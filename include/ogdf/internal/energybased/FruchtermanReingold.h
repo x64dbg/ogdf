@@ -54,50 +54,59 @@
 #include <ogdf/internal/energybased/NodeAttributes.h>
 #include <ogdf/internal/energybased/EdgeAttributes.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT FruchtermanReingold
 {
 public:
-	FruchtermanReingold();          //constructor
-	~FruchtermanReingold() { }      //destructor
+    FruchtermanReingold();          //constructor
+    ~FruchtermanReingold() { }      //destructor
 
-	//Calculate exact rep. forces for each node.
-	void calculate_exact_repulsive_forces(
-		const Graph &G,
-		NodeArray<NodeAttributes>& A,
-		NodeArray<DPoint>& F_rep);
+    //Calculate exact rep. forces for each node.
+    void calculate_exact_repulsive_forces(
+        const Graph &G,
+        NodeArray<NodeAttributes>& A,
+        NodeArray<DPoint>& F_rep);
 
-	//Grid approximation of rep.forces for each node.
-	void calculate_approx_repulsive_forces(
-		const Graph &G,
-		NodeArray<NodeAttributes>& A,
-		NodeArray<DPoint>& F_rep);
+    //Grid approximation of rep.forces for each node.
+    void calculate_approx_repulsive_forces(
+        const Graph &G,
+        NodeArray<NodeAttributes>& A,
+        NodeArray<DPoint>& F_rep);
 
-	//Make all initialisations that are needed for FruchtermanReingold.
-	void make_initialisations (
-		double boxlength,
-		DPoint down_left_corner,
-		int grid_quotient);
+    //Make all initialisations that are needed for FruchtermanReingold.
+    void make_initialisations (
+        double boxlength,
+        DPoint down_left_corner,
+        int grid_quotient);
 
-	//Import updated information of the drawing area.
-	void update_boxlength_and_cornercoordinate(double b_l, DPoint d_l_c) {
-		boxlength = b_l; down_left_corner = d_l_c;
-	}
+    //Import updated information of the drawing area.
+    void update_boxlength_and_cornercoordinate(double b_l, DPoint d_l_c)
+    {
+        boxlength = b_l;
+        down_left_corner = d_l_c;
+    }
 
 private:
-	int _grid_quotient;//for coarsening the FrRe-grid
-	int max_gridindex; //maximum index of a grid row/column
-	double boxlength;  //length of drawing box
-	DPoint down_left_corner;//down left corner of drawing box
+    int _grid_quotient;//for coarsening the FrRe-grid
+    int max_gridindex; //maximum index of a grid row/column
+    double boxlength;  //length of drawing box
+    DPoint down_left_corner;//down left corner of drawing box
 
-	//Returns the repulsing force_function_value of scalar d.
-	double f_rep_scalar (double d);
+    //Returns the repulsing force_function_value of scalar d.
+    double f_rep_scalar (double d);
 
-	//The number k of rows and colums of the grid is sqrt(|V|) / frGridQuotient()
-	//(Note that in [FrRe] frGridQuotient() is 2.)
-	void grid_quotient(int p) { _grid_quotient = ((0<=p) ? p : 2);}
-	int grid_quotient() const {return _grid_quotient;}
+    //The number k of rows and colums of the grid is sqrt(|V|) / frGridQuotient()
+    //(Note that in [FrRe] frGridQuotient() is 2.)
+    void grid_quotient(int p)
+    {
+        _grid_quotient = ((0<=p) ? p : 2);
+    }
+    int grid_quotient() const
+    {
+        return _grid_quotient;
+    }
 };
 
 }//namespace ogdf

@@ -53,33 +53,43 @@
 #include <ogdf/module/LayerByLayerSweep.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //! The median heuristic for 2-layer crossing minimization.
 class OGDF_EXPORT MedianHeuristic : public LayerByLayerSweep
 {
 public:
-	//! Creates a new instance of the median heuristic.
-	MedianHeuristic() { }
+    //! Creates a new instance of the median heuristic.
+    MedianHeuristic() { }
 
-	//! Creates a new instance of the median heuristic.
-	MedianHeuristic(const MedianHeuristic &crossMin) { }
+    //! Creates a new instance of the median heuristic.
+    MedianHeuristic(const MedianHeuristic &crossMin) { }
 
-	//! Returns a new instance of the median heuristic with the same option settings.
-	LayerByLayerSweep *clone() const { return new MedianHeuristic; }
+    //! Returns a new instance of the median heuristic with the same option settings.
+    LayerByLayerSweep *clone() const
+    {
+        return new MedianHeuristic;
+    }
 
-	//! Initializes crossing minimization for hierarchy \a H.
-	void init (const HierarchyLevels &levels) { m_weight.init(levels.hierarchy()); }
+    //! Initializes crossing minimization for hierarchy \a H.
+    void init (const HierarchyLevels &levels)
+    {
+        m_weight.init(levels.hierarchy());
+    }
 
-	//! Calls the median heuristic for level \a L.
-	void call (Level &L);
+    //! Calls the median heuristic for level \a L.
+    void call (Level &L);
 
-	//! Does some clean-up after calls.
-	void cleanup () { m_weight.init(); }
+    //! Does some clean-up after calls.
+    void cleanup ()
+    {
+        m_weight.init();
+    }
 
 private:
-	NodeArray<int> m_weight; //!< The median weight of a node.
+    NodeArray<int> m_weight; //!< The median weight of a node.
 };
 
 

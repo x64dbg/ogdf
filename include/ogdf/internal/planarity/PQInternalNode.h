@@ -53,7 +53,8 @@
 
 #include <ogdf/internal/planarity/PQNode.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -99,193 +100,217 @@ class PQInternalNode : public PQNode<T,X,Y>
 {
 public:
 
-	PQInternalNode(
-		int count,
-		PQNodeRoot::PQNodeType typ,
-		PQNodeRoot::PQNodeStatus stat,
-		PQInternalKey<T,X,Y>* internalPtr,
-		PQNodeKey<T,X,Y>* infoPtr)
-		: PQNode<T,X,Y>(count,infoPtr)
-	{
-		m_type = typ;
-		m_status = stat;
-		m_mark = PQNodeRoot::UNMARKED;
+    PQInternalNode(
+        int count,
+        PQNodeRoot::PQNodeType typ,
+        PQNodeRoot::PQNodeStatus stat,
+        PQInternalKey<T,X,Y>* internalPtr,
+        PQNodeKey<T,X,Y>* infoPtr)
+        : PQNode<T,X,Y>(count,infoPtr)
+    {
+        m_type = typ;
+        m_status = stat;
+        m_mark = PQNodeRoot::UNMARKED;
 
-		m_pointerToInternal = internalPtr;
-		internalPtr->setNodePointer(this);
-	}
+        m_pointerToInternal = internalPtr;
+        internalPtr->setNodePointer(this);
+    }
 
-	PQInternalNode(
-		int count,
-		PQNodeRoot::PQNodeType typ,
-		PQNodeRoot::PQNodeStatus stat,
-		PQInternalKey<T,X,Y>* internalPtr)
-		: PQNode<T,X,Y>(count)
-	{
-		m_type   = typ;
-		m_status = stat;
-		m_mark   = PQNodeRoot::UNMARKED;
-		m_pointerToInternal = internalPtr;
-		internalPtr->setNodePointer(this);
-	}
+    PQInternalNode(
+        int count,
+        PQNodeRoot::PQNodeType typ,
+        PQNodeRoot::PQNodeStatus stat,
+        PQInternalKey<T,X,Y>* internalPtr)
+        : PQNode<T,X,Y>(count)
+    {
+        m_type   = typ;
+        m_status = stat;
+        m_mark   = PQNodeRoot::UNMARKED;
+        m_pointerToInternal = internalPtr;
+        internalPtr->setNodePointer(this);
+    }
 
-	PQInternalNode(
-		int count,
-		PQNodeRoot::PQNodeType typ,
-		PQNodeRoot::PQNodeStatus stat,
-		PQNodeKey<T,X,Y>* infoPtr)
-		: PQNode<T,X,Y>(count,infoPtr)
-	{
-		m_type   = typ;
-		m_status = stat;
-		m_mark   = PQNodeRoot::UNMARKED;
-		m_pointerToInternal = 0;
-	}
+    PQInternalNode(
+        int count,
+        PQNodeRoot::PQNodeType typ,
+        PQNodeRoot::PQNodeStatus stat,
+        PQNodeKey<T,X,Y>* infoPtr)
+        : PQNode<T,X,Y>(count,infoPtr)
+    {
+        m_type   = typ;
+        m_status = stat;
+        m_mark   = PQNodeRoot::UNMARKED;
+        m_pointerToInternal = 0;
+    }
 
-	PQInternalNode(
-		int count,
-		PQNodeRoot::PQNodeType typ,
-		PQNodeRoot::PQNodeStatus stat)
-		: PQNode<T,X,Y>(count)
-	{
-		m_type = typ;
-		m_status = stat;
-		m_mark = PQNodeRoot::UNMARKED;
-		m_pointerToInternal = 0;
+    PQInternalNode(
+        int count,
+        PQNodeRoot::PQNodeType typ,
+        PQNodeRoot::PQNodeStatus stat)
+        : PQNode<T,X,Y>(count)
+    {
+        m_type = typ;
+        m_status = stat;
+        m_mark = PQNodeRoot::UNMARKED;
+        m_pointerToInternal = 0;
 
-	}
+    }
 
-	/**
-	 * The destructor does not delete any
-	 * accompanying information class as PQLeafKey,
-	 * PQNodeKey and PQInternalKey.
-	 * This has been avoided, since applications may need the existence of
-	 * these information classes after the corresponding node has been
-	 * deleted. If the deletion of an accompanying information class should
-	 * be performed with the deletion of a node, either derive a new class
-	 * with an appropriate destructor, or make use of the function
-	 * CleanNode() of the class template PQTree.
-	*/
-	~PQInternalNode() { }
+    /**
+     * The destructor does not delete any
+     * accompanying information class as PQLeafKey,
+     * PQNodeKey and PQInternalKey.
+     * This has been avoided, since applications may need the existence of
+     * these information classes after the corresponding node has been
+     * deleted. If the deletion of an accompanying information class should
+     * be performed with the deletion of a node, either derive a new class
+     * with an appropriate destructor, or make use of the function
+     * CleanNode() of the class template PQTree.
+    */
+    ~PQInternalNode() { }
 
 
-	//! Returns 0. An element of type PQInternalNode does not have a PQLeafKey.
-	virtual PQLeafKey<T,X,Y>* getKey() const { return 0; }
+    //! Returns 0. An element of type PQInternalNode does not have a PQLeafKey.
+    virtual PQLeafKey<T,X,Y>* getKey() const
+    {
+        return 0;
+    }
 
-	/**
-	 * Accepts only pointers \a pointerToKey = 0.
-	 * The function setKey() is designed to set a
-	 * specified pointer variable in a derived class
-	 * of PQNode to the adress stored in \a pointerToKey that is
-	 * of type PQLeafKey. The class template PQInternalNode does not store
-	 * informations of type PQLeafKey.
-	 *
-	 * setKey() ignores the informations as long as
-	 * \a pointerToKey = 0. The return value then is 1.
-	 * In case that \a pointerToKey != 0, the return value is 0.
-	 */
-	virtual bool setKey(PQLeafKey<T,X,Y>* pointerToKey)
-	{
-		return (pointerToKey == 0);
-	}
+    /**
+     * Accepts only pointers \a pointerToKey = 0.
+     * The function setKey() is designed to set a
+     * specified pointer variable in a derived class
+     * of PQNode to the adress stored in \a pointerToKey that is
+     * of type PQLeafKey. The class template PQInternalNode does not store
+     * informations of type PQLeafKey.
+     *
+     * setKey() ignores the informations as long as
+     * \a pointerToKey = 0. The return value then is 1.
+     * In case that \a pointerToKey != 0, the return value is 0.
+     */
+    virtual bool setKey(PQLeafKey<T,X,Y>* pointerToKey)
+    {
+        return (pointerToKey == 0);
+    }
 
-	//! Returns a pointer to the PQInternalKey information.
-	virtual PQInternalKey<T,X,Y>* getInternal() const { return m_pointerToInternal; }
+    //! Returns a pointer to the PQInternalKey information.
+    virtual PQInternalKey<T,X,Y>* getInternal() const
+    {
+        return m_pointerToInternal;
+    }
 
-	/**
-	 * setInternal() sets the pointer variable \a m_pointerToInternal to the
-	 * specified adress of \a pointerToInternal that is of type PQInternalKey.
-	 * Observe that \a pointerToInternal has
-	 * to be instantiated by the client. The function setInternal() does
-	 * not instantiate the corresponding variable in the derived class.
-	 * Nevertheless, using this function will automatically set the \a m_nodePointer of the
-	 * element of type PQInternalKey to this PQInternalNode.
-	 * The return value is always 1 unless \a pointerInternal was
-	 * equal to 0.
-	 */
-	virtual bool setInternal(PQInternalKey<T,X,Y>* pointerToInternal)
-	{
-		m_pointerToInternal = pointerToInternal;
-		if (pointerToInternal != 0)
-		{
-			m_pointerToInternal->setNodePointer(this);
-			return true;
-		}
-		else
-			return false;
-	}
+    /**
+     * setInternal() sets the pointer variable \a m_pointerToInternal to the
+     * specified adress of \a pointerToInternal that is of type PQInternalKey.
+     * Observe that \a pointerToInternal has
+     * to be instantiated by the client. The function setInternal() does
+     * not instantiate the corresponding variable in the derived class.
+     * Nevertheless, using this function will automatically set the \a m_nodePointer of the
+     * element of type PQInternalKey to this PQInternalNode.
+     * The return value is always 1 unless \a pointerInternal was
+     * equal to 0.
+     */
+    virtual bool setInternal(PQInternalKey<T,X,Y>* pointerToInternal)
+    {
+        m_pointerToInternal = pointerToInternal;
+        if (pointerToInternal != 0)
+        {
+            m_pointerToInternal->setNodePointer(this);
+            return true;
+        }
+        else
+            return false;
+    }
 
-	//! Returns the variable \ m_mark.
-	/**
-	 * The variable \a m_mark describes the designation used in
-	 * the first pass of Booth and Luekers algorithm called Bubble(). A
-	 * P- or Q-node is either marked \b BLOCKED, \b UNBLOCKED or
-	 * \b QUEUED (see PQNode).
-	 */
-	virtual PQNodeRoot::PQNodeMark mark() const { return m_mark; }
+    //! Returns the variable \ m_mark.
+    /**
+     * The variable \a m_mark describes the designation used in
+     * the first pass of Booth and Luekers algorithm called Bubble(). A
+     * P- or Q-node is either marked \b BLOCKED, \b UNBLOCKED or
+     * \b QUEUED (see PQNode).
+     */
+    virtual PQNodeRoot::PQNodeMark mark() const
+    {
+        return m_mark;
+    }
 
-	//! Sets the variable \ m_mark.
-	virtual void mark(PQNodeRoot::PQNodeMark m) { m_mark = m; }
+    //! Sets the variable \ m_mark.
+    virtual void mark(PQNodeRoot::PQNodeMark m)
+    {
+        m_mark = m;
+    }
 
-	//! Returns the variable \a m_status in the derived class PQInternalNode.
-	/**
-	 * The functions manage the status of a node in the PQ-tree. A status is
-	 * any kind of information of the current situation in the frontier of
-	 * a node (the frontier of a node are all descendant leaves of the
-	 * node). A status can be anything such as \b EMPTY, \b FULL or
-	 * \b PARTIAL (see PQNode). Since there might be more than those three
-	 * possibilities, (e.g. in computing planar subgraphs) this
-	 * function may be overloaded by the client.
-	 */
-	virtual PQNodeRoot::PQNodeStatus status() const { return m_status; }
+    //! Returns the variable \a m_status in the derived class PQInternalNode.
+    /**
+     * The functions manage the status of a node in the PQ-tree. A status is
+     * any kind of information of the current situation in the frontier of
+     * a node (the frontier of a node are all descendant leaves of the
+     * node). A status can be anything such as \b EMPTY, \b FULL or
+     * \b PARTIAL (see PQNode). Since there might be more than those three
+     * possibilities, (e.g. in computing planar subgraphs) this
+     * function may be overloaded by the client.
+     */
+    virtual PQNodeRoot::PQNodeStatus status() const
+    {
+        return m_status;
+    }
 
-	//! Sets the variable \a m_status in the derived class PQInternalNode.
-	virtual void status(PQNodeRoot::PQNodeStatus s) { m_status = s; }
+    //! Sets the variable \a m_status in the derived class PQInternalNode.
+    virtual void status(PQNodeRoot::PQNodeStatus s)
+    {
+        m_status = s;
+    }
 
-	//! Returns the variable \a m_type in the derived class PQInternalNode.
-	/**
-	 * The type of a PQInternalNode is either \b PNode or \b QNode (see
-	 * PQNodeRoot).
-	 */
-	virtual PQNodeRoot::PQNodeType type() const { return m_type; }
+    //! Returns the variable \a m_type in the derived class PQInternalNode.
+    /**
+     * The type of a PQInternalNode is either \b PNode or \b QNode (see
+     * PQNodeRoot).
+     */
+    virtual PQNodeRoot::PQNodeType type() const
+    {
+        return m_type;
+    }
 
-	//! Sets the variable \a m_type in the derived class PQInternalNode.
-	virtual void type(PQNodeRoot::PQNodeType t) { m_type = t; }
+    //! Sets the variable \a m_type in the derived class PQInternalNode.
+    virtual void type(PQNodeRoot::PQNodeType t)
+    {
+        m_type = t;
+    }
 
 private:
 
-	/**
-	 * \a m_mark is a variable, storing if a PQInternalNode is
-	 * \b QUEUEUD, \b BLOCKED or \b UNBLOCKED (see PQNode)
-	 * during the first phase of the procedure Bubble().
-	 */
-	PQNodeRoot::PQNodeMark m_mark;
+    /**
+     * \a m_mark is a variable, storing if a PQInternalNode is
+     * \b QUEUEUD, \b BLOCKED or \b UNBLOCKED (see PQNode)
+     * during the first phase of the procedure Bubble().
+     */
+    PQNodeRoot::PQNodeMark m_mark;
 
 
-	/**
-	 * \a m_pointerToInternal stores the adress of the corresponding
-	 * internal information. That is information not supposed to be
-	 * available for leaves of the PQ-tree. The internal information must
-	 * be of type PQInternalKey.
-	 * The PQInternalKey information can be overloaded by the
-	 * client in order to present different information classes, needed in
-	 * the different applications of PQ-trees.
-	 */
-	PQInternalKey<T,X,Y>* m_pointerToInternal;
+    /**
+     * \a m_pointerToInternal stores the adress of the corresponding
+     * internal information. That is information not supposed to be
+     * available for leaves of the PQ-tree. The internal information must
+     * be of type PQInternalKey.
+     * The PQInternalKey information can be overloaded by the
+     * client in order to present different information classes, needed in
+     * the different applications of PQ-trees.
+     */
+    PQInternalKey<T,X,Y>* m_pointerToInternal;
 
-	/**
-	 * \a m_status is a variable storing the status of a PQInternalNode.
-	 * A P- or Q-node can be either \b FULL, \b PARTIAL or \b EMPTY
-	 * (see PQNode).
-	 */
-	PQNodeRoot::PQNodeStatus m_status;
+    /**
+     * \a m_status is a variable storing the status of a PQInternalNode.
+     * A P- or Q-node can be either \b FULL, \b PARTIAL or \b EMPTY
+     * (see PQNode).
+     */
+    PQNodeRoot::PQNodeStatus m_status;
 
-	/**
-	 * \a m_status is a variable storing the status of a PQInternalNode.
-	 * A P- or Q-node can be either \b FULL, \b PARTIAL or \b EMPTY
-	 * (see PQNode).
-	 */
-	PQNodeRoot::PQNodeType m_type;
+    /**
+     * \a m_status is a variable storing the status of a PQInternalNode.
+     * A P- or Q-node can be either \b FULL, \b PARTIAL or \b EMPTY
+     * (see PQNode).
+     */
+    PQNodeRoot::PQNodeType m_type;
 };
 
 }

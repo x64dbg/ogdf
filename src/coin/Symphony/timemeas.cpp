@@ -24,65 +24,65 @@
 double used_time(double *T)
 {
 #ifdef _OPENMP
-   double t, oldT =  T ? *T : 0;
-   struct timeval tp;
+    double t, oldT =  T ? *T : 0;
+    struct timeval tp;
 
 #if defined(_MSC_VER) || defined(__MNO_CYGWIN)
-   clock_t tp_clock;
-   long tp_long;
-   tp_clock = clock();
-   tp_long = (long) (tp_clock) / CLOCKS_PER_SEC;
-   tp.tv_sec = tp_long;
-   tp.tv_usec = 0;
+    clock_t tp_clock;
+    long tp_long;
+    tp_clock = clock();
+    tp_long = (long) (tp_clock) / CLOCKS_PER_SEC;
+    tp.tv_sec = tp_long;
+    tp.tv_usec = 0;
 #else
-   (void) gettimeofday(&tp, NULL);
+    (void) gettimeofday(&tp, NULL);
 #endif
 
-   t = (double)tp.tv_sec + ((double)tp.tv_usec)/1000000;
-   if (T) *T = t;
-   return (t - oldT);
+    t = (double)tp.tv_sec + ((double)tp.tv_usec)/1000000;
+    if (T) *T = t;
+    return (t - oldT);
 #else
 
-   /* FIXME: Windows CPU timing does not currently work */
+    /* FIXME: Windows CPU timing does not currently work */
 
 #if defined(_MSC_VER) || defined (__MNO_CYGWIN) || defined(__MINGW32__)
-   return (0);
+    return (0);
 #else
 
-   double oldT =  *T;
-   struct rusage x;
+    double oldT =  *T;
+    struct rusage x;
 
-   (void) getrusage(RUSAGE_SELF, &x);
-   *T = ((1e6 * (double) x.ru_utime.tv_sec) + (double)x.ru_utime.tv_usec);
-   *T /= 1e6;
-   return (*T - oldT);
+    (void) getrusage(RUSAGE_SELF, &x);
+    *T = ((1e6 * (double) x.ru_utime.tv_sec) + (double)x.ru_utime.tv_usec);
+    *T /= 1e6;
+    return (*T - oldT);
 
 #endif
 
-/* END OF FIXME */
+    /* END OF FIXME */
 
 #endif
 }
 
 double wall_clock(double *T)
 {
-   double t, oldT =  T ? *T : 0;
-   struct timeval tp;
+    double t, oldT =  T ? *T : 0;
+    struct timeval tp;
 
 #if defined(_MSC_VER) || defined (__MNO_CYGWIN)
-   clock_t tp_clock;
-   long tp_long;
-   tp_clock = clock();
-   tp_long = (long) (tp_clock) / CLOCKS_PER_SEC;
-   tp.tv_sec = tp_long;
-   tp.tv_usec = 0;
+    clock_t tp_clock;
+    long tp_long;
+    tp_clock = clock();
+    tp_long = (long) (tp_clock) / CLOCKS_PER_SEC;
+    tp.tv_sec = tp_long;
+    tp.tv_usec = 0;
 #else
-   (void) gettimeofday(&tp, NULL);
+    (void) gettimeofday(&tp, NULL);
 #endif
 
-   t = (double)tp.tv_sec + ((double)tp.tv_usec)/1000000;
-   if (T) *T = t;
-   return (t - oldT);
+    t = (double)tp.tv_sec + ((double)tp.tv_usec)/1000000;
+    if (T) *T = t;
+    return (t - oldT);
 }
 
 #if 0
@@ -91,20 +91,20 @@ double wall_clock(double *T)
 
 void start_time(void)
 {
-   struct itimerval value = {{0, 0}, {MAX_SEC, 0}};
-   struct itimerval ovalue = {{0, 0}, {0,0}};
+    struct itimerval value = {{0, 0}, {MAX_SEC, 0}};
+    struct itimerval ovalue = {{0, 0}, {0,0}};
 
-   setitimer(ITIMER_VIRTUAL, &value, &ovalue);
+    setitimer(ITIMER_VIRTUAL, &value, &ovalue);
 }
 
 double used_time(double *T)
 {
-   static struct itimerval value;
+    static struct itimerval value;
 
-   getitimer(ITIMER_VIRTUAL, &value);
-   return( ((double) MAX_SEC) -
-	   ((double) value.it_value.tv_sec) -
-	   ((double) value.it_value.tv_usec) / 1e6 - *T);
+    getitimer(ITIMER_VIRTUAL, &value);
+    return( ((double) MAX_SEC) -
+            ((double) value.it_value.tv_sec) -
+            ((double) value.it_value.tv_usec) / 1e6 - *T);
 }
 
 #endif

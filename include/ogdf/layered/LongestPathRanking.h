@@ -58,10 +58,11 @@
 #include <ogdf/basic/NodeArray.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class GraphCopySimple;
-	class GraphAttributes;
+class GraphCopySimple;
+class GraphAttributes;
 
 
 //! The longest-path ranking algorithm.
@@ -113,137 +114,170 @@ namespace ogdf {
  *   </tr>
  * </table>
  */
-class OGDF_EXPORT LongestPathRanking : public RankingModule {
+class OGDF_EXPORT LongestPathRanking : public RankingModule
+{
 
-	ModuleOption<AcyclicSubgraphModule> m_subgraph; //!< The acyclic sugraph module.
-	bool m_sepDeg0; //!< Put isolated nodes on a separate layer?
-	bool m_separateMultiEdges; //!< Separate multi-edges?
-	bool m_optimizeEdgeLength; //!< Optimize for short edges.
-	bool m_alignBaseClasses;   //!< Align base classes (callUML only).
-	bool m_alignSiblings;      //!< Align siblings (callUML only).
+    ModuleOption<AcyclicSubgraphModule> m_subgraph; //!< The acyclic sugraph module.
+    bool m_sepDeg0; //!< Put isolated nodes on a separate layer?
+    bool m_separateMultiEdges; //!< Separate multi-edges?
+    bool m_optimizeEdgeLength; //!< Optimize for short edges.
+    bool m_alignBaseClasses;   //!< Align base classes (callUML only).
+    bool m_alignSiblings;      //!< Align siblings (callUML only).
 
-	int m_offset, m_maxN;
+    int m_offset, m_maxN;
 
-	NodeArray<bool> m_isSource, m_finished;
-	NodeArray<SListPure<Tuple2<node,int> > > m_adjacent;
-	NodeArray<int> m_ingoing;
+    NodeArray<bool> m_isSource, m_finished;
+    NodeArray<SListPure<Tuple2<node,int> > > m_adjacent;
+    NodeArray<int> m_ingoing;
 
 public:
-	//! Creates an instance of longest-path ranking.
-	LongestPathRanking();
+    //! Creates an instance of longest-path ranking.
+    LongestPathRanking();
 
 
-	/**
-	 *  @name Algorithm call
-	 *  @{
-	 */
+    /**
+     *  @name Algorithm call
+     *  @{
+     */
 
-	//! Computes a node ranking of \a G in \a rank.
-	void call(const Graph &G, NodeArray<int> &rank);
+    //! Computes a node ranking of \a G in \a rank.
+    void call(const Graph &G, NodeArray<int> &rank);
 
-	//! Computes a node ranking of \a G with given minimal edge length in \a rank.
-	/**
-	 * @param G is the input graph.
-	 * @param length specifies the minimal length of each edge.
-	 * @param rank is assigned the rank (layer) of each node.
-	 */
-	void call(const Graph &G, const EdgeArray<int> &length, NodeArray<int> &rank);
+    //! Computes a node ranking of \a G with given minimal edge length in \a rank.
+    /**
+     * @param G is the input graph.
+     * @param length specifies the minimal length of each edge.
+     * @param rank is assigned the rank (layer) of each node.
+     */
+    void call(const Graph &G, const EdgeArray<int> &length, NodeArray<int> &rank);
 
-	//! Computes a node ranking of \a G with given minimal edge length in \a rank.
-	/**
-	 * Parameter \a cost is just ignored by the implementation.
-	 *
-	 * @param G is the input graph.
-	 * @param length specifies the minimal length of each edge.
-	 * @param cost specifies the edge costs (ignored)
-	 * @param rank is assigned the rank (layer) of each node.
-	 */
-	void call(const Graph &G, const EdgeArray<int> & length, const EdgeArray<int> & cost, NodeArray<int> &rank) {
-		call(G, length, rank);
-	}
+    //! Computes a node ranking of \a G with given minimal edge length in \a rank.
+    /**
+     * Parameter \a cost is just ignored by the implementation.
+     *
+     * @param G is the input graph.
+     * @param length specifies the minimal length of each edge.
+     * @param cost specifies the edge costs (ignored)
+     * @param rank is assigned the rank (layer) of each node.
+     */
+    void call(const Graph &G, const EdgeArray<int> & length, const EdgeArray<int> & cost, NodeArray<int> &rank)
+    {
+        call(G, length, rank);
+    }
 
-	//! Call for UML graphs with special treatement of inheritance hierarchies.
-	void callUML(const GraphAttributes &AG, NodeArray<int> &rank);
-
-
-	/** @}
-	 *  @name Optional parameters
-	 *  @{
-	 */
-
-	//! Returns the current setting of option separateDeg0Layer.
-	/**
-	 * If set to true, isolated nodes are placed on a separate layer.
-	 */
-	bool separateDeg0Layer() const { return m_sepDeg0; }
-
-	//! Sets the option separateDeg0Layer to \a sdl.
-	void separateDeg0Layer (bool sdl) { m_sepDeg0 = sdl; }
-
-	//! Returns the current setting of option separateMultiEdges.
-	/**
-	 * If set to true, multi-edges will span at least two layers. Since
-	 * each such edge will have at least one dummy node, the edges will
-	 * automaticall be separated in a Sugiyama drawing.
-	 */
-	bool separateMultiEdges() const { return m_separateMultiEdges; }
-
-	//! Sets the option separateMultiEdges to \a b.
-	void separateMultiEdges(bool b) { m_separateMultiEdges = b; }
-
-	//! Returns the current setting of option optimizeEdgeLength.
-	/**
-	 * If set to true the ranking algorithm tries to reduce edge length
-	 * even if this might increase the height of the layout. Choose
-	 * false if the longest-path ranking known from the literature
-	 * shall be used.
-	 */
-	bool optimizeEdgeLength() const { return m_optimizeEdgeLength; }
-
-	//! Sets the option optimizeEdgeLength to \a b.
-	void optimizeEdgeLength(bool b) { m_optimizeEdgeLength = b; }
-
-	//! Returns the current setting of alignment of base classes (callUML only).
-	bool alignBaseClasses() const { return m_alignBaseClasses; }
-
-	//! Sets the option for alignment of base classes to \a b.
-	void alignBaseClasses(bool b) { m_alignBaseClasses = b; }
-
-	//! Returns the current setting of option for alignment of siblings.
-	bool alignSiblings() const { return m_alignSiblings; }
-
-	//! Sets the option for alignment of siblings to \a b.
-	void alignSiblings(bool b) { m_alignSiblings = b; }
+    //! Call for UML graphs with special treatement of inheritance hierarchies.
+    void callUML(const GraphAttributes &AG, NodeArray<int> &rank);
 
 
-	/** @}
-	 *  @name Module options
-	 *  @{
-	 */
+    /** @}
+     *  @name Optional parameters
+     *  @{
+     */
 
-	//! Sets the module for the computation of the acyclic subgraph.
-	void setSubgraph(AcyclicSubgraphModule *pSubgraph) {
-		m_subgraph.set(pSubgraph);
-	}
+    //! Returns the current setting of option separateDeg0Layer.
+    /**
+     * If set to true, isolated nodes are placed on a separate layer.
+     */
+    bool separateDeg0Layer() const
+    {
+        return m_sepDeg0;
+    }
 
-	//! @}
+    //! Sets the option separateDeg0Layer to \a sdl.
+    void separateDeg0Layer (bool sdl)
+    {
+        m_sepDeg0 = sdl;
+    }
+
+    //! Returns the current setting of option separateMultiEdges.
+    /**
+     * If set to true, multi-edges will span at least two layers. Since
+     * each such edge will have at least one dummy node, the edges will
+     * automaticall be separated in a Sugiyama drawing.
+     */
+    bool separateMultiEdges() const
+    {
+        return m_separateMultiEdges;
+    }
+
+    //! Sets the option separateMultiEdges to \a b.
+    void separateMultiEdges(bool b)
+    {
+        m_separateMultiEdges = b;
+    }
+
+    //! Returns the current setting of option optimizeEdgeLength.
+    /**
+     * If set to true the ranking algorithm tries to reduce edge length
+     * even if this might increase the height of the layout. Choose
+     * false if the longest-path ranking known from the literature
+     * shall be used.
+     */
+    bool optimizeEdgeLength() const
+    {
+        return m_optimizeEdgeLength;
+    }
+
+    //! Sets the option optimizeEdgeLength to \a b.
+    void optimizeEdgeLength(bool b)
+    {
+        m_optimizeEdgeLength = b;
+    }
+
+    //! Returns the current setting of alignment of base classes (callUML only).
+    bool alignBaseClasses() const
+    {
+        return m_alignBaseClasses;
+    }
+
+    //! Sets the option for alignment of base classes to \a b.
+    void alignBaseClasses(bool b)
+    {
+        m_alignBaseClasses = b;
+    }
+
+    //! Returns the current setting of option for alignment of siblings.
+    bool alignSiblings() const
+    {
+        return m_alignSiblings;
+    }
+
+    //! Sets the option for alignment of siblings to \a b.
+    void alignSiblings(bool b)
+    {
+        m_alignSiblings = b;
+    }
+
+
+    /** @}
+     *  @name Module options
+     *  @{
+     */
+
+    //! Sets the module for the computation of the acyclic subgraph.
+    void setSubgraph(AcyclicSubgraphModule *pSubgraph)
+    {
+        m_subgraph.set(pSubgraph);
+    }
+
+    //! @}
 
 private:
-	//! Implements the algorithm call.
-	void doCall(const Graph& G,
-		NodeArray<int> &rank,
-		EdgeArray<bool> &reversed,
-		const EdgeArray<int> &length);
+    //! Implements the algorithm call.
+    void doCall(const Graph& G,
+                NodeArray<int> &rank,
+                EdgeArray<bool> &reversed,
+                const EdgeArray<int> &length);
 
-	void join(
-		GraphCopySimple &GC,
-		NodeArray<node> &superNode,
-		NodeArray<SListPure<node> > &joinedNodes,
-		node v, node w);
+    void join(
+        GraphCopySimple &GC,
+        NodeArray<node> &superNode,
+        NodeArray<SListPure<node> > &joinedNodes,
+        node v, node w);
 
-	void dfs(node v);
-	void getTmpRank(node v, NodeArray<int> &rank);
-	void dfsAdd(node v, NodeArray<int> &rank);
+    void dfs(node v);
+    void getTmpRank(node v, NodeArray<int> &rank);
+    void dfsAdd(node v, NodeArray<int> &rank);
 };
 
 

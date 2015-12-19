@@ -10,7 +10,7 @@
   \file
 */
 
-#define	IMPLIED_FREE	9
+#define IMPLIED_FREE    9
 
 /*! \class implied_free_action
     \brief Detect and process implied free variables
@@ -26,35 +26,37 @@
   The transform also handles more complicated variations, where x is not a
   singleton.
 */
-class implied_free_action : public CoinPresolveAction {
-  struct action {
-    int row, col;
-    double clo, cup;
-    double rlo, rup;
-    const double *rowels;
-    const double *costs;
-    int ninrow;
-  };
+class implied_free_action : public CoinPresolveAction
+{
+    struct action
+    {
+        int row, col;
+        double clo, cup;
+        double rlo, rup;
+        const double *rowels;
+        const double *costs;
+        int ninrow;
+    };
 
-  const int nactions_;
-  const action *const actions_;
+    const int nactions_;
+    const action *const actions_;
 
-  implied_free_action(int nactions,
-		      const action *actions,
-		      const CoinPresolveAction *next) :
-    CoinPresolveAction(next),
-    nactions_(nactions), actions_(actions) {}
+    implied_free_action(int nactions,
+                        const action *actions,
+                        const CoinPresolveAction *next) :
+        CoinPresolveAction(next),
+        nactions_(nactions), actions_(actions) {}
 
- public:
-  const char *name() const;
+public:
+    const char *name() const;
 
-  static const CoinPresolveAction *presolve(CoinPresolveMatrix * prob,
-					 const CoinPresolveAction *next,
-					int & fillLevel);
+    static const CoinPresolveAction *presolve(CoinPresolveMatrix * prob,
+            const CoinPresolveAction *next,
+            int & fillLevel);
 
-  void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix *prob) const;
 
-  ~implied_free_action();
+    ~implied_free_action();
 };
 
 #endif

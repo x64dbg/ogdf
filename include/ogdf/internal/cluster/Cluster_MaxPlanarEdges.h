@@ -55,28 +55,30 @@
 
 #include <ogdf/abacus/constraint.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-class MaxPlanarEdgesConstraint : public abacus::Constraint {
+class MaxPlanarEdgesConstraint : public abacus::Constraint
+{
 #ifdef OGDF_DEBUG
-	friend class MaxCPlanarSub;
-	friend class CPlanarSub;
+    friend class MaxCPlanarSub;
+    friend class CPlanarSub;
 #endif
-	public:
-		//construction
-		MaxPlanarEdgesConstraint(abacus::Master *master, int edgeBound, List<nodePair> &edges);
-		MaxPlanarEdgesConstraint(abacus::Master *master, int edgeBound);
+public:
+    //construction
+    MaxPlanarEdgesConstraint(abacus::Master *master, int edgeBound, List<nodePair> &edges);
+    MaxPlanarEdgesConstraint(abacus::Master *master, int edgeBound);
 
-		//destruction
-		virtual ~MaxPlanarEdgesConstraint();
+    //destruction
+    virtual ~MaxPlanarEdgesConstraint();
 
-		//computes and returns the coefficient for the given variable
-		virtual double coeff(const abacus::Variable *v) const;
+    //computes and returns the coefficient for the given variable
+    virtual double coeff(const abacus::Variable *v) const;
 
-	private:
-		List<nodePair> m_edges;
-		bool m_graphCons;
+private:
+    List<nodePair> m_edges;
+    bool m_graphCons;
 };
 
 }

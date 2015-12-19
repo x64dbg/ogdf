@@ -15,8 +15,8 @@
 // Default Constructor
 //-------------------------------------------------------------------
 ClpDualRowPivot::ClpDualRowPivot () :
-     model_(NULL),
-     type_(-1)
+    model_(NULL),
+    type_(-1)
 {
 
 }
@@ -25,8 +25,8 @@ ClpDualRowPivot::ClpDualRowPivot () :
 // Copy constructor
 //-------------------------------------------------------------------
 ClpDualRowPivot::ClpDualRowPivot (const ClpDualRowPivot & source) :
-     model_(source.model_),
-     type_(source.type_)
+    model_(source.model_),
+    type_(source.type_)
 {
 
 }
@@ -45,16 +45,17 @@ ClpDualRowPivot::~ClpDualRowPivot ()
 ClpDualRowPivot &
 ClpDualRowPivot::operator=(const ClpDualRowPivot& rhs)
 {
-     if (this != &rhs) {
-          type_ = rhs.type_;
-          model_ = rhs.model_;
-     }
-     return *this;
+    if (this != &rhs)
+    {
+        type_ = rhs.type_;
+        model_ = rhs.model_;
+    }
+    return *this;
 }
 void
 ClpDualRowPivot::saveWeights(ClpSimplex * model, int /*mode*/)
 {
-     model_ = model;
+    model_ = model;
 }
 // checks accuracy and may re-initialize (may be empty)
 void

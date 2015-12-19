@@ -47,126 +47,136 @@
 using std::istringstream;
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 static bool read_next_line(istream &is, string &buffer)
 {
-	while(std::getline(is,buffer)) {
-		if(!buffer.empty() && buffer[0] != '#')
-			return true;
-	}
-	return false;
+    while(std::getline(is,buffer))
+    {
+        if(!buffer.empty() && buffer[0] != '#')
+            return true;
+    }
+    return false;
 }
 
 
 static bool buffer_equal(const string &buffer, const char *str)
 {
-	string::size_type n = buffer.length();
-	string::size_type left = 0, ns = n;
-	while(left < n && isspace(buffer[left])) ++left;
-	while(ns > 0 && isspace(buffer[ns-1])) --ns;
-	return buffer.compare(left, ns, str) == 0;
+    string::size_type n = buffer.length();
+    string::size_type left = 0, ns = n;
+    while(left < n && isspace(buffer[left])) ++left;
+    while(ns > 0 && isspace(buffer[ns-1])) --ns;
+    return buffer.compare(left, ns, str) == 0;
 }
 
 
 bool GraphIO::readLEDA(Graph &G, istream &is)
 {
-	G.clear();
+    G.clear();
 
-	// header
+    // header
 
-	try {
-		string buffer;
-		if(!read_next_line(is,buffer))
-			return false;
-		if(!buffer_equal(buffer, "LEDA.GRAPH")) // check type
-			return false;
-		if(!read_next_line(is,buffer)) // skip node type (ignored)
-			return false;
-		if(!read_next_line(is,buffer)) // skip edge type (ignored)
-			return false;
+    try
+    {
+        string buffer;
+        if(!read_next_line(is,buffer))
+            return false;
+        if(!buffer_equal(buffer, "LEDA.GRAPH")) // check type
+            return false;
+        if(!read_next_line(is,buffer)) // skip node type (ignored)
+            return false;
+        if(!read_next_line(is,buffer)) // skip edge type (ignored)
+            return false;
 
-		// nodes
+        // nodes
 
-		// check if next line specifies direction (-1 = directed, -2 = undirected) or nodes
-		if(!read_next_line(is,buffer))
-			return false;
+        // check if next line specifies direction (-1 = directed, -2 = undirected) or nodes
+        if(!read_next_line(is,buffer))
+            return false;
 
-		int n = stoi(buffer);
-		if(n < 0) {
-			if(!read_next_line(is,buffer))
-				return false;
-			n = stoi(buffer);
-		}
-		if(n < 0) return false; // makes no sense
+        int n = stoi(buffer);
+        if(n < 0)
+        {
+            if(!read_next_line(is,buffer))
+                return false;
+            n = stoi(buffer);
+        }
+        if(n < 0) return false; // makes no sense
 
-		Array<node> nodes(1,n);
-		for(int i = 1; i <= n; ++i) {
-			if (read_next_line(is,buffer) == false)
-				return false;
-			nodes[i] = G.newNode();
-		}
+        Array<node> nodes(1,n);
+        for(int i = 1; i <= n; ++i)
+        {
+            if (read_next_line(is,buffer) == false)
+                return false;
+            nodes[i] = G.newNode();
+        }
 
-		// edges
+        // edges
 
-		if(!read_next_line(is,buffer))
-			return false;
+        if(!read_next_line(is,buffer))
+            return false;
 
-		int m = stoi(buffer);
-		if(m < 0) return false; // makes no sense
+        int m = stoi(buffer);
+        if(m < 0) return false; // makes no sense
 
-		for(int i = 1; i <= m; ++i) {
-			if (read_next_line(is,buffer) == false)
-				return false;
-			istringstream iss(buffer);
+        for(int i = 1; i <= m; ++i)
+        {
+            if (read_next_line(is,buffer) == false)
+                return false;
+            istringstream iss(buffer);
 
-			// read index of source and target node
-			int src = -1, tgt = -1;
-			iss >> src >> tgt;
+            // read index of source and target node
+            int src = -1, tgt = -1;
+            iss >> src >> tgt;
 
-			// indices valid?
-			if (src < 1 || n < src || tgt < 1 || n < tgt)
-				return false;
+            // indices valid?
+            if (src < 1 || n < src || tgt < 1 || n < tgt)
+                return false;
 
-			G.newEdge(nodes[src],nodes[tgt]);
-		}
+            G.newEdge(nodes[src],nodes[tgt]);
+        }
 
-	} catch(...) {
-		return false;
-	}
+    }
+    catch(...)
+    {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 
 bool GraphIO::writeLEDA(const Graph &G, ostream &os)
 {
-	// write header
-	os << "LEDA.GRAPH\n";	// format specification
-	os << "void\n";			// no node type
-	os << "void\n";			// no edge type
-	os << "-1\n";			// directed graph
+    // write header
+    os << "LEDA.GRAPH\n";   // format specification
+    os << "void\n";         // no node type
+    os << "void\n";         // no edge type
+    os << "-1\n";           // directed graph
 
-	// write nodes and assign indices 1, 2, ..., n
-	os << G.numberOfNodes() << "\n";
+    // write nodes and assign indices 1, 2, ..., n
+    os << G.numberOfNodes() << "\n";
 
-	NodeArray<int> index(G);
-	int nextIndex = 1;
-	node v;
-	forall_nodes(v,G) {
-		os << "|{}|\n";
-		index[v] = nextIndex++;
-	}
+    NodeArray<int> index(G);
+    int nextIndex = 1;
+    node v;
+    forall_nodes(v,G)
+    {
+        os << "|{}|\n";
+        index[v] = nextIndex++;
+    }
 
-	// write edges
-	os << G.numberOfEdges() << "\n";
+    // write edges
+    os << G.numberOfEdges() << "\n";
 
-	edge e;
-	forall_edges(e,G) {
-		os << index[e->source()] << " " << index[e->target()] << " 0 |{}|\n";
-	}
+    edge e;
+    forall_edges(e,G)
+    {
+        os << index[e->source()] << " " << index[e->target()] << " 0 |{}|\n";
+    }
 
-	return true;
+    return true;
 }
 
 }

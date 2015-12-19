@@ -51,77 +51,81 @@
 #include "MixedModelBase.h"
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 void MMOrder::init(
-	PlanRep &PG,
-	ShellingOrderModule &compOrder,
-	adjEntry adjExternal)
+    PlanRep &PG,
+    ShellingOrderModule &compOrder,
+    adjEntry adjExternal)
 {
-	compOrder.callLeftmost(PG, m_lmc, adjExternal);
-	m_left .init(1,m_lmc.length());
-	m_right.init(1,m_lmc.length());
+    compOrder.callLeftmost(PG, m_lmc, adjExternal);
+    m_left .init(1,m_lmc.length());
+    m_right.init(1,m_lmc.length());
 }
 
 
 MixedModelLayout::MixedModelLayout()
 {
-	m_augmenter.set(new PlanarAugmentation);
-	m_compOrder.set(new BiconnectedShellingOrder);
-	m_crossingsBeautifier.set(new MMDummyCrossingsBeautifier);
-	m_embedder.set(new SimpleEmbedder);
+    m_augmenter.set(new PlanarAugmentation);
+    m_compOrder.set(new BiconnectedShellingOrder);
+    m_crossingsBeautifier.set(new MMDummyCrossingsBeautifier);
+    m_embedder.set(new SimpleEmbedder);
 }
 
 
 void MixedModelLayout::doCall(
-	PlanRep &PG,
-	adjEntry adjExternal,
-	GridLayout &gridLayout,
-	IPoint &boundingBox,
-	bool fixEmbedding)
+    PlanRep &PG,
+    adjEntry adjExternal,
+    GridLayout &gridLayout,
+    IPoint &boundingBox,
+    bool fixEmbedding)
 {
-	// handle graphs with less than 3 nodes
-	node v1, v2;
-	switch (PG.numberOfNodes()) {
-	case 0:
-		boundingBox = IPoint(0,0);
-		return;
+    // handle graphs with less than 3 nodes
+    node v1, v2;
+    switch (PG.numberOfNodes())
+    {
+    case 0:
+        boundingBox = IPoint(0,0);
+        return;
 
-	case 1:
-		v1 = PG.firstNode();
-		gridLayout.x(v1) = gridLayout.y(v1) = 0;
-		boundingBox = IPoint(0,0);
-		return;
+    case 1:
+        v1 = PG.firstNode();
+        gridLayout.x(v1) = gridLayout.y(v1) = 0;
+        boundingBox = IPoint(0,0);
+        return;
 
-	case 2:
-		v1 = PG.firstNode();
-		v2 = v1->succ();
-		gridLayout.x(v1) = gridLayout.y(v1) = gridLayout.y(v2) = 0;
-		gridLayout.x(v2) = 1;
-		boundingBox = IPoint(1,0);
-		return;
-	}
+    case 2:
+        v1 = PG.firstNode();
+        v2 = v1->succ();
+        gridLayout.x(v1) = gridLayout.y(v1) = gridLayout.y(v2) = 0;
+        gridLayout.x(v2) = 1;
+        boundingBox = IPoint(1,0);
+        return;
+    }
 
-	MixedModelBase mm(PG,gridLayout);
+    MixedModelBase mm(PG,gridLayout);
 
-	if(fixEmbedding) {
-		OGDF_ASSERT(PG.representsCombEmbedding());
-		PlanarAugmentationFix fixAugmenter;
-		mm.computeOrder(fixAugmenter, 0, adjExternal, m_compOrder.get());
-	} else
-		mm.computeOrder(m_augmenter.get(),&m_embedder.get(),0,m_compOrder.get());
+    if(fixEmbedding)
+    {
+        OGDF_ASSERT(PG.representsCombEmbedding());
+        PlanarAugmentationFix fixAugmenter;
+        mm.computeOrder(fixAugmenter, 0, adjExternal, m_compOrder.get());
+    }
+    else
+        mm.computeOrder(m_augmenter.get(),&m_embedder.get(),0,m_compOrder.get());
 
-	mm.assignIopCoords();
-	mm.placeNodes();
-	mm.postprocessing1();
-	mm.setBends();
-	mm.postprocessing2();
+    mm.assignIopCoords();
+    mm.placeNodes();
+    mm.postprocessing1();
+    mm.setBends();
+    mm.postprocessing2();
 
-	m_crossingsBeautifier.get().call(PG,gridLayout);
+    m_crossingsBeautifier.get().call(PG,gridLayout);
 
-	int xmin, ymin;
-	gridLayout.computeBoundingBox(xmin,boundingBox.m_x,ymin,boundingBox.m_y);
+    int xmin, ymin;
+    gridLayout.computeBoundingBox(xmin,boundingBox.m_x,ymin,boundingBox.m_y);
 }
 
 

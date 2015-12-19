@@ -58,44 +58,63 @@
 #include <ogdf/internal/planarity/PQInternalKey.h>
 #include <ogdf/internal/planarity/IndInfo.h>
 
-namespace ogdf{
+namespace ogdf
+{
 
 
 class EmbedIndicator : public PQNode<edge,IndInfo*,bool>
 {
 public:
 
-	EmbedIndicator(int count, PQNodeKey<edge,IndInfo*,bool>* infoPtr)
-		: PQNode<edge,IndInfo*,bool>(count,infoPtr) { }
+    EmbedIndicator(int count, PQNodeKey<edge,IndInfo*,bool>* infoPtr)
+        : PQNode<edge,IndInfo*,bool>(count,infoPtr) { }
 
-	virtual ~EmbedIndicator() {
-		delete getNodeInfo()->userStructInfo();
-		delete getNodeInfo();
-	}
+    virtual ~EmbedIndicator()
+    {
+        delete getNodeInfo()->userStructInfo();
+        delete getNodeInfo();
+    }
 
-	PQNodeType  type() const { return leaf; }
+    PQNodeType  type() const
+    {
+        return leaf;
+    }
 
-	void type(PQNodeType) { }
+    void type(PQNodeType) { }
 
-	PQNodeStatus  status() const { return PQNodeRoot::INDICATOR; }
+    PQNodeStatus  status() const
+    {
+        return PQNodeRoot::INDICATOR;
+    }
 
-	void status(PQNodeStatus) { }
+    void status(PQNodeStatus) { }
 
-	PQNodeMark  mark() const { return UNMARKED; }
+    PQNodeMark  mark() const
+    {
+        return UNMARKED;
+    }
 
-	void mark(PQNodeMark) { }
+    void mark(PQNodeMark) { }
 
-	PQLeafKey<edge,IndInfo*,bool>* getKey() const { return 0; }
+    PQLeafKey<edge,IndInfo*,bool>* getKey() const
+    {
+        return 0;
+    }
 
-	bool setKey(PQLeafKey<edge,IndInfo*,bool>* pointerToKey) {
-		return (pointerToKey == 0);
-	}
+    bool setKey(PQLeafKey<edge,IndInfo*,bool>* pointerToKey)
+    {
+        return (pointerToKey == 0);
+    }
 
-	PQInternalKey<edge,IndInfo*,bool>* getInternal() const { return 0; }
+    PQInternalKey<edge,IndInfo*,bool>* getInternal() const
+    {
+        return 0;
+    }
 
-	bool setInternal(PQInternalKey<edge,IndInfo*,bool>* pointerToInternal) {
-		return (pointerToInternal == 0);
-	}
+    bool setInternal(PQInternalKey<edge,IndInfo*,bool>* pointerToInternal)
+    {
+        return (pointerToInternal == 0);
+    }
 };
 
 

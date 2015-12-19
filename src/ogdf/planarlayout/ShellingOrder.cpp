@@ -45,73 +45,79 @@
 #include <ogdf/basic/SList.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 void ShellingOrder::init(const Graph &G, const List<ShellingOrderSet> &partition)
 {
-	m_pGraph = &G;
-	m_V.init(1,partition.size());
-	m_rank.init(G);
+    m_pGraph = &G;
+    m_V.init(1,partition.size());
+    m_rank.init(G);
 
-	int i = 1;
-	ListConstIterator<ShellingOrderSet> it;
-	for(it = partition.begin(); it.valid(); ++it)
-	{
-		const ShellingOrderSet &S = *it;
-		for(int j = 1; j <= S.len(); ++j)
-			m_rank[S[j]] = i;
+    int i = 1;
+    ListConstIterator<ShellingOrderSet> it;
+    for(it = partition.begin(); it.valid(); ++it)
+    {
+        const ShellingOrderSet &S = *it;
+        for(int j = 1; j <= S.len(); ++j)
+            m_rank[S[j]] = i;
 
-		m_V[i++] = *it;
-	}
+        m_V[i++] = *it;
+    }
 }
 
 
 void ShellingOrder::initLeftmost(
-	const Graph &G,
-	const List<ShellingOrderSet> &partition)
+    const Graph &G,
+    const List<ShellingOrderSet> &partition)
 {
-	m_pGraph = &G;
-	m_V.init(1,partition.size());
-	m_rank.init(G);
+    m_pGraph = &G;
+    m_V.init(1,partition.size());
+    m_rank.init(G);
 
-	NodeArray<SListPure<const ShellingOrderSet *> > crSets(G);
-	BoundedStack<node> outerfaceStack(G.numberOfNodes());
+    NodeArray<SListPure<const ShellingOrderSet *> > crSets(G);
+    BoundedStack<node> outerfaceStack(G.numberOfNodes());
 
-	int i, j;
+    int i, j;
 
-	ListConstIterator<ShellingOrderSet> it;
-	for(it = partition.begin(); it.valid(); ++it) {
-		node cr = (*it).right();
-		if (cr != 0)
-			crSets[cr].pushBack(&(*it));
-	}
+    ListConstIterator<ShellingOrderSet> it;
+    for(it = partition.begin(); it.valid(); ++it)
+    {
+        node cr = (*it).right();
+        if (cr != 0)
+            crSets[cr].pushBack(&(*it));
+    }
 
-	const ShellingOrderSet &V1 = partition.front();
-	for (j = V1.len(); j >= 2; j--)
-		outerfaceStack.push(V1[j]);
+    const ShellingOrderSet &V1 = partition.front();
+    for (j = V1.len(); j >= 2; j--)
+        outerfaceStack.push(V1[j]);
 
-	m_V[1] = V1;
+    m_V[1] = V1;
 
-	i = 2;
-	while (!outerfaceStack.empty()) {
-		node cr = outerfaceStack.top();
-		if (crSets[cr].empty())
-			outerfaceStack.pop();
-		else {
-			m_V[i] = *(crSets[cr].popFrontRet());
-			for (j = len(i); j >= 1; j--)
-				outerfaceStack.push ( (m_V[i])[j] );
-			i++;
-		}
-	}
+    i = 2;
+    while (!outerfaceStack.empty())
+    {
+        node cr = outerfaceStack.top();
+        if (crSets[cr].empty())
+            outerfaceStack.pop();
+        else
+        {
+            m_V[i] = *(crSets[cr].popFrontRet());
+            for (j = len(i); j >= 1; j--)
+                outerfaceStack.push ( (m_V[i])[j] );
+            i++;
+        }
+    }
 
 
-	for (i = 1; i <= length(); i++) {
-		for (j = 1; j <= m_V[i].len(); ++j) {
-			m_rank [(m_V[i])[j]] = i;
-		}
-	}
+    for (i = 1; i <= length(); i++)
+    {
+        for (j = 1; j <= m_V[i].len(); ++j)
+        {
+            m_rank [(m_V[i])[j]] = i;
+        }
+    }
 }
 
 

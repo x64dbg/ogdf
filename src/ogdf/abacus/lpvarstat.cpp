@@ -37,35 +37,36 @@
 #include <ogdf/abacus/lpvarstat.h>
 #include <ogdf/abacus/global.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 ostream &operator<<(ostream& out, const LPVARSTAT &rhs)
 {
-	switch (rhs.status_)
-	{
-	case LPVARSTAT::AtLowerBound:
-		out << "AtLowerBound";
-		break;
-	case LPVARSTAT::Basic:
-		out << "Basic";
-		break;
-	case LPVARSTAT::AtUpperBound:
-		out << "AtUpperBound";
-		break;
-	case LPVARSTAT::NonBasicFree:
-		out << "NonBasicFree";
-		break;
-	case LPVARSTAT::Eliminated:
-		out << "Eliminated";
-		break;
-	case LPVARSTAT::Unknown:
-		out << "Unknown";
-		break;
-	default:
-		Logger::ifout() << "LPVARSTAT: unknonw status\n";
-		OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpVarStat);
-	}
-	return out;
+    switch (rhs.status_)
+    {
+    case LPVARSTAT::AtLowerBound:
+        out << "AtLowerBound";
+        break;
+    case LPVARSTAT::Basic:
+        out << "Basic";
+        break;
+    case LPVARSTAT::AtUpperBound:
+        out << "AtUpperBound";
+        break;
+    case LPVARSTAT::NonBasicFree:
+        out << "NonBasicFree";
+        break;
+    case LPVARSTAT::Eliminated:
+        out << "Eliminated";
+        break;
+    case LPVARSTAT::Unknown:
+        out << "Unknown";
+        break;
+    default:
+        Logger::ifout() << "LPVARSTAT: unknonw status\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpVarStat);
+    }
+    return out;
 }
 } //namespace abacus

@@ -52,62 +52,64 @@
 #include <ogdf/graphalg/Dijkstra.h>
 #include <map>
 
-namespace ogdf {
+namespace ogdf
+{
 
 template<typename T>
-class Voronoi {
+class Voronoi
+{
 protected:
-	NodeArray<edge> m_predecessor;
-	NodeArray<T> m_distance;
-	NodeArray<node> m_seedOfNode;
-	std::map< node, List<node> > m_nodeList;
+    NodeArray<edge> m_predecessor;
+    NodeArray<T> m_distance;
+    NodeArray<node> m_seedOfNode;
+    std::map< node, List<node> > m_nodeList;
 
-	void computeVoronoiRegions(const Graph &G, const EdgeArray<T> &weights, const List<node> &seeds);
+    void computeVoronoiRegions(const Graph &G, const EdgeArray<T> &weights, const List<node> &seeds);
 
 public:
-	//! Build data structure to query Voronoi regions of edge-weighted graph G with given Voronoi seeds
-	//! @param G the input graph
-	//! @param weights edge weights
-	//! @param seeds a list of Voronoi seed nodes, the centers of the Voronoi regions
-	Voronoi(const Graph &G, const EdgeArray<T> &weights, const List<node> &seeds)
-	 : m_predecessor(G)
-	 , m_distance(G)
-	 , m_seedOfNode(G)
-	 , m_nodeList()
-	{
-		computeVoronoiRegions(G, weights, seeds);
-	}
+    //! Build data structure to query Voronoi regions of edge-weighted graph G with given Voronoi seeds
+    //! @param G the input graph
+    //! @param weights edge weights
+    //! @param seeds a list of Voronoi seed nodes, the centers of the Voronoi regions
+    Voronoi(const Graph &G, const EdgeArray<T> &weights, const List<node> &seeds)
+        : m_predecessor(G)
+        , m_distance(G)
+        , m_seedOfNode(G)
+        , m_nodeList()
+    {
+        computeVoronoiRegions(G, weights, seeds);
+    }
 
-	//! Returns the edge incident to v and its predecessor.  Note that the predecessor of a terminal is NULL.
-	edge predecessorEdge(node v) const
-	{
-		return m_predecessor[v];
-	}
+    //! Returns the edge incident to v and its predecessor.  Note that the predecessor of a terminal is NULL.
+    edge predecessorEdge(node v) const
+    {
+        return m_predecessor[v];
+    }
 
-	//! Returns the nearest node to v on the shortest path to its Voronoi seed.
-	node predecessor(node v) const
-	{
-		edge tmp = predecessorEdge(v);
-		return (tmp ? tmp->opposite(v) : NULL);
-	}
+    //! Returns the nearest node to v on the shortest path to its Voronoi seed.
+    node predecessor(node v) const
+    {
+        edge tmp = predecessorEdge(v);
+        return (tmp ? tmp->opposite(v) : NULL);
+    }
 
-	//! Returns the distance between v and its Voronoi seed.
-	T distance(node v) const
-	{
-		return m_distance[v];
-	}
+    //! Returns the distance between v and its Voronoi seed.
+    T distance(node v) const
+    {
+        return m_distance[v];
+    }
 
-	//! Returns the Voronoi seed of node v.
-	node seed(node v) const
-	{
-		return m_seedOfNode[v];
-	}
+    //! Returns the Voronoi seed of node v.
+    node seed(node v) const
+    {
+        return m_seedOfNode[v];
+    }
 
-	//! Returns the list of nodes in the Voronoi region of node v.
-	const List<node> &nodesInRegion(node v) const
-	{
-		return m_nodeList.find(seed(v))->second;
-	}
+    //! Returns the list of nodes in the Voronoi region of node v.
+    const List<node> &nodesInRegion(node v) const
+    {
+        return m_nodeList.find(seed(v))->second;
+    }
 };
 
 //// implementation
@@ -115,31 +117,35 @@ public:
 template<typename T>
 void Voronoi<T>::computeVoronoiRegions(const Graph &G, const EdgeArray<T> &weights, const List<node> &seeds)
 {
-	Dijkstra<T> sssp;
-	sssp.call(G, weights, seeds, m_predecessor, m_distance);
+    Dijkstra<T> sssp;
+    sssp.call(G, weights, seeds, m_predecessor, m_distance);
 
-	// extract Voronoi seeds for each node and Voronoi regions for each seed
-	NodeArray<bool> processed(G, false);
-	forall_listiterators(node, seed, seeds) {
-		processed[*seed] = true;
-		m_seedOfNode[*seed] = *seed;
-		m_nodeList[*seed].pushBack(*seed);
-	}
+    // extract Voronoi seeds for each node and Voronoi regions for each seed
+    NodeArray<bool> processed(G, false);
+    forall_listiterators(node, seed, seeds)
+    {
+        processed[*seed] = true;
+        m_seedOfNode[*seed] = *seed;
+        m_nodeList[*seed].pushBack(*seed);
+    }
 
-	node u;
-	forall_nodes(u, G) {
-		List<node> foundNodes;
-		node v;
-		for (v = u; !processed[v]; v = predecessor(v)) {
-			processed[v] = true;
-			foundNodes.pushBack(v);
-		}
-		OGDF_ASSERT(processed[v]);
-		forall_listiterators(node, passedNode, foundNodes) {
-			m_seedOfNode[*passedNode] = m_seedOfNode[v];
-			m_nodeList[m_seedOfNode[v]].pushBack(*passedNode);
-		}
-	}
+    node u;
+    forall_nodes(u, G)
+    {
+        List<node> foundNodes;
+        node v;
+        for (v = u; !processed[v]; v = predecessor(v))
+        {
+            processed[v] = true;
+            foundNodes.pushBack(v);
+        }
+        OGDF_ASSERT(processed[v]);
+        forall_listiterators(node, passedNode, foundNodes)
+        {
+            m_seedOfNode[*passedNode] = m_seedOfNode[v];
+            m_nodeList[m_seedOfNode[v]].pushBack(*passedNode);
+        }
+    }
 }
 
 } // end namespace ogdf

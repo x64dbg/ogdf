@@ -44,24 +44,26 @@
 #include <ogdf/module/UpwardPlanarSubgraphModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 void UpwardPlanarSubgraphModule::callAndDelete(
-	GraphCopy &GC,
-	List<edge> &delOrigEdges)
+    GraphCopy &GC,
+    List<edge> &delOrigEdges)
 {
-	List<edge> delEdges;
+    List<edge> delEdges;
 
-	call(GC, delEdges);
+    call(GC, delEdges);
 
-	ListConstIterator<edge> it;
-	for(it = delEdges.begin(); it.valid(); ++it) {
-		edge eCopy = *it;
+    ListConstIterator<edge> it;
+    for(it = delEdges.begin(); it.valid(); ++it)
+    {
+        edge eCopy = *it;
 
-		delOrigEdges.pushBack(GC.original(eCopy));
-		GC.delEdge(eCopy);
-	}
+        delOrigEdges.pushBack(GC.original(eCopy));
+        GC.delEdge(eCopy);
+    }
 }
 
 

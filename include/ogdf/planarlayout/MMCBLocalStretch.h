@@ -53,7 +53,8 @@
 #include <ogdf/planarlayout/MMCBBase.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -62,14 +63,14 @@ namespace ogdf {
 class OGDF_EXPORT MMCBLocalStretch : public MMCBBase
 {
 public:
-	//! Creates an instance of the crossings beautifier.
-	MMCBLocalStretch() { }
+    //! Creates an instance of the crossings beautifier.
+    MMCBLocalStretch() { }
 
-	~MMCBLocalStretch() { }
+    ~MMCBLocalStretch() { }
 
 protected:
-	//! Implements the module call.
-	void doCall(const PlanRep &PG, GridLayout &gl, const List<node> &L);
+    //! Implements the module call.
+    void doCall(const PlanRep &PG, GridLayout &gl, const List<node> &L);
 };
 
 

@@ -59,134 +59,183 @@
 #include <math.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-class OGDF_EXPORT IntersectionRectangle {
+class OGDF_EXPORT IntersectionRectangle
+{
 
 private:
 
-	DPoint m_p1; // lower left Point
-	DPoint m_p2; // upper right Point
-	double m_area;
-	DPoint m_center;
+    DPoint m_p1; // lower left Point
+    DPoint m_p2; // upper right Point
+    double m_area;
+    DPoint m_center;
 
 public:
 
-	// constructs zero area rectangle
-	IntersectionRectangle() : m_p1(), m_p2(), m_area(0.0), m_center() { }
+    // constructs zero area rectangle
+    IntersectionRectangle() : m_p1(), m_p2(), m_area(0.0), m_center() { }
 
-	//constructs rectangle with diagonal from p1 to p2
-	IntersectionRectangle(const DPoint &p1, const DPoint &p2) : m_p1(p1), m_p2(p2) { init(); }
+    //constructs rectangle with diagonal from p1 to p2
+    IntersectionRectangle(const DPoint &p1, const DPoint &p2) : m_p1(p1), m_p2(p2)
+    {
+        init();
+    }
 
-	//copy constructor
-	IntersectionRectangle(const IntersectionRectangle &dr) :
-		m_p1(dr.m_p1), m_p2(dr.m_p2), m_area(dr.m_area), m_center(dr.m_center) { }
+    //copy constructor
+    IntersectionRectangle(const IntersectionRectangle &dr) :
+        m_p1(dr.m_p1), m_p2(dr.m_p2), m_area(dr.m_area), m_center(dr.m_center) { }
 
-	//constructs rectangle with diagonal from (x1,y1) to (x2,y2)
-	IntersectionRectangle(double x1, double y1, double x2, double y2) {
-		m_p1.m_x = x1; m_p1.m_y = y1; m_p2.m_x = x2; m_p2.m_y = y2;
-		init();
-	}
+    //constructs rectangle with diagonal from (x1,y1) to (x2,y2)
+    IntersectionRectangle(double x1, double y1, double x2, double y2)
+    {
+        m_p1.m_x = x1;
+        m_p1.m_y = y1;
+        m_p2.m_x = x2;
+        m_p2.m_y = y2;
+        init();
+    }
 
-	//constructs rectangle with diagonal dl
-	IntersectionRectangle(const DLine &dl) : m_p1(dl.start()), m_p2(dl.end())
-	{ init(); }
+    //constructs rectangle with diagonal dl
+    IntersectionRectangle(const DLine &dl) : m_p1(dl.start()), m_p2(dl.end())
+    {
+        init();
+    }
 
-	// constructs a rectangle from the center point, width and height
-	IntersectionRectangle(const DPoint &, double , double);
+    // constructs a rectangle from the center point, width and height
+    IntersectionRectangle(const DPoint &, double , double);
 
-	// returns true if two rectangles have the same coordinates
-	bool operator==(const IntersectionRectangle &dr) const {
-		return m_p1 == dr.m_p1 && m_p2 == dr.m_p2;
-	}
+    // returns true if two rectangles have the same coordinates
+    bool operator==(const IntersectionRectangle &dr) const
+    {
+        return m_p1 == dr.m_p1 && m_p2 == dr.m_p2;
+    }
 
-	// returns true if two rectangles have different coordinates
-	bool operator!=(const IntersectionRectangle &dr) const {
-		return !(*this == dr);
-	}
+    // returns true if two rectangles have different coordinates
+    bool operator!=(const IntersectionRectangle &dr) const
+    {
+        return !(*this == dr);
+    }
 
-	// assignment
-	IntersectionRectangle &operator= (const IntersectionRectangle &dr) {
-		if (this != &dr) { // don't assign myself
-			m_p1 = dr.m_p1;
-			m_p2 = dr.m_p2;
-			m_center = dr.m_center;
-			m_area = dr.m_area;
-		}
-		return *this;
-	}
+    // assignment
+    IntersectionRectangle &operator= (const IntersectionRectangle &dr)
+    {
+        if (this != &dr)   // don't assign myself
+        {
+            m_p1 = dr.m_p1;
+            m_p2 = dr.m_p2;
+            m_center = dr.m_center;
+            m_area = dr.m_area;
+        }
+        return *this;
+    }
 
-	// returns the width of the rectangle
-	double width() const {
-		return m_p2.m_x - m_p1.m_x;
-	}
+    // returns the width of the rectangle
+    double width() const
+    {
+        return m_p2.m_x - m_p1.m_x;
+    }
 
-	//returns the height of the rectangle
-	double height() const {
-		return m_p2.m_y - m_p1.m_y;
-	}
+    //returns the height of the rectangle
+    double height() const
+    {
+        return m_p2.m_y - m_p1.m_y;
+    }
 
-	//returns the center of the rectangle
-	DPoint center() const { return m_center; }
+    //returns the center of the rectangle
+    DPoint center() const
+    {
+        return m_center;
+    }
 
-	//returns the area of the rectangle
-	double area() const { return m_area; }
+    //returns the area of the rectangle
+    double area() const
+    {
+        return m_area;
+    }
 
 
-	// returns rect-defining vertices
-	const DPoint &p1() const { return m_p1; }
-	const DPoint &p2() const { return m_p2; }
+    // returns rect-defining vertices
+    const DPoint &p1() const
+    {
+        return m_p1;
+    }
+    const DPoint &p2() const
+    {
+        return m_p2;
+    }
 
-	// tests if p is inside the rectangle modulo the comparison epsilon
-	bool inside(const DPoint &p) const {
-		if ((p.m_x + OGDF_GEOM_EPS) < m_p1.m_x ||
-			(p.m_x - OGDF_GEOM_EPS) > m_p2.m_x ||
-			(p.m_y + OGDF_GEOM_EPS) < m_p1.m_y ||
-			(p.m_y - OGDF_GEOM_EPS) > m_p2.m_y)
-			return false;
-		return true;
-	}
+    // tests if p is inside the rectangle modulo the comparison epsilon
+    bool inside(const DPoint &p) const
+    {
+        if ((p.m_x + OGDF_GEOM_EPS) < m_p1.m_x ||
+                (p.m_x - OGDF_GEOM_EPS) > m_p2.m_x ||
+                (p.m_y + OGDF_GEOM_EPS) < m_p1.m_y ||
+                (p.m_y - OGDF_GEOM_EPS) > m_p2.m_y)
+            return false;
+        return true;
+    }
 
-	// tests if *this and the argument rectangle intersect
-	bool intersects(const IntersectionRectangle &) const;
+    // tests if *this and the argument rectangle intersect
+    bool intersects(const IntersectionRectangle &) const;
 
-	// returns the rectangle resulting from intersection of this and argument.
-	// Returns a rectangle with zero width and height and center (0,0) if intersection
-	// is empty.
-	IntersectionRectangle intersection(const IntersectionRectangle &) const;
+    // returns the rectangle resulting from intersection of this and argument.
+    // Returns a rectangle with zero width and height and center (0,0) if intersection
+    // is empty.
+    IntersectionRectangle intersection(const IntersectionRectangle &) const;
 
-	// computes distance between two rectangles
-	double distance(const IntersectionRectangle &) const;
+    // computes distance between two rectangles
+    double distance(const IntersectionRectangle &) const;
 
-	//moves the rectangle such that its center is at the given point
-	void move(const DPoint &);
+    //moves the rectangle such that its center is at the given point
+    void move(const DPoint &);
 
 private:
-	// makes sure, that m_p1 <= m_p2, default after construction, sets area and center
-	void init();
+    // makes sure, that m_p1 <= m_p2, default after construction, sets area and center
+    void init();
 
-	// swaps the two y-coordinates
-	void yInvert() { swap(m_p1.m_y, m_p2.m_y); }
+    // swaps the two y-coordinates
+    void yInvert()
+    {
+        swap(m_p1.m_y, m_p2.m_y);
+    }
 
-	// swaps the two x-coordinates
-	void xInvert() { swap(m_p1.m_x, m_p2.m_x); }
+    // swaps the two x-coordinates
+    void xInvert()
+    {
+        swap(m_p1.m_x, m_p2.m_x);
+    }
 
-	// functions for computing bounding lines
-	DLine bottom() const { return DLine(m_p1.m_x,m_p1.m_y,m_p2.m_x,m_p1.m_y); }
-	DLine top() const { return DLine(m_p1.m_x, m_p2.m_y, m_p2.m_x,m_p2.m_y); }
-	DLine left() const { return DLine(m_p1.m_x, m_p1.m_y, m_p1.m_x, m_p2.m_y); }
-	DLine right() const { return DLine(m_p2.m_x, m_p1.m_y, m_p2.m_x, m_p2.m_y); }
+    // functions for computing bounding lines
+    DLine bottom() const
+    {
+        return DLine(m_p1.m_x,m_p1.m_y,m_p2.m_x,m_p1.m_y);
+    }
+    DLine top() const
+    {
+        return DLine(m_p1.m_x, m_p2.m_y, m_p2.m_x,m_p2.m_y);
+    }
+    DLine left() const
+    {
+        return DLine(m_p1.m_x, m_p1.m_y, m_p1.m_x, m_p2.m_y);
+    }
+    DLine right() const
+    {
+        return DLine(m_p2.m_x, m_p1.m_y, m_p2.m_x, m_p2.m_y);
+    }
 
-	// computes distance between parallel line segments
-	double parallelDist(const DLine &, const DLine &) const;
+    // computes distance between parallel line segments
+    double parallelDist(const DLine &, const DLine &) const;
 
-	// computes distance between two points
-	double pointDist(const DPoint &p1, const DPoint &p2) const {
-		return sqrt((p1.m_y - p2.m_y) * (p1.m_y - p2.m_y) + (p1.m_x - p2.m_x) * (p1.m_x - p2.m_x));
-	}
+    // computes distance between two points
+    double pointDist(const DPoint &p1, const DPoint &p2) const
+    {
+        return sqrt((p1.m_y - p2.m_y) * (p1.m_y - p2.m_y) + (p1.m_x - p2.m_x) * (p1.m_x - p2.m_x));
+    }
 
-	friend ostream& operator<<(ostream &,const IntersectionRectangle &);
+    friend ostream& operator<<(ostream &,const IntersectionRectangle &);
 };
 
 /*
@@ -194,14 +243,14 @@ private:
 //sorted sequences
 class PointComparer {
 public:
-	static int compare(const DPoint &p1, const DPoint &p2) {
-		if(p1.m_x > p2.m_x) return 1;
-		if(p1.m_x < p2.m_x) return -1;
-		if(p1.m_y > p2.m_y) return 1;
-		if(p1.m_y < p2.m_y) return -1;
-		return 0;
-	}
-	OGDF_AUGMENT_STATICCOMPARER(DPoint)
+    static int compare(const DPoint &p1, const DPoint &p2) {
+        if(p1.m_x > p2.m_x) return 1;
+        if(p1.m_x < p2.m_x) return -1;
+        if(p1.m_y > p2.m_y) return 1;
+        if(p1.m_y < p2.m_y) return -1;
+        return 0;
+    }
+    OGDF_AUGMENT_STATICCOMPARER(DPoint)
 };
 */
 

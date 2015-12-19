@@ -60,7 +60,8 @@
 #include <ogdf/basic/GraphAttributes.h>
 #include <ogdf/basic/GraphObserver.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //===============================================
@@ -74,20 +75,20 @@ namespace ogdf {
 class OGDF_EXPORT IncNodeInserter
 {
 public:
-	//creates inserter on PG
-	IncNodeInserter(PlanRepInc &PG) : m_planRep(&PG ) { }
+    //creates inserter on PG
+    IncNodeInserter(PlanRepInc &PG) : m_planRep(&PG ) { }
 
-	//insert copy in m_planRep for original node v
-	virtual void insertCopyNode(node v, CombinatorialEmbedding &E,
-		Graph::NodeType vTyp) = 0;
+    //insert copy in m_planRep for original node v
+    virtual void insertCopyNode(node v, CombinatorialEmbedding &E,
+                                Graph::NodeType vTyp) = 0;
 
 protected:
-	//returns a face to insert a copy of v and a list of
-	//adjacency entries corresponding to the insertion adjEntries
-	//for the adjacent edges
-	virtual face getInsertionFace(node v, CombinatorialEmbedding &E) = 0;
+    //returns a face to insert a copy of v and a list of
+    //adjacency entries corresponding to the insertion adjEntries
+    //for the adjacent edges
+    virtual face getInsertionFace(node v, CombinatorialEmbedding &E) = 0;
 
-	PlanRepInc* m_planRep; //the PlanRep that is changed
+    PlanRepInc* m_planRep; //the PlanRep that is changed
 }; //incnodeinserter
 
 } //end namespace ogdf

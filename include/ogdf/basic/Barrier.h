@@ -56,7 +56,8 @@
 #include <pthread.h>
 #endif
 
-namespace ogdf {
+namespace ogdf
+{
 
 #ifdef OGDF_SYSTEM_WINDOWS
 
@@ -70,44 +71,44 @@ namespace ogdf {
 class Barrier
 {
 public:
-	inline Barrier(__uint32 numThreads) : m_threadCount(numThreads)
-	{
-		InitializeConditionVariable( &m_allThreadsReachedSync);
-		InitializeCriticalSection( &m_numThreadsReachedSyncLock);
-		m_numThreadsReachedSync = 0;
-		m_syncNumber = 0;
-	}
+    inline Barrier(__uint32 numThreads) : m_threadCount(numThreads)
+    {
+        InitializeConditionVariable( &m_allThreadsReachedSync);
+        InitializeCriticalSection( &m_numThreadsReachedSyncLock);
+        m_numThreadsReachedSync = 0;
+        m_syncNumber = 0;
+    }
 
-	~Barrier() { }
+    ~Barrier() { }
 
-	inline void threadSync()
-	{
-		EnterCriticalSection( &m_numThreadsReachedSyncLock);
-		__uint32 syncNr = m_syncNumber;
-		m_numThreadsReachedSync++;
-		if (m_numThreadsReachedSync == m_threadCount)
-		{
-			m_syncNumber++;
-			WakeAllConditionVariable( &m_allThreadsReachedSync);
-			m_numThreadsReachedSync = 0;
-		}
-		else
-		{
-			while (syncNr == m_syncNumber)
-			{
-				// Sleeping while waiting for the Condition Variable to signal, releases (leaves) the CriticalSection temporarily
-				SleepConditionVariableCS( &m_allThreadsReachedSync, &m_numThreadsReachedSyncLock, INFINITE);
-			}
-			// when awake, whe thread is again in the Critical Section
-		}
-		LeaveCriticalSection( &m_numThreadsReachedSyncLock);
-	}
+    inline void threadSync()
+    {
+        EnterCriticalSection( &m_numThreadsReachedSyncLock);
+        __uint32 syncNr = m_syncNumber;
+        m_numThreadsReachedSync++;
+        if (m_numThreadsReachedSync == m_threadCount)
+        {
+            m_syncNumber++;
+            WakeAllConditionVariable( &m_allThreadsReachedSync);
+            m_numThreadsReachedSync = 0;
+        }
+        else
+        {
+            while (syncNr == m_syncNumber)
+            {
+                // Sleeping while waiting for the Condition Variable to signal, releases (leaves) the CriticalSection temporarily
+                SleepConditionVariableCS( &m_allThreadsReachedSync, &m_numThreadsReachedSyncLock, INFINITE);
+            }
+            // when awake, whe thread is again in the Critical Section
+        }
+        LeaveCriticalSection( &m_numThreadsReachedSyncLock);
+    }
 private:
-	__uint32 m_threadCount;
-	CRITICAL_SECTION m_numThreadsReachedSyncLock;
-	CONDITION_VARIABLE m_allThreadsReachedSync;
-	__uint32 m_numThreadsReachedSync;
-	__uint32 m_syncNumber;
+    __uint32 m_threadCount;
+    CRITICAL_SECTION m_numThreadsReachedSyncLock;
+    CONDITION_VARIABLE m_allThreadsReachedSync;
+    __uint32 m_numThreadsReachedSync;
+    __uint32 m_syncNumber;
 };
 
 #else //(_WIN32_WINNT >= 0x0600)
@@ -125,49 +126,49 @@ private:
 class Barrier
 {
 public:
-	inline Barrier(__uint32 numThreads) : m_threadCount(numThreads)
-	{
-		m_allThreadsReachedSync = CreateEvent( NULL, TRUE, FALSE, NULL );
-		InitializeCriticalSection( &m_numThreadsReachedSyncLock);
-		m_numThreadsReachedSync = 0;
-		m_syncNumber = 0;
-	}
+    inline Barrier(__uint32 numThreads) : m_threadCount(numThreads)
+    {
+        m_allThreadsReachedSync = CreateEvent( NULL, TRUE, FALSE, NULL );
+        InitializeCriticalSection( &m_numThreadsReachedSyncLock);
+        m_numThreadsReachedSync = 0;
+        m_syncNumber = 0;
+    }
 
-	~Barrier() { }
+    ~Barrier() { }
 
-	inline void threadSync()
-	{
-		EnterCriticalSection( &m_numThreadsReachedSyncLock);
-		__uint32 syncNr = m_syncNumber;
-		m_numThreadsReachedSync++;
-		if (m_numThreadsReachedSync == m_threadCount)
-		{
-			SetEvent(m_allThreadsReachedSync);
-			m_syncNumber++;
-			m_numThreadsReachedSync = 0;
-			LeaveCriticalSection( &m_numThreadsReachedSyncLock);
-		}
-		else
-		{
-			if ( (m_syncNumber == syncNr) && (m_numThreadsReachedSync == 1) )
-			{
-				ResetEvent(m_allThreadsReachedSync);
-			}
-			while (m_syncNumber == syncNr)
-			{
-				LeaveCriticalSection( &m_numThreadsReachedSyncLock);
-				WaitForSingleObject(m_allThreadsReachedSync, 100);
-				EnterCriticalSection( &m_numThreadsReachedSyncLock);
-			}
-			LeaveCriticalSection( &m_numThreadsReachedSyncLock);
-		}
-	}
+    inline void threadSync()
+    {
+        EnterCriticalSection( &m_numThreadsReachedSyncLock);
+        __uint32 syncNr = m_syncNumber;
+        m_numThreadsReachedSync++;
+        if (m_numThreadsReachedSync == m_threadCount)
+        {
+            SetEvent(m_allThreadsReachedSync);
+            m_syncNumber++;
+            m_numThreadsReachedSync = 0;
+            LeaveCriticalSection( &m_numThreadsReachedSyncLock);
+        }
+        else
+        {
+            if ( (m_syncNumber == syncNr) && (m_numThreadsReachedSync == 1) )
+            {
+                ResetEvent(m_allThreadsReachedSync);
+            }
+            while (m_syncNumber == syncNr)
+            {
+                LeaveCriticalSection( &m_numThreadsReachedSyncLock);
+                WaitForSingleObject(m_allThreadsReachedSync, 100);
+                EnterCriticalSection( &m_numThreadsReachedSyncLock);
+            }
+            LeaveCriticalSection( &m_numThreadsReachedSyncLock);
+        }
+    }
 private:
-	__uint32 m_threadCount;
-	CRITICAL_SECTION m_numThreadsReachedSyncLock;
-	HANDLE m_allThreadsReachedSync;
-	__uint32 m_numThreadsReachedSync;
-	__uint32 m_syncNumber;
+    __uint32 m_threadCount;
+    CRITICAL_SECTION m_numThreadsReachedSyncLock;
+    HANDLE m_allThreadsReachedSync;
+    __uint32 m_numThreadsReachedSync;
+    __uint32 m_syncNumber;
 };
 
 #endif //(_WIN32_WINNT >= 0x0600)
@@ -183,44 +184,44 @@ private:
 class Barrier
 {
 public:
-	inline Barrier(__uint32 numThreads) : m_threadCount(numThreads)
-	{
-		pthread_cond_init( &m_allThreadsReachedSync, NULL);
-		pthread_mutex_init( &m_numThreadsReachedSyncLock, NULL);
-		m_numThreadsReachedSync = 0;
-		m_syncNumber = 0;
-	}
+    inline Barrier(__uint32 numThreads) : m_threadCount(numThreads)
+    {
+        pthread_cond_init( &m_allThreadsReachedSync, NULL);
+        pthread_mutex_init( &m_numThreadsReachedSyncLock, NULL);
+        m_numThreadsReachedSync = 0;
+        m_syncNumber = 0;
+    }
 
-	~Barrier()
-	{
-		pthread_cond_destroy( &m_allThreadsReachedSync);
-		pthread_mutex_destroy( &m_numThreadsReachedSyncLock);
-	}
+    ~Barrier()
+    {
+        pthread_cond_destroy( &m_allThreadsReachedSync);
+        pthread_mutex_destroy( &m_numThreadsReachedSyncLock);
+    }
 
-	inline void threadSync()
-	{
-		pthread_mutex_lock( &m_numThreadsReachedSyncLock);
-		__uint32 syncNr = m_syncNumber;
-		m_numThreadsReachedSync++;
-		if (m_numThreadsReachedSync == m_threadCount)
-		{
-			m_syncNumber++;
-			pthread_cond_signal( &m_allThreadsReachedSync);
-			m_numThreadsReachedSync = 0;
-		}
-		else
-		{
-			while (syncNr == m_syncNumber)
-				pthread_cond_wait( &m_allThreadsReachedSync, &m_numThreadsReachedSyncLock);
-		}
-		pthread_mutex_unlock( &m_numThreadsReachedSyncLock);
-	}
+    inline void threadSync()
+    {
+        pthread_mutex_lock( &m_numThreadsReachedSyncLock);
+        __uint32 syncNr = m_syncNumber;
+        m_numThreadsReachedSync++;
+        if (m_numThreadsReachedSync == m_threadCount)
+        {
+            m_syncNumber++;
+            pthread_cond_signal( &m_allThreadsReachedSync);
+            m_numThreadsReachedSync = 0;
+        }
+        else
+        {
+            while (syncNr == m_syncNumber)
+                pthread_cond_wait( &m_allThreadsReachedSync, &m_numThreadsReachedSyncLock);
+        }
+        pthread_mutex_unlock( &m_numThreadsReachedSyncLock);
+    }
 private:
-	__uint32 m_threadCount;
-	pthread_mutex_t m_numThreadsReachedSyncLock;
-	pthread_cond_t m_allThreadsReachedSync;
-	__uint32 m_numThreadsReachedSync;
-	__uint32 m_syncNumber;
+    __uint32 m_threadCount;
+    pthread_mutex_t m_numThreadsReachedSyncLock;
+    pthread_cond_t m_allThreadsReachedSync;
+    __uint32 m_numThreadsReachedSync;
+    __uint32 m_syncNumber;
 };
 #else
 
@@ -231,23 +232,23 @@ private:
 class Barrier
 {
 public:
-	inline Barrier(__uint32 numThreads) : m_threadCount(numThreads)
-	{
-		pthread_barrier_init(&m_barrier, NULL, m_threadCount);
-	}
+    inline Barrier(__uint32 numThreads) : m_threadCount(numThreads)
+    {
+        pthread_barrier_init(&m_barrier, NULL, m_threadCount);
+    }
 
-	~Barrier()
-	{
-		 pthread_barrier_destroy(&m_barrier);
-	}
+    ~Barrier()
+    {
+        pthread_barrier_destroy(&m_barrier);
+    }
 
-	inline void threadSync()
-	{
-		pthread_barrier_wait(&m_barrier);
-	}
+    inline void threadSync()
+    {
+        pthread_barrier_wait(&m_barrier);
+    }
 private:
-	pthread_barrier_t m_barrier;
-	__uint32 m_threadCount;
+    pthread_barrier_t m_barrier;
+    __uint32 m_threadCount;
 };
 #endif
 

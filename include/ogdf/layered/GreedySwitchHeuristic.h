@@ -61,26 +61,29 @@ namespace ogdf
 class OGDF_EXPORT GreedySwitchHeuristic : public LayerByLayerSweep
 {
 public:
-	//! Creates a new instance of the greedy-switch heuristic.
-	GreedySwitchHeuristic() { }
+    //! Creates a new instance of the greedy-switch heuristic.
+    GreedySwitchHeuristic() { }
 
-	//! Creates a new instance of the greedy-switch heuristic.
-	GreedySwitchHeuristic(const GreedySwitchHeuristic &crossMin) { }
+    //! Creates a new instance of the greedy-switch heuristic.
+    GreedySwitchHeuristic(const GreedySwitchHeuristic &crossMin) { }
 
-	//! Returns a new instance of the greed-switch heuristic with the same option settings.
-	LayerByLayerSweep *clone() const { return new GreedySwitchHeuristic; }
+    //! Returns a new instance of the greed-switch heuristic with the same option settings.
+    LayerByLayerSweep *clone() const
+    {
+        return new GreedySwitchHeuristic;
+    }
 
-	//! Initializes crossing minimization for hierarchy \a H.
-	void init (const HierarchyLevels &levels);
+    //! Initializes crossing minimization for hierarchy \a H.
+    void init (const HierarchyLevels &levels);
 
-	//! Calls the greedy switch heuristic for level \a L.
-	void call (Level &L);
+    //! Calls the greedy switch heuristic for level \a L.
+    void call (Level &L);
 
-	//! Does some clean-up after calls.
-	void cleanup ();
+    //! Does some clean-up after calls.
+    void cleanup ();
 
 private:
-	CrossingsMatrix *m_crossingMatrix;
+    CrossingsMatrix *m_crossingMatrix;
 };
 
 

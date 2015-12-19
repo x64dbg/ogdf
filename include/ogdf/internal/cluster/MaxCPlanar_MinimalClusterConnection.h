@@ -60,24 +60,26 @@
 
 #include <ogdf/abacus/constraint.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-class MinimalClusterConnection : public abacus::Constraint {
+class MinimalClusterConnection : public abacus::Constraint
+{
 
 public:
 
-	MinimalClusterConnection(abacus::Master *master, List<nodePair> &edges);
+    MinimalClusterConnection(abacus::Master *master, List<nodePair> &edges);
 
-	virtual ~MinimalClusterConnection();
+    virtual ~MinimalClusterConnection();
 
-	// Computes and returns the coefficient for the given variable
-	virtual double coeff(const abacus::Variable *v) const;
+    // Computes and returns the coefficient for the given variable
+    virtual double coeff(const abacus::Variable *v) const;
 
 private:
 
-	// The node pairs corresponding to the constraint
-	List<nodePair> m_edges;
+    // The node pairs corresponding to the constraint
+    List<nodePair> m_edges;
 
 };
 

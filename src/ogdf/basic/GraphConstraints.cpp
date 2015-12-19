@@ -42,31 +42,32 @@
  ***************************************************************/
 #include <ogdf/basic/Constraints.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 void GraphConstraints::nodeDeleted(node v)
 {
-	ListConstIterator<Constraint *> it;
-	for(it = m_List.begin(); it.valid(); ++it)
-	{
-		Constraint *c = *it;
-		c->nodeDeleted(v);
-	}
+    ListConstIterator<Constraint *> it;
+    for(it = m_List.begin(); it.valid(); ++it)
+    {
+        Constraint *c = *it;
+        c->nodeDeleted(v);
+    }
 }
 
 List<Constraint *> GraphConstraints::getConstraintsOfType(int type)
 {
-	List<Constraint *> res;
-	ListConstIterator<Constraint *> it;
-	for(it = m_List.begin(); it.valid(); ++it)
-	{
-		Constraint *c = *it;
-		if (type==c->getType())
-		{
-			if (c->isValid()) res.pushBack(c);
-		}
-	}
-	return res;
+    List<Constraint *> res;
+    ListConstIterator<Constraint *> it;
+    for(it = m_List.begin(); it.valid(); ++it)
+    {
+        Constraint *c = *it;
+        if (type==c->getType())
+        {
+            if (c->isValid()) res.pushBack(c);
+        }
+    }
+    return res;
 }
 
 }

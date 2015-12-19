@@ -41,7 +41,8 @@
 #include <ogdf/abacus/abacusroot.h>
 
 
-namespace abacus {
+namespace abacus
+{
 
 class Master;
 class Sub;
@@ -69,73 +70,77 @@ template<class BaseType, class CoType> class PoolSlotRef;
  * in nodes which are not the root of the remaining branch-and-cut tree,
  * we always have to take the candidates and values from this class.
  */
-class  FixCand :  public AbacusRoot  {
+class  FixCand :  public AbacusRoot
+{
 
-	friend class Sub;
-	friend class Master;
+    friend class Sub;
+    friend class Master;
 
 public:
 
-	//! Creates an empty set of candidates for fixing.
-	/**
-	 * \param master A pointer to the corresponding master of the optimization.
-	 */
-	FixCand(Master *master) :
-		master_(master),
-		candidates_(0),
-		fsVarStat_(0),
-		lhs_(0)
-	{ }
+    //! Creates an empty set of candidates for fixing.
+    /**
+     * \param master A pointer to the corresponding master of the optimization.
+     */
+    FixCand(Master *master) :
+        master_(master),
+        candidates_(0),
+        fsVarStat_(0),
+        lhs_(0)
+    { }
 
-	//! The destructor.
-	~FixCand() { deleteAll(); }
+    //! The destructor.
+    ~FixCand()
+    {
+        deleteAll();
+    }
 
 private:
 
-	//! Memorizes suitable variables for fixing.
-	/**
-	 * \param sub A pointer to the root node of the remaining branch-and-cut tree.
-	 */
-	void saveCandidates(Sub *sub);
+    //! Memorizes suitable variables for fixing.
+    /**
+     * \param sub A pointer to the root node of the remaining branch-and-cut tree.
+     */
+    void saveCandidates(Sub *sub);
 
-	//! Tries to fix as many candidates as possible.
-	/**
-	 * The new variable status is both stored in the global variable status
-	 * of the class Master and in the local variable status of Sub.
-	 * Candidates which are fixed are removed from the candidate set.
-	 *
-	 * We do not used the function Master::primalViolated() for checking of a
-	 * variable can be fixed, because here we also have to be careful for
-	 * integer objective function.
-	 *
-	 * \param addVarBuffer Inactive variables which are fixed to a nonzero
-	 *                     value are added to \a addVarBuffer to be activated
-	 *                     in the next iteration.
-	 *
-	 * \return 1 If contradictions to the variables statuses of \a sub are detected; 0 otherwise.
-	 */
-	void fixByRedCost(CutBuffer<Variable, Constraint> *addVarBuffer);
+    //! Tries to fix as many candidates as possible.
+    /**
+     * The new variable status is both stored in the global variable status
+     * of the class Master and in the local variable status of Sub.
+     * Candidates which are fixed are removed from the candidate set.
+     *
+     * We do not used the function Master::primalViolated() for checking of a
+     * variable can be fixed, because here we also have to be careful for
+     * integer objective function.
+     *
+     * \param addVarBuffer Inactive variables which are fixed to a nonzero
+     *                     value are added to \a addVarBuffer to be activated
+     *                     in the next iteration.
+     *
+     * \return 1 If contradictions to the variables statuses of \a sub are detected; 0 otherwise.
+     */
+    void fixByRedCost(CutBuffer<Variable, Constraint> *addVarBuffer);
 
-	//! Deletes all allocated memory of members.
-	/**
-	 * The member pointers are set to 0 that multiple deletion cannot cause any error.
-	 */
-	void deleteAll();
+    //! Deletes all allocated memory of members.
+    /**
+     * The member pointers are set to 0 that multiple deletion cannot cause any error.
+     */
+    void deleteAll();
 
-	//! Allocates memory to store \a nCand candidates for fixing.
-	void allocate(int nCand);
+    //! Allocates memory to store \a nCand candidates for fixing.
+    void allocate(int nCand);
 
 
-	Master *master_; //!< A pointer to the corresponding master of the optimization.
+    Master *master_; //!< A pointer to the corresponding master of the optimization.
 
-	ArrayBuffer<PoolSlotRef<Variable, Constraint>*> *candidates_; //!< The candidates for fixing.
+    ArrayBuffer<PoolSlotRef<Variable, Constraint>*> *candidates_; //!< The candidates for fixing.
 
-	ArrayBuffer<FSVarStat*> *fsVarStat_; //!< The fixing status of the candidates.
+    ArrayBuffer<FSVarStat*> *fsVarStat_; //!< The fixing status of the candidates.
 
-	ArrayBuffer<double> *lhs_; //!< The left hand side of the expression evaluated for fixing.
+    ArrayBuffer<double> *lhs_; //!< The left hand side of the expression evaluated for fixing.
 
-	FixCand(const FixCand &rhs);
-	const FixCand &operator=(const FixCand &rhs);
+    FixCand(const FixCand &rhs);
+    const FixCand &operator=(const FixCand &rhs);
 };
 
 } //namespace abacus

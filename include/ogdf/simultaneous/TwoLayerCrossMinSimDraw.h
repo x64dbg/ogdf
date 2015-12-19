@@ -53,31 +53,32 @@
 #include <ogdf/module/LayerByLayerSweep.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-	class OGDF_EXPORT TwoLayerCrossMinSimDraw : public LayerByLayerSweep
-	{
-	public:
-		//! Initializes a two-layer crossing minimization module.
-		TwoLayerCrossMinSimDraw() : LayerByLayerSweep() { }
+class OGDF_EXPORT TwoLayerCrossMinSimDraw : public LayerByLayerSweep
+{
+public:
+    //! Initializes a two-layer crossing minimization module.
+    TwoLayerCrossMinSimDraw() : LayerByLayerSweep() { }
 
-		//! Returns a new instance of the two-layer crossing minimization module with the same option settings.
-		virtual TwoLayerCrossMinSimDraw *clone() const = 0;
+    //! Returns a new instance of the two-layer crossing minimization module with the same option settings.
+    virtual TwoLayerCrossMinSimDraw *clone() const = 0;
 
-		/**
-		* \brief Performs crossing minimization for level \a L.
-		*
-		* @param L is the level in the hierarchy on which nodes are permuted; the
-		*        neighbor level (fixed level) is determined by the hierarchy.
-		* @param esg points to an edge array which specifies to which subgraphs
-		*        an edge belongs; there are up to 32 possible subgraphs each of which
-		*        is represented by a bit of an <code>__uint32</code>.
-		*/
-		virtual void call(Level &L, const EdgeArray<__uint32> *esg) = 0;
+    /**
+    * \brief Performs crossing minimization for level \a L.
+    *
+    * @param L is the level in the hierarchy on which nodes are permuted; the
+    *        neighbor level (fixed level) is determined by the hierarchy.
+    * @param esg points to an edge array which specifies to which subgraphs
+    *        an edge belongs; there are up to 32 possible subgraphs each of which
+    *        is represented by a bit of an <code>__uint32</code>.
+    */
+    virtual void call(Level &L, const EdgeArray<__uint32> *esg) = 0;
 
-		void call(Level &L) = 0;
-	};
+    void call(Level &L) = 0;
+};
 
 
 } // end namespace ogdf

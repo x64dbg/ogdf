@@ -127,13 +127,14 @@ CglLandPUnitTest(
             double elements[8] = {2.0,-2.0,7.0,-7.0,2.0,2.0,4.0,4.0};
             CoinPackedMatrix  columnCopy(true,4,2,8,elements,rows,start,length);
 
-            double rowLower[4]={-COIN_DBL_MAX,-COIN_DBL_MAX,
-                                -COIN_DBL_MAX,-COIN_DBL_MAX};
-            double rowUpper[4]={3.,1.,8.,1.};
-            double colLower[2]={0.0,0.0};
-            double colUpper[2]={1.0,1.0};
-            double obj[2]={-1,-1};
-            int intVar[2]={0,1};
+            double rowLower[4]= {-COIN_DBL_MAX,-COIN_DBL_MAX,
+                                 -COIN_DBL_MAX,-COIN_DBL_MAX
+                                };
+            double rowUpper[4]= {3.,1.,8.,1.};
+            double colLower[2]= {0.0,0.0};
+            double colUpper[2]= {1.0,1.0};
+            double obj[2]= {-1,-1};
+            int intVar[2]= {0,1};
 
             OsiSolverInterface  * siP = si->clone();
             siP->loadProblem(columnCopy, colLower, colUpper, obj, rowLower, rowUpper);

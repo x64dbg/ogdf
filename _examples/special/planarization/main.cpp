@@ -8,18 +8,18 @@ using namespace ogdf;
 
 int main()
 {
-	Graph G;
-	randomSimpleGraph(G, 100, 150);
-	PlanRep PR(G);
+    Graph G;
+    randomSimpleGraph(G, 100, 150);
+    PlanRep PR(G);
 
-	int crossNum;
-	SubgraphPlanarizer SP;
-	SP.setSubgraph(new FastPlanarSubgraph);
-	SP.setInserter(new VariableEmbeddingInserter);
-	SP.call(PR,0,crossNum);
+    int crossNum;
+    SubgraphPlanarizer SP;
+    SP.setSubgraph(new FastPlanarSubgraph);
+    SP.setInserter(new VariableEmbeddingInserter);
+    SP.call(PR,0,crossNum);
 
-	cout << crossNum << " crossings" << endl;
-	GraphIO::writeGML(PR, "plan.gml");
+    cout << crossNum << " crossings" << endl;
+    GraphIO::writeGML(PR, "plan.gml");
 
-	return 0;
+    return 0;
 }

@@ -52,31 +52,33 @@
 #include <ogdf/internal/energybased/MultilevelGraph.h>
 #include <vector>
 
-namespace ogdf {
+namespace ogdf
+{
 
 // all returned Polygons are clockwise (cw)
-class OGDF_EXPORT ConvexHull {
+class OGDF_EXPORT ConvexHull
+{
 private:
-	bool sameDirection(const DPoint &start, const DPoint &end, const DPoint &s, const DPoint &e) const;
+    bool sameDirection(const DPoint &start, const DPoint &end, const DPoint &s, const DPoint &e) const;
 
-	// calculates a convex hull very quickly but only works with cross-free Polygons!
-	DPolygon conv(const DPolygon &poly) const;
+    // calculates a convex hull very quickly but only works with cross-free Polygons!
+    DPolygon conv(const DPolygon &poly) const;
 
-	// Calculates the Part of the convex hull that is left of line start-end
-	// /a points should only contain points that really are left of the line.
-	void leftHull(std::vector<DPoint> points, DPoint &start, DPoint &end, DPolygon &hullPoly) const;
+    // Calculates the Part of the convex hull that is left of line start-end
+    // /a points should only contain points that really are left of the line.
+    void leftHull(std::vector<DPoint> points, DPoint &start, DPoint &end, DPolygon &hullPoly) const;
 
 
 public:
-	ConvexHull();
-	~ConvexHull();
+    ConvexHull();
+    ~ConvexHull();
 
-	DPoint calcNormal(const DPoint &start, const DPoint &end) const;
-	double leftOfLine(const DPoint &normal, const DPoint &point, const DPoint &pointOnLine) const;
+    DPoint calcNormal(const DPoint &start, const DPoint &end) const;
+    double leftOfLine(const DPoint &normal, const DPoint &point, const DPoint &pointOnLine) const;
 
-	DPolygon call(std::vector<DPoint> points) const;
-	DPolygon call(GraphAttributes &GA) const;
-	DPolygon call(MultilevelGraph &MLG) const;
+    DPolygon call(std::vector<DPoint> points) const;
+    DPolygon call(GraphAttributes &GA) const;
+    DPolygon call(MultilevelGraph &MLG) const;
 
 };
 

@@ -40,7 +40,8 @@
 
 #include <ogdf/abacus/master.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 //! Constraint classification.
@@ -50,58 +51,65 @@ namespace abacus {
  * and the structure of the constraint. A rather rudimentary
  * classification is implemented in the class ConClass.
  */
-class  ConClass :  public AbacusRoot  {
+class  ConClass :  public AbacusRoot
+{
 public:
 
-	/*! \brief The constructor initializes the constraint classification with
-	 *
-	 * \param master A pointer to the corresponding master of the optimization.
-	 * \param discrete
-	 * \param allVarBinary \a true if all variables are binary
-	 * \param trivial \a true if it is a bound or a variable upper bound
-	 * \param bound \a true if the constraint is a bound of the variable
-	 * \param varBound \a true if the constraint is a variable upper bound
-	 */
-	ConClass(
-		const Master *master,
-		bool discrete,
-		bool allVarBinary,
-		bool trivial,
-		bool bound,
-		bool varBound)
-	:
-		discrete_(discrete),
-		allVarBinary_(allVarBinary),
-		trivial_(trivial),
-		bound_(bound),
-		varBound_(varBound)
-	{ }
+    /*! \brief The constructor initializes the constraint classification with
+     *
+     * \param master A pointer to the corresponding master of the optimization.
+     * \param discrete
+     * \param allVarBinary \a true if all variables are binary
+     * \param trivial \a true if it is a bound or a variable upper bound
+     * \param bound \a true if the constraint is a bound of the variable
+     * \param varBound \a true if the constraint is a variable upper bound
+     */
+    ConClass(
+        const Master *master,
+        bool discrete,
+        bool allVarBinary,
+        bool trivial,
+        bool bound,
+        bool varBound)
+        :
+        discrete_(discrete),
+        allVarBinary_(allVarBinary),
+        trivial_(trivial),
+        bound_(bound),
+        varBound_(varBound)
+    { }
 
-	//! Output operator for constraint classifications.
-	friend ostream &operator<<(ostream &out, const ConClass &rhs);
+    //! Output operator for constraint classifications.
+    friend ostream &operator<<(ostream &out, const ConClass &rhs);
 
-	//! Returns \a true if all variables with nonzero coefficients of the constraint are binary.
-	bool allVarBinary() const { return allVarBinary_; }
+    //! Returns \a true if all variables with nonzero coefficients of the constraint are binary.
+    bool allVarBinary() const
+    {
+        return allVarBinary_;
+    }
 
-	//! Returns \a true if the constraint is a bound or a variable upper bound.
-	bool trivial() const { return trivial_; }
+    //! Returns \a true if the constraint is a bound or a variable upper bound.
+    bool trivial() const
+    {
+        return trivial_;
+    }
 
 
 private:
 
-	bool  discrete_;
+    bool  discrete_;
 
-	//! \a true if all variables are binary.
-	bool  allVarBinary_;
+    //! \a true if all variables are binary.
+    bool  allVarBinary_;
 
-	//! \a true if it is a bound or a variable lower/upper bound.
-	bool  trivial_;
+    //! \a true if it is a bound or a variable lower/upper bound.
+    bool  trivial_;
 
-	//! \a true if the constraint is a bound of the variable.
-	bool  bound_;
+    //! \a true if the constraint is a bound of the variable.
+    bool  bound_;
 
-	//! \a true if the constraint is a variable lower/upper bound.
-	bool  varBound_;
+    //! \a true if the constraint is a variable lower/upper bound.
+    bool  varBound_;
 };
 
 } //namespace abacus

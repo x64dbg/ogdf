@@ -40,7 +40,8 @@
 
 #include <ogdf/abacus/lpmaster.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 //! The OSI LP master.
@@ -49,30 +50,31 @@ namespace abacus {
  * OSI specific parameters and global data. The master instance of
  * Master keeps a pointer to an instance of this class.
  */
-class  LpMasterOsi :  public LpMaster  {
-	friend class OsiIF;
+class  LpMasterOsi :  public LpMaster
+{
+    friend class OsiIF;
 public:
 
-	//! The constructor.
-	/**
-	 * \param master The master of the optimization.
-	 */
-	LpMasterOsi(Master *master) : LpMaster(master) { }
+    //! The constructor.
+    /**
+     * \param master The master of the optimization.
+     */
+    LpMasterOsi(Master *master) : LpMaster(master) { }
 
-	//! The destructor.
-	virtual ~LpMasterOsi();
+    //! The destructor.
+    virtual ~LpMasterOsi();
 
-	//! Initializes the LP solver specific Parameters.
-	virtual void initializeLpParameters();
+    //! Initializes the LP solver specific Parameters.
+    virtual void initializeLpParameters();
 
-	//! Sets default values of the LP solver specific Parameters.
-	virtual void setDefaultLpParameters() { }
+    //! Sets default values of the LP solver specific Parameters.
+    virtual void setDefaultLpParameters() { }
 
-	//! Prints the settings of the LP solver specific Parameters.
-	virtual void printLpParameters() const { }
+    //! Prints the settings of the LP solver specific Parameters.
+    virtual void printLpParameters() const { }
 
-	//! Prints LP solver specific Statistics.
-	virtual void outputLpStatistics() const { }
+    //! Prints LP solver specific Statistics.
+    virtual void outputLpStatistics() const { }
 };
 
 } //namespace abacus

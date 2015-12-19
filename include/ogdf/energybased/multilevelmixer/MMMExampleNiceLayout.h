@@ -50,7 +50,8 @@
 #include <ogdf/module/LayoutModule.h>
 #include <ogdf/internal/energybased/MultilevelGraph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 /** \brief An example Layout using the Modular Mutlievel Mixer
  *
@@ -64,16 +65,19 @@ class OGDF_EXPORT MMMExampleNiceLayout : public LayoutModule
 {
 public:
 
-	//! Constructor
-	MMMExampleNiceLayout();
+    //! Constructor
+    MMMExampleNiceLayout();
 
-	//! calculates a drawing for the Graph GA
-	void call(GraphAttributes &GA);
+    //! calculates a drawing for the Graph GA
+    void call(GraphAttributes &GA);
 
-	void call(GraphAttributes &GA, GraphConstraints & GC) { call(GA); }
+    void call(GraphAttributes &GA, GraphConstraints & GC)
+    {
+        call(GA);
+    }
 
-	//! calculates a drawing for the Graph MLG
-	void call(MultilevelGraph &MLG);
+    //! calculates a drawing for the Graph MLG
+    void call(MultilevelGraph &MLG);
 
 private:
 

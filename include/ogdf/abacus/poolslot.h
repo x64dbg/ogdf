@@ -43,7 +43,8 @@
 #include <ogdf/abacus/constraint.h>
 #include <ogdf/abacus/variable.h>
 
-namespace abacus {
+namespace abacus
+{
 
 class Sub;
 
@@ -83,106 +84,122 @@ template<class BaseType, class CoType> class CutBuffer;
  * of the optimization process, except that it can be guaranteed that
  * there is no reference to this slot from any other place of the program.
  */
-template<class BaseType, class CoType> class  PoolSlot :  public AbacusRoot  {
+template<class BaseType, class CoType> class  PoolSlot :  public AbacusRoot
+{
 
-	friend class PoolSlotRef<BaseType,CoType>;
-	friend class Pool<BaseType,CoType>;
-	friend class StandardPool<BaseType,CoType>;
-	friend class CutBuffer<BaseType,CoType>;
+    friend class PoolSlotRef<BaseType,CoType>;
+    friend class Pool<BaseType,CoType>;
+    friend class StandardPool<BaseType,CoType>;
+    friend class CutBuffer<BaseType,CoType>;
 
-	friend class Sub;
-	friend class PoolSlotRef<Constraint, Variable>;
-	friend class PoolSlotRef<Variable, Constraint>;
-	friend class Pool<Constraint, Variable>;
-	friend class Pool<Variable, Constraint>;
-	friend class StandardPool<Constraint, Variable>;
-	friend class StandardPool<Variable, Constraint>;
-	friend class NonDuplPool<Constraint, Variable>;
-	friend class NonDuplPool<Variable, Constraint>;
-	friend class CutBuffer<Constraint, Variable>;
-	friend class CutBuffer<Variable, Constraint>;
+    friend class Sub;
+    friend class PoolSlotRef<Constraint, Variable>;
+    friend class PoolSlotRef<Variable, Constraint>;
+    friend class Pool<Constraint, Variable>;
+    friend class Pool<Variable, Constraint>;
+    friend class StandardPool<Constraint, Variable>;
+    friend class StandardPool<Variable, Constraint>;
+    friend class NonDuplPool<Constraint, Variable>;
+    friend class NonDuplPool<Variable, Constraint>;
+    friend class CutBuffer<Constraint, Variable>;
+    friend class CutBuffer<Variable, Constraint>;
 
 public:
 
-	//! Creates a pool slot and inserts \a convar.
-	/**
-	 * Sets the version number to 1, if a constraint has already been inserted
-	 * in this slot, 0 otherwise.
-	 *
-	 * \param master A pointer to the corresponding master of the optimization.
-	 * \param pool   The pool this slot belongs to.
-	 * \param convar The constraint/variable inserted in this slot
-	 *               if not 0. The default value is 0.
-	 */
-	PoolSlot(Master *master,
-		Pool<BaseType, CoType> *pool,
-		BaseType *convar = 0);
+    //! Creates a pool slot and inserts \a convar.
+    /**
+     * Sets the version number to 1, if a constraint has already been inserted
+     * in this slot, 0 otherwise.
+     *
+     * \param master A pointer to the corresponding master of the optimization.
+     * \param pool   The pool this slot belongs to.
+     * \param convar The constraint/variable inserted in this slot
+     *               if not 0. The default value is 0.
+     */
+    PoolSlot(Master *master,
+             Pool<BaseType, CoType> *pool,
+             BaseType *convar = 0);
 
-	~PoolSlot();
+    ~PoolSlot();
 
-	//! Returns a pointer to the constraint/variable in the pool slot.
-	BaseType *conVar() const { return conVar_; }
+    //! Returns a pointer to the constraint/variable in the pool slot.
+    BaseType *conVar() const
+    {
+        return conVar_;
+    }
 
 
 private:
 
-	//! Inserts a constraint/variable in the slot and updates the version number.
-	/**
-	 * If the slot still contains a constraint, the program stops.
-	 *
-	 * \param convar The constraint/variable that is inserted.
-	 */
-	void insert(BaseType *convar);
+    //! Inserts a constraint/variable in the slot and updates the version number.
+    /**
+     * If the slot still contains a constraint, the program stops.
+     *
+     * \param convar The constraint/variable that is inserted.
+     */
+    void insert(BaseType *convar);
 
-	//! Tries to remove the item from the slot.
-	/**
-	 * This is possible if the function ConVar::deletable() returns \a true.
-	 *
-	 * \return 0 if the constraint/variable in the slot could be deleted, 1 otherwise.
-	 */
-	int softDelete() {
-		if (conVar_ == 0)
-			return 0;
-		if (conVar_->deletable() == false)
-			return 1;
-		hardDelete();
-		return 0;
-	}
+    //! Tries to remove the item from the slot.
+    /**
+     * This is possible if the function ConVar::deletable() returns \a true.
+     *
+     * \return 0 if the constraint/variable in the slot could be deleted, 1 otherwise.
+     */
+    int softDelete()
+    {
+        if (conVar_ == 0)
+            return 0;
+        if (conVar_->deletable() == false)
+            return 1;
+        hardDelete();
+        return 0;
+    }
 
-	//! Deletes the constraint/variable in the slot.
-	/**
-	 * \warning This function should be used very carefully.
-	 */
-	void hardDelete() {
-		delete conVar_;
-		conVar_ = 0;
-	}
+    //! Deletes the constraint/variable in the slot.
+    /**
+     * \warning This function should be used very carefully.
+     */
+    void hardDelete()
+    {
+        delete conVar_;
+        conVar_ = 0;
+    }
 
-	//! Removes the constraint contained in this slot from its pool.
-	void removeConVarFromPool() {
-		pool_->removeConVar(this);
-	}
+    //! Removes the constraint contained in this slot from its pool.
+    void removeConVarFromPool()
+    {
+        pool_->removeConVar(this);
+    }
 
-	//! Return the version number of the constraint/variable in the slot.
-	unsigned long version() const { return version_; }
+    //! Return the version number of the constraint/variable in the slot.
+    unsigned long version() const
+    {
+        return version_;
+    }
 
-	//! Returns a pointer to the corresponding master of the optimization.
-	Master *master() { return master_; }
+    //! Returns a pointer to the corresponding master of the optimization.
+    Master *master()
+    {
+        return master_;
+    }
 
-	//! Returns a const pointer to the corresponding master of the optimization.
-	const Master *master() const { return master_; }
+    //! Returns a const pointer to the corresponding master of the optimization.
+    const Master *master() const
+    {
+        return master_;
+    }
 
-	Master *master_;	//!< A pointer to the corresponding master of the optimization.
-	BaseType *conVar_;		//!< A pointer to the constraint/variable.
-	unsigned long version_;	//!< The version of the constraint in the slot.
-	Pool<BaseType, CoType> *pool_; //!< A pointer to the corresponding pool.
+    Master *master_;    //!< A pointer to the corresponding master of the optimization.
+    BaseType *conVar_;      //!< A pointer to the constraint/variable.
+    unsigned long version_; //!< The version of the constraint in the slot.
+    Pool<BaseType, CoType> *pool_; //!< A pointer to the corresponding pool.
 
 
-	PoolSlot(const PoolSlot<BaseType, CoType> &rhs);
-	const PoolSlot<BaseType, CoType>
-		&operator=(const PoolSlot<BaseType, CoType> &rhs);
+    PoolSlot(const PoolSlot<BaseType, CoType> &rhs);
+    const PoolSlot<BaseType, CoType>
+    &operator=(const PoolSlot<BaseType, CoType> &rhs);
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 } //namespace abacus

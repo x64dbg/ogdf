@@ -57,7 +57,8 @@
 #include <ogdf/basic/NodeArray.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! The optimal ranking algorithm.
 /**
@@ -89,82 +90,90 @@ namespace ogdf {
  *   </tr>
  * </table>
  */
-class OGDF_EXPORT OptimalRanking : public RankingModule {
+class OGDF_EXPORT OptimalRanking : public RankingModule
+{
 
-	ModuleOption<AcyclicSubgraphModule> m_subgraph; // option for acyclic sugraph
-	bool m_separateMultiEdges;
+    ModuleOption<AcyclicSubgraphModule> m_subgraph; // option for acyclic sugraph
+    bool m_separateMultiEdges;
 
 public:
-	//! Creates an instance of optimal ranking.
-	OptimalRanking();
+    //! Creates an instance of optimal ranking.
+    OptimalRanking();
 
 
-	/**
-	 *  @name Algorithm call
-	 *  @{
-	 */
+    /**
+     *  @name Algorithm call
+     *  @{
+     */
 
-	//! Computes a node ranking of \a G in \a rank.
-	void call(const Graph &G, NodeArray<int> &rank);
+    //! Computes a node ranking of \a G in \a rank.
+    void call(const Graph &G, NodeArray<int> &rank);
 
-	//! Computes a node ranking of \a G with given minimal edge length in \a rank.
-	/**
-	 * @param G is the input graph.
-	 * @param length specifies the minimal length of each edge.
-	 * @param rank is assigned the rank (layer) of each node.
-	 */
-	void call(const Graph &G, const EdgeArray<int> &length, NodeArray<int> &rank);
+    //! Computes a node ranking of \a G with given minimal edge length in \a rank.
+    /**
+     * @param G is the input graph.
+     * @param length specifies the minimal length of each edge.
+     * @param rank is assigned the rank (layer) of each node.
+     */
+    void call(const Graph &G, const EdgeArray<int> &length, NodeArray<int> &rank);
 
-	//! Computes a cost-minimal node ranking of \a G for given edge costs and minimal edge lengths in \a rank.
-	/**
-	 * @param G is the input graph.
-	 * @param length specifies the minimal length of each edge.
-	 * @param cost specifies the cost of each edge.
-	 * @param rank is assigned the rank (layer) of each node.
-	 */
-	void call(
-		const Graph &G,
-		const EdgeArray<int> &length,
-		const EdgeArray<int> &cost,
-		NodeArray<int> &rank);
-
-
-	/** @}
-	 *  @name Optional parameters
-	 *  @{
-	 */
-
-	//! Returns the current setting of option separateMultiEdges.
-	/**
-	 * If set to true, multi-edges will span at least two layers. Since
-	 * each such edge will have at least one dummy node, the edges will
-	 * automaticall be separated in a Sugiyama drawing.
-	 */
-	bool separateMultiEdges() const { return m_separateMultiEdges; }
-
-	//! Sets the option separateMultiEdges to \a b.
-	void separateMultiEdges(bool b) { m_separateMultiEdges = b; }
+    //! Computes a cost-minimal node ranking of \a G for given edge costs and minimal edge lengths in \a rank.
+    /**
+     * @param G is the input graph.
+     * @param length specifies the minimal length of each edge.
+     * @param cost specifies the cost of each edge.
+     * @param rank is assigned the rank (layer) of each node.
+     */
+    void call(
+        const Graph &G,
+        const EdgeArray<int> &length,
+        const EdgeArray<int> &cost,
+        NodeArray<int> &rank);
 
 
-	/** @}
-	 *  @name Module options
-	 *  @{
-	 */
+    /** @}
+     *  @name Optional parameters
+     *  @{
+     */
 
-	//! Sets the module for the computation of the acyclic subgraph.
-	void setSubgraph(AcyclicSubgraphModule *pSubgraph) {
-		m_subgraph.set(pSubgraph);
-	}
+    //! Returns the current setting of option separateMultiEdges.
+    /**
+     * If set to true, multi-edges will span at least two layers. Since
+     * each such edge will have at least one dummy node, the edges will
+     * automaticall be separated in a Sugiyama drawing.
+     */
+    bool separateMultiEdges() const
+    {
+        return m_separateMultiEdges;
+    }
 
-	//! @}
+    //! Sets the option separateMultiEdges to \a b.
+    void separateMultiEdges(bool b)
+    {
+        m_separateMultiEdges = b;
+    }
+
+
+    /** @}
+     *  @name Module options
+     *  @{
+     */
+
+    //! Sets the module for the computation of the acyclic subgraph.
+    void setSubgraph(AcyclicSubgraphModule *pSubgraph)
+    {
+        m_subgraph.set(pSubgraph);
+    }
+
+    //! @}
 
 private:
-	//! Implements the algorithm call.
-	void doCall(const Graph& G,
-		NodeArray<int> &rank,
-		EdgeArray<bool> &reversed,
-		const EdgeArray<int> &length,
-		const EdgeArray<int> &cost);
+    //! Implements the algorithm call.
+    void doCall(const Graph& G,
+                NodeArray<int> &rank,
+                EdgeArray<bool> &reversed,
+                const EdgeArray<int> &length,
+                const EdgeArray<int> &cost);
 };
 
 

@@ -12,54 +12,59 @@
 
     As it is adapted from doubleton icoly is one dropped.
  */
-class tripleton_action : public CoinPresolveAction {
- public:
-  struct action {
-    int icolx;
-    int icolz;
-    int row;
+class tripleton_action : public CoinPresolveAction
+{
+public:
+    struct action
+    {
+        int icolx;
+        int icolz;
+        int row;
 
-    int icoly;
-    double cloy;
-    double cupy;
-    double costy;
-    double clox;
-    double cupx;
-    double costx;
+        int icoly;
+        double cloy;
+        double cupy;
+        double costy;
+        double clox;
+        double cupx;
+        double costx;
 
-    double rlo;
-    double rup;
+        double rlo;
+        double rup;
 
-    double coeffx;
-    double coeffy;
-    double coeffz;
+        double coeffx;
+        double coeffy;
+        double coeffz;
 
-    double *colel;
+        double *colel;
 
-    int ncolx;
-    int ncoly;
-  };
+        int ncolx;
+        int ncoly;
+    };
 
-  const int nactions_;
-  const action *const actions_;
+    const int nactions_;
+    const action *const actions_;
 
- private:
-  tripleton_action(int nactions,
-		      const action *actions,
-		      const CoinPresolveAction *next) :
-    CoinPresolveAction(next),
-    nactions_(nactions), actions_(actions)
-{}
+private:
+    tripleton_action(int nactions,
+                     const action *actions,
+                     const CoinPresolveAction *next) :
+        CoinPresolveAction(next),
+        nactions_(nactions), actions_(actions)
+    {}
 
- public:
-  const char *name() const { return ("tripleton_action"); }
+public:
+    const char *name() const
+    {
+        return ("tripleton_action");
+    }
 
-  static const CoinPresolveAction *presolve(CoinPresolveMatrix *,
-					 const CoinPresolveAction *next);
-  
-  void postsolve(CoinPostsolveMatrix *prob) const;
+    static const CoinPresolveAction *presolve(CoinPresolveMatrix *,
+            const CoinPresolveAction *next);
 
-  ~tripleton_action();
+    void postsolve(CoinPostsolveMatrix *prob) const;
+
+    ~tripleton_action();
 };
 #endif
 

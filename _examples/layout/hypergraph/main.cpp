@@ -7,17 +7,17 @@ using namespace ogdf;
 
 int main()
 {
-	Hypergraph H;
+    Hypergraph H;
 
-	H.readBenchHypergraph("c17.bench");
+    H.readBenchHypergraph("c17.bench");
 
-	HypergraphAttributesES HA(H, EdgeStandardType::tree);
-	HypergraphLayoutES hlES;
+    HypergraphAttributesES HA(H, EdgeStandardType::tree);
+    HypergraphLayoutES hlES;
 
-	hlES.setProfile(HypergraphLayoutES::Normal);
-	hlES.call(HA);
+    hlES.setProfile(HypergraphLayoutES::Normal);
+    hlES.call(HA);
 
-	GraphIO::writeGML(HA.repGA(), "c17.gml");
+    GraphIO::writeGML(HA.repGA(), "c17.gml");
 
-	return 0;
+    return 0;
 }

@@ -53,7 +53,8 @@
 #include <ogdf/basic/SList.h>
 #include <ogdf/basic/BoundedStack.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //---------------------------------------------------------
@@ -76,16 +77,18 @@ OGDF_EXPORT bool isLoopFree(const Graph &G);
 template<class NODELIST>
 void makeLoopFree(Graph &G, NODELIST &L)
 {
-	L.clear();
+    L.clear();
 
-	edge e, eNext;
-	for (e = G.firstEdge(); e; e = eNext) {
-		eNext = e->succ();
-		if (e->isSelfLoop()) {
-			L.pushBack(e->source());
-			G.delEdge(e);
-		}
-	}
+    edge e, eNext;
+    for (e = G.firstEdge(); e; e = eNext)
+    {
+        eNext = e->succ();
+        if (e->isSelfLoop())
+        {
+            L.pushBack(e->source());
+            G.delEdge(e);
+        }
+    }
 }
 
 
@@ -147,24 +150,33 @@ OGDF_EXPORT int numParallelEdges(const Graph &G);
 template <class EDGELIST>
 void makeParallelFree(Graph &G, EDGELIST &parallelEdges)
 {
-	parallelEdges.clear();
-	if (G.numberOfEdges() <= 1) return;
+    parallelEdges.clear();
+    if (G.numberOfEdges() <= 1) return;
 
-	SListPure<edge> edges;
-	parallelFreeSort(G,edges);
+    SListPure<edge> edges;
+    parallelFreeSort(G,edges);
 
-	SListConstIterator<edge> it = edges.begin();
-	edge ePrev = *it++, e;
-	bool bAppend = true;
-	while(it.valid()) {
-		e = *it++;
-		if (ePrev->source() == e->source() && ePrev->target() == e->target()) {
-			G.delEdge(e);
-			if (bAppend) { parallelEdges.pushBack(ePrev); bAppend = false; }
-		} else {
-			ePrev = e; bAppend = true;
-		}
-	}
+    SListConstIterator<edge> it = edges.begin();
+    edge ePrev = *it++, e;
+    bool bAppend = true;
+    while(it.valid())
+    {
+        e = *it++;
+        if (ePrev->source() == e->source() && ePrev->target() == e->target())
+        {
+            G.delEdge(e);
+            if (bAppend)
+            {
+                parallelEdges.pushBack(ePrev);
+                bAppend = false;
+            }
+        }
+        else
+        {
+            ePrev = e;
+            bAppend = true;
+        }
+    }
 }
 
 
@@ -176,9 +188,10 @@ void makeParallelFree(Graph &G, EDGELIST &parallelEdges)
  *
  * @param G is the input graph.
  */
-inline void makeParallelFree(Graph &G) {
-	List<edge> parallelEdges;
-	makeParallelFree(G,parallelEdges);
+inline void makeParallelFree(Graph &G)
+{
+    List<edge> parallelEdges;
+    makeParallelFree(G,parallelEdges);
 }
 
 
@@ -194,10 +207,10 @@ inline void makeParallelFree(Graph &G) {
  * @param maxIndex is assigned for each edge (v,w) the index max(index(v),index(w)).
  */
 OGDF_EXPORT void parallelFreeSortUndirected(
-	const Graph &G,
-	SListPure<edge> &edges,
-	EdgeArray<int> &minIndex,
-	EdgeArray<int> &maxIndex);
+    const Graph &G,
+    SListPure<edge> &edges,
+    EdgeArray<int> &minIndex,
+    EdgeArray<int> &maxIndex);
 
 
 //! Returns true iff \a G contains no undirected parallel edges.
@@ -237,25 +250,34 @@ OGDF_EXPORT int numParallelEdgesUndirected(const Graph &G);
 template <class EDGELIST>
 void makeParallelFreeUndirected(Graph &G, EDGELIST &parallelEdges)
 {
-	parallelEdges.clear();
-	if (G.numberOfEdges() <= 1) return;
+    parallelEdges.clear();
+    if (G.numberOfEdges() <= 1) return;
 
-	SListPure<edge> edges;
-	EdgeArray<int> minIndex(G), maxIndex(G);
-	parallelFreeSortUndirected(G,edges,minIndex,maxIndex);
+    SListPure<edge> edges;
+    EdgeArray<int> minIndex(G), maxIndex(G);
+    parallelFreeSortUndirected(G,edges,minIndex,maxIndex);
 
-	SListConstIterator<edge> it = edges.begin();
-	edge ePrev = *it++, e;
-	bool bAppend = true;
-	while(it.valid()) {
-		e = *it++;
-		if (minIndex[ePrev] == minIndex[e] && maxIndex[ePrev] == maxIndex[e]) {
-			G.delEdge(e);
-			if (bAppend) { parallelEdges.pushBack(ePrev); bAppend = false; }
-		} else {
-			ePrev = e; bAppend = true;
-		}
-	}
+    SListConstIterator<edge> it = edges.begin();
+    edge ePrev = *it++, e;
+    bool bAppend = true;
+    while(it.valid())
+    {
+        e = *it++;
+        if (minIndex[ePrev] == minIndex[e] && maxIndex[ePrev] == maxIndex[e])
+        {
+            G.delEdge(e);
+            if (bAppend)
+            {
+                parallelEdges.pushBack(ePrev);
+                bAppend = false;
+            }
+        }
+        else
+        {
+            ePrev = e;
+            bAppend = true;
+        }
+    }
 }
 
 
@@ -267,9 +289,10 @@ void makeParallelFreeUndirected(Graph &G, EDGELIST &parallelEdges)
  *
  * @param G is the input graph.
  */
-inline void makeParallelFreeUndirected(Graph &G) {
-	List<edge> parallelEdges;
-	makeParallelFreeUndirected(G,parallelEdges);
+inline void makeParallelFreeUndirected(Graph &G)
+{
+    List<edge> parallelEdges;
+    makeParallelFreeUndirected(G,parallelEdges);
 }
 
 
@@ -290,44 +313,45 @@ inline void makeParallelFreeUndirected(Graph &G) {
  */
 template <class EDGELIST>
 void makeParallelFreeUndirected(
-	Graph &G,
-	EDGELIST &parallelEdges,
-	EdgeArray<int> &cardPositive,
-	EdgeArray<int> &cardNegative)
+    Graph &G,
+    EDGELIST &parallelEdges,
+    EdgeArray<int> &cardPositive,
+    EdgeArray<int> &cardNegative)
 {
-	parallelEdges.clear();
-	cardPositive.fill(0);
-	cardNegative.fill(0);
-	if (G.numberOfEdges() <= 1) return;
+    parallelEdges.clear();
+    cardPositive.fill(0);
+    cardNegative.fill(0);
+    if (G.numberOfEdges() <= 1) return;
 
-	SListPure<edge> edges;
-	EdgeArray<int> minIndex(G), maxIndex(G);
-	parallelFreeSortUndirected(G,edges,minIndex,maxIndex);
+    SListPure<edge> edges;
+    EdgeArray<int> minIndex(G), maxIndex(G);
+    parallelFreeSortUndirected(G,edges,minIndex,maxIndex);
 
-	SListConstIterator<edge> it = edges.begin();
-	edge ePrev = *it++, e;
-	bool bAppend = true;
-	while(it.valid())
-	{
-		e = *it++;
-		if (minIndex[ePrev] == minIndex[e] && maxIndex[ePrev] == maxIndex[e])
-		{
-			if (ePrev->source() == e->source() && ePrev->target() == e->target())
-				cardPositive[ePrev]++;
-			else if (ePrev->source() == e->target() && ePrev->target() == e->source())
-				cardNegative[ePrev]++;
-			G.delEdge(e);
-			if (bAppend)
-			{
-				parallelEdges.pushBack(ePrev);
-				bAppend = false;
-			}
-		}
-		else
-		{
-			ePrev = e; bAppend = true;
-		}
-	}
+    SListConstIterator<edge> it = edges.begin();
+    edge ePrev = *it++, e;
+    bool bAppend = true;
+    while(it.valid())
+    {
+        e = *it++;
+        if (minIndex[ePrev] == minIndex[e] && maxIndex[ePrev] == maxIndex[e])
+        {
+            if (ePrev->source() == e->source() && ePrev->target() == e->target())
+                cardPositive[ePrev]++;
+            else if (ePrev->source() == e->target() && ePrev->target() == e->source())
+                cardNegative[ePrev]++;
+            G.delEdge(e);
+            if (bAppend)
+            {
+                parallelEdges.pushBack(ePrev);
+                bAppend = false;
+            }
+        }
+        else
+        {
+            ePrev = e;
+            bAppend = true;
+        }
+    }
 }
 
 
@@ -344,22 +368,22 @@ void makeParallelFreeUndirected(
 template <class EDGELIST>
 void getParallelFreeUndirected(const Graph &G, EdgeArray<EDGELIST> &parallelEdges)
 {
-	if (G.numberOfEdges() <= 1) return;
+    if (G.numberOfEdges() <= 1) return;
 
-	SListPure<edge> edges;
-	EdgeArray<int> minIndex(G), maxIndex(G);
-	parallelFreeSortUndirected(G,edges,minIndex,maxIndex);
+    SListPure<edge> edges;
+    EdgeArray<int> minIndex(G), maxIndex(G);
+    parallelFreeSortUndirected(G,edges,minIndex,maxIndex);
 
-	SListConstIterator<edge> it = edges.begin();
-	edge ePrev = *it++, e;
-	while(it.valid())
-	{
-		e = *it++;
-		if (minIndex[ePrev] == minIndex[e] && maxIndex[ePrev] == maxIndex[e])
-			parallelEdges[ePrev].pushBack(e);
-		else
-			ePrev = e;
-	}
+    SListConstIterator<edge> it = edges.begin();
+    edge ePrev = *it++, e;
+    while(it.valid())
+    {
+        e = *it++;
+        if (minIndex[ePrev] == minIndex[e] && maxIndex[ePrev] == maxIndex[e])
+            parallelEdges[ePrev].pushBack(e);
+        else
+            ePrev = e;
+    }
 }
 
 
@@ -373,8 +397,9 @@ void getParallelFreeUndirected(const Graph &G, EdgeArray<EDGELIST> &parallelEdge
  * @param G is the input graph.
  * @return true if \a G is simple, i.e. contains neither self-loops nor parallel edges, false otherwise.
  */
-inline bool isSimple(const Graph &G) {
-	return isLoopFree(G) && isParallelFree(G);
+inline bool isSimple(const Graph &G)
+{
+    return isLoopFree(G) && isParallelFree(G);
 }
 
 
@@ -382,9 +407,10 @@ inline bool isSimple(const Graph &G) {
 /**
  * @param G is the input graph.
  */
-inline void makeSimple(Graph &G) {
-	makeLoopFree(G);
-	makeParallelFree(G);
+inline void makeSimple(Graph &G)
+{
+    makeLoopFree(G);
+    makeParallelFree(G);
 }
 
 
@@ -394,8 +420,9 @@ inline void makeSimple(Graph &G) {
  * @return true if \a G is (undirected) simple, i.e. contains neither self-loops
  *         nor undirected parallel edges, false otherwise.
  */
-inline bool isSimpleUndirected(const Graph &G) {
-	return isLoopFree(G) && isParallelFreeUndirected(G);
+inline bool isSimpleUndirected(const Graph &G)
+{
+    return isLoopFree(G) && isParallelFreeUndirected(G);
 }
 
 
@@ -403,9 +430,10 @@ inline bool isSimpleUndirected(const Graph &G) {
 /**
  * @param G is the input graph.
  */
-inline void makeSimpleUndirected(Graph &G) {
-	makeLoopFree(G);
-	makeParallelFreeUndirected(G);
+inline void makeSimpleUndirected(Graph &G)
+{
+    makeLoopFree(G);
+    makeParallelFreeUndirected(G);
 }
 
 
@@ -434,9 +462,10 @@ OGDF_EXPORT void makeConnected(Graph &G, List<edge> &added);
 /**
  * @param G is the input graph.
  */
-inline void makeConnected(Graph &G) {
-	List<edge> added;
-	makeConnected(G,added);
+inline void makeConnected(Graph &G)
+{
+    List<edge> added;
+    makeConnected(G,added);
 }
 
 
@@ -464,9 +493,9 @@ OGDF_EXPORT int connectedComponents(const Graph &G, NodeArray<int> &component);
  * @return the number of connected components.
  */
 OGDF_EXPORT int connectedIsolatedComponents(
-	const Graph &G,
-	List<node> &isolated,
-	NodeArray<int> &component);
+    const Graph &G,
+    List<node> &isolated,
+    NodeArray<int> &component);
 
 
 //! Returns true iff \a G is biconnected.
@@ -482,9 +511,10 @@ OGDF_EXPORT bool isBiconnected(const Graph &G, node &cutVertex);
 /**
  * @param G is the input graph.
  */
-inline bool isBiconnected(const Graph &G) {
-	node cutVertex;
-	return isBiconnected(G,cutVertex);
+inline bool isBiconnected(const Graph &G)
+{
+    node cutVertex;
+    return isBiconnected(G,cutVertex);
 }
 
 
@@ -500,9 +530,10 @@ OGDF_EXPORT void makeBiconnected(Graph &G, List<edge> &added);
 /**
  * @param G is the input graph.
  */
-inline void makeBiconnected(Graph &G) {
-	List<edge> added;
-	makeBiconnected(G,added);
+inline void makeBiconnected(Graph &G)
+{
+    List<edge> added;
+    makeBiconnected(G,added);
 }
 
 
@@ -538,9 +569,10 @@ OGDF_EXPORT bool isTriconnected(const Graph &G, node &s1, node &s2);
  * @param G is the input graph.
  * @return true if \a G is triconnected, false otherwise.
  */
-inline bool isTriconnected(const Graph &G) {
-	node s1, s2;
-	return isTriconnected(G,s1,s2);
+inline bool isTriconnected(const Graph &G)
+{
+    node s1, s2;
+    return isTriconnected(G,s1,s2);
 }
 
 
@@ -570,9 +602,10 @@ OGDF_EXPORT bool isTriconnectedPrimitive(const Graph &G, node &s1, node &s2);
  * @param G is the input graph.
  * @return true if \a G is triconnected, false otherwise.
  */
-inline bool isTriconnectedPrimitive(const Graph &G) {
-	node s1, s2;
-	return isTriconnectedPrimitive(G,s1,s2);
+inline bool isTriconnectedPrimitive(const Graph &G)
+{
+    node s1, s2;
+    return isTriconnectedPrimitive(G,s1,s2);
 }
 
 
@@ -606,9 +639,10 @@ OGDF_EXPORT bool isAcyclic(const Graph &G, List<edge> &backedges);
  * @param G is the input graph
  * @return true if \a G contains no directed cycle, false otherwise.
  */
-inline bool isAcyclic(const Graph &G) {
-	List<edge> backedges;
-	return isAcyclic(G,backedges);
+inline bool isAcyclic(const Graph &G)
+{
+    List<edge> backedges;
+    return isAcyclic(G,backedges);
 }
 
 
@@ -626,9 +660,10 @@ OGDF_EXPORT bool isAcyclicUndirected(const Graph &G, List<edge> &backedges);
  * @param G is the input graph
  * @return true if \a G contains no undirected cycle, false otherwise.
  */
-inline bool isAcyclicUndirected(const Graph &G) {
-	List<edge> backedges;
-	return isAcyclicUndirected(G,backedges);
+inline bool isAcyclicUndirected(const Graph &G)
+{
+    List<edge> backedges;
+    return isAcyclicUndirected(G,backedges);
 }
 
 
@@ -665,9 +700,10 @@ OGDF_EXPORT bool hasSingleSource(const Graph &G, node &source);
  * @param G is the input graph.
  * @return true if \a G has a single source, false otherwise.
  */
-inline bool hasSingleSource(const Graph &G) {
-	node source;
-	return hasSingleSource(G,source);
+inline bool hasSingleSource(const Graph &G)
+{
+    node source;
+    return hasSingleSource(G,source);
 }
 
 
@@ -685,9 +721,10 @@ OGDF_EXPORT bool hasSingleSink(const Graph &G, node &sink);
  * @param G is the input graph.
  * @return true if \a G has a single sink, false otherwise.
  */
-inline bool hasSingleSink(const Graph &G) {
-	node sink;
-	return hasSingleSink(G,sink);
+inline bool hasSingleSink(const Graph &G)
+{
+    node sink;
+    return hasSingleSink(G,sink);
 }
 
 
@@ -712,10 +749,11 @@ OGDF_EXPORT bool isStGraph(const Graph &G, node &s, node &t, edge &st);
  * @param G  is the input graph.
  * @return true if \a G is an st-digraph, false otherwise.
  */
-inline bool isStGraph(const Graph &G) {
-	node s, t;
-	edge st;
-	return isStGraph(G,s,t,st);
+inline bool isStGraph(const Graph &G)
+{
+    node s, t;
+    edge st;
+    return isStGraph(G,s,t,st);
 }
 
 
@@ -757,9 +795,10 @@ OGDF_EXPORT void makeBimodal(Graph &G, List<edge> &newEdges);
  *
  * @param G is the input graph.
  */
-inline void makeBimodal(Graph &G) {
-	List<edge> dummy;
-	makeBimodal(G, dummy);
+inline void makeBimodal(Graph &G)
+{
+    List<edge> dummy;
+    makeBimodal(G, dummy);
 }
 
 
@@ -782,7 +821,7 @@ OGDF_EXPORT bool isFreeForest(const Graph &G);
  */
 inline bool isTree(const Graph &G)
 {
-	return (G.numberOfNodes() == G.numberOfEdges() + 1) && isConnected(G);
+    return (G.numberOfNodes() == G.numberOfEdges() + 1) && isConnected(G);
 }
 
 
@@ -802,8 +841,8 @@ OGDF_EXPORT bool isForest(const Graph& G, List<node> &roots);
  */
 inline bool isForest(const Graph &G)
 {
-	List<node> roots;
-	return isForest(G,roots);
+    List<node> roots;
+    return isForest(G,roots);
 }
 
 
@@ -821,9 +860,10 @@ OGDF_EXPORT bool isArborescence (const Graph& G, node &root);
  * @param G    is the input graph.
  * @return true if \a G represents a arborescence, false otherwise.
  */
-inline bool isArborescence(const Graph &G) {
-	node root;
-	return isArborescence(G,root);
+inline bool isArborescence(const Graph &G)
+{
+    node root;
+    return isArborescence(G,root);
 }
 
 

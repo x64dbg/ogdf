@@ -50,7 +50,8 @@
 
 #include <ogdf/basic/basic.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //--------------------------------------------------------------------
 // A comparer interface has to define
@@ -82,24 +83,39 @@ namespace ogdf {
 template<typename E> class StdComparer
 {
 public:
-	static bool less(const E &x, const E &y) { OGDF_THROW(NoStdComparerException); }
-	static bool leq(const E &x, const E &y) { OGDF_THROW(NoStdComparerException); }
-	static bool greater(const E &x, const E &y) { OGDF_THROW(NoStdComparerException); }
-	static bool geq(const E &x, const E &y) { OGDF_THROW(NoStdComparerException); }
-	static bool equal(const E &x, const E &y) { OGDF_THROW(NoStdComparerException); }
+    static bool less(const E &x, const E &y)
+    {
+        OGDF_THROW(NoStdComparerException);
+    }
+    static bool leq(const E &x, const E &y)
+    {
+        OGDF_THROW(NoStdComparerException);
+    }
+    static bool greater(const E &x, const E &y)
+    {
+        OGDF_THROW(NoStdComparerException);
+    }
+    static bool geq(const E &x, const E &y)
+    {
+        OGDF_THROW(NoStdComparerException);
+    }
+    static bool equal(const E &x, const E &y)
+    {
+        OGDF_THROW(NoStdComparerException);
+    }
 };
 
 //! Generates a specialization of the standard static comparer for \a type based on compare operators.
 #define OGDF_STD_COMPARER(type) \
-	template<> class StdComparer<type> \
-	{ \
-	public: \
-		static bool less   (const type &x, const type &y) { return x <  y; } \
-		static bool leq    (const type &x, const type &y) { return x <= y; } \
-		static bool greater(const type &x, const type &y) { return x >  y; } \
-		static bool geq    (const type &x, const type &y) { return x >= y; } \
-		static bool equal  (const type &x, const type &y) { return x == y; } \
-	};
+    template<> class StdComparer<type> \
+    { \
+    public: \
+        static bool less   (const type &x, const type &y) { return x <  y; } \
+        static bool leq    (const type &x, const type &y) { return x <= y; } \
+        static bool greater(const type &x, const type &y) { return x >  y; } \
+        static bool geq    (const type &x, const type &y) { return x >= y; } \
+        static bool equal  (const type &x, const type &y) { return x == y; } \
+    };
 
 OGDF_STD_COMPARER(short)
 OGDF_STD_COMPARER(int)
@@ -107,13 +123,29 @@ OGDF_STD_COMPARER(float)
 OGDF_STD_COMPARER(double)
 
 //! Generates a specialization of the standard static comparer for booleans.
-template<> class StdComparer<bool> {
+template<> class StdComparer<bool>
+{
 public:
-	static bool less   (const bool &x, const bool &y) { return !x &&  y; }
-	static bool leq    (const bool &x, const bool &y) { return !x ||  y; }
-	static bool greater(const bool &x, const bool &y) { return  x && !y; }
-	static bool geq    (const bool &x, const bool &y) { return  x || !y; }
-	static bool equal  (const bool &x, const bool &y) { return  x ==  y; }
+    static bool less   (const bool &x, const bool &y)
+    {
+        return !x &&  y;
+    }
+    static bool leq    (const bool &x, const bool &y)
+    {
+        return !x ||  y;
+    }
+    static bool greater(const bool &x, const bool &y)
+    {
+        return  x && !y;
+    }
+    static bool geq    (const bool &x, const bool &y)
+    {
+        return  x || !y;
+    }
+    static bool equal  (const bool &x, const bool &y)
+    {
+        return  x ==  y;
+    }
 };
 
 
@@ -122,14 +154,30 @@ public:
  * For the comparison of the contents, you may give your own static comparer
  */
 template<class CONTENTTYPE, class STATICCONTENTCOMPARER = StdComparer<CONTENTTYPE> >
-class TargetComparer {
-	typedef CONTENTTYPE* CONTENTPOINTER;
+class TargetComparer
+{
+    typedef CONTENTTYPE* CONTENTPOINTER;
 public:
-	static bool less   (const CONTENTPOINTER &x, const CONTENTPOINTER &y) { return STATICCONTENTCOMPARER::less   (*x,*y); }
-	static bool leq    (const CONTENTPOINTER &x, const CONTENTPOINTER &y) { return STATICCONTENTCOMPARER::leq    (*x,*y); }
-	static bool greater(const CONTENTPOINTER &x, const CONTENTPOINTER &y) { return STATICCONTENTCOMPARER::greater(*x,*y); }
-	static bool geq    (const CONTENTPOINTER &x, const CONTENTPOINTER &y) { return STATICCONTENTCOMPARER::geq    (*x,*y); }
-	static bool equal  (const CONTENTPOINTER &x, const CONTENTPOINTER &y) { return STATICCONTENTCOMPARER::equal  (*x,*y); }
+    static bool less   (const CONTENTPOINTER &x, const CONTENTPOINTER &y)
+    {
+        return STATICCONTENTCOMPARER::less   (*x,*y);
+    }
+    static bool leq    (const CONTENTPOINTER &x, const CONTENTPOINTER &y)
+    {
+        return STATICCONTENTCOMPARER::leq    (*x,*y);
+    }
+    static bool greater(const CONTENTPOINTER &x, const CONTENTPOINTER &y)
+    {
+        return STATICCONTENTCOMPARER::greater(*x,*y);
+    }
+    static bool geq    (const CONTENTPOINTER &x, const CONTENTPOINTER &y)
+    {
+        return STATICCONTENTCOMPARER::geq    (*x,*y);
+    }
+    static bool equal  (const CONTENTPOINTER &x, const CONTENTPOINTER &y)
+    {
+        return STATICCONTENTCOMPARER::equal  (*x,*y);
+    }
 };
 
 
@@ -172,12 +220,12 @@ public:
  * \endcode
  */
 #define OGDF_AUGMENT_COMPARER(type) \
-	public: \
-	bool less(const type &x, const type &y) const { return compare(x,y) < 0; } \
-	bool leq(const type &x, const type &y) const { return compare(x,y) <= 0; } \
-	bool greater(const type &x, const type &y) const { return compare(x,y) > 0; } \
-	bool geq(const type &x, const type &y) const { return compare(x,y) >= 0; } \
-	bool equal(const type &x, const type &y) const { return compare(x,y) == 0; }
+    public: \
+    bool less(const type &x, const type &y) const { return compare(x,y) < 0; } \
+    bool leq(const type &x, const type &y) const { return compare(x,y) <= 0; } \
+    bool greater(const type &x, const type &y) const { return compare(x,y) > 0; } \
+    bool geq(const type &x, const type &y) const { return compare(x,y) >= 0; } \
+    bool equal(const type &x, const type &y) const { return compare(x,y) == 0; }
 
 //! Add this macro to your class to turn it into a full static comparer.
 /**
@@ -216,12 +264,12 @@ public:
  * \endcode
  */
 #define OGDF_AUGMENT_STATICCOMPARER(type) \
-	public: \
-	static bool less(const type &x, const type &y) { return compare(x,y) < 0; } \
-	static bool leq(const type &x, const type &y) { return compare(x,y) <= 0; } \
-	static bool greater(const type &x, const type &y) { return compare(x,y) > 0; } \
-	static bool geq(const type &x, const type &y) { return compare(x,y) >= 0; } \
-	static bool equal(const type &x, const type &y) { return compare(x,y) == 0; }
+    public: \
+    static bool less(const type &x, const type &y) { return compare(x,y) < 0; } \
+    static bool leq(const type &x, const type &y) { return compare(x,y) <= 0; } \
+    static bool greater(const type &x, const type &y) { return compare(x,y) > 0; } \
+    static bool geq(const type &x, const type &y) { return compare(x,y) >= 0; } \
+    static bool equal(const type &x, const type &y) { return compare(x,y) == 0; }
 
 
 //! Abstract base class for comparer classes.
@@ -242,45 +290,51 @@ public:
  * #OGDF_AUGMENT_COMPARER, #OGDF_AUGMENT_STATICCOMPARER, #OGDF_STD_COMPARER to
  * obtain non-virtual classes with few effort.
  */
-template<class E> class VComparer {
+template<class E> class VComparer
+{
 public:
-	//! Initializes a comparer.
-	VComparer() { }
+    //! Initializes a comparer.
+    VComparer() { }
 
-	virtual ~VComparer() { }
+    virtual ~VComparer() { }
 
-	//! Compares \a x and \a y and returns the result as an integer.
-	/** The returns value is
-	 *  - < 0 iff x < y,
-	 *  - = 0 iff x = y,
-	 *  - > 0 iff x > y
-	 */
-	virtual int compare(const E &x, const E &y) const = 0;
+    //! Compares \a x and \a y and returns the result as an integer.
+    /** The returns value is
+     *  - < 0 iff x < y,
+     *  - = 0 iff x = y,
+     *  - > 0 iff x > y
+     */
+    virtual int compare(const E &x, const E &y) const = 0;
 
-	//! Returns true iff \a x < \a y
-	virtual bool less(const E &x, const E &y) const {
-		return compare(x,y) < 0;
-	}
+    //! Returns true iff \a x < \a y
+    virtual bool less(const E &x, const E &y) const
+    {
+        return compare(x,y) < 0;
+    }
 
-	//! Returns true iff \a x <= \a y
-	virtual bool leq(const E &x, const E &y) const {
-		return compare(x,y) <= 0;
-	}
+    //! Returns true iff \a x <= \a y
+    virtual bool leq(const E &x, const E &y) const
+    {
+        return compare(x,y) <= 0;
+    }
 
-	//! Returns true iff \a x > \a y
-	virtual bool greater(const E &x, const E &y) const {
-		return compare(x,y) > 0;
-	}
+    //! Returns true iff \a x > \a y
+    virtual bool greater(const E &x, const E &y) const
+    {
+        return compare(x,y) > 0;
+    }
 
-	//! Returns true iff \a x >= \a y
-	virtual bool geq(const E &x, const E &y) const {
-		return compare(x,y) >= 0;
-	}
+    //! Returns true iff \a x >= \a y
+    virtual bool geq(const E &x, const E &y) const
+    {
+        return compare(x,y) >= 0;
+    }
 
-	//! Returns true iff \a x = \a y
-	virtual bool equal(const E &x, const E &y) const {
-		return compare(x,y) == 0;
-	}
+    //! Returns true iff \a x = \a y
+    virtual bool equal(const E &x, const E &y) const
+    {
+        return compare(x,y) == 0;
+    }
 }; // class VComparer
 
 
@@ -289,61 +343,107 @@ public:
  * Also defines comparator function using the keys.
  * This class is intended as a helpful convenience class for using with BinaryHeapSimple, Top10Heap,..
  */
- template<class X, class Priority=double>
- class Prioritized {
+template<class X, class Priority=double>
+class Prioritized
+{
 
-	 X x;
-	 Priority p;
+    X x;
+    Priority p;
 
- public:
-	 //! Constructor of empty element. Be careful!
-	 Prioritized() : x(0), p(0) { }
+public:
+    //! Constructor of empty element. Be careful!
+    Prioritized() : x(0), p(0) { }
 
-	 //! Constructor using a key/value pair
-	 Prioritized(X xt, Priority pt) : x(xt),p(pt) { }
+    //! Constructor using a key/value pair
+    Prioritized(X xt, Priority pt) : x(xt),p(pt) { }
 
-	 //! Copy-constructor
-	 Prioritized(const Prioritized& P) : x(P.x),p(P.p) { }
+    //! Copy-constructor
+    Prioritized(const Prioritized& P) : x(P.x),p(P.p) { }
 
-	 //! Returns the key of the element
-	 Priority priority() const { return p; }
+    //! Returns the key of the element
+    Priority priority() const
+    {
+        return p;
+    }
 
-	 //! Returns the data of the element
-	 X item() const { return x;}
+    //! Returns the data of the element
+    X item() const
+    {
+        return x;
+    }
 
-	 //! Sets priority
-	 void setPriority(Priority pp) { p = pp; }
+    //! Sets priority
+    void setPriority(Priority pp)
+    {
+        p = pp;
+    }
 
-	 //! Sets value x
-	 void setItem(X item) { x=item; }
+    //! Sets value x
+    void setItem(X item)
+    {
+        x=item;
+    }
 
-	 //! Comparison oprator based on the compare-operator for the key type (\a Priority)
-	 bool operator<(const Prioritized<X,Priority>& P) const { return p<P.p; }
+    //! Comparison oprator based on the compare-operator for the key type (\a Priority)
+    bool operator<(const Prioritized<X,Priority>& P) const
+    {
+        return p<P.p;
+    }
 
-	 //! Comparison oprator based on the compare-operator for the key type (\a Priority)
-	 bool operator<=(const Prioritized<X,Priority>& P) const { return p<=P.p; }
+    //! Comparison oprator based on the compare-operator for the key type (\a Priority)
+    bool operator<=(const Prioritized<X,Priority>& P) const
+    {
+        return p<=P.p;
+    }
 
-	 //! Comparison oprator based on the compare-operator for the key type (\a Priority)
-	 bool operator>(const Prioritized<X,Priority>& P) const { return p>P.p; }
+    //! Comparison oprator based on the compare-operator for the key type (\a Priority)
+    bool operator>(const Prioritized<X,Priority>& P) const
+    {
+        return p>P.p;
+    }
 
-	 //! Comparison oprator based on the compare-operator for the key type (\a Priority)
-	 bool operator>=(const Prioritized<X,Priority>& P) const { return p>=P.p; }
+    //! Comparison oprator based on the compare-operator for the key type (\a Priority)
+    bool operator>=(const Prioritized<X,Priority>& P) const
+    {
+        return p>=P.p;
+    }
 
-	 //! Comparison oprator based on the compare-operator for the key type (\a Priority)
-	 bool operator==(const Prioritized<X,Priority>& P) const { return p==P.p; }
+    //! Comparison oprator based on the compare-operator for the key type (\a Priority)
+    bool operator==(const Prioritized<X,Priority>& P) const
+    {
+        return p==P.p;
+    }
 
-	 //! Comparison oprator based on the compare-operator for the key type (\a Priority)
-	 bool operator!=(const Prioritized<X,Priority>& P) const { return p!=P.p; }
- };
+    //! Comparison oprator based on the compare-operator for the key type (\a Priority)
+    bool operator!=(const Prioritized<X,Priority>& P) const
+    {
+        return p!=P.p;
+    }
+};
 
 template<class X, class Priority> class StdComparer< Prioritized<X,Priority> >
 {
 public:
-	static bool less   (const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y) { return x <  y; }
-	static bool leq    (const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y) { return x <= y; }
-	static bool greater(const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y) { return x >  y; }
-	static bool geq    (const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y) { return x >= y; }
-	static bool equal  (const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y) { return x == y; }
+    static bool less   (const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y)
+    {
+        return x <  y;
+    }
+    static bool leq    (const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y)
+    {
+        return x <= y;
+    }
+    static bool greater(const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y)
+    {
+        return x >  y;
+    }
+    static bool geq    (const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y)
+    {
+        return x >= y;
+    }
+    static bool equal  (const Prioritized<X,Priority> &x, const Prioritized<X,Priority> &y)
+    {
+        return x == y;
+    }
 };
 
 

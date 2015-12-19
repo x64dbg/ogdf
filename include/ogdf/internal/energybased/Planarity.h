@@ -55,56 +55,59 @@
 #include <ogdf/basic/Array2D.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-class Planarity: public EnergyFunction {
+class Planarity: public EnergyFunction
+{
 public:
-	//! Initializes data structures to speed up later computations.
-	Planarity(GraphAttributes &AG);
+    //! Initializes data structures to speed up later computations.
+    Planarity(GraphAttributes &AG);
 
-	~Planarity();
+    ~Planarity();
 
-	//! Computes energy of initial layout and stores it in \a m_energy.
-	void computeEnergy();
+    //! Computes energy of initial layout and stores it in \a m_energy.
+    void computeEnergy();
 
 private:
-	struct ChangedCrossing {
-		int edgeNum1;
-		int edgeNum2;
-		bool cross;
-	};
+    struct ChangedCrossing
+    {
+        int edgeNum1;
+        int edgeNum2;
+        bool cross;
+    };
 
-	//! Returns 1 if edges cross else 0.
-	bool intersect(const edge, const edge) const;
+    //! Returns 1 if edges cross else 0.
+    bool intersect(const edge, const edge) const;
 
-	//! Computes energy of candidate.
-	void compCandEnergy();
+    //! Computes energy of candidate.
+    void compCandEnergy();
 
-	//! Changes internal data if candidate is taken.
-	void internalCandidateTaken();
+    //! Changes internal data if candidate is taken.
+    void internalCandidateTaken();
 
-	//! Releases memory allocated for \a m_candidateCrossings.
-	void clearCandidateCrossings();
+    //! Releases memory allocated for \a m_candidateCrossings.
+    void clearCandidateCrossings();
 
-	//! Tests if two lines given by four points intersect.
-	bool lowLevelIntersect( const DPoint&, const DPoint&, const DPoint&,
-		 const DPoint&) const;
+    //! Tests if two lines given by four points intersect.
+    bool lowLevelIntersect( const DPoint&, const DPoint&, const DPoint&,
+                            const DPoint&) const;
 
 #ifdef OGDF_DEBUG
-		virtual void printInternalData() const;
+    virtual void printInternalData() const;
 #endif
 
-	EdgeArray<int> *m_edgeNums; //!< numbers of edges
-	Array2D<bool> *m_crossingMatrix; //!< stores for each pair of edges if they cross
+    EdgeArray<int> *m_edgeNums; //!< numbers of edges
+    Array2D<bool> *m_crossingMatrix; //!< stores for each pair of edges if they cross
 
-	/**
-	 * stores for all edges incident to the test node
-	 * an array with the crossings that change if the candidate position is chosen
-	 */
-	List<ChangedCrossing> m_crossingChanges;
+    /**
+     * stores for all edges incident to the test node
+     * an array with the crossings that change if the candidate position is chosen
+     */
+    List<ChangedCrossing> m_crossingChanges;
 
-	List<edge> m_nonSelfLoops; //!< list of edges that are not slef loops
+    List<edge> m_nonSelfLoops; //!< list of edges that are not slef loops
 }; // class Planarity
 
 

@@ -54,70 +54,75 @@
 #include <ogdf/cluster/ClusterArray.h>
 #include <ogdf/basic/EdgeArray.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT CconnectClusterPlanar
 {
 public:
 
-	//aus CCCPE oder CCCP wieder entfernen
-	enum ccErrorCode {
-		none = 0,
-		nonConnected = 1,
-		nonCConnected = 2,
-		nonPlanar = 3,
-		nonCPlanar = 4
-	};
+    //aus CCCPE oder CCCP wieder entfernen
+    enum ccErrorCode
+    {
+        none = 0,
+        nonConnected = 1,
+        nonCConnected = 2,
+        nonPlanar = 3,
+        nonCPlanar = 4
+    };
 
-	ccErrorCode errCode() { return m_errorCode; }
+    ccErrorCode errCode()
+    {
+        return m_errorCode;
+    }
 
 
-	//! Constructor.
-	CconnectClusterPlanar();
+    //! Constructor.
+    CconnectClusterPlanar();
 
-	//! Destructor.
-	virtual ~CconnectClusterPlanar() { }
+    //! Destructor.
+    virtual ~CconnectClusterPlanar() { }
 
-	//! Tests if a cluster graph is c-planar.
-	virtual bool call(const ClusterGraph &C);
+    //! Tests if a cluster graph is c-planar.
+    virtual bool call(const ClusterGraph &C);
 
 private:
 
-	//! Recursive planarity test for clustered graph induced by \a act.
-	bool planarityTest(ClusterGraph &C, cluster &act, Graph &G);
+    //! Recursive planarity test for clustered graph induced by \a act.
+    bool planarityTest(ClusterGraph &C, cluster &act, Graph &G);
 
-	//! Preprocessing that initializes data structures, used in call.
-	bool preProcess(ClusterGraph &C,Graph &G);
+    //! Preprocessing that initializes data structures, used in call.
+    bool preProcess(ClusterGraph &C,Graph &G);
 
-	//! Prepares the planarity test for one cluster.
-	bool preparation(Graph  &G,cluster &C,node superSink);
+    //! Prepares the planarity test for one cluster.
+    bool preparation(Graph  &G,cluster &C,node superSink);
 
-	//! Performs a planarity test on a biconnected component.
-	bool doTest(
-		Graph &G,
-		NodeArray<int> &numbering,
-		cluster &cl,
-		node superSink,
-		EdgeArray<edge> &edgeTable);
+    //! Performs a planarity test on a biconnected component.
+    bool doTest(
+        Graph &G,
+        NodeArray<int> &numbering,
+        cluster &cl,
+        node superSink,
+        EdgeArray<edge> &edgeTable);
 
-	void prepareParallelEdges(Graph &G);
+    void prepareParallelEdges(Graph &G);
 
-	//! Constructs the replacement wheel graphs
-	void constructWheelGraph(
-		ClusterGraph &C,
-		Graph &G,
-		cluster &parent,
-		PlanarPQTree* T,
-		EdgeArray<node> &outgoingTable);
+    //! Constructs the replacement wheel graphs
+    void constructWheelGraph(
+        ClusterGraph &C,
+        Graph &G,
+        cluster &parent,
+        PlanarPQTree* T,
+        EdgeArray<node> &outgoingTable);
 
 
-	//private Members for handling parallel edges
-	EdgeArray<ListPure<edge> >	m_parallelEdges;
-	EdgeArray<bool>				m_isParallel;
-	ClusterArray<PlanarPQTree*> m_clusterPQTree;
-	int	m_parallelCount;
+    //private Members for handling parallel edges
+    EdgeArray<ListPure<edge> >  m_parallelEdges;
+    EdgeArray<bool>             m_isParallel;
+    ClusterArray<PlanarPQTree*> m_clusterPQTree;
+    int m_parallelCount;
 
-	ccErrorCode m_errorCode;
+    ccErrorCode m_errorCode;
 };
 
 } // end namespace ogdf

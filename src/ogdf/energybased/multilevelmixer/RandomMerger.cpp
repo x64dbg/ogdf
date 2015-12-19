@@ -42,78 +42,91 @@
 
 #include <ogdf/energybased/multilevelmixer/RandomMerger.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 RandomMerger::RandomMerger()
-:m_levelSizeFactor(2.0)
+    :m_levelSizeFactor(2.0)
 {
 }
 
 bool RandomMerger::buildOneLevel(MultilevelGraph &MLG)
 {
-	Graph &G = MLG.getGraph();
-	int level = MLG.getLevel() + 1;
-	int numNodes = G.numberOfNodes();
+    Graph &G = MLG.getGraph();
+    int level = MLG.getLevel() + 1;
+    int numNodes = G.numberOfNodes();
 
-	if (numNodes <= 3) {
-		return false;
-	}
+    if (numNodes <= 3)
+    {
+        return false;
+    }
 
-	node v;
-	int index = 0;
-	Array<node> candidates(numNodes);
-	forall_nodes(v, G) {
-		candidates[index] = v;
-		index++;
-	}
+    node v;
+    int index = 0;
+    Array<node> candidates(numNodes);
+    forall_nodes(v, G)
+    {
+        candidates[index] = v;
+        index++;
+    }
 
-	int candSize = candidates.size();
-	while (candSize > numNodes / m_levelSizeFactor)
-	{
-		index = randomNumber(0, candSize-1);
-		node mergeNode = candidates[index];
-		candidates[index] = candidates[candSize-1];
-		candSize--;
-		node parent = 0;
+    int candSize = candidates.size();
+    while (candSize > numNodes / m_levelSizeFactor)
+    {
+        index = randomNumber(0, candSize-1);
+        node mergeNode = candidates[index];
+        candidates[index] = candidates[candSize-1];
+        candSize--;
+        node parent = 0;
 
-		if (mergeNode->degree() > 0) {
-			int index = randomNumber(0, mergeNode->degree()-1);
-			int i = 0;
-			adjEntry adj;
-			forall_adj(adj, mergeNode) {
-				if (i == index) {
-					parent = adj->twinNode();
-					break;
-				} else {
-					i++;
-				}
-			}
-		} else {
-			do {
-				index = randomNumber(0, candSize-1);
-				parent = candidates[index];
-			} while (parent == mergeNode);
-			candidates[index] = candidates[candSize-1];
-			candSize--;
-		}
+        if (mergeNode->degree() > 0)
+        {
+            int index = randomNumber(0, mergeNode->degree()-1);
+            int i = 0;
+            adjEntry adj;
+            forall_adj(adj, mergeNode)
+            {
+                if (i == index)
+                {
+                    parent = adj->twinNode();
+                    break;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
+        else
+        {
+            do
+            {
+                index = randomNumber(0, candSize-1);
+                parent = candidates[index];
+            }
+            while (parent == mergeNode);
+            candidates[index] = candidates[candSize-1];
+            candSize--;
+        }
 
-		NodeMerge * NM = new NodeMerge(level);
-		bool ret = MLG.changeNode(NM, parent, MLG.radius(parent), mergeNode);
-		OGDF_ASSERT( ret );
-		MLG.moveEdgesToParent(NM, mergeNode, parent, true, m_adjustEdgeLengths);
-		ret = MLG.postMerge(NM, mergeNode);
-		if( !ret ) {
-			delete NM;
-		}
-	}
+        NodeMerge * NM = new NodeMerge(level);
+        bool ret = MLG.changeNode(NM, parent, MLG.radius(parent), mergeNode);
+        OGDF_ASSERT( ret );
+        MLG.moveEdgesToParent(NM, mergeNode, parent, true, m_adjustEdgeLengths);
+        ret = MLG.postMerge(NM, mergeNode);
+        if( !ret )
+        {
+            delete NM;
+        }
+    }
 
-	return true;
+    return true;
 }
 
 
 void RandomMerger::setFactor(double factor)
 {
-	m_levelSizeFactor = factor;
+    m_levelSizeFactor = factor;
 }
 
 } // namespace ogdf

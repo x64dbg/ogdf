@@ -48,257 +48,271 @@
 #include <ogdf/basic/extended_graph_alg.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 void UpwardPlanarSubgraphSimple::call(const Graph &G, List<edge> &delEdges)
 {
-	delEdges.clear();
+    delEdges.clear();
 
-	// We construct an auxiliary graph H which represents the current upward
-	// planar subgraph.
-	Graph H;
-	NodeArray<node> mapToH(G);
+    // We construct an auxiliary graph H which represents the current upward
+    // planar subgraph.
+    Graph H;
+    NodeArray<node> mapToH(G);
 
-	node v;
-	forall_nodes(v,G)
-		mapToH[v] = H.newNode();
-
-
-	// We currently support only single-source acyclic digraphs ...
-	node s;
-	hasSingleSource(G,s);
-
-	OGDF_ASSERT(s != 0);
-	OGDF_ASSERT(isAcyclic(G));
-
-	// We start with a spanning tree of G rooted at the single source.
-	NodeArray<bool> visitedNode(G,false);
-	SListPure<edge> treeEdges;
-	dfsBuildSpanningTree(s,treeEdges,visitedNode);
+    node v;
+    forall_nodes(v,G)
+    mapToH[v] = H.newNode();
 
 
-	// Mark all edges in the spanning tree so they can be skipped in the
-	// loop below and add (copies of) them to H.
-	EdgeArray<bool> visitedEdge(G,false);
-	SListConstIterator<edge> it;
-	for(it = treeEdges.begin(); it.valid(); ++it) {
-		edge eG = *it;
-		visitedEdge[eG] = true;
-		H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
-	}
+    // We currently support only single-source acyclic digraphs ...
+    node s;
+    hasSingleSource(G,s);
+
+    OGDF_ASSERT(s != 0);
+    OGDF_ASSERT(isAcyclic(G));
+
+    // We start with a spanning tree of G rooted at the single source.
+    NodeArray<bool> visitedNode(G,false);
+    SListPure<edge> treeEdges;
+    dfsBuildSpanningTree(s,treeEdges,visitedNode);
 
 
-	// Add subsequently the remaining edges to H and test if the resulting
-	// graph is still upward planar. If not, remove the edge again from H
-	// and add it to delEdges.
+    // Mark all edges in the spanning tree so they can be skipped in the
+    // loop below and add (copies of) them to H.
+    EdgeArray<bool> visitedEdge(G,false);
+    SListConstIterator<edge> it;
+    for(it = treeEdges.begin(); it.valid(); ++it)
+    {
+        edge eG = *it;
+        visitedEdge[eG] = true;
+        H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
+    }
 
-	edge eG;
-	forall_edges(eG,G)
-	{
-		if(visitedEdge[eG] == true)
-			continue;
 
-		edge eH = H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
+    // Add subsequently the remaining edges to H and test if the resulting
+    // graph is still upward planar. If not, remove the edge again from H
+    // and add it to delEdges.
 
-		if (UpwardPlanarity::isUpwardPlanar_singleSource(H) == false) {
-			H.delEdge(eH);
-			delEdges.pushBack(eG);
-		}
-	}
+    edge eG;
+    forall_edges(eG,G)
+    {
+        if(visitedEdge[eG] == true)
+            continue;
+
+        edge eH = H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
+
+        if (UpwardPlanarity::isUpwardPlanar_singleSource(H) == false)
+        {
+            H.delEdge(eH);
+            delEdges.pushBack(eG);
+        }
+    }
 
 }
 
 
 void UpwardPlanarSubgraphSimple::dfsBuildSpanningTree(
-	node v,
-	SListPure<edge> &treeEdges,
-	NodeArray<bool> &visited)
+    node v,
+    SListPure<edge> &treeEdges,
+    NodeArray<bool> &visited)
 {
-	visited[v] = true;
+    visited[v] = true;
 
-	edge e;
-	forall_adj_edges(e,v)
-	{
-		node w = e->target();
-		if(w == v) continue;
+    edge e;
+    forall_adj_edges(e,v)
+    {
+        node w = e->target();
+        if(w == v) continue;
 
-		if(!visited[w]) {
-			treeEdges.pushBack(e);
-			dfsBuildSpanningTree(w,treeEdges,visited);
-		}
-	}
+        if(!visited[w])
+        {
+            treeEdges.pushBack(e);
+            dfsBuildSpanningTree(w,treeEdges,visited);
+        }
+    }
 }
 
 
 
 void UpwardPlanarSubgraphSimple::call(GraphCopy &GC, List<edge> &delEdges)
 {
-	const Graph &G = GC.original();
-	delEdges.clear();
+    const Graph &G = GC.original();
+    delEdges.clear();
 
-	// We construct an auxiliary graph H which represents the current upward
-	// planar subgraph.
-	Graph H;
-	NodeArray<node> mapToH(G,0);
-	NodeArray<node> mapToG(H,0);
+    // We construct an auxiliary graph H which represents the current upward
+    // planar subgraph.
+    Graph H;
+    NodeArray<node> mapToH(G,0);
+    NodeArray<node> mapToG(H,0);
 
-	node v;
-	forall_nodes(v,G)
-		mapToG[ mapToH[v] = H.newNode() ] = v;
-
-
-	// We currently support only single-source acyclic digraphs ...
-	node s;
-	hasSingleSource(G,s);
-
-	OGDF_ASSERT(s != 0);
-	OGDF_ASSERT(isAcyclic(G));
-
-	// We start with a spanning tree of G rooted at the single source.
-	NodeArray<bool> visitedNode(G,false);
-	SListPure<edge> treeEdges;
-	dfsBuildSpanningTree(s,treeEdges,visitedNode);
+    node v;
+    forall_nodes(v,G)
+    mapToG[ mapToH[v] = H.newNode() ] = v;
 
 
-	// Mark all edges in the spanning tree so they can be skipped in the
-	// loop below and add (copies of) them to H.
-	EdgeArray<bool> visitedEdge(G,false);
-	SListConstIterator<edge> it;
-	for(it = treeEdges.begin(); it.valid(); ++it) {
-		edge eG = *it;
-		visitedEdge[eG] = true;
-		H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
-	}
+    // We currently support only single-source acyclic digraphs ...
+    node s;
+    hasSingleSource(G,s);
+
+    OGDF_ASSERT(s != 0);
+    OGDF_ASSERT(isAcyclic(G));
+
+    // We start with a spanning tree of G rooted at the single source.
+    NodeArray<bool> visitedNode(G,false);
+    SListPure<edge> treeEdges;
+    dfsBuildSpanningTree(s,treeEdges,visitedNode);
 
 
-	// Add subsequently the remaining edges to H and test if the resulting
-	// graph is still upward planar. If not, remove the edge again from H
-	// and add it to delEdges.
+    // Mark all edges in the spanning tree so they can be skipped in the
+    // loop below and add (copies of) them to H.
+    EdgeArray<bool> visitedEdge(G,false);
+    SListConstIterator<edge> it;
+    for(it = treeEdges.begin(); it.valid(); ++it)
+    {
+        edge eG = *it;
+        visitedEdge[eG] = true;
+        H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
+    }
 
-	SList<Tuple2<node,node> > augmented;
-	GraphCopySimple graphAcyclicTest(G);
 
-	edge eG;
-	forall_edges(eG,G)
-	{
-		// already treated ?
-		if(visitedEdge[eG] == true)
-			continue;
+    // Add subsequently the remaining edges to H and test if the resulting
+    // graph is still upward planar. If not, remove the edge again from H
+    // and add it to delEdges.
 
-		// insert edge into H
-		edge eH = H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
+    SList<Tuple2<node,node> > augmented;
+    GraphCopySimple graphAcyclicTest(G);
 
-		node superSink;
-		SList<edge> augmentedEdges;
-		if (UpwardPlanarity::upwardPlanarAugment_singleSource(H,superSink,augmentedEdges) == false) {
-			// if H is no longer upward planar, remove eG from subgraph
-			H.delEdge(eH);
-			delEdges.pushBack(eG);
+    edge eG;
+    forall_edges(eG,G)
+    {
+        // already treated ?
+        if(visitedEdge[eG] == true)
+            continue;
 
-		} else {
-			// add augmented edges as node-pair to tmpAugmented and remove
-			// all augmented edges from H again
-			SList<Tuple2<node,node> > tmpAugmented;
-			SListConstIterator<edge> it;
-			for(it = augmentedEdges.begin(); it.valid(); ++it) {
-				node v = mapToG[(*it)->source()];
-				node w = mapToG[(*it)->target()];
+        // insert edge into H
+        edge eH = H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
 
-				if (v && w)
-					tmpAugmented.pushBack(Tuple2<node,node>(v,w));
+        node superSink;
+        SList<edge> augmentedEdges;
+        if (UpwardPlanarity::upwardPlanarAugment_singleSource(H,superSink,augmentedEdges) == false)
+        {
+            // if H is no longer upward planar, remove eG from subgraph
+            H.delEdge(eH);
+            delEdges.pushBack(eG);
 
-				H.delEdge(*it);
-			}
+        }
+        else
+        {
+            // add augmented edges as node-pair to tmpAugmented and remove
+            // all augmented edges from H again
+            SList<Tuple2<node,node> > tmpAugmented;
+            SListConstIterator<edge> it;
+            for(it = augmentedEdges.begin(); it.valid(); ++it)
+            {
+                node v = mapToG[(*it)->source()];
+                node w = mapToG[(*it)->target()];
 
-			if (mapToG[superSink] == 0)
-				H.delNode(superSink);
+                if (v && w)
+                    tmpAugmented.pushBack(Tuple2<node,node>(v,w));
 
-			//****************************************************************
-			// The following is a simple workaround to assure the following
-			// property of the upward planar subgraph:
-			//   The st-augmented upward planar subgraph plus the edges not
-			//   in the subgraph must be acyclic. (This is a special property
-			//   of the embedding, not the augmentation.)
-			// The upward-planar embedding function gives us ANY upward-planar
-			// embedding. We check if the property above holds with this
-			// embedding. If it doesn't, we have actually no idea if another
-			// embedding would do.
-			// The better solution would be to incorporate the acyclicity
-			// property into the upward-planarity test, but this is compicated.
-			//****************************************************************
+                H.delEdge(*it);
+            }
 
-			// test if original graph plus augmented edges is still acyclic
-			if(checkAcyclic(graphAcyclicTest,tmpAugmented) == true) {
-				augmented = tmpAugmented;
+            if (mapToG[superSink] == 0)
+                H.delNode(superSink);
 
-			} else {
-				// if not, remove eG from subgraph
-				H.delEdge(eH);
-				delEdges.pushBack(eG);
-			}
-		}
+            //****************************************************************
+            // The following is a simple workaround to assure the following
+            // property of the upward planar subgraph:
+            //   The st-augmented upward planar subgraph plus the edges not
+            //   in the subgraph must be acyclic. (This is a special property
+            //   of the embedding, not the augmentation.)
+            // The upward-planar embedding function gives us ANY upward-planar
+            // embedding. We check if the property above holds with this
+            // embedding. If it doesn't, we have actually no idea if another
+            // embedding would do.
+            // The better solution would be to incorporate the acyclicity
+            // property into the upward-planarity test, but this is compicated.
+            //****************************************************************
 
-	}
+            // test if original graph plus augmented edges is still acyclic
+            if(checkAcyclic(graphAcyclicTest,tmpAugmented) == true)
+            {
+                augmented = tmpAugmented;
 
-	// remove edges not in the subgraph from GC
-	ListConstIterator<edge> itE;
-	for(itE = delEdges.begin(); itE.valid(); ++itE)
-		GC.delEdge(GC.copy(*itE));
+            }
+            else
+            {
+                // if not, remove eG from subgraph
+                H.delEdge(eH);
+                delEdges.pushBack(eG);
+            }
+        }
 
-	// add augmented edges to GC
-	SListConstIterator<Tuple2<node,node> > itP;
-	for(itP = augmented.begin(); itP.valid(); ++itP) {
-		node v = (*itP).x1();
-		node w = (*itP).x2();
+    }
 
-		GC.newEdge(GC.copy(v),GC.copy(w));
-	}
+    // remove edges not in the subgraph from GC
+    ListConstIterator<edge> itE;
+    for(itE = delEdges.begin(); itE.valid(); ++itE)
+        GC.delEdge(GC.copy(*itE));
 
-	// add super sink to GC
-	node sGC = 0;
-	SList<node> sinks;
-	forall_nodes(v,GC) {
-		if(v->indeg() == 0)
-			sGC = v;
-		if(v->outdeg() == 0)
-			sinks.pushBack(v);
-	}
+    // add augmented edges to GC
+    SListConstIterator<Tuple2<node,node> > itP;
+    for(itP = augmented.begin(); itP.valid(); ++itP)
+    {
+        node v = (*itP).x1();
+        node w = (*itP).x2();
 
-	node superSinkGC = GC.newNode();
-	SListConstIterator<node> itV;
-	for(itV = sinks.begin(); itV.valid(); ++itV)
-		GC.newEdge(*itV,superSinkGC);
+        GC.newEdge(GC.copy(v),GC.copy(w));
+    }
 
-	// add st-edge to GC, so that we now have a planar st-digraph
-	GC.newEdge(sGC,superSinkGC);
+    // add super sink to GC
+    node sGC = 0;
+    SList<node> sinks;
+    forall_nodes(v,GC)
+    {
+        if(v->indeg() == 0)
+            sGC = v;
+        if(v->outdeg() == 0)
+            sinks.pushBack(v);
+    }
 
-	OGDF_ASSERT(isAcyclic(GC));
-	OGDF_ASSERT(isPlanar(GC));
+    node superSinkGC = GC.newNode();
+    SListConstIterator<node> itV;
+    for(itV = sinks.begin(); itV.valid(); ++itV)
+        GC.newEdge(*itV,superSinkGC);
+
+    // add st-edge to GC, so that we now have a planar st-digraph
+    GC.newEdge(sGC,superSinkGC);
+
+    OGDF_ASSERT(isAcyclic(GC));
+    OGDF_ASSERT(isPlanar(GC));
 }
 
 
 // test if graphAcyclicTest plus edges in tmpAugmented is acyclic
 // removes added edges again
 bool UpwardPlanarSubgraphSimple::checkAcyclic(
-	GraphCopySimple &graphAcyclicTest,
-	SList<Tuple2<node,node> > &tmpAugmented)
+    GraphCopySimple &graphAcyclicTest,
+    SList<Tuple2<node,node> > &tmpAugmented)
 {
-	SListPure<edge> added;
+    SListPure<edge> added;
 
-	SListConstIterator<Tuple2<node,node> > it;
-	for(it = tmpAugmented.begin(); it.valid(); ++it)
-		added.pushBack(graphAcyclicTest.newEdge(
-			graphAcyclicTest.copy((*it).x1()),
-			graphAcyclicTest.copy((*it).x2())));
+    SListConstIterator<Tuple2<node,node> > it;
+    for(it = tmpAugmented.begin(); it.valid(); ++it)
+        added.pushBack(graphAcyclicTest.newEdge(
+                           graphAcyclicTest.copy((*it).x1()),
+                           graphAcyclicTest.copy((*it).x2())));
 
-	bool acyclic = isAcyclic(graphAcyclicTest);
+    bool acyclic = isAcyclic(graphAcyclicTest);
 
-	SListConstIterator<edge> itE;
-	for(itE = added.begin(); itE.valid(); ++itE)
-		graphAcyclicTest.delEdge(*itE);
+    SListConstIterator<edge> itE;
+    for(itE = added.begin(); itE.valid(); ++itE)
+        graphAcyclicTest.delEdge(*itE);
 
-	return acyclic;
+    return acyclic;
 }
 
 

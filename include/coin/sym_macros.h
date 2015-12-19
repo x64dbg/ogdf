@@ -18,7 +18,7 @@
 /*-------------------------- Random number generator ------------------------*/
 
 #if defined(_MSC_VER) || defined (__MNO_CYGWIN) || defined(__MINGW32__) /* Different function call in
-						  Windows */
+                          Windows */
 #define SRANDOM(seed) srand(seed)
 #define RANDOM() rand()
 #else
@@ -31,97 +31,97 @@
 #ifdef REMALLOC
 #undef REMALLOC
 #endif
-#define REMALLOC(ptr, ptrtype, oldsize, newsize, block_size)	             \
-{								             \
-   if (!ptr || (oldsize < newsize)){				             \
-      FREE(ptr);						             \
+#define REMALLOC(ptr, ptrtype, oldsize, newsize, block_size)                 \
+{                                            \
+   if (!ptr || (oldsize < newsize)){                             \
+      FREE(ptr);                                     \
       oldsize = newsize + (int)(block_size);                                   \
-      ptr = (ptrtype *) malloc((size_t)(oldsize) * sizeof(ptrtype));	     \
-   }								             \
+      ptr = (ptrtype *) malloc((size_t)(oldsize) * sizeof(ptrtype));         \
+   }                                             \
 }
 
 #ifdef REALLOC
 #undef REALLOC
 #endif
-#define REALLOC(ptr, ptrtype, oldsize, newsize, block_size)		     \
-{									     \
-   if (!ptr || (oldsize < newsize)){					     \
-      oldsize = newsize + (int)(block_size);				     \
+#define REALLOC(ptr, ptrtype, oldsize, newsize, block_size)          \
+{                                        \
+   if (!ptr || (oldsize < newsize)){                         \
+      oldsize = newsize + (int)(block_size);                     \
       ptr = (ptrtype *) realloc((char *)ptr, (size_t)                        \
                                 (oldsize * sizeof(ptrtype)));                \
-   }									     \
+   }                                         \
 }
 
 /*---------------------------- PVM macros -----------------------------------*/
 
-#define READ_INT_DESC(desc)						      \
-{									      \
+#define READ_INT_DESC(desc)                           \
+{                                         \
    receive_int_array(&(desc).size, 1);                                        \
-   if ((desc).size > 0){						      \
+   if ((desc).size > 0){                              \
       REMALLOC((desc).list, int, (desc).maxsize, (desc).size, BB_BUNCH);      \
       receive_int_array((desc).list, (desc).size);                            \
-   }									      \
+   }                                          \
 }
 
-#define READ_CHAR_ARRAY_WITH_SIZE(cptr, cnum, maxcnum)	\
-{								\
+#define READ_CHAR_ARRAY_WITH_SIZE(cptr, cnum, maxcnum)  \
+{                               \
    receive_int_array(&cnum, 1);                                 \
-   if (cnum > 0){						\
-      REMALLOC(cptr, char, maxcnum, cnum, BB_BUNCH);		\
+   if (cnum > 0){                       \
+      REMALLOC(cptr, char, maxcnum, cnum, BB_BUNCH);        \
       receive_char_array(cptr, cnum);                           \
-   }								\
+   }                                \
 }
 
-#define READ_STR_LIST(snum, ssize, cptr, sptr)		\
-{								\
-   if (snum > 0){						\
-      sptr = (char **) malloc(snum * sizeof(char *));		\
-      cptr = (char *)  malloc(ssize * snum * CSIZE);		\
-      receive_char_array(cptr, snum * ssize);              	\
-      for (i = 0; i < snum; i++)				\
-	 sptr[i] = cptr + i * ssize;				\
-   }								\
+#define READ_STR_LIST(snum, ssize, cptr, sptr)      \
+{                               \
+   if (snum > 0){                       \
+      sptr = (char **) malloc(snum * sizeof(char *));       \
+      cptr = (char *)  malloc(ssize * snum * CSIZE);        \
+      receive_char_array(cptr, snum * ssize);               \
+      for (i = 0; i < snum; i++)                \
+     sptr[i] = cptr + i * ssize;                \
+   }                                \
 }
 
 
 /*--------------------- Parameter reading macros ----------------------------*/
 
-#define READPAR_ERROR(x)						\
-{									\
-   (void) fprintf(stderr, "\nio: error reading parameter %s\n\n", x);	\
-   exit(1);								\
+#define READPAR_ERROR(x)                        \
+{                                   \
+   (void) fprintf(stderr, "\nio: error reading parameter %s\n\n", x);   \
+   exit(1);                             \
 }
 
-#define READ_INT_PAR(par)						\
-if (sscanf(value, "%i", &(par)) != 1){					\
-   (void) fprintf(stderr, "\nio: error reading parameter %s\n\n", key);	\
-   exit(1);								\
+#define READ_INT_PAR(par)                       \
+if (sscanf(value, "%i", &(par)) != 1){                  \
+   (void) fprintf(stderr, "\nio: error reading parameter %s\n\n", key); \
+   exit(1);                             \
 }
 
-#define READ_STR_PAR(par)						\
-if (sscanf(value, "%s", par) != 1){					\
-   (void) fprintf(stderr, "\nio: error reading parameter %s\n\n", key);	\
-   exit(1);								\
+#define READ_STR_PAR(par)                       \
+if (sscanf(value, "%s", par) != 1){                 \
+   (void) fprintf(stderr, "\nio: error reading parameter %s\n\n", key); \
+   exit(1);                             \
 }
 
-#define READ_DBL_PAR(par)						\
-if (sscanf(value, "%lf", &(par)) != 1){					\
-   (void) fprintf(stderr, "\nio: error reading parameter %s\n\n", key);	\
-   exit(1);								\
+#define READ_DBL_PAR(par)                       \
+if (sscanf(value, "%lf", &(par)) != 1){                 \
+   (void) fprintf(stderr, "\nio: error reading parameter %s\n\n", key); \
+   exit(1);                             \
 }
 
-#define READ_STRINT_PAR(par, str_array, array_size, value)		   \
-{									   \
-   for (i = array_size-1; i >= 0; i--){					   \
-      if (! strcmp(str_array[i].str, value)){				   \
-	 par |= str_array[i].code;					   \
-	 break;								   \
-      }									   \
-   }									   \
-   if (i < 0){								   \
+#define READ_STRINT_PAR(par, str_array, array_size, value)         \
+{                                      \
+   for (i = array_size-1; i >= 0; i--){                    \
+      if (! strcmp(str_array[i].str, value)){                  \
+     par |= str_array[i].code;                     \
+     break;                                \
+      }                                    \
+   }                                       \
+   if (i < 0){                                 \
       (void) fprintf(stderr, "\nio: error reading parameter %s\n\n", key); \
-      exit(1);								   \
-   }									   \
+      exit(1);                                 \
+   }                                       \
 }
 
 /*------------------------ Copying macros -----------------------------------*/
@@ -203,7 +203,7 @@ if ((termcode = f) < 0)                                                    \
 #   define LOG_OF_BITS_PER_BYTE 3
 #   define BITS_PER_BYTE_LESS_ONE 7
 #   define isset(a, i)  (((a)[(i) >> LOG_OF_BITS_PER_BYTE] >> \
-			  ((i) & BITS_PER_BYTE_LESS_ONE)) & 1)
+              ((i) & BITS_PER_BYTE_LESS_ONE)) & 1)
 #endif
 #define isclr(a, i)  (! isset(a, i))
 
@@ -221,7 +221,7 @@ if ((termcode = f) < 0)                                                    \
 #      define BITS_PER_BYTE_LESS_ONE 7
 #   endif
 #   define setbit(a, i) ((a)[(i) >> LOG_OF_BITS_PER_BYTE] |= \
-			 (1 << ((i) & BITS_PER_BYTE_LESS_ONE)))
+             (1 << ((i) & BITS_PER_BYTE_LESS_ONE)))
 #endif
 
 #endif

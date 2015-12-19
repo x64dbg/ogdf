@@ -54,7 +54,8 @@
 #include <ogdf/cluster/ClusterGraphCopyAttributes.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -62,38 +63,40 @@ namespace ogdf {
  *
  * \see SugiyamaLayout
  */
-class OGDF_EXPORT HierarchyClusterLayoutModule {
+class OGDF_EXPORT HierarchyClusterLayoutModule
+{
 public:
-	//! Initializes a hierarchy cluster layout module.
-	HierarchyClusterLayoutModule() { }
+    //! Initializes a hierarchy cluster layout module.
+    HierarchyClusterLayoutModule() { }
 
-	virtual ~HierarchyClusterLayoutModule() { }
+    virtual ~HierarchyClusterLayoutModule() { }
 
-	/**
-	 * \brief Computes a hierarchy layout of a clustered hierarchy \a H in \a ACG.
-	 * @param H is the input clustered hierarchy.
-	 * @param ACG is assigned the cluster hierarchy layout.
-	 */
-	void callCluster(const ExtendedNestingGraph& H, ClusterGraphAttributes &ACG) {
-		ClusterGraphCopyAttributes ACGC(H,ACG);
-		doCall(H,ACGC);
-		ACGC.transform();
-	}
+    /**
+     * \brief Computes a hierarchy layout of a clustered hierarchy \a H in \a ACG.
+     * @param H is the input clustered hierarchy.
+     * @param ACG is assigned the cluster hierarchy layout.
+     */
+    void callCluster(const ExtendedNestingGraph& H, ClusterGraphAttributes &ACG)
+    {
+        ClusterGraphCopyAttributes ACGC(H,ACG);
+        doCall(H,ACGC);
+        ACGC.transform();
+    }
 
 protected:
-	/**
-	 * \brief Implements the actual algorithm call.
-	 *
-	 * Must be implemented by derived classes.
-	 *
-	 * @param H is the input clustered hierarchy.
-	 * @param ACGC has to be assigned the cluster hierarchy layout.
-	 */
-	virtual void doCall(
-		const ExtendedNestingGraph& H,
-		ClusterGraphCopyAttributes &ACGC) = 0;
+    /**
+     * \brief Implements the actual algorithm call.
+     *
+     * Must be implemented by derived classes.
+     *
+     * @param H is the input clustered hierarchy.
+     * @param ACGC has to be assigned the cluster hierarchy layout.
+     */
+    virtual void doCall(
+        const ExtendedNestingGraph& H,
+        ClusterGraphCopyAttributes &ACGC) = 0;
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 

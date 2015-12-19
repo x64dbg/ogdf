@@ -52,18 +52,21 @@
 #include <string>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-namespace tlp {
+namespace tlp
+{
 
 
-enum Attribute {
-	a_label,
-	a_color,
-	a_position,
-	a_size,
-	a_shape,
-	a_unknown
+enum Attribute
+{
+    a_label,
+    a_color,
+    a_position,
+    a_size,
+    a_shape,
+    a_unknown
 };
 
 

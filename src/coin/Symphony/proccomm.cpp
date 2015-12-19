@@ -29,305 +29,365 @@
 
 int register_process()
 {
-   int mytid;
+    int mytid;
 
-   PVM_FUNC(mytid, pvm_mytid());
+    PVM_FUNC(mytid, pvm_mytid());
 
-   return(mytid);
+    return(mytid);
 }
 
 /*===========================================================================*/
 
 int init_send(int data_packing)
 {
-   int s_bufid;
+    int s_bufid;
 
-   PVM_FUNC(s_bufid, pvm_initsend(PvmDataRaw));
+    PVM_FUNC(s_bufid, pvm_initsend(PvmDataRaw));
 
-   return(s_bufid);
+    return(s_bufid);
 }
 
 /*===========================================================================*/
 
 int send_char_array(char *array, int size)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_pkbyte(array, size, 1));
+    PVM_FUNC(info, pvm_pkbyte(array, size, 1));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int send_int_array(int *array, int size)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_pkint(array, size, 1));
+    PVM_FUNC(info, pvm_pkint(array, size, 1));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int send_float_array(float *array, int size)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_pkfloat(array, size, 1));
+    PVM_FUNC(info, pvm_pkfloat(array, size, 1));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int send_dbl_array(double *array, int size)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_pkdouble(array, size, 1));
+    PVM_FUNC(info, pvm_pkdouble(array, size, 1));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int send_str(char *str)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_pkstr(str));
+    PVM_FUNC(info, pvm_pkstr(str));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int send_msg(int recipient, int msgtag)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_send(recipient, msgtag));
+    PVM_FUNC(info, pvm_send(recipient, msgtag));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int msend_msg(int *recipients, int number, int msgtag)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_mcast(recipients, number, msgtag));
+    PVM_FUNC(info, pvm_mcast(recipients, number, msgtag));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int receive_msg(int who, int what)
 {
-   int r_bufid;
+    int r_bufid;
 
-   PVM_FUNC(r_bufid, pvm_recv(who, what));
+    PVM_FUNC(r_bufid, pvm_recv(who, what));
 
-   return(r_bufid);
+    return(r_bufid);
 }
 
 /*===========================================================================*/
 
 int nreceive_msg(int who, int what)
 {
-   int r_bufid;
+    int r_bufid;
 
-   PVM_FUNC(r_bufid, pvm_nrecv(who, what));
+    PVM_FUNC(r_bufid, pvm_nrecv(who, what));
 
-   return(r_bufid);
+    return(r_bufid);
 }
 
 /*===========================================================================*/
 
 int treceive_msg(int who, int what, struct timeval *timeout)
 {
-   int r_bufid;
+    int r_bufid;
 
-   PVM_FUNC(r_bufid, pvm_trecv(who, what, timeout));
+    PVM_FUNC(r_bufid, pvm_trecv(who, what, timeout));
 
-   return(r_bufid);
+    return(r_bufid);
 }
 
 /*===========================================================================*/
 
 int bufinfo(int r_bufid, int *bytes, int *msgtag, int *sender)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_bufinfo(r_bufid, bytes, msgtag, sender));
+    PVM_FUNC(info, pvm_bufinfo(r_bufid, bytes, msgtag, sender));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int freebuf(int bufid)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_freebuf(bufid));
+    PVM_FUNC(info, pvm_freebuf(bufid));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int receive_char_array(char *array, int size)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_upkbyte(array, size, 1));
+    PVM_FUNC(info, pvm_upkbyte(array, size, 1));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int receive_int_array(int *array, int size)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_upkint(array, size, 1));
+    PVM_FUNC(info, pvm_upkint(array, size, 1));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int receive_dbl_array(double *array, int size)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_upkdouble(array, size, 1));
+    PVM_FUNC(info, pvm_upkdouble(array, size, 1));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int receive_float_array(float *array, int size)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_upkfloat(array, size, 1));
+    PVM_FUNC(info, pvm_upkfloat(array, size, 1));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 int receive_str(char *str)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_upkstr(str));
+    PVM_FUNC(info, pvm_upkstr(str));
 
-   return(info);
+    return(info);
 }
 
 /*===========================================================================*/
 
 void comm_exit(void)
 {
-   pvm_exit();
+    pvm_exit();
 }
 
 /*===========================================================================*/
 
 int spawn(char *task, char **argv, int flag, char *where, int ntask,
-	  int *tids)
+          int *tids)
 {
-   int status;
+    int status;
 
-   if ((status = pvm_spawn(task, argv, flag, where, ntask, tids)) != ntask){
-      printf("Couldn't start %s!! \n", task);
-      PVM_ERROR(*tids);
-      exit(0);
-   }
-   return(status);
+    if ((status = pvm_spawn(task, argv, flag, where, ntask, tids)) != ntask)
+    {
+        printf("Couldn't start %s!! \n", task);
+        PVM_ERROR(*tids);
+        exit(0);
+    }
+    return(status);
 }
 
 /*===========================================================================*/
 
 int pstat(int tid)
 {
-   return(pvm_pstat(tid));
+    return(pvm_pstat(tid));
 }
 
 /*===========================================================================*/
 
 void kill_proc(int tid)
 {
-   pvm_kill(tid);
+    pvm_kill(tid);
 }
 
 /*===========================================================================*/
 
 void setsbuf(int sbufid)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_setsbuf(sbufid));
+    PVM_FUNC(info, pvm_setsbuf(sbufid));
 }
 
 /*===========================================================================*/
 
 void setrbuf(int rbufid)
 {
-   int info;
+    int info;
 
-   PVM_FUNC(info, pvm_setrbuf(rbufid));
+    PVM_FUNC(info, pvm_setrbuf(rbufid));
 }
 
 /*===========================================================================*/
 
 void PVM_ERROR(int info)
 {
-   printf("Pvm Error %i : ", info);
-   switch (info){
-      case PvmOk: printf("PvmOk(Error 0)"); break;
-      case PvmBadParam: printf("PvmBadParam (Bad parameter)"); break;
-      case PvmMismatch: printf("PvmMismatch (Count mismatch)"); break;
-      case PvmOverflow: printf("PvmOverflow (Value too large)"); break;
-      case PvmNoData: printf("PvmNoData (End of buffer)"); break;
-      case PvmNoHost: printf("PvmNoHost (No such host)"); break;
-      case PvmNoFile: printf("PvmNoFile (No such file)"); break;
-      case PvmNoMem: printf("PvmNoMem (Malloc failed)"); break;
-      case PvmBadMsg: printf("PvmBadMsg (Can't decode message)"); break;
-      case PvmSysErr: printf("PvmSysErr (Can't contact local daemon)"); break;
-      case PvmNoBuf: printf("PvmNoBuf (No current buffer)"); break;
-      case PvmNoSuchBuf: printf("PvmNoSuchBuf (No such buffer)"); break;
-      case PvmNullGroup: printf("PvmNullGroup (Null group name)"); break;
-      case PvmDupGroup: printf("PvmDupGroup (Already in group)"); break;
-      case PvmNoGroup: printf("PvmNoGroup (No such group)"); break;
-      case PvmNotInGroup: printf("PvmNotInGroup (Not in group)"); break;
-      case PvmNoInst: printf("PvmNoInst (No such instance)"); break;
-      case PvmHostFail: printf("PvmHostFail (Host failed) "); break;
-      case PvmNoParent: printf("PvmNoParent (No parent task)"); break;
-      case PvmNotImpl: printf("PvmNotImpl (Not implemented)"); break;
-      case PvmDSysErr: printf("PvmDSysErr (Pvmd system error)"); break;
-      case PvmBadVersion: printf("PvmBadVersion (Version mismatch)"); break;
-      case PvmOutOfRes: printf("PvmOutOfRes (Out of resources)"); break;
-      case PvmDupHost: printf("PvmDupHost (Duplicate host)"); break;
-      case PvmCantStart: printf("PvmCantStart (Can't start pvmd)"); break;
-      case PvmAlready: printf("PvmAlready (Already in progress)"); break;
-      case PvmNoTask: printf("PvmNoTask (No such task)"); break;
+    printf("Pvm Error %i : ", info);
+    switch (info)
+    {
+    case PvmOk:
+        printf("PvmOk(Error 0)");
+        break;
+    case PvmBadParam:
+        printf("PvmBadParam (Bad parameter)");
+        break;
+    case PvmMismatch:
+        printf("PvmMismatch (Count mismatch)");
+        break;
+    case PvmOverflow:
+        printf("PvmOverflow (Value too large)");
+        break;
+    case PvmNoData:
+        printf("PvmNoData (End of buffer)");
+        break;
+    case PvmNoHost:
+        printf("PvmNoHost (No such host)");
+        break;
+    case PvmNoFile:
+        printf("PvmNoFile (No such file)");
+        break;
+    case PvmNoMem:
+        printf("PvmNoMem (Malloc failed)");
+        break;
+    case PvmBadMsg:
+        printf("PvmBadMsg (Can't decode message)");
+        break;
+    case PvmSysErr:
+        printf("PvmSysErr (Can't contact local daemon)");
+        break;
+    case PvmNoBuf:
+        printf("PvmNoBuf (No current buffer)");
+        break;
+    case PvmNoSuchBuf:
+        printf("PvmNoSuchBuf (No such buffer)");
+        break;
+    case PvmNullGroup:
+        printf("PvmNullGroup (Null group name)");
+        break;
+    case PvmDupGroup:
+        printf("PvmDupGroup (Already in group)");
+        break;
+    case PvmNoGroup:
+        printf("PvmNoGroup (No such group)");
+        break;
+    case PvmNotInGroup:
+        printf("PvmNotInGroup (Not in group)");
+        break;
+    case PvmNoInst:
+        printf("PvmNoInst (No such instance)");
+        break;
+    case PvmHostFail:
+        printf("PvmHostFail (Host failed) ");
+        break;
+    case PvmNoParent:
+        printf("PvmNoParent (No parent task)");
+        break;
+    case PvmNotImpl:
+        printf("PvmNotImpl (Not implemented)");
+        break;
+    case PvmDSysErr:
+        printf("PvmDSysErr (Pvmd system error)");
+        break;
+    case PvmBadVersion:
+        printf("PvmBadVersion (Version mismatch)");
+        break;
+    case PvmOutOfRes:
+        printf("PvmOutOfRes (Out of resources)");
+        break;
+    case PvmDupHost:
+        printf("PvmDupHost (Duplicate host)");
+        break;
+    case PvmCantStart:
+        printf("PvmCantStart (Can't start pvmd)");
+        break;
+    case PvmAlready:
+        printf("PvmAlready (Already in progress)");
+        break;
+    case PvmNoTask:
+        printf("PvmNoTask (No such task)");
+        break;
 #if 0
-      case PvmNoEntry: printf("PvmNoEntry (No such entry)"); break;
-      case PvmDupEntry: printf("PvmDupEntry (Duplicate entry)"); break;
+    case PvmNoEntry:
+        printf("PvmNoEntry (No such entry)");
+        break;
+    case PvmDupEntry:
+        printf("PvmDupEntry (Duplicate entry)");
+        break;
 #endif
-   }
-   printf("\n\n");
-   fflush(stdout);
+    }
+    printf("\n\n");
+    fflush(stdout);
 }
 
 #else
@@ -340,217 +400,217 @@ void PVM_ERROR(int info)
 
 int register_process()
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int init_send(int data_packing)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int send_char_array(char *array, int size)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int send_int_array(int *array, int size)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int send_dbl_array(double *array, int size)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int send_float_array(float *array, int size)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int send_str(char *str)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int send_msg(int sender, int msgtag)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int msend_msg(int *recipients, int number, int msgtag)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 /*===========================================================================*/
 
 int receive_msg(int who, int what)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int nreceive_msg(int who, int what)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int treceive_msg(int who, int what, struct timeval *timeout)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int bufinfo(int r_bufid, int *bytes, int *msgtag, int *sender)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int freebuf(int bufid)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int receive_char_array(char *array, int size)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int receive_int_array(int *array, int size)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int receive_dbl_array(double *array, int size)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int receive_float_array(float *array, int size)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int receive_str(char *str)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 void comm_exit(void)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 }
 
 /*===========================================================================*/
 
 int spawn(char *task, char **argv, int flag, char *where, int ntask,
-	  int *tids)
+          int *tids)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 int pstat(int tid)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 
-   return(0);
+    return(0);
 }
 
 /*===========================================================================*/
 
 void kill_proc(int tid)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 }
 
 /*===========================================================================*/
 
 void setsbuf(int sbufid)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 }
 
 /*===========================================================================*/
 
 void setrbuf(int rbufid)
 {
-   printf("\nComm Error: Unknown communications protocol\n\n");
+    printf("\nComm Error: Unknown communications protocol\n\n");
 }
 
 /*===========================================================================*/

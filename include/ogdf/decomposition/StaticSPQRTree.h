@@ -54,9 +54,10 @@
 #include <ogdf/decomposition/StaticSkeleton.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class TricComp;
+class TricComp;
 
 //---------------------------------------------------------
 // StaticSPQRTree
@@ -99,170 +100,223 @@ class OGDF_EXPORT StaticSPQRTree : public virtual SPQRTree
 {
 public:
 
-	friend class StaticSkeleton;
+    friend class StaticSkeleton;
 
 
-	// constructors
+    // constructors
 
-	/**
-	 * \brief Creates an SPQR tree \a T for graph \a G rooted at the first edge of \a G.
-	 * \pre \a G is biconnected and contains at least 3 nodes,
-	 *      or \a G has exactly 2 nodes and at least 3 edges.
-	 */
-	StaticSPQRTree(const Graph &G) : m_skOf(G), m_copyOf(G) { m_pGraph = &G; init(G.firstEdge()); }
+    /**
+     * \brief Creates an SPQR tree \a T for graph \a G rooted at the first edge of \a G.
+     * \pre \a G is biconnected and contains at least 3 nodes,
+     *      or \a G has exactly 2 nodes and at least 3 edges.
+     */
+    StaticSPQRTree(const Graph &G) : m_skOf(G), m_copyOf(G)
+    {
+        m_pGraph = &G;
+        init(G.firstEdge());
+    }
 
-	/**
-	 * \brief Creates an SPQR tree \a T for graph \a G rooted at the edge \a e.
-	 * \pre \a e is in \a G, \a G is biconnected and contains at least 3 nodes,
-	 *      or \a G has exactly 2 nodes and at least 3 edges.
-	 */
-	StaticSPQRTree(const Graph &G, edge e) : m_skOf(G), m_copyOf(G) { m_pGraph = &G; init(e); }
+    /**
+     * \brief Creates an SPQR tree \a T for graph \a G rooted at the edge \a e.
+     * \pre \a e is in \a G, \a G is biconnected and contains at least 3 nodes,
+     *      or \a G has exactly 2 nodes and at least 3 edges.
+     */
+    StaticSPQRTree(const Graph &G, edge e) : m_skOf(G), m_copyOf(G)
+    {
+        m_pGraph = &G;
+        init(e);
+    }
 
-	/**
-	 * \brief Creates an SPQR tree \a T for graph \a G rooted at the first edge of \a G.
-	 * \pre \a G is biconnected and contains at least 3 nodes,
-	 *      or \a G has exactly 2 nodes and at least 3 edges.
-	 */
-	StaticSPQRTree(const Graph &G, TricComp &tricComp) : m_skOf(G), m_copyOf(G) { m_pGraph = &G; init(G.firstEdge(),tricComp); }
-
-
-	// destructor
-
-	~StaticSPQRTree();
-
-
-	//
-	// a) Access operations
-	//
-
-	//! Returns a reference to the original graph \a G.
-	const Graph &originalGraph() const { return *m_pGraph; }
-
-	//! Returns a reference to the tree \a T.
-	const Graph &tree() const { return m_tree; }
-
-	//! Returns the edge of \a G at which \a T is rooted.
-	edge rootEdge() const { return m_rootEdge; }
-
-	//! Returns the root node of \a T.
-	node rootNode() const { return m_rootNode; }
-
-	//! Returns the number of S-nodes in \a T.
-	int numberOfSNodes() const { return m_numS; }
-
-	//! Returns the number of P-nodes in \a T.
-	int numberOfPNodes() const { return m_numP; }
-
-	//! Returns the number of R-nodes in \a T.
-	int numberOfRNodes() const { return m_numR; }
-
-	/**
-	 * \brief Returns the type of node \a v.
-	 * \pre \a v is a node in \a T
-	 */
-	NodeType typeOf(node v) const { return m_type[v]; }
-
-	//! Returns the list of all nodes with type \a t.
-	List<node> nodesOfType(NodeType t) const;
-
-	/**
-	 * \brief Returns the skeleton of node \a v.
-	 * \pre \a v is a node in \a T
-	 */
-	Skeleton &skeleton(node v) const { return *m_sk[v]; }
-
-	/**
-	 * \brief Returns the edge in skeleton of source(\a e) that corresponds to tree edge \a e.
-	 * \pre \a e is an edge in \a T
-	 */
-	edge skeletonEdgeSrc(edge e) const { return m_skEdgeSrc[e]; }
-
-	/**
-	 * \brief Returns the edge in skeleton of target(\a e) that corresponds to tree edge \a e.
-	 * \pre \a e is an edge in \a T
-	 */
-	edge skeletonEdgeTgt(edge e) const { return m_skEdgeTgt[e]; }
-
-	/**
-	 * \brief Returns the skeleton that contains the real edge \a e.
-	 * \pre \a e is an edge in \a G
-	 */
-	const Skeleton &skeletonOfReal(edge e) const { return *m_skOf[e]; }
-
-	/**
-	 * \brief Returns the skeleton edge that corresponds to the real edge \a e.
-	 * \pre \a e is an edge in \a G
-	 */
-	edge copyOfReal(edge e) const { return m_copyOf[e]; }
+    /**
+     * \brief Creates an SPQR tree \a T for graph \a G rooted at the first edge of \a G.
+     * \pre \a G is biconnected and contains at least 3 nodes,
+     *      or \a G has exactly 2 nodes and at least 3 edges.
+     */
+    StaticSPQRTree(const Graph &G, TricComp &tricComp) : m_skOf(G), m_copyOf(G)
+    {
+        m_pGraph = &G;
+        init(G.firstEdge(),tricComp);
+    }
 
 
-	//
-	// b) Update operations
-	//
+    // destructor
 
-	/**
-	 * \brief Roots \a T at edge \a e and returns the new root node of \a T.
-	 * \pre \a e is an edge in \a G
-	 */
-	node rootTreeAt(edge e);
+    ~StaticSPQRTree();
 
-	/**
-	 * \brief Roots \a T at node \a v and returns \a v.
-	 * \pre \a v is a node in \a T
-	 */
-	node rootTreeAt(node v);
+
+    //
+    // a) Access operations
+    //
+
+    //! Returns a reference to the original graph \a G.
+    const Graph &originalGraph() const
+    {
+        return *m_pGraph;
+    }
+
+    //! Returns a reference to the tree \a T.
+    const Graph &tree() const
+    {
+        return m_tree;
+    }
+
+    //! Returns the edge of \a G at which \a T is rooted.
+    edge rootEdge() const
+    {
+        return m_rootEdge;
+    }
+
+    //! Returns the root node of \a T.
+    node rootNode() const
+    {
+        return m_rootNode;
+    }
+
+    //! Returns the number of S-nodes in \a T.
+    int numberOfSNodes() const
+    {
+        return m_numS;
+    }
+
+    //! Returns the number of P-nodes in \a T.
+    int numberOfPNodes() const
+    {
+        return m_numP;
+    }
+
+    //! Returns the number of R-nodes in \a T.
+    int numberOfRNodes() const
+    {
+        return m_numR;
+    }
+
+    /**
+     * \brief Returns the type of node \a v.
+     * \pre \a v is a node in \a T
+     */
+    NodeType typeOf(node v) const
+    {
+        return m_type[v];
+    }
+
+    //! Returns the list of all nodes with type \a t.
+    List<node> nodesOfType(NodeType t) const;
+
+    /**
+     * \brief Returns the skeleton of node \a v.
+     * \pre \a v is a node in \a T
+     */
+    Skeleton &skeleton(node v) const
+    {
+        return *m_sk[v];
+    }
+
+    /**
+     * \brief Returns the edge in skeleton of source(\a e) that corresponds to tree edge \a e.
+     * \pre \a e is an edge in \a T
+     */
+    edge skeletonEdgeSrc(edge e) const
+    {
+        return m_skEdgeSrc[e];
+    }
+
+    /**
+     * \brief Returns the edge in skeleton of target(\a e) that corresponds to tree edge \a e.
+     * \pre \a e is an edge in \a T
+     */
+    edge skeletonEdgeTgt(edge e) const
+    {
+        return m_skEdgeTgt[e];
+    }
+
+    /**
+     * \brief Returns the skeleton that contains the real edge \a e.
+     * \pre \a e is an edge in \a G
+     */
+    const Skeleton &skeletonOfReal(edge e) const
+    {
+        return *m_skOf[e];
+    }
+
+    /**
+     * \brief Returns the skeleton edge that corresponds to the real edge \a e.
+     * \pre \a e is an edge in \a G
+     */
+    edge copyOfReal(edge e) const
+    {
+        return m_copyOf[e];
+    }
+
+
+    //
+    // b) Update operations
+    //
+
+    /**
+     * \brief Roots \a T at edge \a e and returns the new root node of \a T.
+     * \pre \a e is an edge in \a G
+     */
+    node rootTreeAt(edge e);
+
+    /**
+     * \brief Roots \a T at node \a v and returns \a v.
+     * \pre \a v is a node in \a T
+     */
+    node rootTreeAt(node v);
 
 
 protected:
 
-	//! Initialization (called by constructor).
-	void init(edge e);
+    //! Initialization (called by constructor).
+    void init(edge e);
 
-	//! Initialization (called by constructor).
-	void init(edge eRef, TricComp &tricComp);
+    //! Initialization (called by constructor).
+    void init(edge eRef, TricComp &tricComp);
 
-	//! Recursively performs rooting of tree.
-	void rootRec(node v, edge ef);
+    //! Recursively performs rooting of tree.
+    void rootRec(node v, edge ef);
 
-	/**
-	 * \brief Recursively performs the task of adding edges (and nodes)
-	 * to the pertinent graph \a Gp for each involved skeleton graph.
-	 */
-	void cpRec(node v, PertinentGraph &Gp) const
-	{
-		edge e;
-		const Skeleton &S = skeleton(v);
+    /**
+     * \brief Recursively performs the task of adding edges (and nodes)
+     * to the pertinent graph \a Gp for each involved skeleton graph.
+     */
+    void cpRec(node v, PertinentGraph &Gp) const
+    {
+        edge e;
+        const Skeleton &S = skeleton(v);
 
-		forall_edges(e,S.getGraph()) {
-			edge eOrig = S.realEdge(e);
-			if (eOrig != 0) cpAddEdge(eOrig,Gp);
-		}
+        forall_edges(e,S.getGraph())
+        {
+            edge eOrig = S.realEdge(e);
+            if (eOrig != 0) cpAddEdge(eOrig,Gp);
+        }
 
-		forall_adj_edges(e,v) {
-			node w = e->target();
-			if (w != v) cpRec(w,Gp);
-		}
-	}
+        forall_adj_edges(e,v)
+        {
+            node w = e->target();
+            if (w != v) cpRec(w,Gp);
+        }
+    }
 
 
-	const Graph *m_pGraph;  //!< pointer to original graph
-	Graph        m_tree;    //!< underlying tree graph
+    const Graph *m_pGraph;  //!< pointer to original graph
+    Graph        m_tree;    //!< underlying tree graph
 
-	edge m_rootEdge;  //!< edge of \a G at which \a T is rooted
-	node m_rootNode;  //!< root node of \a T
+    edge m_rootEdge;  //!< edge of \a G at which \a T is rooted
+    node m_rootNode;  //!< root node of \a T
 
-	int m_numS;  //!< number of S-nodes
-	int m_numP;  //!< number of P-nodes
-	int m_numR;  //!< number of R-nodes
+    int m_numS;  //!< number of S-nodes
+    int m_numP;  //!< number of P-nodes
+    int m_numR;  //!< number of R-nodes
 
-	NodeArray<NodeType> m_type;  //!< type of nodes in \a T
+    NodeArray<NodeType> m_type;  //!< type of nodes in \a T
 
-	NodeArray<StaticSkeleton *> m_sk;         //!< pointer to skeleton of a node in \a T
-	EdgeArray<edge>             m_skEdgeSrc;  //!< corresponding edge in skeleton(source(\a e))
-	EdgeArray<edge>             m_skEdgeTgt;  //!< corresponding edge in skeleton(target(\a e))
+    NodeArray<StaticSkeleton *> m_sk;         //!< pointer to skeleton of a node in \a T
+    EdgeArray<edge>             m_skEdgeSrc;  //!< corresponding edge in skeleton(source(\a e))
+    EdgeArray<edge>             m_skEdgeTgt;  //!< corresponding edge in skeleton(target(\a e))
 
-	EdgeArray<StaticSkeleton *> m_skOf;    //!< skeleton containing real edge \a e
-	EdgeArray<edge>             m_copyOf;  //!< skeleton edge corresponding to real edge \a e
+    EdgeArray<StaticSkeleton *> m_skOf;    //!< skeleton containing real edge \a e
+    EdgeArray<edge>             m_copyOf;  //!< skeleton edge corresponding to real edge \a e
 
 }; // class StaticSPQRTree
 

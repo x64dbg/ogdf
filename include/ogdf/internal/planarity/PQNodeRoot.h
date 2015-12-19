@@ -52,7 +52,8 @@
 #include <ogdf/basic/basic.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -61,40 +62,42 @@ namespace ogdf {
  * refer to a node without the class structure.
  */
 
-class PQNodeRoot {
+class PQNodeRoot
+{
 
 public:
-	enum PQNodeType { PNode = 1, QNode = 2, leaf = 3 };
+    enum PQNodeType { PNode = 1, QNode = 2, leaf = 3 };
 
-	enum SibDirection { NODIR, LEFT, RIGHT };
+    enum SibDirection { NODIR, LEFT, RIGHT };
 
-	// Status Definitions
-	enum PQNodeStatus {
-		EMPTY         = 1,
-		PARTIAL       = 2,
-		FULL          = 3,
-		PERTINENT     = 4,
-		TO_BE_DELETED = 5,
+    // Status Definitions
+    enum PQNodeStatus
+    {
+        EMPTY         = 1,
+        PARTIAL       = 2,
+        FULL          = 3,
+        PERTINENT     = 4,
+        TO_BE_DELETED = 5,
 
-		// Extra node status defines
-		INDICATOR     = 6,
-		ELIMINATED    = 6,	//!< Nodes removed durign the template reduction are marked as
-							//!< as ELIMINATED. Their memory is not freed. They are kept
-							//!< for parent pointer update.
-		WHA_DELETE    = 7,	//!< Nodes that need to be removed in order to obtain a
-							//!< maximal pertinent sequence are marked WHA_DELETE.
-		PERTROOT      = 8	//!< The pertinent Root is marked PERTROOTduring the clean up
-							//!< after a reduction. Technical.
-	};
+        // Extra node status defines
+        INDICATOR     = 6,
+        ELIMINATED    = 6,  //!< Nodes removed durign the template reduction are marked as
+        //!< as ELIMINATED. Their memory is not freed. They are kept
+        //!< for parent pointer update.
+        WHA_DELETE    = 7,  //!< Nodes that need to be removed in order to obtain a
+        //!< maximal pertinent sequence are marked WHA_DELETE.
+        PERTROOT      = 8   //!< The pertinent Root is marked PERTROOTduring the clean up
+                        //!< after a reduction. Technical.
+    };
 
-	// Mark Definitions for Bubble Phase
-	enum PQNodeMark { UNMARKED = 0, QUEUED = 1, BLOCKED = 2, UNBLOCKED = 3 };
+    // Mark Definitions for Bubble Phase
+    enum PQNodeMark { UNMARKED = 0, QUEUED = 1, BLOCKED = 2, UNBLOCKED = 3 };
 
 
-	PQNodeRoot() { }
-	virtual ~PQNodeRoot() { }
+    PQNodeRoot() { }
+    virtual ~PQNodeRoot() { }
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 }

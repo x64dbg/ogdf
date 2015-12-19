@@ -54,11 +54,12 @@
 #include <ogdf/basic/Array2D.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-	class OGDF_EXPORT GraphCopyAttributes;
-	class OGDF_EXPORT GraphCopy;
+class OGDF_EXPORT GraphCopyAttributes;
+class OGDF_EXPORT GraphCopy;
 
 
 //! The spring-embedder layout algorithm by Fruchterman and Reingold.
@@ -102,155 +103,182 @@ namespace ogdf {
 class OGDF_EXPORT SpringEmbedderFR : public LayoutModule
 {
 public:
-	//! The scaling method used by the algorithm.
-	enum Scaling {
-		scInput,           //!< bounding box of input is used.
-		scUserBoundingBox, //!< bounding box set by userBoundingBox() is used.
-		scScaleFunction    //!< automatic scaling is used with parameter set by scaleFunctionFactor() (larger factor, larger b-box).
-	};
+    //! The scaling method used by the algorithm.
+    enum Scaling
+    {
+        scInput,           //!< bounding box of input is used.
+        scUserBoundingBox, //!< bounding box set by userBoundingBox() is used.
+        scScaleFunction    //!< automatic scaling is used with parameter set by scaleFunctionFactor() (larger factor, larger b-box).
+    };
 
 
-	//! Creates an instance of Fruchterman/Reingold layout.
-	SpringEmbedderFR();
+    //! Creates an instance of Fruchterman/Reingold layout.
+    SpringEmbedderFR();
 
-	// destructor
-	~SpringEmbedderFR() { }
-
-
-	//! Calls the layout algorithm for graph attributes \a GA.
-	void call(GraphAttributes &GA);
+    // destructor
+    ~SpringEmbedderFR() { }
 
 
-	//! Returns the current setting of iterations.
-	int iterations() const {
-		return m_iterations;
-	}
+    //! Calls the layout algorithm for graph attributes \a GA.
+    void call(GraphAttributes &GA);
 
-	//! Sets the number of iterations to \a i.
-	void iterations(int i) {
-		if (i>0)
-			m_iterations = i;
-	}
 
-	double fineness() const {
-		return m_fineness;
-	}
+    //! Returns the current setting of iterations.
+    int iterations() const
+    {
+        return m_iterations;
+    }
 
-	void fineness(double f) {
-		m_fineness = f;
-	}
+    //! Sets the number of iterations to \a i.
+    void iterations(int i)
+    {
+        if (i>0)
+            m_iterations = i;
+    }
 
-	//! Returns the current setting of nodes.
-	bool noise() const {
-		return m_noise;
-	}
+    double fineness() const
+    {
+        return m_fineness;
+    }
 
-	//! Sets the parameter noise to \a on.
-	void noise(bool on) {
-		m_noise = on;
-	}
+    void fineness(double f)
+    {
+        m_fineness = f;
+    }
 
-	//! Returns the minimum distance between connected components.
-	double minDistCC() const { return m_minDistCC; }
+    //! Returns the current setting of nodes.
+    bool noise() const
+    {
+        return m_noise;
+    }
 
-	//! Sets the minimum distance between connected components to \a x.
-	void minDistCC(double x) { m_minDistCC = x; }
+    //! Sets the parameter noise to \a on.
+    void noise(bool on)
+    {
+        m_noise = on;
+    }
 
-	//! Returns the page ratio.
-	double pageRatio() { return m_pageRatio; }
+    //! Returns the minimum distance between connected components.
+    double minDistCC() const
+    {
+        return m_minDistCC;
+    }
 
-	//! Sets the page ration to \a x.
-	void pageRatio(double x) { m_pageRatio = x; }
+    //! Sets the minimum distance between connected components to \a x.
+    void minDistCC(double x)
+    {
+        m_minDistCC = x;
+    }
 
-	//! Returns the current scaling method.
-	Scaling scaling() const {
-		return m_scaling;
-	}
+    //! Returns the page ratio.
+    double pageRatio()
+    {
+        return m_pageRatio;
+    }
 
-	//! Sets the method for scaling the inital layout to \a sc.
-	void scaling(Scaling sc) {
-		m_scaling = sc;
-	}
+    //! Sets the page ration to \a x.
+    void pageRatio(double x)
+    {
+        m_pageRatio = x;
+    }
 
-	//! Returns the current scale function factor.
-	double scaleFunctionFactor() const {
-		return m_scaleFactor;
-	}
+    //! Returns the current scaling method.
+    Scaling scaling() const
+    {
+        return m_scaling;
+    }
 
-	//! Sets the scale function factor to \a f.
-	void scaleFunctionFactor(double f) {
-		m_scaleFactor = f;
-	}
+    //! Sets the method for scaling the inital layout to \a sc.
+    void scaling(Scaling sc)
+    {
+        m_scaling = sc;
+    }
 
-	//! Sets the user bounding box (used if scaling method is scUserBoundingBox).
-	void userBoundingBox(double xmin, double ymin, double xmax, double ymax) {
-		m_bbXmin = xmin;
-		m_bbYmin = ymin;
-		m_bbXmax = xmax;
-		m_bbYmax = ymax;
-	}
+    //! Returns the current scale function factor.
+    double scaleFunctionFactor() const
+    {
+        return m_scaleFactor;
+    }
+
+    //! Sets the scale function factor to \a f.
+    void scaleFunctionFactor(double f)
+    {
+        m_scaleFactor = f;
+    }
+
+    //! Sets the user bounding box (used if scaling method is scUserBoundingBox).
+    void userBoundingBox(double xmin, double ymin, double xmax, double ymax)
+    {
+        m_bbXmin = xmin;
+        m_bbYmin = ymin;
+        m_bbXmax = xmax;
+        m_bbYmax = ymax;
+    }
 
 private:
-	bool initialize(GraphCopy &G, GraphCopyAttributes &AG);
+    bool initialize(GraphCopy &G, GraphCopyAttributes &AG);
 
-	void mainStep(GraphCopy &G, GraphCopyAttributes &AG);
-	void cleanup() {
-		delete m_A;
-		m_A = 0;
-	}
+    void mainStep(GraphCopy &G, GraphCopyAttributes &AG);
+    void cleanup()
+    {
+        delete m_A;
+        m_A = 0;
+    }
 
-	NodeArray<ListIterator<node> > m_lit;
+    NodeArray<ListIterator<node> > m_lit;
 
-	int m_cF;
+    int m_cF;
 
-	double m_width;
-	double m_height;
+    double m_width;
+    double m_height;
 
-	double m_txNull;
-	double m_tyNull;
-	double m_tx;
-	double m_ty;
+    double m_txNull;
+    double m_tyNull;
+    double m_tx;
+    double m_ty;
 
-	double m_k;
-	double m_k2;
-	double m_kk;
-	int m_ki;
+    double m_k;
+    double m_k2;
+    double m_kk;
+    int m_ki;
 
-	int m_xA;
-	int m_yA;
+    int m_xA;
+    int m_yA;
 
-	Array2D<List<node> > *m_A;
+    Array2D<List<node> > *m_A;
 
 
-	double mylog2(int x) {
-		double l = 0.0;
-		while(x > 0) {
-			l++;
-			x >>= 1;
-		}
-		return l/2;
-	}
+    double mylog2(int x)
+    {
+        double l = 0.0;
+        while(x > 0)
+        {
+            l++;
+            x >>= 1;
+        }
+        return l/2;
+    }
 
-	int    m_iterations;  //!< The number of iterations.
-	double m_fineness;    //!< The fineness of the grid.
+    int    m_iterations;  //!< The number of iterations.
+    double m_fineness;    //!< The fineness of the grid.
 
-	double m_xleft;       //!< Bounding box (minimal x-coordinate).
-	double m_xright;      //!< Bounding box (maximal x-coordinate).
-	double m_ysmall;      //!< Bounding box (minimal y-coordinate).
-	double m_ybig;        //!< Bounding box (maximal y-coordinate).
+    double m_xleft;       //!< Bounding box (minimal x-coordinate).
+    double m_xright;      //!< Bounding box (maximal x-coordinate).
+    double m_ysmall;      //!< Bounding box (minimal y-coordinate).
+    double m_ybig;        //!< Bounding box (maximal y-coordinate).
 
-	bool m_noise;         //!< Perform random perturbations?
+    bool m_noise;         //!< Perform random perturbations?
 
-	Scaling m_scaling;    //!< The scaling method.
-	double m_scaleFactor; //!< The factor used if scaling type is scScaleFunction.
+    Scaling m_scaling;    //!< The scaling method.
+    double m_scaleFactor; //!< The factor used if scaling type is scScaleFunction.
 
-	double m_bbXmin; //!< User bounding box (minimal x-coordinate).
-	double m_bbYmin; //!< User bounding box (maximal x-coordinate).
-	double m_bbXmax; //!< User bounding box (minimal y-coordinate).
-	double m_bbYmax; //!< User bounding box (maximal y-coordinate).
+    double m_bbXmin; //!< User bounding box (minimal x-coordinate).
+    double m_bbYmin; //!< User bounding box (maximal x-coordinate).
+    double m_bbXmax; //!< User bounding box (minimal y-coordinate).
+    double m_bbYmax; //!< User bounding box (maximal y-coordinate).
 
-	double m_minDistCC; //!< The minimal distance between connected components.
-	double m_pageRatio; //!< The page ratio.
+    double m_minDistCC; //!< The minimal distance between connected components.
+    double m_pageRatio; //!< The page ratio.
 };
 
 

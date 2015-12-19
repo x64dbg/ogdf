@@ -44,31 +44,33 @@
 #include <ogdf/module/PlanarSubgraphModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 Module::ReturnType PlanarSubgraphModule::callAndDelete(
-	GraphCopy &PG,
-	const List<edge> &preferedEdges,
-	List<edge> &delOrigEdges,
-	bool preferedImplyPlanar)
+    GraphCopy &PG,
+    const List<edge> &preferedEdges,
+    List<edge> &delOrigEdges,
+    bool preferedImplyPlanar)
 {
-	List<edge> delEdges;
+    List<edge> delEdges;
 
-	ReturnType retValue = call(PG, preferedEdges, delEdges, preferedImplyPlanar);
+    ReturnType retValue = call(PG, preferedEdges, delEdges, preferedImplyPlanar);
 
-	if(isSolution(retValue))
-	{
-		ListConstIterator<edge> it;
-		for(it = delEdges.begin(); it.valid(); ++it) {
-			edge eCopy = *it;
+    if(isSolution(retValue))
+    {
+        ListConstIterator<edge> it;
+        for(it = delEdges.begin(); it.valid(); ++it)
+        {
+            edge eCopy = *it;
 
-			delOrigEdges.pushBack(PG.original(eCopy));
-			PG.delEdge(eCopy);
-		}
-	}
+            delOrigEdges.pushBack(PG.original(eCopy));
+            PG.delEdge(eCopy);
+        }
+    }
 
-	return retValue;
+    return retValue;
 }
 
 

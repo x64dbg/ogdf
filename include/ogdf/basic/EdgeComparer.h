@@ -58,7 +58,8 @@
 #include <ogdf/planarity/PlanRep.h>
 #include <ogdf/basic/GraphAttributes.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! The EdgeComparer compares adjacency entries on base of the position of the nodes given by an Attributed Graph's layout information
 /**
@@ -75,45 +76,45 @@ namespace ogdf {
 class OGDF_EXPORT EdgeComparer : public VComparer<adjEntry>
 {
 public:
-	//order: clockwise
+    //order: clockwise
 
-	EdgeComparer(const GraphAttributes& AG, const PlanRep& PR) : m_AG(&AG), m_PR(&PR) { }
+    EdgeComparer(const GraphAttributes& AG, const PlanRep& PR) : m_AG(&AG), m_PR(&PR) { }
 
-	//! compare the edges directly in AG
-	EdgeComparer(const GraphAttributes &AG) : m_AG(&AG), m_PR(0) {}
+    //! compare the edges directly in AG
+    EdgeComparer(const GraphAttributes &AG) : m_AG(&AG), m_PR(0) {}
 
-	int compare(const adjEntry &e1, const adjEntry &e2) const;
+    int compare(const adjEntry &e1, const adjEntry &e2) const;
 
-	//! check if vector u->v lies within 180degree halfcircle before vector u->w in clockwise order (i.e. twelve o'clock lies before 1)
-	bool before(const DPoint u, const DPoint v, const DPoint w) const;
+    //! check if vector u->v lies within 180degree halfcircle before vector u->w in clockwise order (i.e. twelve o'clock lies before 1)
+    bool before(const DPoint u, const DPoint v, const DPoint w) const;
 
 private:
 
-	//! returns a value > 0, if vector uv lies "before" vector uw
-	int orientation(
-		const DPoint u,
-		const DPoint v,
-		const DPoint w) const;
+    //! returns a value > 0, if vector uv lies "before" vector uw
+    int orientation(
+        const DPoint u,
+        const DPoint v,
+        const DPoint w) const;
 
-	//! compares by angle relative to x-axis
-	int compareVectors(
-		const double& x1,
-		const double& y1,
-		const double& x2,
-		const double& y2) const;
-	//! computes angle between vectors p->q, p->r
-	double angle(DPoint p, DPoint q, DPoint r) const;
+    //! compares by angle relative to x-axis
+    int compareVectors(
+        const double& x1,
+        const double& y1,
+        const double& x2,
+        const double& y2) const;
+    //! computes angle between vectors p->q, p->r
+    double angle(DPoint p, DPoint q, DPoint r) const;
 
-	inline int signOf(const double& x) const
-	{
-		if ( x == 0 ) return 0;
-		else if (x > 0 ) return 1;
-		else return -1;
-	}
+    inline int signOf(const double& x) const
+    {
+        if ( x == 0 ) return 0;
+        else if (x > 0 ) return 1;
+        else return -1;
+    }
 
 
-	const GraphAttributes *m_AG;
-	const PlanRep *m_PR;
+    const GraphAttributes *m_AG;
+    const PlanRep *m_PR;
 };//EdgeComparer
 
 

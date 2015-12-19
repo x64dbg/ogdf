@@ -40,7 +40,8 @@
 
 #include <ogdf/abacus/abacusroot.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 class AbacusGlobal;
@@ -56,87 +57,100 @@ class AbacusGlobal;
  * this notion since later in the interface from a cutting plane
  * algorithm to the linear program variables might be eliminated.
  */
-class LPVARSTAT :  public AbacusRoot  {
+class LPVARSTAT :  public AbacusRoot
+{
 public:
 
-	//! The enumeration of the statuses a variable gets from the linear program solver.
-	enum STATUS {
-		AtLowerBound,	/*!< The variable is at its lower bound, but not in the basis. */
-		Basic,			/*!< The variable is in the basis. */
-		AtUpperBound,	/*!< The variable is at its upper bound , but not in the basis. */
-		NonBasicFree,	/*!< The variable is unbounded and not in the basis. */
-		Eliminated,		/*!< The variable has been removed by our preprocessor
-						 *   in the class LpSub. So, it is not present in the LP-solver. */
-		Unknown			/*!< The LP-status of the variable is unknown since no
-						 *   LP has been solved. This status is also assigned
-						 *   to variables which are fixed or set, yet still
-						 *   contained in the \a LP to avoid a wrong setting
-						 *   or fixing  by reduced costs. */
-	};
+    //! The enumeration of the statuses a variable gets from the linear program solver.
+    enum STATUS
+    {
+        AtLowerBound,   /*!< The variable is at its lower bound, but not in the basis. */
+        Basic,          /*!< The variable is in the basis. */
+        AtUpperBound,   /*!< The variable is at its upper bound , but not in the basis. */
+        NonBasicFree,   /*!< The variable is unbounded and not in the basis. */
+        Eliminated,     /*!< The variable has been removed by our preprocessor
+                         *   in the class LpSub. So, it is not present in the LP-solver. */
+        Unknown         /*!< The LP-status of the variable is unknown since no
+                         *   LP has been solved. This status is also assigned
+                         *   to variables which are fixed or set, yet still
+                         *   contained in the \a LP to avoid a wrong setting
+                         *   or fixing  by reduced costs. */
+    };
 
 
-	//! This constructor initializes the status as \a Unknown.
-	LPVARSTAT() : status_(Unknown) { }
+    //! This constructor initializes the status as \a Unknown.
+    LPVARSTAT() : status_(Unknown) { }
 
-	//! This constructor initializes the LPVARSTAT.
-	/**
-	 * \param status The initial status.
-	 */
-	LPVARSTAT(STATUS status) : status_(status) { }
+    //! This constructor initializes the LPVARSTAT.
+    /**
+     * \param status The initial status.
+     */
+    LPVARSTAT(STATUS status) : status_(status) { }
 
-	//! This constructor make a copy of \a *lpVarStat.
-	/**
-	 * \param lpVarStat A copy of this object is made.
-	 */
-	LPVARSTAT(LPVARSTAT *lpVarStat) :
-		status_(lpVarStat->status_)
-	{ }
+    //! This constructor make a copy of \a *lpVarStat.
+    /**
+     * \param lpVarStat A copy of this object is made.
+     */
+    LPVARSTAT(LPVARSTAT *lpVarStat) :
+        status_(lpVarStat->status_)
+    { }
 
-	//! The output operator.
-	/**
-	 * Writes the \a STATUS to an output stream
-	 * in the form <tt>AtLowerBound</tt>, <tt>Basic</tt>, <tt>AtUpperBound</tt>,
-	 * <tt>NonBasicFree</tt>, <tt>Eliminated</tt>, <tt>Unknown</tt>.
-	 *
-	 * \param out The output stream.
-	 * \param rhs The status being output.
-	 *
-	 * \return A reference to the output stream.
-	 */
-	friend ostream &operator<<(ostream& out, const LPVARSTAT &rhs);
+    //! The output operator.
+    /**
+     * Writes the \a STATUS to an output stream
+     * in the form <tt>AtLowerBound</tt>, <tt>Basic</tt>, <tt>AtUpperBound</tt>,
+     * <tt>NonBasicFree</tt>, <tt>Eliminated</tt>, <tt>Unknown</tt>.
+     *
+     * \param out The output stream.
+     * \param rhs The status being output.
+     *
+     * \return A reference to the output stream.
+     */
+    friend ostream &operator<<(ostream& out, const LPVARSTAT &rhs);
 
-	//! Returns the LP-status.
-	STATUS status() const { return status_; }
+    //! Returns the LP-status.
+    STATUS status() const
+    {
+        return status_;
+    }
 
-	//! Sets the status to \a stat.
-	/**
-	 * \param stat The new LP-status.
-	 */
-	void status(STATUS stat) { status_ = stat; }
+    //! Sets the status to \a stat.
+    /**
+     * \param stat The new LP-status.
+     */
+    void status(STATUS stat)
+    {
+        status_ = stat;
+    }
 
-	//! Sets the status to \a stat.
-	/**
-	 * \param stat The new LP-status.
-	 */
-	void status(const LPVARSTAT *stat) { status_ = stat->status_; }
+    //! Sets the status to \a stat.
+    /**
+     * \param stat The new LP-status.
+     */
+    void status(const LPVARSTAT *stat)
+    {
+        status_ = stat->status_;
+    }
 
-	//! Returns true if the variable status is \a AtUpperBound or \a AtLowerBound, false otherwise.
-	bool atBound() const {
-		return (status_ == AtLowerBound || status_ == AtUpperBound);
-	}
+    //! Returns true if the variable status is \a AtUpperBound or \a AtLowerBound, false otherwise.
+    bool atBound() const
+    {
+        return (status_ == AtLowerBound || status_ == AtUpperBound);
+    }
 
-	//! Returns true If the status is \a Basic, false otherwise.
-	bool basic() const {
-		return (status_ == Basic);
-	}
+    //! Returns true If the status is \a Basic, false otherwise.
+    bool basic() const
+    {
+        return (status_ == Basic);
+    }
 
 
 private:
 
-	//! The LP-status.
-	STATUS status_;
+    //! The LP-status.
+    STATUS status_;
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 } //namespace abacus

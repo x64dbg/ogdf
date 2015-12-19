@@ -45,76 +45,77 @@
 #include <ogdf/internal/planarity/VarEdgeInserterCore.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	//---------------------------------------------------------
-	// constructor
-	// sets default values for options
-	//
-	VariableEmbeddingInserter::VariableEmbeddingInserter()
-	{
-		m_rrOption = rrNone;
-		m_percentMostCrossed = 25;
-	}
-
-
-	// copy constructor
-	VariableEmbeddingInserter::VariableEmbeddingInserter(const VariableEmbeddingInserter &inserter)
-		: EdgeInsertionModule(inserter)
-	{
-		m_rrOption = inserter.m_rrOption;
-		m_percentMostCrossed = inserter.m_percentMostCrossed;
-	}
+//---------------------------------------------------------
+// constructor
+// sets default values for options
+//
+VariableEmbeddingInserter::VariableEmbeddingInserter()
+{
+    m_rrOption = rrNone;
+    m_percentMostCrossed = 25;
+}
 
 
-	// clone method
-	EdgeInsertionModule *VariableEmbeddingInserter::clone() const
-	{
-		return new VariableEmbeddingInserter(*this);
-	}
+// copy constructor
+VariableEmbeddingInserter::VariableEmbeddingInserter(const VariableEmbeddingInserter &inserter)
+    : EdgeInsertionModule(inserter)
+{
+    m_rrOption = inserter.m_rrOption;
+    m_percentMostCrossed = inserter.m_percentMostCrossed;
+}
 
 
-	// assignment operator
-	VariableEmbeddingInserter &VariableEmbeddingInserter::operator=(const VariableEmbeddingInserter &inserter)
-	{
-		m_timeLimit = inserter.m_timeLimit;
-		m_rrOption = inserter.m_rrOption;
-		m_percentMostCrossed = inserter.m_percentMostCrossed;
-		return *this;
-	}
+// clone method
+EdgeInsertionModule *VariableEmbeddingInserter::clone() const
+{
+    return new VariableEmbeddingInserter(*this);
+}
 
 
-	// actual call method
-	Module::ReturnType VariableEmbeddingInserter::doCall(
-		PlanRepLight &pr,
-		const Array<edge> &origEdges,
-		const EdgeArray<int> *pCostOrig,
-		const EdgeArray<bool> *pForbiddenOrig,
-		const EdgeArray<__uint32> *pEdgeSubgraph)
-	{
-		VarEdgeInserterCore core(pr, pCostOrig, pForbiddenOrig, pEdgeSubgraph);
-		core.timeLimit(timeLimit());
-
-		ReturnType retVal = core.call(origEdges, m_rrOption, m_percentMostCrossed);
-		m_runsPostprocessing = core.runsPostprocessing();
-		return retVal;
-	}
+// assignment operator
+VariableEmbeddingInserter &VariableEmbeddingInserter::operator=(const VariableEmbeddingInserter &inserter)
+{
+    m_timeLimit = inserter.m_timeLimit;
+    m_rrOption = inserter.m_rrOption;
+    m_percentMostCrossed = inserter.m_percentMostCrossed;
+    return *this;
+}
 
 
-	// actual call method for postprocessing only
-	Module::ReturnType VariableEmbeddingInserter::doCallPostprocessing(
-			PlanRepLight              &pr,
-			const Array<edge>         &origEdges,
-			const EdgeArray<int>      *pCostOrig,
-			const EdgeArray<bool>     *pForbiddenOrig,
-			const EdgeArray<__uint32> *pEdgeSubgraphs)
-	{
-		VarEdgeInserterCore core(pr, pCostOrig, pForbiddenOrig, pEdgeSubgraphs);
-		core.timeLimit(timeLimit());
+// actual call method
+Module::ReturnType VariableEmbeddingInserter::doCall(
+    PlanRepLight &pr,
+    const Array<edge> &origEdges,
+    const EdgeArray<int> *pCostOrig,
+    const EdgeArray<bool> *pForbiddenOrig,
+    const EdgeArray<__uint32> *pEdgeSubgraph)
+{
+    VarEdgeInserterCore core(pr, pCostOrig, pForbiddenOrig, pEdgeSubgraph);
+    core.timeLimit(timeLimit());
 
-		ReturnType retVal = core.callPostprocessing(origEdges, m_rrOption, m_percentMostCrossed);
-		m_runsPostprocessing = core.runsPostprocessing();
-		return retVal;
-	}
+    ReturnType retVal = core.call(origEdges, m_rrOption, m_percentMostCrossed);
+    m_runsPostprocessing = core.runsPostprocessing();
+    return retVal;
+}
+
+
+// actual call method for postprocessing only
+Module::ReturnType VariableEmbeddingInserter::doCallPostprocessing(
+    PlanRepLight              &pr,
+    const Array<edge>         &origEdges,
+    const EdgeArray<int>      *pCostOrig,
+    const EdgeArray<bool>     *pForbiddenOrig,
+    const EdgeArray<__uint32> *pEdgeSubgraphs)
+{
+    VarEdgeInserterCore core(pr, pCostOrig, pForbiddenOrig, pEdgeSubgraphs);
+    core.timeLimit(timeLimit());
+
+    ReturnType retVal = core.callPostprocessing(origEdges, m_rrOption, m_percentMostCrossed);
+    m_runsPostprocessing = core.runsPostprocessing();
+    return retVal;
+}
 
 }

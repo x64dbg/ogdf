@@ -37,53 +37,55 @@
 */
 
 CoinPresolveMatrix::CoinPresolveMatrix
-  (int ncols_alloc, int nrows_alloc, CoinBigIndex nelems_alloc)
+(int ncols_alloc, int nrows_alloc, CoinBigIndex nelems_alloc)
 
-  : CoinPrePostsolveMatrix(ncols_alloc,nrows_alloc,nelems_alloc),
+    : CoinPrePostsolveMatrix(ncols_alloc,nrows_alloc,nelems_alloc),
 
-    clink_(0),
-    rlink_(0),
+      clink_(0),
+      rlink_(0),
 
-    dobias_(0.0),
-    mrstrt_(0),
-    hinrow_(0),
-    rowels_(0),
-    hcol_(0),
+      dobias_(0.0),
+      mrstrt_(0),
+      hinrow_(0),
+      rowels_(0),
+      hcol_(0),
 
-    integerType_(0),
-    anyInteger_(false),
-    tuning_(false),
-    startTime_(0.0),
-    feasibilityTolerance_(0.0),
-    status_(-1),
-    pass_(0),
-    maxSubstLevel_(3),
-    colChanged_(0),
-    colsToDo_(0),
-    numberColsToDo_(0),
-    nextColsToDo_(0),
-    numberNextColsToDo_(0),
+      integerType_(0),
+      anyInteger_(false),
+      tuning_(false),
+      startTime_(0.0),
+      feasibilityTolerance_(0.0),
+      status_(-1),
+      pass_(0),
+      maxSubstLevel_(3),
+      colChanged_(0),
+      colsToDo_(0),
+      numberColsToDo_(0),
+      nextColsToDo_(0),
+      numberNextColsToDo_(0),
 
-    rowChanged_(0),
-    rowsToDo_(0),
-    numberRowsToDo_(0),
-    nextRowsToDo_(0),
-    numberNextRowsToDo_(0),
-    presolveOptions_(0),
-    anyProhibited_(false),
-    usefulRowInt_(NULL),
-    usefulRowDouble_(NULL),
-    usefulColumnInt_(NULL),
-    usefulColumnDouble_(NULL),
-    randomNumber_(NULL),
-    infiniteUp_(NULL),
-    sumUp_(NULL),
-    infiniteDown_(NULL),
-    sumDown_(NULL)
+      rowChanged_(0),
+      rowsToDo_(0),
+      numberRowsToDo_(0),
+      nextRowsToDo_(0),
+      numberNextRowsToDo_(0),
+      presolveOptions_(0),
+      anyProhibited_(false),
+      usefulRowInt_(NULL),
+      usefulRowDouble_(NULL),
+      usefulColumnInt_(NULL),
+      usefulColumnDouble_(NULL),
+      randomNumber_(NULL),
+      infiniteUp_(NULL),
+      sumUp_(NULL),
+      infiniteDown_(NULL),
+      sumDown_(NULL)
 
-{ /* nothing to do here */
+{
+    /* nothing to do here */
 
-  return ; }
+    return ;
+}
 
 /*
   CoinPresolveMatrix destructor.
@@ -91,32 +93,34 @@ CoinPresolveMatrix::CoinPresolveMatrix
 
 CoinPresolveMatrix::~CoinPresolveMatrix()
 
-{ delete[] clink_ ;
-  delete[] rlink_ ;
+{
+    delete[] clink_ ;
+    delete[] rlink_ ;
 
-  delete[] mrstrt_ ;
-  delete[] hinrow_ ;
-  delete[] rowels_ ;
-  delete[] hcol_ ;
+    delete[] mrstrt_ ;
+    delete[] hinrow_ ;
+    delete[] rowels_ ;
+    delete[] hcol_ ;
 
-  delete[] integerType_ ;
-  delete[] rowChanged_ ;
-  delete[] rowsToDo_ ;
-  delete[] nextRowsToDo_ ;
-  delete[] colChanged_ ;
-  delete[] colsToDo_ ;
-  delete[] nextColsToDo_ ;
-  delete[] usefulRowInt_;
-  delete[] usefulRowDouble_;
-  delete[] usefulColumnInt_;
-  delete[] usefulColumnDouble_;
-  delete[] randomNumber_;
-  delete[] infiniteUp_;
-  delete[] sumUp_;
-  delete[] infiniteDown_;
-  delete[] sumDown_;
+    delete[] integerType_ ;
+    delete[] rowChanged_ ;
+    delete[] rowsToDo_ ;
+    delete[] nextRowsToDo_ ;
+    delete[] colChanged_ ;
+    delete[] colsToDo_ ;
+    delete[] nextColsToDo_ ;
+    delete[] usefulRowInt_;
+    delete[] usefulRowDouble_;
+    delete[] usefulColumnInt_;
+    delete[] usefulColumnDouble_;
+    delete[] randomNumber_;
+    delete[] infiniteUp_;
+    delete[] sumUp_;
+    delete[] infiniteDown_;
+    delete[] sumDown_;
 
-  return ; }
+    return ;
+}
 
 
 
@@ -146,287 +150,318 @@ CoinPresolveMatrix::~CoinPresolveMatrix()
 void CoinPresolveMatrix::setMatrix (const CoinPackedMatrix *mtx)
 
 {
-/*
-  Check to make sure the matrix will fit and is column ordered.
-*/
-  if (mtx->isColOrdered() == false)
-  { throw CoinError("source matrix must be column ordered",
-		    "setMatrix","CoinPrePostsolveMatrix") ; }
+    /*
+      Check to make sure the matrix will fit and is column ordered.
+    */
+    if (mtx->isColOrdered() == false)
+    {
+        throw CoinError("source matrix must be column ordered",
+                        "setMatrix","CoinPrePostsolveMatrix") ;
+    }
 
-  int numCols = mtx->getNumCols() ;
-  if (numCols > ncols0_)
-  { throw CoinError("source matrix exceeds allocated capacity",
-		    "setMatrix","CoinPrePostsolveMatrix") ; }
-/*
-  Acquire the actual size, but allocate the matrix storage to the
-  requested capacity. The column-major rep is part of the PrePostsolve
-  object, the row-major rep belongs to the Presolve object.
-*/
-  ncols_ = numCols ;
-  nrows_ = mtx->getNumRows() ;
-  nelems_ = mtx->getNumElements() ;
-  bulk0_ = static_cast<CoinBigIndex> (bulkRatio_*nelems0_) ;
+    int numCols = mtx->getNumCols() ;
+    if (numCols > ncols0_)
+    {
+        throw CoinError("source matrix exceeds allocated capacity",
+                        "setMatrix","CoinPrePostsolveMatrix") ;
+    }
+    /*
+      Acquire the actual size, but allocate the matrix storage to the
+      requested capacity. The column-major rep is part of the PrePostsolve
+      object, the row-major rep belongs to the Presolve object.
+    */
+    ncols_ = numCols ;
+    nrows_ = mtx->getNumRows() ;
+    nelems_ = mtx->getNumElements() ;
+    bulk0_ = static_cast<CoinBigIndex> (bulkRatio_*nelems0_) ;
 
-  if (mcstrt_ == 0) mcstrt_ = new CoinBigIndex [ncols0_+1] ;
-  if (hincol_ == 0) hincol_ = new int [ncols0_+1] ;
-  if (hrow_ == 0) hrow_ = new int [bulk0_] ;
-  if (colels_ == 0) colels_ = new double [bulk0_] ;
+    if (mcstrt_ == 0) mcstrt_ = new CoinBigIndex [ncols0_+1] ;
+    if (hincol_ == 0) hincol_ = new int [ncols0_+1] ;
+    if (hrow_ == 0) hrow_ = new int [bulk0_] ;
+    if (colels_ == 0) colels_ = new double [bulk0_] ;
 
-  if (mrstrt_ == 0) mrstrt_ = new CoinBigIndex [nrows0_+1] ;
-  if (hinrow_ == 0) hinrow_ = new int [nrows0_+1] ;
-  if (hcol_ == 0) hcol_ = new int [bulk0_] ;
-  if (rowels_ == 0) rowels_ = new double [bulk0_] ;
-/*
-  Grab the corresponding vectors from the source matrix.
-*/
-  const CoinBigIndex *src_mcstrt = mtx->getVectorStarts() ;
-  const int *src_hincol = mtx->getVectorLengths() ;
-  const double *src_colels = mtx->getElements() ;
-  const int *src_hrow = mtx->getIndices() ;
-/*
-  Bulk copy the column starts and lengths.
-*/
-  CoinMemcpyN(src_mcstrt,mtx->getSizeVectorStarts(),mcstrt_) ;
-  CoinMemcpyN(src_hincol,mtx->getSizeVectorLengths(),hincol_) ;
-/*
-  Copy the coefficients column by column in case there are gaps between
-  the columns in the bulk storage area. The assert is just in case the
-  gaps are *really* big.
-*/
-  assert(src_mcstrt[ncols_] <= bulk0_) ;
-  int j;
-  for ( j = 0 ; j < numCols ; j++)
-  { int lenj = src_hincol[j] ;
-    CoinBigIndex offset = mcstrt_[j] ;
-    CoinMemcpyN(src_colels+offset,lenj,colels_+offset) ;
-    CoinMemcpyN(src_hrow+offset,lenj,hrow_+offset) ; }
-/*
-  Now make a row-major copy. Start by counting the number of coefficients in
-  each row; we can do this directly in hinrow. Given the number of
-  coefficients in a row, we know how to lay out the bulk storage area.
-*/
-  CoinZeroN(hinrow_,nrows0_+1) ;
-  for ( j = 0 ; j < ncols_ ; j++)
-  { int *rowIndices = hrow_+mcstrt_[j] ;
-    int lenj = hincol_[j] ;
-    for (int k = 0 ; k < lenj ; k++)
-    { int i = rowIndices[k] ;
-      hinrow_[i]++ ; } }
-/*
-  Initialize mrstrt[i] to the start of row i+1. As we drop each coefficient
-  and column index into the bulk storage arrays, we'll decrement and store.
-  When we're done, mrstrt[i] will point to the start of row i, as it should.
-*/
-  int totalCoeffs = 0 ;
-  int i;
-  for ( i = 0 ; i < nrows_ ; i++)
-  { totalCoeffs += hinrow_[i] ;
-    mrstrt_[i] = totalCoeffs ; }
-  mrstrt_[nrows_] = totalCoeffs ;
-  for ( j = ncols_-1 ; j >= 0 ; j--)
-  { int lenj = hincol_[j] ;
-    double *colCoeffs = colels_+mcstrt_[j] ;
-    int *rowIndices = hrow_+mcstrt_[j] ;
-    for (int k = 0 ; k < lenj ; k++)
-    { int ri;
-      ri = rowIndices[k] ;
-      double aij = colCoeffs[k] ;
-      CoinBigIndex l = --mrstrt_[ri] ;
-      rowels_[l] = aij ;
-      hcol_[l] = j ; } }
-/*
-  Now the support structures. The entry for original column j should start
-  out as j; similarly for row i. originalColumn_ and originalRow_ belong to
-  the PrePostsolve object.
-*/
-  if (originalColumn_ == 0) originalColumn_ = new int [ncols0_] ;
-  if (originalRow_ == 0) originalRow_ = new int [nrows0_] ;
+    if (mrstrt_ == 0) mrstrt_ = new CoinBigIndex [nrows0_+1] ;
+    if (hinrow_ == 0) hinrow_ = new int [nrows0_+1] ;
+    if (hcol_ == 0) hcol_ = new int [bulk0_] ;
+    if (rowels_ == 0) rowels_ = new double [bulk0_] ;
+    /*
+      Grab the corresponding vectors from the source matrix.
+    */
+    const CoinBigIndex *src_mcstrt = mtx->getVectorStarts() ;
+    const int *src_hincol = mtx->getVectorLengths() ;
+    const double *src_colels = mtx->getElements() ;
+    const int *src_hrow = mtx->getIndices() ;
+    /*
+      Bulk copy the column starts and lengths.
+    */
+    CoinMemcpyN(src_mcstrt,mtx->getSizeVectorStarts(),mcstrt_) ;
+    CoinMemcpyN(src_hincol,mtx->getSizeVectorLengths(),hincol_) ;
+    /*
+      Copy the coefficients column by column in case there are gaps between
+      the columns in the bulk storage area. The assert is just in case the
+      gaps are *really* big.
+    */
+    assert(src_mcstrt[ncols_] <= bulk0_) ;
+    int j;
+    for ( j = 0 ; j < numCols ; j++)
+    {
+        int lenj = src_hincol[j] ;
+        CoinBigIndex offset = mcstrt_[j] ;
+        CoinMemcpyN(src_colels+offset,lenj,colels_+offset) ;
+        CoinMemcpyN(src_hrow+offset,lenj,hrow_+offset) ;
+    }
+    /*
+      Now make a row-major copy. Start by counting the number of coefficients in
+      each row; we can do this directly in hinrow. Given the number of
+      coefficients in a row, we know how to lay out the bulk storage area.
+    */
+    CoinZeroN(hinrow_,nrows0_+1) ;
+    for ( j = 0 ; j < ncols_ ; j++)
+    {
+        int *rowIndices = hrow_+mcstrt_[j] ;
+        int lenj = hincol_[j] ;
+        for (int k = 0 ; k < lenj ; k++)
+        {
+            int i = rowIndices[k] ;
+            hinrow_[i]++ ;
+        }
+    }
+    /*
+      Initialize mrstrt[i] to the start of row i+1. As we drop each coefficient
+      and column index into the bulk storage arrays, we'll decrement and store.
+      When we're done, mrstrt[i] will point to the start of row i, as it should.
+    */
+    int totalCoeffs = 0 ;
+    int i;
+    for ( i = 0 ; i < nrows_ ; i++)
+    {
+        totalCoeffs += hinrow_[i] ;
+        mrstrt_[i] = totalCoeffs ;
+    }
+    mrstrt_[nrows_] = totalCoeffs ;
+    for ( j = ncols_-1 ; j >= 0 ; j--)
+    {
+        int lenj = hincol_[j] ;
+        double *colCoeffs = colels_+mcstrt_[j] ;
+        int *rowIndices = hrow_+mcstrt_[j] ;
+        for (int k = 0 ; k < lenj ; k++)
+        {
+            int ri;
+            ri = rowIndices[k] ;
+            double aij = colCoeffs[k] ;
+            CoinBigIndex l = --mrstrt_[ri] ;
+            rowels_[l] = aij ;
+            hcol_[l] = j ;
+        }
+    }
+    /*
+      Now the support structures. The entry for original column j should start
+      out as j; similarly for row i. originalColumn_ and originalRow_ belong to
+      the PrePostsolve object.
+    */
+    if (originalColumn_ == 0) originalColumn_ = new int [ncols0_] ;
+    if (originalRow_ == 0) originalRow_ = new int [nrows0_] ;
 
-  for ( j = 0 ; j < ncols0_ ; j++)
-    originalColumn_[j] = j ;
-  for ( i = 0 ; i < nrows0_ ; i++)
-    originalRow_[i] = i ;
-/*
-  We have help to set up the clink_ and rlink_ vectors (aids for matrix bulk
-  storage management). clink_ and rlink_ belong to the Presolve object.  Once
-  this is done, it's safe to set mrstrt_[nrows_] and mcstrt_[ncols_] to the
-  full size of the bulk storage area.
-*/
-  if (clink_ == 0) clink_ = new presolvehlink [ncols0_+1] ;
-  if (rlink_ == 0) rlink_ = new presolvehlink [nrows0_+1] ;
-  presolve_make_memlists(/*mcstrt_,*/hincol_,clink_,ncols_) ;
-  presolve_make_memlists(/*mrstrt_,*/hinrow_,rlink_,nrows_) ;
-  mcstrt_[ncols_] = bulk0_ ;
-  mrstrt_[nrows_] = bulk0_ ;
-/*
-  No rows or columns have been changed just yet. colChanged_ and rowChanged_
-  belong to the Presolve object.
-*/
-  if (colChanged_ == 0) colChanged_ = new unsigned char [ncols0_] ;
-  CoinZeroN(colChanged_,ncols0_) ;
-  if (rowChanged_ == 0) rowChanged_ = new unsigned char [nrows0_] ;
-  CoinZeroN(rowChanged_,nrows0_) ;
-/*
-  Finally, allocate the various *ToDo arrays. These are used to track the rows
-  and columns which should be processed in a given round of presolve
-  transforms. These belong to the Presolve object. Setting number*ToDo to 0
-  is all the initialization that's required here.
-*/
-  rowsToDo_ = new int [nrows0_] ;
-  numberRowsToDo_ = 0 ;
-  nextRowsToDo_ = new int [nrows0_] ;
-  numberNextRowsToDo_ = 0 ;
-  colsToDo_ = new int [ncols0_] ;
-  numberColsToDo_ = 0 ;
-  nextColsToDo_ = new int [ncols0_] ;
-  numberNextColsToDo_ = 0 ;
-  initializeStuff();
-  return ; }
+    for ( j = 0 ; j < ncols0_ ; j++)
+        originalColumn_[j] = j ;
+    for ( i = 0 ; i < nrows0_ ; i++)
+        originalRow_[i] = i ;
+    /*
+      We have help to set up the clink_ and rlink_ vectors (aids for matrix bulk
+      storage management). clink_ and rlink_ belong to the Presolve object.  Once
+      this is done, it's safe to set mrstrt_[nrows_] and mcstrt_[ncols_] to the
+      full size of the bulk storage area.
+    */
+    if (clink_ == 0) clink_ = new presolvehlink [ncols0_+1] ;
+    if (rlink_ == 0) rlink_ = new presolvehlink [nrows0_+1] ;
+    presolve_make_memlists(/*mcstrt_,*/hincol_,clink_,ncols_) ;
+    presolve_make_memlists(/*mrstrt_,*/hinrow_,rlink_,nrows_) ;
+    mcstrt_[ncols_] = bulk0_ ;
+    mrstrt_[nrows_] = bulk0_ ;
+    /*
+      No rows or columns have been changed just yet. colChanged_ and rowChanged_
+      belong to the Presolve object.
+    */
+    if (colChanged_ == 0) colChanged_ = new unsigned char [ncols0_] ;
+    CoinZeroN(colChanged_,ncols0_) ;
+    if (rowChanged_ == 0) rowChanged_ = new unsigned char [nrows0_] ;
+    CoinZeroN(rowChanged_,nrows0_) ;
+    /*
+      Finally, allocate the various *ToDo arrays. These are used to track the rows
+      and columns which should be processed in a given round of presolve
+      transforms. These belong to the Presolve object. Setting number*ToDo to 0
+      is all the initialization that's required here.
+    */
+    rowsToDo_ = new int [nrows0_] ;
+    numberRowsToDo_ = 0 ;
+    nextRowsToDo_ = new int [nrows0_] ;
+    numberNextRowsToDo_ = 0 ;
+    colsToDo_ = new int [ncols0_] ;
+    numberColsToDo_ = 0 ;
+    nextColsToDo_ = new int [ncols0_] ;
+    numberNextColsToDo_ = 0 ;
+    initializeStuff();
+    return ;
+}
 /* Recompute ups and downs for a row (nonzero if infeasible).
    If iRow -1 then recompute all */
 int
 CoinPresolveMatrix::recomputeSums(int iRow)
 {
-  double * columnLower	= clo_;
-  double * columnUpper	= cup_;
+    double * columnLower  = clo_;
+    double * columnUpper  = cup_;
 
-  const double *element	= rowels_;
-  const int *column	= hcol_;
-  const CoinBigIndex *rowStart	= mrstrt_;
-  const int *rowLength	= hinrow_;
-  int numberRows	= nrows_;
-  int numberColumns	= ncols_;
-  //const int *hrow	= hrow_;
-  //const CoinBigIndex *mcstrt	= mcstrt_;
-  //const int *hincol	= hincol_;
-  double *rowLower	= rlo_;
-  double *rowUpper	= rup_;
-  double large = 1.0e20; // treat bounds > this as infinite
-  int iFirst = (iRow>=0) ? iRow : 0;
-  int iLast = (iRow>=0) ? iRow : numberRows;
-  int infeasible=0;
-  double tolerance = feasibilityTolerance_;
-  for (iRow=iFirst;iRow<iLast;iRow++) {
-    infiniteUp_[iRow]=0;
-    sumUp_[iRow]=0.0;
-    infiniteDown_[iRow]=0;
-    sumDown_[iRow]=0.0;
-    if ((rowLower[iRow]>-large||rowUpper[iRow]<large)&&rowLength[iRow]>0) {
-      int infiniteUpper = 0;
-      int infiniteLower = 0;
-      double maximumUp = 0.0;
-      double maximumDown = 0.0;
-      CoinBigIndex rStart = rowStart[iRow];
-      CoinBigIndex rEnd = rowStart[iRow]+rowLength[iRow];
-      CoinBigIndex j;
-      // Compute possible lower and upper ranges
+    const double *element = rowels_;
+    const int *column = hcol_;
+    const CoinBigIndex *rowStart  = mrstrt_;
+    const int *rowLength  = hinrow_;
+    int numberRows    = nrows_;
+    int numberColumns = ncols_;
+    //const int *hrow = hrow_;
+    //const CoinBigIndex *mcstrt  = mcstrt_;
+    //const int *hincol   = hincol_;
+    double *rowLower  = rlo_;
+    double *rowUpper  = rup_;
+    double large = 1.0e20; // treat bounds > this as infinite
+    int iFirst = (iRow>=0) ? iRow : 0;
+    int iLast = (iRow>=0) ? iRow : numberRows;
+    int infeasible=0;
+    double tolerance = feasibilityTolerance_;
+    for (iRow=iFirst; iRow<iLast; iRow++)
+    {
+        infiniteUp_[iRow]=0;
+        sumUp_[iRow]=0.0;
+        infiniteDown_[iRow]=0;
+        sumDown_[iRow]=0.0;
+        if ((rowLower[iRow]>-large||rowUpper[iRow]<large)&&rowLength[iRow]>0)
+        {
+            int infiniteUpper = 0;
+            int infiniteLower = 0;
+            double maximumUp = 0.0;
+            double maximumDown = 0.0;
+            CoinBigIndex rStart = rowStart[iRow];
+            CoinBigIndex rEnd = rowStart[iRow]+rowLength[iRow];
+            CoinBigIndex j;
+            // Compute possible lower and upper ranges
 
-      for (j = rStart; j < rEnd; ++j) {
-	double value=element[j];
-	int iColumn = column[j];
-	if (value > 0.0) {
-	  if (columnUpper[iColumn] < large)
-	    maximumUp += columnUpper[iColumn] * value;
-	  else
-	    ++infiniteUpper;
-	  if (columnLower[iColumn] > -large)
-	    maximumDown += columnLower[iColumn] * value;
-	  else
-	    ++infiniteLower;
-	} else if (value<0.0) {
-	  if (columnUpper[iColumn] < large)
-	    maximumDown += columnUpper[iColumn] * value;
-	  else
-	    ++infiniteLower;
-	  if (columnLower[iColumn] > -large)
-	    maximumUp += columnLower[iColumn] * value;
-	  else
-	    ++infiniteUpper;
-	}
-      }
+            for (j = rStart; j < rEnd; ++j)
+            {
+                double value=element[j];
+                int iColumn = column[j];
+                if (value > 0.0)
+                {
+                    if (columnUpper[iColumn] < large)
+                        maximumUp += columnUpper[iColumn] * value;
+                    else
+                        ++infiniteUpper;
+                    if (columnLower[iColumn] > -large)
+                        maximumDown += columnLower[iColumn] * value;
+                    else
+                        ++infiniteLower;
+                }
+                else if (value<0.0)
+                {
+                    if (columnUpper[iColumn] < large)
+                        maximumDown += columnUpper[iColumn] * value;
+                    else
+                        ++infiniteLower;
+                    if (columnLower[iColumn] > -large)
+                        maximumUp += columnLower[iColumn] * value;
+                    else
+                        ++infiniteUpper;
+                }
+            }
 #if 0
-      // Build in a margin of error (NO)
-      maximumUp += 1.0e-8*fabs(maximumUp);
-      maximumDown -= 1.0e-8*fabs(maximumDown);
+            // Build in a margin of error (NO)
+            maximumUp += 1.0e-8*fabs(maximumUp);
+            maximumDown -= 1.0e-8*fabs(maximumDown);
 #endif
-      infiniteUp_[iRow]=infiniteUpper;
-      sumUp_[iRow]=maximumUp;
-      infiniteDown_[iRow]=infiniteLower;
-      sumDown_[iRow]=maximumDown;
-      double maxUp = maximumUp+infiniteUpper*1.0e31;
-      double maxDown = maximumDown-infiniteLower*1.0e31;
-      if (maxUp <= rowUpper[iRow] + tolerance &&
-	  maxDown >= rowLower[iRow] - tolerance) {
-	// redundant
-	infiniteUp_[iRow]=numberColumns+1;
-	infiniteDown_[iRow]=numberColumns+1;
-      } else if (maxUp <rowLower[iRow]-tolerance) {
-	// infeasible
-	infeasible++;
-      } else if (maxDown >rowUpper[iRow]+tolerance) {
-	// infeasible
-	infeasible++;
-      }
-    } else {
-      // odd probably redundant
-      infiniteUp_[iRow]=numberColumns+1;
-      infiniteDown_[iRow]=numberColumns+1;
-      if (rowLower[iRow]>0.0||rowUpper[iRow]<0.0) {
-	double tolerance2=10.0*tolerance;
-	if (rowLower[iRow]>0.0&&rowLower[iRow]<tolerance2)
-	  rowLower[iRow]=0.0;
-	else
-	  infeasible++;
-	if (rowUpper[iRow]<0.0&&rowUpper[iRow]>-tolerance2)
-	  rowUpper[iRow]=0.0;
-	else
-	  infeasible++;
-      }
+            infiniteUp_[iRow]=infiniteUpper;
+            sumUp_[iRow]=maximumUp;
+            infiniteDown_[iRow]=infiniteLower;
+            sumDown_[iRow]=maximumDown;
+            double maxUp = maximumUp+infiniteUpper*1.0e31;
+            double maxDown = maximumDown-infiniteLower*1.0e31;
+            if (maxUp <= rowUpper[iRow] + tolerance &&
+                    maxDown >= rowLower[iRow] - tolerance)
+            {
+                // redundant
+                infiniteUp_[iRow]=numberColumns+1;
+                infiniteDown_[iRow]=numberColumns+1;
+            }
+            else if (maxUp <rowLower[iRow]-tolerance)
+            {
+                // infeasible
+                infeasible++;
+            }
+            else if (maxDown >rowUpper[iRow]+tolerance)
+            {
+                // infeasible
+                infeasible++;
+            }
+        }
+        else
+        {
+            // odd probably redundant
+            infiniteUp_[iRow]=numberColumns+1;
+            infiniteDown_[iRow]=numberColumns+1;
+            if (rowLower[iRow]>0.0||rowUpper[iRow]<0.0)
+            {
+                double tolerance2=10.0*tolerance;
+                if (rowLower[iRow]>0.0&&rowLower[iRow]<tolerance2)
+                    rowLower[iRow]=0.0;
+                else
+                    infeasible++;
+                if (rowUpper[iRow]<0.0&&rowUpper[iRow]>-tolerance2)
+                    rowUpper[iRow]=0.0;
+                else
+                    infeasible++;
+            }
+        }
     }
-  }
-  return infeasible;
+    return infeasible;
 }
 // Initialize random numbers etc (nonzero if infeasible)
 int
 CoinPresolveMatrix::initializeStuff()
 {
-  // Allocate useful arrays
-  usefulRowInt_ = new int [3*nrows_];
-  usefulRowDouble_ = new double [nrows_];
-  usefulColumnInt_ = new int [2*ncols_];
-  usefulColumnDouble_ = new double[ncols_];
-  int k=CoinMax(ncols_+1,nrows_+1);
-  randomNumber_ = new double [k];
-  coin_init_random_vec(randomNumber_,k);
-  infiniteUp_ = new int [nrows_];
-  sumUp_ = new double [nrows_];
-  infiniteDown_ = new int [nrows_];
-  sumDown_ = new double [nrows_];
-  // return recomputeSums(-1);
-  return 0;
+    // Allocate useful arrays
+    usefulRowInt_ = new int [3*nrows_];
+    usefulRowDouble_ = new double [nrows_];
+    usefulColumnInt_ = new int [2*ncols_];
+    usefulColumnDouble_ = new double[ncols_];
+    int k=CoinMax(ncols_+1,nrows_+1);
+    randomNumber_ = new double [k];
+    coin_init_random_vec(randomNumber_,k);
+    infiniteUp_ = new int [nrows_];
+    sumUp_ = new double [nrows_];
+    infiniteDown_ = new int [nrows_];
+    sumDown_ = new double [nrows_];
+    // return recomputeSums(-1);
+    return 0;
 }
 // Delete useful arrays
 void
 CoinPresolveMatrix::deleteStuff()
 {
-  delete[] usefulRowInt_;
-  delete[] usefulRowDouble_;
-  delete[] usefulColumnInt_;
-  delete[] usefulColumnDouble_;
-  delete[] randomNumber_;
-  delete[] infiniteUp_;
-  delete[] sumUp_;
-  delete[] infiniteDown_;
-  delete[] sumDown_;
-  usefulRowInt_ = NULL;
-  usefulRowDouble_ = NULL;
-  usefulColumnInt_ = NULL;
-  usefulColumnDouble_ = NULL;
-  randomNumber_ = NULL;
-  infiniteUp_ = NULL;
-  sumUp_ = NULL;
-  infiniteDown_ = NULL;
-  sumDown_ = NULL;
+    delete[] usefulRowInt_;
+    delete[] usefulRowDouble_;
+    delete[] usefulColumnInt_;
+    delete[] usefulColumnDouble_;
+    delete[] randomNumber_;
+    delete[] infiniteUp_;
+    delete[] sumUp_;
+    delete[] infiniteDown_;
+    delete[] sumDown_;
+    usefulRowInt_ = NULL;
+    usefulRowDouble_ = NULL;
+    usefulColumnInt_ = NULL;
+    usefulColumnDouble_ = NULL;
+    randomNumber_ = NULL;
+    infiniteUp_ = NULL;
+    sumUp_ = NULL;
+    infiniteDown_ = NULL;
+    sumDown_ = NULL;
 }
 
 
@@ -437,47 +472,65 @@ CoinPresolveMatrix::deleteStuff()
 */
 
 void CoinPresolveMatrix::setVariableType (const unsigned char *variableType,
-					 int lenParam)
+        int lenParam)
 
-{ int len ;
+{
+    int len ;
 
-  if (lenParam < 0)
-  { len = ncols_ ; }
-  else
-  if (lenParam > ncols0_)
-  { throw CoinError("length exceeds allocated size",
-		    "setIntegerType","CoinPresolveMatrix") ; }
-  else
-  { len = lenParam ; }
+    if (lenParam < 0)
+    {
+        len = ncols_ ;
+    }
+    else if (lenParam > ncols0_)
+    {
+        throw CoinError("length exceeds allocated size",
+                        "setIntegerType","CoinPresolveMatrix") ;
+    }
+    else
+    {
+        len = lenParam ;
+    }
 
-  if (integerType_ == 0) integerType_ = new unsigned char [ncols0_] ;
-  CoinCopyN(variableType,len,integerType_) ;
+    if (integerType_ == 0) integerType_ = new unsigned char [ncols0_] ;
+    CoinCopyN(variableType,len,integerType_) ;
 
-  return ; }
+    return ;
+}
 
 void CoinPresolveMatrix::setVariableType (bool allIntegers, int lenParam)
 
-{ int len ;
+{
+    int len ;
 
-  if (lenParam < 0)
-  { len = ncols_ ; }
-  else
-  if (lenParam > ncols0_)
-  { throw CoinError("length exceeds allocated size",
-		    "setIntegerType","CoinPresolveMatrix") ; }
-  else
-  { len = lenParam ; }
+    if (lenParam < 0)
+    {
+        len = ncols_ ;
+    }
+    else if (lenParam > ncols0_)
+    {
+        throw CoinError("length exceeds allocated size",
+                        "setIntegerType","CoinPresolveMatrix") ;
+    }
+    else
+    {
+        len = lenParam ;
+    }
 
-  if (integerType_ == 0) integerType_ = new unsigned char [ncols0_] ;
+    if (integerType_ == 0) integerType_ = new unsigned char [ncols0_] ;
 
-  const unsigned char value = 1 ;
+    const unsigned char value = 1 ;
 
-  if (allIntegers == true)
-  { CoinFillN(integerType_,len,value) ; }
-  else
-  { CoinZeroN(integerType_,len) ; }
+    if (allIntegers == true)
+    {
+        CoinFillN(integerType_,len,value) ;
+    }
+    else
+    {
+        CoinZeroN(integerType_,len) ;
+    }
 
-  return ; }
+    return ;
+}
 
 /*
   The next pair of routines initialises the [row,col]ToDo lists in preparation
@@ -492,21 +545,31 @@ void CoinPresolveMatrix::initColsToDo ()
   Then place all columns not marked prohibited on the ToDo list.
 */
 
-{ int j ;
+{
+    int j ;
 
-  numberNextColsToDo_ = 0 ;
+    numberNextColsToDo_ = 0 ;
 
-  if (anyProhibited_ == false)
-  { for (j = 0 ; j < ncols_ ; j++)
-    { colsToDo_[j] = j ; }
-      numberColsToDo_ = ncols_ ; }
-  else
-  { numberColsToDo_ = 0 ;
-    for (j = 0 ; j < ncols_ ; j++)
-    if (colProhibited(j) == false)
-    { colsToDo_[numberColsToDo_++] = j ; } }
+    if (anyProhibited_ == false)
+    {
+        for (j = 0 ; j < ncols_ ; j++)
+        {
+            colsToDo_[j] = j ;
+        }
+        numberColsToDo_ = ncols_ ;
+    }
+    else
+    {
+        numberColsToDo_ = 0 ;
+        for (j = 0 ; j < ncols_ ; j++)
+            if (colProhibited(j) == false)
+            {
+                colsToDo_[numberColsToDo_++] = j ;
+            }
+    }
 
-  return ; }
+    return ;
+}
 
 void CoinPresolveMatrix::initRowsToDo ()
 /*
@@ -515,21 +578,31 @@ void CoinPresolveMatrix::initRowsToDo ()
   Then place all rows not marked prohibited on the ToDo list.
 */
 
-{ int i ;
+{
+    int i ;
 
-  numberNextRowsToDo_ = 0 ;
+    numberNextRowsToDo_ = 0 ;
 
-  if (anyProhibited_ == false)
-  { for (i = 0 ; i < nrows_ ; i++)
-    { rowsToDo_[i] = i ; }
-      numberRowsToDo_ = nrows_ ; }
-  else
-  { numberRowsToDo_ = 0 ;
-    for (i = 0 ; i < nrows_ ; i++)
-    if (rowProhibited(i) == false)
-    { rowsToDo_[numberRowsToDo_++] = i ; } }
+    if (anyProhibited_ == false)
+    {
+        for (i = 0 ; i < nrows_ ; i++)
+        {
+            rowsToDo_[i] = i ;
+        }
+        numberRowsToDo_ = nrows_ ;
+    }
+    else
+    {
+        numberRowsToDo_ = 0 ;
+        for (i = 0 ; i < nrows_ ; i++)
+            if (rowProhibited(i) == false)
+            {
+                rowsToDo_[numberRowsToDo_++] = i ;
+            }
+    }
 
-  return ; }
+    return ;
+}
 
 int CoinPresolveMatrix::stepColsToDo ()
 /*
@@ -537,16 +610,20 @@ int CoinPresolveMatrix::stepColsToDo ()
   resetting the Changed indicator. It returns the number of columns
   transfered.
 */
-{ int k ;
+{
+    int k ;
 
-  for (k = 0 ; k < numberNextColsToDo_ ; k++)
-  { int j = nextColsToDo_[k] ;
-    unsetColChanged(j) ;
-    colsToDo_[k] = j ; }
-  numberColsToDo_ = numberNextColsToDo_ ;
-  numberNextColsToDo_ = 0 ;
+    for (k = 0 ; k < numberNextColsToDo_ ; k++)
+    {
+        int j = nextColsToDo_[k] ;
+        unsetColChanged(j) ;
+        colsToDo_[k] = j ;
+    }
+    numberColsToDo_ = numberNextColsToDo_ ;
+    numberNextColsToDo_ = 0 ;
 
-  return (numberColsToDo_) ; }
+    return (numberColsToDo_) ;
+}
 
 int CoinPresolveMatrix::stepRowsToDo ()
 /*
@@ -554,22 +631,26 @@ int CoinPresolveMatrix::stepRowsToDo ()
   resetting the Changed indicator. It returns the number of columns
   transfered.
 */
-{ int k ;
+{
+    int k ;
 
-  for (k = 0 ; k < numberNextRowsToDo_ ; k++)
-  { int i = nextRowsToDo_[k] ;
-    unsetRowChanged(i) ;
-    rowsToDo_[k] = i ; }
-  numberRowsToDo_ = numberNextRowsToDo_ ;
-  numberNextRowsToDo_ = 0 ;
+    for (k = 0 ; k < numberNextRowsToDo_ ; k++)
+    {
+        int i = nextRowsToDo_[k] ;
+        unsetRowChanged(i) ;
+        rowsToDo_[k] = i ;
+    }
+    numberRowsToDo_ = numberNextRowsToDo_ ;
+    numberNextRowsToDo_ = 0 ;
 
-  return (numberRowsToDo_) ; }
+    return (numberRowsToDo_) ;
+}
 // Say we want statistics - also set time
 void
 CoinPresolveMatrix::statistics()
 {
-  tuning_=true;
-  startTime_ = CoinCpuTime();
+    tuning_=true;
+    startTime_ = CoinCpuTime();
 }
 #ifdef PRESOLVE_DEBUG
 #include "CoinPresolvePsdebug.cpp"

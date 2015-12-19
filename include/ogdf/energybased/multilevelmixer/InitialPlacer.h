@@ -50,23 +50,24 @@
 #include <ogdf/basic/Graph.h>
 #include <ogdf/internal/energybased/MultilevelGraph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT InitialPlacer
 {
 protected:
-	bool m_randomOffset;
+    bool m_randomOffset;
 
 public:
-	InitialPlacer():m_randomOffset(true) { }
-	virtual ~InitialPlacer() { }
+    InitialPlacer():m_randomOffset(true) { }
+    virtual ~InitialPlacer() { }
 
-	virtual void placeOneLevel(MultilevelGraph &MLG) = 0;
+    virtual void placeOneLevel(MultilevelGraph &MLG) = 0;
 
-	void setRandomOffset(bool on)
-	{
-		m_randomOffset = on;
-	}
+    void setRandomOffset(bool on)
+    {
+        m_randomOffset = on;
+    }
 
 };
 

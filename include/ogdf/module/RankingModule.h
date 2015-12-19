@@ -53,7 +53,8 @@
 #include <ogdf/basic/Graph.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -61,40 +62,42 @@ namespace ogdf {
  *
  * \see SugiyamaLayout
  */
-class OGDF_EXPORT RankingModule {
+class OGDF_EXPORT RankingModule
+{
 public:
-	//! Initializes a ranking module.
-	RankingModule() { }
+    //! Initializes a ranking module.
+    RankingModule() { }
 
-	virtual ~RankingModule() { }
+    virtual ~RankingModule() { }
 
-	/**
-	 * \brief Computes a node ranking of the digraph \a G in \a rank.
-	 *
-	 * This method is the actual algorithm call and must be implemented by
-	 * derived classes.
-	 *
-	 * @param G is the input digraph.
-	 * @param rank is assigned the node ranking.
-	 */
-	virtual void call(const Graph &G, NodeArray<int> &rank) = 0;
+    /**
+     * \brief Computes a node ranking of the digraph \a G in \a rank.
+     *
+     * This method is the actual algorithm call and must be implemented by
+     * derived classes.
+     *
+     * @param G is the input digraph.
+     * @param rank is assigned the node ranking.
+     */
+    virtual void call(const Graph &G, NodeArray<int> &rank) = 0;
 
-	virtual void call(const Graph &G, const EdgeArray<int> & /* length */, const EdgeArray<int> & /* cost */, NodeArray<int> &rank)
-	{
-		call(G, rank);
-	}
+    virtual void call(const Graph &G, const EdgeArray<int> & /* length */, const EdgeArray<int> & /* cost */, NodeArray<int> &rank)
+    {
+        call(G, rank);
+    }
 
-	/**
-	 * \brief Computes a node ranking of the digraph \a G in \a rank.
-	 *
-	 * @param G is the input digraph.
-	 * @param rank is assigned the node ranking.
-	 */
-	void operator()(const Graph &G, NodeArray<int> &rank) {
-		call(G,rank);
-	}
+    /**
+     * \brief Computes a node ranking of the digraph \a G in \a rank.
+     *
+     * @param G is the input digraph.
+     * @param rank is assigned the node ranking.
+     */
+    void operator()(const Graph &G, NodeArray<int> &rank)
+    {
+        call(G,rank);
+    }
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 

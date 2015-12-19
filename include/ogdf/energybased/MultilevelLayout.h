@@ -60,38 +60,42 @@
 #include <ogdf/basic/PreprocessorLayout.h>
 #include <ogdf/basic/Constraints.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class OGDF_EXPORT MultilevelLayout : public LayoutModule
-	{
-		public:
-			//! Constructor
-			MultilevelLayout();
+class OGDF_EXPORT MultilevelLayout : public LayoutModule
+{
+public:
+    //! Constructor
+    MultilevelLayout();
 
-			//! Destructor
-			virtual ~MultilevelLayout() {delete m_pp;}
+    //! Destructor
+    virtual ~MultilevelLayout()
+    {
+        delete m_pp;
+    }
 
-			//! Calculates a drawing for the Graph GA.
-			void call(GraphAttributes &GA);
+    //! Calculates a drawing for the Graph GA.
+    void call(GraphAttributes &GA);
 
-			//! Calculates a drawing for the Graph GA and tries to satisfy
-			//! the constraints in CG if supported.
-			virtual void call(GraphAttributes &GA, GraphConstraints &GC);
+    //! Calculates a drawing for the Graph GA and tries to satisfy
+    //! the constraints in CG if supported.
+    virtual void call(GraphAttributes &GA, GraphConstraints &GC);
 
-			//Setting of the three main phases' methods
-			//! Sets the single level layout
-			void setLayout(LayoutModule* L);
-			//! Sets the method used for coarsening
-			void setMultilevelBuilder(MultilevelBuilder* B);
-			//! Sets the placement method used when refining the levels again.
-			void setPlacer(InitialPlacer* P);
+    //Setting of the three main phases' methods
+    //! Sets the single level layout
+    void setLayout(LayoutModule* L);
+    //! Sets the method used for coarsening
+    void setMultilevelBuilder(MultilevelBuilder* B);
+    //! Sets the placement method used when refining the levels again.
+    void setPlacer(InitialPlacer* P);
 
 
-		private:
-			ModularMultilevelMixer* m_mmm;
-			ScalingLayout* m_sc;
-			ComponentSplitterLayout* m_cs;
-			PreprocessorLayout* m_pp;
-	};
+private:
+    ModularMultilevelMixer* m_mmm;
+    ScalingLayout* m_sc;
+    ComponentSplitterLayout* m_cs;
+    PreprocessorLayout* m_pp;
+};
 } //end namespace ogdf
 #endif

@@ -50,7 +50,8 @@
 
 #include <ogdf/hypergraph/HypergraphAttributes.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief Interface of hypergraph layout algorithms.
@@ -60,35 +61,35 @@ class OGDF_EXPORT HypergraphLayoutModule
 {
 public:
 
-	//! Initializes a layout module.
-	HypergraphLayoutModule()
-	{
-	}
+    //! Initializes a layout module.
+    HypergraphLayoutModule()
+    {
+    }
 
-	virtual ~HypergraphLayoutModule()
-	{
-	}
+    virtual ~HypergraphLayoutModule()
+    {
+    }
 
-	/**
-	 * \brief Computes a layout of hypergraph given by \a HA.
-	 *
-	 * This method is the actual algorithm call and must be implemented by
-	 * derived classes.
-	 * @param HA is the input hypergraph attributes class.
-	 */
-	virtual void call(HypergraphAttributes &HA) = 0;
+    /**
+     * \brief Computes a layout of hypergraph given by \a HA.
+     *
+     * This method is the actual algorithm call and must be implemented by
+     * derived classes.
+     * @param HA is the input hypergraph attributes class.
+     */
+    virtual void call(HypergraphAttributes &HA) = 0;
 
-	/**
-	 * \brief Computes a layout of a hypergraph given by \a HA.
-	 *
-	 * @param HA is the input hypergraph attributes class.
-	 */
-	void operator()(HypergraphAttributes &HA)
-	{
-		call(HA);
-	}
+    /**
+     * \brief Computes a layout of a hypergraph given by \a HA.
+     *
+     * @param HA is the input hypergraph attributes class.
+     */
+    void operator()(HypergraphAttributes &HA)
+    {
+        call(HA);
+    }
 
-	OGDF_MALLOC_NEW_DELETE;
+    OGDF_MALLOC_NEW_DELETE;
 };
 
 } // end namespace ogdf

@@ -25,10 +25,10 @@
 int user_receive_cp_data PROTO((void **user));
 int user_free_cp PROTO((void **user));
 int user_prepare_to_check_cuts PROTO((void *user, int varnum, int *indices,
-				      double *values));
+                                      double *values));
 int user_check_cut PROTO((void *user, double lpetol, int varnum, int *indices,
-			  double *values, cut_data *cut, int *is_violated,
-			  double *quality));
+                          double *values, cut_data *cut, int *is_violated,
+                          double *quality));
 int user_finished_checking_cuts PROTO((void *user));
 int user_receive_lp_solution_cp PROTO((void *user));
 

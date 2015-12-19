@@ -49,18 +49,19 @@
 
 #include <ogdf/energybased/multilevelmixer/MultilevelBuilder.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT RandomMerger : public MultilevelBuilder
 {
 private:
-	double m_levelSizeFactor;
+    double m_levelSizeFactor;
 
-	bool buildOneLevel(MultilevelGraph &MLG);
+    bool buildOneLevel(MultilevelGraph &MLG);
 
 public:
-	RandomMerger();
-	void setFactor(double factor);
+    RandomMerger();
+    void setFactor(double factor);
 };
 
 } // namespace ogdf

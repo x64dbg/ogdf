@@ -68,62 +68,74 @@
 #include <coin/CoinPackedMatrix.hpp>
 #endif
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT TutteLayout : public LayoutModule
 {
 #ifndef USE_COIN
 public:
 
-	void call(GraphAttributes &AG) { THROW_NO_COIN_EXCEPTION; }
-	void call(GraphAttributes &AG, const List<node>& givenNodes) { THROW_NO_COIN_EXCEPTION; }
+    void call(GraphAttributes &AG)
+    {
+        THROW_NO_COIN_EXCEPTION;
+    }
+    void call(GraphAttributes &AG, const List<node>& givenNodes)
+    {
+        THROW_NO_COIN_EXCEPTION;
+    }
 
 };
 
 #else // USE_COIN
 public:
 
-	TutteLayout();
-	~TutteLayout() { }
+    TutteLayout();
+    ~TutteLayout() { }
 
-	DRect bbox () const {
-		return m_bbox;
-	}
+    DRect bbox () const
+    {
+        return m_bbox;
+    }
 
-	void bbox (const DRect &bb) {
-		m_bbox = bb;
-	}
+    void bbox (const DRect &bb)
+    {
+        m_bbox = bb;
+    }
 
-	void call(GraphAttributes &AG);
-	void call(GraphAttributes &AG, const List<node> &givenNodes);
-	void call(GraphAttributes &GA, GraphConstraints & GC) { call(GA); }
+    void call(GraphAttributes &AG);
+    void call(GraphAttributes &AG, const List<node> &givenNodes);
+    void call(GraphAttributes &GA, GraphConstraints & GC)
+    {
+        call(GA);
+    }
 
 private:
 
-	static bool solveLP(
-		int cols,
-		const CoinPackedMatrix &Matrix,
-		const Array<double> &rightHandSide,
-		Array<double> &x);
+    static bool solveLP(
+        int cols,
+        const CoinPackedMatrix &Matrix,
+        const Array<double> &rightHandSide,
+        Array<double> &x);
 
-	void setFixedNodes(const Graph &G, List<node> &nodes,
-		List<DPoint> &pos, double radius = 1.0);
-	/*! sets the positions of the nodes in a largest face of $G$ in the
-	*  form of a regular $k$-gon with the prescribed radius. The
-	*  corresponding nodes and their positions are stored in nodes
-	*  and pos, respectively. $G$ does not have to be planar!
-	*/
+    void setFixedNodes(const Graph &G, List<node> &nodes,
+                       List<DPoint> &pos, double radius = 1.0);
+    /*! sets the positions of the nodes in a largest face of $G$ in the
+    *  form of a regular $k$-gon with the prescribed radius. The
+    *  corresponding nodes and their positions are stored in nodes
+    *  and pos, respectively. $G$ does not have to be planar!
+    */
 
-	void setFixedNodes(const Graph &G, List<node> &nodes, const List<node> &givenNodes,
-		List<DPoint> &pos, double radius = 1.0);
-	/*! the method is overloaded for a given set of nodes.
-	*/
+    void setFixedNodes(const Graph &G, List<node> &nodes, const List<node> &givenNodes,
+                       List<DPoint> &pos, double radius = 1.0);
+    /*! the method is overloaded for a given set of nodes.
+    */
 
-	bool doCall(GraphAttributes &AG,
-		const List<node> &fixedNodes,
-		List<DPoint> &fixedPositions);
+    bool doCall(GraphAttributes &AG,
+                const List<node> &fixedNodes,
+                List<DPoint> &fixedPositions);
 
-	DRect m_bbox;
+    DRect m_bbox;
 };
 
 #endif // USE_COIN

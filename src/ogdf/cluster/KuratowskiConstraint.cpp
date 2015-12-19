@@ -55,26 +55,31 @@ using namespace ogdf;
 using namespace abacus;
 
 ClusterKuratowskiConstraint::ClusterKuratowskiConstraint(Master *master, int nEdges, SListPure<nodePair> &ks) :
-	Constraint(master, 0, CSense::Less, nEdges-1, true, false, true)
+    Constraint(master, 0, CSense::Less, nEdges-1, true, false, true)
 {
-	SListConstIterator<nodePair> it;
-	for (it = ks.begin(); it.valid(); ++it) {
-		m_subdivision.pushBack(*it);
-	}
+    SListConstIterator<nodePair> it;
+    for (it = ks.begin(); it.valid(); ++it)
+    {
+        m_subdivision.pushBack(*it);
+    }
 }
 
 
 ClusterKuratowskiConstraint::~ClusterKuratowskiConstraint() {}
 
 
-double ClusterKuratowskiConstraint::coeff(const Variable *v) const {
-	const EdgeVar *e = (const EdgeVar*)v;
-	for (ListConstIterator<nodePair> it = m_subdivision.begin(); it.valid(); ++it) {
-		if( ((*it).v1 == e->sourceNode() && (*it).v2 == e->targetNode()) ||
-			((*it).v1 == e->targetNode() && (*it).v2 == e->sourceNode()) )
-		{return 1.0;}
-	}
-	return 0.0;
+double ClusterKuratowskiConstraint::coeff(const Variable *v) const
+{
+    const EdgeVar *e = (const EdgeVar*)v;
+    for (ListConstIterator<nodePair> it = m_subdivision.begin(); it.valid(); ++it)
+    {
+        if( ((*it).v1 == e->sourceNode() && (*it).v2 == e->targetNode()) ||
+                ((*it).v1 == e->targetNode() && (*it).v2 == e->sourceNode()) )
+        {
+            return 1.0;
+        }
+    }
+    return 0.0;
 }
 
 #endif // USE_ABACUS

@@ -57,7 +57,8 @@
 #include <ogdf/basic/List.h>
 #include <ogdf/cluster/ClusterGraph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //----------------------------------------------------------
@@ -68,41 +69,46 @@ namespace ogdf {
 // these functions should be called by Graph before (delete)
 // and after (add) its structure
 //----------------------------------------------------------
-class OGDF_EXPORT ClusterGraphObserver {
-	friend class ClusterGraph;
+class OGDF_EXPORT ClusterGraphObserver
+{
+    friend class ClusterGraph;
 
 public:
-	ClusterGraphObserver() : m_pClusterGraph(0) {}
+    ClusterGraphObserver() : m_pClusterGraph(0) {}
 
-	ClusterGraphObserver(const ClusterGraph* CG) : m_pClusterGraph(CG)
-	{
-		m_itCGList = CG->registerObserver(this);
-	}//constructor
+    ClusterGraphObserver(const ClusterGraph* CG) : m_pClusterGraph(CG)
+    {
+        m_itCGList = CG->registerObserver(this);
+    }//constructor
 
-	virtual ~ClusterGraphObserver()
-	{
-		if (m_pClusterGraph) m_pClusterGraph->unregisterObserver(m_itCGList);
-	}//destructor
+    virtual ~ClusterGraphObserver()
+    {
+        if (m_pClusterGraph) m_pClusterGraph->unregisterObserver(m_itCGList);
+    }//destructor
 
-	// associates structure with different graph
-	void reregister(const ClusterGraph *pCG) {
-		//small speedup: check if == m_pGraph
-		if (m_pClusterGraph) m_pClusterGraph->unregisterObserver(m_itCGList);
-		if ((m_pClusterGraph = pCG) != 0) m_itCGList = pCG->registerObserver(this);
-	}
+    // associates structure with different graph
+    void reregister(const ClusterGraph *pCG)
+    {
+        //small speedup: check if == m_pGraph
+        if (m_pClusterGraph) m_pClusterGraph->unregisterObserver(m_itCGList);
+        if ((m_pClusterGraph = pCG) != 0) m_itCGList = pCG->registerObserver(this);
+    }
 
-	virtual void clusterDeleted(cluster v) = 0;
-	virtual void clusterAdded(cluster v)   = 0;
-	//virtual void reInit()            	= 0;
-	//virtual void cleared()           	= 0;//Graph cleared
+    virtual void clusterDeleted(cluster v) = 0;
+    virtual void clusterAdded(cluster v)   = 0;
+    //virtual void reInit()             = 0;
+    //virtual void cleared()            = 0;//Graph cleared
 
-	const ClusterGraph*  getGraph() const {	return m_pClusterGraph;}
+    const ClusterGraph*  getGraph() const
+    {
+        return m_pClusterGraph;
+    }
 
 protected:
-	const ClusterGraph* m_pClusterGraph; //underlying clustergraph
+    const ClusterGraph* m_pClusterGraph; //underlying clustergraph
 
-	//List entry in cluster graphs list of all registered observers
-	ListIterator<ClusterGraphObserver*> m_itCGList;
+    //List entry in cluster graphs list of all registered observers
+    ListIterator<ClusterGraphObserver*> m_itCGList;
 };
 
 } // end of namespace

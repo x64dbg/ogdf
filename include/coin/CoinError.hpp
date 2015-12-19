@@ -39,115 +39,130 @@ It contains:
   </ul>
   For asserts class=> optional hint
 */
-class CoinError  {
+class CoinError
+{
     friend void CoinErrorUnitTest();
 
 private:
     CoinError()
-      :
-      message_(),
-      method_(),
-      class_(),
-      file_(),
-      lineNumber_()
+        :
+        message_(),
+        method_(),
+        class_(),
+        file_(),
+        lineNumber_()
     {
-      // nothing to do here
+        // nothing to do here
     }
 
 public:
-    
-  //-------------------------------------------------------------------
-  // Get methods
-  //-------------------------------------------------------------------   
-  /**@name Get error attributes */
-  //@{
+
+    //-------------------------------------------------------------------
+    // Get methods
+    //-------------------------------------------------------------------
+    /**@name Get error attributes */
+    //@{
     /// get message text
-    inline const std::string & message() const 
-    { return message_; }
+    inline const std::string & message() const
+    {
+        return message_;
+    }
     /// get name of method instantiating error
-    inline const std::string & methodName() const 
-    { return method_;  }
+    inline const std::string & methodName() const
+    {
+        return method_;
+    }
     /// get name of class instantiating error (or hint for assert)
-    inline const std::string & className() const 
-    { return class_;   }
+    inline const std::string & className() const
+    {
+        return class_;
+    }
     /// get name of file for assert
-    inline const std::string & fileName() const 
-    { return file_;  }
+    inline const std::string & fileName() const
+    {
+        return file_;
+    }
     /// get line number of assert (-1 if not assert)
-    inline int lineNumber() const 
-    { return lineNumber_;   }
+    inline int lineNumber() const
+    {
+        return lineNumber_;
+    }
     /// Just print (for asserts)
     inline void print(bool doPrint = true) const
     {
-      if (! doPrint)
-        return;
-      if (lineNumber_<0) {
-        std::cout<<message_<<" in "<<class_<<"::"<<method_<<std::endl;
-      } else {
-        std::cout<<file_<<":"<<lineNumber_<<" method "<<method_
-                 <<" : assertion \'"<<message_<<"\' failed."<<std::endl;
-        if(class_!="")
-          std::cout<<"Possible reason: "<<class_<<std::endl;
-      }
+        if (! doPrint)
+            return;
+        if (lineNumber_<0)
+        {
+            std::cout<<message_<<" in "<<class_<<"::"<<method_<<std::endl;
+        }
+        else
+        {
+            std::cout<<file_<<":"<<lineNumber_<<" method "<<method_
+                     <<" : assertion \'"<<message_<<"\' failed."<<std::endl;
+            if(class_!="")
+                std::cout<<"Possible reason: "<<class_<<std::endl;
+        }
     }
-  //@}
-  
-    
-  /**@name Constructors and destructors */
-  //@{
-    /// Alternate Constructor 
-    CoinError ( 
-      std::string message__, 
-      std::string methodName__, 
-      std::string className__,
-      std::string fileName_ = std::string(),
-      int line = -1)
-      :
-      message_(message__),
-      method_(methodName__),
-      class_(className__),
-      file_(fileName_),
-      lineNumber_(line)
+    //@}
+
+
+    /**@name Constructors and destructors */
+    //@{
+    /// Alternate Constructor
+    CoinError (
+        std::string message__,
+        std::string methodName__,
+        std::string className__,
+        std::string fileName_ = std::string(),
+        int line = -1)
+        :
+        message_(message__),
+        method_(methodName__),
+        class_(className__),
+        file_(fileName_),
+        lineNumber_(line)
     {
-      print(printErrors_);
+        print(printErrors_);
     }
 
-    /// Copy constructor 
+    /// Copy constructor
     CoinError (const CoinError & source)
-      :
-      message_(source.message_),
-      method_(source.method_),
-      class_(source.class_),
-      file_(source.file_),
-      lineNumber_(source.lineNumber_)
+        :
+        message_(source.message_),
+        method_(source.method_),
+        class_(source.class_),
+        file_(source.file_),
+        lineNumber_(source.lineNumber_)
     {
-      // nothing to do here
+        // nothing to do here
     }
 
-    /// Assignment operator 
+    /// Assignment operator
     CoinError & operator=(const CoinError& rhs)
     {
-      if (this != &rhs) {
-	message_=rhs.message_;
-	method_=rhs.method_;
-	class_=rhs.class_;
-	file_=rhs.file_;
-	lineNumber_ = rhs.lineNumber_;
-      }
-      return *this;
+        if (this != &rhs)
+        {
+            message_=rhs.message_;
+            method_=rhs.method_;
+            class_=rhs.class_;
+            file_=rhs.file_;
+            lineNumber_ = rhs.lineNumber_;
+        }
+        return *this;
     }
 
-    /// Destructor 
+    /// Destructor
     virtual ~CoinError ()
     {
-      // nothing to do here
+        // nothing to do here
     }
-  //@}
-    
+    //@}
+
 private:
-    
-  /**@name Private member data */
-  //@{
+
+    /**@name Private member data */
+    //@{
     /// message test
     std::string message_;
     /// method name
@@ -158,20 +173,20 @@ private:
     std::string file_;
     /// Line number
     int lineNumber_;
-  //@}
+    //@}
 
 public:
-  /// Whether to print every error
-  static bool printErrors_;
+    /// Whether to print every error
+    static bool printErrors_;
 };
 
 #ifndef __STRING
-#define __STRING(x)	#x
+#define __STRING(x) #x
 #endif
 
 #ifndef __GNUC_PREREQ
 # define __GNUC_PREREQ(maj, min) (0)
-#endif 
+#endif
 
 #ifndef COIN_ASSERT
 #   define CoinAssertDebug(expression) assert(expression)
@@ -180,62 +195,62 @@ public:
 #   define CoinAssertHint(expression,hint) assert(expression)
 #else
 #   ifdef NDEBUG
-#      define CoinAssertDebug(expression)		{}
-#      define CoinAssertDebugHint(expression,hint)	{}
+#      define CoinAssertDebug(expression)       {}
+#      define CoinAssertDebugHint(expression,hint)  {}
 #   else
 #      if defined(__GNUC__) && __GNUC_PREREQ(2, 6)
-#         define CoinAssertDebug(expression) { 				   \
-             if (!(expression)) {					   \
+#         define CoinAssertDebug(expression) {                 \
+             if (!(expression)) {                      \
                 throw CoinError(__STRING(expression), __PRETTY_FUNCTION__, \
-                                "", __FILE__, __LINE__);		   \
-             }								   \
+                                "", __FILE__, __LINE__);           \
+             }                                 \
           }
-#         define CoinAssertDebugHint(expression,hint) {			   \
-             if (!(expression)) {					   \
+#         define CoinAssertDebugHint(expression,hint) {            \
+             if (!(expression)) {                      \
                 throw CoinError(__STRING(expression), __PRETTY_FUNCTION__, \
-                                hint, __FILE__,__LINE__);		   \
-             }								   \
+                                hint, __FILE__,__LINE__);          \
+             }                                 \
           }
 #      else
-#         define CoinAssertDebug(expression) {				   \
-             if (!(expression)) {					   \
-                throw CoinError(__STRING(expression), "",		   \
-                                "", __FILE__,__LINE__);			   \
-             }								   \
+#         define CoinAssertDebug(expression) {                 \
+             if (!(expression)) {                      \
+                throw CoinError(__STRING(expression), "",          \
+                                "", __FILE__,__LINE__);            \
+             }                                 \
           }
-#         define CoinAssertDebugHint(expression,hint) {			   \
-             if (!(expression)) {					   \
-                throw CoinError(__STRING(expression), "",		   \
-                                hint, __FILE__,__LINE__);		   \
-             }								   \
+#         define CoinAssertDebugHint(expression,hint) {            \
+             if (!(expression)) {                      \
+                throw CoinError(__STRING(expression), "",          \
+                                hint, __FILE__,__LINE__);          \
+             }                                 \
           }
 #      endif
 #   endif
 #   if defined(__GNUC__) && __GNUC_PREREQ(2, 6)
-#      define CoinAssert(expression) { 					\
-          if (!(expression)) {						\
+#      define CoinAssert(expression) {                  \
+          if (!(expression)) {                      \
              throw CoinError(__STRING(expression), __PRETTY_FUNCTION__, \
-                             "", __FILE__, __LINE__);			\
-          }								\
+                             "", __FILE__, __LINE__);           \
+          }                             \
        }
-#      define CoinAssertHint(expression,hint) {				\
-          if (!(expression)) {						\
+#      define CoinAssertHint(expression,hint) {             \
+          if (!(expression)) {                      \
              throw CoinError(__STRING(expression), __PRETTY_FUNCTION__, \
-                             hint, __FILE__,__LINE__);			\
-          }								\
+                             hint, __FILE__,__LINE__);          \
+          }                             \
        }
 #   else
-#      define CoinAssert(expression) {					\
-          if (!(expression)) {						\
-             throw CoinError(__STRING(expression), "",			\
-                             "", __FILE__,__LINE__);			\
-          }								\
+#      define CoinAssert(expression) {                  \
+          if (!(expression)) {                      \
+             throw CoinError(__STRING(expression), "",          \
+                             "", __FILE__,__LINE__);            \
+          }                             \
        }
-#      define CoinAssertHint(expression,hint) {				\
-          if (!(expression)) {						\
-             throw CoinError(__STRING(expression), "",			\
-                             hint, __FILE__,__LINE__);			\
-          }								\
+#      define CoinAssertHint(expression,hint) {             \
+          if (!(expression)) {                      \
+             throw CoinError(__STRING(expression), "",          \
+                             hint, __FILE__,__LINE__);          \
+          }                             \
        }
 #   endif
 #endif

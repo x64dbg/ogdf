@@ -52,7 +52,8 @@
 #include <ogdf/basic/basic.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -62,35 +63,46 @@ namespace ogdf {
  * instances passed to set() must be allocated with new and will be
  * freed by ModuleOption.
  */
-template<class M> class ModuleOption {
+template<class M> class ModuleOption
+{
 
-	M *m_pModule; //!< Pointer to the module.
+    M *m_pModule; //!< Pointer to the module.
 
 public:
-	//! Initializes a module option; the initial module is just a 0-pointer.
-	ModuleOption() : m_pModule(0) { }
+    //! Initializes a module option; the initial module is just a 0-pointer.
+    ModuleOption() : m_pModule(0) { }
 
-	// destruction
-	~ModuleOption() { delete m_pModule; }
+    // destruction
+    ~ModuleOption()
+    {
+        delete m_pModule;
+    }
 
-	//! Sets the module to \a pM.
-	/**
-	 * This function will also free the module currently stored by the option.
-	 */
-	void set(M *pM) {
-		delete m_pModule;
-		m_pModule = pM;
-	}
+    //! Sets the module to \a pM.
+    /**
+     * This function will also free the module currently stored by the option.
+     */
+    void set(M *pM)
+    {
+        delete m_pModule;
+        m_pModule = pM;
+    }
 
-	//! Returns true iff the option currently stores a module.
-	bool valid() const { return m_pModule != 0; }
+    //! Returns true iff the option currently stores a module.
+    bool valid() const
+    {
+        return m_pModule != 0;
+    }
 
-	//! Returns a reference to the stored module.
-	/**
-	 * It is required that the option currently stores a module, i.e.,
-	 * valid() is true.
-	 */
-	M &get() const { return *m_pModule; }
+    //! Returns a reference to the stored module.
+    /**
+     * It is required that the option currently stores a module, i.e.,
+     * valid() is true.
+     */
+    M &get() const
+    {
+        return *m_pModule;
+    }
 };
 
 

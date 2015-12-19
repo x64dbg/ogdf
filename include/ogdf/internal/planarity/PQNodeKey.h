@@ -54,7 +54,8 @@
 #include <stdlib.h>
 #include <ogdf/internal/planarity/PQBasicKey.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 template<class T,class X,class Y> class PQNode;
@@ -80,23 +81,35 @@ class PQNodeKey : public PQBasicKey<T,X,Y>
 {
 public:
 
-	//! Stores the information. Has to be overloaded by the client.
-	X m_userStructInfo;
+    //! Stores the information. Has to be overloaded by the client.
+    X m_userStructInfo;
 
-	// Constructor
-	PQNodeKey(X info):PQBasicKey<T,X,Y>() { m_userStructInfo = info; }
+    // Constructor
+    PQNodeKey(X info):PQBasicKey<T,X,Y>()
+    {
+        m_userStructInfo = info;
+    }
 
-	// Destructor
-	virtual ~PQNodeKey() { }
+    // Destructor
+    virtual ~PQNodeKey() { }
 
-	//! Returns 0.
-	virtual T userStructKey() { return 0; }
+    //! Returns 0.
+    virtual T userStructKey()
+    {
+        return 0;
+    }
 
-	//! Returns \a m_userStructInfo.
-	virtual X userStructInfo() { return m_userStructInfo; }
+    //! Returns \a m_userStructInfo.
+    virtual X userStructInfo()
+    {
+        return m_userStructInfo;
+    }
 
-	//! Returns 0.
-	virtual Y userStructInternal() { return 0; }
+    //! Returns 0.
+    virtual Y userStructInternal()
+    {
+        return 0;
+    }
 };
 
 }

@@ -51,35 +51,39 @@
 
 #include <ogdf/basic/basic.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class MDMFLengthAttribute
 {
 public:
-	//constructors and destructor
-	MDMFLengthAttribute() { d = l = 0; }
-	MDMFLengthAttribute(const int& d, const int& l) : d(d), l(l) { }
-	MDMFLengthAttribute(const int& d) : d(d), l(0) { }
-	MDMFLengthAttribute(const MDMFLengthAttribute& x) : d(x.d), l(x.l) { }
-	~MDMFLengthAttribute() { }
+    //constructors and destructor
+    MDMFLengthAttribute()
+    {
+        d = l = 0;
+    }
+    MDMFLengthAttribute(const int& d, const int& l) : d(d), l(l) { }
+    MDMFLengthAttribute(const int& d) : d(d), l(0) { }
+    MDMFLengthAttribute(const MDMFLengthAttribute& x) : d(x.d), l(x.l) { }
+    ~MDMFLengthAttribute() { }
 
-	MDMFLengthAttribute operator=(const MDMFLengthAttribute& x);
-	MDMFLengthAttribute operator=(const int& x);
-	bool operator==(const MDMFLengthAttribute& x);
-	bool operator!=(const MDMFLengthAttribute& x);
-	bool operator>(const MDMFLengthAttribute& x);
-	bool operator<(const MDMFLengthAttribute& x);
-	bool operator>=(const MDMFLengthAttribute& x);
-	bool operator<=(const MDMFLengthAttribute& x);
-	MDMFLengthAttribute operator+(const MDMFLengthAttribute& x);
-	MDMFLengthAttribute operator-(const MDMFLengthAttribute& x);
-	MDMFLengthAttribute operator+=(const MDMFLengthAttribute& x);
-	MDMFLengthAttribute operator-=(const MDMFLengthAttribute& x);
+    MDMFLengthAttribute operator=(const MDMFLengthAttribute& x);
+    MDMFLengthAttribute operator=(const int& x);
+    bool operator==(const MDMFLengthAttribute& x);
+    bool operator!=(const MDMFLengthAttribute& x);
+    bool operator>(const MDMFLengthAttribute& x);
+    bool operator<(const MDMFLengthAttribute& x);
+    bool operator>=(const MDMFLengthAttribute& x);
+    bool operator<=(const MDMFLengthAttribute& x);
+    MDMFLengthAttribute operator+(const MDMFLengthAttribute& x);
+    MDMFLengthAttribute operator-(const MDMFLengthAttribute& x);
+    MDMFLengthAttribute operator+=(const MDMFLengthAttribute& x);
+    MDMFLengthAttribute operator-=(const MDMFLengthAttribute& x);
 
 public:
-	//the two components:
-	int d;
-	int l;
+    //the two components:
+    int d;
+    int l;
 };
 
 bool operator==(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y);

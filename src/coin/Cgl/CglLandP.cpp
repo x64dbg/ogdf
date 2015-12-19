@@ -29,7 +29,7 @@ namespace LAP
 {
 //Setup output messages
 LapMessages::LapMessages( )
-        :CoinMessages(LAP_MESSAGES_DUMMY_END)
+    :CoinMessages(LAP_MESSAGES_DUMMY_END)
 {
     strcpy(source_,"Lap");
     addMessage(BEGIN_ROUND,CoinOneMessage( 1, 2,"Starting %s round %d variable considered for separation."));
@@ -43,57 +43,57 @@ LapMessages::LapMessages( )
 }
 using namespace LAP;
 CglLandP::Parameters::Parameters():
-        CglParam(),
-        pivotLimit(20),
-        pivotLimitInTree(10),
-        maxCutPerRound(5000),
-        failedPivotLimit(1),
-        degeneratePivotLimit(0),
-        extraCutsLimit(5),
-        pivotTol(1e-4),
-        away(5e-4),
-        timeLimit(COIN_DBL_MAX),
-        singleCutTimeLimit(COIN_DBL_MAX),
-        rhsWeight(1.),
-        useTableauRow(true),
-        modularize(false),
-        strengthen(true),
-        countMistakenRc(false),
-        sepSpace(Fractional),
-        perturb(true),
-        normalization(Unweighted),
-        rhsWeightType(Fixed),
-        lhs_norm(L1),
-        generateExtraCuts(none),
-        pivotSelection(mostNegativeRc)
+    CglParam(),
+    pivotLimit(20),
+    pivotLimitInTree(10),
+    maxCutPerRound(5000),
+    failedPivotLimit(1),
+    degeneratePivotLimit(0),
+    extraCutsLimit(5),
+    pivotTol(1e-4),
+    away(5e-4),
+    timeLimit(COIN_DBL_MAX),
+    singleCutTimeLimit(COIN_DBL_MAX),
+    rhsWeight(1.),
+    useTableauRow(true),
+    modularize(false),
+    strengthen(true),
+    countMistakenRc(false),
+    sepSpace(Fractional),
+    perturb(true),
+    normalization(Unweighted),
+    rhsWeightType(Fixed),
+    lhs_norm(L1),
+    generateExtraCuts(none),
+    pivotSelection(mostNegativeRc)
 {
     EPS = 1e-08;
 }
 
 CglLandP::Parameters::Parameters(const Parameters &other):
-        CglParam(other),
-        pivotLimit(other.pivotLimit),
-        pivotLimitInTree(other.pivotLimitInTree),
-        maxCutPerRound(other.maxCutPerRound),
-        failedPivotLimit(other.failedPivotLimit),
-        degeneratePivotLimit(other.degeneratePivotLimit),
-        extraCutsLimit(other.extraCutsLimit),
-        pivotTol(other.pivotTol),
-        away(other.away),
-        timeLimit(other.timeLimit),
-        singleCutTimeLimit(other.singleCutTimeLimit),
-        rhsWeight(other.rhsWeight),
-        useTableauRow(other.useTableauRow),
-        modularize(other.modularize),
-        strengthen(other.strengthen),
-        countMistakenRc(other.countMistakenRc),
-        sepSpace(other.sepSpace),
-        perturb(other.perturb),
-        normalization(other.normalization),
-        rhsWeightType(other.rhsWeightType),
-        lhs_norm(other.lhs_norm),
-        generateExtraCuts(other.generateExtraCuts),
-        pivotSelection(other.pivotSelection)
+    CglParam(other),
+    pivotLimit(other.pivotLimit),
+    pivotLimitInTree(other.pivotLimitInTree),
+    maxCutPerRound(other.maxCutPerRound),
+    failedPivotLimit(other.failedPivotLimit),
+    degeneratePivotLimit(other.degeneratePivotLimit),
+    extraCutsLimit(other.extraCutsLimit),
+    pivotTol(other.pivotTol),
+    away(other.away),
+    timeLimit(other.timeLimit),
+    singleCutTimeLimit(other.singleCutTimeLimit),
+    rhsWeight(other.rhsWeight),
+    useTableauRow(other.useTableauRow),
+    modularize(other.modularize),
+    strengthen(other.strengthen),
+    countMistakenRc(other.countMistakenRc),
+    sepSpace(other.sepSpace),
+    perturb(other.perturb),
+    normalization(other.normalization),
+    rhsWeightType(other.rhsWeightType),
+    lhs_norm(other.lhs_norm),
+    generateExtraCuts(other.generateExtraCuts),
+    pivotSelection(other.pivotSelection)
 {}
 
 CglLandP::Parameters & CglLandP::Parameters::operator=(const Parameters &other)
@@ -128,9 +128,9 @@ CglLandP::Parameters & CglLandP::Parameters::operator=(const Parameters &other)
 }
 
 CglLandP::CachedData::CachedData(int nBasics, int nNonBasics):
-        basics_(NULL), nonBasics_(NULL), nBasics_(nBasics),
-        nNonBasics_(nNonBasics), basis_(NULL), colsol_(NULL),
-        slacks_(NULL), integers_(NULL)
+    basics_(NULL), nonBasics_(NULL), nBasics_(nBasics),
+    nNonBasics_(nNonBasics), basis_(NULL), colsol_(NULL),
+    slacks_(NULL), integers_(NULL)
 {
     if (nBasics_>0)
     {
@@ -147,9 +147,9 @@ CglLandP::CachedData::CachedData(int nBasics, int nNonBasics):
 }
 
 CglLandP::CachedData::CachedData(const CachedData &source):
-        basics_(NULL), nonBasics_(NULL), nBasics_(source.nBasics_),
-        nNonBasics_(source.nNonBasics_), basis_(NULL),
-        colsol_(NULL), slacks_(NULL), integers_(NULL)
+    basics_(NULL), nonBasics_(NULL), nBasics_(source.nBasics_),
+    nNonBasics_(source.nNonBasics_), basis_(NULL),
+    colsol_(NULL), slacks_(NULL), integers_(NULL)
 {
     if (nBasics_>0)
     {
@@ -371,7 +371,8 @@ CglLandP::CachedData::getData(const OsiSolverInterface &si)
     }
 }
 void
-CglLandP::CachedData::clean(){
+CglLandP::CachedData::clean()
+{
     if (basics_!=NULL)
         delete [] basics_;
     basics_ = NULL;
@@ -387,8 +388,8 @@ CglLandP::CachedData::clean(){
         delete [] integers_;
     integers_ = NULL;
 
-   nBasics_ = 0;
-   nNonBasics_ = 0;
+    nBasics_ = 0;
+    nNonBasics_ = 0;
 }
 CglLandP::CachedData::~CachedData()
 {
@@ -405,10 +406,10 @@ CglLandP::CachedData::~CachedData()
 
 CglLandP::CglLandP(const CglLandP::Parameters &params,
                    const LAP::Validator &validator):
-        params_(params), cached_(), validator_(validator), numcols_(-1),
-        originalColLower_(NULL), originalColUpper_(NULL),
-        canLift_(false),
-        extraCuts_()
+    params_(params), cached_(), validator_(validator), numcols_(-1),
+    originalColLower_(NULL), originalColUpper_(NULL),
+    canLift_(false),
+    extraCuts_()
 {
     handler_ = new CoinMessageHandler();
     handler_->setLogLevel(0);
@@ -426,12 +427,12 @@ CglLandP::~CglLandP()
 }
 
 CglLandP::CglLandP(const CglLandP & source):
-        CglCutGenerator(source),
-        params_(source.params_), cached_(source.cached_),
-        validator_(source.validator_), numcols_(source.numcols_),
-        originalColLower_(NULL), originalColUpper_(NULL),
-        canLift_(source.canLift_),
-        extraCuts_(source.extraCuts_)
+    CglCutGenerator(source),
+    params_(source.params_), cached_(source.cached_),
+    validator_(source.validator_), numcols_(source.numcols_),
+    originalColLower_(NULL), originalColUpper_(NULL),
+    canLift_(source.canLift_),
+    extraCuts_(source.extraCuts_)
 {
     handler_ = new CoinMessageHandler();
     handler_->setLogLevel(source.handler_->logLevel());
@@ -637,7 +638,7 @@ CglLandP::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
         if (code)
         {
             handler_->message(CUT_REJECTED, messages_)<<
-            validator_.failureString(code)<<CoinMessageEol;
+                    validator_.failureString(code)<<CoinMessageEol;
         }
         else
         {
@@ -664,7 +665,7 @@ CglLandP::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
         if (code)
         {
             handler_->message(LAP_CUT_FAILED_DO_MIG, messages_)
-            <<validator_.failureString(code)<<CoinMessageEol;
+                    <<validator_.failureString(code)<<CoinMessageEol;
         }
         else
         {
@@ -707,8 +708,8 @@ struct StableExternalComp
     const std::vector<T2> &vec_2_;
     StableExternalComp(const std::vector<T1> &vec_1,
                        const std::vector<T2> &vec_2):
-            vec_1_(vec_1),
-            vec_2_(vec_2)
+        vec_1_(vec_1),
+        vec_2_(vec_2)
     {
     }
     CoinRelFltEq eq;

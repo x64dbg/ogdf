@@ -52,124 +52,167 @@
 #include <vector>
 #include <map>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //Stores info on merging for a refinement level
 struct NodeMerge
 {
-	// Node/Edge IDs instead of pointers as the nodes themselves may be nonexistent.
-	std::vector<int> m_deletedEdges;
-	std::vector<int> m_changedEdges;
-	std::map<int, double> m_doubleWeight; // for changed and deleted edges
-	std::map<int, int> m_source;
-	std::map<int, int> m_target;
+    // Node/Edge IDs instead of pointers as the nodes themselves may be nonexistent.
+    std::vector<int> m_deletedEdges;
+    std::vector<int> m_changedEdges;
+    std::map<int, double> m_doubleWeight; // for changed and deleted edges
+    std::map<int, int> m_source;
+    std::map<int, int> m_target;
 
-	int m_mergedNode;
-	std::vector< std::pair<int, double> > m_position; // optional information <target, distance>. mergedNode will be placed at average of relative distances to target.
+    int m_mergedNode;
+    std::vector< std::pair<int, double> > m_position; // optional information <target, distance>. mergedNode will be placed at average of relative distances to target.
 
-	std::vector<int> m_changedNodes; // there may be placement strategies that use more than one reference-node.
-	std::map<int, double> m_radius; // for changed nodes and the merged node
+    std::vector<int> m_changedNodes; // there may be placement strategies that use more than one reference-node.
+    std::map<int, double> m_radius; // for changed nodes and the merged node
 
-	int m_level;
+    int m_level;
 
 
-	NodeMerge(int level) : m_level(level) { }
-	~NodeMerge() { }
+    NodeMerge(int level) : m_level(level) { }
+    ~NodeMerge() { }
 };
 
 
 class OGDF_EXPORT MultilevelGraph
 {
 private:
-	bool m_createdGraph; //used in destructor, TODO: check if it is needed
-	Graph * m_G;
-	GraphAttributes * m_GA; //<! Keeps layout info in replacement of information below (todo: remove them)
-	std::vector<NodeMerge *> m_changes;
-	NodeArray<double> m_radius;
-	double m_avgRadius; //stores average node radius for scaling and random layout purposes
+    bool m_createdGraph; //used in destructor, TODO: check if it is needed
+    Graph * m_G;
+    GraphAttributes * m_GA; //<! Keeps layout info in replacement of information below (todo: remove them)
+    std::vector<NodeMerge *> m_changes;
+    NodeArray<double> m_radius;
+    double m_avgRadius; //stores average node radius for scaling and random layout purposes
 
-	EdgeArray<double> m_weight;
+    EdgeArray<double> m_weight;
 
-	// Associations to index only as the node/edge may be nonexistent
-	NodeArray<int> m_nodeAssociations;
-	EdgeArray<int> m_edgeAssociations;
+    // Associations to index only as the node/edge may be nonexistent
+    NodeArray<int> m_nodeAssociations;
+    EdgeArray<int> m_edgeAssociations;
 
-	std::vector<node> m_reverseNodeIndex;
-	std::vector<int> m_reverseNodeMergeWeight;//<! Keeps number of vertices represented by vertex with given index
-	std::vector<edge> m_reverseEdgeIndex;
+    std::vector<node> m_reverseNodeIndex;
+    std::vector<int> m_reverseNodeMergeWeight;//<! Keeps number of vertices represented by vertex with given index
+    std::vector<edge> m_reverseEdgeIndex;
 
-	MultilevelGraph * removeOneCC(std::vector<node> &componentSubArray);
-	void copyFromGraph(const Graph &G, NodeArray<int> &nodeAssociations, EdgeArray<int> &edgeAssociations);
-	void prepareGraphAttributes(GraphAttributes &GA) const;
+    MultilevelGraph * removeOneCC(std::vector<node> &componentSubArray);
+    void copyFromGraph(const Graph &G, NodeArray<int> &nodeAssociations, EdgeArray<int> &edgeAssociations);
+    void prepareGraphAttributes(GraphAttributes &GA) const;
 
-	void initReverseIndizes();
-	void initInternal();
+    void initReverseIndizes();
+    void initInternal();
 
 public:
-	~MultilevelGraph();
-	MultilevelGraph();
-	MultilevelGraph(Graph &G);
-	MultilevelGraph(GraphAttributes &GA);
-	// if the Graph is available without const, no copy needs to be created.
-	MultilevelGraph(GraphAttributes &GA, Graph &G);
+    ~MultilevelGraph();
+    MultilevelGraph();
+    MultilevelGraph(Graph &G);
+    MultilevelGraph(GraphAttributes &GA);
+    // if the Graph is available without const, no copy needs to be created.
+    MultilevelGraph(GraphAttributes &GA, Graph &G);
 
-	// creates MultilevelGraph directly from GML file.
-	MultilevelGraph(istream &is);
-	MultilevelGraph(const char *filename);
+    // creates MultilevelGraph directly from GML file.
+    MultilevelGraph(istream &is);
+    MultilevelGraph(const char *filename);
 
-	NodeArray<double> &getRArray() { return m_radius; }
-	EdgeArray<double> &getWArray() { return m_weight; }
+    NodeArray<double> &getRArray()
+    {
+        return m_radius;
+    }
+    EdgeArray<double> &getWArray()
+    {
+        return m_weight;
+    }
 
-	edge getEdge(unsigned int index);
-	node getNode(unsigned int index);
+    edge getEdge(unsigned int index);
+    node getNode(unsigned int index);
 
-	double radius(node v) { return m_radius[v]; }
-	void radius(node v, double r) { m_radius[v] = r; }
-	double averageRadius() const { return m_avgRadius;}
+    double radius(node v)
+    {
+        return m_radius[v];
+    }
+    void radius(node v, double r)
+    {
+        m_radius[v] = r;
+    }
+    double averageRadius() const
+    {
+        return m_avgRadius;
+    }
 
-	double x(node v) { return m_GA->x(v); }
-	double y(node v) { return m_GA->y(v); }
-	void x(node v, double x) { m_GA->x(v) = x;}
-	void y(node v, double y) { m_GA->y(v) = y;}
+    double x(node v)
+    {
+        return m_GA->x(v);
+    }
+    double y(node v)
+    {
+        return m_GA->y(v);
+    }
+    void x(node v, double x)
+    {
+        m_GA->x(v) = x;
+    }
+    void y(node v, double y)
+    {
+        m_GA->y(v) = y;
+    }
 
-	void weight(edge e, double weight) { m_weight[e] = weight; }
-	double weight(edge e) { return m_weight[e]; }
+    void weight(edge e, double weight)
+    {
+        m_weight[e] = weight;
+    }
+    double weight(edge e)
+    {
+        return m_weight[e];
+    }
 
-	//returns the merge weight, i.e. the number of nodes represented by v on the current level
-	int mergeWeight(node v) {return m_reverseNodeMergeWeight[v->index()];}
+    //returns the merge weight, i.e. the number of nodes represented by v on the current level
+    int mergeWeight(node v)
+    {
+        return m_reverseNodeMergeWeight[v->index()];
+    }
 
-	void moveToZero();
+    void moveToZero();
 
-	int getLevel();
-	Graph & getGraph() { return *m_G; }
-	//! Returns attributes of current level graph as GraphAttributes
-	GraphAttributes & getGraphAttributes() const { return *m_GA; }
-	void exportAttributes(GraphAttributes &GA) const;
-	void exportAttributesSimple(GraphAttributes &GA) const;
-	void importAttributes(const GraphAttributes &GA);
-	void importAttributesSimple(const GraphAttributes &GA);
-	void reInsertGraph(MultilevelGraph &MLG);
-	void reInsertAll(std::vector<MultilevelGraph *> &components);
-	void copyNodeTo(node v, MultilevelGraph &MLG, std::map<node, node> &tempNodeAssociations, bool associate, int index = -1);
-	void copyEdgeTo(edge e, MultilevelGraph &MLG, std::map<node, node> &tempNodeAssociations, bool associate, int index = -1);
-	void writeGML(ostream &os);
-	void writeGML(const char *fileName);
+    int getLevel();
+    Graph & getGraph()
+    {
+        return *m_G;
+    }
+    //! Returns attributes of current level graph as GraphAttributes
+    GraphAttributes & getGraphAttributes() const
+    {
+        return *m_GA;
+    }
+    void exportAttributes(GraphAttributes &GA) const;
+    void exportAttributesSimple(GraphAttributes &GA) const;
+    void importAttributes(const GraphAttributes &GA);
+    void importAttributesSimple(const GraphAttributes &GA);
+    void reInsertGraph(MultilevelGraph &MLG);
+    void reInsertAll(std::vector<MultilevelGraph *> &components);
+    void copyNodeTo(node v, MultilevelGraph &MLG, std::map<node, node> &tempNodeAssociations, bool associate, int index = -1);
+    void copyEdgeTo(edge e, MultilevelGraph &MLG, std::map<node, node> &tempNodeAssociations, bool associate, int index = -1);
+    void writeGML(ostream &os);
+    void writeGML(const char *fileName);
 
-	// the original graph will be cleared to save Memory
-	std::vector<MultilevelGraph *> splitIntoComponents();
+    // the original graph will be cleared to save Memory
+    std::vector<MultilevelGraph *> splitIntoComponents();
 
-	bool postMerge(NodeMerge * NM, node merged);
-	//\a merged is the node now represented by \a theNode
-	bool changeNode(NodeMerge * NM, node theNode, double newRadius, node merged);
-	bool changeEdge(NodeMerge * NM, edge theEdge, double newWeight, node newSource, node newTarget);
-	bool deleteEdge(NodeMerge * NM, edge theEdge);
-	std::vector<edge> moveEdgesToParent(NodeMerge * NM, node theNode, node parent, bool deleteDoubleEndges, int adjustEdgeLengths);
-	NodeMerge * getLastMerge();
-	node undoLastMerge();
+    bool postMerge(NodeMerge * NM, node merged);
+    //\a merged is the node now represented by \a theNode
+    bool changeNode(NodeMerge * NM, node theNode, double newRadius, node merged);
+    bool changeEdge(NodeMerge * NM, edge theEdge, double newWeight, node newSource, node newTarget);
+    bool deleteEdge(NodeMerge * NM, edge theEdge);
+    std::vector<edge> moveEdgesToParent(NodeMerge * NM, node theNode, node parent, bool deleteDoubleEndges, int adjustEdgeLengths);
+    NodeMerge * getLastMerge();
+    node undoLastMerge();
 
-	void updateReverseIndizes();
-	//sets the merge weights back to initial values
-	void updateMergeWeights();
+    void updateReverseIndizes();
+    //sets the merge weights back to initial values
+    void updateMergeWeights();
 };
 
 } // namespace ogdf

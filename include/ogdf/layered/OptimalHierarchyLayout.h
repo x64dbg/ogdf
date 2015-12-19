@@ -54,7 +54,8 @@
 #include <ogdf/module/HierarchyLayoutModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //! The LP-based hierarchy layout algorithm.
@@ -95,111 +96,122 @@ class OGDF_EXPORT OptimalHierarchyLayout : public HierarchyLayoutModule
 {
 #ifndef OGDF_LP_SOLVER
 protected:
-	void doCall(const HierarchyLevelsBase& /*levels*/, GraphCopyAttributes & /*AGC*/) {
-		OGDF_THROW_PARAM(LibraryNotSupportedException, lnscCoin);
-	}
+    void doCall(const HierarchyLevelsBase& /*levels*/, GraphCopyAttributes & /*AGC*/)
+    {
+        OGDF_THROW_PARAM(LibraryNotSupportedException, lnscCoin);
+    }
 
 #else
 
 public:
-	//! Creates an instance of optimal hierarchy layout.
-	OptimalHierarchyLayout();
+    //! Creates an instance of optimal hierarchy layout.
+    OptimalHierarchyLayout();
 
-	//! Copy constructor.
-	OptimalHierarchyLayout(const OptimalHierarchyLayout &);
+    //! Copy constructor.
+    OptimalHierarchyLayout(const OptimalHierarchyLayout &);
 
-	// destructor
-	~OptimalHierarchyLayout() { }
-
-
-	//! Assignment operator.
-	OptimalHierarchyLayout &operator=(const OptimalHierarchyLayout &);
+    // destructor
+    ~OptimalHierarchyLayout() { }
 
 
-	/**
-	 *  @name Optional parameters
-	 *  @{
-	 */
+    //! Assignment operator.
+    OptimalHierarchyLayout &operator=(const OptimalHierarchyLayout &);
 
-	//! Returns the minimal allowed x-distance between nodes on a layer.
-	double nodeDistance() const {
-		return m_nodeDistance;
-	}
 
-	//! Sets the minimal allowed x-distance between nodes on a layer to \a x.
-	void nodeDistance(double x) {
-		if(x >= 0)
-			m_nodeDistance = x;
-	}
+    /**
+     *  @name Optional parameters
+     *  @{
+     */
 
-	//! Returns the minimal allowed y-distance between layers.
-	double layerDistance() const {
-		return m_layerDistance;
-	}
+    //! Returns the minimal allowed x-distance between nodes on a layer.
+    double nodeDistance() const
+    {
+        return m_nodeDistance;
+    }
 
-	//! Sets the minimal allowed y-distance between layers to \a x.
-	void layerDistance(double x) {
-		if(x >= 0)
-			m_layerDistance = x;
-	}
+    //! Sets the minimal allowed x-distance between nodes on a layer to \a x.
+    void nodeDistance(double x)
+    {
+        if(x >= 0)
+            m_nodeDistance = x;
+    }
 
-	//! Returns the current setting of option <i>fixedLayerDistance</i>.
-	/**
-	 * If set to true, the distance is always layerDistance; otherwise
-	 * the distance is adjusted (increased) to improve readability.
-	 */
-	bool fixedLayerDistance() const {
-		return m_fixedLayerDistance;
-	}
+    //! Returns the minimal allowed y-distance between layers.
+    double layerDistance() const
+    {
+        return m_layerDistance;
+    }
 
-	//! Sets the option <i>fixedLayerDistance</i> to \a b.
-	void fixedLayerDistance(bool b) {
-		m_fixedLayerDistance = b;
-	}
+    //! Sets the minimal allowed y-distance between layers to \a x.
+    void layerDistance(double x)
+    {
+        if(x >= 0)
+            m_layerDistance = x;
+    }
 
-	//! Returns the weight of edge segments connecting to vertical segments.
-	double weightSegments() const {
-		return m_weightSegments;
-	}
+    //! Returns the current setting of option <i>fixedLayerDistance</i>.
+    /**
+     * If set to true, the distance is always layerDistance; otherwise
+     * the distance is adjusted (increased) to improve readability.
+     */
+    bool fixedLayerDistance() const
+    {
+        return m_fixedLayerDistance;
+    }
 
-	//! Sets the weight of edge segments connecting to vertical segments to \a w.
-	void weightSegments(double w) {
-		if(w > 0.0 && w <= 100.0)
-			m_weightSegments = w;
-	}
+    //! Sets the option <i>fixedLayerDistance</i> to \a b.
+    void fixedLayerDistance(bool b)
+    {
+        m_fixedLayerDistance = b;
+    }
 
-	//! Returns the weight for balancing successors below a node; 0.0 means no balancing.
-	double weightBalancing() const {
-		return m_weightBalancing;
-	}
+    //! Returns the weight of edge segments connecting to vertical segments.
+    double weightSegments() const
+    {
+        return m_weightSegments;
+    }
 
-	//! Sets the weight for balancing successors below a node to \a w; 0.0 means no balancing.
-	void weightBalancing(double w) {
-		if(w >= 0.0 && w <= 100.0)
-			m_weightBalancing = w;
-	}
+    //! Sets the weight of edge segments connecting to vertical segments to \a w.
+    void weightSegments(double w)
+    {
+        if(w > 0.0 && w <= 100.0)
+            m_weightSegments = w;
+    }
 
-	//! @}
+    //! Returns the weight for balancing successors below a node; 0.0 means no balancing.
+    double weightBalancing() const
+    {
+        return m_weightBalancing;
+    }
+
+    //! Sets the weight for balancing successors below a node to \a w; 0.0 means no balancing.
+    void weightBalancing(double w)
+    {
+        if(w >= 0.0 && w <= 100.0)
+            m_weightBalancing = w;
+    }
+
+    //! @}
 
 protected:
-	//! Implements the algorithm call.
-	void doCall(const HierarchyLevelsBase &levels,GraphCopyAttributes &AGC);
+    //! Implements the algorithm call.
+    void doCall(const HierarchyLevelsBase &levels,GraphCopyAttributes &AGC);
 
 private:
-	void computeXCoordinates(
-		const HierarchyLevelsBase &levels,
-		GraphCopyAttributes &AGC);
-	void computeYCoordinates(
-		const HierarchyLevelsBase &levels,
-		GraphCopyAttributes &AGC);
+    void computeXCoordinates(
+        const HierarchyLevelsBase &levels,
+        GraphCopyAttributes &AGC);
+    void computeYCoordinates(
+        const HierarchyLevelsBase &levels,
+        GraphCopyAttributes &AGC);
 
-	// options
-	double m_nodeDistance;  //!< The minimal distance between nodes.
-	double m_layerDistance; //!< The minimal distance between layers.
-	bool   m_fixedLayerDistance; //!< Use fixed layer distances?
+    // options
+    double m_nodeDistance;  //!< The minimal distance between nodes.
+    double m_layerDistance; //!< The minimal distance between layers.
+    bool   m_fixedLayerDistance; //!< Use fixed layer distances?
 
-	double m_weightSegments;  //!< The weight of edge segments.
-	double m_weightBalancing; //!< The weight for balancing.
+    double m_weightSegments;  //!< The weight of edge segments.
+    double m_weightBalancing; //!< The weight for balancing.
 
 #endif
 };

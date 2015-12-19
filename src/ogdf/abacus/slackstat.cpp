@@ -36,25 +36,27 @@
 
 #include <ogdf/abacus/slackstat.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 ostream &operator<<(ostream &out, const SlackStat &rhs)
 {
-	switch (rhs.status_) {
-	case SlackStat::Basic:
-		out << "Basic";
-		break;
-	case SlackStat::NonBasicZero:
-		out << "NonBasic Zero";
-		break;
-	case SlackStat::NonBasicNonZero:
-		out << "NonBasic NonZero";
-		break;
-	case SlackStat::Unknown:
-		out << "Unknown";
-		break;
-	}
-	return out;
+    switch (rhs.status_)
+    {
+    case SlackStat::Basic:
+        out << "Basic";
+        break;
+    case SlackStat::NonBasicZero:
+        out << "NonBasic Zero";
+        break;
+    case SlackStat::NonBasicNonZero:
+        out << "NonBasic NonZero";
+        break;
+    case SlackStat::Unknown:
+        out << "Unknown";
+        break;
+    }
+    return out;
 }
 } //namespace abacus

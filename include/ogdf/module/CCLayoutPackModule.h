@@ -54,7 +54,8 @@
 
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -63,126 +64,127 @@ namespace ogdf {
  *
  * \see PlanarizationLayout<BR>PlanarizationGridLayout
  */
-class OGDF_EXPORT CCLayoutPackModule {
+class OGDF_EXPORT CCLayoutPackModule
+{
 public:
-	//! Initializes a layout packing module.
-	CCLayoutPackModule() { }
+    //! Initializes a layout packing module.
+    CCLayoutPackModule() { }
 
-	virtual ~CCLayoutPackModule() { }
+    virtual ~CCLayoutPackModule() { }
 
-	/**
-	 * \brief Arranges the rectangles given by \a box.
-	 *
-	 * The algorithm call takes an input an array \a box of rectangles with
-	 * real coordinates and computes in \a offset the offset to (0,0) of each
-	 * rectangle in the layout.
-	 *
-	 * This method is the actual algorithm call and must be overridden by derived
-	 * classes.
-	 * @param box is the array of input rectangles.
-	 * @param offset is assigned the offset of each rectangle to the origin (0,0).
-	 *        The offset of a rectangle is its lower left point in the layout.
-	 * @param pageRatio is the desired page ratio (width / height) of the
-	 *        resulting layout.
-	 */
-	virtual void call(Array<DPoint> &box,
-		Array<DPoint> &offset,
-		double pageRatio = 1.0) = 0;
+    /**
+     * \brief Arranges the rectangles given by \a box.
+     *
+     * The algorithm call takes an input an array \a box of rectangles with
+     * real coordinates and computes in \a offset the offset to (0,0) of each
+     * rectangle in the layout.
+     *
+     * This method is the actual algorithm call and must be overridden by derived
+     * classes.
+     * @param box is the array of input rectangles.
+     * @param offset is assigned the offset of each rectangle to the origin (0,0).
+     *        The offset of a rectangle is its lower left point in the layout.
+     * @param pageRatio is the desired page ratio (width / height) of the
+     *        resulting layout.
+     */
+    virtual void call(Array<DPoint> &box,
+                      Array<DPoint> &offset,
+                      double pageRatio = 1.0) = 0;
 
-	/**
-	 * \brief Arranges the rectangles given by \a box.
-	 *
-	 * The algorithm call takes an input an array \a box of rectangles with
-	 * real coordinates and computes in \a offset the offset to (0,0) of each
-	 * rectangle in the layout.
-	 * @param box is the array of input rectangles.
-	 * @param offset is assigned the offset of each rectangle to the origin (0,0).
-	 *        The offset of a rectangle is its lower left point in the layout.
-	 * @param pageRatio is the desired page ratio (width / height) of the
-	 *        resulting layout.
-	 */
-	void operator()(Array<DPoint> &box,
-		Array<DPoint> &offset,
-		double pageRatio = 1.0)
-	{
-		call(box,offset,pageRatio);
-	}
+    /**
+     * \brief Arranges the rectangles given by \a box.
+     *
+     * The algorithm call takes an input an array \a box of rectangles with
+     * real coordinates and computes in \a offset the offset to (0,0) of each
+     * rectangle in the layout.
+     * @param box is the array of input rectangles.
+     * @param offset is assigned the offset of each rectangle to the origin (0,0).
+     *        The offset of a rectangle is its lower left point in the layout.
+     * @param pageRatio is the desired page ratio (width / height) of the
+     *        resulting layout.
+     */
+    void operator()(Array<DPoint> &box,
+                    Array<DPoint> &offset,
+                    double pageRatio = 1.0)
+    {
+        call(box,offset,pageRatio);
+    }
 
-	/**
-	 * \brief Arranges the rectangles given by \a box.
-	 *
-	 * The algorithm call takes an input an array \a box of rectangles with
-	 * integer coordinates and computes in \a offset the offset to (0,0) of each
-	 * rectangle in the layout.
-	 *
-	 * This method is the actual algorithm call and must be overridden by derived
-	 * classes.
-	 * @param box is the array of input rectangles.
-	 * @param offset is assigned the offset of each rectangle to the origin (0,0).
-	 *        The offset of a rectangle is its lower left point in the layout.
-	 * @param pageRatio is the desired page ratio (width / height) of the
-	 *        resulting layout.
-	 */
-	virtual void call(Array<IPoint> &box,
-		Array<IPoint> &offset,
-		double pageRatio = 1.0) = 0;
+    /**
+     * \brief Arranges the rectangles given by \a box.
+     *
+     * The algorithm call takes an input an array \a box of rectangles with
+     * integer coordinates and computes in \a offset the offset to (0,0) of each
+     * rectangle in the layout.
+     *
+     * This method is the actual algorithm call and must be overridden by derived
+     * classes.
+     * @param box is the array of input rectangles.
+     * @param offset is assigned the offset of each rectangle to the origin (0,0).
+     *        The offset of a rectangle is its lower left point in the layout.
+     * @param pageRatio is the desired page ratio (width / height) of the
+     *        resulting layout.
+     */
+    virtual void call(Array<IPoint> &box,
+                      Array<IPoint> &offset,
+                      double pageRatio = 1.0) = 0;
 
-	/**
-	 * \brief Arranges the rectangles given by \a box.
-	 *
-	 * The algorithm call takes an input an array \a box of rectangles with
-	 * integer coordinates and computes in \a offset the offset to (0,0) of each
-	 * rectangle in the layout.
-	 * @param box is the array of input rectangles.
-	 * @param offset is assigned the offset of each rectangle to the origin (0,0).
-	 *        The offset of a rectangle is its lower left point in the layout.
-	 * @param pageRatio is the desired page ratio (width / height) of the
-	 *        resulting layout.
-	 */
-	void operator()(Array<IPoint> &box,
-		Array<IPoint> &offset,
-		double pageRatio = 1.0)
-	{
-		call(box,offset,pageRatio);
-	}
+    /**
+     * \brief Arranges the rectangles given by \a box.
+     *
+     * The algorithm call takes an input an array \a box of rectangles with
+     * integer coordinates and computes in \a offset the offset to (0,0) of each
+     * rectangle in the layout.
+     * @param box is the array of input rectangles.
+     * @param offset is assigned the offset of each rectangle to the origin (0,0).
+     *        The offset of a rectangle is its lower left point in the layout.
+     * @param pageRatio is the desired page ratio (width / height) of the
+     *        resulting layout.
+     */
+    void operator()(Array<IPoint> &box,
+                    Array<IPoint> &offset,
+                    double pageRatio = 1.0)
+    {
+        call(box,offset,pageRatio);
+    }
 
-	/**
-	 * \brief Checks if the rectangles in \a box do not overlap for given offsets.
-	 *
-	 * This function serves for checking if the computed offsets are correct in
-	 * the sense that the rectangles do not overlap in the resulting layout.
-	 * @param box is the array of rectangles.
-	 * @param offset is the array of corresponding offsets.
-	 */
-	static bool checkOffsets(const Array<DPoint> &box,
-		const Array<DPoint> &offset);
+    /**
+     * \brief Checks if the rectangles in \a box do not overlap for given offsets.
+     *
+     * This function serves for checking if the computed offsets are correct in
+     * the sense that the rectangles do not overlap in the resulting layout.
+     * @param box is the array of rectangles.
+     * @param offset is the array of corresponding offsets.
+     */
+    static bool checkOffsets(const Array<DPoint> &box,
+                             const Array<DPoint> &offset);
 
-	/**
-	 * \brief Checks if the rectangles in \a box do not overlap for given offsets.
-	 *
-	 * This function serves for checking if the computed offsets are correct in
-	 * the sense that the rectangles do not overlap in the resulting layout.
-	 * @param box is the array of rectangles.
-	 * @param offset is the array of corresponding offsets.
-	 */
-	static bool checkOffsets(const Array<IPoint> &box,
-		const Array<IPoint> &offset);
+    /**
+     * \brief Checks if the rectangles in \a box do not overlap for given offsets.
+     *
+     * This function serves for checking if the computed offsets are correct in
+     * the sense that the rectangles do not overlap in the resulting layout.
+     * @param box is the array of rectangles.
+     * @param offset is the array of corresponding offsets.
+     */
+    static bool checkOffsets(const Array<IPoint> &box,
+                             const Array<IPoint> &offset);
 
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 
 private:
-	/**
-	 * \brief Checks if the rectangles in \a box do not overlap for given offsets.
-	 *
-	 * This is a parameterized function for generic point types \a POINT.
-	 * @param box is the array of rectangles.
-	 * @param offset is the array of corresponding offsets.
-	 */
-	template<class POINT>
-	static bool checkOffsetsTP(
-		const Array<POINT> &box,
-		const Array<POINT> &offset);
+    /**
+     * \brief Checks if the rectangles in \a box do not overlap for given offsets.
+     *
+     * This is a parameterized function for generic point types \a POINT.
+     * @param box is the array of rectangles.
+     * @param offset is the array of corresponding offsets.
+     */
+    template<class POINT>
+    static bool checkOffsetsTP(
+        const Array<POINT> &box,
+        const Array<POINT> &offset);
 };
 
 

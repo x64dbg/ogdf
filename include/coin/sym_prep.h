@@ -96,134 +96,135 @@
 /*===========================================================================*/
 typedef struct PREP_STATS
 {
-   int rows_deleted;
-   int vars_fixed;
-   int coeffs_nulled;
-   int bounds_integerized;
-   int vars_aggregated;
-   int vars_integerized;
+    int rows_deleted;
+    int vars_fixed;
+    int coeffs_nulled;
+    int bounds_integerized;
+    int vars_aggregated;
+    int vars_integerized;
 
-   /* regarding coeffs changes and bounds tightening */
-   int coeffs_changed;
-   char *nz_coeff_changed;
+    /* regarding coeffs changes and bounds tightening */
+    int coeffs_changed;
+    char *nz_coeff_changed;
 
-   int bounds_tightened;
+    int bounds_tightened;
 
-   /* regarding uboundedness and infeasiblity */
-   int col_infeas_ind;
-   int row_infeas_ind;
-   int col_unbound_ind;
-   int col_numeric_ind;
-}prep_stats;
+    /* regarding uboundedness and infeasiblity */
+    int col_infeas_ind;
+    int row_infeas_ind;
+    int col_unbound_ind;
+    int col_numeric_ind;
+} prep_stats;
 
 /*===========================================================================*/
 /* Single Row Relaxation data structure */
 /* Under development */
 /*===========================================================================*/
-typedef struct SRDESC{
+typedef struct SRDESC
+{
 
-   int prob_type;
-   char sense;
-   double rhs;
+    int prob_type;
+    char sense;
+    double rhs;
 
-   int max_n;    /* all variables which are not fixed yet */
-   double *obj_max;
-   double *matval_max;
-   double *ratio_max;
-   int *matind_max;
-   char *reversed_max;
-   //  int *ratio_type_max;
-   double ub_offset;
-   double rhs_max;
-   double sum_c_max;
-   double sum_a_max;
+    int max_n;    /* all variables which are not fixed yet */
+    double *obj_max;
+    double *matval_max;
+    double *ratio_max;
+    int *matind_max;
+    char *reversed_max;
+    //  int *ratio_type_max;
+    double ub_offset;
+    double rhs_max;
+    double sum_c_max;
+    double sum_a_max;
 
-   char ub_updated;
-   double ub;
+    char ub_updated;
+    double ub;
 
-   int min_n;
-   double *obj_min;
-   double *matval_min;
-   double *ratio_min;
-   int *matind_min;
-   char *reversed_min;
-   //   int *ratio_type_min;
-   double lb_offset;
-   double rhs_min;
-   double sum_c_min;
-   double sum_a_min;
+    int min_n;
+    double *obj_min;
+    double *matval_min;
+    double *ratio_min;
+    int *matind_min;
+    char *reversed_min;
+    //   int *ratio_type_min;
+    double lb_offset;
+    double rhs_min;
+    double sum_c_min;
+    double sum_a_min;
 
-   char lb_updated;
-   double lb;
+    char lb_updated;
+    double lb;
 
-   /* for sorting purposes */
-   int * fixed_ind;
-   int * tmp_ind;
+    /* for sorting purposes */
+    int * fixed_ind;
+    int * tmp_ind;
 
-   /* for variable fixing, bound tightening purpose*/
+    /* for variable fixing, bound tightening purpose*/
 
-   int * var_stat_max;
-   int * var_stat_min;
+    int * var_stat_max;
+    int * var_stat_min;
 
-   double *var_obj_max;
-   double *var_matval_max;
+    double *var_obj_max;
+    double *var_matval_max;
 
-   double *var_obj_min;
-   double *var_matval_min;
+    double *var_obj_min;
+    double *var_matval_min;
 
-   double *var_min_opt; /* for solving the same problem for
-			   each variable fixed
-			*/
-   double *var_max_opt;
+    double *var_min_opt; /* for solving the same problem for
+               each variable fixed
+            */
+    double *var_max_opt;
 
-}SRdesc;
+} SRdesc;
 
 /*===========================================================================*/
 /* Preprocessing data structure  */
 /*===========================================================================*/
 typedef struct PREPDesc
 {
-   MIPdesc * mip;
-   MIPdesc * orig_mip;
-   prep_stats stats;
-   prep_params params;
+    MIPdesc * mip;
+    MIPdesc * orig_mip;
+    prep_stats stats;
+    prep_params params;
 
-   /* for logical fixing */
-   int impl_limit;
-   //int impl_var_cnt; /* fixed ones */
-   IMPlist *list; /* the list under inspection */
-   int      impl_col_ind;
-   prep_stats impl_stats;
-   int      impl_row_cnt;
-   int      impl_var_cnt;
-   char     *impl_vars;
+    /* for logical fixing */
+    int impl_limit;
+    //int impl_var_cnt; /* fixed ones */
+    IMPlist *list; /* the list under inspection */
+    int      impl_col_ind;
+    prep_stats impl_stats;
+    int      impl_row_cnt;
+    int      impl_var_cnt;
+    char     *impl_vars;
 
-   ROWinfo *impl_rows;
-   COLinfo *impl_cols;
+    ROWinfo *impl_rows;
+    COLinfo *impl_cols;
 
-   double *impl_ub;
-   double *impl_lb;
+    double *impl_ub;
+    double *impl_lb;
 
-   char *ulist_checked;
-   char *llist_checked;
+    char *ulist_checked;
+    char *llist_checked;
 
-   /* trying single/aggr row relaxations to improve bounds*/
-   int max_sr_cnt;
-   int max_aggr_cnt;
-   SRdesc *sr; /* for 'L', 'G' constraints */
-   SRdesc *d_sr; /* additionally, for 'E' constraints */
-   /* for subproblems checking purposes */
-   char *rows_checked;
-   double alloc_time;
+    /* trying single/aggr row relaxations to improve bounds*/
+    int max_sr_cnt;
+    int max_aggr_cnt;
+    SRdesc *sr; /* for 'L', 'G' constraints */
+    SRdesc *d_sr; /* additionally, for 'E' constraints */
+    /* for subproblems checking purposes */
+    char *rows_checked;
+    double alloc_time;
 
-   /* will need for sorting etc */
-   int * user_col_ind;
-   int * user_row_ind;
-   double alloc2_time;
-   double impl_array_time;
-   double impl_cols_time;
-   double impl_rows_time;
-}PREPdesc;
+    /* will need for sorting etc */
+    int * user_col_ind;
+    int * user_row_ind;
+    double alloc2_time;
+    double impl_array_time;
+    double impl_cols_time;
+    double impl_rows_time;
+} PREPdesc;
 
 /*===========================================================================*/
 /* Data structure to keep relevant info of a column */
@@ -233,12 +234,13 @@ typedef struct PREPDesc
    -not used in symphony */
 /*=========================================================================*/
 
-typedef struct PREP_ENVIRONMENT{
-   PREPdesc * P;
-   prep_stats stats;
-   prep_params params;
-   int termcode;
-}prep_environment;
+typedef struct PREP_ENVIRONMENT
+{
+    PREPdesc * P;
+    prep_stats stats;
+    prep_params params;
+    int termcode;
+} prep_environment;
 
 /*===========================================================================*/
 
@@ -252,10 +254,10 @@ int prep_update_rootdesc(sym_environment *env);
 
 /*load a problem through MIP model description arrays*/
 int prep_load_problem(prep_environment *prep, int numcols, int numrows,
-		      int *start, int *index, double *value,
-		      double *collb, double *colub, char *is_int,
-		      double *obj, double obj_offset, char *rowsen,
-		      double *rowrhs, double *rowrng, char make_copy);
+                      int *start, int *index, double *value,
+                      double *collb, double *colub, char *is_int,
+                      double *obj, double obj_offset, char *rowsen,
+                      double *rowrhs, double *rowrng, char make_copy);
 
 /*==========================================================================*/
 /*==========================================================================*/
@@ -286,20 +288,20 @@ int prep_basic(PREPdesc *P);
 
 /* try to improve the bounds of a variable*/
 int prep_improve_variable(PREPdesc *P, int col_ind, int row_ind, int a_loc,
-			  int dive_level, char check_improve, char impl_mode,
-			  char use_sr_bounds,
-			  double sr_ub, double sr_lb, int use_mip);
+                          int dive_level, char check_improve, char impl_mode,
+                          char use_sr_bounds,
+                          double sr_ub, double sr_lb, int use_mip);
 
 /* check if the given row is redundant */
 int prep_check_redundancy(PREPdesc *P, int row_ind, char use_sr_bounds,
-			  double sr_ub, double sr_lb, char impl_mode,
-			  int dive_level);
+                          double sr_ub, double sr_lb, char impl_mode,
+                          int dive_level);
 
 /* if a column is modified, then update the model*/
 int prep_modified_cols_update_info(PREPdesc *P, int col_cnt, int *col_start,
-				   int row_ind, int dive_level,
-				   double fixed_bound,  int fix_type,
-				   char check_redundancy, char impl_mode);
+                                   int row_ind, int dive_level,
+                                   double fixed_bound,  int fix_type,
+                                   char check_redundancy, char impl_mode);
 
 /* for the unbounded variables, check if we can tighten their bounds*/
 
@@ -310,11 +312,11 @@ int prep_deleted_row_update_info(MIPdesc *mip, int row_ind);
 
 /* try to find duplicate rows and columns */
 int prep_delete_duplicate_rows_cols(PREPdesc *P, char check_rows,
-				    char check_cols);
+                                    char check_cols);
 /* utility functions */
 void prep_sos_fill_var_cnt(PREPdesc *P);
 void prep_sos_fill_row(ROWinfo *row, int alloc_size, int size,
-		       int *ind);
+                       int *ind);
 
 double prep_rnd_integral(double val, double etol, char rnd_type);
 int  prep_get_row_bounds(MIPdesc *mip, int r_ind, double etol);
@@ -324,15 +326,15 @@ char prep_is_integral(double val, double etol);
 /* reporting functions */
 int prep_declare_fixed_var(int col_ind, char *name, double fixed_bound);
 int prep_declare_redundant_row(ROWinfo row, int row_ind, char sense,
-			       double rhs);
+                               double rhs);
 int prep_declare_coef_change(int row_ind, int col_ind,
-			     char *name, double a_val,
-			     double rhs);
+                             char *name, double a_val,
+                             double rhs);
 int prep_report(PREPdesc *P, int termcode);
 
 /* implications - under development*/
 int prep_add_to_impl_list(IMPlist *list, int ind, int fix_type,
-			  double val);
+                          double val);
 int prep_initialize_impl_lists(PREPdesc *P);
 
 /* experimental - under development */
@@ -352,32 +354,32 @@ void sr_allocate(SRdesc **sr, int n);
 
 /* solve the single row (indexed by row_ind) relaxation*/
 int sr_solve_bounded_prob(PREPdesc *P, SRdesc *sr, SRdesc *d_sr,
-			  int obj_ind, int row_ind,
-			  int *r_matbeg, int *r_matind, double *r_matval,
-			  COLinfo *cols, double *ub, double *lb, double etol);
+                          int obj_ind, int row_ind,
+                          int *r_matbeg, int *r_matind, double *r_matval,
+                          COLinfo *cols, double *ub, double *lb, double etol);
 /* internal functions: */
 /* add a new column to the problem: the description of column is passed in
    through function arguments*/
 int sr_add_new_col(SRdesc *sr, SRdesc *d_sr, double c_val, double a_val,
-		   int col_ind, char col_var_type, double col_ub,
-		   double col_lb, char sense, int col_type,
-		   int col_bound_type);
+                   int col_ind, char col_var_type, double col_ub,
+                   double col_lb, char sense, int col_type,
+                   int col_bound_type);
 /* add a new column to the problem: the description of column is passed in
    through function arguments - here we know that it is bounded*/
 int sr_add_new_bounded_col(SRdesc *sr, double c_val, double a_val,
-			   int col_ind,
-			   double rhs_ub_offset, double rhs_lb_offset,
-			   double obj_ub_offset, double obj_lb_offset,
-			   double col_ub, double col_lb, int obj_sense,
-			   char var_type);
+                           int col_ind,
+                           double rhs_ub_offset, double rhs_lb_offset,
+                           double obj_ub_offset, double obj_lb_offset,
+                           double col_ub, double col_lb, int obj_sense,
+                           char var_type);
 /* helper functions */
 int sr_find_opt_bounded(PREPdesc *P, SRdesc *sr, int obj_ind,
-			double *ub, double *lb);
+                        double *ub, double *lb);
 
 int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
-		       int row_ind, int *r_matbeg,
-		       int *r_matind, double *r_matval, COLinfo *cols,
-		       double *ub, double *lb, double etol);
+                       int row_ind, int *r_matbeg,
+                       int *r_matind, double *r_matval, COLinfo *cols,
+                       double *ub, double *lb, double etol);
 
 void free_prep_desc(PREPdesc *P);
 void free_sr_desc(SRdesc *sr);

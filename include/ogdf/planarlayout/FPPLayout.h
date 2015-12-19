@@ -67,34 +67,35 @@ namespace ogdf
  * for triangulated planar graphs is computed. In the third phase the vertices
  * are placed incrementally according to the shelling order.
  */
-class OGDF_EXPORT FPPLayout : public PlanarGridLayoutModule {
+class OGDF_EXPORT FPPLayout : public PlanarGridLayoutModule
+{
 public:
-	FPPLayout();
+    FPPLayout();
 
 private:
-	void doCall(
-		const Graph &G,
-		adjEntry adjExternal,
-		GridLayout &gridLayout,
-		IPoint &boundingBox,
-		bool fixEmbedding );
+    void doCall(
+        const Graph &G,
+        adjEntry adjExternal,
+        GridLayout &gridLayout,
+        IPoint &boundingBox,
+        bool fixEmbedding );
 
-	void computeOrder(
-		const GraphCopy &G,
-		NodeArray<int> &num,
-		NodeArray<adjEntry> &e_wp,
-		NodeArray<adjEntry> &e_wq,
-		adjEntry e_12,
-		adjEntry e_2n,
-		adjEntry e_n1 );
+    void computeOrder(
+        const GraphCopy &G,
+        NodeArray<int> &num,
+        NodeArray<adjEntry> &e_wp,
+        NodeArray<adjEntry> &e_wq,
+        adjEntry e_12,
+        adjEntry e_2n,
+        adjEntry e_n1 );
 
-	void computeCoordinates(
-		const GraphCopy &G,
-		IPoint &boundingBox,
-		GridLayout &gridLayout,
-		NodeArray<int> &num,
-		NodeArray<adjEntry> &e_wp,
-		NodeArray<adjEntry> &e_wq );
+    void computeCoordinates(
+        const GraphCopy &G,
+        IPoint &boundingBox,
+        GridLayout &gridLayout,
+        NodeArray<int> &num,
+        NodeArray<adjEntry> &e_wp,
+        NodeArray<adjEntry> &e_wq );
 };
 
 

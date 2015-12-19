@@ -8,7 +8,7 @@
 /*! \file OsiRowCutDebugger.hpp
 
   \brief Provides a facility to validate cut constraints to ensure that they
-  	 do not cut off a given solution.
+     do not cut off a given solution.
 */
 
 #include <string>
@@ -39,149 +39,158 @@
   transformations, your solution must match the presolved problem. (But see
   #redoSolution().)
 */
-class OsiRowCutDebugger {
-  friend void OsiRowCutDebuggerUnitTest(const OsiSolverInterface * siP,    
-					const std::string & mpsDir);
+class OsiRowCutDebugger
+{
+    friend void OsiRowCutDebuggerUnitTest(const OsiSolverInterface * siP,
+                                          const std::string & mpsDir);
 
 public:
-  
-  /*! @name Validate Row Cuts
-  
-    Check that the specified cuts do not cut off the known solution.
-  */
-  //@{
-  /*! \brief Check that the set of cuts does not cut off the solution known
-  	     to the debugger.
 
-    Check if any generated cuts cut off the solution known to the debugger!
-    If so then print offending cuts.  Return the number of invalid cuts.
-  */
-  virtual int validateCuts(const OsiCuts & cs, int first, int last) const;
+    /*! @name Validate Row Cuts
 
-  /*! \brief Check that the cut does not cut off the solution known to the
-  	     debugger.
-  
-    Return true if cut is invalid
-  */
-  virtual bool invalidCut(const OsiRowCut & rowcut) const;
+      Check that the specified cuts do not cut off the known solution.
+    */
+    //@{
+    /*! \brief Check that the set of cuts does not cut off the solution known
+           to the debugger.
 
-  /*! \brief Returns true if the solution held in the solver is compatible
-  	     with the known solution.
+      Check if any generated cuts cut off the solution known to the debugger!
+      If so then print offending cuts.  Return the number of invalid cuts.
+    */
+    virtual int validateCuts(const OsiCuts & cs, int first, int last) const;
 
-    More specifically, returns true if the known solution satisfies the column
-    bounds held in the solver.
-  */
-  bool onOptimalPath(const OsiSolverInterface &si) const;
-  //@}
+    /*! \brief Check that the cut does not cut off the solution known to the
+           debugger.
 
-  /*! @name Activate the Debugger
-  
-    The debugger is considered to be active when it holds a known solution.
-  */
-  //@{
-  /*! \brief Activate a debugger using the name of a problem.
+      Return true if cut is invalid
+    */
+    virtual bool invalidCut(const OsiRowCut & rowcut) const;
 
-    The debugger knows an optimal solution for most of miplib3. Check the
-    source code for the full list.  Returns true if the debugger is
-    successfully activated.
-  */
-  bool activate(const OsiSolverInterface &si, const char *model) ;
+    /*! \brief Returns true if the solution held in the solver is compatible
+           with the known solution.
 
-  /*! \brief Activate a debugger using a full solution array.
+      More specifically, returns true if the known solution satisfies the column
+      bounds held in the solver.
+    */
+    bool onOptimalPath(const OsiSolverInterface &si) const;
+    //@}
 
-    The solution must have one entry for every variable, but only the entries
-    for integer values are used. By default the debugger will solve an lp
-    relaxation with the integer variables fixed and fill in values for the
-    continuous variables from this solution. If the debugger should preserve
-    the given values for the continuous variables, set \p keepContinuous to
-    \c true.
+    /*! @name Activate the Debugger
 
-    Returns true if debugger activates successfully.
-  */
-  bool activate(const OsiSolverInterface &si, const double* solution,
-  		bool keepContinuous = false) ;
+      The debugger is considered to be active when it holds a known solution.
+    */
+    //@{
+    /*! \brief Activate a debugger using the name of a problem.
 
-  /// Returns true if the debugger is active 
-  bool active() const;
-  //@}
+      The debugger knows an optimal solution for most of miplib3. Check the
+      source code for the full list.  Returns true if the debugger is
+      successfully activated.
+    */
+    bool activate(const OsiSolverInterface &si, const char *model) ;
 
-  /*! @name Query or Manipulate the Known Solution */
-  //@{
-  /// Return the known solution
-  inline const double * optimalSolution() const
-  { return knownSolution_;}
+    /*! \brief Activate a debugger using a full solution array.
 
-  /// Return the number of columns in the known solution
-  inline int numberColumns() const { return (numberColumns_) ; }
+      The solution must have one entry for every variable, but only the entries
+      for integer values are used. By default the debugger will solve an lp
+      relaxation with the integer variables fixed and fill in values for the
+      continuous variables from this solution. If the debugger should preserve
+      the given values for the continuous variables, set \p keepContinuous to
+      \c true.
 
-  /// Return the value of the objective for the known solution
-  inline double optimalValue() const { return knownValue_;}
+      Returns true if debugger activates successfully.
+    */
+    bool activate(const OsiSolverInterface &si, const double* solution,
+                  bool keepContinuous = false) ;
 
-  /*! \brief Edit the known solution to reflect column changes
+    /// Returns true if the debugger is active
+    bool active() const;
+    //@}
 
-    Given a translation array \p originalColumns[numberColumns] which can
-    translate current column indices to original column indices, this method
-    will edit the solution held in the debugger so that it matches the current
-    set of columns.
+    /*! @name Query or Manipulate the Known Solution */
+    //@{
+    /// Return the known solution
+    inline const double * optimalSolution() const
+    {
+        return knownSolution_;
+    }
 
-    Useful when the original problem is preprocessed prior to cut generation.
-    The debugger does keep a record of the changes.
-  */
-  void redoSolution(int numberColumns, const int *originalColumns);
+    /// Return the number of columns in the known solution
+    inline int numberColumns() const
+    {
+        return (numberColumns_) ;
+    }
 
-  /// Print optimal solution (returns -1 bad debug, 0 on optimal, 1 not)
-  int printOptimalSolution(const OsiSolverInterface & si) const;
-  //@}
+    /// Return the value of the objective for the known solution
+    inline double optimalValue() const
+    {
+        return knownValue_;
+    }
 
-  /**@name Constructors and Destructors */
-  //@{
-  /// Default constructor - no checking 
-  OsiRowCutDebugger ();
+    /*! \brief Edit the known solution to reflect column changes
 
-  /*! \brief Constructor with name of model.
+      Given a translation array \p originalColumns[numberColumns] which can
+      translate current column indices to original column indices, this method
+      will edit the solution held in the debugger so that it matches the current
+      set of columns.
 
-    See #activate(const OsiSolverInterface&,const char*).
-  */
-  OsiRowCutDebugger(const OsiSolverInterface &si, const char *model) ;
+      Useful when the original problem is preprocessed prior to cut generation.
+      The debugger does keep a record of the changes.
+    */
+    void redoSolution(int numberColumns, const int *originalColumns);
 
-  /*! \brief Constructor with full solution.
+    /// Print optimal solution (returns -1 bad debug, 0 on optimal, 1 not)
+    int printOptimalSolution(const OsiSolverInterface & si) const;
+    //@}
 
-    See #activate(const OsiSolverInterface&,const double*,bool).
-  */
-  OsiRowCutDebugger(const OsiSolverInterface &si, const double *solution,
-  		    bool enforceOptimality = false) ;
- 
-  /// Copy constructor 
-  OsiRowCutDebugger(const OsiRowCutDebugger &);
+    /**@name Constructors and Destructors */
+    //@{
+    /// Default constructor - no checking
+    OsiRowCutDebugger ();
 
-  /// Assignment operator 
-  OsiRowCutDebugger& operator=(const OsiRowCutDebugger& rhs);
-  
-  /// Destructor 
-  virtual ~OsiRowCutDebugger ();
-  //@}
-      
+    /*! \brief Constructor with name of model.
+
+      See #activate(const OsiSolverInterface&,const char*).
+    */
+    OsiRowCutDebugger(const OsiSolverInterface &si, const char *model) ;
+
+    /*! \brief Constructor with full solution.
+
+      See #activate(const OsiSolverInterface&,const double*,bool).
+    */
+    OsiRowCutDebugger(const OsiSolverInterface &si, const double *solution,
+                      bool enforceOptimality = false) ;
+
+    /// Copy constructor
+    OsiRowCutDebugger(const OsiRowCutDebugger &);
+
+    /// Assignment operator
+    OsiRowCutDebugger& operator=(const OsiRowCutDebugger& rhs);
+
+    /// Destructor
+    virtual ~OsiRowCutDebugger ();
+    //@}
+
 private:
-  
-  // Private member data
 
-  /**@name Private member data */
-  //@{
-  /// Value of known solution
-  double knownValue_;
+    // Private member data
 
-  /*! \brief Number of columns in known solution
-  
-    This must match the number of columns reported by the solver.
-  */
-  int numberColumns_;
+    /**@name Private member data */
+    //@{
+    /// Value of known solution
+    double knownValue_;
 
-  /// array specifying integer variables
-  bool * integerVariable_;
+    /*! \brief Number of columns in known solution
 
-  /// array specifying known solution
-  double * knownSolution_;
-  //@}
+      This must match the number of columns reported by the solver.
+    */
+    int numberColumns_;
+
+    /// array specifying integer variables
+    bool * integerVariable_;
+
+    /// array specifying known solution
+    double * knownSolution_;
+    //@}
 };
-  
+
 #endif

@@ -55,7 +55,8 @@
 #include <ogdf/basic/GraphAttributes.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! The interface for energy functions for the Davidson Harel graph drawing method.
 /**
@@ -64,67 +65,82 @@ namespace ogdf {
 class EnergyFunction
 {
 public:
-	//! Initializes data dtructures to speed up later computations
-	EnergyFunction(const string &funcname, GraphAttributes &AG);
+    //! Initializes data dtructures to speed up later computations
+    EnergyFunction(const string &funcname, GraphAttributes &AG);
 
-	virtual ~EnergyFunction() { }
+    virtual ~EnergyFunction() { }
 
-	//! computes energy for the layout at the beginning of the optimization process
-	virtual void computeEnergy() = 0;
+    //! computes energy for the layout at the beginning of the optimization process
+    virtual void computeEnergy() = 0;
 
-	//! sets m_testNode, m_testX and m_testY and computes the energy for the new configuration (vertex v moves to newPos)
-	double computeCandidateEnergy(
-		const node v,
-		const DPoint &newPos);
+    //! sets m_testNode, m_testX and m_testY and computes the energy for the new configuration (vertex v moves to newPos)
+    double computeCandidateEnergy(
+        const node v,
+        const DPoint &newPos);
 
-	//! prints the name of the energy function
-	string getName() const { return m_name; }
+    //! prints the name of the energy function
+    string getName() const
+    {
+        return m_name;
+    }
 
-	//! Changes m_currentX and m_currentY by setting the position of m_testNode to m_testX and m_testY. Sets m_energy to m_candidateEnergy. Computes the energy of the layout stored in AG.
-	void candidateTaken();
+    //! Changes m_currentX and m_currentY by setting the position of m_testNode to m_testX and m_testY. Sets m_energy to m_candidateEnergy. Computes the energy of the layout stored in AG.
+    void candidateTaken();
 
 #ifdef OGDF_DEBUG
-	//! prints status information for debugging
-	void printStatus() const;
+    //! prints status information for debugging
+    void printStatus() const;
 #endif
 
-	double energy() const { return m_energy; }
+    double energy() const
+    {
+        return m_energy;
+    }
 
 protected:
-	const Graph &m_G; //!< the graph that should be drawn
-	const string m_name; //!< name of the energy function
-	double m_candidateEnergy; //!< the energy of the layout if the candidate layout is chosen
-	double m_energy; //!< energy of the current layout
+    const Graph &m_G; //!< the graph that should be drawn
+    const string m_name; //!< name of the energy function
+    double m_candidateEnergy; //!< the energy of the layout if the candidate layout is chosen
+    double m_energy; //!< energy of the current layout
 
-	//! returns candidate position for the node to be moved
-	DPoint testPos() { return m_testPos; }
+    //! returns candidate position for the node to be moved
+    DPoint testPos()
+    {
+        return m_testPos;
+    }
 
-	//! returns the current position of vertex v
-	DPoint currentPos(const node v) const { return DPoint(m_AG.x(v),m_AG.y(v)); }
+    //! returns the current position of vertex v
+    DPoint currentPos(const node v) const
+    {
+        return DPoint(m_AG.x(v),m_AG.y(v));
+    }
 
-	//! returns the vertex that is under consideration in the current step
-	node testNode() const { return m_testNode; }
+    //! returns the vertex that is under consideration in the current step
+    node testNode() const
+    {
+        return m_testNode;
+    }
 
-	//! changes the data of a specific energy function if the candidate was taken
-	virtual void internalCandidateTaken() = 0;
+    //! changes the data of a specific energy function if the candidate was taken
+    virtual void internalCandidateTaken() = 0;
 
-	//! computes the energy if m_testNode changes position to m_testX and m_testY, sets the value of m_candidateEnergy.
-	virtual void compCandEnergy() = 0;
+    //! computes the energy if m_testNode changes position to m_testX and m_testY, sets the value of m_candidateEnergy.
+    virtual void compCandEnergy() = 0;
 
 #ifdef OGDF_DEBUG
-	virtual void printInternalData() const = 0;
+    virtual void printInternalData() const = 0;
 #endif
 
 private:
-	//! the copy constructor is fake and can not be used.
-	EnergyFunction(const EnergyFunction &e) : m_G(e.m_G), m_name(e.m_name), m_AG(e.m_AG) { }
+    //! the copy constructor is fake and can not be used.
+    EnergyFunction(const EnergyFunction &e) : m_G(e.m_G), m_name(e.m_name), m_AG(e.m_AG) { }
 
-	//! the assignment operator is fake and can not be used.
-	EnergyFunction& operator=(const EnergyFunction &e);
+    //! the assignment operator is fake and can not be used.
+    EnergyFunction& operator=(const EnergyFunction &e);
 
-	GraphAttributes& m_AG;	//!< This stores the graph with its graphical attributes and the current positions for the vertices
-	node m_testNode; //!< The node that changed position in the candidate
-	DPoint m_testPos; //!< New candidate positions for m_testNode
+    GraphAttributes& m_AG;  //!< This stores the graph with its graphical attributes and the current positions for the vertices
+    node m_testNode; //!< The node that changed position in the candidate
+    DPoint m_testPos; //!< New candidate positions for m_testNode
 };
 
 }// end namespace

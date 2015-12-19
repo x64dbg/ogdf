@@ -13,7 +13,7 @@ bool CoinError::printErrors_ = false;
 #include <windows.h>
 void WindowsErrorPopupBlocker()
 {
-  SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
+    SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
 }
 #else
 void WindowsErrorPopupBlocker() {}

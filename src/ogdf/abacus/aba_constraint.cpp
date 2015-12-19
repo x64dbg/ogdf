@@ -39,145 +39,153 @@
 #include <ogdf/abacus/row.h>
 #include <ogdf/abacus/active.h>
 
-namespace abacus {
+namespace abacus
+{
 
 int Constraint::genRow(Active<Variable, Constraint> *var,
-						   Row &row) const
+                       Row &row) const
 {
-	double eps      = master_->machineEps();
-	double minusEps = -eps;
-	int    n        = var->number();
-	double c;
+    double eps      = master_->machineEps();
+    double minusEps = -eps;
+    int    n        = var->number();
+    double c;
 
-	expand();
+    expand();
 
-	for (int e = 0; e < n; e++) {
-		c = coeff((*var)[e]);
-		if (c > eps || c < minusEps) row.insert(e, c);
-	}
+    for (int e = 0; e < n; e++)
+    {
+        c = coeff((*var)[e]);
+        if (c > eps || c < minusEps) row.insert(e, c);
+    }
 
-	row.rhs(rhs());
-	row.sense(sense_.sense());
-	compress();
-	return row.nnz();
+    row.rhs(rhs());
+    row.sense(sense_.sense());
+    compress();
+    return row.nnz();
 }
 
 
 double Constraint::slack(Active<Variable, Constraint> *variables,
-							 double *x) const
+                         double *x) const
 {
-	double eps      = master_->machineEps();
-	double minusEps = -eps;
-	double c;
-	double xi;
-	double lhs = 0.0;
-	int    n   = variables->number();
+    double eps      = master_->machineEps();
+    double minusEps = -eps;
+    double c;
+    double xi;
+    double lhs = 0.0;
+    int    n   = variables->number();
 
-	expand();
+    expand();
 
-	for (int i = 0; i < n; i++) {
-		xi = x[i];
-		if (xi > eps || xi < minusEps) {
-			c = coeff((*variables)[i]);
-			if (c > eps || c < minusEps)
-				lhs += c * xi;
-		}
-	}
+    for (int i = 0; i < n; i++)
+    {
+        xi = x[i];
+        if (xi > eps || xi < minusEps)
+        {
+            c = coeff((*variables)[i]);
+            if (c > eps || c < minusEps)
+                lhs += c * xi;
+        }
+    }
 
-	compress();
+    compress();
 
-	return rhs() - lhs;
+    return rhs() - lhs;
 }
 
 
 bool Constraint::violated(Active<Variable, Constraint> *variables,
-							  double *x,
-							  double *sl) const
+                          double *x,
+                          double *sl) const
 {
-	double s = slack(variables, x);
+    double s = slack(variables, x);
 
-	if (sl) *sl = s;
+    if (sl) *sl = s;
 
-	return violated(s);
+    return violated(s);
 }
 
 
 bool Constraint::violated(double slack) const
 {
-	switch (sense_.sense()) {
-	case CSense::Equal:
-		if (fabs(slack) > master_->eps()) return true;
-		else                              return false;
-	case CSense::Less:
-		if (slack < -master_->eps()) return true;
-		else                         return false;
-	case CSense::Greater:
-		if (slack > master_->eps()) return true;
-		else                        return false;
-	default:
-		Logger::ifout() << "Constraint::violated(): unknown sense\n";
-		OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConstraint);
-	}
+    switch (sense_.sense())
+    {
+    case CSense::Equal:
+        if (fabs(slack) > master_->eps()) return true;
+        else                              return false;
+    case CSense::Less:
+        if (slack < -master_->eps()) return true;
+        else                         return false;
+    case CSense::Greater:
+        if (slack > master_->eps()) return true;
+        else                        return false;
+    default:
+        Logger::ifout() << "Constraint::violated(): unknown sense\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConstraint);
+    }
 }
 
 
 InfeasCon::INFEAS Constraint::voidLhsViolated(double newRhs) const
 {
-	switch (sense_.sense()) {
-	case CSense::Equal:
-		if(newRhs > master_->eps())  return InfeasCon::TooLarge;
-		if(newRhs < -master_->eps()) return InfeasCon::TooSmall;
-		else                      return InfeasCon::Feasible;
-	case CSense::Less:
-		return newRhs < -master_->eps() ? InfeasCon::TooLarge : InfeasCon::Feasible;
-	case CSense::Greater:
-		return   newRhs > master_->eps() ? InfeasCon::TooSmall : InfeasCon::Feasible;
-	default:
-		Logger::ifout() << "Constraint::voidLhsViolated(): unknown sense\n";
-		OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConstraint);
-	}
+    switch (sense_.sense())
+    {
+    case CSense::Equal:
+        if(newRhs > master_->eps())  return InfeasCon::TooLarge;
+        if(newRhs < -master_->eps()) return InfeasCon::TooSmall;
+        else                      return InfeasCon::Feasible;
+    case CSense::Less:
+        return newRhs < -master_->eps() ? InfeasCon::TooLarge : InfeasCon::Feasible;
+    case CSense::Greater:
+        return   newRhs > master_->eps() ? InfeasCon::TooSmall : InfeasCon::Feasible;
+    default:
+        Logger::ifout() << "Constraint::voidLhsViolated(): unknown sense\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConstraint);
+    }
 }
 
 
 void Constraint::printRow(ostream &out,
-							  Active<Variable, Constraint> *var) const
+                          Active<Variable, Constraint> *var) const
 {
-	Row row(master_, var->number());
+    Row row(master_, var->number());
 
-	genRow(var, row);
+    genRow(var, row);
 
-	out << row;
+    out << row;
 }
 
 
 double Constraint::distance(double *x,
-								Active<Variable, Constraint> *actVar) const
+                            Active<Variable, Constraint> *actVar) const
 {
 
-	Row a(master_, actVar->number());
+    Row a(master_, actVar->number());
 
-	int nnz = genRow(actVar, a);
+    int nnz = genRow(actVar, a);
 
-	double ax = 0.0;
+    double ax = 0.0;
 
-	for (int i = 0; i < nnz; i++)
-		ax += a.coeff(i) * x[a.support(i)];
+    for (int i = 0; i < nnz; i++)
+        ax += a.coeff(i) * x[a.support(i)];
 
-	return fabs((rhs() - ax)/a.norm());
+    return fabs((rhs() - ax)/a.norm());
 
 }
 
 
 ConClass *Constraint::classification(Active<Variable, Constraint> *var) const
 {
-	if (conClass_ == 0 || var) {
-		if (var == 0) {
-			Logger::ifout() << "Constraint::classification(): Fatal error.\nNeither classification nor variable set specified.\n";
-			OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConstraint);
-		}
-		conClass_ = classify(var);
-	}
-	return conClass_;
+    if (conClass_ == 0 || var)
+    {
+        if (var == 0)
+        {
+            Logger::ifout() << "Constraint::classification(): Fatal error.\nNeither classification nor variable set specified.\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConstraint);
+        }
+        conClass_ = classify(var);
+    }
+    return conClass_;
 }
 
 } //namespace abacus

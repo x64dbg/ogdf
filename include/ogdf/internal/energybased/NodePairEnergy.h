@@ -56,57 +56,69 @@
 #include <ogdf/internal/energybased/IntersectionRectangle.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-class NodePairEnergy: public EnergyFunction {
+class NodePairEnergy: public EnergyFunction
+{
 public:
-	//Initializes data dtructures to speed up later computations
-	NodePairEnergy(const string energyname, GraphAttributes &AG);
+    //Initializes data dtructures to speed up later computations
+    NodePairEnergy(const string energyname, GraphAttributes &AG);
 
-	virtual ~NodePairEnergy() {
-		delete m_nodeNums;
-		delete m_pairEnergy;
-	}
+    virtual ~NodePairEnergy()
+    {
+        delete m_nodeNums;
+        delete m_pairEnergy;
+    }
 
-	//computes the energy of the initial layout
-	void computeEnergy();
+    //computes the energy of the initial layout
+    void computeEnergy();
 
 protected:
-	//computes the energy stored by a pair of vertices at the given positions
-	virtual double computeCoordEnergy(node, node, const DPoint&, const DPoint&) const = 0;
+    //computes the energy stored by a pair of vertices at the given positions
+    virtual double computeCoordEnergy(node, node, const DPoint&, const DPoint&) const = 0;
 
-	//returns the internal number given to each vertex
-	int nodeNum(node v) const { return (*m_nodeNums)[v]; }
+    //returns the internal number given to each vertex
+    int nodeNum(node v) const
+    {
+        return (*m_nodeNums)[v];
+    }
 
-	//returns true in constant time if two vertices are adjacent
-	bool adjacent(const node v, const node w) const { return m_adjacentOracle.adjacent(v,w); }
+    //returns true in constant time if two vertices are adjacent
+    bool adjacent(const node v, const node w) const
+    {
+        return m_adjacentOracle.adjacent(v,w);
+    }
 
-	//returns the shape of a vertex as an IntersectionRectangle
-	const IntersectionRectangle& shape(const node v) const { return m_shape[v]; }
+    //returns the shape of a vertex as an IntersectionRectangle
+    const IntersectionRectangle& shape(const node v) const
+    {
+        return m_shape[v];
+    }
 
 #ifdef OGDF_DEBUG
-	virtual void printInternalData() const;
+    virtual void printInternalData() const;
 #endif
 
 private:
-	NodeArray<int> *m_nodeNums;//stores internal number of each vertex
-	Array2D<double> *m_pairEnergy;//stores for each pair of vertices its energy
-	NodeArray<double> m_candPairEnergy;//stores for each vertex its pair energy with
-	//respect to the vertex to be moved if its new position is chosen
-	NodeArray<IntersectionRectangle> m_shape;//stores the shape of each vertex as
-	//an IntersectionRectangle
-	List<node> m_nonIsolated;//list of vertices with degree greater zero
-	const AdjacencyOracle m_adjacentOracle;//structure for constant time adjacency queries
+    NodeArray<int> *m_nodeNums;//stores internal number of each vertex
+    Array2D<double> *m_pairEnergy;//stores for each pair of vertices its energy
+    NodeArray<double> m_candPairEnergy;//stores for each vertex its pair energy with
+    //respect to the vertex to be moved if its new position is chosen
+    NodeArray<IntersectionRectangle> m_shape;//stores the shape of each vertex as
+    //an IntersectionRectangle
+    List<node> m_nonIsolated;//list of vertices with degree greater zero
+    const AdjacencyOracle m_adjacentOracle;//structure for constant time adjacency queries
 
-	//function computes energy stored in a certain pair of vertices
-	double computePairEnergy(const node v, const node w) const;
+    //function computes energy stored in a certain pair of vertices
+    double computePairEnergy(const node v, const node w) const;
 
-	//computes energy of whole layout if new position of the candidate vertex is chosen
-	void compCandEnergy();
+    //computes energy of whole layout if new position of the candidate vertex is chosen
+    void compCandEnergy();
 
-	//If a candidate change is chosen as the new position, this function sets the
-	//internal data accordingly
-	void internalCandidateTaken();
+    //If a candidate change is chosen as the new position, this function sets the
+    //internal data accordingly
+    void internalCandidateTaken();
 };
 
 

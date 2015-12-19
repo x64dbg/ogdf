@@ -43,7 +43,8 @@
 #include <ogdf/abacus/lpsolution.h>
 #include <ogdf/abacus/nonduplpool.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 enum Separator_CUTFOUND {Added, Duplication, Full};
@@ -72,138 +73,159 @@ enum Separator_CUTFOUND {Added, Duplication, Full};
  * serve as parameter to the functions Sub::addCons() and Sub::addVars().
  */
 template <class BaseType, class CoType>
-class  Separator :  public AbacusRoot  {
+class  Separator :  public AbacusRoot
+{
 public:
 
-	//! Creates a separator.
-	/**
-	 * \param lpSolution The LP solution to be separated.
-	 * \param maxGen     The maximal number of cutting planes which are stored.
-	 * \param nonDuplications If this flag is set, then the same
-	 *                   constraint/variable is stored at most  once in the buffer. In this case
-	 *                   for constraints/variables the virtual member functions
-	 *                   \a name(), \a hashKey(), and \a equal() of the base class ConVar have to be
-	 *                   defined. Using these three functions, we check in the function \a cutFound
-	 *                   if a constraint or variable is already stored in the buffer.
-	 */
-	Separator(
-		LpSolution<CoType,BaseType> *lpSolution,
-		bool nonDuplications,
-		int maxGen=300)
-		:
-		master_(lpSolution->master_),
-		lpSol_(lpSolution),
-		minAbsViolation_(master_->eps()),
-		newCons_(master_,maxGen),
-		hash_(0),
-		nDuplications_(0),
-		pool_(0)
-	{
-		if(nonDuplications)
-			hash_=new AbaHash<unsigned, BaseType *>((AbacusGlobal*)master_, 3*maxGen);
-	}
+    //! Creates a separator.
+    /**
+     * \param lpSolution The LP solution to be separated.
+     * \param maxGen     The maximal number of cutting planes which are stored.
+     * \param nonDuplications If this flag is set, then the same
+     *                   constraint/variable is stored at most  once in the buffer. In this case
+     *                   for constraints/variables the virtual member functions
+     *                   \a name(), \a hashKey(), and \a equal() of the base class ConVar have to be
+     *                   defined. Using these three functions, we check in the function \a cutFound
+     *                   if a constraint or variable is already stored in the buffer.
+     */
+    Separator(
+        LpSolution<CoType,BaseType> *lpSolution,
+        bool nonDuplications,
+        int maxGen=300)
+        :
+        master_(lpSolution->master_),
+        lpSol_(lpSolution),
+        minAbsViolation_(master_->eps()),
+        newCons_(master_,maxGen),
+        hash_(0),
+        nDuplications_(0),
+        pool_(0)
+    {
+        if(nonDuplications)
+            hash_=new AbaHash<unsigned, BaseType *>((AbacusGlobal*)master_, 3*maxGen);
+    }
 
 
-	//! \brief The destructor.
-	virtual ~Separator() {
-		delete hash_;
-	}
+    //! \brief The destructor.
+    virtual ~Separator()
+    {
+        delete hash_;
+    }
 
 
-	//! This function has to be redefined and should implement the separation routine.
-	virtual void separate() = 0;
+    //! This function has to be redefined and should implement the separation routine.
+    virtual void separate() = 0;
 
-	//! Passes a cut (constraint or variable) to the buffer.
-	/**
-	 * If the buffer is full or the cut already exists, the cut is deleted.
-	 *
-	 * \param cv A pointer to a new constraint/variable found by the separation algorithm.
-	 *
-	 * \return ABA\_SEPARATOR\_CUTFOUND::Added       if the cut is added to the buffer;
-	 * \return ABA\_SEPARATOR\_CUTFOUND::Duplication if the cut is already in the buffer;
-	 * \return ABA\_SEPARATOR\_CUTFOUND::Full        if the buffer is full.
-	 */
-	Separator_CUTFOUND cutFound(BaseType *cv);
+    //! Passes a cut (constraint or variable) to the buffer.
+    /**
+     * If the buffer is full or the cut already exists, the cut is deleted.
+     *
+     * \param cv A pointer to a new constraint/variable found by the separation algorithm.
+     *
+     * \return ABA\_SEPARATOR\_CUTFOUND::Added       if the cut is added to the buffer;
+     * \return ABA\_SEPARATOR\_CUTFOUND::Duplication if the cut is already in the buffer;
+     * \return ABA\_SEPARATOR\_CUTFOUND::Full        if the buffer is full.
+     */
+    Separator_CUTFOUND cutFound(BaseType *cv);
 
-	//! Returns true if the separation should be terminated.
-	/**
-	 * In the default implementation, this is the case if \a maxGen constraints/variables
-	 * are in the cutBuffer.
-	 */
-	virtual bool terminateSeparation() {
-		return ( nGen() >= maxGen() );
-	}
+    //! Returns true if the separation should be terminated.
+    /**
+     * In the default implementation, this is the case if \a maxGen constraints/variables
+     * are in the cutBuffer.
+     */
+    virtual bool terminateSeparation()
+    {
+        return ( nGen() >= maxGen() );
+    }
 
-	//! Returns the buffer with the generated constraints/variable.
-	ArrayBuffer<BaseType *> &cutBuffer() { return newCons_; }
-
-
-	//! Returns the number of generated cutting planes.
-	int nGen() const { return newCons_.number(); }
-
-
-	//! Returns the number of duplicated constraints/variables which are discarded.
-	int nDuplications() const { return nDuplications_; }
+    //! Returns the buffer with the generated constraints/variable.
+    ArrayBuffer<BaseType *> &cutBuffer()
+    {
+        return newCons_;
+    }
 
 
-	//! Returns the number of collisions in the hash table.
-	int nCollisions() const;
-
-	//! Returns the maximal number of generated cutting planes.
-	int maxGen() const { return newCons_.size(); }
-
-
-	//! Returns the absolute value for considering a constraint/variable as violated.
-	double minAbsViolation() const { return minAbsViolation_; }
+    //! Returns the number of generated cutting planes.
+    int nGen() const
+    {
+        return newCons_.number();
+    }
 
 
-	//! Sets a new value for \a minAbsViolation.
-	void minAbsViolation(double minAbsVio) {
-		minAbsViolation_=minAbsVio;
-	}
+    //! Returns the number of duplicated constraints/variables which are discarded.
+    int nDuplications() const
+    {
+        return nDuplications_;
+    }
 
-	//! The lpSolution to be separated.
-	LpSolution<CoType, BaseType> *lpSolution() {
-		return lpSol_;
-	}
 
-	/**
-	 * If the separator checks for duplication of cuts, the test is also done for
-	 * constraints/variables that are in the pool passed as argument.
-	 *
-	 * This can be useful if already cuts are generated by performing constraint pool separation
-	 * of this pool.
-	 */
-	void watchNonDuplPool(NonDuplPool<BaseType, CoType> *pool) {
-		pool_ = pool;
-	}
+    //! Returns the number of collisions in the hash table.
+    int nCollisions() const;
+
+    //! Returns the maximal number of generated cutting planes.
+    int maxGen() const
+    {
+        return newCons_.size();
+    }
+
+
+    //! Returns the absolute value for considering a constraint/variable as violated.
+    double minAbsViolation() const
+    {
+        return minAbsViolation_;
+    }
+
+
+    //! Sets a new value for \a minAbsViolation.
+    void minAbsViolation(double minAbsVio)
+    {
+        minAbsViolation_=minAbsVio;
+    }
+
+    //! The lpSolution to be separated.
+    LpSolution<CoType, BaseType> *lpSolution()
+    {
+        return lpSol_;
+    }
+
+    /**
+     * If the separator checks for duplication of cuts, the test is also done for
+     * constraints/variables that are in the pool passed as argument.
+     *
+     * This can be useful if already cuts are generated by performing constraint pool separation
+     * of this pool.
+     */
+    void watchNonDuplPool(NonDuplPool<BaseType, CoType> *pool)
+    {
+        pool_ = pool;
+    }
 
 protected:
 
-	/**
-	 * \param cv A pointer to a constraint/variable for which it should
-	 *           be checked if an equivalent item is already contained in the buffer.
-	 *
-	 * \return The function checks if a constraint/variable that is equivalent
-	 * to \a cv according to the function ConVar::equal() is already stored in
-	 * the buffer by using the hashtable.
-	 */
-	bool find(BaseType *cv);
+    /**
+     * \param cv A pointer to a constraint/variable for which it should
+     *           be checked if an equivalent item is already contained in the buffer.
+     *
+     * \return The function checks if a constraint/variable that is equivalent
+     * to \a cv according to the function ConVar::equal() is already stored in
+     * the buffer by using the hashtable.
+     */
+    bool find(BaseType *cv);
 
-	Master *master_; //!< A pointer to the corresponding master of the optimization.
-	LpSolution<CoType, BaseType> *lpSol_; //!< The LP solution to be separated.
+    Master *master_; //!< A pointer to the corresponding master of the optimization.
+    LpSolution<CoType, BaseType> *lpSol_; //!< The LP solution to be separated.
 
 private:
-	double minAbsViolation_;
-	ArrayBuffer<BaseType*> newCons_;
-	AbaHash<unsigned, BaseType*> *hash_;
-	int nDuplications_;
-	bool sendConstraints_;
-	NonDuplPool<BaseType, CoType> *pool_;
+    double minAbsViolation_;
+    ArrayBuffer<BaseType*> newCons_;
+    AbaHash<unsigned, BaseType*> *hash_;
+    int nDuplications_;
+    bool sendConstraints_;
+    NonDuplPool<BaseType, CoType> *pool_;
 
-	Separator(const Separator<BaseType, CoType> &rhs);
-	const Separator<BaseType, CoType>
-		&operator=(const Separator<BaseType, CoType> & rhs);
+    Separator(const Separator<BaseType, CoType> &rhs);
+    const Separator<BaseType, CoType>
+    &operator=(const Separator<BaseType, CoType> & rhs);
 };
 
 } //namespace abacus

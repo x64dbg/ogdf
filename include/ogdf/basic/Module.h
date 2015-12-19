@@ -51,7 +51,8 @@
 
 #include <ogdf/basic/basic.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -67,25 +68,27 @@ namespace ogdf {
 class OGDF_EXPORT Module
 {
 public:
-	//! The return type of a module.
-	enum ReturnType {
-		retFeasible, //!< The solution is feasible.
-		retOptimal, //!< The solution is optimal
-		retNoFeasibleSolution, //!< There exists no feasible solution.
-		retTimeoutFeasible, //!< The solution is feasible, but there was a timeout.
-		retTimeoutInfeasible, //!< The solution is not feasible due to a timeout.
-		retError //! Computation was aborted due to an error.
-	};
+    //! The return type of a module.
+    enum ReturnType
+    {
+        retFeasible, //!< The solution is feasible.
+        retOptimal, //!< The solution is optimal
+        retNoFeasibleSolution, //!< There exists no feasible solution.
+        retTimeoutFeasible, //!< The solution is feasible, but there was a timeout.
+        retTimeoutInfeasible, //!< The solution is not feasible due to a timeout.
+        retError //! Computation was aborted due to an error.
+    };
 
-	//! Initializes a module.
-	Module() { }
+    //! Initializes a module.
+    Module() { }
 
-	virtual ~Module() { }
+    virtual ~Module() { }
 
-	//! Returns true iff \a retVal indicates that the module returned a feasible solution.
-	static bool isSolution(ReturnType ret) {
-		return ret == retFeasible || ret == retOptimal || ret == retTimeoutFeasible;
-	}
+    //! Returns true iff \a retVal indicates that the module returned a feasible solution.
+    static bool isSolution(ReturnType ret)
+    {
+        return ret == retFeasible || ret == retOptimal || ret == retTimeoutFeasible;
+    }
 };
 
 

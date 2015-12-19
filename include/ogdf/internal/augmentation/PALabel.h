@@ -51,9 +51,10 @@
 #include <ogdf/basic/Graph.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	enum paStopCause { paPlanarity, paCDegree, paBDegree, paRoot };
+enum paStopCause { paPlanarity, paCDegree, paBDegree, paRoot };
 
 /**
  * \brief auxiliary class for the planar augmentation algorithm
@@ -64,105 +65,123 @@ namespace ogdf {
  */
 class PALabel
 {
-	friend class PlanarAugmentation;
-	friend class PlanarAugmentationFix;
+    friend class PlanarAugmentation;
+    friend class PlanarAugmentationFix;
 
 private:
 
-	/**
-	 * \brief the "parent" of the pendants in the BC-Tree, m_parent is a b-vertex or a c-vertex
-	 * if it is a b-vertex m_parent != 0
-	 * otherwise m_parent == 0 and the parent is the head node
-	 * m_head is always != 0
-	 */
-	node m_parent;
+    /**
+     * \brief the "parent" of the pendants in the BC-Tree, m_parent is a b-vertex or a c-vertex
+     * if it is a b-vertex m_parent != 0
+     * otherwise m_parent == 0 and the parent is the head node
+     * m_head is always != 0
+     */
+    node m_parent;
 
-	node m_head; //!< the cutvertex and perhaps (see m_parent) the parent node
+    node m_head; //!< the cutvertex and perhaps (see m_parent) the parent node
 
-	List<node> m_pendants; //!< list with all pendants of the label
+    List<node> m_pendants; //!< list with all pendants of the label
 
-	paStopCause m_stopCause;  //!< the stop cause that occurs when traversing from the pendants to the bc-tree-root computed in PlanarAugmentation::followPath()
+    paStopCause m_stopCause;  //!< the stop cause that occurs when traversing from the pendants to the bc-tree-root computed in PlanarAugmentation::followPath()
 
 public:
-	PALabel(node parent, node cutvertex, paStopCause sc = paBDegree) {
-		m_parent = parent;
-		m_head = cutvertex;
-		m_stopCause = sc;
-	}
+    PALabel(node parent, node cutvertex, paStopCause sc = paBDegree)
+    {
+        m_parent = parent;
+        m_head = cutvertex;
+        m_stopCause = sc;
+    }
 
-	bool isBLabel() {
-		return (m_parent != 0);
-	}
+    bool isBLabel()
+    {
+        return (m_parent != 0);
+    }
 
-	bool isCLabel() {
-		return (m_parent == 0);
-	}
+    bool isCLabel()
+    {
+        return (m_parent == 0);
+    }
 
-	//! return pendant with number nr, starts counting at 0
-	node getPendant(int nr) {
-		return (nr < m_pendants.size()) ? (*(m_pendants.get(nr))) : 0;
-	}
+    //! return pendant with number nr, starts counting at 0
+    node getPendant(int nr)
+    {
+        return (nr < m_pendants.size()) ? (*(m_pendants.get(nr))) : 0;
+    }
 
-	node getFirstPendant() {
-		return (m_pendants.size() > 0) ? m_pendants.front() : 0;
-	}
+    node getFirstPendant()
+    {
+        return (m_pendants.size() > 0) ? m_pendants.front() : 0;
+    }
 
-	node getLastPendant() {
-		return (m_pendants.size() > 0) ? m_pendants.back() : 0;
-	}
+    node getLastPendant()
+    {
+        return (m_pendants.size() > 0) ? m_pendants.back() : 0;
+    }
 
-	//! return number of pendants
-	int size() {
-		return m_pendants.size();
-	}
+    //! return number of pendants
+    int size()
+    {
+        return m_pendants.size();
+    }
 
-	void removePendant(node pendant);
+    void removePendant(node pendant);
 
-	void removePendant(ListIterator<node> it){
-		m_pendants.del(it);
-	}
+    void removePendant(ListIterator<node> it)
+    {
+        m_pendants.del(it);
+    }
 
-	void removeFirstPendant() {
-		if (m_pendants.size() > 0){
-			m_pendants.popFront();
-		}
-	}
+    void removeFirstPendant()
+    {
+        if (m_pendants.size() > 0)
+        {
+            m_pendants.popFront();
+        }
+    }
 
-	void addPendant(node pendant) {
-		m_pendants.pushBack(pendant);
-	}
+    void addPendant(node pendant)
+    {
+        m_pendants.pushBack(pendant);
+    }
 
-	void deleteAllPendants() {
-		m_pendants.clear();
-	}
+    void deleteAllPendants()
+    {
+        m_pendants.clear();
+    }
 
-	//! return the parent node. If the label is a c-label it returns m_head
-	node parent() {
-		return (m_parent != 0) ? m_parent : m_head;
-	}
+    //! return the parent node. If the label is a c-label it returns m_head
+    node parent()
+    {
+        return (m_parent != 0) ? m_parent : m_head;
+    }
 
-	//! returns the head node
-	node head() {
-		return m_head;
-	}
+    //! returns the head node
+    node head()
+    {
+        return m_head;
+    }
 
-	void setParent(node newParent){
-		m_parent = newParent;
-	}
+    void setParent(node newParent)
+    {
+        m_parent = newParent;
+    }
 
-	void setHead(node newHead){
-		m_head = newHead;
-	}
+    void setHead(node newHead)
+    {
+        m_head = newHead;
+    }
 
-	paStopCause stopCause(){
-		return m_stopCause;
-	}
+    paStopCause stopCause()
+    {
+        return m_stopCause;
+    }
 
-	void stopCause(paStopCause sc){
-		m_stopCause = sc;
-	}
+    void stopCause(paStopCause sc)
+    {
+        m_stopCause = sc;
+    }
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 }; // class PALabel
 
 

@@ -43,42 +43,56 @@
 #include <ogdf/fileformats/Tlp.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-namespace tlp {
+namespace tlp
+{
 
 
 std::string toString(const Attribute &attr)
 {
-	switch(attr) {
-	case a_label: return "viewLabel";
-	case a_color: return "viewColor";
-	case a_position: return "viewLayout";
-	case a_size: return "viewSize";
-	case a_shape: return "viewShape";
-	default: return "unknown";
-	}
+    switch(attr)
+    {
+    case a_label:
+        return "viewLabel";
+    case a_color:
+        return "viewColor";
+    case a_position:
+        return "viewLayout";
+    case a_size:
+        return "viewSize";
+    case a_shape:
+        return "viewShape";
+    default:
+        return "unknown";
+    }
 }
 
 
 Attribute toAttribute(const std::string &str)
 {
-	if(str == "viewLabel") {
-		return a_label;
-	}
-	if(str == "viewColor") {
-		return a_color;
-	}
-	if(str == "viewLayout") {
-		return a_position;
-	}
-	if(str == "viewSize") {
-		return a_size;
-	}
-	if(str == "viewShape") {
-		return a_shape;
-	}
-	return a_unknown;
+    if(str == "viewLabel")
+    {
+        return a_label;
+    }
+    if(str == "viewColor")
+    {
+        return a_color;
+    }
+    if(str == "viewLayout")
+    {
+        return a_position;
+    }
+    if(str == "viewSize")
+    {
+        return a_size;
+    }
+    if(str == "viewShape")
+    {
+        return a_shape;
+    }
+    return a_unknown;
 }
 
 

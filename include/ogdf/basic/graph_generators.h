@@ -52,7 +52,8 @@
 #include <ogdf/basic/Graph.h>
 #include <ogdf/cluster/ClusterGraph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! Creates a random graph.
 /**
@@ -120,7 +121,7 @@ OGDF_EXPORT void upwardPlanarBiconnectedDiGraph(Graph &G, int n, int m);
  *   @param m is the max. number of edges in each biconnected component
  *   @param b is the number of biconnected components
  */
-OGDF_EXPORT void planarCNBGraph(Graph &G, int n, int m,	int b);
+OGDF_EXPORT void planarCNBGraph(Graph &G, int n, int m, int b);
 
 //! Creates a random triconnected (and simple) graph.
 /**
@@ -231,12 +232,12 @@ void regularTree(Graph& G, int n, int children);
  *        or more); otherwise the graph is proper.
  */
 OGDF_EXPORT void randomHierarchy(
-	Graph &G,
-	int n,
-	int m,
-	bool planar,
-	bool singleSource,
-	bool longEdges);
+    Graph &G,
+    int n,
+    int m,
+    bool planar,
+    bool singleSource,
+    bool longEdges);
 
 //! Assigns random clusters to a given graph \a G.
 /**

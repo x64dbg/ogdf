@@ -40,7 +40,8 @@
 
 #include <ogdf/abacus/abacusroot.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 //! Variable types.
@@ -49,62 +50,79 @@ namespace abacus {
  * \a Integer or \a Binary. We distinguish \a Integer and \a Binary variables
  * since some operations are performed differently (e.g., branching).
  */
-class  VarType :  public AbacusRoot  {
+class  VarType :  public AbacusRoot
+{
 public:
 
-	//! The enumeration with the different variable types.
-	enum TYPE {
-		Continuous,	//!< A continuous variable.
-		Integer,	//!< A general integer variable.
-		Binary		//!< A variable having value 0 or 1.
-	};
+    //! The enumeration with the different variable types.
+    enum TYPE
+    {
+        Continuous, //!< A continuous variable.
+        Integer,    //!< A general integer variable.
+        Binary      //!< A variable having value 0 or 1.
+    };
 
-	//! The default constructor: Lets the type of the variable uninitialized.
-	VarType() { }
+    //! The default constructor: Lets the type of the variable uninitialized.
+    VarType() { }
 
-	//! Creates a variable type \a t.
-	/**
-	 * \param t The variable type.
-	 */
-	VarType(TYPE t) : type_(t) { }
+    //! Creates a variable type \a t.
+    /**
+     * \param t The variable type.
+     */
+    VarType(TYPE t) : type_(t) { }
 
-	//! Output operator for variable types.
-	/**
-	 * Writes the variable type to an output stream in
-	 * the format <tt>Continuous</tt>, <tt>Integer</tt>, or <tt>Binary</tt>.
-	 *
-	 * \param out The output stream.
-	 * \param rhs The variable type being output.
-	 *
-	 * \return A reference to the output stream.
-	 */
-	friend ostream &operator<<(ostream &out, const VarType &rhs);
+    //! Output operator for variable types.
+    /**
+     * Writes the variable type to an output stream in
+     * the format <tt>Continuous</tt>, <tt>Integer</tt>, or <tt>Binary</tt>.
+     *
+     * \param out The output stream.
+     * \param rhs The variable type being output.
+     *
+     * \return A reference to the output stream.
+     */
+    friend ostream &operator<<(ostream &out, const VarType &rhs);
 
-	//! Returns the type of the variable.
-	TYPE type() const { return type_; }
-
-
-	//! Sets the variable type to \a t.
-	/**
-	 * \param t The new type of the variable.
-	 */
-	void type(TYPE t) { type_ = t; }
+    //! Returns the type of the variable.
+    TYPE type() const
+    {
+        return type_;
+    }
 
 
-	//! Returns true if the type of the variable is \a Integer or \a Binary, false otherwise.
-	bool discrete() const { return (type_ != Continuous); }
+    //! Sets the variable type to \a t.
+    /**
+     * \param t The new type of the variable.
+     */
+    void type(TYPE t)
+    {
+        type_ = t;
+    }
 
 
-	//! Returns true if the type of the variable is \a Binary, false otherwise.
-	bool binary() const { return (type_ == Binary); }
+    //! Returns true if the type of the variable is \a Integer or \a Binary, false otherwise.
+    bool discrete() const
+    {
+        return (type_ != Continuous);
+    }
 
 
-	//! Returns true if the type of the variable is \a Integer, false otherwise.
-	bool integer() const { return (type_ == Integer); }
+    //! Returns true if the type of the variable is \a Binary, false otherwise.
+    bool binary() const
+    {
+        return (type_ == Binary);
+    }
+
+
+    //! Returns true if the type of the variable is \a Integer, false otherwise.
+    bool integer() const
+    {
+        return (type_ == Integer);
+    }
 
 private:
 
-	TYPE type_; //!< The type of the variable.
+    TYPE type_; //!< The type of the variable.
 };
 
 } //namespace abacus

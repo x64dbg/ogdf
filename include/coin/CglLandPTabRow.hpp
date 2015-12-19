@@ -31,13 +31,13 @@ struct TabRow: public CoinIndexedVector
     bool modularized_;
 
     TabRow():
-            CoinIndexedVector(), si_(NULL), modularized_(false) {}
+        CoinIndexedVector(), si_(NULL), modularized_(false) {}
 
     TabRow(const CglLandPSimplex *si):
-            CoinIndexedVector(), num(-1), rhs(0), si_(si), modularized_(false) {}
+        CoinIndexedVector(), num(-1), rhs(0), si_(si), modularized_(false) {}
 
     TabRow(const TabRow & source):CoinIndexedVector(source),
-            num(source.num), rhs(source.rhs), si_(source.si_)
+        num(source.num), rhs(source.rhs), si_(source.si_)
     {
     }
 

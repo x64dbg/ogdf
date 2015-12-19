@@ -60,38 +60,46 @@ namespace ogdf
 class OGDF_EXPORT MMSubgraphPlanarizer : public MMCrossingMinimizationModule
 {
 public:
-	//! Creates a subgraph planarizer for minor-monotone crossing minimization.
-	MMSubgraphPlanarizer();
+    //! Creates a subgraph planarizer for minor-monotone crossing minimization.
+    MMSubgraphPlanarizer();
 
-	//! Sets the module option for the computation of the planar subgraph.
-	void setSubgraph(PlanarSubgraphModule *pSubgraph) {
-		m_subgraph.set(pSubgraph);
-	}
+    //! Sets the module option for the computation of the planar subgraph.
+    void setSubgraph(PlanarSubgraphModule *pSubgraph)
+    {
+        m_subgraph.set(pSubgraph);
+    }
 
-	//! Sets the module option for minor-monotone edge insertion.
-	void setInserter(MMEdgeInsertionModule *pInserter) {
-		m_inserter.set(pInserter);
-	}
+    //! Sets the module option for minor-monotone edge insertion.
+    void setInserter(MMEdgeInsertionModule *pInserter)
+    {
+        m_inserter.set(pInserter);
+    }
 
-	//! Returns the number of performed permutations in the edge insertion step.
-	int permutations() { return m_permutations; }
+    //! Returns the number of performed permutations in the edge insertion step.
+    int permutations()
+    {
+        return m_permutations;
+    }
 
-	//! Sets the number of performed permutations in the edge insertion step.
-	void permutations(int p) { m_permutations = p; }
+    //! Sets the number of performed permutations in the edge insertion step.
+    void permutations(int p)
+    {
+        m_permutations = p;
+    }
 
 protected:
-	virtual ReturnType doCall(PlanRepExpansion &PG,
-		int cc,
-		const EdgeArray<bool> *forbid,
-		int& crossingNumber,
-		int& numNS,
-		int& numSN);
+    virtual ReturnType doCall(PlanRepExpansion &PG,
+                              int cc,
+                              const EdgeArray<bool> *forbid,
+                              int& crossingNumber,
+                              int& numNS,
+                              int& numSN);
 
 private:
-	ModuleOption<PlanarSubgraphModule>  m_subgraph; //!< The planar subgraph module.
-	ModuleOption<MMEdgeInsertionModule> m_inserter; //!< The minor-monotone edge insertion module.
+    ModuleOption<PlanarSubgraphModule>  m_subgraph; //!< The planar subgraph module.
+    ModuleOption<MMEdgeInsertionModule> m_inserter; //!< The minor-monotone edge insertion module.
 
-	int m_permutations;	//!< The number of permutations.
+    int m_permutations; //!< The number of permutations.
 };
 
 }

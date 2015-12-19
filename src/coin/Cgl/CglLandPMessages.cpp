@@ -33,8 +33,8 @@ inline int err_m(int n)
 
 
 LandPMessages::LandPMessages()
-        :
-        CoinMessages(DUMMY_END)
+    :
+    CoinMessages(DUMMY_END)
 {
     strcpy(source_,"Lap");
     LAP_ADD_MSG(Separating,std_m,3+REMOVE_LOG,"Starting separation on variable %d, initial depth of cut %f");

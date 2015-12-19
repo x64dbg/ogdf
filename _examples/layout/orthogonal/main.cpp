@@ -11,39 +11,39 @@ using namespace ogdf;
 
 int main()
 {
-	Graph G;
-	GraphAttributes GA(G,
-		GraphAttributes::nodeGraphics |
-		GraphAttributes::edgeGraphics |
-		GraphAttributes::nodeLabel |
-		GraphAttributes::edgeStyle |
-		GraphAttributes::nodeStyle |
-		GraphAttributes::nodeTemplate);
-	GraphIO::readGML(GA, G, "ERDiagram.gml");
+    Graph G;
+    GraphAttributes GA(G,
+                       GraphAttributes::nodeGraphics |
+                       GraphAttributes::edgeGraphics |
+                       GraphAttributes::nodeLabel |
+                       GraphAttributes::edgeStyle |
+                       GraphAttributes::nodeStyle |
+                       GraphAttributes::nodeTemplate);
+    GraphIO::readGML(GA, G, "ERDiagram.gml");
 
-	PlanarizationLayout pl;
+    PlanarizationLayout pl;
 
-	SubgraphPlanarizer *crossMin = new SubgraphPlanarizer;
+    SubgraphPlanarizer *crossMin = new SubgraphPlanarizer;
 
-	FastPlanarSubgraph *ps = new FastPlanarSubgraph;
-	ps->runs(100);
-	VariableEmbeddingInserter *ves = new VariableEmbeddingInserter;
-	ves->removeReinsert(rrAll);
+    FastPlanarSubgraph *ps = new FastPlanarSubgraph;
+    ps->runs(100);
+    VariableEmbeddingInserter *ves = new VariableEmbeddingInserter;
+    ves->removeReinsert(rrAll);
 
-	crossMin->setSubgraph(ps);
-	crossMin->setInserter(ves);
+    crossMin->setSubgraph(ps);
+    crossMin->setInserter(ves);
 
-	EmbedderMinDepthMaxFaceLayers *emb = new EmbedderMinDepthMaxFaceLayers;
-	pl.setEmbedder(emb);
+    EmbedderMinDepthMaxFaceLayers *emb = new EmbedderMinDepthMaxFaceLayers;
+    pl.setEmbedder(emb);
 
-	OrthoLayout *ol = new OrthoLayout;
-	ol->separation(20.0);
-	ol->cOverhang(0.4);
-	pl.setPlanarLayouter(ol);
+    OrthoLayout *ol = new OrthoLayout;
+    ol->separation(20.0);
+    ol->cOverhang(0.4);
+    pl.setPlanarLayouter(ol);
 
-	pl.call(GA);
+    pl.call(GA);
 
-	GraphIO::writeGML(GA, "ERDiagram-layout.gml");
+    GraphIO::writeGML(GA, "ERDiagram-layout.gml");
 
-	return 0;
+    return 0;
 }

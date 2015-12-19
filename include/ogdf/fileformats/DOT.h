@@ -55,32 +55,35 @@
 #include <string>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-namespace dot {
+namespace dot
+{
 
-	enum Attribute {
-		a_id = 0,
-		a_label,
-		a_template,
-		a_stroke,
-		a_fill,
-		a_width,
-		a_height,
-		a_shape,
-		a_weight,
-		a_position,
-		a_arrow,
-		a_unknown
-	};
+enum Attribute
+{
+    a_id = 0,
+    a_label,
+    a_template,
+    a_stroke,
+    a_fill,
+    a_width,
+    a_height,
+    a_shape,
+    a_weight,
+    a_position,
+    a_arrow,
+    a_unknown
+};
 
-	std::string toString(const Attribute &attr);
-	std::string toString(const Shape &shape);
-	std::string toString(const EdgeArrow &arrow);
+std::string toString(const Attribute &attr);
+std::string toString(const Shape &shape);
+std::string toString(const EdgeArrow &arrow);
 
-	Attribute toAttribute(const std::string &str);
-	Shape toShape(const std::string &str);
-	EdgeArrow toArrow(const std::string &str);
+Attribute toAttribute(const std::string &str);
+Shape toShape(const std::string &str);
+EdgeArrow toArrow(const std::string &str);
 
 } // end namespace dot
 

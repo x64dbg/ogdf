@@ -51,9 +51,10 @@
 #if defined (CLP_EXTERN_C)
 /* Real typedef for structure */
 class CMessageHandler;
-typedef struct {
-  ClpSimplex * model_;
-  CMessageHandler * handler_;
+typedef struct
+{
+    ClpSimplex * model_;
+    CMessageHandler * handler_;
 } Clp_Simplex;
 #else
 typedef void Clp_Simplex;
@@ -63,18 +64,19 @@ typedef void Clp_Simplex;
 /** typedef for user call back.
  The cvec are constructed so don't need to be const*/
 typedef  void (COINLINKAGE_CB *clp_callback) (Clp_Simplex * model,int  msgno, int ndouble,
-                            const double * dvec, int nint, const int * ivec,
-                            int nchar, char ** cvec);
+        const double * dvec, int nint, const int * ivec,
+        int nchar, char ** cvec);
 #endif
 /** User does not need to see structure of model but C++ code does */
 #if defined (SBB_EXTERN_C)
 /* Real typedef for structure */
 class Sbb_MessageHandler;
-typedef struct {
-  OsiClpSolverInterface * solver_;
-  SbbModel              * model_;
-  Sbb_MessageHandler    * handler_;
-  char                  * information_;
+typedef struct
+{
+    OsiClpSolverInterface * solver_;
+    SbbModel              * model_;
+    Sbb_MessageHandler    * handler_;
+    char                  * information_;
 } Sbb_Model;
 #else
 typedef void Sbb_Model;
@@ -82,11 +84,12 @@ typedef void Sbb_Model;
 #if defined (CBC_EXTERN_C)
 /* Real typedef for structure */
 class Cbc_MessageHandler;
-typedef struct {
-  OsiClpSolverInterface * solver_;
-  CbcModel              * model_;
-  Cbc_MessageHandler    * handler_;
-  char                  * information_;
+typedef struct
+{
+    OsiClpSolverInterface * solver_;
+    CbcModel              * model_;
+    Cbc_MessageHandler    * handler_;
+    char                  * information_;
 } Cbc_Model;
 #else
 typedef void Cbc_Model;
@@ -95,11 +98,11 @@ typedef void Cbc_Model;
 /** typedef for user call back.
  The cvec are constructed so don't need to be const*/
 typedef  void (COINLINKAGE_CB *sbb_callback) (Sbb_Model * model,int  msgno, int ndouble,
-                            const double * dvec, int nint, const int * ivec,
-                            int nchar, char ** cvec);
+        const double * dvec, int nint, const int * ivec,
+        int nchar, char ** cvec);
 typedef  void (COINLINKAGE_CB *cbc_callback) (Cbc_Model * model,int  msgno, int ndouble,
-                            const double * dvec, int nint, const int * ivec,
-                            int nchar, char ** cvec);
+        const double * dvec, int nint, const int * ivec,
+        int nchar, char ** cvec);
 #endif
 #if COIN_BIG_INDEX==0
 typedef int CoinBigIndex;

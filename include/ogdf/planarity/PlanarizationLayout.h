@@ -58,155 +58,168 @@
 
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class CliqueReplacer;
+class CliqueReplacer;
 
 
 //! The planarization approach for drawing graphs.
 class OGDF_EXPORT PlanarizationLayout : public LayoutModule
 {
 public:
-	//! Creates an instance of planarization layout and sets options to default values.
-	PlanarizationLayout();
+    //! Creates an instance of planarization layout and sets options to default values.
+    PlanarizationLayout();
 
-	//! Destructor.
-	~PlanarizationLayout() { }
+    //! Destructor.
+    ~PlanarizationLayout() { }
 
-	//! Calls planarization layout for GraphAttributes \a ga.
-	/**
-	 * \pre The graph has no self-loops.
-	 * @param ga is the input graph and will also be assigned the layout information.
-	 */
-	void call(GraphAttributes &ga);
+    //! Calls planarization layout for GraphAttributes \a ga.
+    /**
+     * \pre The graph has no self-loops.
+     * @param ga is the input graph and will also be assigned the layout information.
+     */
+    void call(GraphAttributes &ga);
 
-	void call(GraphAttributes &ga, GraphConstraints & gc) { call(ga); }
+    void call(GraphAttributes &ga, GraphConstraints & gc)
+    {
+        call(ga);
+    }
 
-	//! Calls planarization layout with clique handling for GraphAttributes \a ga with associated graph \a g.
-	/**
-	 * \pre \a g is the graph associated with graph attributes \a ga.
-	 *
-	 * This call perfoms a special handling for cliques, which are temporarily replaced by a star graph.
-	 * In the final drawing, the clique edges are drawn straight-line.
-	 */
-	void call(GraphAttributes &ga, Graph &g);
+    //! Calls planarization layout with clique handling for GraphAttributes \a ga with associated graph \a g.
+    /**
+     * \pre \a g is the graph associated with graph attributes \a ga.
+     *
+     * This call perfoms a special handling for cliques, which are temporarily replaced by a star graph.
+     * In the final drawing, the clique edges are drawn straight-line.
+     */
+    void call(GraphAttributes &ga, Graph &g);
 
-	void callSimDraw(GraphAttributes &ga);
+    void callSimDraw(GraphAttributes &ga);
 
-	/** @}
-	 *  @name Optional parameters
-	 *  @{
-	 */
+    /** @}
+     *  @name Optional parameters
+     *  @{
+     */
 
-	//! Returns the current setting of option pageRatio.
-	/**
-	 * This option specifies the desired ration width / height of the computed
-	 * layout. It is currently only used for packing connected components.
-	 */
-	double pageRatio() const {
-		return m_pageRatio;
-	}
+    //! Returns the current setting of option pageRatio.
+    /**
+     * This option specifies the desired ration width / height of the computed
+     * layout. It is currently only used for packing connected components.
+     */
+    double pageRatio() const
+    {
+        return m_pageRatio;
+    }
 
-	//! Sets the option pageRatio to \a ratio.
-	void pageRatio(double ratio) {
-		m_pageRatio = ratio;
-	}
+    //! Sets the option pageRatio to \a ratio.
+    void pageRatio(double ratio)
+    {
+        m_pageRatio = ratio;
+    }
 
-	//! Returns the current setting of option minCliqueSize.
-	/**
-	 * If preprocessing of cliques is considered, this option determines the
-	 * minimal size of cliques to search for.
-	 */
-	int minCliqueSize() const {
-		return m_cliqueSize;
-	}
+    //! Returns the current setting of option minCliqueSize.
+    /**
+     * If preprocessing of cliques is considered, this option determines the
+     * minimal size of cliques to search for.
+     */
+    int minCliqueSize() const
+    {
+        return m_cliqueSize;
+    }
 
-	//! Set the option minCliqueSize to \a i.
-	void minCliqueSize(int i) {
-		m_cliqueSize = max(i, 3);
-	}
+    //! Set the option minCliqueSize to \a i.
+    void minCliqueSize(int i)
+    {
+        m_cliqueSize = max(i, 3);
+    }
 
 
-	/** @}
-	 *  @name Module options
-	 *  @{
-	 */
+    /** @}
+     *  @name Module options
+     *  @{
+     */
 
-	//! Sets the module option for crossing minimization.
-	void setCrossMin(CrossingMinimizationModule *pCrossMin) {
-		m_crossMin.set(pCrossMin);
-	}
+    //! Sets the module option for crossing minimization.
+    void setCrossMin(CrossingMinimizationModule *pCrossMin)
+    {
+        m_crossMin.set(pCrossMin);
+    }
 
-	//! Sets the module option for the graph embedding algorithm.
-	/**
-	 * The result of the crossing minimization step is a planar graph,
-	 * in which crossings are replaced by dummy nodes. The embedding
-	 * module then computes a planar embedding of this planar graph.
-	 */
-	void setEmbedder(EmbedderModule *pEmbedder) {
-		m_embedder.set(pEmbedder);
-	}
+    //! Sets the module option for the graph embedding algorithm.
+    /**
+     * The result of the crossing minimization step is a planar graph,
+     * in which crossings are replaced by dummy nodes. The embedding
+     * module then computes a planar embedding of this planar graph.
+     */
+    void setEmbedder(EmbedderModule *pEmbedder)
+    {
+        m_embedder.set(pEmbedder);
+    }
 
-	//! Sets the module option for the planar layout algorithm.
-	/**
-	 * The planar layout algorithm is used to compute a planar layout
-	 * of the planarized representation resulting from the crossing
-	 * minimization step. Planarized representation means that edge crossings
-	 * are replaced by dummy nodes of degree four, so the actual layout
-	 * algorithm obtains a planar graph as input. By default, the planar
-	 * layout algorithm produces an orthogonal drawing.
-	 */
-	void setPlanarLayouter(LayoutPlanRepModule *pPlanarLayouter) {
-		m_planarLayouter.set(pPlanarLayouter);
-	}
+    //! Sets the module option for the planar layout algorithm.
+    /**
+     * The planar layout algorithm is used to compute a planar layout
+     * of the planarized representation resulting from the crossing
+     * minimization step. Planarized representation means that edge crossings
+     * are replaced by dummy nodes of degree four, so the actual layout
+     * algorithm obtains a planar graph as input. By default, the planar
+     * layout algorithm produces an orthogonal drawing.
+     */
+    void setPlanarLayouter(LayoutPlanRepModule *pPlanarLayouter)
+    {
+        m_planarLayouter.set(pPlanarLayouter);
+    }
 
-	//! Sets the module option for the arrangement of connected components.
-	/**
-	 * The planarization layout algorithm draws each connected component of
-	 * the input graph seperately, and then arranges the resulting drawings
-	 * using a packing algorithm.
-	 */
-	void setPacker(CCLayoutPackModule *pPacker) {
-		m_packer.set(pPacker);
-	}
+    //! Sets the module option for the arrangement of connected components.
+    /**
+     * The planarization layout algorithm draws each connected component of
+     * the input graph seperately, and then arranges the resulting drawings
+     * using a packing algorithm.
+     */
+    void setPacker(CCLayoutPackModule *pPacker)
+    {
+        m_packer.set(pPacker);
+    }
 
-	/** @}
-	 *  @name Further information
-	 *  @{
-	 */
+    /** @}
+     *  @name Further information
+     *  @{
+     */
 
-	//! Returns the number of crossings in the computed layout.
-	int numberOfCrossings() const {
-		return m_nCrossings;
-	}
+    //! Returns the number of crossings in the computed layout.
+    int numberOfCrossings() const
+    {
+        return m_nCrossings;
+    }
 
-	//! @}
+    //! @}
 
 private:
-	void arrangeCCs(PlanRep &PG, GraphAttributes &GA, Array<DPoint> &boundingBox) const;
-	void preprocessCliques(Graph &G, CliqueReplacer &cliqueReplacer);
-	void fillAdjNodes(List<node>& adjNodes,
-		PlanRep& PG,
-		node centerNode,
-		NodeArray<bool>& isClique,
-		Layout& drawing);
+    void arrangeCCs(PlanRep &PG, GraphAttributes &GA, Array<DPoint> &boundingBox) const;
+    void preprocessCliques(Graph &G, CliqueReplacer &cliqueReplacer);
+    void fillAdjNodes(List<node>& adjNodes,
+                      PlanRep& PG,
+                      node centerNode,
+                      NodeArray<bool>& isClique,
+                      Layout& drawing);
 
-	//! The module for computing a planar subgraph.
-	ModuleOption<CrossingMinimizationModule> m_crossMin;
+    //! The module for computing a planar subgraph.
+    ModuleOption<CrossingMinimizationModule> m_crossMin;
 
-	//! The module for planar embedding.
-	ModuleOption<EmbedderModule> m_embedder;
+    //! The module for planar embedding.
+    ModuleOption<EmbedderModule> m_embedder;
 
-	//! The module for computing a planar layout.
-	ModuleOption<LayoutPlanRepModule> m_planarLayouter;
+    //! The module for computing a planar layout.
+    ModuleOption<LayoutPlanRepModule> m_planarLayouter;
 
-	//! The module for arranging connected components.
-	ModuleOption<CCLayoutPackModule> m_packer;
+    //! The module for arranging connected components.
+    ModuleOption<CCLayoutPackModule> m_packer;
 
-	double m_pageRatio;    //!< The desired page ratio.
-	int m_nCrossings;      //!< The number of crossings in the computed layout.
+    double m_pageRatio;    //!< The desired page ratio.
+    int m_nCrossings;      //!< The number of crossings in the computed layout.
 
-	int m_cliqueSize;      //!< The minimum size of cliques to search for.
+    int m_cliqueSize;      //!< The minimum size of cliques to search for.
 };
 
 } // end namespace ogdf

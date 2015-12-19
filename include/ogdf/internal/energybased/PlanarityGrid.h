@@ -57,27 +57,29 @@
 #include <ogdf/internal/energybased/UniformGrid.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-class PlanarityGrid: public EnergyFunction {
+class PlanarityGrid: public EnergyFunction
+{
 public:
-	//initializes data structures to speed up later computations
-	PlanarityGrid(GraphAttributes &AG);
-	~PlanarityGrid();
-	// computes energy of initial layout and stores it in m_energy
-	void computeEnergy();
+    //initializes data structures to speed up later computations
+    PlanarityGrid(GraphAttributes &AG);
+    ~PlanarityGrid();
+    // computes energy of initial layout and stores it in m_energy
+    void computeEnergy();
 private:
-	// computes energy of candidate
-	void compCandEnergy();
-	// changes internal data if candidate is taken
-	void internalCandidateTaken();
+    // computes energy of candidate
+    void compCandEnergy();
+    // changes internal data if candidate is taken
+    void internalCandidateTaken();
 #ifdef OGDF_DEBUG
-		virtual void printInternalData() const;
+    virtual void printInternalData() const;
 #endif
-	const GraphAttributes &m_layout; //The current layout
-	UniformGrid *m_currentGrid; //stores grid for current layout
-	UniformGrid *m_candidateGrid; //stores grid for candidate layout
+    const GraphAttributes &m_layout; //The current layout
+    UniformGrid *m_currentGrid; //stores grid for current layout
+    UniformGrid *m_candidateGrid; //stores grid for candidate layout
 }; // class Planarity
 
 

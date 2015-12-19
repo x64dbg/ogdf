@@ -60,71 +60,79 @@
 #include <ogdf/upward/UpwardPlanRep.h>
 #include <ogdf/upward/SubgraphUpwardPlanarizer.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 class OGDF_EXPORT VisibilityLayout : public LayoutModule
 {
 public:
 
-	VisibilityLayout() {
-		m_grid_dist = 1;
-		// set default module
-		m_upPlanarizer.set(new SubgraphUpwardPlanarizer());
-	}
+    VisibilityLayout()
+    {
+        m_grid_dist = 1;
+        // set default module
+        m_upPlanarizer.set(new SubgraphUpwardPlanarizer());
+    }
 
-	virtual void call(GraphAttributes &GA);
+    virtual void call(GraphAttributes &GA);
 
-	void layout(GraphAttributes &GA, const UpwardPlanRep &UPROrig);
+    void layout(GraphAttributes &GA, const UpwardPlanRep &UPROrig);
 
-	void setUpwardPlanarizer(UpwardPlanarizerModule *upPlanarizer) {
-		m_upPlanarizer.set(upPlanarizer);
-	}
+    void setUpwardPlanarizer(UpwardPlanarizerModule *upPlanarizer)
+    {
+        m_upPlanarizer.set(upPlanarizer);
+    }
 
-	void setMinGridDistance(int dist) {m_grid_dist = dist;}
+    void setMinGridDistance(int dist)
+    {
+        m_grid_dist = dist;
+    }
 
 
 
 private:
 
-	//min grid distance
-	int m_grid_dist;
+    //min grid distance
+    int m_grid_dist;
 
-	Graph D; // the dual graph of the UPR
-	node s_D; // super source of D
-	node t_D; // super sink f D
+    Graph D; // the dual graph of the UPR
+    node s_D; // super source of D
+    node t_D; // super sink f D
 
-	//node segment of the visibility representation
-	struct NodeSegment {
-		int y; //y coordinate
-		int x_l; // left x coordinate
-		int x_r; // right x coordiante
-	};
+    //node segment of the visibility representation
+    struct NodeSegment
+    {
+        int y; //y coordinate
+        int x_l; // left x coordinate
+        int x_r; // right x coordiante
+    };
 
-	// edge segment of the visibility representation
-	struct EdgeSegment {
-		int y_b; // bottom y coordinate
-		int y_t; // top y coordinate
-		int x; // x coordiante
-	};
+    // edge segment of the visibility representation
+    struct EdgeSegment
+    {
+        int y_b; // bottom y coordinate
+        int y_t; // top y coordinate
+        int x; // x coordiante
+    };
 
-	//mapping node to node segment of visibility presentation
-	NodeArray<NodeSegment> nodeToVis;
+    //mapping node to node segment of visibility presentation
+    NodeArray<NodeSegment> nodeToVis;
 
-	//mapping edge to edge segment of visibility presentation
-	EdgeArray<EdgeSegment> edgeToVis;
+    //mapping edge to edge segment of visibility presentation
+    EdgeArray<EdgeSegment> edgeToVis;
 
-	FaceArray<node> faceToNode;
-	NodeArray<face> leftFace_node;
-	NodeArray<face> rightFace_node;
-	EdgeArray<face> leftFace_edge;
-	EdgeArray<face> rightFace_edge;
+    FaceArray<node> faceToNode;
+    NodeArray<face> leftFace_node;
+    NodeArray<face> rightFace_node;
+    EdgeArray<face> leftFace_edge;
+    EdgeArray<face> rightFace_edge;
 
-	ModuleOption<UpwardPlanarizerModule> m_upPlanarizer; // upward planarizer
+    ModuleOption<UpwardPlanarizerModule> m_upPlanarizer; // upward planarizer
 
-	void constructDualGraph(UpwardPlanRep &UPR);
+    void constructDualGraph(UpwardPlanRep &UPR);
 
-	void constructVisibilityRepresentation(UpwardPlanRep &UPR);
+    void constructVisibilityRepresentation(UpwardPlanRep &UPR);
 
 
 };

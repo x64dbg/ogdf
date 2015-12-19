@@ -58,10 +58,11 @@
 #include <ogdf/basic/GridLayoutMapped.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	template<class ATYPE> class CompactionConstraintGraph;
-	class Layout;
+template<class ATYPE> class CompactionConstraintGraph;
+class Layout;
 
 
 /**
@@ -84,68 +85,72 @@ namespace ogdf {
 class OGDF_EXPORT LongestPathCompaction
 {
 public:
-	//! Creates an instance of the longest path compaction algorithm.
-	LongestPathCompaction(bool tighten = true,
-		int maxImprovementSteps = 0);
+    //! Creates an instance of the longest path compaction algorithm.
+    LongestPathCompaction(bool tighten = true,
+                          int maxImprovementSteps = 0);
 
-	//! Constructive heurisitic for orthogonal representations.
-	void constructiveHeuristics(
-		PlanRep &PG,
-		OrthoRep &OR,
-		const RoutingChannel<int> &rc,
-		GridLayoutMapped &drawing);
-
-
-	//! Improvement heurisitic for orthogonal drawings.
-	void improvementHeuristics(
-		PlanRep &PG,
-		OrthoRep &OR,
-		const RoutingChannel<int> &rc,
-		GridLayoutMapped &drawing);
-
-	//
-	// options
-
-	//! Sets option <i>tighten</i> to \a select.
-	void tighten(bool select) {
-		m_tighten = select;
-	}
-
-	//! Returns the option <i>tighten</i>.
-	bool tighten() const {
-		return m_tighten;
-	}
+    //! Constructive heurisitic for orthogonal representations.
+    void constructiveHeuristics(
+        PlanRep &PG,
+        OrthoRep &OR,
+        const RoutingChannel<int> &rc,
+        GridLayoutMapped &drawing);
 
 
-	//! Sets the option <i>max improvement steps</i>.
-	void maxImprovementSteps(int maxSteps) {
-		m_maxImprovementSteps = maxSteps;
-	}
+    //! Improvement heurisitic for orthogonal drawings.
+    void improvementHeuristics(
+        PlanRep &PG,
+        OrthoRep &OR,
+        const RoutingChannel<int> &rc,
+        GridLayoutMapped &drawing);
 
-	//! Returns the option <i>max improvement steps</i>.
-	int maxImprovementSteps() const {
-		return m_maxImprovementSteps;
-	}
+    //
+    // options
+
+    //! Sets option <i>tighten</i> to \a select.
+    void tighten(bool select)
+    {
+        m_tighten = select;
+    }
+
+    //! Returns the option <i>tighten</i>.
+    bool tighten() const
+    {
+        return m_tighten;
+    }
+
+
+    //! Sets the option <i>max improvement steps</i>.
+    void maxImprovementSteps(int maxSteps)
+    {
+        m_maxImprovementSteps = maxSteps;
+    }
+
+    //! Returns the option <i>max improvement steps</i>.
+    int maxImprovementSteps() const
+    {
+        return m_maxImprovementSteps;
+    }
 
 
 private:
-	void computeCoords(
-		const CompactionConstraintGraph<int> &D,
-		NodeArray<int> &pos);
+    void computeCoords(
+        const CompactionConstraintGraph<int> &D,
+        NodeArray<int> &pos);
 
-	void applyLongestPaths(const CompactionConstraintGraph<int> &D,
-		NodeArray<int> &pos);
+    void applyLongestPaths(const CompactionConstraintGraph<int> &D,
+                           NodeArray<int> &pos);
 
-	void moveComponents(const CompactionConstraintGraph<int> &D,
-		NodeArray<int> &pos);
+    void moveComponents(const CompactionConstraintGraph<int> &D,
+                        NodeArray<int> &pos);
 
 
-	// options
-	bool m_tighten;  //!< Tighten pseudo-components.
-	int m_maxImprovementSteps; //!< The maximal number of improvement steps.
+    // options
+    bool m_tighten;  //!< Tighten pseudo-components.
+    int m_maxImprovementSteps; //!< The maximal number of improvement steps.
 
-	SList<node>    m_pseudoSources; //!< The list of pseudo-sources.
-	NodeArray<int> m_component;     //!< The pseudo component of a node.
+    SList<node>    m_pseudoSources; //!< The list of pseudo-sources.
+    NodeArray<int> m_component;     //!< The pseudo component of a node.
 };
 
 

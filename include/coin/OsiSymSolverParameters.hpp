@@ -19,45 +19,48 @@
 #ifndef OsiSymSolverParameters_hpp
 #define OsiSymSolverParameters_hpp
 
-enum OsiSymIntParam {
-   /** This controls the level of output */
-   OsiSymVerbosity,
-   OsiSymNodeLimit,
-   OsiSymFindFirstFeasible,
-   OsiSymSearchStrategy,
-   OsiSymUsePermanentCutPools,
-   OsiSymKeepWarmStart,
-   OsiSymDoReducedCostFixing,
-   OsiSymMCFindSupportedSolutions,
-   OsiSymSensitivityAnalysis,
-   OsiSymRandomSeed,
-   OsiSymDivingStrategy,
-   OsiSymDivingK,
-   OsiSymDivingThreshold,
-   OsiSymTrimWarmTree,
-   OsiSymGenerateCglGomoryCuts,
-   OsiSymGenerateCglKnapsackCuts,
-   OsiSymGenerateCglOddHoleCuts,
-   OsiSymGenerateCglProbingCuts,
-   OsiSymGenerateCglFlowAndCoverCuts,
-   OsiSymGenerateCglRoundingCuts,
-   OsiSymGenerateCglLiftAndProjectCuts,
-   OsiSymGenerateCglCliqueCuts
+enum OsiSymIntParam
+{
+    /** This controls the level of output */
+    OsiSymVerbosity,
+    OsiSymNodeLimit,
+    OsiSymFindFirstFeasible,
+    OsiSymSearchStrategy,
+    OsiSymUsePermanentCutPools,
+    OsiSymKeepWarmStart,
+    OsiSymDoReducedCostFixing,
+    OsiSymMCFindSupportedSolutions,
+    OsiSymSensitivityAnalysis,
+    OsiSymRandomSeed,
+    OsiSymDivingStrategy,
+    OsiSymDivingK,
+    OsiSymDivingThreshold,
+    OsiSymTrimWarmTree,
+    OsiSymGenerateCglGomoryCuts,
+    OsiSymGenerateCglKnapsackCuts,
+    OsiSymGenerateCglOddHoleCuts,
+    OsiSymGenerateCglProbingCuts,
+    OsiSymGenerateCglFlowAndCoverCuts,
+    OsiSymGenerateCglRoundingCuts,
+    OsiSymGenerateCglLiftAndProjectCuts,
+    OsiSymGenerateCglCliqueCuts
 };
 
-enum OsiSymDblParam {
-   /** The granularity is the actual minimum difference in objective function
-       value for two solutions that actually have do different objective
-       function values. For integer programs with integral objective function
-       coefficients, this would be 1, for instance. */ 
-   OsiSymGranularity,
-   OsiSymTimeLimit,
-   OsiSymGapLimit,
-   OsiSymUpperBound,
-   OsiSymLowerBound
+enum OsiSymDblParam
+{
+    /** The granularity is the actual minimum difference in objective function
+        value for two solutions that actually have do different objective
+        function values. For integer programs with integral objective function
+        coefficients, this would be 1, for instance. */
+    OsiSymGranularity,
+    OsiSymTimeLimit,
+    OsiSymGapLimit,
+    OsiSymUpperBound,
+    OsiSymLowerBound
 };
 
-enum OsiSymStrParam {
+enum OsiSymStrParam
+{
 };
 
 #endif

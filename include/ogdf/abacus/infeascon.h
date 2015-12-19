@@ -41,7 +41,8 @@
 
 #include <ogdf/abacus/abacusroot.h>
 
-namespace abacus {
+namespace abacus
+{
 
 class Constraint;
 class Variable;
@@ -58,51 +59,59 @@ class Master;
  * constraint's left hand side, which is implicitly zero,
  * is either \a TooLarge, \a Feasible, or \a TooSmall.
  */
-class  InfeasCon :  public AbacusRoot  {
+class  InfeasCon :  public AbacusRoot
+{
 public:
 
-	//! The different ways of infeasibility of a constraint.
-	enum INFEAS {
-		TooSmall = -1,	//!< The left hand side is too small for the right hand side.
-		Feasible,		//!< The constraint is not infeasible.
-		TooLarge		//!< The left hand side is too large for the right hand side.
-	};
+    //! The different ways of infeasibility of a constraint.
+    enum INFEAS
+    {
+        TooSmall = -1,  //!< The left hand side is too small for the right hand side.
+        Feasible,       //!< The constraint is not infeasible.
+        TooLarge        //!< The left hand side is too large for the right hand side.
+    };
 
-	//! The constructor.
-	/**
-	 * \param master A pointer to the corresponding master of the optimization.
-	 * \param con    The infeasible constraint.
-	 * \param inf    The way of infeasibility.
-	 */
-	InfeasCon(Master *master, Constraint *con, INFEAS inf) :
-		master_(master),
-		constraint_(con),
-		infeas_(inf)
-	{ }
+    //! The constructor.
+    /**
+     * \param master A pointer to the corresponding master of the optimization.
+     * \param con    The infeasible constraint.
+     * \param inf    The way of infeasibility.
+     */
+    InfeasCon(Master *master, Constraint *con, INFEAS inf) :
+        master_(master),
+        constraint_(con),
+        infeas_(inf)
+    { }
 
-	//! Returns a pointer to the infeasible constraint.
-	Constraint *constraint() const { return constraint_; }
+    //! Returns a pointer to the infeasible constraint.
+    Constraint *constraint() const
+    {
+        return constraint_;
+    }
 
 
-	//! Returns the way of infeasibility of the constraint.
-	INFEAS infeas() const { return infeas_; }
+    //! Returns the way of infeasibility of the constraint.
+    INFEAS infeas() const
+    {
+        return infeas_;
+    }
 
-	//! Returns true if the variable \a v might reduce the infeasibility, false otherwise.
-	/**
-	 * \param v A variable for which we test if its addition might reduce infeasibility.
-	 */
-	bool goodVar(const Variable *v) const;
+    //! Returns true if the variable \a v might reduce the infeasibility, false otherwise.
+    /**
+     * \param v A variable for which we test if its addition might reduce infeasibility.
+     */
+    bool goodVar(const Variable *v) const;
 
 private:
 
-	//! A pointer to the corresponding master of the optimization.
-	Master *master_;
+    //! A pointer to the corresponding master of the optimization.
+    Master *master_;
 
-	//! A pointer to the infeasible constraint.
-	Constraint *constraint_;
+    //! A pointer to the infeasible constraint.
+    Constraint *constraint_;
 
-	//! The way of infeasibility.
-	INFEAS infeas_;
+    //! The way of infeasibility.
+    INFEAS infeas_;
 };
 
 } //namespace abacus

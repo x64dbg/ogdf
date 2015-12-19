@@ -51,7 +51,8 @@
 
 #include <ogdf/module/AugmentationModule.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief Implementation of a DFS-based algorithm for biconnectivity augmentation.
@@ -64,17 +65,18 @@ namespace ogdf {
  * a new edge is added.
  */
 
-class OGDF_EXPORT DfsMakeBiconnected : public AugmentationModule {
+class OGDF_EXPORT DfsMakeBiconnected : public AugmentationModule
+{
 public:
-	//! Creates an instance of DFS-based biconnectivity augmentation.
-	DfsMakeBiconnected() { }
+    //! Creates an instance of DFS-based biconnectivity augmentation.
+    DfsMakeBiconnected() { }
 
-	// destruction
-	~DfsMakeBiconnected() { }
+    // destruction
+    ~DfsMakeBiconnected() { }
 
 protected:
-	//! Implements the algorithm call.
-	void doCall(Graph& G, List<edge> &L);
+    //! Implements the algorithm call.
+    void doCall(Graph& G, List<edge> &L);
 };
 
 } // end namespace ogdf

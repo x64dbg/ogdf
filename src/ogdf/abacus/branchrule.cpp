@@ -37,23 +37,24 @@
 #include <ogdf/abacus/branchrule.h>
 #include <ogdf/abacus/master.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 void BranchRule::extract(LpSub * /* lp */)
 {
-	Logger::ifout() << "WARNING:" << endl;
-	Logger::ifout() << "  virtual dummy function extract() of base class ";
-	Logger::ifout() << "BranchRule is called." << endl;
-	Logger::ifout() << "  Redefinition in derived class is missing." << endl;
+    Logger::ifout() << "WARNING:" << endl;
+    Logger::ifout() << "  virtual dummy function extract() of base class ";
+    Logger::ifout() << "BranchRule is called." << endl;
+    Logger::ifout() << "  Redefinition in derived class is missing." << endl;
 }
 
 
 void BranchRule::unExtract(LpSub * /* lp */)
 {
-	Logger::ifout() << "WARNING:" << endl;
-	Logger::ifout() << "  virtual dummy function unExtract() of base class ";
-	Logger::ifout() << "BranchRule is called." << endl;
-	Logger::ifout() << "  Redefinition in derived class is missing." << endl;
+    Logger::ifout() << "WARNING:" << endl;
+    Logger::ifout() << "  virtual dummy function unExtract() of base class ";
+    Logger::ifout() << "BranchRule is called." << endl;
+    Logger::ifout() << "  Redefinition in derived class is missing." << endl;
 }
 } //namespace abacus

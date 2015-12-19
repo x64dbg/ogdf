@@ -51,9 +51,10 @@
 
 #include <ogdf/basic/Graph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class OGDF_EXPORT SPQRTree;
+class OGDF_EXPORT SPQRTree;
 
 
 //---------------------------------------------------------
@@ -80,88 +81,96 @@ namespace ogdf {
 
 class OGDF_EXPORT PertinentGraph
 {
-	friend class OGDF_EXPORT SPQRTree;
+    friend class OGDF_EXPORT SPQRTree;
 
 public:
 
-	// constructor
-	// Remark: Pertinent graphs are created by the pertinentGraph()
-	//   function of SPQRTree.
+    // constructor
+    // Remark: Pertinent graphs are created by the pertinentGraph()
+    //   function of SPQRTree.
 
-	//! Creates an empty instance of type PertinentGraph.
-	/**
-	 * \remarks Pertinent graphs are created by the pertinentGraph()
-	 *          function of SPQRTree.
-	 */
-	PertinentGraph() : m_vT(0) { }
+    //! Creates an empty instance of type PertinentGraph.
+    /**
+     * \remarks Pertinent graphs are created by the pertinentGraph()
+     *          function of SPQRTree.
+     */
+    PertinentGraph() : m_vT(0) { }
 
-	//! Initialization of a pertinent graph of tree node \a vT.
-	void init(node vT) {
-		m_P = Graph();
-		m_vT = vT;
-		m_vEdge = m_skRefEdge = 0;
-		m_origV.init(m_P,0);
-		m_origE.init(m_P,0);
-	}
+    //! Initialization of a pertinent graph of tree node \a vT.
+    void init(node vT)
+    {
+        m_P = Graph();
+        m_vT = vT;
+        m_vEdge = m_skRefEdge = 0;
+        m_origV.init(m_P,0);
+        m_origE.init(m_P,0);
+    }
 
 
-	//! Returns the tree node \a vT in \a T whose pertinent graph is this one.
-	node treeNode() const {
-		return m_vT;
-	}
+    //! Returns the tree node \a vT in \a T whose pertinent graph is this one.
+    node treeNode() const
+    {
+        return m_vT;
+    }
 
-	//! Returns a reference to \a G(\a vT).
-	const Graph &getGraph() const {
-		return m_P;
-	}
+    //! Returns a reference to \a G(\a vT).
+    const Graph &getGraph() const
+    {
+        return m_P;
+    }
 
-	//! Returns a reference to \a G(\a vT).
-	Graph &getGraph() {
-		return m_P;
-	}
+    //! Returns a reference to \a G(\a vT).
+    Graph &getGraph()
+    {
+        return m_P;
+    }
 
-	//! Returns the edge in \a G(\a vT) corresponding to the reference edge in skeleton of \a vT.
-	/**
-	 * If \a vT is the root of \a T, then 0 is returned.
-	 */
-	edge referenceEdge() const {
-		return m_vEdge;
-	}
+    //! Returns the edge in \a G(\a vT) corresponding to the reference edge in skeleton of \a vT.
+    /**
+     * If \a vT is the root of \a T, then 0 is returned.
+     */
+    edge referenceEdge() const
+    {
+        return m_vEdge;
+    }
 
-	//! Returns the reference edge in skeleton of \a vT.
-	/**
-	 * Notice that this edge may differ from the current reference edge in skeleton
-	 * of \a vT if \a T has been rerooted after the construction of \a P.
-	 */
-	edge skeletonReferenceEdge() const {
-		return m_skRefEdge;
-	}
+    //! Returns the reference edge in skeleton of \a vT.
+    /**
+     * Notice that this edge may differ from the current reference edge in skeleton
+     * of \a vT if \a T has been rerooted after the construction of \a P.
+     */
+    edge skeletonReferenceEdge() const
+    {
+        return m_skRefEdge;
+    }
 
-	//! Returns the vertex in \a G that corresponds to \a v.
-	/**
-	 * \pre \a v is a node in \a G(\a vT)
-	 */
-	node original(node v) const {
-		return m_origV[v];
-	}
+    //! Returns the vertex in \a G that corresponds to \a v.
+    /**
+     * \pre \a v is a node in \a G(\a vT)
+     */
+    node original(node v) const
+    {
+        return m_origV[v];
+    }
 
-	//! Returns the edge in \a G that corresponds to \a e.
-	/**
-	 * If \a e is the reference edge, then 0 is returned.
-	 * \pre \a e is an edge in \a G(\a vT)
-	 */
-	edge original(edge e) const {
-		return m_origE[e];
-	}
+    //! Returns the edge in \a G that corresponds to \a e.
+    /**
+     * If \a e is the reference edge, then 0 is returned.
+     * \pre \a e is an edge in \a G(\a vT)
+     */
+    edge original(edge e) const
+    {
+        return m_origE[e];
+    }
 
 protected:
-	node  m_vT;  //!< corresponding tree node
-	Graph m_P;   //!< actual graph
-	edge  m_vEdge; //!< reference edge (in \a m_P)
-	edge  m_skRefEdge; //!< reference edge (in skeleton(\a m_vT))
+    node  m_vT;  //!< corresponding tree node
+    Graph m_P;   //!< actual graph
+    edge  m_vEdge; //!< reference edge (in \a m_P)
+    edge  m_skRefEdge; //!< reference edge (in skeleton(\a m_vT))
 
-	NodeArray<node> m_origV; //!< corresp. original node
-	EdgeArray<edge> m_origE; //!< corresp. original edge
+    NodeArray<node> m_origV; //!< corresp. original node
+    EdgeArray<edge> m_origE; //!< corresp. original edge
 };
 
 

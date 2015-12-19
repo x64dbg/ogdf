@@ -44,105 +44,122 @@
 
 #include <vector>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 static void writeMatrix(
-	std::ostream &os,
-	const Graph &G, const GraphAttributes *GA)
+    std::ostream &os,
+    const Graph &G, const GraphAttributes *GA)
 {
-	os << "DATA:\n";
-	const long attrs = GA ? GA->attributes() : 0;
-	const int n = G.numberOfNodes();
-	std::vector<double> matrix(n * n, 0);
+    os << "DATA:\n";
+    const long attrs = GA ? GA->attributes() : 0;
+    const int n = G.numberOfNodes();
+    std::vector<double> matrix(n * n, 0);
 
-	edge e;
-	forall_edges(e, G) {
-		const int vs = e->source()->index();
-		const int vt = e->target()->index();
+    edge e;
+    forall_edges(e, G)
+    {
+        const int vs = e->source()->index();
+        const int vt = e->target()->index();
 
-		if(attrs & GraphAttributes::edgeDoubleWeight) {
-			matrix[vs * n + vt] = GA->doubleWeight(e);
-		} else if(attrs & GraphAttributes::edgeIntWeight) {
-			matrix[vs * n + vt] = GA->intWeight(e);
-		} else {
-			matrix[vs * n + vt] = 1;
-		}
-	}
+        if(attrs & GraphAttributes::edgeDoubleWeight)
+        {
+            matrix[vs * n + vt] = GA->doubleWeight(e);
+        }
+        else if(attrs & GraphAttributes::edgeIntWeight)
+        {
+            matrix[vs * n + vt] = GA->intWeight(e);
+        }
+        else
+        {
+            matrix[vs * n + vt] = 1;
+        }
+    }
 
-	node v, u;
-	forall_nodes(v, G) {
-		bool space = false;
-		forall_nodes(u, G) {
-			if(space) {
-				os << " ";
-			}
-			space = true;
+    node v, u;
+    forall_nodes(v, G)
+    {
+        bool space = false;
+        forall_nodes(u, G)
+        {
+            if(space)
+            {
+                os << " ";
+            }
+            space = true;
 
-			const int vs = v->index(), vt = u->index();
-			os << matrix[vs * n + vt];
-		}
-		os << "\n";
-	}
+            const int vs = v->index(), vt = u->index();
+            os << matrix[vs * n + vt];
+        }
+        os << "\n";
+    }
 }
 
 
 static void writeEdges(
-	std::ostream &os,
-	const Graph &G, const GraphAttributes *GA)
+    std::ostream &os,
+    const Graph &G, const GraphAttributes *GA)
 {
-	os << "DATA:\n";
-	const long attrs = GA ? GA->attributes() : 0;
+    os << "DATA:\n";
+    const long attrs = GA ? GA->attributes() : 0;
 
-	edge e;
-	forall_edges(e, G) {
-		os << (e->source()->index() + 1) << " " << (e->target()->index() + 1);
+    edge e;
+    forall_edges(e, G)
+    {
+        os << (e->source()->index() + 1) << " " << (e->target()->index() + 1);
 
-		if(attrs & GraphAttributes::edgeDoubleWeight) {
-			os << " " << GA->doubleWeight(e);
-		} else if(attrs & GraphAttributes::edgeIntWeight) {
-			os << " " << GA->intWeight(e);
-		}
+        if(attrs & GraphAttributes::edgeDoubleWeight)
+        {
+            os << " " << GA->doubleWeight(e);
+        }
+        else if(attrs & GraphAttributes::edgeIntWeight)
+        {
+            os << " " << GA->intWeight(e);
+        }
 
-		os << "\n";
-	}
+        os << "\n";
+    }
 }
 
 
 static void writeGraph(
-	std::ostream &os,
-	const Graph &G, const GraphAttributes *GA)
+    std::ostream &os,
+    const Graph &G, const GraphAttributes *GA)
 {
-	const long long n = G.numberOfNodes(), m = G.numberOfEdges();
+    const long long n = G.numberOfNodes(), m = G.numberOfEdges();
 
-	os << "DL N = " << n << "\n";
+    os << "DL N = " << n << "\n";
 
-	// We pick output format basing on edge density.
-	enum { matrix, edges } format = (m > (n * n / 2)) ? matrix : edges;
+    // We pick output format basing on edge density.
+    enum { matrix, edges } format = (m > (n * n / 2)) ? matrix : edges;
 
-	// Specify output format.
-	os << "FORMAT = ";
-	if(format == matrix) {
-		os << "fullmatrix\n";
-		writeMatrix(os, G, GA);
-	} else if(format == edges) {
-		os << "edgelist1\n";
-		writeEdges(os, G, GA);
-	}
+    // Specify output format.
+    os << "FORMAT = ";
+    if(format == matrix)
+    {
+        os << "fullmatrix\n";
+        writeMatrix(os, G, GA);
+    }
+    else if(format == edges)
+    {
+        os << "edgelist1\n";
+        writeEdges(os, G, GA);
+    }
 }
 
 
 bool GraphIO::writeDL(const Graph &G, std::ostream &os)
 {
-	writeGraph(os, G, NULL);
-	return true;
+    writeGraph(os, G, NULL);
+    return true;
 }
 
 
 bool GraphIO::writeDL(const GraphAttributes &GA, std::ostream &os)
 {
-	writeGraph(os, GA.constGraph(), &GA);
-	return true;
+    writeGraph(os, GA.constGraph(), &GA);
+    return true;
 }
 
 

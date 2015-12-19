@@ -9,7 +9,7 @@
 /** \file
  * \brief Declaration of classes GridSifting and GlobalSifting.
  *
- * \author Pawe³ Schmidt
+ * \author Paweï¿½ Schmidt
  *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
@@ -54,13 +54,14 @@
 #include <ogdf/module/LayeredCrossMinModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief The global sifting heuristic for crossing minimization.
  *
  * Implementation of the global sifting heuristic based on
- * C. Bachmaier, F. J. Brandenburg, W. Brunner, F. Hübner,
+ * C. Bachmaier, F. J. Brandenburg, W. Brunner, F. Hï¿½bner,
  * <i>Global k-Level Crossing Reduction</i>, J. Graph Algorithms and
  * Appl. 15(5), 2011, pp. 631-659.
  * This class implements the interface LayeredCrossMinModule and should be
@@ -68,44 +69,51 @@ namespace ogdf {
  *
  *
  */
-class OGDF_EXPORT GlobalSifting : public LayeredCrossMinModule {
+class OGDF_EXPORT GlobalSifting : public LayeredCrossMinModule
+{
 
 
 public:
-	//! Creates a new instance of the global sifting heuristic.
-	GlobalSifting() : m_nRepeats(10) { }
+    //! Creates a new instance of the global sifting heuristic.
+    GlobalSifting() : m_nRepeats(10) { }
 
-	/**
-	 * \brief Returns the current setting of option nRepeats.
-	 *
-	 * This option determines, how many times the global sifting is repeated.
-	 * Each repetition starts from permutation returned by the previous one.
-	 * The first repetition starts from random permutation.
-	 */
-	int nRepeats() { return m_nRepeats; }
+    /**
+     * \brief Returns the current setting of option nRepeats.
+     *
+     * This option determines, how many times the global sifting is repeated.
+     * Each repetition starts from permutation returned by the previous one.
+     * The first repetition starts from random permutation.
+     */
+    int nRepeats()
+    {
+        return m_nRepeats;
+    }
 
-	//! Sets the option nRepeats to \a num.
-	void nRepeats( int num ) { m_nRepeats = num; }
+    //! Sets the option nRepeats to \a num.
+    void nRepeats( int num )
+    {
+        m_nRepeats = num;
+    }
 
-	//! Implementation of interface LateredCrossMinModule.
-	const HierarchyLevelsBase *reduceCrossings(const SugiyamaLayout &sugi, Hierarchy &H)
-	{
-		BlockOrder *pBlockOrder = new BlockOrder(H,true);
+    //! Implementation of interface LateredCrossMinModule.
+    const HierarchyLevelsBase *reduceCrossings(const SugiyamaLayout &sugi, Hierarchy &H)
+    {
+        BlockOrder *pBlockOrder = new BlockOrder(H,true);
 
-		pBlockOrder -> globalSifting( sugi.runs(), m_nRepeats );
+        pBlockOrder -> globalSifting( sugi.runs(), m_nRepeats );
 
-		return pBlockOrder;
-	}
+        return pBlockOrder;
+    }
 
 private:
-	int m_nRepeats;
+    int m_nRepeats;
 };
 
 /**
  * \brief The grid sifting heuristic for crossing minimization.
  *
  * Implementation of the grid sifting heuristic based on
- * C. Bachmaier, W. Brunner, A. Gleißner, <i>Grid Sifting: Leveling
+ * C. Bachmaier, W. Brunner, A. Gleiï¿½ner, <i>Grid Sifting: Leveling
  * and Crossing Reduction</i>, Technical Report MIP-1103, University
  * of Passau, 2011.
 
@@ -115,37 +123,44 @@ private:
  *
  *
  */
-class OGDF_EXPORT GridSifting : public LayeredCrossMinModule {
+class OGDF_EXPORT GridSifting : public LayeredCrossMinModule
+{
 
 public:
-	//! Creates a new instance of the global sifting heuristic.
-	GridSifting() { }
+    //! Creates a new instance of the global sifting heuristic.
+    GridSifting() { }
 
-	//! implementation of interface LayeredCrossMinModule.
-	const HierarchyLevelsBase *reduceCrossings(const SugiyamaLayout &sugi, Hierarchy &H)
-	{
-		BlockOrder *pBlockOrder = new BlockOrder(H,false);
+    //! implementation of interface LayeredCrossMinModule.
+    const HierarchyLevelsBase *reduceCrossings(const SugiyamaLayout &sugi, Hierarchy &H)
+    {
+        BlockOrder *pBlockOrder = new BlockOrder(H,false);
 
-		pBlockOrder -> m_verticalStepsBound = 10;
+        pBlockOrder -> m_verticalStepsBound = 10;
 
-		pBlockOrder -> gridSifting( sugi.runs() );
+        pBlockOrder -> gridSifting( sugi.runs() );
 
-		return pBlockOrder;
-	}
+        return pBlockOrder;
+    }
 
-	/**
-	 * \brief Returns the current setting of option verticalStepsBound.
-	 *
-	 * This option determines, how many levels can be traversed in
-	 * vertical step of the grid sifting algorithm.
-	 */
-	int verticalStepsBound() { return m_verticalStepsBound; }
+    /**
+     * \brief Returns the current setting of option verticalStepsBound.
+     *
+     * This option determines, how many levels can be traversed in
+     * vertical step of the grid sifting algorithm.
+     */
+    int verticalStepsBound()
+    {
+        return m_verticalStepsBound;
+    }
 
-	//! Sets the option verticalStepsBound to \a b.
-	void verticalStepsBound( int b ) { m_verticalStepsBound = b; }
+    //! Sets the option verticalStepsBound to \a b.
+    void verticalStepsBound( int b )
+    {
+        m_verticalStepsBound = b;
+    }
 
 private:
-	int m_verticalStepsBound;
+    int m_verticalStepsBound;
 };
 
 

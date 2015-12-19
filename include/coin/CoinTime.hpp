@@ -42,23 +42,23 @@
 #define DELTA_EPOCH_IN_SECS  11644473600.0
 inline double CoinGetTimeOfDay()
 {
-  FILETIME ft;
- 
-  GetSystemTimeAsFileTime(&ft);
-  double t = ft.dwHighDateTime * TWO_TO_THE_THIRTYTWO + ft.dwLowDateTime;
-  t = t/10000000.0 - DELTA_EPOCH_IN_SECS;
-  return t;
+    FILETIME ft;
+
+    GetSystemTimeAsFileTime(&ft);
+    double t = ft.dwHighDateTime * TWO_TO_THE_THIRTYTWO + ft.dwLowDateTime;
+    t = t/10000000.0 - DELTA_EPOCH_IN_SECS;
+    return t;
 }
 #else
 #include <sys/types.h>
 #include <sys/timeb.h>
 inline double CoinGetTimeOfDay()
 {
-  struct _timeb timebuffer;
+    struct _timeb timebuffer;
 #pragma warning(disable:4996)
-  _ftime( &timebuffer ); // C4996
+    _ftime( &timebuffer ); // C4996
 #pragma warning(default:4996)
-  return timebuffer.time + timebuffer.millitm/1000.0;
+    return timebuffer.time + timebuffer.millitm/1000.0;
 }
 #endif
 
@@ -92,7 +92,7 @@ inline double CoinWallclockTime(double callType = 0)
 
 //#############################################################################
 
-//#define HAVE_SDK // if SDK under Win32 is installed, for CPU instead of elapsed time under Win 
+//#define HAVE_SDK // if SDK under Win32 is installed, for CPU instead of elapsed time under Win
 #ifdef HAVE_SDK
 #include <windows.h>
 #ifdef small
@@ -105,33 +105,33 @@ inline double CoinWallclockTime(double callType = 0)
 
 static inline double CoinCpuTime()
 {
-  double cpu_temp;
+    double cpu_temp;
 #if defined(_MSC_VER) || defined(__MSVCRT__)
 #ifdef HAVE_SDK
-  FILETIME creation;
-  FILETIME exit;
-  FILETIME kernel;
-  FILETIME user;
-  GetProcessTimes(GetCurrentProcess(), &creation, &exit, &kernel, &user);
-  double t = user.dwHighDateTime * TWO_TO_THE_THIRTYTWO + user.dwLowDateTime;
-  return t/10000000.0;
+    FILETIME creation;
+    FILETIME exit;
+    FILETIME kernel;
+    FILETIME user;
+    GetProcessTimes(GetCurrentProcess(), &creation, &exit, &kernel, &user);
+    double t = user.dwHighDateTime * TWO_TO_THE_THIRTYTWO + user.dwLowDateTime;
+    return t/10000000.0;
 #else
-  unsigned int ticksnow;        /* clock_t is same as int */
-  ticksnow = (unsigned int)clock();
-  cpu_temp = (double)((double)ticksnow/CLOCKS_PER_SEC);
+    unsigned int ticksnow;        /* clock_t is same as int */
+    ticksnow = (unsigned int)clock();
+    cpu_temp = (double)((double)ticksnow/CLOCKS_PER_SEC);
 #endif
 
 #else
-  struct rusage usage;
+    struct rusage usage;
 # ifdef ZEROFAULT
-  usage.ru_utime.tv_sec = 0 ;
-  usage.ru_utime.tv_usec = 0 ;
+    usage.ru_utime.tv_sec = 0 ;
+    usage.ru_utime.tv_usec = 0 ;
 # endif
-  getrusage(RUSAGE_SELF,&usage);
-  cpu_temp = static_cast<double>(usage.ru_utime.tv_sec);
-  cpu_temp += 1.0e-6*(static_cast<double> (usage.ru_utime.tv_usec));
+    getrusage(RUSAGE_SELF,&usage);
+    cpu_temp = static_cast<double>(usage.ru_utime.tv_sec);
+    cpu_temp += 1.0e-6*(static_cast<double> (usage.ru_utime.tv_usec));
 #endif
-  return cpu_temp;
+    return cpu_temp;
 }
 
 //#############################################################################
@@ -140,40 +140,40 @@ static inline double CoinCpuTime()
 
 static inline double CoinSysTime()
 {
-  double sys_temp;
+    double sys_temp;
 #if defined(_MSC_VER) || defined(__MSVCRT__)
-  sys_temp = 0.0;
+    sys_temp = 0.0;
 #else
-  struct rusage usage;
+    struct rusage usage;
 # ifdef ZEROFAULT
-  usage.ru_utime.tv_sec = 0 ;
-  usage.ru_utime.tv_usec = 0 ;
+    usage.ru_utime.tv_sec = 0 ;
+    usage.ru_utime.tv_usec = 0 ;
 # endif
-  getrusage(RUSAGE_SELF,&usage);
-  sys_temp = static_cast<double>(usage.ru_stime.tv_sec);
-  sys_temp += 1.0e-6*(static_cast<double> (usage.ru_stime.tv_usec));
+    getrusage(RUSAGE_SELF,&usage);
+    sys_temp = static_cast<double>(usage.ru_stime.tv_sec);
+    sys_temp += 1.0e-6*(static_cast<double> (usage.ru_stime.tv_usec));
 #endif
-  return sys_temp;
+    return sys_temp;
 }
 
 //#############################################################################
 // On most systems SELF seems to include children threads, This is for when it doesn't
 static inline double CoinCpuTimeJustChildren()
 {
-  double cpu_temp;
+    double cpu_temp;
 #if defined(_MSC_VER) || defined(__MSVCRT__)
-  cpu_temp = 0.0;
+    cpu_temp = 0.0;
 #else
-  struct rusage usage;
+    struct rusage usage;
 # ifdef ZEROFAULT
-  usage.ru_utime.tv_sec = 0 ;
-  usage.ru_utime.tv_usec = 0 ;
+    usage.ru_utime.tv_sec = 0 ;
+    usage.ru_utime.tv_usec = 0 ;
 # endif
-  getrusage(RUSAGE_CHILDREN,&usage);
-  cpu_temp = static_cast<double>(usage.ru_utime.tv_sec);
-  cpu_temp += 1.0e-6*(static_cast<double> (usage.ru_utime.tv_usec));
+    getrusage(RUSAGE_CHILDREN,&usage);
+    cpu_temp = static_cast<double>(usage.ru_utime.tv_sec);
+    cpu_temp += 1.0e-6*(static_cast<double> (usage.ru_utime.tv_usec));
 #endif
-  return cpu_temp;
+    return cpu_temp;
 }
 //#############################################################################
 
@@ -197,114 +197,137 @@ static inline double CoinCpuTimeJustChildren()
 class CoinTimer
 {
 private:
-   /// When the timer was initialized/reset/restarted
-   double start;
-   /// 
-   double limit;
-   double end;
+    /// When the timer was initialized/reset/restarted
+    double start;
+    ///
+    double limit;
+    double end;
 #ifdef COIN_COMPILE_WITH_TRACING
-   std::fstream* stream;
-   bool write_stream;
+    std::fstream* stream;
+    bool write_stream;
 #endif
 
 private:
 #ifdef COIN_COMPILE_WITH_TRACING
-   inline bool evaluate(bool b_tmp) const {
-      int i_tmp = b_tmp;
-      if (stream) {
-	 if (write_stream)
-	    (*stream) << i_tmp << "\n";
-	 else 
-	    (*stream) >> i_tmp;
-      }
-      return i_tmp;
-   }
-   inline double evaluate(double d_tmp) const {
-      if (stream) {
-	 if (write_stream)
-	    (*stream) << d_tmp << "\n";
-	 else 
-	    (*stream) >> d_tmp;
-      }
-      return d_tmp;
-   }
+    inline bool evaluate(bool b_tmp) const
+    {
+        int i_tmp = b_tmp;
+        if (stream)
+        {
+            if (write_stream)
+                (*stream) << i_tmp << "\n";
+            else
+                (*stream) >> i_tmp;
+        }
+        return i_tmp;
+    }
+    inline double evaluate(double d_tmp) const
+    {
+        if (stream)
+        {
+            if (write_stream)
+                (*stream) << d_tmp << "\n";
+            else
+                (*stream) >> d_tmp;
+        }
+        return d_tmp;
+    }
 #else
-   inline bool evaluate(const bool b_tmp) const {
-      return b_tmp;
-   }
-   inline double evaluate(const double d_tmp) const {
-      return d_tmp;
-   }
-#endif   
+    inline bool evaluate(const bool b_tmp) const
+    {
+        return b_tmp;
+    }
+    inline double evaluate(const double d_tmp) const
+    {
+        return d_tmp;
+    }
+#endif
 
 public:
-   /// Default constructor creates a timer with no time limit and no tracing
-   CoinTimer() :
-      start(0), limit(1e100), end(1e100)
+    /// Default constructor creates a timer with no time limit and no tracing
+    CoinTimer() :
+        start(0), limit(1e100), end(1e100)
 #ifdef COIN_COMPILE_WITH_TRACING
-      , stream(0), write_stream(true)
+        , stream(0), write_stream(true)
 #endif
-   {}
+    {}
 
-   /// Create a timer with the given time limit and with no tracing
-   CoinTimer(double lim) :
-      start(CoinCpuTime()), limit(lim), end(start+lim)
+    /// Create a timer with the given time limit and with no tracing
+    CoinTimer(double lim) :
+        start(CoinCpuTime()), limit(lim), end(start+lim)
 #ifdef COIN_COMPILE_WITH_TRACING
-      , stream(0), write_stream(true)
+        , stream(0), write_stream(true)
 #endif
-   {}
+    {}
 
 #ifdef COIN_COMPILE_WITH_TRACING
-   /** Create a timer with no time limit and with writing/reading the trace
-       to/from the given stream, depending on the argument \c write. */
-   CoinTimer(std::fstream* s, bool write) :
-      start(0), limit(1e100), end(1e100),
-      stream(s), write_stream(write) {}
-   
-   /** Create a timer with the given time limit and with writing/reading the
-       trace to/from the given stream, depending on the argument \c write. */
-   CoinTimer(double lim, std::fstream* s, bool w) :
-      start(CoinCpuTime()), limit(lim), end(start+lim),
-      stream(s), write_stream(w) {}
+    /** Create a timer with no time limit and with writing/reading the trace
+        to/from the given stream, depending on the argument \c write. */
+    CoinTimer(std::fstream* s, bool write) :
+        start(0), limit(1e100), end(1e100),
+        stream(s), write_stream(write) {}
+
+    /** Create a timer with the given time limit and with writing/reading the
+        trace to/from the given stream, depending on the argument \c write. */
+    CoinTimer(double lim, std::fstream* s, bool w) :
+        start(CoinCpuTime()), limit(lim), end(start+lim),
+        stream(s), write_stream(w) {}
 #endif
-   
-   /// Restart the timer (keeping the same time limit)
-   inline void restart() { start=CoinCpuTime(); end=start+limit; }
-   /// An alternate name for \c restart()
-   inline void reset() { restart(); }
-   /// Reset (and restart) the timer and change its time limit
-   inline void reset(double lim) { limit=lim; restart(); }
 
-   /** Return whether the given percentage of the time limit has elapsed since
-       the timer was started */
-   inline bool isPastPercent(double pct) const {
-      return evaluate(start + limit * pct < CoinCpuTime());
-   }
-   /** Return whether the given amount of time has elapsed since the timer was
-       started */
-   inline bool isPast(double lim) const {
-      return evaluate(start + lim < CoinCpuTime());
-   }
-   /** Return whether the originally specified time limit has passed since the
-       timer was started */
-   inline bool isExpired() const {
-      return evaluate(end < CoinCpuTime());
-   }
+    /// Restart the timer (keeping the same time limit)
+    inline void restart()
+    {
+        start=CoinCpuTime();
+        end=start+limit;
+    }
+    /// An alternate name for \c restart()
+    inline void reset()
+    {
+        restart();
+    }
+    /// Reset (and restart) the timer and change its time limit
+    inline void reset(double lim)
+    {
+        limit=lim;
+        restart();
+    }
 
-   /** Return how much time is left on the timer */
-   inline double timeLeft() const {
-      return evaluate(end - CoinCpuTime());
-   }
+    /** Return whether the given percentage of the time limit has elapsed since
+        the timer was started */
+    inline bool isPastPercent(double pct) const
+    {
+        return evaluate(start + limit * pct < CoinCpuTime());
+    }
+    /** Return whether the given amount of time has elapsed since the timer was
+        started */
+    inline bool isPast(double lim) const
+    {
+        return evaluate(start + lim < CoinCpuTime());
+    }
+    /** Return whether the originally specified time limit has passed since the
+        timer was started */
+    inline bool isExpired() const
+    {
+        return evaluate(end < CoinCpuTime());
+    }
 
-   /** Return how much time has elapsed */
-   inline double timeElapsed() const {
-      return evaluate(CoinCpuTime() - start);
-   }
+    /** Return how much time is left on the timer */
+    inline double timeLeft() const
+    {
+        return evaluate(end - CoinCpuTime());
+    }
 
-   inline void setLimit(double l) {
-      limit = l;
-      return;
-   }
+    /** Return how much time has elapsed */
+    inline double timeElapsed() const
+    {
+        return evaluate(CoinCpuTime() - start);
+    }
+
+    inline void setLimit(double l)
+    {
+        limit = l;
+        return;
+    }
 };
 
 #endif

@@ -43,7 +43,8 @@
 
 #include <ogdf/basic/Logger.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 // initializers
 #ifdef OGDF_DEBUG

@@ -51,72 +51,75 @@
 
 #include <ogdf/basic/Graph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief Base class of algorithms for computing a maximal acyclic subgraph.
  *
  * \see SugiyamaLayout
  */
-class OGDF_EXPORT AcyclicSubgraphModule {
+class OGDF_EXPORT AcyclicSubgraphModule
+{
 public:
-	//! Initializes an acyclic subgraph module.
-	AcyclicSubgraphModule() { }
+    //! Initializes an acyclic subgraph module.
+    AcyclicSubgraphModule() { }
 
-	// destruction
-	virtual ~AcyclicSubgraphModule() { }
+    // destruction
+    virtual ~AcyclicSubgraphModule() { }
 
-	/**
-	 * \brief Computes the set of edges \a arcSet which have to be removed
-	 *        for obtaining an acyclic subgraph of \a G.
-	 *
-	 * This is the actual algorithm call and must be implemented by derived classes.
-	 * @param G is the input graph.
-	 * @param arcSet is assigned the list of edges that have to be removed in \a G.
-	 */
-	virtual void call(const Graph &G, List<edge> &arcSet) = 0;
+    /**
+     * \brief Computes the set of edges \a arcSet which have to be removed
+     *        for obtaining an acyclic subgraph of \a G.
+     *
+     * This is the actual algorithm call and must be implemented by derived classes.
+     * @param G is the input graph.
+     * @param arcSet is assigned the list of edges that have to be removed in \a G.
+     */
+    virtual void call(const Graph &G, List<edge> &arcSet) = 0;
 
-	/**
-	 * \brief Computes the set of edges \a arcSet which have to be removed
-	 *        for obtaining an acyclic subgraph of \a G.
-	 * @param G is the input graph.
-	 * @param arcSet is assigned the list of edges that have to be removed in \a G.
-	 */
-	void operator()(const Graph &G, List<edge> &arcSet) {
-		call(G,arcSet);
-	}
+    /**
+     * \brief Computes the set of edges \a arcSet which have to be removed
+     *        for obtaining an acyclic subgraph of \a G.
+     * @param G is the input graph.
+     * @param arcSet is assigned the list of edges that have to be removed in \a G.
+     */
+    void operator()(const Graph &G, List<edge> &arcSet)
+    {
+        call(G,arcSet);
+    }
 
-	/**
-	 * \brief Makes \a G acyclic by reversing edges.
-	 *
-	 * This method will ignore self-loops in the input graph \a G; thus self-loops
-	 * are neither reversed or removed nor added to \a reversed.
-	 * @param G is the input graph.
-	 * @param reversed is assigned the list of edges that have been reversed in \a G.
-	 */
-	void callAndReverse(Graph &G, List<edge> &reversed);
+    /**
+     * \brief Makes \a G acyclic by reversing edges.
+     *
+     * This method will ignore self-loops in the input graph \a G; thus self-loops
+     * are neither reversed or removed nor added to \a reversed.
+     * @param G is the input graph.
+     * @param reversed is assigned the list of edges that have been reversed in \a G.
+     */
+    void callAndReverse(Graph &G, List<edge> &reversed);
 
-	// makes G acyclic (except for self-loops!) by reversing edges
-	/**
-	 * \brief Makes \a G acyclic by reversing edges.
-	 *
-	 * This method will ignore self-loops in the input graph \a G; thus self-loops
-	 * are neither reversed nor removed. This is the simplified version of callAndDelete()
-	 * that does not return the list of reversed edges.
-	 * @param G is the input graph.
-	 */
-	void callAndReverse(Graph &G);
+    // makes G acyclic (except for self-loops!) by reversing edges
+    /**
+     * \brief Makes \a G acyclic by reversing edges.
+     *
+     * This method will ignore self-loops in the input graph \a G; thus self-loops
+     * are neither reversed nor removed. This is the simplified version of callAndDelete()
+     * that does not return the list of reversed edges.
+     * @param G is the input graph.
+     */
+    void callAndReverse(Graph &G);
 
-	// makes G acyclic by deleting edges
-	/**
-	 * \brief Makes \a G acyclic by removing edges.
-	 *
-	 * This method will also remove self-loops in the input graph \a G.
-	 * @param G is the input graph.
-	 */
-	void callAndDelete(Graph &G);
+    // makes G acyclic by deleting edges
+    /**
+     * \brief Makes \a G acyclic by removing edges.
+     *
+     * This method will also remove self-loops in the input graph \a G.
+     * @param G is the input graph.
+     */
+    void callAndDelete(Graph &G);
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 } // end namespace ogdf

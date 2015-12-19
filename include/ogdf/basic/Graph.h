@@ -55,16 +55,17 @@
 
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	//! Output operator for nodes; prints node index (or "nil").
-	OGDF_EXPORT ostream &operator<<(ostream &os, ogdf::node v);
+//! Output operator for nodes; prints node index (or "nil").
+OGDF_EXPORT ostream &operator<<(ostream &os, ogdf::node v);
 
-	//! Output operator for edges; prints source and target indices (or "nil").
-	OGDF_EXPORT ostream &operator<<(ostream &os, ogdf::edge e);
+//! Output operator for edges; prints source and target indices (or "nil").
+OGDF_EXPORT ostream &operator<<(ostream &os, ogdf::edge e);
 
-	//! Output operator for adjacency entries; prints node and twin indices (or "nil").
-	OGDF_EXPORT ostream &operator<<(ostream &os, ogdf::adjEntry adj);
+//! Output operator for adjacency entries; prints node and twin indices (or "nil").
+OGDF_EXPORT ostream &operator<<(ostream &os, ogdf::adjEntry adj);
 
 
 } // end namespace ogdf

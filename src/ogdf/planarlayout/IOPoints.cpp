@@ -44,119 +44,121 @@
 #include "IOPoints.h"
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 ListConstIterator<InOutPoint> IOPoints::searchRealForward(
-	ListConstIterator<InOutPoint> it) const
+    ListConstIterator<InOutPoint> it) const
 {
-	while (it.valid() && marked((*it).m_adj))
-		++it;
+    while (it.valid() && marked((*it).m_adj))
+        ++it;
 
-	return it;
+    return it;
 }
 
 ListConstIterator<InOutPoint> IOPoints::searchRealBackward(
-	ListConstIterator<InOutPoint> it) const
+    ListConstIterator<InOutPoint> it) const
 {
-	while (it.valid() && marked((*it).m_adj))
-		--it;
+    while (it.valid() && marked((*it).m_adj))
+        --it;
 
-	return it;
+    return it;
 }
 
 
 void IOPoints::restoreDeg1Nodes(PlanRep &PG, Stack<PlanRep::Deg1RestoreInfo> &S)
 {
-	List<node> deg1s;
+    List<node> deg1s;
 
-	PG.restoreDeg1Nodes(S,deg1s);
+    PG.restoreDeg1Nodes(S,deg1s);
 
-	ListConstIterator<node> it;
-	for(it = deg1s.begin(); it.valid(); ++it) {
-		adjEntry adj = (*it)->firstAdj();
-		m_mark[adj] = m_mark[adj->twin()] = true;
-	}
+    ListConstIterator<node> it;
+    for(it = deg1s.begin(); it.valid(); ++it)
+    {
+        adjEntry adj = (*it)->firstAdj();
+        m_mark[adj] = m_mark[adj->twin()] = true;
+    }
 }
 
 
 adjEntry IOPoints::switchBeginIn(node v)
 {
-	List<InOutPoint> &Lin  = m_in [v];
-	List<InOutPoint> &Lout = m_out[v];
+    List<InOutPoint> &Lin  = m_in [v];
+    List<InOutPoint> &Lout = m_out[v];
 
-	ListConstIterator<InOutPoint> it;
-	adjEntry adj;
+    ListConstIterator<InOutPoint> it;
+    adjEntry adj;
 
-	while ((it = Lin.begin()).valid() && marked(adj = (*it).m_adj))
-		m_pointOf[adj] = &(*Lout.pushFront(Lin.popFrontRet()));
+    while ((it = Lin.begin()).valid() && marked(adj = (*it).m_adj))
+        m_pointOf[adj] = &(*Lout.pushFront(Lin.popFrontRet()));
 
-	return it.valid() ? adj : 0;
+    return it.valid() ? adj : 0;
 }
 
 
 adjEntry IOPoints::switchEndIn(node v)
 {
-	List<InOutPoint> &Lin  = m_in [v];
-	List<InOutPoint> &Lout = m_out[v];
+    List<InOutPoint> &Lin  = m_in [v];
+    List<InOutPoint> &Lout = m_out[v];
 
-	ListConstIterator<InOutPoint> it;
-	adjEntry adj;
+    ListConstIterator<InOutPoint> it;
+    adjEntry adj;
 
-	while ((it = Lin.rbegin()).valid() && marked(adj = (*it).m_adj))
-		m_pointOf[adj] = &(*Lout.pushBack(Lin.popBackRet()));
+    while ((it = Lin.rbegin()).valid() && marked(adj = (*it).m_adj))
+        m_pointOf[adj] = &(*Lout.pushBack(Lin.popBackRet()));
 
-	return it.valid() ? adj : 0;
+    return it.valid() ? adj : 0;
 }
 
 
 void IOPoints::switchBeginOut(node v)
 {
-	List<InOutPoint> &Lin  = m_in [v];
-	List<InOutPoint> &Lout = m_out[v];
+    List<InOutPoint> &Lin  = m_in [v];
+    List<InOutPoint> &Lout = m_out[v];
 
-	adjEntry adj = (*Lout.begin()).m_adj;
-	m_pointOf[adj] = &(*Lin.pushFront(Lout.popFrontRet()));
+    adjEntry adj = (*Lout.begin()).m_adj;
+    m_pointOf[adj] = &(*Lin.pushFront(Lout.popFrontRet()));
 }
 
 
 void IOPoints::switchEndOut(node v)
 {
-	List<InOutPoint> &Lin  = m_in [v];
-	List<InOutPoint> &Lout = m_out[v];
+    List<InOutPoint> &Lin  = m_in [v];
+    List<InOutPoint> &Lout = m_out[v];
 
-	adjEntry adj = (*Lout.rbegin()).m_adj;
-	m_pointOf[adj] = &(*Lin.pushBack(Lout.popBackRet()));
+    adjEntry adj = (*Lout.rbegin()).m_adj;
+    m_pointOf[adj] = &(*Lin.pushBack(Lout.popBackRet()));
 }
 
 
 void IOPoints::numDeg1(node v, int &xl, int &xr,
-	bool doubleCount) const
+                       bool doubleCount) const
 {
-	const List<InOutPoint> &L = m_out[v];
-	ListConstIterator<InOutPoint> it;
+    const List<InOutPoint> &L = m_out[v];
+    ListConstIterator<InOutPoint> it;
 
-	xl = xr = 0;
-	for (it = L.begin(); it.valid() && marked((*it).m_adj); ++it)
-		++xl;
+    xl = xr = 0;
+    for (it = L.begin(); it.valid() && marked((*it).m_adj); ++it)
+        ++xl;
 
-	if (doubleCount || it.valid()) // avoid double counting if all are marked
-		for (it = L.rbegin(); it.valid() && marked((*it).m_adj); --it)
-			++xr;
+    if (doubleCount || it.valid()) // avoid double counting if all are marked
+        for (it = L.rbegin(); it.valid() && marked((*it).m_adj); --it)
+            ++xr;
 }
 
 InOutPoint IOPoints::middleNeighbor(node z1) const
 {
-	const List<InOutPoint> &L = m_in[z1];
+    const List<InOutPoint> &L = m_in[z1];
 
-	ListConstIterator<InOutPoint> it, itFound;
-	int i,  pos = (L.size()-1)/2;
+    ListConstIterator<InOutPoint> it, itFound;
+    int i,  pos = (L.size()-1)/2;
 
-	for (it = L.begin().succ(), i = 1; i <= pos || !itFound.valid(); ++it, ++i)
-		if (!marked((*it).m_adj))
-			itFound = it;
+    for (it = L.begin().succ(), i = 1; i <= pos || !itFound.valid(); ++it, ++i)
+        if (!marked((*it).m_adj))
+            itFound = it;
 
-	return *itFound;
+    return *itFound;
 }
 
 

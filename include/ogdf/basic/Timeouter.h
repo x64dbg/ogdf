@@ -52,7 +52,8 @@
 #include <ogdf/basic/basic.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! class for timeout funtionality.
 /**
@@ -63,46 +64,51 @@ namespace ogdf {
 class OGDF_EXPORT Timeouter
 {
 public:
-	//! timeout is turned of by default
-	Timeouter() : m_timeLimit(-1) { }
+    //! timeout is turned of by default
+    Timeouter() : m_timeLimit(-1) { }
 
-	//! timeout is set to the given value (seconds)
-	Timeouter(double t) : m_timeLimit(t) { }
+    //! timeout is set to the given value (seconds)
+    Timeouter(double t) : m_timeLimit(t) { }
 
-	//! timeout is turned off (false) or on (true) (with 0 second)
-	Timeouter(bool t) : m_timeLimit(t ? 0 : -1) { }
+    //! timeout is turned off (false) or on (true) (with 0 second)
+    Timeouter(bool t) : m_timeLimit(t ? 0 : -1) { }
 
-	Timeouter(const Timeouter &t) : m_timeLimit(t.m_timeLimit) { }
+    Timeouter(const Timeouter &t) : m_timeLimit(t.m_timeLimit) { }
 
-	~Timeouter() { }
+    ~Timeouter() { }
 
-	Timeouter &operator=(const Timeouter &t) {
-		m_timeLimit = t.m_timeLimit;
-		return *this;
-	}
+    Timeouter &operator=(const Timeouter &t)
+    {
+        m_timeLimit = t.m_timeLimit;
+        return *this;
+    }
 
-	//! sets the time limit for the call (in seconds); <0 means no limit.
-	void timeLimit(double t) {
-		m_timeLimit = t;
-	}
+    //! sets the time limit for the call (in seconds); <0 means no limit.
+    void timeLimit(double t)
+    {
+        m_timeLimit = t;
+    }
 
-	//! shorthand to turn timelimit off or on (with 0 seconds)
-	void timeLimit(bool t) {
-		m_timeLimit = t ? 0 : -1;
-	}
+    //! shorthand to turn timelimit off or on (with 0 seconds)
+    void timeLimit(bool t)
+    {
+        m_timeLimit = t ? 0 : -1;
+    }
 
-	//! returns the current time limit for the call
-	double timeLimit() const {
-		return m_timeLimit;
-	}
+    //! returns the current time limit for the call
+    double timeLimit() const
+    {
+        return m_timeLimit;
+    }
 
-	//! returns whether any time limit is set or not
-	bool isTimeLimit() const {
-		return m_timeLimit >= 0;
-	}
+    //! returns whether any time limit is set or not
+    bool isTimeLimit() const
+    {
+        return m_timeLimit >= 0;
+    }
 
 protected:
-	double m_timeLimit; //!< Time limit for module calls (< 0 means no limit).
+    double m_timeLimit; //!< Time limit for module calls (< 0 means no limit).
 };
 
 

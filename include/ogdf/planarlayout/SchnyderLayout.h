@@ -53,7 +53,8 @@
 #include <ogdf/module/GridLayoutModule.h>
 #include <ogdf/basic/List.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * The class SchnyderLayout represents the layout algorithm by
@@ -68,44 +69,45 @@ namespace ogdf {
  * (also called Schnyder trees) with special orientation properties is derived.
  * In the third step, the actual coordinates are computed.
  */
-class OGDF_EXPORT SchnyderLayout : public PlanarGridLayoutModule {
+class OGDF_EXPORT SchnyderLayout : public PlanarGridLayoutModule
+{
 
 public:
-	SchnyderLayout();
+    SchnyderLayout();
 
 protected:
-	void doCall(const Graph &G, adjEntry adjExternal, GridLayout &gridLayout,
-				IPoint &boundingBox, bool fixEmbedding);
+    void doCall(const Graph &G, adjEntry adjExternal, GridLayout &gridLayout,
+                IPoint &boundingBox, bool fixEmbedding);
 
 private:
-	void contract(Graph& G, node a, node b, node c, List<node>& L);
+    void contract(Graph& G, node a, node b, node c, List<node>& L);
 
-	void realizer(
-		GraphCopy& G,
-		const List<node>& L,
-		node a,
-		node b,
-		node c,
-		EdgeArray<int>& rValues,
-		GraphCopy& T);
+    void realizer(
+        GraphCopy& G,
+        const List<node>& L,
+        node a,
+        node b,
+        node c,
+        EdgeArray<int>& rValues,
+        GraphCopy& T);
 
-	void subtreeSizes(
-		EdgeArray<int>& rValues,
-		int i,
-		node r,
-		NodeArray<int>& size);
+    void subtreeSizes(
+        EdgeArray<int>& rValues,
+        int i,
+        node r,
+        NodeArray<int>& size);
 
-	void prefixSum(
-		EdgeArray<int>& rValues,
-		int i,
-		node r,
-		const NodeArray<int>& val,
-		NodeArray<int>& sum);
+    void prefixSum(
+        EdgeArray<int>& rValues,
+        int i,
+        node r,
+        const NodeArray<int>& val,
+        NodeArray<int>& sum);
 
-	void schnyderEmbedding(
-		GraphCopy& GC,
-		GridLayout &gridLayout,
-		adjEntry adjExternal);
+    void schnyderEmbedding(
+        GraphCopy& GC,
+        GridLayout &gridLayout,
+        adjEntry adjExternal);
 };
 
 

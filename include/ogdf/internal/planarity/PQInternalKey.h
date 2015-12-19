@@ -53,7 +53,8 @@
 #include <stdlib.h>
 #include <ogdf/internal/planarity/PQBasicKey.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 template<class T,class X,class Y> class PQNode;
@@ -79,29 +80,41 @@ template<class T,class X,class Y>
 class PQInternalKey : public PQBasicKey<T,X,Y>
 {
 public:
-	/**
-	 * The class template PQInternalKey has only one public member: the
-	 * \a m_userStructInternal that has to be overloaded by the client. This
-	 * element is kept public, since the user has to have the opportunity
-	 * to manipulate the information that was stored by his algorithm at a
-	 * node.
-	 */
-	Y m_userStructInternal;
+    /**
+     * The class template PQInternalKey has only one public member: the
+     * \a m_userStructInternal that has to be overloaded by the client. This
+     * element is kept public, since the user has to have the opportunity
+     * to manipulate the information that was stored by his algorithm at a
+     * node.
+     */
+    Y m_userStructInternal;
 
-	//Constructor
-	PQInternalKey(Y element) { m_userStructInternal = element; }
+    //Constructor
+    PQInternalKey(Y element)
+    {
+        m_userStructInternal = element;
+    }
 
-	//Destructor
-	virtual ~PQInternalKey() {}
+    //Destructor
+    virtual ~PQInternalKey() {}
 
-	//! Overloaded pure virtual function returning 0.
-	virtual T userStructKey() { return 0; }
+    //! Overloaded pure virtual function returning 0.
+    virtual T userStructKey()
+    {
+        return 0;
+    }
 
-	//! Overloaded pure virtual function returning 0.
-	virtual X userStructInfo() { return 0; }
+    //! Overloaded pure virtual function returning 0.
+    virtual X userStructInfo()
+    {
+        return 0;
+    }
 
-	//! Overloaded pure virtual function returning \a m_userStructInternal.
-	virtual Y userStructInternal() { return  m_userStructInternal; }
+    //! Overloaded pure virtual function returning \a m_userStructInternal.
+    virtual Y userStructInternal()
+    {
+        return  m_userStructInternal;
+    }
 };
 
 }

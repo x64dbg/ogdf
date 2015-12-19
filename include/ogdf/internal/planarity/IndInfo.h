@@ -54,26 +54,37 @@
 #include <ogdf/basic/Graph.h>
 #include <ogdf/internal/planarity/PQNodeKey.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 class IndInfo
 {
-	friend class EmbedPQTree;
+    friend class EmbedPQTree;
 
 public:
-	IndInfo(node w) { v = w; changeDir = false; }
-	~IndInfo() { }
+    IndInfo(node w)
+    {
+        v = w;
+        changeDir = false;
+    }
+    ~IndInfo() { }
 
-	void resetAssociatedNode(node w) { v = w; }
-	node getAssociatedNode() { return v; }
+    void resetAssociatedNode(node w)
+    {
+        v = w;
+    }
+    node getAssociatedNode()
+    {
+        return v;
+    }
 
 private:
-	node v;
-	bool changeDir;
+    node v;
+    bool changeDir;
 
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 

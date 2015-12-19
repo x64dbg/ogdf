@@ -48,106 +48,119 @@
 #include <ogdf/basic/EdgeComparerSimple.h>
 #include <ogdf/basic/geometry.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 int EdgeComparerSimple::compare(const adjEntry &e1, const adjEntry &e2) const
 {
-	// set true if the algorithm should consider the bend-points
-	bool useBends = true;
+    // set true if the algorithm should consider the bend-points
+    bool useBends = true;
 
-	double xP1, xP2, yP1, yP2;
+    double xP1, xP2, yP1, yP2;
 
-	DPolyline poly = m_AG->bends(e1->theEdge());
-	ListIterator<DPoint> it;
-	DPoint pE1, pE2;
+    DPolyline poly = m_AG->bends(e1->theEdge());
+    ListIterator<DPoint> it;
+    DPoint pE1, pE2;
 
-	if ((useBends) && (poly.size() > 2)){
-		it = poly.begin();
+    if ((useBends) && (poly.size() > 2))
+    {
+        it = poly.begin();
 
-		while (it.valid()){
-			it++;
-		}
+        while (it.valid())
+        {
+            it++;
+        }
 
-		if (e1->theEdge()->source() == basis){
-			it = poly.begin();
-			it++;
-		}
-		else{
-			it = poly.rbegin();
-			it--;
-		}
-		pE1 = *it;
-	}
-	else{
-		pE1.m_x = m_AG->x((e1->twinNode()));
-		pE1.m_y = m_AG->y((e1->twinNode()));
-	}
+        if (e1->theEdge()->source() == basis)
+        {
+            it = poly.begin();
+            it++;
+        }
+        else
+        {
+            it = poly.rbegin();
+            it--;
+        }
+        pE1 = *it;
+    }
+    else
+    {
+        pE1.m_x = m_AG->x((e1->twinNode()));
+        pE1.m_y = m_AG->y((e1->twinNode()));
+    }
 
-	poly = m_AG->bends(e2->theEdge());
-	if ((useBends) && (poly.size() > 2)){
-		it = poly.begin();
+    poly = m_AG->bends(e2->theEdge());
+    if ((useBends) && (poly.size() > 2))
+    {
+        it = poly.begin();
 
-		while (it.valid()){
-			it++;
-		}
+        while (it.valid())
+        {
+            it++;
+        }
 
-		if (e2->theEdge()->source() == basis){
-			it = poly.begin();
-			it++;
-		}
-		else{
-			it = poly.rbegin();
-			it--;
-		}
-		pE2 = *it;
-	}
-	else{
-		pE2.m_x = m_AG->x((e2->twinNode()));
-		pE2.m_y = m_AG->y((e2->twinNode()));
-	}
+        if (e2->theEdge()->source() == basis)
+        {
+            it = poly.begin();
+            it++;
+        }
+        else
+        {
+            it = poly.rbegin();
+            it--;
+        }
+        pE2 = *it;
+    }
+    else
+    {
+        pE2.m_x = m_AG->x((e2->twinNode()));
+        pE2.m_y = m_AG->y((e2->twinNode()));
+    }
 
 
-	xP1 = -(m_AG->x(basis)) + (pE1.m_x);
-	yP1 = -(m_AG->y(basis)) + (pE1.m_y);
+    xP1 = -(m_AG->x(basis)) + (pE1.m_x);
+    yP1 = -(m_AG->y(basis)) + (pE1.m_y);
 
-	xP2 = -(m_AG->x(basis)) + (pE2.m_x);
-	yP2 = -(m_AG->y(basis)) + (pE2.m_y);
+    xP2 = -(m_AG->x(basis)) + (pE2.m_x);
+    yP2 = -(m_AG->y(basis)) + (pE2.m_y);
 
-	if ((yP1 >= 0) && (yP2 < 0))
-		return 1;
-	if ((yP1 < 0) && (yP2 >= 0))
-		return -1;
-	if ((yP1 >= 0) && (yP2 >= 0)){
+    if ((yP1 >= 0) && (yP2 < 0))
+        return 1;
+    if ((yP1 < 0) && (yP2 >= 0))
+        return -1;
+    if ((yP1 >= 0) && (yP2 >= 0))
+    {
 
-		if ((xP1 >= 0) && (xP2 < 0))
-			return -1;
-		if ((xP1 < 0) && (xP2 >= 0))
-			return 1;
+        if ((xP1 >= 0) && (xP2 < 0))
+            return -1;
+        if ((xP1 < 0) && (xP2 >= 0))
+            return 1;
 
-		xP1 = xP1 / (sqrt(xP1*xP1 + yP1*yP1));
-		xP2 = xP2 / (sqrt(xP2*xP2 + yP2*yP2));
-		if (xP1 > xP2)
-			return -1;
-		else
-			return 1;
-	}
-	if ((yP1 < 0) && (yP2 < 0)){
+        xP1 = xP1 / (sqrt(xP1*xP1 + yP1*yP1));
+        xP2 = xP2 / (sqrt(xP2*xP2 + yP2*yP2));
+        if (xP1 > xP2)
+            return -1;
+        else
+            return 1;
+    }
+    if ((yP1 < 0) && (yP2 < 0))
+    {
 
-		if ((xP1 >= 0) && (xP2 < 0))
-			return 1;
-		if ((xP1 < 0) && (xP2 >= 0))
-			return -1;
+        if ((xP1 >= 0) && (xP2 < 0))
+            return 1;
+        if ((xP1 < 0) && (xP2 >= 0))
+            return -1;
 
-		xP1 = xP1 / (sqrt(xP1*xP1 + yP1*yP1));
-		xP2 = xP2 / (sqrt(xP2*xP2 + yP2*yP2));
-		if (xP1 > xP2)
-			return 1;
-		else
-			return -1;
-	}
+        xP1 = xP1 / (sqrt(xP1*xP1 + yP1*yP1));
+        xP2 = xP2 / (sqrt(xP2*xP2 + yP2*yP2));
+        if (xP1 > xP2)
+            return 1;
+        else
+            return -1;
+    }
 
-	return 0;
+    return 0;
 }
 
 }//namespace ogdf

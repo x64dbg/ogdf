@@ -49,15 +49,16 @@
 
 #include <ogdf/energybased/multilevelmixer/InitialPlacer.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT SolarPlacer : public InitialPlacer
 {
 public:
-	void placeOneLevel(MultilevelGraph &MLG);
+    void placeOneLevel(MultilevelGraph &MLG);
 
 private:
-	void placeOneNode(MultilevelGraph &MLG);
+    void placeOneNode(MultilevelGraph &MLG);
 };
 
 } // namespace ogdf

@@ -1,10 +1,10 @@
- /*
- * $Revision: 3503 $
- *
- * last checkin:
- *   $Author: beyer $
- *   $Date: 2013-05-16 14:48:58 +0200 (Thu, 16 May 2013) $
- ***************************************************************/
+/*
+* $Revision: 3503 $
+*
+* last checkin:
+*   $Author: beyer $
+*   $Date: 2013-05-16 14:48:58 +0200 (Thu, 16 May 2013) $
+***************************************************************/
 
 /** \file
  * \brief Implementation of class MaximumPlanarSubgraph
@@ -44,134 +44,136 @@
 
 #ifdef USE_ABACUS
 
- #include <ogdf/planarity/MaximumPlanarSubgraph.h>
- #include <ogdf/cluster/MaximumCPlanarSubgraph.h>
- #include <ogdf/basic/extended_graph_alg.h>
- #include <ogdf/basic/simple_graph_alg.h>
+#include <ogdf/planarity/MaximumPlanarSubgraph.h>
+#include <ogdf/cluster/MaximumCPlanarSubgraph.h>
+#include <ogdf/basic/extended_graph_alg.h>
+#include <ogdf/basic/simple_graph_alg.h>
 
- namespace ogdf {
+namespace ogdf
+{
 
 Module::ReturnType MaximumPlanarSubgraph::doCall(
-	const Graph &G,
-	const List<edge> &preferedEdges,
-	List<edge> &delEdges,
-	const EdgeArray<int>  *pCost,
-	bool preferredImplyPlanar)
+    const Graph &G,
+    const List<edge> &preferedEdges,
+    List<edge> &delEdges,
+    const EdgeArray<int>  *pCost,
+    bool preferredImplyPlanar)
 {
-	if (G.numberOfEdges() < 9)
-		return retOptimal;
+    if (G.numberOfEdges() < 9)
+        return retOptimal;
 
-	//if the graph is planar, we don't have to do anything
-	if (isPlanar(G))
-		return retOptimal;
+    //if the graph is planar, we don't have to do anything
+    if (isPlanar(G))
+        return retOptimal;
 
-	//---------
-	//Exact ILP
-	MaximumCPlanarSubgraph mc;
-	List<nodePair> addEdges;
+    //---------
+    //Exact ILP
+    MaximumCPlanarSubgraph mc;
+    List<nodePair> addEdges;
 
-	delEdges.clear();
+    delEdges.clear();
 
-	node v;
-	NodeArray<node> tableNodes(G,0);
-	EdgeArray<edge> tableEdges(G,0);
-	NodeArray<bool> mark(G,0);
+    node v;
+    NodeArray<node> tableNodes(G,0);
+    EdgeArray<edge> tableEdges(G,0);
+    NodeArray<bool> mark(G,0);
 
-	EdgeArray<int> componentID(G);
+    EdgeArray<int> componentID(G);
 
-	// Determine biconnected components
-	int bcCount = biconnectedComponents(G,componentID);
-	OGDF_ASSERT(bcCount >= 1);
+    // Determine biconnected components
+    int bcCount = biconnectedComponents(G,componentID);
+    OGDF_ASSERT(bcCount >= 1);
 
-	// Determine edges per biconnected component
-	Array<SList<edge> > blockEdges(0,bcCount-1);
-	edge e;
-	forall_edges(e,G)
-	{
-		if (!e->isSelfLoop())
-			blockEdges[componentID[e]].pushFront(e);
-	}
+    // Determine edges per biconnected component
+    Array<SList<edge> > blockEdges(0,bcCount-1);
+    edge e;
+    forall_edges(e,G)
+    {
+        if (!e->isSelfLoop())
+            blockEdges[componentID[e]].pushFront(e);
+    }
 
-	// Determine nodes per biconnected component.
-	Array<SList<node> > blockNodes(0,bcCount-1);
-	int i;
-	for (i = 0; i < bcCount; i++)
-	{
-		SListIterator<edge> it;
-		for (it = blockEdges[i].begin(); it.valid(); ++it)
-		{
-			e = *it;
-			if (!mark[e->source()])
-			{
-				blockNodes[i].pushBack(e->source());
-				mark[e->source()] = true;
-			}
-			if (!mark[e->target()])
-			{
-				blockNodes[i].pushBack(e->target());
-				mark[e->target()] = true;
-			}
-		}
-		SListIterator<node> itn;
-		for (itn = blockNodes[i].begin(); itn.valid(); ++itn)
-			mark[*itn] = false;
-	}
-
-
-	// Perform computation for every biconnected component
-	ReturnType mr;
-	if (bcCount == 1) {
-		ClusterGraph CG(G);
-		mr = mc.call(CG, delEdges, addEdges);
-	}
-	else
-	{
-		for (i = 0; i < bcCount; i++)
-		{
-			Graph C;
-
-			SListIterator<node> itn;
-			for (itn = blockNodes[i].begin(); itn.valid(); ++ itn)
-			{
-				v = *itn;
-				node w = C.newNode();
-				tableNodes[v] = w;
-			}
+    // Determine nodes per biconnected component.
+    Array<SList<node> > blockNodes(0,bcCount-1);
+    int i;
+    for (i = 0; i < bcCount; i++)
+    {
+        SListIterator<edge> it;
+        for (it = blockEdges[i].begin(); it.valid(); ++it)
+        {
+            e = *it;
+            if (!mark[e->source()])
+            {
+                blockNodes[i].pushBack(e->source());
+                mark[e->source()] = true;
+            }
+            if (!mark[e->target()])
+            {
+                blockNodes[i].pushBack(e->target());
+                mark[e->target()] = true;
+            }
+        }
+        SListIterator<node> itn;
+        for (itn = blockNodes[i].begin(); itn.valid(); ++itn)
+            mark[*itn] = false;
+    }
 
 
-			SListIterator<edge> it;
-			for (it = blockEdges[i].begin(); it.valid(); ++it)
-			{
-				e = *it;
-				edge f = C.newEdge(tableNodes[e->source()],tableNodes[e->target()]);
-				tableEdges[e] = f;
-			}
+    // Perform computation for every biconnected component
+    ReturnType mr;
+    if (bcCount == 1)
+    {
+        ClusterGraph CG(G);
+        mr = mc.call(CG, delEdges, addEdges);
+    }
+    else
+    {
+        for (i = 0; i < bcCount; i++)
+        {
+            Graph C;
 
-			// Construct a translation table for the edges.
-			// Necessary, since edges are deleted in a new graph
-			// that represents the current biconnected component
-			// of the original graph.
-			EdgeArray<edge> backTableEdges(C,0);
-			for (it = blockEdges[i].begin(); it.valid(); ++it)
-				backTableEdges[tableEdges[*it]] = *it;
+            SListIterator<node> itn;
+            for (itn = blockNodes[i].begin(); itn.valid(); ++ itn)
+            {
+                v = *itn;
+                node w = C.newNode();
+                tableNodes[v] = w;
+            }
 
-			// The deleted edges of the biconnected component
-			List<edge> delEdgesOfBC;
 
-			ClusterGraph CG(C);
-			mr = mc.call(CG, delEdgesOfBC, addEdges);
-			// Abort if no optimal solution found, i.e., feasible is also not allowed
-			if (mr != retOptimal)
-				break;
+            SListIterator<edge> it;
+            for (it = blockEdges[i].begin(); it.valid(); ++it)
+            {
+                e = *it;
+                edge f = C.newEdge(tableNodes[e->source()],tableNodes[e->target()]);
+                tableEdges[e] = f;
+            }
 
-			// Get the original edges that are deleted and
-			// put them on the list delEdges.
-			while (!delEdgesOfBC.empty())
-				delEdges.pushBack(backTableEdges[delEdgesOfBC.popFrontRet()]);
+            // Construct a translation table for the edges.
+            // Necessary, since edges are deleted in a new graph
+            // that represents the current biconnected component
+            // of the original graph.
+            EdgeArray<edge> backTableEdges(C,0);
+            for (it = blockEdges[i].begin(); it.valid(); ++it)
+                backTableEdges[tableEdges[*it]] = *it;
 
-		}
-	}
-	return mr;
+            // The deleted edges of the biconnected component
+            List<edge> delEdgesOfBC;
+
+            ClusterGraph CG(C);
+            mr = mc.call(CG, delEdgesOfBC, addEdges);
+            // Abort if no optimal solution found, i.e., feasible is also not allowed
+            if (mr != retOptimal)
+                break;
+
+            // Get the original edges that are deleted and
+            // put them on the list delEdges.
+            while (!delEdgesOfBC.empty())
+                delEdges.pushBack(backTableEdges[delEdgesOfBC.popFrontRet()]);
+
+        }
+    }
+    return mr;
 }//docall for graph
 
 } //end namespace ogdf

@@ -49,19 +49,20 @@
 
 #include <ogdf/energybased/multilevelmixer/InitialPlacer.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT ZeroPlacer : public InitialPlacer
 {
-	void placeOneNode(MultilevelGraph &MLG);
+    void placeOneNode(MultilevelGraph &MLG);
 
-	double m_randomRange;
+    double m_randomRange;
 
 public:
 
-	void placeOneLevel(MultilevelGraph &MLG);
-	ZeroPlacer();
-	void setRandomRange(double range);
+    void placeOneLevel(MultilevelGraph &MLG);
+    ZeroPlacer();
+    void setRandomRange(double range);
 };
 
 } // namespace ogdf

@@ -133,8 +133,8 @@ public:
     void outPivInfo(int ncuts)
     {
         handler_->message(RoundStats, messages_)<<ncuts<<numPivots_
-        <<numSourceRowEntered_
-        <<numIncreased_<<CoinMessageEol;
+                                                <<numSourceRowEntered_
+                                                <<numIncreased_<<CoinMessageEol;
     }
 #ifdef APPEND_ROW
     /** Append source row to tableau.*/
@@ -146,7 +146,7 @@ public:
 #endif
 protected:
     /** Perform a change in the basis (direction is 1 if leaving variable is going to ub, 0 otherwise)*/
-    bool changeBasis(int incoming, int leaving, int direction, 
+    bool changeBasis(int incoming, int leaving, int direction,
 #ifndef OLD_COMPUTATION
                      bool recompute_source_row,
 #endif
@@ -254,8 +254,8 @@ protected:
     /** print the tableau of current basis. */
     void printTableau(std::ostream & os);
 
-  /** Print everything .*/
-  void printEverything();
+    /** Print everything .*/
+    void printEverything();
     /** print the tableau of current basis. */
     void printTableauLateX(std::ostream & os);
     void printRowLateX(std::ostream & os, int i);

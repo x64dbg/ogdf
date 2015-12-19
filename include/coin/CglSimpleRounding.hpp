@@ -11,13 +11,13 @@
 #include "CglCutGenerator.hpp"
 #include "CoinPackedMatrix.hpp"
 
-/** Simple Rounding Cut Generator Class<br> 
+/** Simple Rounding Cut Generator Class<br>
 
  This class generates simple rounding cuts via the following method:
     For each contraint,
       attempt to derive a <= inequality in all integer variables
       by netting out any continuous variables.
-      Divide the resulting integer inequality through by 
+      Divide the resulting integer inequality through by
       the greatest common denomimator (gcd) of the lhs coefficients.
       Round down the rhs.
 
@@ -26,140 +26,143 @@
  (Reference: Nemhauser and Wolsey, Integer and Combinatorial Optimization, 1988, pg 211.)
 */
 
-class CglSimpleRounding : public CglCutGenerator {
-   friend void CglSimpleRoundingUnitTest(const OsiSolverInterface * siP,
-					 const std::string mpdDir );
- 
+class CglSimpleRounding : public CglCutGenerator
+{
+    friend void CglSimpleRoundingUnitTest(const OsiSolverInterface * siP,
+                                          const std::string mpdDir );
+
 public:
 
-  /**@name Generate Cuts */
-  //@{
-  /** Generate simple rounding cuts for the model accessed through the solver interface. 
-  Insert generated cuts into the cut set cs.
-  */
-  virtual void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
-			     const CglTreeInfo info = CglTreeInfo()) const;
-  //@}
+    /**@name Generate Cuts */
+    //@{
+    /** Generate simple rounding cuts for the model accessed through the solver interface.
+    Insert generated cuts into the cut set cs.
+    */
+    virtual void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
+                               const CglTreeInfo info = CglTreeInfo()) const;
+    //@}
 
-  /**@name Constructors and destructors */
-  //@{
-  /// Default constructor 
-  CglSimpleRounding ();
- 
-  /// Copy constructor 
-  CglSimpleRounding (
-    const CglSimpleRounding &);
+    /**@name Constructors and destructors */
+    //@{
+    /// Default constructor
+    CglSimpleRounding ();
 
-  /// Clone
-  virtual CglCutGenerator * clone() const;
+    /// Copy constructor
+    CglSimpleRounding (
+        const CglSimpleRounding &);
 
-  /// Assignment operator 
-  CglSimpleRounding &
+    /// Clone
+    virtual CglCutGenerator * clone() const;
+
+    /// Assignment operator
+    CglSimpleRounding &
     operator=(
-    const CglSimpleRounding& rhs);
-  
-  /// Destructor 
-  virtual
+        const CglSimpleRounding& rhs);
+
+    /// Destructor
+    virtual
     ~CglSimpleRounding ();
-  /// Create C++ lines to get to current state
-  virtual std::string generateCpp( FILE * fp);
-  //@}
+    /// Create C++ lines to get to current state
+    virtual std::string generateCpp( FILE * fp);
+    //@}
 
 private:
-  
-  // Private member methods
-   
-  /**@name Private methods */
-  //@{
-  
-  /// Derive a <= inequality in integer variables from the rowIndex-th constraint
-  bool deriveAnIntegerRow(
-                          const OsiSolverInterface & si,
-                          int rowIndex,
-                          const CoinShallowPackedVector & matrixRow, 
-                          CoinPackedVector & irow,
-                          double & b,
-                          bool * negative) const;
-  
 
-  /** Given a vector of doubles, x, with size elements and a positive tolerance,
-     dataTol, this method returns the smallest power of 10 needed so that
-     x[i]*10**power "is integer" for all i=0,...,size-1.
-  
-     ** change of definition of dataTol so that it refers to original
-     data, not to scaled data as that seems to lead to problems.
+    // Private member methods
 
-     So if xScaled is x[i]*10**power and xInt is rounded(xScaled)
-     then fabs(xScaled-xInt) <= dataTol*10**power.  This means that
-     dataTol should be smaller - say 1.0e-12 rather tahn 1.0e-8
+    /**@name Private methods */
+    //@{
 
-     Returns -number of times overflowed  if the power is so big that it will
-     cause overflow (i.e. integer stored will be bigger than 2**31).
-     Test in cut generator.
-  */ 
-  int power10ToMakeDoubleAnInt( 
-       int size,               // the length of the vector x
-       const double * x,   
-       double dataTol ) const; // the precision of the data, i.e. the positive
-                               // epsilon, which is equivalent to zero
+    /// Derive a <= inequality in integer variables from the rowIndex-th constraint
+    bool deriveAnIntegerRow(
+        const OsiSolverInterface & si,
+        int rowIndex,
+        const CoinShallowPackedVector & matrixRow,
+        CoinPackedVector & irow,
+        double & b,
+        bool * negative) const;
 
-  /**@name Greatest common denominators methods */
-  //@{
-  /// Returns the greatest common denominator of two positive integers, a and b.
-  inline  int gcd(int a, int b) const; 
-  
-  /** Returns the greatest common denominator of a vector of
-      positive integers, vi, of length n.
-  */
-  inline  int gcdv(int n, const int * const vi) const; 
-  //@}
 
-  //@}
-  
-  /**@name Private member data */
-  //@{
-  /// A value within an epsilon_ neighborhood of 0  is considered to be 0.
-  double epsilon_;
-  //@}
+    /** Given a vector of doubles, x, with size elements and a positive tolerance,
+       dataTol, this method returns the smallest power of 10 needed so that
+       x[i]*10**power "is integer" for all i=0,...,size-1.
+
+       ** change of definition of dataTol so that it refers to original
+       data, not to scaled data as that seems to lead to problems.
+
+       So if xScaled is x[i]*10**power and xInt is rounded(xScaled)
+       then fabs(xScaled-xInt) <= dataTol*10**power.  This means that
+       dataTol should be smaller - say 1.0e-12 rather tahn 1.0e-8
+
+       Returns -number of times overflowed  if the power is so big that it will
+       cause overflow (i.e. integer stored will be bigger than 2**31).
+       Test in cut generator.
+    */
+    int power10ToMakeDoubleAnInt(
+        int size,               // the length of the vector x
+        const double * x,
+        double dataTol ) const; // the precision of the data, i.e. the positive
+    // epsilon, which is equivalent to zero
+
+    /**@name Greatest common denominators methods */
+    //@{
+    /// Returns the greatest common denominator of two positive integers, a and b.
+    inline  int gcd(int a, int b) const;
+
+    /** Returns the greatest common denominator of a vector of
+        positive integers, vi, of length n.
+    */
+    inline  int gcdv(int n, const int * const vi) const;
+    //@}
+
+    //@}
+
+    /**@name Private member data */
+    //@{
+    /// A value within an epsilon_ neighborhood of 0  is considered to be 0.
+    double epsilon_;
+    //@}
 };
 
 
 //-------------------------------------------------------------------
-// Returns the greatest common denominator of two 
-// positive integers, a and b, found using Euclid's algorithm 
+// Returns the greatest common denominator of two
+// positive integers, a and b, found using Euclid's algorithm
 //-------------------------------------------------------------------
-int 
+int
 CglSimpleRounding::gcd(int a, int b) const
 {
-  if(a > b) {
-    // Swap a and b
-    int temp = a;
-    a = b;
-    b = temp;
-  }
-  int remainder = b % a;
-  if (remainder == 0) return a;
-  else return gcd(remainder,a);
+    if(a > b)
+    {
+        // Swap a and b
+        int temp = a;
+        a = b;
+        b = temp;
+    }
+    int remainder = b % a;
+    if (remainder == 0) return a;
+    else return gcd(remainder,a);
 }
 
 //-------------------------------------------------------------------
 // Returns the greatest common denominator of a vector of
 // positive integers, vi, of length n.
 //-------------------------------------------------------------------
-int 
+int
 CglSimpleRounding::gcdv(int n, const int* const vi) const
 {
-  if (n==0)
-    abort();
+    if (n==0)
+        abort();
 
-  if (n==1)
-    return vi[0];
+    if (n==1)
+        return vi[0];
 
-  int retval=gcd(vi[0], vi[1]);
-  for (int i=2; i<n; i++){
-     retval=gcd(retval,vi[i]);
-  }
-  return retval;
+    int retval=gcd(vi[0], vi[1]);
+    for (int i=2; i<n; i++)
+    {
+        retval=gcd(retval,vi[i]);
+    }
+    return retval;
 }
 
 //#############################################################################
@@ -169,6 +172,6 @@ CglSimpleRounding::gcdv(int n, const int* const vi) const
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
 void CglSimpleRoundingUnitTest(const OsiSolverInterface * siP,
-			       const std::string mpdDir );
-  
+                               const std::string mpdDir );
+
 #endif

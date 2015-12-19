@@ -45,59 +45,60 @@
 #include <ogdf/internal/planarity/VarEdgeInserterDynCore.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	//---------------------------------------------------------
-	// constructor
-	// sets default values for options
-	//
-	VariableEmbeddingInserterDyn::VariableEmbeddingInserterDyn()
-	{
-		m_rrOption = rrNone;
-		m_percentMostCrossed = 25;
-	}
-
-
-	// copy constructor
-	VariableEmbeddingInserterDyn::VariableEmbeddingInserterDyn(const VariableEmbeddingInserterDyn &inserter)
-		: EdgeInsertionModule(inserter)
-	{
-		m_rrOption = inserter.m_rrOption;
-		m_percentMostCrossed = inserter.m_percentMostCrossed;
-	}
+//---------------------------------------------------------
+// constructor
+// sets default values for options
+//
+VariableEmbeddingInserterDyn::VariableEmbeddingInserterDyn()
+{
+    m_rrOption = rrNone;
+    m_percentMostCrossed = 25;
+}
 
 
-	// clone method
-	EdgeInsertionModule *VariableEmbeddingInserterDyn::clone() const
-	{
-		return new VariableEmbeddingInserterDyn(*this);
-	}
+// copy constructor
+VariableEmbeddingInserterDyn::VariableEmbeddingInserterDyn(const VariableEmbeddingInserterDyn &inserter)
+    : EdgeInsertionModule(inserter)
+{
+    m_rrOption = inserter.m_rrOption;
+    m_percentMostCrossed = inserter.m_percentMostCrossed;
+}
 
 
-	// assignment operator
-	VariableEmbeddingInserterDyn &VariableEmbeddingInserterDyn::operator=(const VariableEmbeddingInserterDyn &inserter)
-	{
-		m_rrOption = inserter.m_rrOption;
-		m_percentMostCrossed = inserter.m_percentMostCrossed;
-		return *this;
-	}
+// clone method
+EdgeInsertionModule *VariableEmbeddingInserterDyn::clone() const
+{
+    return new VariableEmbeddingInserterDyn(*this);
+}
 
 
-	// actual call method
-	Module::ReturnType VariableEmbeddingInserterDyn::doCall(
-		PlanRepLight &pr,
-		const Array<edge> &origEdges,
-		const EdgeArray<int> *pCostOrig,
-		const EdgeArray<bool> *pForbiddenOrig,
-		const EdgeArray<__uint32> *pEdgeSubgraphs)
-	{
-		VarEdgeInserterDynCore core(pr, pCostOrig, pForbiddenOrig, pEdgeSubgraphs);
-		core.timeLimit(timeLimit());
+// assignment operator
+VariableEmbeddingInserterDyn &VariableEmbeddingInserterDyn::operator=(const VariableEmbeddingInserterDyn &inserter)
+{
+    m_rrOption = inserter.m_rrOption;
+    m_percentMostCrossed = inserter.m_percentMostCrossed;
+    return *this;
+}
 
-		ReturnType retVal = core.call(origEdges, m_rrOption, m_percentMostCrossed);
-		m_runsPostprocessing = core.runsPostprocessing();
-		return retVal;
-	}
+
+// actual call method
+Module::ReturnType VariableEmbeddingInserterDyn::doCall(
+    PlanRepLight &pr,
+    const Array<edge> &origEdges,
+    const EdgeArray<int> *pCostOrig,
+    const EdgeArray<bool> *pForbiddenOrig,
+    const EdgeArray<__uint32> *pEdgeSubgraphs)
+{
+    VarEdgeInserterDynCore core(pr, pCostOrig, pForbiddenOrig, pEdgeSubgraphs);
+    core.timeLimit(timeLimit());
+
+    ReturnType retVal = core.call(origEdges, m_rrOption, m_percentMostCrossed);
+    m_runsPostprocessing = core.runsPostprocessing();
+    return retVal;
+}
 
 
 }

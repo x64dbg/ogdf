@@ -58,7 +58,8 @@
 #include <ogdf/basic/simple_graph_alg.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //-----------------------------------------------------------------------------
 // Constructor:
@@ -67,15 +68,15 @@ namespace ogdf {
 
 PlanarizationLayoutUML::PlanarizationLayoutUML()
 {
-	//modules
-	m_crossMin      .set(new SubgraphPlanarizerUML);
-	m_planarLayouter.set(new OrthoLayoutUML);
-	m_packer        .set(new TileToRowsCCPacker);
-	m_embedder      .set(new SimpleEmbedder);
+    //modules
+    m_crossMin      .set(new SubgraphPlanarizerUML);
+    m_planarLayouter.set(new OrthoLayoutUML);
+    m_packer        .set(new TileToRowsCCPacker);
+    m_embedder      .set(new SimpleEmbedder);
 
-	//parameters
-	m_pageRatio = 1.0;
-	m_fakeTree  = true; //change edge type from generalization to association
+    //parameters
+    m_pageRatio = 1.0;
+    m_fakeTree  = true; //change edge type from generalization to association
 }
 
 
@@ -86,74 +87,76 @@ PlanarizationLayoutUML::PlanarizationLayoutUML()
 
 void PlanarizationLayoutUML::doSimpleCall(GraphAttributes &GA)
 {
-	m_nCrossings = 0;
+    m_nCrossings = 0;
 
-	if(GA.constGraph().empty())
-		return;
+    if(GA.constGraph().empty())
+        return;
 
-	PlanRepUML pr =  PlanRepUML(GA);
-	const int numCC = pr.numberOfCCs();
+    PlanRepUML pr =  PlanRepUML(GA);
+    const int numCC = pr.numberOfCCs();
 
-	// (width,height) of the layout of each connected component
-	Array<DPoint> boundingBox(numCC);
+    // (width,height) of the layout of each connected component
+    Array<DPoint> boundingBox(numCC);
 
-	//------------------------------------------
-	//now planarize CCs and apply drawing module
-	for(int i = 0; i < numCC; ++i)
-	{
-		//---------------------------------------
-		// 1. crossing minimization
-		//---------------------------------------
-		int cr;
-		m_crossMin.get().call(pr, i, cr);
-		m_nCrossings += cr;
-
-
-		//---------------------------------------
-		// 2. embed resulting planar graph
-		//---------------------------------------
-		adjEntry adjExternal = 0;
-		m_embedder.get().call(pr, adjExternal);
+    //------------------------------------------
+    //now planarize CCs and apply drawing module
+    for(int i = 0; i < numCC; ++i)
+    {
+        //---------------------------------------
+        // 1. crossing minimization
+        //---------------------------------------
+        int cr;
+        m_crossMin.get().call(pr, i, cr);
+        m_nCrossings += cr;
 
 
-		//---------------------------------------------------------
-		// 3. compute layout of planarized representation
-		//---------------------------------------------------------
+        //---------------------------------------
+        // 2. embed resulting planar graph
+        //---------------------------------------
+        adjEntry adjExternal = 0;
+        m_embedder.get().call(pr, adjExternal);
 
-		Layout drawing(pr);
 
-		//call the Layouter for the CC's UMLGraph
-		m_planarLayouter.get().call(pr,adjExternal,drawing);
+        //---------------------------------------------------------
+        // 3. compute layout of planarized representation
+        //---------------------------------------------------------
 
-		// copy layout into umlGraph
-		// Later, we move nodes and edges in each connected component, such
-		// that no two overlap.
+        Layout drawing(pr);
 
-		for(int j = pr.startNode(); j < pr.stopNode(); ++j) {
-			node vG = pr.v(j);
+        //call the Layouter for the CC's UMLGraph
+        m_planarLayouter.get().call(pr,adjExternal,drawing);
 
-			GA.x(vG) = drawing.x(pr.copy(vG));
-			GA.y(vG) = drawing.y(pr.copy(vG));
+        // copy layout into umlGraph
+        // Later, we move nodes and edges in each connected component, such
+        // that no two overlap.
 
-			adjEntry adj;
-			forall_adj(adj,vG) {
-				if ((adj->index() & 1) == 0)
-					continue;
-				edge eG = adj->theEdge();
-				drawing.computePolylineClear(pr, eG, GA.bends(eG));
-			}
-		}
+        for(int j = pr.startNode(); j < pr.stopNode(); ++j)
+        {
+            node vG = pr.v(j);
 
-		// the width/height of the layout has been computed by the planar
-		// layout algorithm; required as input to packing algorithm
-		boundingBox[i] = m_planarLayouter.get().getBoundingBox();
-	}
+            GA.x(vG) = drawing.x(pr.copy(vG));
+            GA.y(vG) = drawing.y(pr.copy(vG));
 
-	//----------------------------------------
-	// 4. arrange layouts of connected components
-	//----------------------------------------
+            adjEntry adj;
+            forall_adj(adj,vG)
+            {
+                if ((adj->index() & 1) == 0)
+                    continue;
+                edge eG = adj->theEdge();
+                drawing.computePolylineClear(pr, eG, GA.bends(eG));
+            }
+        }
 
-	arrangeCCs(pr, GA, boundingBox);
+        // the width/height of the layout has been computed by the planar
+        // layout algorithm; required as input to packing algorithm
+        boundingBox[i] = m_planarLayouter.get().getBoundingBox();
+    }
+
+    //----------------------------------------
+    // 4. arrange layouts of connected components
+    //----------------------------------------
+
+    arrangeCCs(pr, GA, boundingBox);
 }
 
 
@@ -163,150 +166,153 @@ void PlanarizationLayoutUML::doSimpleCall(GraphAttributes &GA)
 //-----------------------------------------------------------------------------
 void PlanarizationLayoutUML::call(UMLGraph &umlGraph)
 {
-	m_nCrossings = 0;
+    m_nCrossings = 0;
 
-	if(umlGraph.constGraph().empty())
-		return;
+    if(umlGraph.constGraph().empty())
+        return;
 
-	// check necessary preconditions
-	preProcess(umlGraph);
+    // check necessary preconditions
+    preProcess(umlGraph);
 
-	//---------------------------------------------------
-	// preprocessing: insert a merger for generalizations
-	umlGraph.insertGenMergers();
+    //---------------------------------------------------
+    // preprocessing: insert a merger for generalizations
+    umlGraph.insertGenMergers();
 
-	PlanRepUML pr(umlGraph);
-	const int numCC = pr.numberOfCCs();
+    PlanRepUML pr(umlGraph);
+    const int numCC = pr.numberOfCCs();
 
-	// (width,height) of the layout of each connected component
-	Array<DPoint> boundingBox(numCC);
-
-
-	// alignment section (should not be here, because planarlayout should
-	// not know about the meaning of layouter options and should not cope
-	// with them), move later
-	// we have to distinguish between cc's with and without generalizations
-	// if the alignment option is set
-	int l_layoutOptions = m_planarLayouter.get().getOptions();
-	bool l_align = ((l_layoutOptions & umlOpAlign) > 0);
-	//end alignment section
-
-	//------------------------------------------
-	//now planarize CCs and apply drawing module
-	for(int i = 0; i < numCC; ++i)
-	{
-		//---------------------------------------
-		// 1. crossing minimization
-		//---------------------------------------
-
-		// alignment: check wether gens exist, special treatment is necessary
-		bool l_gensExist = false; // set this for all CC's, start with first gen,
-		//this setting can be mixed among CC's without problems
-
-		EdgeArray<Graph::EdgeType> savedType(pr);
-		EdgeArray<Graph::EdgeType> savedOrigType(pr.original()); //for deleted copies
-
-		EdgeArray<int> costOrig(pr.original(), 1);
-		//edgearray for reinserter call: which edge may never be crossed?
-		EdgeArray<bool> noCrossingEdge(pr.original(), false);
-
-		edge e;
-		forall_edges(e,pr)
-		{
-			edge eOrig = pr.original(e);
-
-			if (pr.typeOf(e) == Graph::generalization)
-			{
-				if (l_align) l_gensExist = true;
-				OGDF_ASSERT(!eOrig || !(noCrossingEdge[eOrig]));
-
-				// high cost to allow alignment without crossings
-				if (l_align && (
-					(eOrig && (pr.typeOf(e->target()) == Graph::generalizationMerger))
-						|| pr.alignUpward(e->adjSource())
-					))
-				 costOrig[eOrig] = 10;
-
-			}
-		}
-
-		int cr;
-		m_crossMin.get().call(pr, i, cr, &costOrig);
-		m_nCrossings += cr;
+    // (width,height) of the layout of each connected component
+    Array<DPoint> boundingBox(numCC);
 
 
-		//---------------------------------------
-		// 2. embed resulting planar graph
-		//---------------------------------------
+    // alignment section (should not be here, because planarlayout should
+    // not know about the meaning of layouter options and should not cope
+    // with them), move later
+    // we have to distinguish between cc's with and without generalizations
+    // if the alignment option is set
+    int l_layoutOptions = m_planarLayouter.get().getOptions();
+    bool l_align = ((l_layoutOptions & umlOpAlign) > 0);
+    //end alignment section
 
-		// We currently compute any embedding and choose the maximal face as external face
+    //------------------------------------------
+    //now planarize CCs and apply drawing module
+    for(int i = 0; i < numCC; ++i)
+    {
+        //---------------------------------------
+        // 1. crossing minimization
+        //---------------------------------------
 
-		// if we use FixedEmbeddingInserter, we have to re-use the computed
-		// embedding, otherwise crossing nodes can turn into "touching points"
-		// of edges (alternatively, we could compute a new embedding and
-		// finally "remove" such unnecessary crossings).
-		if(!pr.representsCombEmbedding())
-			planarEmbed(pr);
+        // alignment: check wether gens exist, special treatment is necessary
+        bool l_gensExist = false; // set this for all CC's, start with first gen,
+        //this setting can be mixed among CC's without problems
 
-		adjEntry adjExternal = 0;
-		if(pr.numberOfEdges() > 0) {
-			CombinatorialEmbedding E(pr);
-			face fExternal = findBestExternalFace(pr,E);
-			adjExternal = fExternal->firstAdj();
-		}
+        EdgeArray<Graph::EdgeType> savedType(pr);
+        EdgeArray<Graph::EdgeType> savedOrigType(pr.original()); //for deleted copies
+
+        EdgeArray<int> costOrig(pr.original(), 1);
+        //edgearray for reinserter call: which edge may never be crossed?
+        EdgeArray<bool> noCrossingEdge(pr.original(), false);
+
+        edge e;
+        forall_edges(e,pr)
+        {
+            edge eOrig = pr.original(e);
+
+            if (pr.typeOf(e) == Graph::generalization)
+            {
+                if (l_align) l_gensExist = true;
+                OGDF_ASSERT(!eOrig || !(noCrossingEdge[eOrig]));
+
+                // high cost to allow alignment without crossings
+                if (l_align && (
+                            (eOrig && (pr.typeOf(e->target()) == Graph::generalizationMerger))
+                            || pr.alignUpward(e->adjSource())
+                        ))
+                    costOrig[eOrig] = 10;
+
+            }
+        }
+
+        int cr;
+        m_crossMin.get().call(pr, i, cr, &costOrig);
+        m_nCrossings += cr;
 
 
-		//---------------------------------------------------------
-		// 3. compute layout of planarized representation
-		//---------------------------------------------------------
+        //---------------------------------------
+        // 2. embed resulting planar graph
+        //---------------------------------------
 
-		Layout drawing(pr);
+        // We currently compute any embedding and choose the maximal face as external face
 
-		// distinguish between CC's with/without generalizations
-		// this changes the input layout modules options!
-		if (l_gensExist)
-			m_planarLayouter.get().setOptions(l_layoutOptions);
-		else
-			m_planarLayouter.get().setOptions((l_layoutOptions & ~umlOpAlign));
+        // if we use FixedEmbeddingInserter, we have to re-use the computed
+        // embedding, otherwise crossing nodes can turn into "touching points"
+        // of edges (alternatively, we could compute a new embedding and
+        // finally "remove" such unnecessary crossings).
+        if(!pr.representsCombEmbedding())
+            planarEmbed(pr);
 
-		// call the Layouter for the CC's UMLGraph
-		m_planarLayouter.get().call(pr, adjExternal, drawing);
+        adjEntry adjExternal = 0;
+        if(pr.numberOfEdges() > 0)
+        {
+            CombinatorialEmbedding E(pr);
+            face fExternal = findBestExternalFace(pr,E);
+            adjExternal = fExternal->firstAdj();
+        }
 
-		// copy layout into umlGraph
-		// Later, we move nodes and edges in each connected component, such
-		// that no two overlap.
 
-		for(int j = pr.startNode(); j < pr.stopNode(); ++j) {
-			node vG = pr.v(j);
+        //---------------------------------------------------------
+        // 3. compute layout of planarized representation
+        //---------------------------------------------------------
 
-			umlGraph.x(vG) = drawing.x(pr.copy(vG));
-			umlGraph.y(vG) = drawing.y(pr.copy(vG));
+        Layout drawing(pr);
 
-			adjEntry adj;
-			forall_adj(adj,vG) {
-				if ((adj->index() & 1) == 0) continue;
-				edge eG = adj->theEdge();
+        // distinguish between CC's with/without generalizations
+        // this changes the input layout modules options!
+        if (l_gensExist)
+            m_planarLayouter.get().setOptions(l_layoutOptions);
+        else
+            m_planarLayouter.get().setOptions((l_layoutOptions & ~umlOpAlign));
 
-				drawing.computePolylineClear(pr,eG,umlGraph.bends(eG));
-			}
-		}
+        // call the Layouter for the CC's UMLGraph
+        m_planarLayouter.get().call(pr, adjExternal, drawing);
 
-		// the width/height of the layout has been computed by the planar
-		// layout algorithm; required as input to packing algorithm
-		boundingBox[i] = m_planarLayouter.get().getBoundingBox();
-	}//for cc's
+        // copy layout into umlGraph
+        // Later, we move nodes and edges in each connected component, such
+        // that no two overlap.
 
-	//----------------------------------------
-	// Arrange layouts of connected components
-	//----------------------------------------
+        for(int j = pr.startNode(); j < pr.stopNode(); ++j)
+        {
+            node vG = pr.v(j);
 
-	arrangeCCs(pr, umlGraph, boundingBox);
+            umlGraph.x(vG) = drawing.x(pr.copy(vG));
+            umlGraph.y(vG) = drawing.y(pr.copy(vG));
 
-	umlGraph.undoGenMergers();
-	umlGraph.removeUnnecessaryBendsHV();
+            adjEntry adj;
+            forall_adj(adj,vG)
+            {
+                if ((adj->index() & 1) == 0) continue;
+                edge eG = adj->theEdge();
 
-	//new position after adding of cliqueprocess, check if correct
-	postProcess(umlGraph);
+                drawing.computePolylineClear(pr,eG,umlGraph.bends(eG));
+            }
+        }
+
+        // the width/height of the layout has been computed by the planar
+        // layout algorithm; required as input to packing algorithm
+        boundingBox[i] = m_planarLayouter.get().getBoundingBox();
+    }//for cc's
+
+    //----------------------------------------
+    // Arrange layouts of connected components
+    //----------------------------------------
+
+    arrangeCCs(pr, umlGraph, boundingBox);
+
+    umlGraph.undoGenMergers();
+    umlGraph.removeUnnecessaryBendsHV();
+
+    //new position after adding of cliqueprocess, check if correct
+    postProcess(umlGraph);
 }
 
 
@@ -319,161 +325,170 @@ void PlanarizationLayoutUML::call(UMLGraph &umlGraph)
 
 void PlanarizationLayoutUML::assureDrawability(UMLGraph &UG)
 {
-	//preliminary
-	//self loops are killed by the caller (e.g., the plugin interface)
-	//should be done here later
+    //preliminary
+    //self loops are killed by the caller (e.g., the plugin interface)
+    //should be done here later
 
-	const Graph& G = UG.constGraph();
+    const Graph& G = UG.constGraph();
 
-	//check for selfloops and handle them
-	edge e;
-	forall_edges(e, G) {
-		if (e->isSelfLoop())
-			OGDF_THROW_PARAM(PreconditionViolatedException, pvcSelfLoop);
-	}
+    //check for selfloops and handle them
+    edge e;
+    forall_edges(e, G)
+    {
+        if (e->isSelfLoop())
+            OGDF_THROW_PARAM(PreconditionViolatedException, pvcSelfLoop);
+    }
 
-	// check for generalization - nontrees
-	// if m_fakeTree is set, change type of "back" edges to association
-	m_fakedGens.clear();//?
-	if (!dfsGenTree(UG, m_fakedGens, m_fakeTree))
-		OGDF_THROW_PARAM(PreconditionViolatedException, pvcTreeHierarchies);
+    // check for generalization - nontrees
+    // if m_fakeTree is set, change type of "back" edges to association
+    m_fakedGens.clear();//?
+    if (!dfsGenTree(UG, m_fakedGens, m_fakeTree))
+        OGDF_THROW_PARAM(PreconditionViolatedException, pvcTreeHierarchies);
 
-	else {
-		ListConstIterator<edge> itE = m_fakedGens.begin();
-		while (itE.valid()) {
-			UG.type(*itE) = Graph::association;
-			itE++;
-		}
-	}
+    else
+    {
+        ListConstIterator<edge> itE = m_fakedGens.begin();
+        while (itE.valid())
+        {
+            UG.type(*itE) = Graph::association;
+            itE++;
+        }
+    }
 }//assureDrawability
 
 
 
 void PlanarizationLayoutUML::preProcess(UMLGraph &UG)
 {
-	assureDrawability(UG);
+    assureDrawability(UG);
 
-	const SListPure<UMLGraph::AssociationClass*> &acList = UG.assClassList();
-	SListConstIterator<UMLGraph::AssociationClass*> it = acList.begin();
-	while (it.valid())
-	{
-		UG.modelAssociationClass((*it));
-		it++;
-	}
+    const SListPure<UMLGraph::AssociationClass*> &acList = UG.assClassList();
+    SListConstIterator<UMLGraph::AssociationClass*> it = acList.begin();
+    while (it.valid())
+    {
+        UG.modelAssociationClass((*it));
+        it++;
+    }
 }//preprocess
 
 
 void PlanarizationLayoutUML::postProcess(UMLGraph& UG)
 {
-	//reset the type of faked associations to generalization
-	if (m_fakeTree)
-	{
-		ListIterator<edge> itE = m_fakedGens.begin();
-		while (itE.valid())
-		{
-			UG.type(*itE) = Graph::generalization;
-			itE++;
-		}
-	}
+    //reset the type of faked associations to generalization
+    if (m_fakeTree)
+    {
+        ListIterator<edge> itE = m_fakedGens.begin();
+        while (itE.valid())
+        {
+            UG.type(*itE) = Graph::generalization;
+            itE++;
+        }
+    }
 
-	UG.undoAssociationClasses();
+    UG.undoAssociationClasses();
 }//postProcess
 
 
 // find best suited external face according to certain criteria
 face PlanarizationLayoutUML::findBestExternalFace(
-	const PlanRep &PG,
-	const CombinatorialEmbedding &E)
+    const PlanRep &PG,
+    const CombinatorialEmbedding &E)
 {
-	FaceArray<int> weight(E);
+    FaceArray<int> weight(E);
 
-	face f;
-	forall_faces(f,E)
-		weight[f] = f->size();
+    face f;
+    forall_faces(f,E)
+    weight[f] = f->size();
 
-	node v;
-	forall_nodes(v,PG)
-	{
-		if(PG.typeOf(v) != Graph::generalizationMerger)
-			continue;
+    node v;
+    forall_nodes(v,PG)
+    {
+        if(PG.typeOf(v) != Graph::generalizationMerger)
+            continue;
 
-		adjEntry adj;
-		forall_adj(adj,v) {
-			if(adj->theEdge()->source() == v)
-				break;
-		}
+        adjEntry adj;
+        forall_adj(adj,v)
+        {
+            if(adj->theEdge()->source() == v)
+                break;
+        }
 
-		OGDF_ASSERT(adj->theEdge()->source() == v);
+        OGDF_ASSERT(adj->theEdge()->source() == v);
 
-		node w = adj->theEdge()->target();
-		bool isBase = true;
+        node w = adj->theEdge()->target();
+        bool isBase = true;
 
-		adjEntry adj2;
-		forall_adj(adj2, w) {
-			edge e = adj2->theEdge();
-			if(e->target() != w && PG.typeOf(e) == Graph::generalization) {
-				isBase = false;
-				break;
-			}
-		}
+        adjEntry adj2;
+        forall_adj(adj2, w)
+        {
+            edge e = adj2->theEdge();
+            if(e->target() != w && PG.typeOf(e) == Graph::generalization)
+            {
+                isBase = false;
+                break;
+            }
+        }
 
-		if(isBase == false)
-			continue;
+        if(isBase == false)
+            continue;
 
-		face f1 = E.leftFace(adj);
-		face f2 = E.rightFace(adj);
+        face f1 = E.leftFace(adj);
+        face f2 = E.rightFace(adj);
 
-		weight[f1] += v->indeg();
-		if(f2 != f1)
-			weight[f2] += v->indeg();
-	}
+        weight[f1] += v->indeg();
+        if(f2 != f1)
+            weight[f2] += v->indeg();
+    }
 
-	face fBest = E.firstFace();
-	forall_faces(f,E)
-		if(weight[f] > weight[fBest])
-			fBest = f;
+    face fBest = E.firstFace();
+    forall_faces(f,E)
+    if(weight[f] > weight[fBest])
+        fBest = f;
 
-	return fBest;
+    return fBest;
 }
 
 
 void PlanarizationLayoutUML::arrangeCCs(PlanRep &PG, GraphAttributes &GA, Array<DPoint> &boundingBox)
 {
-	int numCC = PG.numberOfCCs();
-	Array<DPoint> offset(numCC);
-	m_packer.get().call(boundingBox,offset,m_pageRatio);
+    int numCC = PG.numberOfCCs();
+    Array<DPoint> offset(numCC);
+    m_packer.get().call(boundingBox,offset,m_pageRatio);
 
-	// The arrangement is given by offset to the origin of the coordinate
-	// system. We still have to shift each node and edge by the offset
-	// of its connected component.
+    // The arrangement is given by offset to the origin of the coordinate
+    // system. We still have to shift each node and edge by the offset
+    // of its connected component.
 
-	for(int i = 0; i < numCC; ++i) {
+    for(int i = 0; i < numCC; ++i)
+    {
 
-		const double dx = offset[i].m_x;
-		const double dy = offset[i].m_y;
+        const double dx = offset[i].m_x;
+        const double dy = offset[i].m_y;
 
-		// iterate over all nodes in ith CC
-		for(int j = PG.startNode(i); j < PG.stopNode(i); ++j)
-		{
-			node v = PG.v(j);
+        // iterate over all nodes in ith CC
+        for(int j = PG.startNode(i); j < PG.stopNode(i); ++j)
+        {
+            node v = PG.v(j);
 
-			GA.x(v) += dx;
-			GA.y(v) += dy;
+            GA.x(v) += dx;
+            GA.y(v) += dy;
 
-			adjEntry adj;
-			forall_adj(adj,v) {
-				if ((adj->index() & 1) == 0) continue;
-				edge e = adj->theEdge();
+            adjEntry adj;
+            forall_adj(adj,v)
+            {
+                if ((adj->index() & 1) == 0) continue;
+                edge e = adj->theEdge();
 
-				DPolyline &dpl = GA.bends(e);
-				ListIterator<DPoint> it;
-				for(it = dpl.begin(); it.valid(); ++it) {
-					(*it).m_x += dx;
-					(*it).m_y += dy;
-				}
-			}
-		}
-	}
+                DPolyline &dpl = GA.bends(e);
+                ListIterator<DPoint> it;
+                for(it = dpl.begin(); it.valid(); ++it)
+                {
+                    (*it).m_x += dx;
+                    (*it).m_y += dy;
+                }
+            }
+        }
+    }
 }
 
 
@@ -491,227 +506,228 @@ void PlanarizationLayoutUML::arrangeCCs(PlanRep &PG, GraphAttributes &GA, Array<
 //---------------------------------------------------------
 void PlanarizationLayoutUML::callFixEmbed(UMLGraph &umlGraph)
 {
-	m_nCrossings = 0;
+    m_nCrossings = 0;
 
-	if(((const Graph &)umlGraph).empty())
-		return;
+    if(((const Graph &)umlGraph).empty())
+        return;
 
-	//check necessary preconditions
-	preProcess(umlGraph);
+    //check necessary preconditions
+    preProcess(umlGraph);
 
-	int l_layoutOptions = m_planarLayouter.get().getOptions();
-	bool l_align = ((l_layoutOptions & umlOpAlign)>0);
+    int l_layoutOptions = m_planarLayouter.get().getOptions();
+    bool l_align = ((l_layoutOptions & umlOpAlign)>0);
 
-	//--------------------------------------------------------
-	//first, we sort all edges around each node corresponding
-	//to the given layout in umlGraph
-	//then we insert the mergers
-	//try to rebuild this: insert mergers only in copy
-	bool umlMerge = false; //Standard: false
-	int i;
+    //--------------------------------------------------------
+    //first, we sort all edges around each node corresponding
+    //to the given layout in umlGraph
+    //then we insert the mergers
+    //try to rebuild this: insert mergers only in copy
+    bool umlMerge = false; //Standard: false
+    int i;
 
-	//*********************************************************
-	// first phase: Compute planarized representation from input
-	//*********************************************************
+    //*********************************************************
+    // first phase: Compute planarized representation from input
+    //*********************************************************
 
-	//now we derive a planar representation of the input
-	//graph using its layout information
-	PlanRepUML PG(umlGraph);
+    //now we derive a planar representation of the input
+    //graph using its layout information
+    PlanRepUML PG(umlGraph);
 
-	const int numCC = PG.numberOfCCs();
+    const int numCC = PG.numberOfCCs();
 
-	// (width,height) of the layout of each connected component
-	Array<DPoint> boundingBox(numCC);
-
-
-	//******************************************
-	//now planarize CCs and apply drawing module
-	for(i = 0; i < numCC; ++i)
-	{
-		// we treat connected component i
-		// PG is set to a copy of this CC
-
-		PG.initCC(i);
-
-		int nOrigVerticesPG = PG.numberOfNodes();
-
-		//alignment: check wether gens exist, special treatment is necessary
-		bool l_gensExist = false; //set this for all CC's, start with first gen,
-		//this setting can be mixed among CC's without problems
-
-		//*********************************************************
-		// we don't need to compute a planar subgraph, because we
-		// use the given embedding
-		//*********************************************************
-
-		adjEntry adjExternal = 0;
-
-		//here lies the main difference to the other call
-		//we first planarize by using the given layout and then
-		//set the embedding corresponding to the input
-		bool embedded;
-		TopologyModule TM;
-		try {
-			embedded = TM.setEmbeddingFromGraph(PG, umlGraph, adjExternal, umlMerge);
-		}//try
-		catch (...)
-		{
-			//TODO: check for graph changes that are not undone
-			embedded = false;
-		}
+    // (width,height) of the layout of each connected component
+    Array<DPoint> boundingBox(numCC);
 
 
-		//-------------------------------------------------
-		//if not embedded correctly
-		if (!embedded)
-		{
-			reembed(PG, i, l_align, l_gensExist);
-		}//if !embedded
+    //******************************************
+    //now planarize CCs and apply drawing module
+    for(i = 0; i < numCC; ++i)
+    {
+        // we treat connected component i
+        // PG is set to a copy of this CC
 
-		//-------------------------------------------------
+        PG.initCC(i);
 
-		CombinatorialEmbedding E(PG);
+        int nOrigVerticesPG = PG.numberOfNodes();
 
-		if (!umlMerge)
-			PG.setupIncremental(i, E);
+        //alignment: check wether gens exist, special treatment is necessary
+        bool l_gensExist = false; //set this for all CC's, start with first gen,
+        //this setting can be mixed among CC's without problems
 
-		//
-		// determine embedding of PG
-		//
+        //*********************************************************
+        // we don't need to compute a planar subgraph, because we
+        // use the given embedding
+        //*********************************************************
 
-		// We currently compute any embedding and choose the maximal face
-		// as external face
+        adjEntry adjExternal = 0;
 
-		// if we use FixedEmbeddingInserterOld, we have to re-use the computed
-		// embedding, otherwise crossing nodes can turn into "touching points"
-		// of edges (alternatively, we could compute a new embedding and
-		// finally "remove" such unnecessary crossings).
-
-		if((adjExternal == 0) && PG.numberOfEdges() > 0)
-		{
-			//face fExternal = E.maximalFace();
-			face fExternal = findBestExternalFace(PG,E);
-			adjExternal = fExternal->firstAdj();
-			//while (PG.sinkConnect(adjExternal->theEdge()))
-			//	adjExternal = adjExternal->faceCycleSucc();
-		}
-
-		m_nCrossings += PG.numberOfNodes() - nOrigVerticesPG;
+        //here lies the main difference to the other call
+        //we first planarize by using the given layout and then
+        //set the embedding corresponding to the input
+        bool embedded;
+        TopologyModule TM;
+        try
+        {
+            embedded = TM.setEmbeddingFromGraph(PG, umlGraph, adjExternal, umlMerge);
+        }//try
+        catch (...)
+        {
+            //TODO: check for graph changes that are not undone
+            embedded = false;
+        }
 
 
-		//*********************************************************
-		// third phase: Compute layout of planarized representation
-		//*********************************************************
+        //-------------------------------------------------
+        //if not embedded correctly
+        if (!embedded)
+        {
+            reembed(PG, i, l_align, l_gensExist);
+        }//if !embedded
 
-		Layout drawing(PG);
+        //-------------------------------------------------
 
-		//distinguish between CC's with/without generalizations
-		//this changes the input layout modules options!
-		if (l_gensExist)
-			m_planarLayouter.get().setOptions(l_layoutOptions);
-		else m_planarLayouter.get().setOptions((l_layoutOptions & ~umlOpAlign));
+        CombinatorialEmbedding E(PG);
 
-		//***************************************
-		//call the Layouter for the CC's UMLGraph
-		m_planarLayouter.get().call(PG,adjExternal,drawing);
+        if (!umlMerge)
+            PG.setupIncremental(i, E);
 
-		// copy layout into umlGraph
-		// Later, we move nodes and edges in each connected component, such
-		// that no two overlap.
+        //
+        // determine embedding of PG
+        //
 
-		//set position for original nodes and set bends for
-		//all edges
-		for(int j = PG.startNode(); j < PG.stopNode(); ++j)
-		{
-			node vG = PG.v(j);
+        // We currently compute any embedding and choose the maximal face
+        // as external face
 
-			umlGraph.x(vG) = drawing.x(PG.copy(vG));
-			umlGraph.y(vG) = drawing.y(PG.copy(vG));
+        // if we use FixedEmbeddingInserterOld, we have to re-use the computed
+        // embedding, otherwise crossing nodes can turn into "touching points"
+        // of edges (alternatively, we could compute a new embedding and
+        // finally "remove" such unnecessary crossings).
 
-			adjEntry adj;
-			forall_adj(adj,vG)
-			{
-				if ((adj->index() & 1) == 0) continue;
-				edge eG = adj->theEdge();
+        if((adjExternal == 0) && PG.numberOfEdges() > 0)
+        {
+            //face fExternal = E.maximalFace();
+            face fExternal = findBestExternalFace(PG,E);
+            adjExternal = fExternal->firstAdj();
+            //while (PG.sinkConnect(adjExternal->theEdge()))
+            //  adjExternal = adjExternal->faceCycleSucc();
+        }
 
-				drawing.computePolylineClear(PG,eG,umlGraph.bends(eG));
-			}//foralladj
-		}//for orig nodes
+        m_nCrossings += PG.numberOfNodes() - nOrigVerticesPG;
 
-		if (!umlMerge)
-		{
-			//insert bend point for incremental mergers
-			const SList<node>& mergers = PG.incrementalMergers(i);
-			SListConstIterator<node> itMerger = mergers.begin();
-			while (itMerger.valid())
-			{
-				node vMerger = (*itMerger);
-				//due to the fact that the merger may be expanded, we are
-				//forced to run through the face
-				adjEntry adjMerger = PG.expandAdj(vMerger);
-				//check if there is an expansion face
-				if (adjMerger != 0)
-				{
-					//we run through the expansion face to the connected edges
-					//this edge is to dummy corner
-					adjEntry runAdj = adjMerger->faceCycleSucc();
-					while (runAdj != adjMerger)
-					{
-						node vConnect = runAdj->theNode();
-						//because of the node collapse using the original
-						//edges instead of the merger copy edges (should be
-						//fixed for incremental mode) the  degree is 4
-						//if (vConnect->degree() != 3)
-						if (vConnect->degree() != 4)
-						{
-							runAdj = runAdj->faceCycleSucc();
-							continue;
-						}
-						edge eCopy = runAdj->cyclicPred()->theEdge();
-						OGDF_ASSERT(eCopy->target() == runAdj->theNode())
-						OGDF_ASSERT(PG.isGeneralization(eCopy))
-						OGDF_ASSERT(PG.original(eCopy))
-						umlGraph.bends(PG.original(eCopy)).pushBack(
-						DPoint(drawing.x(vMerger), drawing.y(vMerger)));
-						runAdj = runAdj->faceCycleSucc();
 
-					}
+        //*********************************************************
+        // third phase: Compute layout of planarized representation
+        //*********************************************************
 
-				}
-				else //currently all nodes are expanded, but this is not guaranteed
-				{
-					forall_adj(adjMerger, vMerger)
-					{
-						if (adjMerger->theEdge()->target() == vMerger)
-						{
-							edge eOrig = PG.original(adjMerger->theEdge());
-							if (eOrig)
-								//incoming merger edges always have an original here!
-								umlGraph.bends(eOrig).pushBack(DPoint(drawing.x(vMerger),
-								drawing.y(vMerger)));
+        Layout drawing(PG);
 
-						}
-					}//forall adj
-				}
-				itMerger++;
-			}//while merger nodes
-		}
+        //distinguish between CC's with/without generalizations
+        //this changes the input layout modules options!
+        if (l_gensExist)
+            m_planarLayouter.get().setOptions(l_layoutOptions);
+        else m_planarLayouter.get().setOptions((l_layoutOptions & ~umlOpAlign));
 
-		// the width/height of the layout has been computed by the planar
-		// layout algorithm; required as input to packing algorithm
-		boundingBox[i] = m_planarLayouter.get().getBoundingBox();
-	}//for cc's
+        //***************************************
+        //call the Layouter for the CC's UMLGraph
+        m_planarLayouter.get().call(PG,adjExternal,drawing);
 
-	postProcess(umlGraph);
+        // copy layout into umlGraph
+        // Later, we move nodes and edges in each connected component, such
+        // that no two overlap.
 
-	//----------------------------------------
-	// Arrange layouts of connected components
-	//----------------------------------------
+        //set position for original nodes and set bends for
+        //all edges
+        for(int j = PG.startNode(); j < PG.stopNode(); ++j)
+        {
+            node vG = PG.v(j);
 
-	arrangeCCs(PG, umlGraph, boundingBox);
+            umlGraph.x(vG) = drawing.x(PG.copy(vG));
+            umlGraph.y(vG) = drawing.y(PG.copy(vG));
 
-	umlGraph.undoGenMergers();
-	umlGraph.removeUnnecessaryBendsHV();
+            adjEntry adj;
+            forall_adj(adj,vG)
+            {
+                if ((adj->index() & 1) == 0) continue;
+                edge eG = adj->theEdge();
+
+                drawing.computePolylineClear(PG,eG,umlGraph.bends(eG));
+            }//foralladj
+        }//for orig nodes
+
+        if (!umlMerge)
+        {
+            //insert bend point for incremental mergers
+            const SList<node>& mergers = PG.incrementalMergers(i);
+            SListConstIterator<node> itMerger = mergers.begin();
+            while (itMerger.valid())
+            {
+                node vMerger = (*itMerger);
+                //due to the fact that the merger may be expanded, we are
+                //forced to run through the face
+                adjEntry adjMerger = PG.expandAdj(vMerger);
+                //check if there is an expansion face
+                if (adjMerger != 0)
+                {
+                    //we run through the expansion face to the connected edges
+                    //this edge is to dummy corner
+                    adjEntry runAdj = adjMerger->faceCycleSucc();
+                    while (runAdj != adjMerger)
+                    {
+                        node vConnect = runAdj->theNode();
+                        //because of the node collapse using the original
+                        //edges instead of the merger copy edges (should be
+                        //fixed for incremental mode) the  degree is 4
+                        //if (vConnect->degree() != 3)
+                        if (vConnect->degree() != 4)
+                        {
+                            runAdj = runAdj->faceCycleSucc();
+                            continue;
+                        }
+                        edge eCopy = runAdj->cyclicPred()->theEdge();
+                        OGDF_ASSERT(eCopy->target() == runAdj->theNode())
+                        OGDF_ASSERT(PG.isGeneralization(eCopy))
+                        OGDF_ASSERT(PG.original(eCopy))
+                        umlGraph.bends(PG.original(eCopy)).pushBack(
+                            DPoint(drawing.x(vMerger), drawing.y(vMerger)));
+                        runAdj = runAdj->faceCycleSucc();
+
+                    }
+
+                }
+                else //currently all nodes are expanded, but this is not guaranteed
+                {
+                    forall_adj(adjMerger, vMerger)
+                    {
+                        if (adjMerger->theEdge()->target() == vMerger)
+                        {
+                            edge eOrig = PG.original(adjMerger->theEdge());
+                            if (eOrig)
+                                //incoming merger edges always have an original here!
+                                umlGraph.bends(eOrig).pushBack(DPoint(drawing.x(vMerger),
+                                                                      drawing.y(vMerger)));
+
+                        }
+                    }//forall adj
+                }
+                itMerger++;
+            }//while merger nodes
+        }
+
+        // the width/height of the layout has been computed by the planar
+        // layout algorithm; required as input to packing algorithm
+        boundingBox[i] = m_planarLayouter.get().getBoundingBox();
+    }//for cc's
+
+    postProcess(umlGraph);
+
+    //----------------------------------------
+    // Arrange layouts of connected components
+    //----------------------------------------
+
+    arrangeCCs(PG, umlGraph, boundingBox);
+
+    umlGraph.undoGenMergers();
+    umlGraph.removeUnnecessaryBendsHV();
 }//callfixembed
 
 #endif

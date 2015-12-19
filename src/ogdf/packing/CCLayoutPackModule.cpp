@@ -43,50 +43,51 @@
 #include <ogdf/module/CCLayoutPackModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 template<class POINT>
 bool CCLayoutPackModule::checkOffsetsTP(
-	const Array<POINT> &box,
-	const Array<POINT> &offset)
+    const Array<POINT> &box,
+    const Array<POINT> &offset)
 {
-	OGDF_ASSERT(box.size() == offset.size());
-	const int n = box.size();
+    OGDF_ASSERT(box.size() == offset.size());
+    const int n = box.size();
 
-	for (int i = 0; i < n; ++i)
-	{
-		typename POINT::numberType xl = offset[i].m_x;
-		typename POINT::numberType xr = xl + box[i].m_x;
-		typename POINT::numberType yb = offset[i].m_y;
-		typename POINT::numberType yt = yb + box[i].m_y;
+    for (int i = 0; i < n; ++i)
+    {
+        typename POINT::numberType xl = offset[i].m_x;
+        typename POINT::numberType xr = xl + box[i].m_x;
+        typename POINT::numberType yb = offset[i].m_y;
+        typename POINT::numberType yt = yb + box[i].m_y;
 
-		OGDF_ASSERT(xl <= xr && yb <= yt);
+        OGDF_ASSERT(xl <= xr && yb <= yt);
 
-		for (int j = i+1; j < n; ++j)
-		{
-			typename POINT::numberType xl2 = offset[j].m_x;
-			typename POINT::numberType xr2 = xl2 + box[j].m_x;
-			typename POINT::numberType yb2 = offset[j].m_y;
-			typename POINT::numberType yt2 = yb2 + box[j].m_y;
+        for (int j = i+1; j < n; ++j)
+        {
+            typename POINT::numberType xl2 = offset[j].m_x;
+            typename POINT::numberType xr2 = xl2 + box[j].m_x;
+            typename POINT::numberType yb2 = offset[j].m_y;
+            typename POINT::numberType yt2 = yb2 + box[j].m_y;
 
-			if (xr2 > xl && xl2 < xr && yt2 > yb && yb2 < yt)
-				return false;
-		}
-	}
+            if (xr2 > xl && xl2 < xr && yt2 > yb && yb2 < yt)
+                return false;
+        }
+    }
 
-	return true;
+    return true;
 }
 
 bool CCLayoutPackModule::checkOffsets(const Array<DPoint> &box,
-	const Array<DPoint> &offset)
+                                      const Array<DPoint> &offset)
 {
-	return checkOffsetsTP(box,offset);
+    return checkOffsetsTP(box,offset);
 }
 
 bool CCLayoutPackModule::checkOffsets(const Array<IPoint> &box,
-	const Array<IPoint> &offset)
+                                      const Array<IPoint> &offset)
 {
-	return checkOffsetsTP(box,offset);
+    return checkOffsetsTP(box,offset);
 }
 
 

@@ -26,25 +26,27 @@
 CoinWarmStartDiff*
 CoinWarmStartPrimalDual::generateDiff (const CoinWarmStart *const oldCWS) const
 {
-/*
-  Make sure the parameter is CoinWarmStartPrimalDual or derived class.
-*/
-  const CoinWarmStartPrimalDual *old =
-      dynamic_cast<const CoinWarmStartPrimalDual *>(oldCWS) ;
-  if (!old)
-  { throw CoinError("Old warm start not derived from CoinWarmStartPrimalDual.",
-		    "generateDiff","CoinWarmStartPrimalDual") ; }
+    /*
+      Make sure the parameter is CoinWarmStartPrimalDual or derived class.
+    */
+    const CoinWarmStartPrimalDual *old =
+        dynamic_cast<const CoinWarmStartPrimalDual *>(oldCWS) ;
+    if (!old)
+    {
+        throw CoinError("Old warm start not derived from CoinWarmStartPrimalDual.",
+                        "generateDiff","CoinWarmStartPrimalDual") ;
+    }
 
-  CoinWarmStartPrimalDualDiff* diff = new CoinWarmStartPrimalDualDiff;
-  CoinWarmStartDiff* vecdiff;
-  vecdiff = primal_.generateDiff(&old->primal_);
-  diff->primalDiff_.swap(*dynamic_cast<CoinWarmStartVectorDiff<double>*>(vecdiff));
-  delete vecdiff;
-  vecdiff = dual_.generateDiff(&old->dual_);
-  diff->dualDiff_.swap(*dynamic_cast<CoinWarmStartVectorDiff<double>*>(vecdiff));
-  delete vecdiff;
+    CoinWarmStartPrimalDualDiff* diff = new CoinWarmStartPrimalDualDiff;
+    CoinWarmStartDiff* vecdiff;
+    vecdiff = primal_.generateDiff(&old->primal_);
+    diff->primalDiff_.swap(*dynamic_cast<CoinWarmStartVectorDiff<double>*>(vecdiff));
+    delete vecdiff;
+    vecdiff = dual_.generateDiff(&old->dual_);
+    diff->dualDiff_.swap(*dynamic_cast<CoinWarmStartVectorDiff<double>*>(vecdiff));
+    delete vecdiff;
 
-  return diff;
+    return diff;
 }
 
 //#############################################################################
@@ -59,15 +61,17 @@ CoinWarmStartPrimalDual::generateDiff (const CoinWarmStart *const oldCWS) const
 void
 CoinWarmStartPrimalDual::applyDiff (const CoinWarmStartDiff *const cwsdDiff)
 {
-/*
-  Make sure we have a CoinWarmStartPrimalDualDiff
-*/
-  const CoinWarmStartPrimalDualDiff *diff =
-    dynamic_cast<const CoinWarmStartPrimalDualDiff *>(cwsdDiff) ;
-  if (!diff)
-  { throw CoinError("Diff not derived from CoinWarmStartPrimalDualDiff.",
-		    "applyDiff","CoinWarmStartPrimalDual") ; }
+    /*
+      Make sure we have a CoinWarmStartPrimalDualDiff
+    */
+    const CoinWarmStartPrimalDualDiff *diff =
+        dynamic_cast<const CoinWarmStartPrimalDualDiff *>(cwsdDiff) ;
+    if (!diff)
+    {
+        throw CoinError("Diff not derived from CoinWarmStartPrimalDualDiff.",
+                        "applyDiff","CoinWarmStartPrimalDual") ;
+    }
 
-  primal_.applyDiff(&diff->primalDiff_);
-  dual_.applyDiff(&diff->dualDiff_);
+    primal_.applyDiff(&diff->primalDiff_);
+    dual_.applyDiff(&diff->dualDiff_);
 }

@@ -55,7 +55,8 @@
 #include <ogdf/basic/GraphCopy.h>
 #include <ogdf/planarity/KuratowskiSubdivision.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class KuratowskiWrapper;
 
@@ -152,135 +153,149 @@ class KuratowskiWrapper;
 class OGDF_EXPORT BoyerMyrvold : public PlanarityModule
 {
 protected:
-	//! Class BoyerMyrvoldPlanar on heap
-	BoyerMyrvoldPlanar* pBMP;
+    //! Class BoyerMyrvoldPlanar on heap
+    BoyerMyrvoldPlanar* pBMP;
 
-	//! Deletes BoyerMyrvoldPlanar on heap
-	void clear() { delete pBMP; }
+    //! Deletes BoyerMyrvoldPlanar on heap
+    void clear()
+    {
+        delete pBMP;
+    }
 
-	//! The number of extracted Structures for statistical purposes
-	int nOfStructures;
+    //! The number of extracted Structures for statistical purposes
+    int nOfStructures;
 
 public:
-	//! Constructor
-	BoyerMyrvold() { pBMP = 0; }
-	//! Destructor
-	~BoyerMyrvold() { clear(); }
+    //! Constructor
+    BoyerMyrvold()
+    {
+        pBMP = 0;
+    }
+    //! Destructor
+    ~BoyerMyrvold()
+    {
+        clear();
+    }
 
-	//! The number of extracted Structures for statistical purposes
-	int numberOfStructures() { return nOfStructures; }
+    //! The number of extracted Structures for statistical purposes
+    int numberOfStructures()
+    {
+        return nOfStructures;
+    }
 
-	//! Returns true, iff \a g is planar
-	/** This is the routine, which avoids the overhead of copying the input graph.
-	 * It is therefore not suitable, if your graph must not be alterated!
-	 */
-	virtual bool isPlanarDestructive(Graph& g);
+    //! Returns true, iff \a g is planar
+    /** This is the routine, which avoids the overhead of copying the input graph.
+     * It is therefore not suitable, if your graph must not be alterated!
+     */
+    virtual bool isPlanarDestructive(Graph& g);
 
-	//! Returns true, iff a copy of the constant graph \a g is planar
-	/** Use this slower routine, if your graph must not be alterated.
-	 */
-	virtual bool isPlanar(const Graph& g);
+    //! Returns true, iff a copy of the constant graph \a g is planar
+    /** Use this slower routine, if your graph must not be alterated.
+     */
+    virtual bool isPlanar(const Graph& g);
 
-	//! Returns true, if G is planar, false otherwise. If true, G contains a planar embedding.
-	virtual bool planarEmbed(Graph &G) {
-		SList<KuratowskiWrapper> list;
-		return planarEmbed(G,list);
-	}
+    //! Returns true, if G is planar, false otherwise. If true, G contains a planar embedding.
+    virtual bool planarEmbed(Graph &G)
+    {
+        SList<KuratowskiWrapper> list;
+        return planarEmbed(G,list);
+    }
 
-	//! Constructs a planar embedding of G. \a G \b has to be planar!
-	/**
-	 * Returns true if the embedding was successful.
-	 * Returns false, if the given graph was non-planar (and leaves the
-	 * graph in an at least partially deleted state)
-	 *
-	 * This routine is slightly faster than planarEmbed, but requires \a G to be planar.
-	 * If \a G is not planar, the graph will be destroyed while trying to embed it!
-	 */
-	virtual bool planarEmbedPlanarGraph(Graph &G) {
-		SList<KuratowskiWrapper> list;
-		return planarEmbedDestructive(G,list);
-	}
-
-
-
-
-	//! Transforms KuratowskiWrapper in KuratowskiSubdivision
-	void transform(
-		const KuratowskiWrapper& source,
-		KuratowskiSubdivision& target,
-		NodeArray<int>& count,
-		EdgeArray<int>& countEdge);
-
-	//! Transforms KuratowskiWrapper-List in KuratowskiSubdivision-List with respect to sieving constraints
-	void transform(
-		const SList<KuratowskiWrapper>& sourceList,
-		SList<KuratowskiSubdivision>& targetList,
-		const Graph& g,
-		const bool onlyDifferent = false);
+    //! Constructs a planar embedding of G. \a G \b has to be planar!
+    /**
+     * Returns true if the embedding was successful.
+     * Returns false, if the given graph was non-planar (and leaves the
+     * graph in an at least partially deleted state)
+     *
+     * This routine is slightly faster than planarEmbed, but requires \a G to be planar.
+     * If \a G is not planar, the graph will be destroyed while trying to embed it!
+     */
+    virtual bool planarEmbedPlanarGraph(Graph &G)
+    {
+        SList<KuratowskiWrapper> list;
+        return planarEmbedDestructive(G,list);
+    }
 
 
 
-	//! Returns an embedding, if \a g is planar and Kuratowski Subdivisions otherwise
-	/** If \a g is planar, the adjLists of \a g specify a planar embedding.
-	 * Use this function, if \a g may be changed.
-	 * @param g is the input graph.
-	 * @param output contains a number of Kuratowski Subdivisions depending on the other parameters
-	 * @param embeddingGrade is a flag bounding the number of extracted subdivisions
-	 * @param bundles extracts much more subdivisions, if set
-	 * @param limitStructures limits the number of Kuratowski Structures to \a embeddingGrade, if set
-	 * @param randomDFSTree randomizes Kuratowski extraction through randomizing the DFSTree, if set
-	 * @param avoidE2Minors avoids all \a E2-Minors and ensures unique subdivisions, if set
-	 */
-	bool planarEmbedDestructive(
-		Graph& g,
-		SList<KuratowskiWrapper>& output,
-		int embeddingGrade = BoyerMyrvoldPlanar::doNotFind,
-		bool bundles = false,
-		bool limitStructures = false,
-		bool randomDFSTree = false,
-		bool avoidE2Minors = true);
 
-	//! Returns an embedding, if \a g is planar and Kuratowski Subdivisions otherwise
-	/** If \a g is planar, the adjLists of \a g specify a planar embedding. The function
-	 * copies the graph before computation. Use this function, if \a g must not be changed in
-	 * the non-planar case.
-	 * @param g is the input graph.
-	 * @param output contains a number of Kuratowski Subdivisions depending on the other parameters
-	 * @param embeddingGrade is a flag bounding the number of extracted subdivisions
-	 * @param bundles extracts much more subdivisions, if set
-	 * @param limitStructures limits the number of Kuratowski Structures to \a embeddingGrade, if set
-	 * @param randomDFSTree randomizes Kuratowski extraction through randomizing the DFSTree, if set
-	 * @param avoidE2Minors avoids all \a E2-Minors and ensures unique subdivisions, if set
-	 */
-	bool planarEmbed(
-		Graph& g,
-		SList<KuratowskiWrapper>& output,
-		int embeddingGrade = BoyerMyrvoldPlanar::doNotFind,
-		bool bundles = false,
-		bool limitStructures = false,
-		bool randomDFSTree = false,
-		bool avoidE2Minors = true);
+    //! Transforms KuratowskiWrapper in KuratowskiSubdivision
+    void transform(
+        const KuratowskiWrapper& source,
+        KuratowskiSubdivision& target,
+        NodeArray<int>& count,
+        EdgeArray<int>& countEdge);
 
-	//! Returns an embedding, if graph copy \a h is planar and Kuratowski Subdivisions otherwise
-	/** If \a h is planar, the adjLists of \a h specify a planar embedding. The function
-	 * copies the graph before computation. Use this function, if \a g must not be changed.
-	 * @param h is the input graph copy.
-	 * @param output contains a number of Kuratowski Subdivisions depending on the other parameters
-	 * @param embeddingGrade is a flag bounding the number of extracted subdivisions
-	 * @param bundles extracts much more subdivisions, if set
-	 * @param limitStructures limits the number of Kuratowski Structures to \a embeddingGrade, if set
-	 * @param randomDFSTree randomizes Kuratowski extraction through randomizing the DFSTree, if set
-	 * @param avoidE2Minors avoids all \a E2-Minors and ensures unique subdivisions, if set
-	 */
-	bool planarEmbed(
-		//const Graph& g,
-		GraphCopySimple& h,
-		SList<KuratowskiWrapper>& output,
-		int embeddingGrade = BoyerMyrvoldPlanar::doNotFind,
-		bool bundles = false,
-		bool limitStructures = false,
-		bool randomDFSTree = false,
-		bool avoidE2Minors = true);
+    //! Transforms KuratowskiWrapper-List in KuratowskiSubdivision-List with respect to sieving constraints
+    void transform(
+        const SList<KuratowskiWrapper>& sourceList,
+        SList<KuratowskiSubdivision>& targetList,
+        const Graph& g,
+        const bool onlyDifferent = false);
+
+
+
+    //! Returns an embedding, if \a g is planar and Kuratowski Subdivisions otherwise
+    /** If \a g is planar, the adjLists of \a g specify a planar embedding.
+     * Use this function, if \a g may be changed.
+     * @param g is the input graph.
+     * @param output contains a number of Kuratowski Subdivisions depending on the other parameters
+     * @param embeddingGrade is a flag bounding the number of extracted subdivisions
+     * @param bundles extracts much more subdivisions, if set
+     * @param limitStructures limits the number of Kuratowski Structures to \a embeddingGrade, if set
+     * @param randomDFSTree randomizes Kuratowski extraction through randomizing the DFSTree, if set
+     * @param avoidE2Minors avoids all \a E2-Minors and ensures unique subdivisions, if set
+     */
+    bool planarEmbedDestructive(
+        Graph& g,
+        SList<KuratowskiWrapper>& output,
+        int embeddingGrade = BoyerMyrvoldPlanar::doNotFind,
+        bool bundles = false,
+        bool limitStructures = false,
+        bool randomDFSTree = false,
+        bool avoidE2Minors = true);
+
+    //! Returns an embedding, if \a g is planar and Kuratowski Subdivisions otherwise
+    /** If \a g is planar, the adjLists of \a g specify a planar embedding. The function
+     * copies the graph before computation. Use this function, if \a g must not be changed in
+     * the non-planar case.
+     * @param g is the input graph.
+     * @param output contains a number of Kuratowski Subdivisions depending on the other parameters
+     * @param embeddingGrade is a flag bounding the number of extracted subdivisions
+     * @param bundles extracts much more subdivisions, if set
+     * @param limitStructures limits the number of Kuratowski Structures to \a embeddingGrade, if set
+     * @param randomDFSTree randomizes Kuratowski extraction through randomizing the DFSTree, if set
+     * @param avoidE2Minors avoids all \a E2-Minors and ensures unique subdivisions, if set
+     */
+    bool planarEmbed(
+        Graph& g,
+        SList<KuratowskiWrapper>& output,
+        int embeddingGrade = BoyerMyrvoldPlanar::doNotFind,
+        bool bundles = false,
+        bool limitStructures = false,
+        bool randomDFSTree = false,
+        bool avoidE2Minors = true);
+
+    //! Returns an embedding, if graph copy \a h is planar and Kuratowski Subdivisions otherwise
+    /** If \a h is planar, the adjLists of \a h specify a planar embedding. The function
+     * copies the graph before computation. Use this function, if \a g must not be changed.
+     * @param h is the input graph copy.
+     * @param output contains a number of Kuratowski Subdivisions depending on the other parameters
+     * @param embeddingGrade is a flag bounding the number of extracted subdivisions
+     * @param bundles extracts much more subdivisions, if set
+     * @param limitStructures limits the number of Kuratowski Structures to \a embeddingGrade, if set
+     * @param randomDFSTree randomizes Kuratowski extraction through randomizing the DFSTree, if set
+     * @param avoidE2Minors avoids all \a E2-Minors and ensures unique subdivisions, if set
+     */
+    bool planarEmbed(
+        //const Graph& g,
+        GraphCopySimple& h,
+        SList<KuratowskiWrapper>& output,
+        int embeddingGrade = BoyerMyrvoldPlanar::doNotFind,
+        bool bundles = false,
+        bool limitStructures = false,
+        bool randomDFSTree = false,
+        bool avoidE2Minors = true);
 };
 
 }

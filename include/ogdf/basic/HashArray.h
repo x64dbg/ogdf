@@ -52,7 +52,8 @@
 #include <ogdf/basic/Hashing.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //! Indexed arrays using hashing for element access.
@@ -109,65 +110,82 @@ namespace ogdf {
 template<class I, class E, class H = DefHashFunc<I> >
 class HashArray : private Hashing<I,E,H>
 {
-	E m_defaultValue; //! The default value for elements.
+    E m_defaultValue; //! The default value for elements.
 
 public:
-	//! The type of const-iterators for hash arrays.
-	typedef HashConstIterator<I,E,H> const_iterator;
+    //! The type of const-iterators for hash arrays.
+    typedef HashConstIterator<I,E,H> const_iterator;
 
-	//! Creates a hashing array; the default value is the default value of the element type.
-	HashArray() : Hashing<I,E,H>() { }
+    //! Creates a hashing array; the default value is the default value of the element type.
+    HashArray() : Hashing<I,E,H>() { }
 
-	//! Creates a hashing array with default value \a defaultValue.
-	HashArray(const E &defaultValue, const H &hashFunc = H())
-		: Hashing<I,E,H>(256, hashFunc), m_defaultValue(defaultValue) { }
+    //! Creates a hashing array with default value \a defaultValue.
+    HashArray(const E &defaultValue, const H &hashFunc = H())
+        : Hashing<I,E,H>(256, hashFunc), m_defaultValue(defaultValue) { }
 
-	//! Copy constructor.
-	HashArray(const HashArray<I,E,H> &A) : Hashing<I,E,H>(A), m_defaultValue(A.m_defaultValue) { }
+    //! Copy constructor.
+    HashArray(const HashArray<I,E,H> &A) : Hashing<I,E,H>(A), m_defaultValue(A.m_defaultValue) { }
 
-	//! Returns an iterator to the first element in the list of all elements.
-	HashConstIterator<I,E,H> begin() const { return Hashing<I,E,H>::begin(); }
+    //! Returns an iterator to the first element in the list of all elements.
+    HashConstIterator<I,E,H> begin() const
+    {
+        return Hashing<I,E,H>::begin();
+    }
 
-	//! Returns the number of defined indices (= number of elements in hash table).
-	int size() const { return Hashing<I,E,H>::size(); }
+    //! Returns the number of defined indices (= number of elements in hash table).
+    int size() const
+    {
+        return Hashing<I,E,H>::size();
+    }
 
-	//! Returns if any indices are defined (= if the hash table is empty)
-	int empty() const { return Hashing<I,E,H>::empty(); }
+    //! Returns if any indices are defined (= if the hash table is empty)
+    int empty() const
+    {
+        return Hashing<I,E,H>::empty();
+    }
 
 
-	//! Returns the element with index \a i.
-	const E &operator[](const I &i) const {
-		HashElement<I,E> *pElement = Hashing<I,E,H>::lookup(i);
-		if (pElement) return pElement->info();
-		else return m_defaultValue;
-	}
+    //! Returns the element with index \a i.
+    const E &operator[](const I &i) const
+    {
+        HashElement<I,E> *pElement = Hashing<I,E,H>::lookup(i);
+        if (pElement) return pElement->info();
+        else return m_defaultValue;
+    }
 
-	//! Returns a reference to the element with index \a i.
-	E &operator[](const I &i) {
-		HashElement<I,E> *pElement = Hashing<I,E,H>::lookup(i);
-		if (!pElement) pElement = Hashing<I,E,H>::fastInsert(i,m_defaultValue);
-		return pElement->info();
-	}
+    //! Returns a reference to the element with index \a i.
+    E &operator[](const I &i)
+    {
+        HashElement<I,E> *pElement = Hashing<I,E,H>::lookup(i);
+        if (!pElement) pElement = Hashing<I,E,H>::fastInsert(i,m_defaultValue);
+        return pElement->info();
+    }
 
-	//! Returns true iff index \a i is defined.
-	bool isDefined(const I &i) const {
-		return Hashing<I,E,H>::member(i);
-	}
+    //! Returns true iff index \a i is defined.
+    bool isDefined(const I &i) const
+    {
+        return Hashing<I,E,H>::member(i);
+    }
 
-	//! Undefines index \a i.
-	void undefine(const I &i) {
-		Hashing<I,E,H>::del(i);
-	}
+    //! Undefines index \a i.
+    void undefine(const I &i)
+    {
+        Hashing<I,E,H>::del(i);
+    }
 
-	//! Assignment operator.
-	HashArray<I,E,H> &operator=(const HashArray<I,E,H> &A) {
-		m_defaultValue = A.m_defaultValue;
-		Hashing<I,E,H>::operator =(A);
-		return *this;
-	}
+    //! Assignment operator.
+    HashArray<I,E,H> &operator=(const HashArray<I,E,H> &A)
+    {
+        m_defaultValue = A.m_defaultValue;
+        Hashing<I,E,H>::operator =(A);
+        return *this;
+    }
 
-	//! Undefines all indices.
-	void clear() { Hashing<I,E,H>::clear(); }
+    //! Undefines all indices.
+    void clear()
+    {
+        Hashing<I,E,H>::clear();
+    }
 };
 
 

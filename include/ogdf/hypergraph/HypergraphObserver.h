@@ -58,74 +58,77 @@
 #include <ogdf/basic/List.h>
 #include <ogdf/hypergraph/Hypergraph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 // HypergraphObserver
 class OGDF_EXPORT HypergraphObserver
 {
-	friend class Hypergraph;
+    friend class Hypergraph;
 
 protected:
 
-	//! Observed hypergraph.
-	const Hypergraph *m_hypergraph;
+    //! Observed hypergraph.
+    const Hypergraph *m_hypergraph;
 
-	//! List of all registered hypergraph observers.
-	ListIterator<HypergraphObserver *> m_itObserver;
+    //! List of all registered hypergraph observers.
+    ListIterator<HypergraphObserver *> m_itObserver;
 
 public:
 
-	//! Constructor.
-	HypergraphObserver()
-	  : m_hypergraph(0)
-	{
-	}
+    //! Constructor.
+    HypergraphObserver()
+        : m_hypergraph(0)
+    {
+    }
 
-	//! Constructor assigning \a pH hypergraph to the observer.
-	HypergraphObserver(const Hypergraph *pH)
-	{
-		m_hypergraph = pH;
-		m_itObserver = pH->registerObserver(this);
-	}
+    //! Constructor assigning \a pH hypergraph to the observer.
+    HypergraphObserver(const Hypergraph *pH)
+    {
+        m_hypergraph = pH;
+        m_itObserver = pH->registerObserver(this);
+    }
 
-	//! Destructor.
-	virtual ~HypergraphObserver()
-	{
-		if (m_hypergraph)
-			m_hypergraph->unregisterObserver(m_itObserver);
-	}
+    //! Destructor.
+    virtual ~HypergraphObserver()
+    {
+        if (m_hypergraph)
+            m_hypergraph->unregisterObserver(m_itObserver);
+    }
 
-	//! Associates an observer instance with hypergraph \a H
-	void init(const Hypergraph *pH) {
-		if (m_hypergraph)
-			m_hypergraph->unregisterObserver(m_itObserver);
+    //! Associates an observer instance with hypergraph \a H
+    void init(const Hypergraph *pH)
+    {
+        if (m_hypergraph)
+            m_hypergraph->unregisterObserver(m_itObserver);
 
-		if (pH) {
-			m_hypergraph = pH;
-			m_itObserver = pH->registerObserver(this);
-		}
-	}
+        if (pH)
+        {
+            m_hypergraph = pH;
+            m_itObserver = pH->registerObserver(this);
+        }
+    }
 
-	//! Called by an observed hypergraph when a hypernode is deleted.
-	virtual void hypernodeDeleted(hypernode v) = 0;
+    //! Called by an observed hypergraph when a hypernode is deleted.
+    virtual void hypernodeDeleted(hypernode v) = 0;
 
-	//! Called by an observed hypergraph when a hypernode is added.
-	virtual void hypernodeAdded(hypernode v) = 0;
+    //! Called by an observed hypergraph when a hypernode is added.
+    virtual void hypernodeAdded(hypernode v) = 0;
 
-	//! Called by an observed hypergraph when a hyperedge is deleted.
-	virtual void hyperedgeDeleted(hyperedge e) = 0;
+    //! Called by an observed hypergraph when a hyperedge is deleted.
+    virtual void hyperedgeDeleted(hyperedge e) = 0;
 
-	//! Called by an observed hypergraph when a hyperedge is added.
-	virtual void hyperedgeAdded(hyperedge e) = 0;
+    //! Called by an observed hypergraph when a hyperedge is added.
+    virtual void hyperedgeAdded(hyperedge e) = 0;
 
-	//! Called by the observed hypergraph when it is cleared.
-	virtual void cleared() = 0;
+    //! Called by the observed hypergraph when it is cleared.
+    virtual void cleared() = 0;
 
-	//! Retunrs the observer hypergraph.
-	const Hypergraph * hypergraph() const
-	{
-		return m_hypergraph;
-	}
+    //! Retunrs the observer hypergraph.
+    const Hypergraph * hypergraph() const
+    {
+        return m_hypergraph;
+    }
 
 };
 

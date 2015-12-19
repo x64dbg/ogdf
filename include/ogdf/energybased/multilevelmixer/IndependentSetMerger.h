@@ -49,22 +49,26 @@
 
 #include <ogdf/energybased/multilevelmixer/MultilevelBuilder.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT IndependentSetMerger : public MultilevelBuilder
 {
 private:
-	float m_base;
+    float m_base;
 
-	std::vector<node> prebuildLevel(const Graph &G, const std::vector<node> &oldLevelNodes, int level);
-	bool buildOneLevel(MultilevelGraph &MLG) { return false; }
-	bool buildOneLevel(MultilevelGraph &MLG, std::vector<node> &levelNodes);
+    std::vector<node> prebuildLevel(const Graph &G, const std::vector<node> &oldLevelNodes, int level);
+    bool buildOneLevel(MultilevelGraph &MLG)
+    {
+        return false;
+    }
+    bool buildOneLevel(MultilevelGraph &MLG, std::vector<node> &levelNodes);
 
 public:
-	void buildAllLevels(MultilevelGraph &MLG);
-	void setSearchDepthBase(float base);
+    void buildAllLevels(MultilevelGraph &MLG);
+    void setSearchDepthBase(float base);
 
-	IndependentSetMerger();
+    IndependentSetMerger();
 };
 
 } // namespace ogdf

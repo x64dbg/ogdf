@@ -53,9 +53,11 @@
 #include <vector>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-namespace dot {
+namespace dot
+{
 
 
 //! Just a simple token struct representing a DOT file fragment.
@@ -69,34 +71,36 @@ namespace dot {
  *
  * \sa dot::Lexer
  */
-struct Token {
+struct Token
+{
 
-	enum Type {
-		// Operators
-		assignment, colon, semicolon, comma, edgeOpDirected, edgeOpUndirected,
-		// Brackets
-		leftBracket, rightBracket,
-		leftBrace, rightBrace,
-		// Keywords
-		graph, digraph, subgraph, node, edge,
-		strict,
-		// Values
-		identifier
-	};
+    enum Type
+    {
+        // Operators
+        assignment, colon, semicolon, comma, edgeOpDirected, edgeOpUndirected,
+        // Brackets
+        leftBracket, rightBracket,
+        leftBrace, rightBrace,
+        // Keywords
+        graph, digraph, subgraph, node, edge,
+        strict,
+        // Values
+        identifier
+    };
 
-	//! The type of an field.
-	Type type;
-	//! Indicates a token row (line).
-	size_t row;
-	//! Indicated a token column;
-	size_t column;
-	//! Identifier content (NULL for non-id tokens).
-	std::string *value;
+    //! The type of an field.
+    Type type;
+    //! Indicates a token row (line).
+    size_t row;
+    //! Indicated a token column;
+    size_t column;
+    //! Identifier content (NULL for non-id tokens).
+    std::string *value;
 
-	Token(size_t row, size_t column, std::string *value = NULL);
+    Token(size_t row, size_t column, std::string *value = NULL);
 
-	//! Returns string representation of given token type.
-	static std::string toString(const Type &type);
+    //! Returns string representation of given token type.
+    static std::string toString(const Type &type);
 };
 
 
@@ -110,48 +114,49 @@ struct Token {
  *
  * \sa dot::Parser
  */
-class Lexer {
+class Lexer
+{
 private:
-	std::istream &m_input;
+    std::istream &m_input;
 
-	std::string m_buffer; // Current line of given file.
-	size_t m_row, m_col; // Current position in parsed file.
+    std::string m_buffer; // Current line of given file.
+    size_t m_row, m_col; // Current position in parsed file.
 
-	std::vector<Token> m_tokens;
+    std::vector<Token> m_tokens;
 
-	bool tokenizeLine();
+    bool tokenizeLine();
 
-	//! Checks if \a head matches given token. Advances \a head on success.
-	/**
-	 * @param type A type of token being matched.
-	 * @return True if matches, false otherwise.
-	 */
-	bool match(const Token::Type &type);
-	//! Checks if \a head matches given string. Advances \a head on success.
-	/**
-	 * @param str A string being matched.
-	 * @return True if matches, false otherwise.
-	 */
-	bool match(const std::string &str);
-	//! Checks whether \a head is an identifier.
-	/**
-	 * @param token Function fills it with identifier value and col/row info.
-	 * @return True if matches, false otherwise.
-	 */
-	bool identifier(Token &token);
+    //! Checks if \a head matches given token. Advances \a head on success.
+    /**
+     * @param type A type of token being matched.
+     * @return True if matches, false otherwise.
+     */
+    bool match(const Token::Type &type);
+    //! Checks if \a head matches given string. Advances \a head on success.
+    /**
+     * @param str A string being matched.
+     * @return True if matches, false otherwise.
+     */
+    bool match(const std::string &str);
+    //! Checks whether \a head is an identifier.
+    /**
+     * @param token Function fills it with identifier value and col/row info.
+     * @return True if matches, false otherwise.
+     */
+    bool identifier(Token &token);
 
 public:
-	//! Initializes lexer with given input (but does nothing to it).
-	Lexer(std::istream &input);
-	~Lexer();
+    //! Initializes lexer with given input (but does nothing to it).
+    Lexer(std::istream &input);
+    ~Lexer();
 
-	//! Scans input and turns it into token list.
-	/**
-	 * @return True if success, false otherwise.
-	 */
-	bool tokenize();
-	//! Returns list of tokens (first use Lexer#tokenize())
-	const std::vector<Token> &tokens() const;
+    //! Scans input and turns it into token list.
+    /**
+     * @return True if success, false otherwise.
+     */
+    bool tokenize();
+    //! Returns list of tokens (first use Lexer#tokenize())
+    const std::vector<Token> &tokens() const;
 };
 
 

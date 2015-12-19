@@ -55,7 +55,8 @@
 #include <ogdf/decomposition/DynamicSkeleton.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //---------------------------------------------------------
 // DynamicSPQRTree
@@ -97,170 +98,204 @@ class OGDF_EXPORT DynamicSPQRTree : public virtual SPQRTree, public DynamicSPQRF
 {
 public:
 
-	friend class DynamicSkeleton;
+    friend class DynamicSkeleton;
 
 
-	// constructors
+    // constructors
 
-	/**
-	 * \brief Creates an SPQR tree \e T for graph \a G rooted at the first edge of \a G.
-	 * \pre \a G is biconnected and contains at least 3 nodes,
-	 *      or \a G has exactly 2 nodes and at least 3 edges.
-	 */
-	DynamicSPQRTree (Graph& G) : DynamicSPQRForest(G) { init(G.firstEdge()); }
+    /**
+     * \brief Creates an SPQR tree \e T for graph \a G rooted at the first edge of \a G.
+     * \pre \a G is biconnected and contains at least 3 nodes,
+     *      or \a G has exactly 2 nodes and at least 3 edges.
+     */
+    DynamicSPQRTree (Graph& G) : DynamicSPQRForest(G)
+    {
+        init(G.firstEdge());
+    }
 
-	/**
-	 * \brief Creates an SPQR tree \e T for graph \a G rooted at the edge \a e.
-	 * \pre \a e is in \a G, \a G is biconnected and contains at least 3 nodes,
-	 *      or \a G has exactly 2 nodes and at least 3 edges.
-	 */
-	DynamicSPQRTree (Graph& G, edge e) : DynamicSPQRForest(G) { init(e); }
-
-
-	// destructor
-
-	~DynamicSPQRTree();
-
-
-	//
-	// a) Access operations
-	//
-
-	//! Returns a reference to the original graph \e G.
-	const Graph& originalGraph () const { return m_G; }
-
-	//! Returns a reference to the tree \e T.
-	const Graph& tree () const { return m_T; }
-
-	//! Returns the edge of \e G at which \e T is rooted.
-	edge rootEdge () const { return m_rootEdge; }
-
-	//! Returns the root node of \e T.
-	node rootNode () const { return findSPQR(m_bNode_SPQR[m_B.firstNode()]); }
-
-	//! Returns the number of S-nodes in \e T.
-	int numberOfSNodes () const { return m_bNode_numS[m_B.firstNode()]; }
-
-	//! Returns the number of P-nodes in \e T.
-	int numberOfPNodes () const { return m_bNode_numP[m_B.firstNode()]; }
-
-	//! Returns the number of R-nodes in \e T.
-	int numberOfRNodes () const { return m_bNode_numR[m_B.firstNode()]; }
-
-	/**
-	 * \brief Returns the type of node \a v.
-	 * \pre \a v is a node in \e T
-	 */
-	NodeType typeOf (node v) const
-	{
-		return (NodeType)m_tNode_type[findSPQR(v)];
-	}
-
-	//! Returns the list of all nodes with type \a t.
-	List<node> nodesOfType (NodeType t) const;
-
-	//! Finds the shortest path between the two sets of vertices of \e T which \a s and \a t of \e G belong to.
-	SList<node>& findPath (node s, node t) { return findPathSPQR(m_gNode_hNode[s],m_gNode_hNode[t]); }
-
-	/**
-	 * \brief Returns the skeleton of node \a v.
-	 * \pre \a v is a node in \e T
-	 */
-	Skeleton& skeleton (node v) const
-	{
-		v = findSPQR(v);
-		if (!m_sk[v]) return createSkeleton(v);
-		return *m_sk[v];
-	}
-
-	/**
-	 * \brief Returns the skeleton that contains the real edge \a e.
-	 * \pre \a e is an edge in \e G
-	 */
-	const Skeleton& skeletonOfReal (edge e) const { return skeleton(spqrproper(m_gEdge_hEdge[e])); }
-
-	/**
-	 * \brief Returns the skeleton edge that corresponds to the real edge \a e.
-	 * \pre \a e is an edge in \e G
-	 */
-	edge copyOfReal (edge e) const
-	{
-		e = m_gEdge_hEdge[e];
-		skeleton(spqrproper(e));
-		return m_skelEdge[e];
-	}
-
-	/**
-	 * \brief Returns the virtual edge in the skeleton of \a w that
-	 * corresponds to the tree edge between \a v and \a w.
-	 * \pre \a v and \a w are adjacent nodes in \e T
-	 */
-	edge skeletonEdge (node v, node w) const
-	{
-		edge e = virtualEdge(v,w);
-		if (!e) return e;
-		skeleton(w);
-		return m_skelEdge[e];
-	}
+    /**
+     * \brief Creates an SPQR tree \e T for graph \a G rooted at the edge \a e.
+     * \pre \a e is in \a G, \a G is biconnected and contains at least 3 nodes,
+     *      or \a G has exactly 2 nodes and at least 3 edges.
+     */
+    DynamicSPQRTree (Graph& G, edge e) : DynamicSPQRForest(G)
+    {
+        init(e);
+    }
 
 
-	//
-	// b) Update operations
-	//
+    // destructor
 
-	/**
-	 * \brief Roots \e T at edge \a e and returns the new root node of \e T.
-	 * \pre \a e is an edge in \e G
-	 */
-	node rootTreeAt (edge e);
+    ~DynamicSPQRTree();
 
-	/**
-	 * \brief Roots \e T at node \a v and returns \a v.
-	 * \pre \a v is a node in \e T
-	 */
-	node rootTreeAt (node v);
 
-	/**
-	 * \brief Updates the whole data structure after a new edge \a e has
-	 * been inserted into \e G.
-	 */
-	edge updateInsertedEdge (edge e);
+    //
+    // a) Access operations
+    //
 
-	/**
-	 * \brief Updates the whole data structure after a new vertex has been
-	 * inserted into \e G by splitting an edge into \a e and \a f.
-	 */
-	node updateInsertedNode (edge e, edge f);
+    //! Returns a reference to the original graph \e G.
+    const Graph& originalGraph () const
+    {
+        return m_G;
+    }
+
+    //! Returns a reference to the tree \e T.
+    const Graph& tree () const
+    {
+        return m_T;
+    }
+
+    //! Returns the edge of \e G at which \e T is rooted.
+    edge rootEdge () const
+    {
+        return m_rootEdge;
+    }
+
+    //! Returns the root node of \e T.
+    node rootNode () const
+    {
+        return findSPQR(m_bNode_SPQR[m_B.firstNode()]);
+    }
+
+    //! Returns the number of S-nodes in \e T.
+    int numberOfSNodes () const
+    {
+        return m_bNode_numS[m_B.firstNode()];
+    }
+
+    //! Returns the number of P-nodes in \e T.
+    int numberOfPNodes () const
+    {
+        return m_bNode_numP[m_B.firstNode()];
+    }
+
+    //! Returns the number of R-nodes in \e T.
+    int numberOfRNodes () const
+    {
+        return m_bNode_numR[m_B.firstNode()];
+    }
+
+    /**
+     * \brief Returns the type of node \a v.
+     * \pre \a v is a node in \e T
+     */
+    NodeType typeOf (node v) const
+    {
+        return (NodeType)m_tNode_type[findSPQR(v)];
+    }
+
+    //! Returns the list of all nodes with type \a t.
+    List<node> nodesOfType (NodeType t) const;
+
+    //! Finds the shortest path between the two sets of vertices of \e T which \a s and \a t of \e G belong to.
+    SList<node>& findPath (node s, node t)
+    {
+        return findPathSPQR(m_gNode_hNode[s],m_gNode_hNode[t]);
+    }
+
+    /**
+     * \brief Returns the skeleton of node \a v.
+     * \pre \a v is a node in \e T
+     */
+    Skeleton& skeleton (node v) const
+    {
+        v = findSPQR(v);
+        if (!m_sk[v]) return createSkeleton(v);
+        return *m_sk[v];
+    }
+
+    /**
+     * \brief Returns the skeleton that contains the real edge \a e.
+     * \pre \a e is an edge in \e G
+     */
+    const Skeleton& skeletonOfReal (edge e) const
+    {
+        return skeleton(spqrproper(m_gEdge_hEdge[e]));
+    }
+
+    /**
+     * \brief Returns the skeleton edge that corresponds to the real edge \a e.
+     * \pre \a e is an edge in \e G
+     */
+    edge copyOfReal (edge e) const
+    {
+        e = m_gEdge_hEdge[e];
+        skeleton(spqrproper(e));
+        return m_skelEdge[e];
+    }
+
+    /**
+     * \brief Returns the virtual edge in the skeleton of \a w that
+     * corresponds to the tree edge between \a v and \a w.
+     * \pre \a v and \a w are adjacent nodes in \e T
+     */
+    edge skeletonEdge (node v, node w) const
+    {
+        edge e = virtualEdge(v,w);
+        if (!e) return e;
+        skeleton(w);
+        return m_skelEdge[e];
+    }
+
+
+    //
+    // b) Update operations
+    //
+
+    /**
+     * \brief Roots \e T at edge \a e and returns the new root node of \e T.
+     * \pre \a e is an edge in \e G
+     */
+    node rootTreeAt (edge e);
+
+    /**
+     * \brief Roots \e T at node \a v and returns \a v.
+     * \pre \a v is a node in \e T
+     */
+    node rootTreeAt (node v);
+
+    /**
+     * \brief Updates the whole data structure after a new edge \a e has
+     * been inserted into \e G.
+     */
+    edge updateInsertedEdge (edge e);
+
+    /**
+     * \brief Updates the whole data structure after a new vertex has been
+     * inserted into \e G by splitting an edge into \a e and \a f.
+     */
+    node updateInsertedNode (edge e, edge f);
 
 
 protected:
 
-	//! Initialization (called by constructors).
-	void init (edge e);
+    //! Initialization (called by constructors).
+    void init (edge e);
 
-	//! Creates the skeleton graph belonging to a given vertex \a vT of \e T.
-	DynamicSkeleton& createSkeleton (node vT) const;
+    //! Creates the skeleton graph belonging to a given vertex \a vT of \e T.
+    DynamicSkeleton& createSkeleton (node vT) const;
 
-	/**
-	 * \brief Recursively performs the task of adding edges (and nodes)
-	 * to the pertinent graph \a Gp for each involved skeleton graph.
-	 */
-	void cpRec (node v, PertinentGraph& Gp) const
-	{
-		v = findSPQR(v);
-		for (ListConstIterator<edge> i=m_tNode_hEdges[v].begin(); i.valid(); ++i) {
-			edge e = m_hEdge_gEdge[*i];
-			if (e) cpAddEdge(e,Gp);
-			else if (*i!=m_tNode_hRefEdge[v]) cpRec(spqrproper(*i),Gp);
-		}
-	}
+    /**
+     * \brief Recursively performs the task of adding edges (and nodes)
+     * to the pertinent graph \a Gp for each involved skeleton graph.
+     */
+    void cpRec (node v, PertinentGraph& Gp) const
+    {
+        v = findSPQR(v);
+        for (ListConstIterator<edge> i=m_tNode_hEdges[v].begin(); i.valid(); ++i)
+        {
+            edge e = m_hEdge_gEdge[*i];
+            if (e) cpAddEdge(e,Gp);
+            else if (*i!=m_tNode_hRefEdge[v]) cpRec(spqrproper(*i),Gp);
+        }
+    }
 
 
-	edge m_rootEdge;  //!< edge of \e G at which \e T is rooted
+    edge m_rootEdge;  //!< edge of \e G at which \e T is rooted
 
-	mutable NodeArray<DynamicSkeleton*> m_sk;        //!< pointer to skeleton of a node in \e T
-	mutable EdgeArray<edge>             m_skelEdge;  //!< copies of real and virtual edges in their skeleton graphs (invalid, if the skeleton does not actually exist)
-	mutable NodeArray<node>             m_mapV;      //!< temporary array used by \e createSkeleton()
+    mutable NodeArray<DynamicSkeleton*> m_sk;        //!< pointer to skeleton of a node in \e T
+    mutable EdgeArray<edge>             m_skelEdge;  //!< copies of real and virtual edges in their skeleton graphs (invalid, if the skeleton does not actually exist)
+    mutable NodeArray<node>             m_mapV;      //!< temporary array used by \e createSkeleton()
 
 }; // class DynamicSPQRTree
 

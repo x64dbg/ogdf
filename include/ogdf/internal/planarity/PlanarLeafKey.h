@@ -54,7 +54,8 @@
 #include <ogdf/internal/planarity/PQLeafKey.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 template<class X>
@@ -62,19 +63,19 @@ class PlanarLeafKey : public PQLeafKey<edge,X,bool>
 {
 public:
 
-	PlanarLeafKey(edge e) : PQLeafKey<edge,X,bool>(e) { }
+    PlanarLeafKey(edge e) : PQLeafKey<edge,X,bool>(e) { }
 
-	virtual ~PlanarLeafKey() { }
+    virtual ~PlanarLeafKey() { }
 
-	ostream &print(ostream &os)
-	{
-		int sId = this->m_userStructKey->source()->index();
-		int tId = this->m_userStructKey->target()->index();
+    ostream &print(ostream &os)
+    {
+        int sId = this->m_userStructKey->source()->index();
+        int tId = this->m_userStructKey->target()->index();
 
-		os << " (" << sId << "," << tId << ")";
+        os << " (" << sId << "," << tId << ")";
 
-		return os;
-	}
+        return os;
+    }
 
 };
 

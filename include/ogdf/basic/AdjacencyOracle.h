@@ -51,24 +51,26 @@
 #include <ogdf/basic/NodeArray.h>
 #include <ogdf/basic/Array2D.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! Tells you in constant time if two nodes are adjacent
 /**
  * AdjacencyOracle is initialized with a Graph and returns for
  * any pair of nodes in constant time if they are adajcent.
  */
-class AdjacencyOracle {
+class AdjacencyOracle
+{
 public:
-	//! The constructor for the class, needs time O(n + m)
-	AdjacencyOracle(const Graph &G);
-	//! The destructor
-	~AdjacencyOracle() { }
-	//! This returns true if the two nodes are adjacent in G, false otherwise
-	bool adjacent(const node, const node) const;
+    //! The constructor for the class, needs time O(n + m)
+    AdjacencyOracle(const Graph &G);
+    //! The destructor
+    ~AdjacencyOracle() { }
+    //! This returns true if the two nodes are adjacent in G, false otherwise
+    bool adjacent(const node, const node) const;
 private:
-	NodeArray<int> m_nodeNum; //!< The internal number given to each node
-	Array2D<bool> m_adjacencyMatrix; //!< A 2D-array where the entry is true if the nodes with the corresponding number are adjacent
+    NodeArray<int> m_nodeNum; //!< The internal number given to each node
+    Array2D<bool> m_adjacencyMatrix; //!< A 2D-array where the entry is true if the nodes with the corresponding number are adjacent
 };
 
 }

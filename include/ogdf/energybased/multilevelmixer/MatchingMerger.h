@@ -49,19 +49,20 @@
 
 #include <ogdf/energybased/multilevelmixer/MultilevelBuilder.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT MatchingMerger : public MultilevelBuilder
 {
 private:
-	NodeArray<unsigned int> m_mass;
-	bool m_selectByMass;
+    NodeArray<unsigned int> m_mass;
+    bool m_selectByMass;
 
-	bool buildOneLevel(MultilevelGraph &MLG);
+    bool buildOneLevel(MultilevelGraph &MLG);
 
 public:
-	MatchingMerger();
-	void selectByNodeMass(bool on);
+    MatchingMerger();
+    void selectByNodeMass(bool on);
 };
 
 } // namespace ogdf

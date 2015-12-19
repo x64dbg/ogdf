@@ -51,7 +51,8 @@
 
 #include <ogdf/basic/Graph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief The base class for graph augmentation algorithms.
@@ -68,56 +69,66 @@ namespace ogdf {
  * to \a G and returns the list of added edges in \a L.
  */
 
-class OGDF_EXPORT AugmentationModule {
+class OGDF_EXPORT AugmentationModule
+{
 public:
-	//! Initializes an augmentation module.
-	AugmentationModule() { }
-	// destruction
-	virtual ~AugmentationModule() { }
+    //! Initializes an augmentation module.
+    AugmentationModule() { }
+    // destruction
+    virtual ~AugmentationModule() { }
 
-	//! Calls the augmentation module for graph \a G.
-	void call(Graph& G) {
-		List<edge> L;
-		call(G,L);
-	}
+    //! Calls the augmentation module for graph \a G.
+    void call(Graph& G)
+    {
+        List<edge> L;
+        call(G,L);
+    }
 
-	//! Calls the augmentation module for graph \a G.
-	void operator()(Graph& G) { call(G); }
+    //! Calls the augmentation module for graph \a G.
+    void operator()(Graph& G)
+    {
+        call(G);
+    }
 
-	/**
-	 * \brief Calls the augmentation module for graph \a G.
-	 *
-	 * Returns the list of added edges in \a L.
-	 */
-	void call(Graph& G, List<edge> &L) {
-		doCall(G,L);
-		m_nAddedEdges = L.size();
-	}
+    /**
+     * \brief Calls the augmentation module for graph \a G.
+     *
+     * Returns the list of added edges in \a L.
+     */
+    void call(Graph& G, List<edge> &L)
+    {
+        doCall(G,L);
+        m_nAddedEdges = L.size();
+    }
 
-	/**
-	 * \brief Calls the augmentation module for graph \a G.
-	 *
-	 * Returns the list of added edges in \a L.
-	 */
-	void operator()(Graph& G, List<edge> &L) { call(G,L); }
+    /**
+     * \brief Calls the augmentation module for graph \a G.
+     *
+     * Returns the list of added edges in \a L.
+     */
+    void operator()(Graph& G, List<edge> &L)
+    {
+        call(G,L);
+    }
 
-	//! Returns the number of added edges.
-	int numberOfAddedEdges() const {
-		return m_nAddedEdges;
-	}
+    //! Returns the number of added edges.
+    int numberOfAddedEdges() const
+    {
+        return m_nAddedEdges;
+    }
 
 protected:
-	/**
-	 * \brief Implements the augmentation algorithm for graph \a G.
-	 *
-	 * Returns the list of added edges in \a L.
-	 */
-	virtual void doCall(Graph& G, List<edge> &L) = 0;
+    /**
+     * \brief Implements the augmentation algorithm for graph \a G.
+     *
+     * Returns the list of added edges in \a L.
+     */
+    virtual void doCall(Graph& G, List<edge> &L) = 0;
 
 private:
-	int m_nAddedEdges;
+    int m_nAddedEdges;
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 } // end namespace ogdf

@@ -53,7 +53,8 @@
 #include <ogdf/module/MixedModelCrossingsBeautifierModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief common base class for MMCBDoubleGrid and MMCBLocalStretch.
@@ -64,15 +65,15 @@ namespace ogdf {
 class OGDF_EXPORT MMCBBase : public MixedModelCrossingsBeautifierModule
 {
 public:
-	//! Constructor (does nothing).
-	MMCBBase() { }
+    //! Constructor (does nothing).
+    MMCBBase() { }
 
-	~MMCBBase() { }
+    ~MMCBBase() { }
 
 protected:
-	static void insertBend(GridLayout &gl, edge e, node v, int x, int y);
-	static void copyOn(int old_a[] , int new_a[]);
-	static int workOn(GridLayout &gl, node v);
+    static void insertBend(GridLayout &gl, edge e, node v, int x, int y);
+    static void copyOn(int old_a[] , int new_a[]);
+    static int workOn(GridLayout &gl, node v);
 };
 
 

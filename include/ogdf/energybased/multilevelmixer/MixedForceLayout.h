@@ -50,22 +50,26 @@
 #include <ogdf/module/LayoutModule.h>
 #include <ogdf/internal/energybased/MultilevelGraph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT MixedForceLayout : public LayoutModule
 {
 public:
 
-	MixedForceLayout();
+    MixedForceLayout();
 
-	void call(GraphAttributes &GA);
-	void call(GraphAttributes &GA, GraphConstraints & GC) { call(GA); }
-	void call(MultilevelGraph &MLG);
+    void call(GraphAttributes &GA);
+    void call(GraphAttributes &GA, GraphConstraints & GC)
+    {
+        call(GA);
+    }
+    void call(MultilevelGraph &MLG);
 
 private:
 
-	LayoutModule * m_FR;
-	LayoutModule * m_FME;
+    LayoutModule * m_FR;
+    LayoutModule * m_FME;
 
 };
 

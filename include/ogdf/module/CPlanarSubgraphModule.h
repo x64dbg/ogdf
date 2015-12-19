@@ -54,7 +54,8 @@
 #include <ogdf/cluster/ClusterGraph.h>
 //#include <ogdf/internal/cluster/MaxCPlanar_Master.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //--------------------------------------------------------------------------
 //CPlanarSubgraphModule
@@ -68,40 +69,41 @@ class CPlanarSubgraphModule : public Module, public Timeouter
 {
 
 public:
-	//! Constructs a cplanar subgraph module
-	CPlanarSubgraphModule() {}
-	//! Destruction
-	virtual ~CPlanarSubgraphModule() {}
+    //! Constructs a cplanar subgraph module
+    CPlanarSubgraphModule() {}
+    //! Destruction
+    virtual ~CPlanarSubgraphModule() {}
 
-	/**
-	 *  \brief  Computes set of edges delEdges, which have to be deleted
-	 *  in order to get a c-planar subgraph.
-	 *
-	 * Must be implemented by derived classes.
-	 * @param G is the clustergraph.
-	 * @param delEdges holds the edges not in the subgraph on return.
-	 *
-	 */
-	ReturnType call(const ClusterGraph &G, List<edge> &delEdges) {
-		return doCall(G, delEdges);
-	}
+    /**
+     *  \brief  Computes set of edges delEdges, which have to be deleted
+     *  in order to get a c-planar subgraph.
+     *
+     * Must be implemented by derived classes.
+     * @param G is the clustergraph.
+     * @param delEdges holds the edges not in the subgraph on return.
+     *
+     */
+    ReturnType call(const ClusterGraph &G, List<edge> &delEdges)
+    {
+        return doCall(G, delEdges);
+    }
 
 
 protected:
 
-	/**
-	 * \brief Computes a maximum c-planar subgraph.
-	 *
-	 * If delEdges is empty on return, the clustered graph G is c-planar-
-	 * The actual algorithm call that must be implemented by derived classes!
-	 *
-	 * @param CG is the given cluster graph.
-	 * @param delEdges holds the set of edges that have to be deleted.
-	 */
-	virtual ReturnType doCall(const ClusterGraph &CG,
-		List<edge> &delEdges) = 0;
+    /**
+     * \brief Computes a maximum c-planar subgraph.
+     *
+     * If delEdges is empty on return, the clustered graph G is c-planar-
+     * The actual algorithm call that must be implemented by derived classes!
+     *
+     * @param CG is the given cluster graph.
+     * @param delEdges holds the set of edges that have to be deleted.
+     */
+    virtual ReturnType doCall(const ClusterGraph &CG,
+                              List<edge> &delEdges) = 0;
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 } //end namespace ogdf

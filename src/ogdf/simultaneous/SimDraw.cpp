@@ -44,15 +44,16 @@
 #include <ogdf/fileformats/GraphIO.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //*************************************************************
 // default constructor
 SimDraw::SimDraw()
 {
-	m_GA.init(m_G, GraphAttributes::edgeSubGraphs);
-	m_compareBy = index;
-	m_isDummy.init(m_G, false);
+    m_GA.init(m_G, GraphAttributes::edgeSubGraphs);
+    m_compareBy = index;
+    m_isDummy.init(m_G, false);
 
 } // end constructor
 
@@ -60,13 +61,13 @@ SimDraw::SimDraw()
 // calls GraphAttributes::readGML
 void SimDraw::readGML(const char *fileName)
 {
-	GraphIO::readGML(m_GA, m_G, fileName);
+    GraphIO::readGML(m_GA, m_G, fileName);
 }
 
 // calls GraphAttributes::writeGML
 void SimDraw::writeGML(const char *fileName) const
 {
-	GraphIO::writeGML(m_GA, fileName);
+    GraphIO::writeGML(m_GA, fileName);
 }
 
 
@@ -76,14 +77,14 @@ void SimDraw::writeGML(const char *fileName) const
 // incident edges have at least one common input graph
 bool SimDraw::isProperDummy(node v) const
 {
-	if(!isDummy(v))
-		return false;
-	int sgb = m_GA.subGraphBits(v->firstAdj()->theEdge());
-	edge e;
-	forall_adj_edges(e, v)
-		sgb &= m_GA.subGraphBits(e);
+    if(!isDummy(v))
+        return false;
+    int sgb = m_GA.subGraphBits(v->firstAdj()->theEdge());
+    edge e;
+    forall_adj_edges(e, v)
+    sgb &= m_GA.subGraphBits(e);
 
-	return (sgb != 0);
+    return (sgb != 0);
 
 } // end isProperDummy
 
@@ -92,12 +93,12 @@ bool SimDraw::isProperDummy(node v) const
 // returns number of dummies
 int SimDraw::numberOfDummyNodes() const
 {
-	int counter = 0;
-	node v;
-	forall_nodes(v, m_G)
-		if(isDummy(v))
-			counter++;
-	return counter;
+    int counter = 0;
+    node v;
+    forall_nodes(v, m_G)
+    if(isDummy(v))
+        counter++;
+    return counter;
 
 } // end numberOfDummyNodes
 
@@ -106,12 +107,12 @@ int SimDraw::numberOfDummyNodes() const
 // returns number of phantom dummies
 int SimDraw::numberOfPhantomDummyNodes() const
 {
-	int counter = 0;
-	node v;
-	forall_nodes(v, m_G)
-		if(isPhantomDummy(v))
-			counter++;
-	return counter;
+    int counter = 0;
+    node v;
+    forall_nodes(v, m_G)
+    if(isPhantomDummy(v))
+        counter++;
+    return counter;
 
 } // end numberOfProperDummyNodes
 
@@ -120,12 +121,12 @@ int SimDraw::numberOfPhantomDummyNodes() const
 // returns number of proper dummies
 int SimDraw::numberOfProperDummyNodes() const
 {
-	int counter = 0;
-	node v;
-	forall_nodes(v, m_G)
-		if(isProperDummy(v))
-			counter++;
-	return counter;
+    int counter = 0;
+    node v;
+    forall_nodes(v, m_G)
+    if(isProperDummy(v))
+        counter++;
+    return counter;
 
 } // end numberOfNonProperDummyNodes
 
@@ -136,13 +137,13 @@ int SimDraw::numberOfProperDummyNodes() const
 // returns true if instance is ok
 bool SimDraw::consistencyCheck() const
 {
-	if(&m_G != &(m_GA.constGraph()))
-		return false;
-	edge e;
-	forall_edges(e, m_G)
-		if(m_GA.subGraphBits(e) == 0)
-			return false;
-	return true;
+    if(&m_G != &(m_GA.constGraph()))
+        return false;
+    edge e;
+    forall_edges(e, m_G)
+    if(m_GA.subGraphBits(e) == 0)
+        return false;
+    return true;
 
 } // end consistencyCheck
 
@@ -152,15 +153,15 @@ bool SimDraw::consistencyCheck() const
 //
 int SimDraw::maxSubGraph() const
 {
-	int max = -1;
-	edge e;
-	forall_edges(e, m_G)
-	{
-		for(int i = 31; i > max; i--)
-			if(m_GA.inSubGraph(e, i))
-				max = i;
-	}
-	return max;
+    int max = -1;
+    edge e;
+    forall_edges(e, m_G)
+    {
+        for(int i = 31; i > max; i--)
+            if(m_GA.inSubGraph(e, i))
+                max = i;
+    }
+    return max;
 
 } // end maxSubGraph
 
@@ -170,9 +171,9 @@ int SimDraw::maxSubGraph() const
 //
 int SimDraw::numberOfBasicGraphs() const
 {
-	if(m_G.empty())
-		return 0;
-	return maxSubGraph()+1;
+    if(m_G.empty())
+        return 0;
+    return maxSubGraph()+1;
 
 }//end numberOfBasicGraphs
 
@@ -182,24 +183,24 @@ int SimDraw::numberOfBasicGraphs() const
 //
 const Graph SimDraw::getBasicGraph(int i) const
 {
-	//get a copy of m_G
-	GraphCopy GC(m_G);
+    //get a copy of m_G
+    GraphCopy GC(m_G);
 
-	//delete all edges that are not in SubGraph i
-	List<edge> LE;
-	GC.allEdges(LE);
-	forall_listiterators(edge, it, LE)
-		if(!(m_GA.inSubGraph(GC.original(*it),i)))
-			GC.delEdge(*it);
+    //delete all edges that are not in SubGraph i
+    List<edge> LE;
+    GC.allEdges(LE);
+    forall_listiterators(edge, it, LE)
+    if(!(m_GA.inSubGraph(GC.original(*it),i)))
+        GC.delEdge(*it);
 
-	//delete all Nodes where degree = 0
-	List<node> LN;
-	GC.allNodes(LN);
-	forall_listiterators(node, it, LN)
-		if((*it)->degree() == 0)
-			GC.delNode(*it);
+    //delete all Nodes where degree = 0
+    List<node> LN;
+    GC.allNodes(LN);
+    forall_listiterators(node, it, LN)
+    if((*it)->degree() == 0)
+        GC.delNode(*it);
 
-	return GC;
+    return GC;
 
 }//end getBasicGraph
 
@@ -209,93 +210,93 @@ const Graph SimDraw::getBasicGraph(int i) const
 //
 void SimDraw::getBasicGraphAttributes(int i, GraphAttributes &GA, Graph &G)
 {
-	G = m_G;
-	GA.init(G,m_GA.attributes());
+    G = m_G;
+    GA.init(G,m_GA.attributes());
 
-	List<edge> LE;
-	m_G.allEdges(LE);
-	forall_listiterators(edge,it,LE)
-		if(m_GA.inSubGraph(*it,i))
-		{
-			node v;
-			forall_nodes(v,G)
-			{
-				if(compare(GA,v,m_GA,(*it)->source()))
-				{
-					if(m_GA.attributes() & GraphAttributes::nodeGraphics)
-					{
-						GA.x(v) = m_GA.x((*it)->source());
-						GA.y(v) = m_GA.y((*it)->source());
-						GA.height(v) = m_GA.height((*it)->source());
-						GA.width(v) = m_GA.width((*it)->source());
-					}
+    List<edge> LE;
+    m_G.allEdges(LE);
+    forall_listiterators(edge,it,LE)
+    if(m_GA.inSubGraph(*it,i))
+    {
+        node v;
+        forall_nodes(v,G)
+        {
+            if(compare(GA,v,m_GA,(*it)->source()))
+            {
+                if(m_GA.attributes() & GraphAttributes::nodeGraphics)
+                {
+                    GA.x(v) = m_GA.x((*it)->source());
+                    GA.y(v) = m_GA.y((*it)->source());
+                    GA.height(v) = m_GA.height((*it)->source());
+                    GA.width(v) = m_GA.width((*it)->source());
+                }
 
-					if(m_GA.attributes() & GraphAttributes::nodeId)
-						GA.idNode(v) = m_GA.idNode((*it)->source());
+                if(m_GA.attributes() & GraphAttributes::nodeId)
+                    GA.idNode(v) = m_GA.idNode((*it)->source());
 
-					if(m_GA.attributes() & GraphAttributes::nodeLabel)
-						GA.label(v) = m_GA.label((*it)->source());
-				}
+                if(m_GA.attributes() & GraphAttributes::nodeLabel)
+                    GA.label(v) = m_GA.label((*it)->source());
+            }
 
-				if(compare(GA,v,m_GA,(*it)->target()))
-				{
-					if(m_GA.attributes() & GraphAttributes::nodeGraphics)
-					{
-						GA.x(v) = m_GA.x((*it)->target());
-						GA.y(v) = m_GA.y((*it)->target());
-						GA.height(v) = m_GA.height((*it)->target());
-						GA.width(v) = m_GA.width((*it)->target());
-					}
+            if(compare(GA,v,m_GA,(*it)->target()))
+            {
+                if(m_GA.attributes() & GraphAttributes::nodeGraphics)
+                {
+                    GA.x(v) = m_GA.x((*it)->target());
+                    GA.y(v) = m_GA.y((*it)->target());
+                    GA.height(v) = m_GA.height((*it)->target());
+                    GA.width(v) = m_GA.width((*it)->target());
+                }
 
-					if(m_GA.attributes() & GraphAttributes::nodeId)
-						GA.idNode(v) = m_GA.idNode((*it)->target());
+                if(m_GA.attributes() & GraphAttributes::nodeId)
+                    GA.idNode(v) = m_GA.idNode((*it)->target());
 
-					if(m_GA.attributes() & GraphAttributes::nodeLabel)
-						GA.label(v) = m_GA.label((*it)->target());
-				}
-			}
+                if(m_GA.attributes() & GraphAttributes::nodeLabel)
+                    GA.label(v) = m_GA.label((*it)->target());
+            }
+        }
 
-			edge e;
-			forall_edges(e,G)
-			{
-				if(compare(GA,e->source(),m_GA,(*it)->source())
-					&& compare(GA,e->target(),m_GA,(*it)->target()))
-				{
-					if(m_GA.attributes() & GraphAttributes::edgeIntWeight)
-						GA.intWeight(e) = m_GA.intWeight(*it);
+        edge e;
+        forall_edges(e,G)
+        {
+            if(compare(GA,e->source(),m_GA,(*it)->source())
+                    && compare(GA,e->target(),m_GA,(*it)->target()))
+            {
+                if(m_GA.attributes() & GraphAttributes::edgeIntWeight)
+                    GA.intWeight(e) = m_GA.intWeight(*it);
 
-					if(m_GA.attributes() & GraphAttributes::edgeLabel)
-						GA.label(e) = m_GA.label(*it);
+                if(m_GA.attributes() & GraphAttributes::edgeLabel)
+                    GA.label(e) = m_GA.label(*it);
 
-					if(m_GA.attributes() & GraphAttributes::edgeStyle)
-						GA.strokeColor(e) = m_GA.strokeColor(*it);
+                if(m_GA.attributes() & GraphAttributes::edgeStyle)
+                    GA.strokeColor(e) = m_GA.strokeColor(*it);
 
-					if(m_GA.attributes() & GraphAttributes::edgeGraphics)
-						GA.bends(e) = m_GA.bends(*it);
-				}
-			}
-		}
-		else
-		{
-			List<edge> LE2;
-			G.allEdges(LE2);
-			forall_listiterators(edge, it2, LE2)
-			{
-				if(compare(GA,(*it2)->source(),m_GA,(*it)->source())
-					&& compare(GA,(*it2)->target(),m_GA,(*it)->target()))
-				{
-					G.delEdge(*it2);
-				}
-			}
-		}
+                if(m_GA.attributes() & GraphAttributes::edgeGraphics)
+                    GA.bends(e) = m_GA.bends(*it);
+            }
+        }
+    }
+    else
+    {
+        List<edge> LE2;
+        G.allEdges(LE2);
+        forall_listiterators(edge, it2, LE2)
+        {
+            if(compare(GA,(*it2)->source(),m_GA,(*it)->source())
+                    && compare(GA,(*it2)->target(),m_GA,(*it)->target()))
+            {
+                G.delEdge(*it2);
+            }
+        }
+    }
 
-		//remove all Nodes with degree == 0
-		//this can change the IDs of the nodes in G.
-		List<node> LN;
-		G.allNodes(LN);
-		forall_listiterators(node, it3, LN)
-			if((*it3)->degree() == 0)
-				G.delNode(*it3);
+    //remove all Nodes with degree == 0
+    //this can change the IDs of the nodes in G.
+    List<node> LN;
+    G.allNodes(LN);
+    forall_listiterators(node, it3, LN)
+    if((*it3)->degree() == 0)
+        G.delNode(*it3);
 
 }//end getBasicGraphAttributes
 
@@ -305,56 +306,63 @@ void SimDraw::getBasicGraphAttributes(int i, GraphAttributes &GA, Graph &G)
 //
 bool SimDraw::addGraphAttributes(const GraphAttributes & GA)
 {
-	if(maxSubGraph() >= 31)
-		return false;
+    if(maxSubGraph() >= 31)
+        return false;
 
-	//if(compareBy() == label)
-	OGDF_ASSERT((compareBy() != label) || (m_GA.attributes() & GraphAttributes::edgeLabel));
+    //if(compareBy() == label)
+    OGDF_ASSERT((compareBy() != label) || (m_GA.attributes() & GraphAttributes::edgeLabel));
 
-	int max = numberOfBasicGraphs();
-	bool foundEdge = false;
-	node v;
-	edge e, f;
-	Graph G = GA.constGraph();
+    int max = numberOfBasicGraphs();
+    bool foundEdge = false;
+    node v;
+    edge e, f;
+    Graph G = GA.constGraph();
 
-	forall_edges(e,G) {
-		forall_edges(f,m_G) {
-			if (compare(m_GA, f->source(), GA, e->source())
-			 && compare(m_GA, f->target(), GA, e->target())) {
-				foundEdge = true;
-				m_GA.addSubGraph(f,max);
-			}
-		}
+    forall_edges(e,G)
+    {
+        forall_edges(f,m_G)
+        {
+            if (compare(m_GA, f->source(), GA, e->source())
+                    && compare(m_GA, f->target(), GA, e->target()))
+            {
+                foundEdge = true;
+                m_GA.addSubGraph(f,max);
+            }
+        }
 
-		if (!foundEdge) {
-			node s, t;
-			bool srcFound = false;
-			bool tgtFound = false;
-			forall_nodes(v,m_G) {
-				if (compare(m_GA, v, GA, e->source())) {
-					s = v;
-					srcFound = true;
-				}
-				if (compare(m_GA, v, GA, e->target())) {
-					t = v;
-					tgtFound = true;
-				}
-			}
+        if (!foundEdge)
+        {
+            node s, t;
+            bool srcFound = false;
+            bool tgtFound = false;
+            forall_nodes(v,m_G)
+            {
+                if (compare(m_GA, v, GA, e->source()))
+                {
+                    s = v;
+                    srcFound = true;
+                }
+                if (compare(m_GA, v, GA, e->target()))
+                {
+                    t = v;
+                    tgtFound = true;
+                }
+            }
 
-			if (!srcFound)
-				s = m_G.newNode(e->source()->index());
+            if (!srcFound)
+                s = m_G.newNode(e->source()->index());
 
-			if (!tgtFound)
-				t = m_G.newNode(e->target()->index());
+            if (!tgtFound)
+                t = m_G.newNode(e->target()->index());
 
-			edge d = m_G.newEdge(s, t);
-			if(compareBy() == label)
-				m_GA.label(d) = GA.label(e);
+            edge d = m_G.newEdge(s, t);
+            if(compareBy() == label)
+                m_GA.label(d) = GA.label(e);
 
-			m_GA.addSubGraph(d, max);
-		}
-	}
-	return true;
+            m_GA.addSubGraph(d, max);
+        }
+    }
+    return true;
 
 }// end addGraphAttributes
 
@@ -364,13 +372,13 @@ bool SimDraw::addGraphAttributes(const GraphAttributes & GA)
 //and CompareMode = index.
 bool SimDraw::addGraph(const Graph & G)
 {
-	if(compareBy() == label)
-		return false;
-	else
-	{
-		GraphAttributes newGA(G);
-		return(addGraphAttributes(newGA));
-	}
+    if(compareBy() == label)
+        return false;
+    else
+    {
+        GraphAttributes newGA(G);
+        return(addGraphAttributes(newGA));
+    }
 
 }//end addGraph
 
@@ -379,17 +387,17 @@ bool SimDraw::addGraph(const Graph & G)
 //compares two nodes depending on the mode in m_CompareBy
 //
 bool SimDraw::compare(const GraphAttributes & vGA, node v,
-	const GraphAttributes & wGA, node w) const
+                      const GraphAttributes & wGA, node w) const
 {
-	if(m_compareBy == index)
-		return compareById(v,w);
-	else if(m_compareBy == label)
-		return compareByLabel(vGA, v, wGA, w);
-	else
-	{
-		OGDF_ASSERT( false ); // m_compareBy is not set correctly
-		return false;
-	}
+    if(m_compareBy == index)
+        return compareById(v,w);
+    else if(m_compareBy == label)
+        return compareByLabel(vGA, v, wGA, w);
+    else
+    {
+        OGDF_ASSERT( false ); // m_compareBy is not set correctly
+        return false;
+    }
 
 } // end compare
 

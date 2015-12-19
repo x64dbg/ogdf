@@ -42,21 +42,22 @@
 #include <ogdf/abacus/lpvarstat.h>
 #include <ogdf/abacus/slackstat.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 //LP::LP(Master*master)
 //
-//	:
-//	master_(master),
-//	optStat_(Unoptimized),
-//	xValStatus_(Missing),
-//	barXValStatus_(Missing),
-//	yValStatus_(Missing),
-//	recoStatus_(Missing),
-//	slackStatus_(Missing),
-//	basisStatus_(Missing),
-//	nOpt_(0)
+//  :
+//  master_(master),
+//  optStat_(Unoptimized),
+//  xValStatus_(Missing),
+//  barXValStatus_(Missing),
+//  yValStatus_(Missing),
+//  recoStatus_(Missing),
+//  slackStatus_(Missing),
+//  basisStatus_(Missing),
+//  nOpt_(0)
 //{}
 //
 //LP::~LP()
@@ -64,396 +65,413 @@ namespace abacus {
 //{}
 
 //void LP::initialize(OptSense sense,
-//						int nRow,
-//						int maxRow,
-//						int nCol,
-//						int maxCol,
-//						Array<double> &obj,
-//						Array<double> &lBound,
-//						Array<double> &uBound,
-//						Array<Row*> &rows)
+//                      int nRow,
+//                      int maxRow,
+//                      int nCol,
+//                      int maxCol,
+//                      Array<double> &obj,
+//                      Array<double> &lBound,
+//                      Array<double> &uBound,
+//                      Array<Row*> &rows)
 //
 //{
-//	_initialize(sense,nRow,maxRow,nCol,maxCol,obj,lBound,uBound,rows);
+//  _initialize(sense,nRow,maxRow,nCol,maxCol,obj,lBound,uBound,rows);
 //}
 
 //void LP::initialize(OptSense sense,
-//						int nRow,
-//						int maxRow,
-//						int nCol,
-//						int maxCol,
-//						Array<double> &obj,
-//						Array<double> &lBound,
-//						Array<double> &uBound,
-//						Array<Row*> &rows,
-//						Array<LPVARSTAT::STATUS> &lpVarStat,
-//						Array<SlackStat::STATUS> &slackStat)
+//                      int nRow,
+//                      int maxRow,
+//                      int nCol,
+//                      int maxCol,
+//                      Array<double> &obj,
+//                      Array<double> &lBound,
+//                      Array<double> &uBound,
+//                      Array<Row*> &rows,
+//                      Array<LPVARSTAT::STATUS> &lpVarStat,
+//                      Array<SlackStat::STATUS> &slackStat)
 //
 //{
-//	_initialize(sense,nRow,maxRow,nCol,maxCol,obj,lBound,uBound,rows);
-//	LP::loadBasis(lpVarStat,slackStat);
+//  _initialize(sense,nRow,maxRow,nCol,maxCol,obj,lBound,uBound,rows);
+//  LP::loadBasis(lpVarStat,slackStat);
 //}
 //
 //void LP::loadBasis(Array<LPVARSTAT::STATUS> &lpVarStat,
-//					   Array<SlackStat::STATUS> &slackStat)
+//                     Array<SlackStat::STATUS> &slackStat)
 //
 //{
-//	_loadBasis(lpVarStat,slackStat);
+//  _loadBasis(lpVarStat,slackStat);
 //}
 
 LP::OPTSTAT LP::optimize(METHOD method)
 {
-	if(nCol()==0){
-		Logger::ifout() << "LP::optimize(): cannot optimize (number of columns is 0)\n";
-		OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLp);
-	}
+    if(nCol()==0)
+    {
+        Logger::ifout() << "LP::optimize(): cannot optimize (number of columns is 0)\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLp);
+    }
 
-	++nOpt_;
+    ++nOpt_;
 
-	switch(method){
-	case Primal:
-		optStat_= _primalSimplex();
-		break;
-	case Dual:
-		optStat_= _dualSimplex();
-		break;
-	case BarrierAndCrossover:
-		optStat_= _barrier(true);
-		break;
-	case BarrierNoCrossover:
-		optStat_= _barrier(false);
-		break;
-	case Approximate:
-		optStat_= _approx();
-		break;
-	}
+    switch(method)
+    {
+    case Primal:
+        optStat_= _primalSimplex();
+        break;
+    case Dual:
+        optStat_= _dualSimplex();
+        break;
+    case BarrierAndCrossover:
+        optStat_= _barrier(true);
+        break;
+    case BarrierNoCrossover:
+        optStat_= _barrier(false);
+        break;
+    case Approximate:
+        optStat_= _approx();
+        break;
+    }
 
-	return optStat_;
+    return optStat_;
 }
 
 
 //void LP::remRows(ArrayBuffer<int> &ind)
 //{
-//	initPostOpt();
+//  initPostOpt();
 //
-//	_remRows(ind);
+//  _remRows(ind);
 //}
 
 
 //void LP::initPostOpt()
 //{
-//	optStat_= Unoptimized;
-//	xValStatus_= barXValStatus_= recoStatus_= Missing;
-//	slackStatus_= yValStatus_= basisStatus_= Missing;
+//  optStat_= Unoptimized;
+//  xValStatus_= barXValStatus_= recoStatus_= Missing;
+//  slackStatus_= yValStatus_= basisStatus_= Missing;
 //}
 
 
 void LP::addRows(ArrayBuffer<Row*> &newRows)
 {
-	if(nRow()+newRows.size()> maxRow())
-		rowRealloc(nRow()+newRows.size());
+    if(nRow()+newRows.size()> maxRow())
+        rowRealloc(nRow()+newRows.size());
 
-	initPostOpt();
-	_addRows(newRows);
+    initPostOpt();
+    _addRows(newRows);
 
 }
 
 
 //void LP::rowRealloc(int newSize)
 //{
-//	_rowRealloc(newSize);
+//  _rowRealloc(newSize);
 //}
 
 
 //void LP::remCols(ArrayBuffer<int> &cols)
 //{
-//	initPostOpt();
-//	_remCols(cols);
+//  initPostOpt();
+//  _remCols(cols);
 //}
 
 
 void LP::addCols(ArrayBuffer<Column*> &newCols)
 {
 
-	if(nCol()+newCols.size()> maxCol())
-		colRealloc(nCol()+newCols.size());
+    if(nCol()+newCols.size()> maxCol())
+        colRealloc(nCol()+newCols.size());
 
-	initPostOpt();
-	_addCols(newCols);
+    initPostOpt();
+    _addCols(newCols);
 }
 
 
 //void LP::colRealloc(int newSize)
 //{
-//	_colRealloc(newSize);
+//  _colRealloc(newSize);
 //}
 
 
 //void LP::changeRhs(Array<double> &newRhs)
 //{
-//	initPostOpt();
+//  initPostOpt();
 //
-//	_changeRhs(newRhs);
+//  _changeRhs(newRhs);
 //}
 
 
 void LP::changeLBound(int i,double newLb)
 {
 #ifdef OGDF_DEBUG
-	colRangeCheck(i);
+    colRangeCheck(i);
 #endif
 
-	initPostOpt();
+    initPostOpt();
 
-	_changeLBound(i,newLb);
+    _changeLBound(i,newLb);
 }
 
 
 void LP::changeUBound(int i,double newUb)
 {
 #ifdef OGDF_DEBUG
-	colRangeCheck(i);
+    colRangeCheck(i);
 #endif
 
-	initPostOpt();
+    initPostOpt();
 
-	_changeUBound(i,newUb);
+    _changeUBound(i,newUb);
 }
 
 
 int LP::pivotSlackVariableIn(ArrayBuffer<int> &rows)
 {
-	initPostOpt();
+    initPostOpt();
 
-	return _pivotSlackVariableIn(rows);
+    return _pivotSlackVariableIn(rows);
 }
 
 
 //int LP::getInfeas(int&infeasRow,int&infeasCol,double*bInvRow)
 //{
-//	return _getInfeas(infeasRow,infeasCol,bInvRow);
+//  return _getInfeas(infeasRow,infeasCol,bInvRow);
 //}
 
 
 void LP::colsNnz(int nRow,Array<Row*> &rows,Array<int> &nnz)
 {
-	Row*row;
-	int i,r;
-	int rowNnz;
+    Row*row;
+    int i,r;
+    int rowNnz;
 
-	nnz.fill(0);
+    nnz.fill(0);
 
-	for(r= 0;r<nRow;r++){
-		row= rows[r];
-		rowNnz= row->nnz();
+    for(r= 0; r<nRow; r++)
+    {
+        row= rows[r];
+        rowNnz= row->nnz();
 
-		for(i= 0;i<rowNnz;i++)
-			nnz[row->support(i)]++;
-	}
+        for(i= 0; i<rowNnz; i++)
+            nnz[row->support(i)]++;
+    }
 }
 
 
 void LP::rows2cols(
-	int nRow,
-	Array<Row*> &rows,
-	Array<SparVec*> &cols)
+    int nRow,
+    Array<Row*> &rows,
+    Array<SparVec*> &cols)
 {
-	Row*row;
-	int i,r;
+    Row*row;
+    int i,r;
 
-	for(r= 0;r<nRow;r++){
-		row= rows[r];
+    for(r= 0; r<nRow; r++)
+    {
+        row= rows[r];
 
-		const int rowNnz= row->nnz();
+        const int rowNnz= row->nnz();
 
-		for(i= 0;i<rowNnz;i++)
-			cols[row->support(i)]->insert(r,row->coeff(i));
-	}
+        for(i= 0; i<rowNnz; i++)
+            cols[row->support(i)]->insert(r,row->coeff(i));
+    }
 }
 
 
 void LP::rowRangeCheck(int r)const
 {
-	if(r < 0 || nRow() <= r) {
-		int _r = nRow()-1;
-		Logger::ifout() << "LP::rowRangeCheck(" << r << "): range of rows\n0 ... " << _r << " violated.\n";
-		OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLp);
-	}
+    if(r < 0 || nRow() <= r)
+    {
+        int _r = nRow()-1;
+        Logger::ifout() << "LP::rowRangeCheck(" << r << "): range of rows\n0 ... " << _r << " violated.\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLp);
+    }
 }
 
 
 void LP::colRangeCheck(int i)const
 {
-	if(i < 0 || nCol() <= i) {
-		int _c = nCol()-1;
-		Logger::ifout() << "LP::colRangeCheck(" << i << "): range of columns\n0 ... " << _c << " violated.\n";
-		OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLp);
-	}
+    if(i < 0 || nCol() <= i)
+    {
+        int _c = nCol()-1;
+        Logger::ifout() << "LP::colRangeCheck(" << i << "): range of columns\n0 ... " << _c << " violated.\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLp);
+    }
 }
 
 
 ostream&operator<<(ostream&out, const LP&rhs)
 {
-	// LP: \a operator<<: local variables
-	char sign;
-	double c;
-	const double eps= rhs.master_->machineEps();
+    // LP: \a operator<<: local variables
+    char sign;
+    double c;
+    const double eps= rhs.master_->machineEps();
 
-	// output the objective function
-	/* The objective function is written in the form
-	*   {\tt min 3.1 x0 + 4 x2}. Variables with coefficient 0 are not output.
-	*   We also suppress the output of a \f$+\f$ before the first coefficient
-	*   and the output of coefficients with value \f$1.0\f$.
-	*/
-	out<<rhs.sense()<<' ';
+    // output the objective function
+    /* The objective function is written in the form
+    *   {\tt min 3.1 x0 + 4 x2}. Variables with coefficient 0 are not output.
+    *   We also suppress the output of a \f$+\f$ before the first coefficient
+    *   and the output of coefficients with value \f$1.0\f$.
+    */
+    out<<rhs.sense()<<' ';
 
-	int j = 0;
-	for(int i = 0; i < rhs.nCol(); i++){
-		c = rhs.obj(i);
-		if(c < -eps || c > eps) {
-			if( c < 0.0){
-				sign = '-';
-				c = -c;
-			}
-			else sign = '+';
+    int j = 0;
+    for(int i = 0; i < rhs.nCol(); i++)
+    {
+        c = rhs.obj(i);
+        if(c < -eps || c > eps)
+        {
+            if( c < 0.0)
+            {
+                sign = '-';
+                c = -c;
+            }
+            else sign = '+';
 
-			if(j > 0 || sign == '-')
-				out << sign << ' ';
-			//suppress output of spaces when coefficients are zero
-			//if(!(c<1.0-eps||1.0+eps<c))
-			out << c << " x" << i << ' ';
-			j++;
-		}
-		if( j && (j % 10 == 0) ) {
-			out << endl;
-			j = 1;
-		}
-	}
-	out << endl;
+            if(j > 0 || sign == '-')
+                out << sign << ' ';
+            //suppress output of spaces when coefficients are zero
+            //if(!(c<1.0-eps||1.0+eps<c))
+            out << c << " x" << i << ' ';
+            j++;
+        }
+        if( j && (j % 10 == 0) )
+        {
+            out << endl;
+            j = 1;
+        }
+    }
+    out << endl;
 
-	out << "s.t." << endl;
+    out << "s.t." << endl;
 
-	// output the constraints
-	/* The constraints of the LP are output row by row.
-	*/
-	Row row(rhs.master_,rhs.nCol());
+    // output the constraints
+    /* The constraints of the LP are output row by row.
+    */
+    Row row(rhs.master_,rhs.nCol());
 
-	for(int i = 0; i < rhs.nRow(); i++) {
-		rhs.row(i,row);
-		out << "(" << i << "): " << row << endl;
-	}
+    for(int i = 0; i < rhs.nRow(); i++)
+    {
+        rhs.row(i,row);
+        out << "(" << i << "): " << row << endl;
+    }
 
-	// output the bounds
-	/* The bounds are written in the form {\tt 0 <= x0 <= 2.3}. *//*:55*/
+    // output the bounds
+    /* The bounds are written in the form {\tt 0 <= x0 <= 2.3}. *//*:55*/
 
-	out << "Bounds" << endl;
-	for(int i = 0; i < rhs.nCol(); i++)
-		out << rhs.lBound(i) << " <= x" << i << " <= " << rhs.uBound(i) << endl;
+    out << "Bounds" << endl;
+    for(int i = 0; i < rhs.nCol(); i++)
+        out << rhs.lBound(i) << " <= x" << i << " <= " << rhs.uBound(i) << endl;
 
-	out << "End" << endl;
-	// output the solution of the linear program
-	/* Finally the status of optimization of the LP is output, together
-	*   with the value of the optimal solution if it is available.
-	*/
-	switch(rhs.optStat_){
-	case LP::Unoptimized:
-		out << "No solution available";
-		break;
-	case LP::Error:
-		out << "Optimization failed";
-		break;
-	case LP::Optimal:
-		out << "Optimum value: "<<rhs.value();
-		break;
-	case LP::Feasible:
-		out << "Primal feasible value: "<<rhs.value();
-		break;
-	case LP::Infeasible:
-		out << "Problem primal infeasible";
-		break;
-	case LP::Unbounded:
-		out << "Problem unbounded";
-		break;
-	default:
-		Logger::ifout() << "operator<<(AbaOStream&, const LP&): Unknown LP::Status!\n";
-		OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpStatus);
-	}
-	out << endl;
+    out << "End" << endl;
+    // output the solution of the linear program
+    /* Finally the status of optimization of the LP is output, together
+    *   with the value of the optimal solution if it is available.
+    */
+    switch(rhs.optStat_)
+    {
+    case LP::Unoptimized:
+        out << "No solution available";
+        break;
+    case LP::Error:
+        out << "Optimization failed";
+        break;
+    case LP::Optimal:
+        out << "Optimum value: "<<rhs.value();
+        break;
+    case LP::Feasible:
+        out << "Primal feasible value: "<<rhs.value();
+        break;
+    case LP::Infeasible:
+        out << "Problem primal infeasible";
+        break;
+    case LP::Unbounded:
+        out << "Problem unbounded";
+        break;
+    default:
+        Logger::ifout() << "operator<<(AbaOStream&, const LP&): Unknown LP::Status!\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpStatus);
+    }
+    out << endl;
 
-	return out;
+    return out;
 }
 
 
 int LP::writeBasisMatrix(const char*fileName)
 {
-	if(optStat_ != Optimal || slackStatus_ == Missing || basisStatus_ == Missing)
-		return 1;
+    if(optStat_ != Optimal || slackStatus_ == Missing || basisStatus_ == Missing)
+        return 1;
 
-	// open the file for writing the basis
-	ofstream file(fileName);
-	if(!file) return 0;
+    // open the file for writing the basis
+    ofstream file(fileName);
+    if(!file) return 0;
 
-	// mark the basic variables
+    // mark the basic variables
 
-	// mark the basic structural variables
+    // mark the basic structural variables
 
-	Array<bool> basicCol(nCol());
-	Array<int> basisIndexCol(nCol());
-	int nBasic= 0;
+    Array<bool> basicCol(nCol());
+    Array<int> basisIndexCol(nCol());
+    int nBasic= 0;
 
-	for(int i = 0; i < nCol(); i++)
-		if(lpVarStat(i) == LPVARSTAT::Basic) {
-			basicCol[i] = true;
-			basisIndexCol[i] = nBasic;
-			nBasic++;
-		}
-		else
-			basicCol[i] = false;
+    for(int i = 0; i < nCol(); i++)
+        if(lpVarStat(i) == LPVARSTAT::Basic)
+        {
+            basicCol[i] = true;
+            basisIndexCol[i] = nBasic;
+            nBasic++;
+        }
+        else
+            basicCol[i] = false;
 
-	//! mark the basic slack variables
+    //! mark the basic slack variables
 
-	Array<int> basisIndexRow(nRow());
-	for(int i = 0; i < nRow(); i++)
-		if(slackStat(i) == SlackStat::Basic) {
-			basisIndexRow[i] = nBasic;
-			nBasic++;
-		}
+    Array<int> basisIndexRow(nRow());
+    for(int i = 0; i < nRow(); i++)
+        if(slackStat(i) == SlackStat::Basic)
+        {
+            basisIndexRow[i] = nBasic;
+            nBasic++;
+        }
 
-		// check the number of the basic variables
+    // check the number of the basic variables
 
-		if(nBasic != nRow()) {
-			int _nR = nRow();
-			Logger::ifout() << "number of basic variables " << nBasic << " != number of rows " << _nR << "\n";
-			OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLp);
-		}
+    if(nBasic != nRow())
+    {
+        int _nR = nRow();
+        Logger::ifout() << "number of basic variables " << nBasic << " != number of rows " << _nR << "\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLp);
+    }
 
-		// write the basis row by row
-		file << nRow() << endl;
+    // write the basis row by row
+    file << nRow() << endl;
 
-		Row sparseRow(master_,nCol());
+    Row sparseRow(master_,nCol());
 
-		for(int i = 0; i < nRow(); i++) {
-			row(i,sparseRow);
-			int nBasicInRow = 0;
-			const int sparseRowNnz = sparseRow.nnz();
+    for(int i = 0; i < nRow(); i++)
+    {
+        row(i,sparseRow);
+        int nBasicInRow = 0;
+        const int sparseRowNnz = sparseRow.nnz();
 
-			for(int j = 0; j < sparseRowNnz; j++)
-				if(basicCol[sparseRow.support(j)])
-					nBasicInRow++;
-			if(slackStat(i) == SlackStat::Basic)
-				nBasicInRow++;
+        for(int j = 0; j < sparseRowNnz; j++)
+            if(basicCol[sparseRow.support(j)])
+                nBasicInRow++;
+        if(slackStat(i) == SlackStat::Basic)
+            nBasicInRow++;
 
-			file << i << ' ' << nBasicInRow << ' ';
-			for(int j = 0; j < sparseRowNnz; j++)
-				if(basicCol[sparseRow.support(j)]){
-					file << basisIndexCol[sparseRow.support(j)] << ' ';
-					file << sparseRow.coeff(j) << ' ';
-				}
-				if(slackStat(i) == SlackStat::Basic)
-					file << basisIndexRow[i] << " 1";
-				file << endl;
-		}
+        file << i << ' ' << nBasicInRow << ' ';
+        for(int j = 0; j < sparseRowNnz; j++)
+            if(basicCol[sparseRow.support(j)])
+            {
+                file << basisIndexCol[sparseRow.support(j)] << ' ';
+                file << sparseRow.coeff(j) << ' ';
+            }
+        if(slackStat(i) == SlackStat::Basic)
+            file << basisIndexRow[i] << " 1";
+        file << endl;
+    }
 
-		return 0;
+    return 0;
 }
 } //namespace abacus

@@ -29,37 +29,39 @@
  * This data structure contains the cut pool itself
 \*===========================================================================*/
 
-typedef struct CP_CUT_DATA{
-   cut_data      cut;
-   int           touches;
-   int           level;
-   int           check_num;
-   double        quality;
-}cp_cut_data;
+typedef struct CP_CUT_DATA
+{
+    cut_data      cut;
+    int           touches;
+    int           level;
+    int           check_num;
+    double        quality;
+} cp_cut_data;
 
 /*===========================================================================*/
 
-typedef struct CUT_POOL{
-   void         *user;
-   int           master;
-   int           tree_manager;
-   double        cut_pool_time;
-   int           msgtag;        /* the message tag of the last message */
-   double        lpetol;        /* the zero tolerance in the lp process */
-   cp_params     par;           /* cut pool parameters */
-   int           size;          /* the total size of all the cuts in the pool*/
-   int           cut_num;       /* the number of cuts in the pool */
-   int           allocated_cut_num;   /* the possible number of cuts */
-   cp_cut_data **cuts;          /* the list of all the cuts in the pool*/
-   int           total_cut_num;
-   int           reorder_count; /* Only reorder the cuts periodically */
-   lp_sol        cur_sol;
+typedef struct CUT_POOL
+{
+    void         *user;
+    int           master;
+    int           tree_manager;
+    double        cut_pool_time;
+    int           msgtag;        /* the message tag of the last message */
+    double        lpetol;        /* the zero tolerance in the lp process */
+    cp_params     par;           /* cut pool parameters */
+    int           size;          /* the total size of all the cuts in the pool*/
+    int           cut_num;       /* the number of cuts in the pool */
+    int           allocated_cut_num;   /* the possible number of cuts */
+    cp_cut_data **cuts;          /* the list of all the cuts in the pool*/
+    int           total_cut_num;
+    int           reorder_count; /* Only reorder the cuts periodically */
+    lp_sol        cur_sol;
 #ifdef COMPILE_IN_CP
-   int           cuts_to_add_num;
-   cut_data    **cuts_to_add;
-   int           cuts_to_add_size;
+    int           cuts_to_add_num;
+    cut_data    **cuts_to_add;
+    int           cuts_to_add_size;
 #endif
-}cut_pool;
+} cut_pool;
 
 /*===========================================================================*/
 /*==================== CP basic functions (cp_func.c) =======================*/
@@ -108,6 +110,6 @@ int receive_lp_solution_cp_u PROTO((cut_pool *cp));
 void free_cut_pool_u PROTO((cut_pool *cp));
 int check_cuts_u PROTO((cut_pool *cp, lp_sol *cur_sol));
 int check_cut_u PROTO((cut_pool *cp, lp_sol *cur_sol, cut_data *cut,
-		       int *is_violated, double *quality));
+                       int *is_violated, double *quality));
 
 #endif

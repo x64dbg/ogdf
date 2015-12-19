@@ -45,86 +45,92 @@
 #include <ogdf/planarity/MMFixedEmbeddingInserter.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 MMSubgraphPlanarizer::MMSubgraphPlanarizer()
 {
-	FastPlanarSubgraph *s = new FastPlanarSubgraph();
-	s->runs(100);
-	m_subgraph.set(s);
+    FastPlanarSubgraph *s = new FastPlanarSubgraph();
+    s->runs(100);
+    m_subgraph.set(s);
 
-	MMFixedEmbeddingInserter *pInserter = new MMFixedEmbeddingInserter();
-	pInserter->removeReinsert(MMEdgeInsertionModule::rrAll);
-	m_inserter.set(pInserter);
+    MMFixedEmbeddingInserter *pInserter = new MMFixedEmbeddingInserter();
+    pInserter->removeReinsert(MMEdgeInsertionModule::rrAll);
+    m_inserter.set(pInserter);
 
-	m_permutations = 1;
+    m_permutations = 1;
 }
 
 
 Module::ReturnType MMSubgraphPlanarizer::doCall(PlanRepExpansion &PG,
-	int cc,
-	const EdgeArray<bool> *forbid,
-	int& crossingNumber,
-	int& numNS,
-	int& numSN)
+        int cc,
+        const EdgeArray<bool> *forbid,
+        int& crossingNumber,
+        int& numNS,
+        int& numSN)
 {
-	OGDF_ASSERT(m_permutations >= 1);
+    OGDF_ASSERT(m_permutations >= 1);
 
-	List<edge> deletedEdges;
-	PG.initCC(cc);
+    List<edge> deletedEdges;
+    PG.initCC(cc);
 
-	ReturnType retValue ;
+    ReturnType retValue ;
 
-	if(forbid != 0) {
-		List<edge> preferedEdges;
-		edge e;
-		forall_edges(e, PG) {
-			edge eOrig = PG.originalEdge(e);
-			if(eOrig && (*forbid)[eOrig])
-				preferedEdges.pushBack(e);
-		}
+    if(forbid != 0)
+    {
+        List<edge> preferedEdges;
+        edge e;
+        forall_edges(e, PG)
+        {
+            edge eOrig = PG.originalEdge(e);
+            if(eOrig && (*forbid)[eOrig])
+                preferedEdges.pushBack(e);
+        }
 
-		retValue = m_subgraph.get().call(PG, preferedEdges, deletedEdges, true);
+        retValue = m_subgraph.get().call(PG, preferedEdges, deletedEdges, true);
 
-	} else {
-		retValue = m_subgraph.get().call(PG, deletedEdges);
-	}
+    }
+    else
+    {
+        retValue = m_subgraph.get().call(PG, deletedEdges);
+    }
 
-	if(isSolution(retValue) == false)
-		return retValue;
+    if(isSolution(retValue) == false)
+        return retValue;
 
-	for(ListIterator<edge> it = deletedEdges.begin(); it.valid(); ++it)
-		*it = PG.originalEdge(*it);
+    for(ListIterator<edge> it = deletedEdges.begin(); it.valid(); ++it)
+        *it = PG.originalEdge(*it);
 
-	int bestcr = -1;
+    int bestcr = -1;
 
-	for(int i = 1; i <= m_permutations; ++i)
-	{
-		for(ListConstIterator<edge> it = deletedEdges.begin(); it.valid(); ++it)
-			PG.delEdge(PG.copy(*it));
+    for(int i = 1; i <= m_permutations; ++i)
+    {
+        for(ListConstIterator<edge> it = deletedEdges.begin(); it.valid(); ++it)
+            PG.delEdge(PG.copy(*it));
 
-		deletedEdges.permute();
+        deletedEdges.permute();
 
-		if(forbid != 0)
-			m_inserter.get().call(PG, deletedEdges, *forbid);
-		else
-			m_inserter.get().call(PG, deletedEdges);
+        if(forbid != 0)
+            m_inserter.get().call(PG, deletedEdges, *forbid);
+        else
+            m_inserter.get().call(PG, deletedEdges);
 
-		crossingNumber = PG.computeNumberOfCrossings();
+        crossingNumber = PG.computeNumberOfCrossings();
 
-		if(i == 1 || crossingNumber < bestcr) {
-			bestcr = crossingNumber;
-			numNS = PG.numberOfNodeSplits();
-			numSN = PG.numberOfSplittedNodes();
-		}
+        if(i == 1 || crossingNumber < bestcr)
+        {
+            bestcr = crossingNumber;
+            numNS = PG.numberOfNodeSplits();
+            numSN = PG.numberOfSplittedNodes();
+        }
 
-		PG.initCC(cc);
-	}
+        PG.initCC(cc);
+    }
 
-	crossingNumber = bestcr;
+    crossingNumber = bestcr;
 
-	return retFeasible;
+    return retFeasible;
 }
 
 

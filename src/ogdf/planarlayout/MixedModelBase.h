@@ -58,71 +58,73 @@
 #include "IOPoints.h"
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 class MixedModelBase
 {
 public:
-	MixedModelBase(PlanRep &PG, GridLayout &gridLayout) :
-		m_PG(PG), m_adjExternal(0), m_gridLayout(gridLayout), m_iops(PG) { }
+    MixedModelBase(PlanRep &PG, GridLayout &gridLayout) :
+        m_PG(PG), m_adjExternal(0), m_gridLayout(gridLayout), m_iops(PG) { }
 
-	virtual ~MixedModelBase() { }
+    virtual ~MixedModelBase() { }
 
-	void computeOrder(
-		AugmentationModule &augmenter,
-		EmbedderModule *pEmbedder,
-		adjEntry adjExternal,
-		ShellingOrderModule &compOrder);
+    void computeOrder(
+        AugmentationModule &augmenter,
+        EmbedderModule *pEmbedder,
+        adjEntry adjExternal,
+        ShellingOrderModule &compOrder);
 
-	void assignIopCoords();
+    void assignIopCoords();
 
-	void placeNodes();
-	void computeXCoords();
-	void computeYCoords();
+    void placeNodes();
+    void computeXCoords();
+    void computeYCoords();
 
-	void setBends();
-	void postprocessing1();
-	void postprocessing2();
+    void setBends();
+    void postprocessing1();
+    void postprocessing2();
 
 
-	// functions for debugging output
+    // functions for debugging output
 
-	void printMMOrder(std::ostream &os);
-	void printInOutPoints(std::ostream &os);
-	void print(std::ostream &os, const InOutPoint &iop);
-	void printNodeCoords(std::ostream &os);
+    void printMMOrder(std::ostream &os);
+    void printInOutPoints(std::ostream &os);
+    void print(std::ostream &os, const InOutPoint &iop);
+    void printNodeCoords(std::ostream &os);
 
-	// avoid creation of assignment operator
-	MixedModelBase &operator=(const MixedModelBase &);
+    // avoid creation of assignment operator
+    MixedModelBase &operator=(const MixedModelBase &);
 
 private:
-	PlanRep &m_PG;
-	adjEntry m_adjExternal;
+    PlanRep &m_PG;
+    adjEntry m_adjExternal;
 
-	GridLayout &m_gridLayout;
+    GridLayout &m_gridLayout;
 
-	MMOrder  m_mmo;
-	IOPoints m_iops;
-	Stack<PlanRep::Deg1RestoreInfo> m_deg1RestoreStack;
+    MMOrder  m_mmo;
+    IOPoints m_iops;
+    Stack<PlanRep::Deg1RestoreInfo> m_deg1RestoreStack;
 
-	Array<int> m_dyl, m_dyr;
-	Array<ListConstIterator<InOutPoint> > m_leftOp, m_rightOp;
-	NodeArray<ListConstIterator<InOutPoint> > m_nextLeft, m_nextRight;
-	NodeArray<int> m_dxla, m_dxra;
+    Array<int> m_dyl, m_dyr;
+    Array<ListConstIterator<InOutPoint> > m_leftOp, m_rightOp;
+    NodeArray<ListConstIterator<InOutPoint> > m_nextLeft, m_nextRight;
+    NodeArray<int> m_dxla, m_dxra;
 
 
-	bool exists(adjEntry adj) {
-		return m_PG.isDummy(adj->theEdge()) == false;
-	}
+    bool exists(adjEntry adj)
+    {
+        return m_PG.isDummy(adj->theEdge()) == false;
+    }
 
-	bool hasLeft (int k) const;
-	bool hasRight(int k) const;
+    bool hasLeft (int k) const;
+    bool hasRight(int k) const;
 
-	void removeDeg1Nodes();
+    void removeDeg1Nodes();
 
-	void firstPoint(int &x, int &y, adjEntry adj);
-	bool isRedundant(int x1, int y1, int x2, int y2, int x3, int y3);
+    void firstPoint(int &x, int &y, adjEntry adj);
+    bool isRedundant(int x1, int y1, int x2, int y2, int x3, int y3);
 };
 
 

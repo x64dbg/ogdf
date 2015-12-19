@@ -41,7 +41,8 @@
 #include <ogdf/abacus/ring.h>
 #include <ogdf/abacus/master.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 //! Tailing off manager.
@@ -63,111 +64,117 @@ namespace abacus {
  * tailing-off effect.
  * The parameters are taken from the associated master.
  */
-class  TailOff :  public AbacusRoot  {
-	friend class Sub;
+class  TailOff :  public AbacusRoot
+{
+    friend class Sub;
 public:
 
-	//! The constructor takes the length of the tailing off history from Master::tailOffNLp().
-	/**
-	 * \param master A pointer to the corresponding master of the optimization.
-	 */
-	TailOff(Master *master) : master_(master)
-	{
-		if (master->tailOffNLp() > 0)
-			lpHistory_ = new AbaRing<double>(master->tailOffNLp());
-		else
-			lpHistory_ = 0;
-	}
+    //! The constructor takes the length of the tailing off history from Master::tailOffNLp().
+    /**
+     * \param master A pointer to the corresponding master of the optimization.
+     */
+    TailOff(Master *master) : master_(master)
+    {
+        if (master->tailOffNLp() > 0)
+            lpHistory_ = new AbaRing<double>(master->tailOffNLp());
+        else
+            lpHistory_ = 0;
+    }
 
-	//! An alternative constructor takes the length of the tailing off history from the parameter NLp.
-	/**
-	 * \param master A pointer to the corresponding master of the optimization.
-	 * \param NLp    The length of the tailing off history.
-	 */
-	TailOff(Master *master, int NLp) : master_(master)
-	{
-		if (NLp > 0)
-			lpHistory_ = new AbaRing<double>(NLp);
-		else
-			lpHistory_ = 0;
-	}
+    //! An alternative constructor takes the length of the tailing off history from the parameter NLp.
+    /**
+     * \param master A pointer to the corresponding master of the optimization.
+     * \param NLp    The length of the tailing off history.
+     */
+    TailOff(Master *master, int NLp) : master_(master)
+    {
+        if (NLp > 0)
+            lpHistory_ = new AbaRing<double>(NLp);
+        else
+            lpHistory_ = 0;
+    }
 
-	//! The destructor.
-	~TailOff() { delete lpHistory_; }
+    //! The destructor.
+    ~TailOff()
+    {
+        delete lpHistory_;
+    }
 
 
-	//! The output operator
-	/**
-	 * Writes the memorized LP-values on an output stream.
-	 *
-	 * \param out The output stream.
-	 * \param rhs The tailing-off manager  being output.
-	 *
-	 * \return A reference to the output stream.
-	 */
-	friend ostream &operator<<(ostream &out, const TailOff &rhs);
+    //! The output operator
+    /**
+     * Writes the memorized LP-values on an output stream.
+     *
+     * \param out The output stream.
+     * \param rhs The tailing-off manager  being output.
+     *
+     * \return A reference to the output stream.
+     */
+    friend ostream &operator<<(ostream &out, const TailOff &rhs);
 
-	//! Checks whether there is a tailing-off effect.
-	/**
-	 * We assume a tailing-off effect if during the last Master::tailOffNLps()
-	 * iterations of the cutting plane algorithms
-	 * the dual bound changed at most Master::tailOffPercent() percent.
-	 *
-	 * \return true if a tailing off effect is observed, false otherwise.
-	 */
-	virtual bool tailOff() const;
+    //! Checks whether there is a tailing-off effect.
+    /**
+     * We assume a tailing-off effect if during the last Master::tailOffNLps()
+     * iterations of the cutting plane algorithms
+     * the dual bound changed at most Master::tailOffPercent() percent.
+     *
+     * \return true if a tailing off effect is observed, false otherwise.
+     */
+    virtual bool tailOff() const;
 
-	//! Can be used to retrieve the difference between the last and a previous LP-solution in percent.
-	/**
-	 * \param nLps The number of LPs before the last solved linear program
-	 *             with which the last solved LP-value should be compared.
-	 * \param d    Contains the absolute difference bewteen the value of the
-	 *             last solved
-	 *             linear program and the value of the linear program solved
-	 *             \a nLps before in percent relative to the older value.
-	 *
-	 * \return 0 if the difference could be computed, i.e., the old
-	 *           LP-value \a nLPs before the last one is store in the history,
-	 *           1 otherwise.
-	 */
-	int diff(int nLps, double &d) const;
+    //! Can be used to retrieve the difference between the last and a previous LP-solution in percent.
+    /**
+     * \param nLps The number of LPs before the last solved linear program
+     *             with which the last solved LP-value should be compared.
+     * \param d    Contains the absolute difference bewteen the value of the
+     *             last solved
+     *             linear program and the value of the linear program solved
+     *             \a nLps before in percent relative to the older value.
+     *
+     * \return 0 if the difference could be computed, i.e., the old
+     *           LP-value \a nLPs before the last one is store in the history,
+     *           1 otherwise.
+     */
+    int diff(int nLps, double &d) const;
 
 protected:
 
-	//! A new LP-solution value can be stored by calling the function \a update().
-	/**
-	 * This update should be performed after every solution
-	 * of an LP in the cutting plane generation phase of the subproblem
-	 * optimization process.
-	 *
-	 * \param value The LP-solution value.
-	 */
-	void update(double value) {
-		if (lpHistory_)
-			lpHistory_->insert(value);
-	}
+    //! A new LP-solution value can be stored by calling the function \a update().
+    /**
+     * This update should be performed after every solution
+     * of an LP in the cutting plane generation phase of the subproblem
+     * optimization process.
+     *
+     * \param value The LP-solution value.
+     */
+    void update(double value)
+    {
+        if (lpHistory_)
+            lpHistory_->insert(value);
+    }
 
 
-	//! Clears the solution history.
-	/**
-	 * This function
-	 * should be called if variables are added, because
-	 * normally the solution value of the LP-relaxation gets worse
-	 * after the addition of variables. Such a
-	 * change could falsely indicate a tailing-off effect if the
-	 * history of LP-values is not reset.
-	 */
-	void reset() {
-		if (lpHistory_)
-			lpHistory_->clear();
-	}
+    //! Clears the solution history.
+    /**
+     * This function
+     * should be called if variables are added, because
+     * normally the solution value of the LP-relaxation gets worse
+     * after the addition of variables. Such a
+     * change could falsely indicate a tailing-off effect if the
+     * history of LP-values is not reset.
+     */
+    void reset()
+    {
+        if (lpHistory_)
+            lpHistory_->clear();
+    }
 
 
-	//! A pointer to the corresponding master of the optimization.
-	Master   *master_;
+    //! A pointer to the corresponding master of the optimization.
+    Master   *master_;
 
-	//! The LP-values considered in the tailing off analysis.
-	AbaRing<double> *lpHistory_;
+    //! The LP-values considered in the tailing off analysis.
+    AbaRing<double> *lpHistory_;
 };
 
 } //namespace abacus

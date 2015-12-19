@@ -53,22 +53,24 @@
 #include <ogdf/labeling/ELabelInterface.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-class OGDF_EXPORT ELabelPosSimple {
+class OGDF_EXPORT ELabelPosSimple
+{
 
 public:
 
-	ELabelPosSimple();
-	~ELabelPosSimple();
+    ELabelPosSimple();
+    ~ELabelPosSimple();
 
-	void call(GraphAttributes& ug, ELabelInterface<double>& eli); //double
+    void call(GraphAttributes& ug, ELabelInterface<double>& eli); //double
 
-	bool   m_absolut;
-	double m_marginDistance;
-	double m_edgeDistance;
+    bool   m_absolut;
+    double m_marginDistance;
+    double m_edgeDistance;
 
-	bool   m_midOnEdge;
+    bool   m_midOnEdge;
 
 private:
 

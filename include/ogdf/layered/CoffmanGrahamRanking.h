@@ -57,7 +57,8 @@
 #include <ogdf/basic/tuples.h>
 #include <ogdf/basic/Stack.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! The coffman graham ranking algorithm.
 /**
@@ -66,99 +67,113 @@ namespace ogdf {
  * in SugiyamaLayout. The aim of the algorithm is to ensure that the height of
  * the ranking (the number of layers) is kept small.
  */
-class OGDF_EXPORT CoffmanGrahamRanking : public RankingModule {
+class OGDF_EXPORT CoffmanGrahamRanking : public RankingModule
+{
 
 public:
-	//! Creates an instance of coffman graham ranking.
-	CoffmanGrahamRanking();
+    //! Creates an instance of coffman graham ranking.
+    CoffmanGrahamRanking();
 
 
-	/**
-	 *  @name Algorithm call
-	 *  @{
-	 */
+    /**
+     *  @name Algorithm call
+     *  @{
+     */
 
-	//! Computes a node ranking of \a G in \a rank.
-	void call(const Graph &G, NodeArray<int> &rank);
+    //! Computes a node ranking of \a G in \a rank.
+    void call(const Graph &G, NodeArray<int> &rank);
 
 
-	/** @}
-	 *  @name Module options
-	 *  @{
-	 */
+    /** @}
+     *  @name Module options
+     *  @{
+     */
 
-	//! Sets the module for the computation of the acyclic subgraph.
-	void setSubgraph(AcyclicSubgraphModule *pSubgraph) {
-		m_subgraph.set(pSubgraph);
-	}
+    //! Sets the module for the computation of the acyclic subgraph.
+    void setSubgraph(AcyclicSubgraphModule *pSubgraph)
+    {
+        m_subgraph.set(pSubgraph);
+    }
 
-	//! @}
+    //! @}
 
-	//! Get for the with
-	int width() const {
-		return m_w;
-	}
+    //! Get for the with
+    int width() const
+    {
+        return m_w;
+    }
 
-	//! Set for the with
-	void width (int w) {
-		m_w = w;
-	}
+    //! Set for the with
+    void width (int w)
+    {
+        m_w = w;
+    }
 
 
 private:
-	// CoffmanGraham data structures
-	class _int_set {
-		int *A, l, p;
-	public:
-		_int_set() : A(NULL), l(0), p(0) { }
-		_int_set(int len) : A(NULL), l(len), p(len) {
-			if (len > 0)
-				A = new int[l];
-		}
-		~_int_set() { delete[] A; }
+    // CoffmanGraham data structures
+    class _int_set
+    {
+        int *A, l, p;
+    public:
+        _int_set() : A(NULL), l(0), p(0) { }
+        _int_set(int len) : A(NULL), l(len), p(len)
+        {
+            if (len > 0)
+                A = new int[l];
+        }
+        ~_int_set()
+        {
+            delete[] A;
+        }
 
-		void init(int len) {
-			delete A;
-			if ((l = len) == 0)
-				A = NULL;
-			else
-				A = new int[l];
-			p = len;
-		}
+        void init(int len)
+        {
+            delete A;
+            if ((l = len) == 0)
+                A = NULL;
+            else
+                A = new int[l];
+            p = len;
+        }
 
-		int length() const {
-			return l;
-		}
+        int length() const
+        {
+            return l;
+        }
 
-		int operator[](int i) const {
-			return A[i];
-		}
+        int operator[](int i) const
+        {
+            return A[i];
+        }
 
-		void insert(int x) {
-			A[--p] = x;
-		}
+        void insert(int x)
+        {
+            A[--p] = x;
+        }
 
-		bool ready() const {
-			return (p == 0);
-		}
-	};
+        bool ready() const
+        {
+            return (p == 0);
+        }
+    };
 
-	// CoffmanGraham members
-	ModuleOption<AcyclicSubgraphModule> m_subgraph;
-	int m_w;
-	NodeArray<_int_set> m_s;
+    // CoffmanGraham members
+    ModuleOption<AcyclicSubgraphModule> m_subgraph;
+    int m_w;
+    NodeArray<_int_set> m_s;
 
-	// dfs members
-	NodeArray<int> mark;
-	StackPure <node> *visited;
+    // dfs members
+    NodeArray<int> mark;
+    StackPure <node> *visited;
 
-	// CoffmanGraham funktions
-	void insert (node u, List<Tuple2<node,int> > &ready_nodes);
-	void insert (node u, List<node> &ready, const NodeArray<int> &pi);
+    // CoffmanGraham funktions
+    void insert (node u, List<Tuple2<node,int> > &ready_nodes);
+    void insert (node u, List<node> &ready, const NodeArray<int> &pi);
 
-	// dfs funktions
-	void removeTransitiveEdges (Graph& G);
-	void dfs(node v);
+    // dfs funktions
+    void removeTransitiveEdges (Graph& G);
+    void dfs(node v);
 };
 
 

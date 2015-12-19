@@ -1,11 +1,11 @@
-// LAST EDIT: 
+// LAST EDIT:
 //-----------------------------------------------------------------------------
 // Implementation of Residual Capacity Inequalities
 // Francisco Barahona (barahon@us.ibm.com)
-//         
+//
 // date: May 18, 2006
 //-----------------------------------------------------------------------------
-// Copyright (C) 2004, International Business Machines Corporation and others. 
+// Copyright (C) 2004, International Business Machines Corporation and others.
 // All Rights Reserved.
 // This code is published under the Eclipse Public License.
 
@@ -35,42 +35,44 @@
 
 /** Residual Capacity Inequalities Cut Generator Class
 
- References: 
+ References:
     T Magnanti, P Mirchandani, R Vachani,
     "The convex hull of two core capacitated network design problems,"
     Math Programming 60 (1993), 233-250.
-    
+
     A Atamturk, D Rajan,
-    "On splittable and unsplittable flow capacitated network design 
+    "On splittable and unsplittable flow capacitated network design
     arc-set polyhedra," Math Programming 92 (2002), 315-333. **/
 
-class CglResidualCapacity : public CglCutGenerator {
-    
+class CglResidualCapacity : public CglCutGenerator
+{
+
     friend void CglResidualCapacityUnitTest(const OsiSolverInterface * siP,
-					    const std::string mpdDir );
-    
-    
+                                            const std::string mpdDir );
+
+
 private:
     //---------------------------------------------------------------------------
     // Enumeration constants that describe the various types of rows
-    enum RowType {
-	/**   row of the type a_1 c_1 +  + a_k c_k - d z_1 -  - d z_p <= b,
-	      where c_i are continuous variables and z_j are integer variables
-	*/
-	ROW_L,
-	/**  row of the type -a_1 c_1 -  - a_k c_k + d z_1 +  + d z_p >= b,
-	     where c_i are continuous variables and z_j are integer variables
-	*/
-	ROW_G,
-	/** equation that can be treated as ROW_L and ROW_G
-	 */
-	ROW_BOTH,
-	/** Other types of rows
-	 */
-	ROW_OTHER
+    enum RowType
+    {
+        /**   row of the type a_1 c_1 +  + a_k c_k - d z_1 -  - d z_p <= b,
+              where c_i are continuous variables and z_j are integer variables
+        */
+        ROW_L,
+        /**  row of the type -a_1 c_1 -  - a_k c_k + d z_1 +  + d z_p >= b,
+             where c_i are continuous variables and z_j are integer variables
+        */
+        ROW_G,
+        /** equation that can be treated as ROW_L and ROW_G
+         */
+        ROW_BOTH,
+        /** Other types of rows
+         */
+        ROW_OTHER
     };
-    
-    
+
+
 public:
     /**@name Get and Set Parameters */
     //@{
@@ -90,110 +92,110 @@ public:
 
     /**@name Generate Cuts */
     //@{
-    /** Generate Residual Capacity cuts for the model data 
-	contained in si. The generated cuts are inserted 
-	in the collection of cuts cs. 
+    /** Generate Residual Capacity cuts for the model data
+    contained in si. The generated cuts are inserted
+    in the collection of cuts cs.
     */
     virtual void generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
-			      const CglTreeInfo info = CglTreeInfo()) const;
+                              const CglTreeInfo info = CglTreeInfo()) const;
     //@}
-    
+
     //---------------------------------------------------------------------------
     /**@name Constructors and destructors */
     //@{
-    /// Default constructor 
+    /// Default constructor
     CglResidualCapacity ();
-    
-    /// Alternate Constructor 
+
+    /// Alternate Constructor
     CglResidualCapacity ( const double tolerance );
-    
-    /// Copy constructor 
+
+    /// Copy constructor
     CglResidualCapacity (
-			 const CglResidualCapacity &);
-    
+        const CglResidualCapacity &);
+
     /// Clone
     virtual CglCutGenerator * clone() const;
-    
-    /// Assignment operator 
+
+    /// Assignment operator
     CglResidualCapacity &
     operator=(
-	      const CglResidualCapacity& rhs);
-    
-    /// Destructor 
+        const CglResidualCapacity& rhs);
+
+    /// Destructor
     virtual
     ~CglResidualCapacity ();
     /// This is to refresh preprocessing
     virtual void refreshPrep();
     //@}
-    
-    
-    
+
+
+
 private:
     //--------------------------------------------------------------------------
     // Private member methods
-    
+
     // Construct
     void gutsOfConstruct ( const double tolerance);
-    
+
     // Delete
     void gutsOfDelete();
-    
+
     // Copy
     void gutsOfCopy (const CglResidualCapacity& rhs);
-    
+
     // Do preprocessing.
-    // It determines the type of each row. 
+    // It determines the type of each row.
     // It may change sense and RHS for ranged rows
     void resCapPreprocess(const OsiSolverInterface& si) const;
-    
+
     // Determine the type of a given row.
     RowType determineRowType(const OsiSolverInterface& si,
-			     const int rowLen, const int* ind, 
-			     const double* coef, const char sense, 
-			     const double rhs,
-			     const double* colLowerBound,
-			     const double* colUpperBound) const;
+                             const int rowLen, const int* ind,
+                             const double* coef, const char sense,
+                             const double rhs,
+                             const double* colLowerBound,
+                             const double* colUpperBound) const;
     // helps the function above
     bool treatAsLessThan(const OsiSolverInterface& si,
-			 const int rowLen, const int* ind, 
-			 const double* coef,
-			 const double rhs,
-			 const double* colLowerBound,
-			 const double* colUpperBound) const;
-    
+                         const int rowLen, const int* ind,
+                         const double* coef,
+                         const double rhs,
+                         const double* colLowerBound,
+                         const double* colUpperBound) const;
+
     // Generate Residual Capacity cuts
     void generateResCapCuts( const OsiSolverInterface& si,
-			     const double* xlp,
-			     const double* colUpperBound,
-			     const double* colLowerBound,
-			     const CoinPackedMatrix& matrixByRow,
-			     const double* LHS,
-			     const double* coefByRow,
-			     const int* colInds,
-			     const int* rowStarts,
-			     const int* rowLengths,
-			     OsiCuts& cs ) const;
-    
+                             const double* xlp,
+                             const double* colUpperBound,
+                             const double* colLowerBound,
+                             const CoinPackedMatrix& matrixByRow,
+                             const double* LHS,
+                             const double* coefByRow,
+                             const int* colInds,
+                             const int* rowStarts,
+                             const int* rowLengths,
+                             OsiCuts& cs ) const;
 
-    // Residual Capacity separation 
+
+    // Residual Capacity separation
     bool resCapSeparation(const OsiSolverInterface& si,
-			  const int rowLen, const int* ind, 
-			  const double* coef,
-			  const double rhs,
-			  const double *xlp,  
-			  const double* colUpperBound,
-			  const double* colLowerBound,
-			  OsiRowCut& resCapCut) const;
-    
-      
+                          const int rowLen, const int* ind,
+                          const double* coef,
+                          const double rhs,
+                          const double *xlp,
+                          const double* colUpperBound,
+                          const double* colLowerBound,
+                          OsiRowCut& resCapCut) const;
+
+
 
 private:
     //---------------------------------------------------------------------------
     // Private member data
     /** Tolerance used for numerical purposes, default value: 1.e-6 **/
     double EPSILON_;
-    /** If violation of a cut is greater that this number, 
-	the cut is accepted, default value: 1.e-4 **/
+    /** If violation of a cut is greater that this number,
+    the cut is accepted, default value: 1.e-4 **/
     double TOLERANCE_;
     /** Controls the preprocessing of the matrix to identify rows suitable for
         cut generation.<UL>
@@ -201,7 +203,7 @@ private:
      <LI> 0: Do preprocessing only if it has not yet been done;
      <LI> 1: Do preprocessing.
      </UL>
-	 Default value: -1 **/
+     Default value: -1 **/
     int doPreproc_;
     // The number of rows of the problem.
     mutable int numRows_;
@@ -216,7 +218,7 @@ private:
     // Sense of rows (modified if ranges)
     mutable char * sense_;
     // RHS of rows (modified if ranges)
-    mutable double * RHS_; 
+    mutable double * RHS_;
     // The number of rows of type ROW_L
     mutable int numRowL_;
     // The indices of the rows of type ROW_L
@@ -234,7 +236,7 @@ private:
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
 void CglResidualCapacityUnitTest(const OsiSolverInterface * siP,
-				 const std::string mpdDir);
+                                 const std::string mpdDir);
 
-  
+
 #endif

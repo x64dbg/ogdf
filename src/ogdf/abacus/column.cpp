@@ -37,28 +37,29 @@
 #include <ogdf/abacus/column.h>
 #include <ogdf/abacus/global.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 ostream &operator<<(ostream &out, const Column &rhs)
 {
-	out << "objective function coefficient: " << rhs.obj() << endl
-	 << "bounds: " << rhs.lBound_ << " <= x <= " << rhs.uBound_ << endl
-	 << "nonzero rows of column :" << endl;
+    out << "objective function coefficient: " << rhs.obj() << endl
+        << "bounds: " << rhs.lBound_ << " <= x <= " << rhs.uBound_ << endl
+        << "nonzero rows of column :" << endl;
 
-	for (int i = 0; i < rhs.nnz_; i++)
-		out << 'r' << rhs.support_[i] << ": " << rhs.coeff_[i] << endl;
+    for (int i = 0; i < rhs.nnz_; i++)
+        out << 'r' << rhs.support_[i] << ": " << rhs.coeff_[i] << endl;
 
-	return out;
+    return out;
 }
 
 
 void Column::copy(const Column &col)
 {
-	SparVec::copy(col);
+    SparVec::copy(col);
 
-	obj_    = col.obj_;
-	lBound_ = col.lBound_;
-	uBound_ = col.uBound_;
+    obj_    = col.obj_;
+    lBound_ = col.lBound_;
+    uBound_ = col.uBound_;
 }
 } //namespace abacus

@@ -41,7 +41,8 @@
 
 #include <ogdf/abacus/abacusroot.h>
 
-namespace abacus {
+namespace abacus
+{
 
 class Master;
 class Sub;
@@ -65,81 +66,83 @@ class LpSub;
  * for changing the bounds of an integer variable (ConBranchRule), and
  * for adding a branching constraint (ConBranchRule).
  */
-class  BranchRule :  public AbacusRoot  {
+class  BranchRule :  public AbacusRoot
+{
 public:
 
-	//! Initializes a branching rule.
-	/**
-	 * \param master A pointer to the corresponding master of the optimization.
-	 */
-	BranchRule(Master *master) : master_(master) { }
+    //! Initializes a branching rule.
+    /**
+     * \param master A pointer to the corresponding master of the optimization.
+     */
+    BranchRule(Master *master) : master_(master) { }
 
 
-	virtual ~BranchRule() { }
+    virtual ~BranchRule() { }
 
 
-	//! Modifies a subproblem by setting the branching variable.
-	/**
-	 * \param sub The subproblem being modified.
-	 *
-	 * \return 0 If the subproblem can be modified according to the branching rule.
-	 * \return 1 If a contradiction occurs.
-	 */
-	virtual int extract(Sub *sub) = 0;
+    //! Modifies a subproblem by setting the branching variable.
+    /**
+     * \param sub The subproblem being modified.
+     *
+     * \return 0 If the subproblem can be modified according to the branching rule.
+     * \return 1 If a contradiction occurs.
+     */
+    virtual int extract(Sub *sub) = 0;
 
 
-	//! Should modify the linear programming relaxation |lp| in order to determine the quality of the branching rule in an LP-based branching rule selection.
-	/**
-	 * The default implementation does nothing except writing a warning to the error stream.
-	 * If a derived concrete branching rule should be used in LP-based branching
-	 * rule selection then this function has to be redefined.
-	 *
-	 * \param lp A pointer to a the linear programming relaxtion of a subproblem.
-	 */
-	virtual void extract(LpSub *lp);
+    //! Should modify the linear programming relaxation |lp| in order to determine the quality of the branching rule in an LP-based branching rule selection.
+    /**
+     * The default implementation does nothing except writing a warning to the error stream.
+     * If a derived concrete branching rule should be used in LP-based branching
+     * rule selection then this function has to be redefined.
+     *
+     * \param lp A pointer to a the linear programming relaxtion of a subproblem.
+     */
+    virtual void extract(LpSub *lp);
 
 
-	//! Should undo the modifictions of the linear programming relaxtion |lp|.
-	/**
-	 * This function has to be redefined in a derived class if extract(LpSub*) is redefined there.
-	 *
-	 * \param lp A pointer to a the linear programming relaxtion of a subproblem.
-	 */
-	virtual void unExtract(LpSub *lp);
+    //! Should undo the modifictions of the linear programming relaxtion |lp|.
+    /**
+     * This function has to be redefined in a derived class if extract(LpSub*) is redefined there.
+     *
+     * \param lp A pointer to a the linear programming relaxtion of a subproblem.
+     */
+    virtual void unExtract(LpSub *lp);
 
 
-	//! Should indicate if the branching is performed by setting a binary variable.
-	/**
-	 * This is only required as in the current version of the GNU-compiler run time
-	 * type information is not satisfactorily implemented.
-	 *
-	 * This function is currently required to determine global validity
-	 * of Gomory cuts for general \a s.
-	 *
-	 * \return The default implementation returns always false.
-	 *         This function must be redefined in SetBranchRule, where it has
-	 *         to return \a true.
-	 */
-	virtual bool branchOnSetVar() {
-		return false;
-	}
+    //! Should indicate if the branching is performed by setting a binary variable.
+    /**
+     * This is only required as in the current version of the GNU-compiler run time
+     * type information is not satisfactorily implemented.
+     *
+     * This function is currently required to determine global validity
+     * of Gomory cuts for general \a s.
+     *
+     * \return The default implementation returns always false.
+     *         This function must be redefined in SetBranchRule, where it has
+     *         to return \a true.
+     */
+    virtual bool branchOnSetVar()
+    {
+        return false;
+    }
 
 
-	//! Called from the constructor of a subproblem.
-	/**
-	 * It can be used to perform initializations of the branching rule that can only be
-	 * done after the generation of the subproblem.
-	 *
-	 * The default implementation does nothing.
-	 *
-	 * \param sub A pointer to the subproblem that should be used for the initialization.
-	 */
-	virtual void initialize(Sub* sub) { }
+    //! Called from the constructor of a subproblem.
+    /**
+     * It can be used to perform initializations of the branching rule that can only be
+     * done after the generation of the subproblem.
+     *
+     * The default implementation does nothing.
+     *
+     * \param sub A pointer to the subproblem that should be used for the initialization.
+     */
+    virtual void initialize(Sub* sub) { }
 
 protected:
-	Master *master_;  //!< A pointer to the corresponding master of the optimization.
+    Master *master_;  //!< A pointer to the corresponding master of the optimization.
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 } //namespace abacus

@@ -71,9 +71,9 @@ Here is a sample usage:
     assert( r.indices ()[2]== 4  );
     assert( r.elements()[2]==40. );
     assert( r.indices ()[3]== 2  );
-    assert( r.elements()[3]==50. );    
+    assert( r.elements()[3]==50. );
 
-    // access original position of index    
+    // access original position of index
     assert( r.originalPosition()[0]==2 );
     assert( r.originalPosition()[1]==0 );
     assert( r.originalPosition()[2]==1 );
@@ -88,7 +88,7 @@ Here is a sample usage:
 
     // Restore orignal sort order
     r.sortOriginalOrder();
-    
+
     assert( r.indices ()[0]== 1  );
     assert( r.elements()[0]==10. );
     assert( r.indices ()[1]== 4  );
@@ -120,217 +120,249 @@ Here is a sample usage:
     assert( r.sum() == 10.+40.+1.+50. );
 @endverbatim
 */
-class CoinPackedVector : public CoinPackedVectorBase {
-   friend void CoinPackedVectorUnitTest();
-  
+class CoinPackedVector : public CoinPackedVectorBase
+{
+    friend void CoinPackedVectorUnitTest();
+
 public:
-   /**@name Get methods. */
-   //@{
-   /// Get the size
-   virtual int getNumElements() const { return nElements_; }
-   /// Get indices of elements
-   virtual const int * getIndices() const { return indices_; }
-   /// Get element values
-   virtual const double * getElements() const { return elements_; }
-   /// Get indices of elements
-   int * getIndices() { return indices_; }
-   /// Get element values
-   double * getElements() { return elements_; }
-   /** Get pointer to int * vector of original postions.
-       If the packed vector has not been sorted then this
-       function returns the vector: 0, 1, 2, ..., size()-1. */
-   const int * getOriginalPosition() const { return origIndices_; }
-   //@}
- 
-   //-------------------------------------------------------------------
-   // Set indices and elements
-   //------------------------------------------------------------------- 
-   /**@name Set methods */
-   //@{
-   /// Reset the vector (as if were just created an empty vector)
-   void clear();
-   /** Assignment operator. <br>
-       <strong>NOTE</strong>: This operator keeps the current
-       <code>testForDuplicateIndex</code> setting, and affter copying the data
-       it acts accordingly. */
-   CoinPackedVector & operator=(const CoinPackedVector &);
-   /** Assignment operator from a CoinPackedVectorBase. <br>
-       <strong>NOTE</strong>: This operator keeps the current
-       <code>testForDuplicateIndex</code> setting, and affter copying the data
-       it acts accordingly. */
-   CoinPackedVector & operator=(const CoinPackedVectorBase & rhs);
+    /**@name Get methods. */
+    //@{
+    /// Get the size
+    virtual int getNumElements() const
+    {
+        return nElements_;
+    }
+    /// Get indices of elements
+    virtual const int * getIndices() const
+    {
+        return indices_;
+    }
+    /// Get element values
+    virtual const double * getElements() const
+    {
+        return elements_;
+    }
+    /// Get indices of elements
+    int * getIndices()
+    {
+        return indices_;
+    }
+    /// Get element values
+    double * getElements()
+    {
+        return elements_;
+    }
+    /** Get pointer to int * vector of original postions.
+        If the packed vector has not been sorted then this
+        function returns the vector: 0, 1, 2, ..., size()-1. */
+    const int * getOriginalPosition() const
+    {
+        return origIndices_;
+    }
+    //@}
 
-   /** Assign the ownership of the arguments to this vector.
-       Size is the length of both the indices and elements vectors.
-       The indices and elements vectors are copied into this class instance's
-       member data. The last argument indicates whether this vector will have
-       to be tested for duplicate indices.
-   */
-   void assignVector(int size, int*& inds, double*& elems,
-		     bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
+    //-------------------------------------------------------------------
+    // Set indices and elements
+    //-------------------------------------------------------------------
+    /**@name Set methods */
+    //@{
+    /// Reset the vector (as if were just created an empty vector)
+    void clear();
+    /** Assignment operator. <br>
+        <strong>NOTE</strong>: This operator keeps the current
+        <code>testForDuplicateIndex</code> setting, and affter copying the data
+        it acts accordingly. */
+    CoinPackedVector & operator=(const CoinPackedVector &);
+    /** Assignment operator from a CoinPackedVectorBase. <br>
+        <strong>NOTE</strong>: This operator keeps the current
+        <code>testForDuplicateIndex</code> setting, and affter copying the data
+        it acts accordingly. */
+    CoinPackedVector & operator=(const CoinPackedVectorBase & rhs);
 
-   /** Set vector size, indices, and elements.
-       Size is the length of both the indices and elements vectors.
-       The indices and elements vectors are copied into this class instance's
-       member data. The last argument specifies whether this vector will have
-       to be checked for duplicate indices whenever that can happen. */
-   void setVector(int size, const int * inds, const double * elems,
-		  bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
-  
-   /** Elements set to have the same scalar value */
-   void setConstant(int size, const int * inds, double elems,
-		    bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
-  
-   /** Indices are not specified and are taken to be 0,1,...,size-1 */
-   void setFull(int size, const double * elems,
-		bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
+    /** Assign the ownership of the arguments to this vector.
+        Size is the length of both the indices and elements vectors.
+        The indices and elements vectors are copied into this class instance's
+        member data. The last argument indicates whether this vector will have
+        to be tested for duplicate indices.
+    */
+    void assignVector(int size, int*& inds, double*& elems,
+                      bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
 
-   /** Indices are not specified and are taken to be 0,1,...,size-1,
-    but only where non zero*/
-   void setFullNonZero(int size, const double * elems,
-		bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
+    /** Set vector size, indices, and elements.
+        Size is the length of both the indices and elements vectors.
+        The indices and elements vectors are copied into this class instance's
+        member data. The last argument specifies whether this vector will have
+        to be checked for duplicate indices whenever that can happen. */
+    void setVector(int size, const int * inds, const double * elems,
+                   bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
 
-   /** Set an existing element in the packed vector
-       The first argument is the "index" into the elements() array
-   */
-   void setElement(int index, double element);
+    /** Elements set to have the same scalar value */
+    void setConstant(int size, const int * inds, double elems,
+                     bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
 
-   /// Insert an element into the vector
-   void insert(int index, double element);
-   /// Append a CoinPackedVector to the end
-   void append(const CoinPackedVectorBase & caboose);
+    /** Indices are not specified and are taken to be 0,1,...,size-1 */
+    void setFull(int size, const double * elems,
+                 bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
 
-   /// Swap values in positions i and j of indices and elements
-   void swap(int i, int j); 
+    /** Indices are not specified and are taken to be 0,1,...,size-1,
+     but only where non zero*/
+    void setFullNonZero(int size, const double * elems,
+                        bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
 
-   /** Resize the packed vector to be the first newSize elements.
-       Problem with truncate: what happens with origIndices_ ??? */
-   void truncate(int newSize); 
-   //@}
+    /** Set an existing element in the packed vector
+        The first argument is the "index" into the elements() array
+    */
+    void setElement(int index, double element);
 
-   /**@name Arithmetic operators. */
-   //@{
-   /// add <code>value</code> to every entry
-   void operator+=(double value);
-   /// subtract <code>value</code> from every entry
-   void operator-=(double value);
-   /// multiply every entry by <code>value</code>
-   void operator*=(double value);
-   /// divide every entry by <code>value</code>
-   void operator/=(double value);
-   //@}
+    /// Insert an element into the vector
+    void insert(int index, double element);
+    /// Append a CoinPackedVector to the end
+    void append(const CoinPackedVectorBase & caboose);
 
-   /**@name Sorting */
-   //@{ 
-   /** Sort the packed storage vector.
-       Typcical usages:
-       <pre> 
-       packedVector.sort(CoinIncrIndexOrdered());   //increasing indices
-       packedVector.sort(CoinIncrElementOrdered()); // increasing elements
-       </pre>
-   */ 
-   template <class CoinCompare3>
-   void sort(const CoinCompare3 & tc)
-   { CoinSort_3(indices_, indices_ + nElements_, origIndices_, elements_,
-		tc); }
+    /// Swap values in positions i and j of indices and elements
+    void swap(int i, int j);
 
-   void sortIncrIndex()
-   { CoinSort_3(indices_, indices_ + nElements_, origIndices_, elements_,
-		CoinFirstLess_3<int, int, double>()); }
+    /** Resize the packed vector to be the first newSize elements.
+        Problem with truncate: what happens with origIndices_ ??? */
+    void truncate(int newSize);
+    //@}
 
-   void sortDecrIndex()
-   { CoinSort_3(indices_, indices_ + nElements_, origIndices_, elements_,
-		CoinFirstGreater_3<int, int, double>()); }
-  
-   void sortIncrElement()
-   { CoinSort_3(elements_, elements_ + nElements_, origIndices_, indices_,
-		CoinFirstLess_3<double, int, int>()); }
+    /**@name Arithmetic operators. */
+    //@{
+    /// add <code>value</code> to every entry
+    void operator+=(double value);
+    /// subtract <code>value</code> from every entry
+    void operator-=(double value);
+    /// multiply every entry by <code>value</code>
+    void operator*=(double value);
+    /// divide every entry by <code>value</code>
+    void operator/=(double value);
+    //@}
 
-   void sortDecrElement()
-   { CoinSort_3(elements_, elements_ + nElements_, origIndices_, indices_,
-		CoinFirstGreater_3<double, int, int>()); }
-  
+    /**@name Sorting */
+    //@{
+    /** Sort the packed storage vector.
+        Typcical usages:
+        <pre>
+        packedVector.sort(CoinIncrIndexOrdered());   //increasing indices
+        packedVector.sort(CoinIncrElementOrdered()); // increasing elements
+        </pre>
+    */
+    template <class CoinCompare3>
+    void sort(const CoinCompare3 & tc)
+    {
+        CoinSort_3(indices_, indices_ + nElements_, origIndices_, elements_,
+                   tc);
+    }
 
-   /** Sort in original order.
-       If the vector has been sorted, then this method restores
-       to its orignal sort order.
-   */
-   void sortOriginalOrder();
-   //@}
+    void sortIncrIndex()
+    {
+        CoinSort_3(indices_, indices_ + nElements_, origIndices_, elements_,
+                   CoinFirstLess_3<int, int, double>());
+    }
 
-   /**@name Memory usage */
-   //@{
-   /** Reserve space.
-       If one knows the eventual size of the packed vector,
-       then it may be more efficient to reserve the space.
-   */
-   void reserve(int n);
-   /** capacity returns the size which could be accomodated without
-       having to reallocate storage.
-   */
-   int capacity() const { return capacity_; }
-   //@}
-   /**@name Constructors and destructors */
-   //@{
-   /** Default constructor */
-   CoinPackedVector(bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
-   /** \brief Alternate Constructors - set elements to vector of doubles
-   
-     This constructor copies the vectors provided as parameters.
-   */
-   CoinPackedVector(int size, const int * inds, const double * elems,
-		   bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
-   /** \brief Alternate Constructors - set elements to vector of doubles
+    void sortDecrIndex()
+    {
+        CoinSort_3(indices_, indices_ + nElements_, origIndices_, elements_,
+                   CoinFirstGreater_3<int, int, double>());
+    }
 
-     This constructor takes ownership of the vectors passed as parameters.
-     \p inds and \p elems will be NULL on return.
-   */
-   CoinPackedVector(int capacity, int size, int *&inds, double *&elems,
-		    bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
-   /** Alternate Constructors - set elements to same scalar value */
-   CoinPackedVector(int size, const int * inds, double element,
-		   bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
-   /** Alternate Constructors - construct full storage with indices 0 through
-       size-1. */
-   CoinPackedVector(int size, const double * elements,
-		   bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
-   /** Copy constructor. */
-   CoinPackedVector(const CoinPackedVector &);
-   /** Copy constructor <em>from a PackedVectorBase</em>. */
-   CoinPackedVector(const CoinPackedVectorBase & rhs);
-   /** Destructor */
-   virtual ~CoinPackedVector ();
-   //@}
-    
+    void sortIncrElement()
+    {
+        CoinSort_3(elements_, elements_ + nElements_, origIndices_, indices_,
+                   CoinFirstLess_3<double, int, int>());
+    }
+
+    void sortDecrElement()
+    {
+        CoinSort_3(elements_, elements_ + nElements_, origIndices_, indices_,
+                   CoinFirstGreater_3<double, int, int>());
+    }
+
+
+    /** Sort in original order.
+        If the vector has been sorted, then this method restores
+        to its orignal sort order.
+    */
+    void sortOriginalOrder();
+    //@}
+
+    /**@name Memory usage */
+    //@{
+    /** Reserve space.
+        If one knows the eventual size of the packed vector,
+        then it may be more efficient to reserve the space.
+    */
+    void reserve(int n);
+    /** capacity returns the size which could be accomodated without
+        having to reallocate storage.
+    */
+    int capacity() const
+    {
+        return capacity_;
+    }
+    //@}
+    /**@name Constructors and destructors */
+    //@{
+    /** Default constructor */
+    CoinPackedVector(bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
+    /** \brief Alternate Constructors - set elements to vector of doubles
+
+      This constructor copies the vectors provided as parameters.
+    */
+    CoinPackedVector(int size, const int * inds, const double * elems,
+                     bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
+    /** \brief Alternate Constructors - set elements to vector of doubles
+
+      This constructor takes ownership of the vectors passed as parameters.
+      \p inds and \p elems will be NULL on return.
+    */
+    CoinPackedVector(int capacity, int size, int *&inds, double *&elems,
+                     bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
+    /** Alternate Constructors - set elements to same scalar value */
+    CoinPackedVector(int size, const int * inds, double element,
+                     bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
+    /** Alternate Constructors - construct full storage with indices 0 through
+        size-1. */
+    CoinPackedVector(int size, const double * elements,
+                     bool testForDuplicateIndex = COIN_DEFAULT_VALUE_FOR_DUPLICATE);
+    /** Copy constructor. */
+    CoinPackedVector(const CoinPackedVector &);
+    /** Copy constructor <em>from a PackedVectorBase</em>. */
+    CoinPackedVector(const CoinPackedVectorBase & rhs);
+    /** Destructor */
+    virtual ~CoinPackedVector ();
+    //@}
+
 private:
-   /**@name Private methods */
-   //@{  
-   /// Copy internal date
-   void gutsOfSetVector(int size,
-			const int * inds, const double * elems,
-			bool testForDuplicateIndex,
-			const char * method);
-   ///
-   void gutsOfSetConstant(int size,
-			  const int * inds, double value,
-			  bool testForDuplicateIndex,
-			  const char * method);
-   //@}
+    /**@name Private methods */
+    //@{
+    /// Copy internal date
+    void gutsOfSetVector(int size,
+                         const int * inds, const double * elems,
+                         bool testForDuplicateIndex,
+                         const char * method);
+    ///
+    void gutsOfSetConstant(int size,
+                           const int * inds, double value,
+                           bool testForDuplicateIndex,
+                           const char * method);
+    //@}
 
 private:
-   /**@name Private member data */
-   //@{
-   /// Vector indices
-   int * indices_;
-   ///Vector elements
-   double * elements_;
-   /// Size of indices and elements vectors
-   int nElements_;
-   /// original unsorted indices
-   int * origIndices_;
-   /// Amount of memory allocated for indices_, origIndices_, and elements_.
-   int capacity_;
-   //@}
+    /**@name Private member data */
+    //@{
+    /// Vector indices
+    int * indices_;
+    ///Vector elements
+    double * elements_;
+    /// Size of indices and elements vectors
+    int nElements_;
+    /// original unsorted indices
+    int * origIndices_;
+    /// Amount of memory allocated for indices_, origIndices_, and elements_.
+    int capacity_;
+    //@}
 };
 
 //#############################################################################
@@ -352,201 +384,212 @@ private:
 //@{
 template <class BinaryFunction> void
 binaryOp(CoinPackedVector& retVal,
-	 const CoinPackedVectorBase& op1, double value,
-	 BinaryFunction bf)
+         const CoinPackedVectorBase& op1, double value,
+         BinaryFunction bf)
 {
-   retVal.clear();
-   const int s = op1.getNumElements();
-   if (s > 0) {
-      retVal.reserve(s);
-      const int * inds = op1.getIndices();
-      const double * elems = op1.getElements();
-      for (int i=0; i<s; ++i ) {
-	 retVal.insert(inds[i], bf(value, elems[i]));
-      }
-   }
+    retVal.clear();
+    const int s = op1.getNumElements();
+    if (s > 0)
+    {
+        retVal.reserve(s);
+        const int * inds = op1.getIndices();
+        const double * elems = op1.getElements();
+        for (int i=0; i<s; ++i )
+        {
+            retVal.insert(inds[i], bf(value, elems[i]));
+        }
+    }
 }
 
 template <class BinaryFunction> inline void
 binaryOp(CoinPackedVector& retVal,
-	 double value, const CoinPackedVectorBase& op2,
-	 BinaryFunction bf)
+         double value, const CoinPackedVectorBase& op2,
+         BinaryFunction bf)
 {
-   binaryOp(retVal, op2, value, bf);
+    binaryOp(retVal, op2, value, bf);
 }
 
 template <class BinaryFunction> void
 binaryOp(CoinPackedVector& retVal,
-	 const CoinPackedVectorBase& op1, const CoinPackedVectorBase& op2,
-	 BinaryFunction bf)
+         const CoinPackedVectorBase& op1, const CoinPackedVectorBase& op2,
+         BinaryFunction bf)
 {
-   retVal.clear();
-   const int s1 = op1.getNumElements();
-   const int s2 = op2.getNumElements();
-/*
-  Replaced || with &&, in response to complaint from Sven deVries, who
-  rightly points out || is not appropriate for additive operations. &&
-  should be ok as long as binaryOp is understood not to create something
-  from nothing.		-- lh, 04.06.11
-*/
-   if (s1 == 0 && s2 == 0)
-      return;
+    retVal.clear();
+    const int s1 = op1.getNumElements();
+    const int s2 = op2.getNumElements();
+    /*
+      Replaced || with &&, in response to complaint from Sven deVries, who
+      rightly points out || is not appropriate for additive operations. &&
+      should be ok as long as binaryOp is understood not to create something
+      from nothing.     -- lh, 04.06.11
+    */
+    if (s1 == 0 && s2 == 0)
+        return;
 
-   retVal.reserve(s1+s2);
+    retVal.reserve(s1+s2);
 
-   const int * inds1 = op1.getIndices();
-   const double * elems1 = op1.getElements();
-   const int * inds2 = op2.getIndices();
-   const double * elems2 = op2.getElements();
+    const int * inds1 = op1.getIndices();
+    const double * elems1 = op1.getElements();
+    const int * inds2 = op2.getIndices();
+    const double * elems2 = op2.getElements();
 
-   int i;
-   // loop once for each element in op1
-   for ( i=0; i<s1; ++i ) {
-      const int index = inds1[i];
-      const int pos2 = op2.findIndex(index);
-      const double val = bf(elems1[i], pos2 == -1 ? 0.0 : elems2[pos2]);
-      // if (val != 0.0) // *THINK* : should we put in only nonzeros?
-      retVal.insert(index, val);
-   }
-   // loop once for each element in operand2  
-   for ( i=0; i<s2; ++i ) {
-      const int index = inds2[i];
-      // if index exists in op1, then element was processed in prior loop
-      if ( op1.isExistingIndex(index) )
-	 continue;
-      // Index does not exist in op1, so the element value must be zero
-      const double val = bf(0.0, elems2[i]);
-      // if (val != 0.0) // *THINK* : should we put in only nonzeros?
-      retVal.insert(index, val);
-   }
+    int i;
+    // loop once for each element in op1
+    for ( i=0; i<s1; ++i )
+    {
+        const int index = inds1[i];
+        const int pos2 = op2.findIndex(index);
+        const double val = bf(elems1[i], pos2 == -1 ? 0.0 : elems2[pos2]);
+        // if (val != 0.0) // *THINK* : should we put in only nonzeros?
+        retVal.insert(index, val);
+    }
+    // loop once for each element in operand2
+    for ( i=0; i<s2; ++i )
+    {
+        const int index = inds2[i];
+        // if index exists in op1, then element was processed in prior loop
+        if ( op1.isExistingIndex(index) )
+            continue;
+        // Index does not exist in op1, so the element value must be zero
+        const double val = bf(0.0, elems2[i]);
+        // if (val != 0.0) // *THINK* : should we put in only nonzeros?
+        retVal.insert(index, val);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 template <class BinaryFunction> CoinPackedVector
 binaryOp(const CoinPackedVectorBase& op1, double value,
-	 BinaryFunction bf)
+         BinaryFunction bf)
 {
-   CoinPackedVector retVal;
-   retVal.setTestForDuplicateIndex(true);
-   binaryOp(retVal, op1, value, bf);
-   return retVal;
+    CoinPackedVector retVal;
+    retVal.setTestForDuplicateIndex(true);
+    binaryOp(retVal, op1, value, bf);
+    return retVal;
 }
 
 template <class BinaryFunction> CoinPackedVector
 binaryOp(double value, const CoinPackedVectorBase& op2,
-	 BinaryFunction bf)
+         BinaryFunction bf)
 {
-   CoinPackedVector retVal;
-   retVal.setTestForDuplicateIndex(true);
-   binaryOp(retVal, op2, value, bf);
-   return retVal;
+    CoinPackedVector retVal;
+    retVal.setTestForDuplicateIndex(true);
+    binaryOp(retVal, op2, value, bf);
+    return retVal;
 }
 
 template <class BinaryFunction> CoinPackedVector
 binaryOp(const CoinPackedVectorBase& op1, const CoinPackedVectorBase& op2,
-	 BinaryFunction bf)
+         BinaryFunction bf)
 {
-   CoinPackedVector retVal;
-   retVal.setTestForDuplicateIndex(true);
-   binaryOp(retVal, op1, op2, bf);
-   return retVal;
+    CoinPackedVector retVal;
+    retVal.setTestForDuplicateIndex(true);
+    binaryOp(retVal, op1, op2, bf);
+    return retVal;
 }
 
 //-----------------------------------------------------------------------------
 /// Return the sum of two packed vectors
 inline CoinPackedVector operator+(const CoinPackedVectorBase& op1,
-				  const CoinPackedVectorBase& op2)
+                                  const CoinPackedVectorBase& op2)
 {
-   CoinPackedVector retVal;
-   retVal.setTestForDuplicateIndex(true);
-   binaryOp(retVal, op1, op2, std::plus<double>());
-   return retVal;
+    CoinPackedVector retVal;
+    retVal.setTestForDuplicateIndex(true);
+    binaryOp(retVal, op1, op2, std::plus<double>());
+    return retVal;
 }
 
 /// Return the difference of two packed vectors
 inline CoinPackedVector operator-(const CoinPackedVectorBase& op1,
-				 const CoinPackedVectorBase& op2)
+                                  const CoinPackedVectorBase& op2)
 {
-   CoinPackedVector retVal;
-   retVal.setTestForDuplicateIndex(true);
-   binaryOp(retVal, op1, op2, std::minus<double>());
-   return retVal;
+    CoinPackedVector retVal;
+    retVal.setTestForDuplicateIndex(true);
+    binaryOp(retVal, op1, op2, std::minus<double>());
+    return retVal;
 }
 
 /// Return the element-wise product of two packed vectors
 inline CoinPackedVector operator*(const CoinPackedVectorBase& op1,
-				  const CoinPackedVectorBase& op2)
+                                  const CoinPackedVectorBase& op2)
 {
-   CoinPackedVector retVal;
-   retVal.setTestForDuplicateIndex(true);
-   binaryOp(retVal, op1, op2, std::multiplies<double>());
-   return retVal;
+    CoinPackedVector retVal;
+    retVal.setTestForDuplicateIndex(true);
+    binaryOp(retVal, op1, op2, std::multiplies<double>());
+    return retVal;
 }
 
 /// Return the element-wise ratio of two packed vectors
 inline CoinPackedVector operator/(const CoinPackedVectorBase& op1,
-				  const CoinPackedVectorBase& op2)
+                                  const CoinPackedVectorBase& op2)
 {
-   CoinPackedVector retVal;
-   retVal.setTestForDuplicateIndex(true);
-   binaryOp(retVal, op1, op2, std::divides<double>());
-   return retVal;
+    CoinPackedVector retVal;
+    retVal.setTestForDuplicateIndex(true);
+    binaryOp(retVal, op1, op2, std::divides<double>());
+    return retVal;
 }
 //@}
 
 /// Returns the dot product of two CoinPackedVector objects whose elements are
 /// doubles.  Use this version if the vectors are *not* guaranteed to be sorted.
 inline double sparseDotProduct(const CoinPackedVectorBase& op1,
-                        const CoinPackedVectorBase& op2){
-  int len, i;
-  double acc = 0.0;
-  CoinPackedVector retVal;
+                               const CoinPackedVectorBase& op2)
+{
+    int len, i;
+    double acc = 0.0;
+    CoinPackedVector retVal;
 
-  CoinPackedVector retval = op1*op2;
-  len = retval.getNumElements();
-  double * CParray = retval.getElements();
+    CoinPackedVector retval = op1*op2;
+    len = retval.getNumElements();
+    double * CParray = retval.getElements();
 
-  for(i = 0; i < len; i++){
-    acc += CParray[i];
-  }
-return acc;
+    for(i = 0; i < len; i++)
+    {
+        acc += CParray[i];
+    }
+    return acc;
 }
 
 
 /// Returns the dot product of two sorted CoinPackedVector objects.
 ///  The vectors should be sorted in ascending order of indices.
 inline double sortedSparseDotProduct(const CoinPackedVectorBase& op1,
-                        const CoinPackedVectorBase& op2){
-  int i, j, len1, len2;
-  double acc = 0.0;
+                                     const CoinPackedVectorBase& op2)
+{
+    int i, j, len1, len2;
+    double acc = 0.0;
 
-  const double* v1val = op1.getElements();
-  const double* v2val = op2.getElements();
-  const int* v1ind = op1.getIndices();
-  const int* v2ind = op2.getIndices();
+    const double* v1val = op1.getElements();
+    const double* v2val = op2.getElements();
+    const int* v1ind = op1.getIndices();
+    const int* v2ind = op2.getIndices();
 
-  len1 = op1.getNumElements();
-  len2 = op2.getNumElements();
+    len1 = op1.getNumElements();
+    len2 = op2.getNumElements();
 
-  i = 0;
-  j = 0;
+    i = 0;
+    j = 0;
 
-  while(i < len1 && j < len2){
-    if(v1ind[i] == v2ind[j]){
-      acc += v1val[i] * v2val[j];
-      i++;
-      j++;
-   }
-    else if(v2ind[j] < v1ind[i]){
-      j++;
-    }
-    else{
-      i++;
-    } // end if-else-elseif
-  } // end while
-  return acc;
- }
+    while(i < len1 && j < len2)
+    {
+        if(v1ind[i] == v2ind[j])
+        {
+            acc += v1val[i] * v2val[j];
+            i++;
+            j++;
+        }
+        else if(v2ind[j] < v1ind[i])
+        {
+            j++;
+        }
+        else
+        {
+            i++;
+        } // end if-else-elseif
+    } // end while
+    return acc;
+}
 
 
 //-----------------------------------------------------------------------------
@@ -560,36 +603,36 @@ inline double sortedSparseDotProduct(const CoinPackedVectorBase& op1,
 inline CoinPackedVector
 operator+(const CoinPackedVectorBase& op1, double value)
 {
-   CoinPackedVector retVal(op1);
-   retVal += value;
-   return retVal;
+    CoinPackedVector retVal(op1);
+    retVal += value;
+    return retVal;
 }
 
 /// Return the difference of a packed vector and a constant
 inline CoinPackedVector
 operator-(const CoinPackedVectorBase& op1, double value)
 {
-   CoinPackedVector retVal(op1);
-   retVal -= value;
-   return retVal;
+    CoinPackedVector retVal(op1);
+    retVal -= value;
+    return retVal;
 }
 
 /// Return the element-wise product of a packed vector and a constant
 inline CoinPackedVector
 operator*(const CoinPackedVectorBase& op1, double value)
 {
-   CoinPackedVector retVal(op1);
-   retVal *= value;
-   return retVal;
+    CoinPackedVector retVal(op1);
+    retVal *= value;
+    return retVal;
 }
 
 /// Return the element-wise ratio of a packed vector and a constant
 inline CoinPackedVector
 operator/(const CoinPackedVectorBase& op1, double value)
 {
-   CoinPackedVector retVal(op1);
-   retVal /= value;
-   return retVal;
+    CoinPackedVector retVal(op1);
+    retVal /= value;
+    return retVal;
 }
 
 //-----------------------------------------------------------------------------
@@ -598,44 +641,46 @@ operator/(const CoinPackedVectorBase& op1, double value)
 inline CoinPackedVector
 operator+(double value, const CoinPackedVectorBase& op1)
 {
-   CoinPackedVector retVal(op1);
-   retVal += value;
-   return retVal;
+    CoinPackedVector retVal(op1);
+    retVal += value;
+    return retVal;
 }
 
 /// Return the difference of a constant and a packed vector
 inline CoinPackedVector
 operator-(double value, const CoinPackedVectorBase& op1)
 {
-   CoinPackedVector retVal(op1);
-   const int size = retVal.getNumElements();
-   double* elems = retVal.getElements();
-   for (int i = 0; i < size; ++i) {
-      elems[i] = value - elems[i];
-   }
-   return retVal;
+    CoinPackedVector retVal(op1);
+    const int size = retVal.getNumElements();
+    double* elems = retVal.getElements();
+    for (int i = 0; i < size; ++i)
+    {
+        elems[i] = value - elems[i];
+    }
+    return retVal;
 }
 
 /// Return the element-wise product of a constant and a packed vector
 inline CoinPackedVector
 operator*(double value, const CoinPackedVectorBase& op1)
 {
-   CoinPackedVector retVal(op1);
-   retVal *= value;
-   return retVal;
+    CoinPackedVector retVal(op1);
+    retVal *= value;
+    return retVal;
 }
 
 /// Return the element-wise ratio of a a constant and packed vector
 inline CoinPackedVector
 operator/(double value, const CoinPackedVectorBase& op1)
 {
-   CoinPackedVector retVal(op1);
-   const int size = retVal.getNumElements();
-   double* elems = retVal.getElements();
-   for (int i = 0; i < size; ++i) {
-      elems[i] = value / elems[i];
-   }
-   return retVal;
+    CoinPackedVector retVal(op1);
+    const int size = retVal.getNumElements();
+    double* elems = retVal.getElements();
+    for (int i = 0; i < size; ++i)
+    {
+        elems[i] = value / elems[i];
+    }
+    return retVal;
 }
 //@}
 

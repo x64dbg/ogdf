@@ -51,7 +51,8 @@
 #include <ogdf/basic/Hashing.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 class GraphConstraints;
@@ -61,60 +62,97 @@ struct XmlTagObject;
 /* -------------------------- Constraint ----------------------------------------- */
 class Constraint
 {
-	friend class GraphConstraints;
+    friend class GraphConstraints;
 
 private:
-	ListIterator<Constraint *> listIt;
+    ListIterator<Constraint *> listIt;
 
 protected:
-	string m_Name;
-	/* */
-	bool m_UserDisabled;
+    string m_Name;
+    /* */
+    bool m_UserDisabled;
 
-	int m_Status; // OK, Suspended, notOk
-	/* The Graph this Constraint belongs to. No Constraint without a Graph! */
-	const Graph *m_pGraph;
+    int m_Status; // OK, Suspended, notOk
+    /* The Graph this Constraint belongs to. No Constraint without a Graph! */
+    const Graph *m_pGraph;
 
-	/* Will be called by the GraphConstraints when a Node in mGraph is removed. */
-	virtual void nodeDeleted(node v) { }
+    /* Will be called by the GraphConstraints when a Node in mGraph is removed. */
+    virtual void nodeDeleted(node v) { }
 
 public:
-	Constraint(const Graph &g) : m_pGraph(&g) { m_Status = 0; m_UserDisabled = false;  }
+    Constraint(const Graph &g) : m_pGraph(&g)
+    {
+        m_Status = 0;
+        m_UserDisabled = false;
+    }
 
-	virtual ~Constraint() {}
+    virtual ~Constraint() {}
 
-	const Graph& constGraph() const { return *m_pGraph; }
+    const Graph& constGraph() const
+    {
+        return *m_pGraph;
+    }
 
-	virtual bool isValid() { return (!m_UserDisabled && (m_Status==0)); }
+    virtual bool isValid()
+    {
+        return (!m_UserDisabled && (m_Status==0));
+    }
 
-	virtual int getInternalStatus() { return m_Status; }
+    virtual int getInternalStatus()
+    {
+        return m_Status;
+    }
 
-	virtual void setInternalStatus(int s) { m_Status = s; }
+    virtual void setInternalStatus(int s)
+    {
+        m_Status = s;
+    }
 
-	//virtual bool load(int stuff) = 0;
-	//virtual bool save(int stuff) = 0;
-	//virtual bool checkConstraints(List<Constraint*> csts) {return true; }
+    //virtual bool load(int stuff) = 0;
+    //virtual bool save(int stuff) = 0;
+    //virtual bool checkConstraints(List<Constraint*> csts) {return true; }
 
-	void userEnable() { m_UserDisabled = false; }
+    void userEnable()
+    {
+        m_UserDisabled = false;
+    }
 
-	void userDisable() { m_UserDisabled = true; }
+    void userDisable()
+    {
+        m_UserDisabled = true;
+    }
 
-	bool isUserDisabled() { return m_UserDisabled; }
+    bool isUserDisabled()
+    {
+        return m_UserDisabled;
+    }
 
-	virtual int getType() { return 0; }
+    virtual int getType()
+    {
+        return 0;
+    }
 
-	static int getStaticType() { return 0; }
+    static int getStaticType()
+    {
+        return 0;
+    }
 
-	void setName(const string &text) { m_Name = text; }
+    void setName(const string &text)
+    {
+        m_Name = text;
+    }
 
-	const string &getName() { return m_Name; }
+    const string &getName()
+    {
+        return m_Name;
+    }
 
-	//DEBUG
-	virtual bool buildFromOgml(XmlTagObject * constraintTag, Hashing <string, node> * nodes);
-	virtual bool storeToOgml(int id, ostream & os, int indentStep);
-	//static void generateIndent(char ** indent, const int & indentSize);
+    //DEBUG
+    virtual bool buildFromOgml(XmlTagObject * constraintTag, Hashing <string, node> * nodes);
+    virtual bool storeToOgml(int id, ostream & os, int indentStep);
+    //static void generateIndent(char ** indent, const int & indentSize);
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 
@@ -122,73 +160,91 @@ public:
 /* For each Graph a Set of Constraints*/
 class GraphConstraints //: public GraphStructure
 {
-	friend class ConstraintManager;
+    friend class ConstraintManager;
 
 protected:
-	/* The Graph this Constraint belongs to. No Constraint without a Graph! */
-	const Graph *m_pGraph;
+    /* The Graph this Constraint belongs to. No Constraint without a Graph! */
+    const Graph *m_pGraph;
 
-	/* All Constraints for mGraph */
-	List<Constraint *> m_List;
+    /* All Constraints for mGraph */
+    List<Constraint *> m_List;
 
 public:
-	/* Constructor, GraphStructure */
-	GraphConstraints(const Graph &g) : m_pGraph(&g), m_List() { }
+    /* Constructor, GraphStructure */
+    GraphConstraints(const Graph &g) : m_pGraph(&g), m_List() { }
 
-	/* Returns the Graph */
-	const Graph *constGraph() { return m_pGraph; }
+    /* Returns the Graph */
+    const Graph *constGraph()
+    {
+        return m_pGraph;
+    }
 
-	/* adds a Constraint to this Set */
-	void addConstraint(Constraint *c) { c->listIt = m_List.pushBack(c); }
+    /* adds a Constraint to this Set */
+    void addConstraint(Constraint *c)
+    {
+        c->listIt = m_List.pushBack(c);
+    }
 
-	/* removes a Constraint from this set */
-	void removeConstraint(Constraint *c) { m_List.del(c->listIt); }
+    /* removes a Constraint from this set */
+    void removeConstraint(Constraint *c)
+    {
+        m_List.del(c->listIt);
+    }
 
-	/* returns all Constraints */
-	List<Constraint *> *getConstraints() { return &m_List; }
+    /* returns all Constraints */
+    List<Constraint *> *getConstraints()
+    {
+        return &m_List;
+    }
 
-	/* Return Constraint Count */
-	int numberOfConstraints() { return m_List.size(); }
+    /* Return Constraint Count */
+    int numberOfConstraints()
+    {
+        return m_List.size();
+    }
 
-	/* returns all Constraints of Type type */
-	List<Constraint *> getConstraintsOfType(int type);
+    /* returns all Constraints of Type type */
+    List<Constraint *> getConstraintsOfType(int type);
 
-	template<class TYP> void getConstraintsOfType(List<TYP *> *res) {
-		//List<TYP *> res;
-		ListConstIterator<Constraint *> it;
-		for(it = m_List.begin(); it.valid(); ++it)
-		{
-			Constraint *c = *it;
+    template<class TYP> void getConstraintsOfType(List<TYP *> *res)
+    {
+        //List<TYP *> res;
+        ListConstIterator<Constraint *> it;
+        for(it = m_List.begin(); it.valid(); ++it)
+        {
+            Constraint *c = *it;
 
-			if (TYP::getStaticType()==c->getType())
-			{
-				if (c->isValid()) res->pushBack(static_cast<TYP *>(c));
-			}
-		}
-		//return res;
-	}
+            if (TYP::getStaticType()==c->getType())
+            {
+                if (c->isValid()) res->pushBack(static_cast<TYP *>(c));
+            }
+        }
+        //return res;
+    }
 
-	void clear() {
-		m_List.clear();
-	}
+    void clear()
+    {
+        m_List.clear();
+    }
 
-	virtual ~GraphConstraints() {
-		ListConstIterator<Constraint *> it;
-		for(it = m_List.begin(); it.valid(); ++it)
-		{
-			Constraint *c = *it;
-			delete c;
-		}
-	}
+    virtual ~GraphConstraints()
+    {
+        ListConstIterator<Constraint *> it;
+        for(it = m_List.begin(); it.valid(); ++it)
+        {
+            Constraint *c = *it;
+            delete c;
+        }
+    }
 
-	virtual void nodeDeleted(node v);
-	virtual void nodeAdded(node v)    { }
-	virtual void edgeDeleted(edge e)  { }
-	virtual void edgeAdded(edge e)    { }
-	virtual void reInit()             { }
-	virtual void cleared()            { }
+    virtual void nodeDeleted(node v);
+    virtual void nodeAdded(node v)    { }
+    virtual void edgeDeleted(edge e)  { }
+    virtual void edgeAdded(edge e)    { }
+    virtual void reInit()             { }
+    virtual void cleared()            { }
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 
@@ -197,11 +253,11 @@ class ConstraintManager
 {
 public:
 
-	static Constraint *createConstraintByName(const Graph &G, string *name);
+    static Constraint *createConstraintByName(const Graph &G, string *name);
 
-	static string getClassnameOfConstraint(Constraint *c);
+    static string getClassnameOfConstraint(Constraint *c);
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 } // end namespace

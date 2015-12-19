@@ -51,7 +51,8 @@
 #include <ogdf/basic/basic.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 #define OGDF_DISJOINT_SETS_INTERMEDIATE_PARENT_CHECK
 
@@ -91,164 +92,170 @@ template <LinkOptions linkOption = LI, CompressionOptions compressionOption = PS
 class DisjointSets
 {
 private:
-	int numberOfSets; //!< Current number of disjoint sets.
-	int numberOfElements; //!< Current number of elements.
-	int maxNumberOfElements; //!< Maximum number of elements (array size) adjusted dynamically.
+    int numberOfSets; //!< Current number of disjoint sets.
+    int numberOfElements; //!< Current number of elements.
+    int maxNumberOfElements; //!< Maximum number of elements (array size) adjusted dynamically.
 
-	// Arrays parents, elements, parameters, siblings map a set id to its properties.
+    // Arrays parents, elements, parameters, siblings map a set id to its properties.
 
-	int *parents; //!< Maps set id to parent set id.
-	int *parameters; //!< Maps set id to rank/size.
-	int *siblings; //!< Maps set id to sibling set id.
+    int *parents; //!< Maps set id to parent set id.
+    int *parameters; //!< Maps set id to rank/size.
+    int *siblings; //!< Maps set id to sibling set id.
 
-	//find
-	int find(CompressionOption<PC>,int set);
-	int find(CompressionOption<PS>,int set);
-	int find(CompressionOption<PH>,int set);
-	int find(CompressionOption<R1>,int set);
-	int find(CompressionOption<CO>,int set);
-	int find(CompressionOption<NF>,int set);
+    //find
+    int find(CompressionOption<PC>,int set);
+    int find(CompressionOption<PS>,int set);
+    int find(CompressionOption<PH>,int set);
+    int find(CompressionOption<R1>,int set);
+    int find(CompressionOption<CO>,int set);
+    int find(CompressionOption<NF>,int set);
 
-	//link
-	int link(LinkOption<NL>,int set1,int set2);
-	int link(LinkOption<LI>,int set1,int set2);
-	int link(LinkOption<LS>,int set1,int set2);
-	int link(LinkOption<LR>,int set1,int set2);
+    //link
+    int link(LinkOption<NL>,int set1,int set2);
+    int link(LinkOption<LI>,int set1,int set2);
+    int link(LinkOption<LS>,int set1,int set2);
+    int link(LinkOption<LR>,int set1,int set2);
 
-	//quickUnion
-	bool quickUnion(LinkOption<LI>,InterleavingOption<Rem>,int set1,int set2);
-	bool quickUnion(LinkOption<LI>,InterleavingOption<IPSPC>,int set1,int set2);
-	bool quickUnion(LinkOption<LR>,InterleavingOption<TvL>,int set1,int set2);
-	bool quickUnion(AnyOption,InterleavingOption<NI>,int set1,int set2);
-	bool quickUnion(LinkOption<NL>,InterleavingOption<IR0>,int set1,int set2);
+    //quickUnion
+    bool quickUnion(LinkOption<LI>,InterleavingOption<Rem>,int set1,int set2);
+    bool quickUnion(LinkOption<LI>,InterleavingOption<IPSPC>,int set1,int set2);
+    bool quickUnion(LinkOption<LR>,InterleavingOption<TvL>,int set1,int set2);
+    bool quickUnion(AnyOption,InterleavingOption<NI>,int set1,int set2);
+    bool quickUnion(LinkOption<NL>,InterleavingOption<IR0>,int set1,int set2);
 
 public:
-	//! Creates an empty DisjointSets structure.
-	/**
-	* \param maxNumberOfElements Expected number of Elements.
-	*/
-	DisjointSets(int maxNumberOfElements = (1<<15) )
-	{
-		this->numberOfSets=0;
-		this->numberOfElements=0;
-		this->maxNumberOfElements = maxNumberOfElements;
-		this->parents = new int[this->maxNumberOfElements];
-		this->parameters = (linkOption==LR || linkOption==LS) ? new int[this->maxNumberOfElements] : 0;
-		this->siblings = (compressionOption==CO) ? new int[this->maxNumberOfElements] : 0;
-	}
+    //! Creates an empty DisjointSets structure.
+    /**
+    * \param maxNumberOfElements Expected number of Elements.
+    */
+    DisjointSets(int maxNumberOfElements = (1<<15) )
+    {
+        this->numberOfSets=0;
+        this->numberOfElements=0;
+        this->maxNumberOfElements = maxNumberOfElements;
+        this->parents = new int[this->maxNumberOfElements];
+        this->parameters = (linkOption==LR || linkOption==LS) ? new int[this->maxNumberOfElements] : 0;
+        this->siblings = (compressionOption==CO) ? new int[this->maxNumberOfElements] : 0;
+    }
 
-	~DisjointSets()
-	{
-		delete [] this->parents;
-		if (this->parameters != 0) delete [] this->parameters;
-		if (this->siblings != 0) delete [] this->siblings;
-	}
+    ~DisjointSets()
+    {
+        delete [] this->parents;
+        if (this->parameters != 0) delete [] this->parameters;
+        if (this->siblings != 0) delete [] this->siblings;
+    }
 
-	//! Returns the id of the largest superset of \a set and compresses the path according to \a compressionOption.
-	/**
-	* \param set Set.
-	* \return Superset id
-	* \pre \a set is a non negative properly initialized id.
-	*/
-	int find(int set)
-	{
-		return find(CompressionOption<compressionOption>(), set);
-	}
+    //! Returns the id of the largest superset of \a set and compresses the path according to \a compressionOption.
+    /**
+    * \param set Set.
+    * \return Superset id
+    * \pre \a set is a non negative properly initialized id.
+    */
+    int find(int set)
+    {
+        return find(CompressionOption<compressionOption>(), set);
+    }
 
-	//! Returns the id of the largest superset of \a set.
-	/**
-	* \param set Set.
-	* \return Superset id
-	* \pre \a set is a non negative properly initialized id.
-	*/
-	int getRepresentative(int set)
-	{
-		while (set!=parents[set]) set=parents[set];
-		return set;
-	}
+    //! Returns the id of the largest superset of \a set.
+    /**
+    * \param set Set.
+    * \return Superset id
+    * \pre \a set is a non negative properly initialized id.
+    */
+    int getRepresentative(int set)
+    {
+        while (set!=parents[set]) set=parents[set];
+        return set;
+    }
 
-	//! Initializes a singleton set.
-	/**
-	* \return Set id of the initialized singleton set.
-	*/
-	int makeSet()
-	{
-		if (this->numberOfElements==this->maxNumberOfElements)
-		{
-			int *parents = this->parents;
-			this->parents = new int[this->maxNumberOfElements * 2];
-			memcpy(this->parents,parents,sizeof(int)*this->maxNumberOfElements);
-			delete [] parents;
+    //! Initializes a singleton set.
+    /**
+    * \return Set id of the initialized singleton set.
+    */
+    int makeSet()
+    {
+        if (this->numberOfElements==this->maxNumberOfElements)
+        {
+            int *parents = this->parents;
+            this->parents = new int[this->maxNumberOfElements * 2];
+            memcpy(this->parents,parents,sizeof(int)*this->maxNumberOfElements);
+            delete [] parents;
 
-			if (this->parameters != 0)
-			{
-				int *parameters = this->parameters;
-				this->parameters = new int[this->maxNumberOfElements*2];
-				memcpy(this->parameters,parameters,sizeof(int)*this->maxNumberOfElements);
-				delete [] parameters;
-			}
+            if (this->parameters != 0)
+            {
+                int *parameters = this->parameters;
+                this->parameters = new int[this->maxNumberOfElements*2];
+                memcpy(this->parameters,parameters,sizeof(int)*this->maxNumberOfElements);
+                delete [] parameters;
+            }
 
-			if (this->siblings != 0)
-			{
-				int *siblings = this->siblings;
-				this->siblings = new int[this->maxNumberOfElements*2];
-				memcpy(this->siblings,siblings,sizeof(int)*this->maxNumberOfElements);
-				delete [] siblings;
-			}
-			this->maxNumberOfElements*=2;
-		}
-		this->numberOfSets++;
-		int id = this->numberOfElements++;
-		this->parents[id]=id;
-		//Initialize size/ rank/ sibling.
-		if (linkOption == LS) this->parameters[id]=1;
-		else if (linkOption == LR) this->parameters[id]=0;
-		if (compressionOption == CO) this->siblings[id] = -1;
-		return id;
-	}
+            if (this->siblings != 0)
+            {
+                int *siblings = this->siblings;
+                this->siblings = new int[this->maxNumberOfElements*2];
+                memcpy(this->siblings,siblings,sizeof(int)*this->maxNumberOfElements);
+                delete [] siblings;
+            }
+            this->maxNumberOfElements*=2;
+        }
+        this->numberOfSets++;
+        int id = this->numberOfElements++;
+        this->parents[id]=id;
+        //Initialize size/ rank/ sibling.
+        if (linkOption == LS) this->parameters[id]=1;
+        else if (linkOption == LR) this->parameters[id]=0;
+        if (compressionOption == CO) this->siblings[id] = -1;
+        return id;
+    }
 
-	//! Unions \a set1 and \a set2.
-	/**
-	* \pre \a set1 and \a set2 are maximal disjoint sets.
-	* \return Set id of the union.
-	*/
-	int link(int set1, int set2)
-	{
-		if (set1==set2) return -1;
-		this->numberOfSets--;
-		int superset = link(LinkOption<linkOption>(), set1, set2);
-		//Collapse subset tree.
-		if (compressionOption == CO)
-		{
-			int subset = set1 == superset ? set2 : set1;
-			int id = subset;
-			while (this->siblings[id] != -1)
-			{
-				id = this->siblings[id];
-				this->parents[id]=superset;
-			}
-			this->siblings[id] = this->siblings[superset];
-			this->siblings[superset] = subset;
-		}
-		return superset;
-	}
+    //! Unions \a set1 and \a set2.
+    /**
+    * \pre \a set1 and \a set2 are maximal disjoint sets.
+    * \return Set id of the union.
+    */
+    int link(int set1, int set2)
+    {
+        if (set1==set2) return -1;
+        this->numberOfSets--;
+        int superset = link(LinkOption<linkOption>(), set1, set2);
+        //Collapse subset tree.
+        if (compressionOption == CO)
+        {
+            int subset = set1 == superset ? set2 : set1;
+            int id = subset;
+            while (this->siblings[id] != -1)
+            {
+                id = this->siblings[id];
+                this->parents[id]=superset;
+            }
+            this->siblings[id] = this->siblings[superset];
+            this->siblings[superset] = subset;
+        }
+        return superset;
+    }
 
-	//! Unions the maximal disjoint sets containing \a set1 and \a set2.
-	/**
-	* \return True, if the maximal sets containing \a set1 and \a set2 were disjoint und joined correctly. False otherwise.
-	*/
-	bool quickUnion(int set1, int set2)
-	{
-		if (set1==set2) return false;
-		this->numberOfSets--;
-		return quickUnion(LinkOption<linkOption>(),InterleavingOption<interleavingOption>(), set1, set2);
-	}
+    //! Unions the maximal disjoint sets containing \a set1 and \a set2.
+    /**
+    * \return True, if the maximal sets containing \a set1 and \a set2 were disjoint und joined correctly. False otherwise.
+    */
+    bool quickUnion(int set1, int set2)
+    {
+        if (set1==set2) return false;
+        this->numberOfSets--;
+        return quickUnion(LinkOption<linkOption>(),InterleavingOption<interleavingOption>(), set1, set2);
+    }
 
-	//! Returns the current number of disjoint sets.
-	int getNumberOfSets() { return numberOfSets; }
+    //! Returns the current number of disjoint sets.
+    int getNumberOfSets()
+    {
+        return numberOfSets;
+    }
 
-	//! Returns the current number of elements.
-	int getNumberOfElements() {return numberOfElements; }
+    //! Returns the current number of elements.
+    int getNumberOfElements()
+    {
+        return numberOfElements;
+    }
 };
 
 
@@ -256,74 +263,74 @@ public:
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::find(CompressionOption<PC>,int set)
 {
-	int parent = parents[set];
-	if (set==parent)
-	{
-		return set;
-	}
-	else
-	{
-		parent = find(CompressionOption<PC>(),parent);
-		parents[set]=parent;
-		return parent;
-	}
+    int parent = parents[set];
+    if (set==parent)
+    {
+        return set;
+    }
+    else
+    {
+        parent = find(CompressionOption<PC>(),parent);
+        parents[set]=parent;
+        return parent;
+    }
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::find(CompressionOption<PH>,int set)
 {
-	while (set!=parents[set])
-	{
-		int parent = parents[set];
-		int grandParent = parents[parent];
-		parents[set]=grandParent;
-		set = grandParent;
-	}
-	return set;
+    while (set!=parents[set])
+    {
+        int parent = parents[set];
+        int grandParent = parents[parent];
+        parents[set]=grandParent;
+        set = grandParent;
+    }
+    return set;
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::find(CompressionOption<PS>,int set)
 {
-	int parent = parents[set];
-	int grandParent = parents[parent];
-	while (parent!=grandParent)
-	{
-		parents[set]=grandParent;
-		set = parent;
-		parent = grandParent;
-		grandParent = parents[grandParent];
-	}
-	return parent;
+    int parent = parents[set];
+    int grandParent = parents[parent];
+    while (parent!=grandParent)
+    {
+        parents[set]=grandParent;
+        set = parent;
+        parent = grandParent;
+        grandParent = parents[grandParent];
+    }
+    return parent;
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::find(CompressionOption<R1>,int set)
 {
-	int root = set;
-	set = parents[root];
+    int root = set;
+    set = parents[root];
 
-	while (set!=parents[set])
-	{
-		int parent = parents[set];
-		parents[set] = root;
-		set = parent;
-	}
-	parents[root] = set;
-	return set;
+    while (set!=parents[set])
+    {
+        int parent = parents[set];
+        parents[set] = root;
+        set = parent;
+    }
+    parents[root] = set;
+    return set;
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::find(CompressionOption<NF>,int set)
 {
-	while (set!=parents[set]) set=parents[set];
-	return set;
+    while (set!=parents[set]) set=parents[set];
+    return set;
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::find(CompressionOption<CO>,int set)
 {
-	return parents[set];
+    return parents[set];
 }
 
 
@@ -332,177 +339,179 @@ template <LinkOptions linkOption, CompressionOptions compressionOption, Interlea
 bool DisjointSets<linkOption,compressionOption,interleavingOption>::quickUnion(AnyOption,InterleavingOption<NI>,int set1,int set2)
 {
 #ifdef OGDF_DISJOINT_SETS_INTERMEDIATE_PARENT_CHECK
-	if (parents[set1]==parents[set2]) return false;
+    if (parents[set1]==parents[set2]) return false;
 #endif
-	set1 = find(set1);
-	set2 = find(set2);
-	if (set1 != set2)
-	{
-		link(set1,set2);
-		return true;
-	}
-	return false;
+    set1 = find(set1);
+    set2 = find(set2);
+    if (set1 != set2)
+    {
+        link(set1,set2);
+        return true;
+    }
+    return false;
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 bool DisjointSets<linkOption,compressionOption,interleavingOption>::quickUnion(LinkOption<NL>,InterleavingOption<IR0>,int set1,int set2)
 {
 #ifdef OGDF_DISJOINT_SETS_INTERMEDIATE_PARENT_CHECK
-	if (parents[set1]==parents[set2]) return false;
+    if (parents[set1]==parents[set2]) return false;
 #endif
-	int root = set2;
-	int set = set2;
-	int parent = parents[set];
-	parents[set]=root;
-	while (set != parent)
-	{
-		if (parent == set1)
-		{
-			parents[root]=set1;
-			return false;
-		}
-		set = parent;
-		parent = parents[set];
-		parents[set]=root;
-	}
+    int root = set2;
+    int set = set2;
+    int parent = parents[set];
+    parents[set]=root;
+    while (set != parent)
+    {
+        if (parent == set1)
+        {
+            parents[root]=set1;
+            return false;
+        }
+        set = parent;
+        parent = parents[set];
+        parents[set]=root;
+    }
 
-	set = set1;
-	parent = parents[set];
-	while (true)
-	{
-		if (parent == root) return false;
-		parents[set] = root;
-		if (parent == set) return true;
-		set = parent;
-		parent = parents[set];
-	}
+    set = set1;
+    parent = parents[set];
+    while (true)
+    {
+        if (parent == root) return false;
+        parents[set] = root;
+        if (parent == set) return true;
+        set = parent;
+        parent = parents[set];
+    }
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 bool DisjointSets<linkOption,compressionOption,interleavingOption>::quickUnion(LinkOption<LI>,InterleavingOption<Rem>,int set1,int set2)
 {
-	int r_x = set1; int r_y = set2;
-	int p_r_x =parents[r_x];
-	int p_r_y =parents[r_y];
-	while (p_r_x != p_r_y)
-	{
-		if (p_r_x < p_r_y)
-		{
-			if (r_x == p_r_x)
-			{
-				parents[r_x]=p_r_y;
-				return true;
-			}
-			parents[r_x]=p_r_y;
-			r_x = p_r_x;
-			p_r_x = parents[r_x];
-		}
-		else
-		{
-			if (r_y == p_r_y)
-			{
-				parents[r_y]=p_r_x;
-				return true;
-			}
-			parents[r_y]=p_r_x;
-			r_y = p_r_y;
-			p_r_y = parents[r_y];
-		}
-	}
-	return false;
+    int r_x = set1;
+    int r_y = set2;
+    int p_r_x =parents[r_x];
+    int p_r_y =parents[r_y];
+    while (p_r_x != p_r_y)
+    {
+        if (p_r_x < p_r_y)
+        {
+            if (r_x == p_r_x)
+            {
+                parents[r_x]=p_r_y;
+                return true;
+            }
+            parents[r_x]=p_r_y;
+            r_x = p_r_x;
+            p_r_x = parents[r_x];
+        }
+        else
+        {
+            if (r_y == p_r_y)
+            {
+                parents[r_y]=p_r_x;
+                return true;
+            }
+            parents[r_y]=p_r_x;
+            r_y = p_r_y;
+            p_r_y = parents[r_y];
+        }
+    }
+    return false;
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 bool DisjointSets<linkOption,compressionOption,interleavingOption>::quickUnion(LinkOption<LI>,InterleavingOption<IPSPC>,int set1,int set2)
 {
 #ifdef OGDF_DISJOINT_SETS_INTERMEDIATE_PARENT_CHECK
-	if (parents[set1]==parents[set2]) return false;
+    if (parents[set1]==parents[set2]) return false;
 #endif
-	int set = set1;
+    int set = set1;
 
-	if (set1 < set2)
-	{
-		set = set2;
-		set2 = set1;
-		set1 = set;
-	}
+    if (set1 < set2)
+    {
+        set = set2;
+        set2 = set1;
+        set1 = set;
+    }
 
-	//!Use path splitting to compress the path of set1 and get the root
-	set = parents[set];
-	int parent = parents[set];
-	int grandParent = parents[parent];
-	while (parent!=grandParent)
-	{
-		parents[set]=grandParent;
-		set = parent;
-		parent = grandParent;
-		grandParent = parents[grandParent];
-	}
-	parents[set1]=parent;
-	int root = parent;
+    //!Use path splitting to compress the path of set1 and get the root
+    set = parents[set];
+    int parent = parents[set];
+    int grandParent = parents[parent];
+    while (parent!=grandParent)
+    {
+        parents[set]=grandParent;
+        set = parent;
+        parent = grandParent;
+        grandParent = parents[grandParent];
+    }
+    parents[set1]=parent;
+    int root = parent;
 
-	//!Redirect all nodes with smaller indices on the path of set2 to the root
-	set = set2;
-	parent = parents[set];
-	while (true)
-	{
-		if (parent < root)
-		{
-			parents[set]=root;
-			if (set == parent) return true;
-			set=parent;
-			parent = parents[set];
-		}
-		else if (parent > root)
-		{
-			parents[root]=parent;
-			parents[set1]=parent;
-			parents[set2]=parent;
-			return true;
-		}
-		else return false;
-	}
+    //!Redirect all nodes with smaller indices on the path of set2 to the root
+    set = set2;
+    parent = parents[set];
+    while (true)
+    {
+        if (parent < root)
+        {
+            parents[set]=root;
+            if (set == parent) return true;
+            set=parent;
+            parent = parents[set];
+        }
+        else if (parent > root)
+        {
+            parents[root]=parent;
+            parents[set1]=parent;
+            parents[set2]=parent;
+            return true;
+        }
+        else return false;
+    }
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 bool DisjointSets<linkOption,compressionOption,interleavingOption>::quickUnion(LinkOption<LR>,InterleavingOption<TvL>,int set1,int set2)
 {
-	int r_x = set1; int r_y = set2;
-	int p_r_x =parents[r_x];
-	int p_r_y =parents[r_y];
-	while (p_r_x != p_r_y)
-	{
-		if (parameters[p_r_x]<=parameters[p_r_y])
-		{
-			if (r_x==p_r_x)
-			{
-				if (parameters[p_r_x]==parameters[p_r_y])
-				{
-					if (p_r_y==parents[p_r_y])
-					{
-						parameters[p_r_y]++;
-					}
-				}
-				parents[r_x]=parents[p_r_y];
-				return true;
-			}
-			parents[r_x]=p_r_y;
-			r_x = p_r_x;
-			p_r_x = parents[r_x];
-		}
-		else
-		{
-			if (r_y==p_r_y)
-			{
-				parents[r_y]=parents[p_r_x];
-				return true;
-			}
-			parents[r_y]=p_r_x;
-			r_y = p_r_y;
-			p_r_y = parents[r_y];
-		}
-	}
-	return false;
+    int r_x = set1;
+    int r_y = set2;
+    int p_r_x =parents[r_x];
+    int p_r_y =parents[r_y];
+    while (p_r_x != p_r_y)
+    {
+        if (parameters[p_r_x]<=parameters[p_r_y])
+        {
+            if (r_x==p_r_x)
+            {
+                if (parameters[p_r_x]==parameters[p_r_y])
+                {
+                    if (p_r_y==parents[p_r_y])
+                    {
+                        parameters[p_r_y]++;
+                    }
+                }
+                parents[r_x]=parents[p_r_y];
+                return true;
+            }
+            parents[r_x]=p_r_y;
+            r_x = p_r_x;
+            p_r_x = parents[r_x];
+        }
+        else
+        {
+            if (r_y==p_r_y)
+            {
+                parents[r_y]=parents[p_r_x];
+                return true;
+            }
+            parents[r_y]=p_r_x;
+            r_y = p_r_y;
+            p_r_y = parents[r_y];
+        }
+    }
+    return false;
 }
 
 
@@ -510,67 +519,67 @@ bool DisjointSets<linkOption,compressionOption,interleavingOption>::quickUnion(L
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::link(LinkOption<LI>,int set1,int set2)
 {
-	if (set1<set2)
-	{
-		parents[set1]=set2;
-		return set2;
-	}
-	else
-	{
-		parents[set2]=set1;
-		return set1;
-	}
+    if (set1<set2)
+    {
+        parents[set1]=set2;
+        return set2;
+    }
+    else
+    {
+        parents[set2]=set1;
+        return set1;
+    }
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::link(LinkOption<LR>,int set1,int set2)
 {
-	int parameter1 = parameters[set1];
-	int parameter2 = parameters[set2];
+    int parameter1 = parameters[set1];
+    int parameter2 = parameters[set2];
 
-	if (parameter1<parameter2)
-	{
-		parents[set1]=set2;
-		return set2;
-	}
-	else if (parameter1>parameter2)
-	{
-		parents[set2]=set1;
-		return set1;
-	}
-	else
-	{
-		parents[set1]=set2;
-		parameters[set2]++;
-		return set2;
-	}
+    if (parameter1<parameter2)
+    {
+        parents[set1]=set2;
+        return set2;
+    }
+    else if (parameter1>parameter2)
+    {
+        parents[set2]=set1;
+        return set1;
+    }
+    else
+    {
+        parents[set1]=set2;
+        parameters[set2]++;
+        return set2;
+    }
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::link(LinkOption<LS>,int set1,int set2)
 {
-	int parameter1 = parameters[set1];
-	int parameter2 = parameters[set2];
+    int parameter1 = parameters[set1];
+    int parameter2 = parameters[set2];
 
-	if (parameter1<parameter2)
-	{
-		parents[set1]=set2;
-		parameters[set2]+=parameter1;
-		return set2;
-	}
-	else
-	{
-		parents[set2]=set1;
-		parameters[set1]+=parameter2;
-		return set1;
-	}
+    if (parameter1<parameter2)
+    {
+        parents[set1]=set2;
+        parameters[set2]+=parameter1;
+        return set2;
+    }
+    else
+    {
+        parents[set2]=set1;
+        parameters[set1]+=parameter2;
+        return set1;
+    }
 }
 
 template <LinkOptions linkOption, CompressionOptions compressionOption, InterleavingOptions interleavingOption>
 int DisjointSets<linkOption,compressionOption,interleavingOption>::link(LinkOption<NL>,int set1,int set2)
 {
-	parents[set1]=set2;
-	return set2;
+    parents[set1]=set2;
+    return set2;
 }
 
 }  // end namespace ogdf

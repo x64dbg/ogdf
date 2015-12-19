@@ -46,118 +46,119 @@
 #include <ogdf/cluster/CconnectClusterPlanar.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //precondition: graph is c-connected
 void CPlanarSubClusteredGraph::call(const ClusterGraph &CG,
-									EdgeArray<bool>& inSub) //original edges in subgraph?
+                                    EdgeArray<bool>& inSub) //original edges in subgraph?
 
 {
-	List<edge> leftOver;//original edges not in subgraph
-	call(CG, inSub, leftOver);
+    List<edge> leftOver;//original edges not in subgraph
+    call(CG, inSub, leftOver);
 
 }//call
 //precondition: graph is c-connected
 void CPlanarSubClusteredGraph::call(const ClusterGraph &CGO,
-									EdgeArray<bool>& inSub, //original edges in subgraph?
-									List<edge>& leftOver)//original edges not in subgraph
+                                    EdgeArray<bool>& inSub, //original edges in subgraph?
+                                    List<edge>& leftOver)//original edges not in subgraph
 {
-	EdgeArray<double> weightDummy;
-	call(CGO, inSub, leftOver, weightDummy);
+    EdgeArray<double> weightDummy;
+    call(CGO, inSub, leftOver, weightDummy);
 }
 
 void CPlanarSubClusteredGraph::call(const ClusterGraph &CGO,
-									EdgeArray<bool>& inSub, //original edges in subgraph?
-									List<edge>& leftOver,   //original edges not in subgraph
-									EdgeArray<double>& edgeWeight) //prefer lightweight edges
+                                    EdgeArray<bool>& inSub, //original edges in subgraph?
+                                    List<edge>& leftOver,   //original edges not in subgraph
+                                    EdgeArray<double>& edgeWeight) //prefer lightweight edges
 {
-	leftOver.clear();
+    leftOver.clear();
 
-	//we compute a c-planar subclustered graph by calling
-	//CPlanarSubClusteredST and then perform reinsertion on
-	//a copy of the computed subclustered graph
-	//initialize "call-global" info arrays
-	//edge status
-	const Graph& origG = CGO.constGraph();
-	m_edgeStatus.init(origG, 0);
+    //we compute a c-planar subclustered graph by calling
+    //CPlanarSubClusteredST and then perform reinsertion on
+    //a copy of the computed subclustered graph
+    //initialize "call-global" info arrays
+    //edge status
+    const Graph& origG = CGO.constGraph();
+    m_edgeStatus.init(origG, 0);
 
-	CPlanarSubClusteredST CPST;
-	if (edgeWeight.valid())
-		CPST.call(CGO, inSub, edgeWeight);
-	else
-		CPST.call(CGO, inSub);
+    CPlanarSubClusteredST CPST;
+    if (edgeWeight.valid())
+        CPST.call(CGO, inSub, edgeWeight);
+    else
+        CPST.call(CGO, inSub);
 
-	//now construct the copy
-	//we should create a clusterGraph copy function that
-	//builds a clustergraph upon a subgraph of the
-	//original graph, preliminarily use fullcopy and delete edges
+    //now construct the copy
+    //we should create a clusterGraph copy function that
+    //builds a clustergraph upon a subgraph of the
+    //original graph, preliminarily use fullcopy and delete edges
 
-	ClusterArray<cluster> clusterCopy(CGO);
-	NodeArray<node> nodeCopy(origG);
-	EdgeArray<edge> edgeCopy(origG);
-	Graph testG;
-	ClusterGraph CG(CGO, testG, clusterCopy, nodeCopy, edgeCopy);
+    ClusterArray<cluster> clusterCopy(CGO);
+    NodeArray<node> nodeCopy(origG);
+    EdgeArray<edge> edgeCopy(origG);
+    Graph testG;
+    ClusterGraph CG(CGO, testG, clusterCopy, nodeCopy, edgeCopy);
 
-	CconnectClusterPlanar CCCP;
+    CconnectClusterPlanar CCCP;
 
-	//-------------------------------------
-	//perform reinsertion of leftover edges
-	//fill list of uninserted edges
+    //-------------------------------------
+    //perform reinsertion of leftover edges
+    //fill list of uninserted edges
 
-	EdgeArray<bool> visited(origG,false);
+    EdgeArray<bool> visited(origG,false);
 
-	//delete the non-ST edges
-	edge e;
-	forall_edges(e, origG)
-	{
-		if (!inSub[e])
-		{
-			leftOver.pushBack(e); //original edges
-			testG.delEdge(edgeCopy[e]);
-		}//if
-	}//foralledges
+    //delete the non-ST edges
+    edge e;
+    forall_edges(e, origG)
+    {
+        if (!inSub[e])
+        {
+            leftOver.pushBack(e); //original edges
+            testG.delEdge(edgeCopy[e]);
+        }//if
+    }//foralledges
 
-	//todo: cope with preferred edges
-	//simple reinsertion strategy: just iterate over list and test
-	ListIterator<edge> itE = leftOver.begin();
-	while (itE.valid())
-	{
-		//testG=CG.getGraph()
-		edge newCopy = testG.newEdge(nodeCopy[(*itE)->source()],
-											 nodeCopy[(*itE)->target()]);
-		edgeCopy[*itE] = newCopy;
+    //todo: cope with preferred edges
+    //simple reinsertion strategy: just iterate over list and test
+    ListIterator<edge> itE = leftOver.begin();
+    while (itE.valid())
+    {
+        //testG=CG.getGraph()
+        edge newCopy = testG.newEdge(nodeCopy[(*itE)->source()],
+                                     nodeCopy[(*itE)->target()]);
+        edgeCopy[*itE] = newCopy;
 
-		bool cplanar = CCCP.call(CG);
+        bool cplanar = CCCP.call(CG);
 
 
-		if (!cplanar)
-		{
-			testG.delEdge(newCopy);
-			itE++;
-		}//if
-		else
-		{
-			ListIterator<edge> itDel = itE;
-			itE++;
-			leftOver.del(itDel);
-		}
-	}//while
+        if (!cplanar)
+        {
+            testG.delEdge(newCopy);
+            itE++;
+        }//if
+        else
+        {
+            ListIterator<edge> itDel = itE;
+            itE++;
+            leftOver.del(itDel);
+        }
+    }//while
 
-	/*
-	ListConstIterator<edge> it;
-	for(it = preferedEdges.begin(); it.valid(); ++it)
-	{
-		edge eG = *it;
-		visited[eG] = true;
+    /*
+    ListConstIterator<edge> it;
+    for(it = preferedEdges.begin(); it.valid(); ++it)
+    {
+        edge eG = *it;
+        visited[eG] = true;
 
-		edge eH = testG.newEdge(toTestG[eG->source()],toTestG[eG->target()]);
+        edge eH = testG.newEdge(toTestG[eG->source()],toTestG[eG->target()]);
 
-		if (preferedImplyPlanar == false && isPlanar(H) == false) {
-			testG.delEdge(eH);
-			delEdges.pushBack(eG);
-		}
-	}
-	*/
+        if (preferedImplyPlanar == false && isPlanar(H) == false) {
+            testG.delEdge(eH);
+            delEdges.pushBack(eG);
+        }
+    }
+    */
 
 
 }//call

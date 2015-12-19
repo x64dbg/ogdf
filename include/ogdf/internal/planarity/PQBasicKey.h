@@ -55,7 +55,8 @@
 #include <ogdf/internal/planarity/PQBasicKeyRoot.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * The class template PQBasicKey is an abstract base class. It enables the user
@@ -133,70 +134,80 @@ template<class T,class X, class Y> class PQNode;
 
 
 template<class T,class X,class Y>
-class PQBasicKey: public PQBasicKeyRoot {
+class PQBasicKey: public PQBasicKeyRoot
+{
 
 public:
 
-	// Constructor
-	PQBasicKey() : m_nodePointer(0) { }
+    // Constructor
+    PQBasicKey() : m_nodePointer(0) { }
 
 
-	/**
-	 * The function nodePointer()
-	 * returns a pointer to an element of type
-	 * PQNode. This element can be either of type leaf or
-	 * PQInternalNode. PQBasicKey, or rather its derived classes store
-	 * informations of this PQNode. The user is able identify with the
-	 * help of this function for every information its corresponding node.
-	 * Nevertheless, the private member \a m_nodePointer that stores
-	 * the pointer to this member <b>is not set</b> within the PQ-tree,
-	 * unless it is a derived class template of type leafKey.
-	 *
-	 * Setting the \a m_nodePointer has to be done explicitly by
-	 * the client with the help of the
-	 * function setNodePointer().
-	 * This offers as much freedom to the
-	 * client as possible, since this enables the client to keep control
-	 * over the informations stored at different nodes and to access
-	 * nodes with specified informations in constant time.
-	 */
-	PQNode<T,X,Y>* nodePointer() { return m_nodePointer; }
+    /**
+     * The function nodePointer()
+     * returns a pointer to an element of type
+     * PQNode. This element can be either of type leaf or
+     * PQInternalNode. PQBasicKey, or rather its derived classes store
+     * informations of this PQNode. The user is able identify with the
+     * help of this function for every information its corresponding node.
+     * Nevertheless, the private member \a m_nodePointer that stores
+     * the pointer to this member <b>is not set</b> within the PQ-tree,
+     * unless it is a derived class template of type leafKey.
+     *
+     * Setting the \a m_nodePointer has to be done explicitly by
+     * the client with the help of the
+     * function setNodePointer().
+     * This offers as much freedom to the
+     * client as possible, since this enables the client to keep control
+     * over the informations stored at different nodes and to access
+     * nodes with specified informations in constant time.
+     */
+    PQNode<T,X,Y>* nodePointer()
+    {
+        return m_nodePointer;
+    }
 
-	/**
-	 * The function print() is a virtual function, that can be overloaded
-	 * by the user in order to print out the information stored at any of
-	 * the derived classes. Deriving this function, the user can choose any
-	 * format for printing out the information. Currently, the return value
-	 * of the function print() is an empty string.
-	 */
+    /**
+     * The function print() is a virtual function, that can be overloaded
+     * by the user in order to print out the information stored at any of
+     * the derived classes. Deriving this function, the user can choose any
+     * format for printing out the information. Currently, the return value
+     * of the function print() is an empty string.
+     */
 
-	virtual ostream &print(ostream &os) { return os; }
+    virtual ostream &print(ostream &os)
+    {
+        return os;
+    }
 
-	/**
-	 * The function setNodePointer() sets the private member
-	 * \a m_nodePointer. The private member \a m_nodePointer stores the
-	 * address of the corresponding node in the PQTree.
-	 * Using this function enables the client to identify
-	 * certain informations with a node in the PQ-tree.
-	 */
-	void setNodePointer(PQNode<T,X,Y>* node) { m_nodePointer = node; }
+    /**
+     * The function setNodePointer() sets the private member
+     * \a m_nodePointer. The private member \a m_nodePointer stores the
+     * address of the corresponding node in the PQTree.
+     * Using this function enables the client to identify
+     * certain informations with a node in the PQ-tree.
+     */
+    void setNodePointer(PQNode<T,X,Y>* node)
+    {
+        m_nodePointer = node;
+    }
 
-	//! Returns the key of a leaf.
-	virtual T userStructKey()  = 0;
+    //! Returns the key of a leaf.
+    virtual T userStructKey()  = 0;
 
-	//! Returns the information of any node.
-	virtual X userStructInfo()  = 0;
+    //! Returns the information of any node.
+    virtual X userStructInfo()  = 0;
 
-	//! Returns the information of any internal node.
-	virtual Y userStructInternal()  = 0;
+    //! Returns the information of any internal node.
+    virtual Y userStructInternal()  = 0;
 
 
 private:
 
-	/** Stores the adress of a node. This node has to
-	 * be specified by the client via the function \a setNodePointer.
-	 */
-	PQNode<T,X,Y>* m_nodePointer;
+    /** Stores the adress of a node. This node has to
+     * be specified by the client via the function \a setNodePointer.
+     */
+    PQNode<T,X,Y>* m_nodePointer;
 
 };
 

@@ -53,7 +53,8 @@
 #include <ogdf/basic/Graph.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT KuratowskiSubdivision : public Array<List<edge> > { };
 

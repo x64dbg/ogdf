@@ -43,7 +43,8 @@
 
 #include <ogdf/basic/DisjointSets.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 const char *linkOptionNames[] = {"Naive Link","Link by Index","Link by Size","Link by Rank"};
 const char *compressionOptionNames[] = {"Path Compression","Path Splitting","Path Halving","Reversal of Type 0","Reversal of Type 1","Collapsing","No Compression"};

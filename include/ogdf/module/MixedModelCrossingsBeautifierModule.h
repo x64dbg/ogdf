@@ -54,7 +54,8 @@
 #include <ogdf/basic/GridLayout.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief The base class for Mixed-Model crossings beautifier algorithms.
@@ -70,43 +71,45 @@ namespace ogdf {
  * the protected method doCall().
  */
 
-class OGDF_EXPORT MixedModelCrossingsBeautifierModule {
+class OGDF_EXPORT MixedModelCrossingsBeautifierModule
+{
 public:
-	//! Initializes the Mixed-Model crossings beautifier module.
-	MixedModelCrossingsBeautifierModule() { }
+    //! Initializes the Mixed-Model crossings beautifier module.
+    MixedModelCrossingsBeautifierModule() { }
 
-	// destruction
-	virtual ~MixedModelCrossingsBeautifierModule() { }
+    // destruction
+    virtual ~MixedModelCrossingsBeautifierModule() { }
 
 
-	/*
-	 * \brief Calls the Mixed-Model crossings beautifier module for graph \a PG and grid layout \a gl.
-	 *
-	 * @param PG is the input graph.
-	 * @param gl is the grid layout of \a PG.
-	 */
-	void call(const PlanRep &PG, GridLayout &gl);
+    /*
+     * \brief Calls the Mixed-Model crossings beautifier module for graph \a PG and grid layout \a gl.
+     *
+     * @param PG is the input graph.
+     * @param gl is the grid layout of \a PG.
+     */
+    void call(const PlanRep &PG, GridLayout &gl);
 
-	//! Returns the number of processed crossings.
-	int numberOfCrossings() const {
-		return m_nCrossings;
-	}
+    //! Returns the number of processed crossings.
+    int numberOfCrossings() const
+    {
+        return m_nCrossings;
+    }
 
 
 protected:
-	/**
-	 * \brief Implements the crossings beautifier module.
-	 *
-	 * @param PG is the input graph.
-	 * @param gl is the grid layout of \a PG.
-	 * @param L is the list of crossing nodes.
-	 */
-	virtual void doCall(const PlanRep &PG, GridLayout &gl, const List<node> &L) = 0;
+    /**
+     * \brief Implements the crossings beautifier module.
+     *
+     * @param PG is the input graph.
+     * @param gl is the grid layout of \a PG.
+     * @param L is the list of crossing nodes.
+     */
+    virtual void doCall(const PlanRep &PG, GridLayout &gl, const List<node> &L) = 0;
 
 private:
-	int m_nCrossings; //!< the number of processed crossings.
+    int m_nCrossings; //!< the number of processed crossings.
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 
@@ -118,8 +121,8 @@ private:
 class MMDummyCrossingsBeautifier : public MixedModelCrossingsBeautifierModule
 {
 protected:
-	//!< Dummy implementation.
-	void doCall(const PlanRep &, GridLayout &, const List<node> &) { }
+    //!< Dummy implementation.
+    void doCall(const PlanRep &, GridLayout &, const List<node> &) { }
 };
 
 

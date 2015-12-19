@@ -64,7 +64,8 @@
 #include <ogdf/basic/SList.h>
 #include <ogdf/module/PlanarityModule.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! Booth-Lueker planarity test.
 /** This class implements the linear-time planarity test proposed by Booth and Luecker, based on PQ-trees.\n
@@ -72,66 +73,73 @@ namespace ogdf {
  * by Boyer and Myrvold instead, implemented in the class BoyerMyrvold.
  * Generally, it is suggested to use the direct function calls isPlanar and planarEmbed in extended_graph_alg.h (which in turn use BoyerMyrvold).
  */
-class OGDF_EXPORT BoothLueker : public PlanarityModule {
+class OGDF_EXPORT BoothLueker : public PlanarityModule
+{
 
 public:
 
-	BoothLueker() { }
-	~BoothLueker() { }
+    BoothLueker() { }
+    ~BoothLueker() { }
 
-	//! Returns true, if G is planar, false otherwise.
-	bool isPlanarDestructive(Graph &G);
-	//! Returns true, if G is planar, false otherwise.
-	bool isPlanar(const Graph &G);
+    //! Returns true, if G is planar, false otherwise.
+    bool isPlanarDestructive(Graph &G);
+    //! Returns true, if G is planar, false otherwise.
+    bool isPlanar(const Graph &G);
 
-	//! Returns true, if G is planar, false otherwise. If true, G contains a planar embedding.
-	bool planarEmbed(Graph &G){return preparation(G,true);}
-	//! Returns true, if G is planar, false otherwise. If true, G contains a planar embedding.
-	/**
-	 * For BoothLueker, this procedure is exactly the same as planarEmbed. (See PlanarityModule or
-	 * BoyerMyrvold for the rationale of this function's existence.
-	 */
-	bool planarEmbedPlanarGraph(Graph &G){return preparation(G,true);}
+    //! Returns true, if G is planar, false otherwise. If true, G contains a planar embedding.
+    bool planarEmbed(Graph &G)
+    {
+        return preparation(G,true);
+    }
+    //! Returns true, if G is planar, false otherwise. If true, G contains a planar embedding.
+    /**
+     * For BoothLueker, this procedure is exactly the same as planarEmbed. (See PlanarityModule or
+     * BoyerMyrvold for the rationale of this function's existence.
+     */
+    bool planarEmbedPlanarGraph(Graph &G)
+    {
+        return preparation(G,true);
+    }
 
 private:
 
-	//! Prepares the planarity test and the planar embedding
-	bool preparation(Graph &G,bool embed);
+    //! Prepares the planarity test and the planar embedding
+    bool preparation(Graph &G,bool embed);
 
-	//! Performs a planarity test on a biconnected component of \a G.
-	/**
-	 * Performs a planarity test on a biconnected component of \a G.
-	 *
-	 * \a numbering contains an st-numbering of the component.
-	 */
-	bool doTest(Graph &G,NodeArray<int> &numbering);
+    //! Performs a planarity test on a biconnected component of \a G.
+    /**
+     * Performs a planarity test on a biconnected component of \a G.
+     *
+     * \a numbering contains an st-numbering of the component.
+     */
+    bool doTest(Graph &G,NodeArray<int> &numbering);
 
-	//! Performs a planarity test on a biconnected component of \a G and embedds it planar.
-	/**
-	 * Performs a planarity test on a biconnected component of \a G and embedds it planar.
-	 *
-	 * \a numbering contains an st-numbering of the component.
-	 */
-	bool doEmbed(Graph &G,
-				 NodeArray<int>  &numbering,
-				 EdgeArray<edge> &backTableEdges,
-				 EdgeArray<edge> &forwardTableEdges);
+    //! Performs a planarity test on a biconnected component of \a G and embedds it planar.
+    /**
+     * Performs a planarity test on a biconnected component of \a G and embedds it planar.
+     *
+     * \a numbering contains an st-numbering of the component.
+     */
+    bool doEmbed(Graph &G,
+                 NodeArray<int>  &numbering,
+                 EdgeArray<edge> &backTableEdges,
+                 EdgeArray<edge> &forwardTableEdges);
 
-	// Used by doEmbed. Computes an entire embedding from an
-	// upward embedding.
-	void entireEmbed(Graph &G,
-					 NodeArray<SListPure<adjEntry> > &entireEmbedding,
-					 NodeArray<SListIterator<adjEntry> > &adjMarker,
-					 NodeArray<bool> &mark,
-					 node v);
+    // Used by doEmbed. Computes an entire embedding from an
+    // upward embedding.
+    void entireEmbed(Graph &G,
+                     NodeArray<SListPure<adjEntry> > &entireEmbedding,
+                     NodeArray<SListIterator<adjEntry> > &adjMarker,
+                     NodeArray<bool> &mark,
+                     node v);
 
-	void prepareParallelEdges(Graph &G);
+    void prepareParallelEdges(Graph &G);
 
 
-	//private Members for handling parallel edges
-	EdgeArray<ListPure<edge> > m_parallelEdges;
-	EdgeArray<bool> m_isParallel;
-	int	m_parallelCount;
+    //private Members for handling parallel edges
+    EdgeArray<ListPure<edge> > m_parallelEdges;
+    EdgeArray<bool> m_isParallel;
+    int m_parallelCount;
 
 
 

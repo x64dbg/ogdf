@@ -54,7 +54,8 @@
 #include <ogdf/layered/Hierarchy.h>
 #include <ogdf/layered/CrossingMinInterfaces.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class SugiyamaLayout;
 
@@ -70,22 +71,23 @@ class SugiyamaLayout;
  */
 
 
-class OGDF_EXPORT LayeredCrossMinModule {
+class OGDF_EXPORT LayeredCrossMinModule
+{
 public:
 
-	//! Creates empty module.
-	LayeredCrossMinModule() { }
+    //! Creates empty module.
+    LayeredCrossMinModule() { }
 
-	//! Destruct.
-	virtual ~LayeredCrossMinModule() { }
+    //! Destruct.
+    virtual ~LayeredCrossMinModule() { }
 
-	//! Calls the actual crossing minimization algorithm.
-	virtual const HierarchyLevelsBase *reduceCrossings(const SugiyamaLayout &sugi, Hierarchy &H) = 0;
+    //! Calls the actual crossing minimization algorithm.
+    virtual const HierarchyLevelsBase *reduceCrossings(const SugiyamaLayout &sugi, Hierarchy &H) = 0;
 
-	//! Performs clean-up.
-	virtual void cleanup() { }
+    //! Performs clean-up.
+    virtual void cleanup() { }
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 

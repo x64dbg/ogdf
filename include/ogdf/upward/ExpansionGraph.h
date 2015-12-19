@@ -57,7 +57,8 @@
 #include <ogdf/basic/SList.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //---------------------------------------------------------
@@ -71,89 +72,101 @@ namespace ogdf {
 class OGDF_EXPORT ExpansionGraph : public Graph
 {
 public:
-	// constructor
-	ExpansionGraph(const Graph &G);
+    // constructor
+    ExpansionGraph(const Graph &G);
 
-	// number of biconnected components of G
-	int numberOfBCs() const {
-		return m_component.high()+1;
-	}
+    // number of biconnected components of G
+    int numberOfBCs() const
+    {
+        return m_component.high()+1;
+    }
 
-	// returns number of bic. component containing edge e
-	int componentNumber(edge e) const {
-		return m_compNum[e];
-	}
+    // returns number of bic. component containing edge e
+    int componentNumber(edge e) const
+    {
+        return m_compNum[e];
+    }
 
-	void setComponentNumber(edge e, int i) {
-		m_compNum[e] = i;
-	}
+    void setComponentNumber(edge e, int i)
+    {
+        m_compNum[e] = i;
+    }
 
-	// returns list of edges contained in component i
-	const SListPure<edge> &component(int i) const {
-		return m_component[i];
-	}
+    // returns list of edges contained in component i
+    const SListPure<edge> &component(int i) const
+    {
+        return m_component[i];
+    }
 
-	// returns list of components containing vertex v
-	const SList<int> &adjacentComponents(node v) const {
-		return m_adjComponents[v];
-	}
-
-
-	// original node of node v
-	// Precond.: v is a node in the expansion graph
-	node original(node v) const {
-		return m_vOrig[v];
-	}
-
-	node representative(node v) const {
-		node vOrig = m_vOrig[v];
-		return (vOrig != 0) ? vOrig : m_vRep[v];
-	}
-
-	node copy(node vG) const {
-		return m_vCopy[vG];
-	}
-
-	// original edge of edge e
-	// Precond.: e is a edge in the expansion graph
-	edge original(edge e) const {
-		return m_eOrig[e];
-	}
-
-	// sets the original node of vCopy to vOriginal
-	void setOriginal(node vCopy, node vOriginal) {
-		m_vOrig[vCopy] = vOriginal;
-	}
+    // returns list of components containing vertex v
+    const SList<int> &adjacentComponents(node v) const
+    {
+        return m_adjComponents[v];
+    }
 
 
-	// initializes to the expansion graph of the i-th biconnected component
-	// of G
-	void init(int i);
+    // original node of node v
+    // Precond.: v is a node in the expansion graph
+    node original(node v) const
+    {
+        return m_vOrig[v];
+    }
 
-	// initializes to the expansion graph of G
-	// advantage is that the vertices in the created copy are created in the
-	// order in which the corresponding originals appear in the list of nodes
-	// in G and therefore mostly have the same indices
-	// mainly for debbugging purposes
-	void init(const Graph &G);
+    node representative(node v) const
+    {
+        node vOrig = m_vOrig[v];
+        return (vOrig != 0) ? vOrig : m_vRep[v];
+    }
+
+    node copy(node vG) const
+    {
+        return m_vCopy[vG];
+    }
+
+    // original edge of edge e
+    // Precond.: e is a edge in the expansion graph
+    edge original(edge e) const
+    {
+        return m_eOrig[e];
+    }
+
+    // sets the original node of vCopy to vOriginal
+    void setOriginal(node vCopy, node vOriginal)
+    {
+        m_vOrig[vCopy] = vOriginal;
+    }
+
+
+    // initializes to the expansion graph of the i-th biconnected component
+    // of G
+    void init(int i);
+
+    // initializes to the expansion graph of G
+    // advantage is that the vertices in the created copy are created in the
+    // order in which the corresponding originals appear in the list of nodes
+    // in G and therefore mostly have the same indices
+    // mainly for debbugging purposes
+    void init(const Graph &G);
 
 private:
-	node getCopy(node vOrig) {
-		node vCopy = m_vCopy[vOrig];
-		if (vCopy == 0) {
-			vCopy = newNode();
-			m_vOrig[m_vCopy[vOrig] = vCopy] = vOrig;
-		}
-		return vCopy;
-	}
+    node getCopy(node vOrig)
+    {
+        node vCopy = m_vCopy[vOrig];
+        if (vCopy == 0)
+        {
+            vCopy = newNode();
+            m_vOrig[m_vCopy[vOrig] = vCopy] = vOrig;
+        }
+        return vCopy;
+    }
 
-	EdgeArray<int>          m_compNum;   // component of edge e
-	Array<SListPure<edge> > m_component; // edges in i-th biconnected comp.
-	NodeArray<SList<int> >  m_adjComponents; // components containing v
-	NodeArray<node>         m_vCopy;     // copy of original vertex
-	NodeArray<node>         m_vOrig;     // original vertex of copy
-	NodeArray<node>         m_vRep;
-	EdgeArray<edge>         m_eOrig;     // original edge of copy
+    EdgeArray<int>          m_compNum;   // component of edge e
+    Array<SListPure<edge> > m_component; // edges in i-th biconnected comp.
+    NodeArray<SList<int> >  m_adjComponents; // components containing v
+    NodeArray<node>         m_vCopy;     // copy of original vertex
+    NodeArray<node>         m_vOrig;     // original vertex of copy
+    NodeArray<node>         m_vRep;
+    EdgeArray<edge>         m_eOrig;     // original edge of copy
 }; // class ExpansionGraph
 
 

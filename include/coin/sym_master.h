@@ -32,52 +32,53 @@
  * well as some of the tours that have been generated.
 \*===========================================================================*/
 
-typedef struct SYM_ENVIRONMENT{
-   void            *user;
-   int              my_tid;
-   int              tm_tid;
-   int              dg_tid;
-   params           par;         /* problem parameters */
-   prob_times       comp_times;  /* keeps track of the computation times for
-				    the problem */
-   int              has_ub;
-   double           ub;
-   lp_sol           best_sol;
-   int              has_mc_ub;
-   double           mc_ub;
-   double           obj[2];
-   double           utopia[2];
-   char             has_ub_estimate;
-   double           ub_estimate;
-   double           lb;
-   double           obj_offset;
+typedef struct SYM_ENVIRONMENT
+{
+    void            *user;
+    int              my_tid;
+    int              tm_tid;
+    int              dg_tid;
+    params           par;         /* problem parameters */
+    prob_times       comp_times;  /* keeps track of the computation times for
+                    the problem */
+    int              has_ub;
+    double           ub;
+    lp_sol           best_sol;
+    int              has_mc_ub;
+    double           mc_ub;
+    double           obj[2];
+    double           utopia[2];
+    char             has_ub_estimate;
+    double           ub_estimate;
+    double           lb;
+    double           obj_offset;
 
-   MIPdesc         *mip; /*For holding the description when read in from MPS
-			   - also the working copy */
+    MIPdesc         *mip; /*For holding the description when read in from MPS
+               - also the working copy */
 
-   MIPdesc         *orig_mip; /*For holding the original description if
-				presolve is used*/
-   MIPdesc         *prep_mip; /* For holding the presolved description if
-				 presolve is used*/
+    MIPdesc         *orig_mip; /*For holding the original description if
+                presolve is used*/
+    MIPdesc         *prep_mip; /* For holding the presolved description if
+                 presolve is used*/
 
-   char             probname[81];
+    char             probname[81];
 
-   base_desc       *base;
-   node_desc       *rootdesc;
+    base_desc       *base;
+    node_desc       *rootdesc;
 
-   int              termcode;
+    int              termcode;
 
-   warm_start_desc *warm_start;
+    warm_start_desc *warm_start;
 
-   double          mc_time;
+    double          mc_time;
 
 #ifdef COMPILE_IN_TM
-   tm_prob         *tm;
+    tm_prob         *tm;
 #ifdef COMPILE_IN_CP
-   cut_pool       **cp;
+    cut_pool       **cp;
 #endif
 #endif
-}sym_environment;
+} sym_environment;
 
 /*===========================================================================*/
 /*=================== Master I/O functions (readparams.c) ===================*/
@@ -87,10 +88,10 @@ void usage PROTO((void));
 int parse_command_line PROTO((sym_environment *env, int argc, char **argv));
 void read_string PROTO((char *target, char *line, int maxlen));
 void print_statistics PROTO((node_times *tim, problem_stat *stat,
-                            lp_stat_desc *lp_stat, double ub,
-			     double lb, double initial_time,
-			     double start_time, double finish_time,
-			     double obj_offset, char obj_sense, int has_ub,
+                             lp_stat_desc *lp_stat, double ub,
+                             double lb, double initial_time,
+                             double start_time, double finish_time,
+                             double obj_offset, char obj_sense, int has_ub,
                              sp_desc *solpool));
 
 /*===========================================================================*/
@@ -118,22 +119,22 @@ int process_own_messages_u PROTO((sym_environment *env, int msgtag));
 
 int resolve_node PROTO((sym_environment *env, bc_node * node));
 int update_tree_bound PROTO((sym_environment *env, bc_node *root, int *cut_num,
-			      int *cut_ind, char *cru_vars, int change_type));
+                             int *cut_ind, char *cru_vars, int change_type));
 void register_cuts PROTO((bc_node *root, int *cut_num,  int *cuts_ind));
 void update_node_desc PROTO((sym_environment *env, bc_node *root,
-			     int change_type));
+                             int change_type));
 void update_branching_decisions PROTO((sym_environment *env, bc_node *root,
-			      int change_type));
+                                       int change_type));
 void check_trim_tree PROTO((sym_environment *env, bc_node *root, int *cut_num,
-			    int *cuts_ind, int change_type));
+                            int *cuts_ind, int change_type));
 void cut_ws_tree_index PROTO((sym_environment *env, bc_node *root, int index,
-			      problem_stat * stat, int change_type));
+                              problem_stat * stat, int change_type));
 void cut_ws_tree_level PROTO((sym_environment *env, bc_node *root, int level,
-			      problem_stat * stat, int change_type));
+                              problem_stat * stat, int change_type));
 void ws_free_subtree PROTO((sym_environment *env, bc_node *root,
-			    int change_type, int check_solution, int update_stats));
+                            int change_type, int check_solution, int update_stats));
 void check_better_solution PROTO((sym_environment * env, bc_node *root,
-				  int delete_node, int change_type));
+                                  int delete_node, int change_type));
 int copy_node PROTO((bc_node * n_to, bc_node *n_from));
 int copy_tree PROTO((bc_node *root_to, bc_node *root_from));
 int read_node PROTO((bc_node * node, FILE *f));
@@ -148,16 +149,16 @@ MIPdesc *create_copy_mip_desc PROTO((MIPdesc *mip));
 sym_environment *create_copy_environment PROTO((sym_environment *env));
 
 double get_lb_for_new_rhs PROTO((bc_node *root, MIPdesc *mip, int cnt,
-				 int *ind, double *val));
+                                 int *ind, double *val));
 double get_ub_for_new_rhs PROTO((bc_node *root, MIPdesc *mip, int cnt,
-				 int *ind, double *val));
+                                 int *ind, double *val));
 #if 0
 double get_lb_for_new_obj PROTO((bc_node *root, MIPdesc *mip, int cnt,
-				 int *ind, double *val));
+                                 int *ind, double *val));
 #endif
 double get_ub_for_new_obj PROTO((bc_node *root, MIPdesc *mip, int cnt,
-				 int *ind, double *val));
+                                 int *ind, double *val));
 int check_feasibility_new_rhs PROTO((bc_node * node, MIPdesc * mip,
-					int cnt, int *ind, double *val));
+                                     int cnt, int *ind, double *val));
 int trim_warm_tree PROTO((sym_environment *env, bc_node *n));
 #endif

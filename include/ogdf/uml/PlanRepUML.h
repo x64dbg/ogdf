@@ -58,11 +58,12 @@
 
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class Layout;
-	class GridLayoutMapped;
-	class OrthoRep;
+class Layout;
+class GridLayoutMapped;
+class OrthoRep;
 
 
 //---------------------------------------------------------
@@ -71,128 +72,142 @@ namespace ogdf {
 // of a UMLGraph; allows special handling of hierarchies
 // in the graph
 //---------------------------------------------------------
-class OGDF_EXPORT PlanRepUML : public PlanRep {
+class OGDF_EXPORT PlanRepUML : public PlanRep
+{
 public:
 
-	// construction
-	PlanRepUML(const UMLGraph &umlGraph);
-	PlanRepUML(const GraphAttributes &GA);
+    // construction
+    PlanRepUML(const UMLGraph &umlGraph);
+    PlanRepUML(const GraphAttributes &GA);
 
-	// deconstruction
-	~PlanRepUML() {}
+    // deconstruction
+    ~PlanRepUML() {}
 
-	void initCC(int i);
+    void initCC(int i);
 
-	// Returns true if an edge splits a face into two subfaces to
-	// guarantee generalizations to be on opposite sides of a node.
-	bool faceSplitter(edge e) const{
-		return m_faceSplitter[e];
-	}
+    // Returns true if an edge splits a face into two subfaces to
+    // guarantee generalizations to be on opposite sides of a node.
+    bool faceSplitter(edge e) const
+    {
+        return m_faceSplitter[e];
+    }
 
-	// Removes all face splitting edges.
-	void removeFaceSplitter(){
-		edge e;
-		forall_edges(e,(*this))
-			if (m_faceSplitter[e])
-				delEdge(e);
-	}
+    // Removes all face splitting edges.
+    void removeFaceSplitter()
+    {
+        edge e;
+        forall_edges(e,(*this))
+        if (m_faceSplitter[e])
+            delEdge(e);
+    }
 
-	//-------------------
-	//incremental drawing
-	//-------------------
-	//initialize incremental stuff, e.g. insert incremental mergers
-	void setupIncremental(int indexCC, CombinatorialEmbedding &E);
-	//Return the list of inserted incremental mergers
-	const SList<node>&  incrementalMergers(int indexCC) const { return m_incMergers[indexCC]; }
-
-
-	//**********************************************************
-	//set generic types
-
-	//the edges that are embedded next to outgoing generalizations if alignment set
-	//attention: this information is NOT updated during graph changes and only
-	//to be used during the embedding phase
-	bool alignUpward(adjEntry ae) {return m_alignUpward[ae];}
-	void alignUpward(adjEntry ae, bool b) {m_alignUpward[ae] = b;}
+    //-------------------
+    //incremental drawing
+    //-------------------
+    //initialize incremental stuff, e.g. insert incremental mergers
+    void setupIncremental(int indexCC, CombinatorialEmbedding &E);
+    //Return the list of inserted incremental mergers
+    const SList<node>&  incrementalMergers(int indexCC) const
+    {
+        return m_incMergers[indexCC];
+    }
 
 
-	//*************************************************************************
+    //**********************************************************
+    //set generic types
+
+    //the edges that are embedded next to outgoing generalizations if alignment set
+    //attention: this information is NOT updated during graph changes and only
+    //to be used during the embedding phase
+    bool alignUpward(adjEntry ae)
+    {
+        return m_alignUpward[ae];
+    }
+    void alignUpward(adjEntry ae, bool b)
+    {
+        m_alignUpward[ae] = b;
+    }
 
 
-	const UMLGraph &getUMLGraph() const {
-		return *m_pUmlGraph;
-	}
-
-	//*************************************************************************
-	//structural alterations
-
-	// inserts a generalization merge node for all incoming
-	// generalizations of v and returns it
-	//conserving embedding
-	node insertGenMerger(node v, const SList<edge> &inGens,
-								 CombinatorialEmbedding &E);
-
-	// Expands nodes with degree > 4 and merge nodes for generalizations
-	void expand(bool lowDegreeExpand = false);
-
-	//expands nodes with degree <= 4 and aligns opposite edges at degree 2 nodes
-	void expandLowDegreeVertices(OrthoRep &OR, bool alignSmallDegree = false);
-
-	void collapseVertices(const OrthoRep &OR, Layout &drawing);
-
-	//*************************************************************************
+    //*************************************************************************
 
 
-	//
-	// extension of methods defined by GraphCopy/PlanRep
-	//
+    const UMLGraph &getUMLGraph() const
+    {
+        return *m_pUmlGraph;
+    }
 
-	// splits edge e
-	virtual edge split(edge e) {
+    //*************************************************************************
+    //structural alterations
 
-		edge eNew = PlanRep::split(e);
+    // inserts a generalization merge node for all incoming
+    // generalizations of v and returns it
+    //conserving embedding
+    node insertGenMerger(node v, const SList<edge> &inGens,
+                         CombinatorialEmbedding &E);
 
-		//check this
-		if (m_alignUpward[e->adjSource()]) m_alignUpward[eNew->adjSource()] = true;
-		if (m_alignUpward[e->adjTarget()]) m_alignUpward[eNew->adjTarget()] = true;
+    // Expands nodes with degree > 4 and merge nodes for generalizations
+    void expand(bool lowDegreeExpand = false);
 
-		return eNew;
-	}
+    //expands nodes with degree <= 4 and aligns opposite edges at degree 2 nodes
+    void expandLowDegreeVertices(OrthoRep &OR, bool alignSmallDegree = false);
+
+    void collapseVertices(const OrthoRep &OR, Layout &drawing);
+
+    //*************************************************************************
 
 
-	// writes attributed graph in GML format to file fileName
-	// For Debugging only
-	void writeGML(const char *fileName, const Layout &drawing);
-	void writeGML(const char *fileName);
-	void writeGML(const char *fileName, GraphAttributes &AG);
+    //
+    // extension of methods defined by GraphCopy/PlanRep
+    //
 
-	// writes attributed graph in GML format to output stream os
-	// For Debugging only
-	void writeGML(ostream &os, const Layout &drawing);
-	void writeGML(const char *fileName, const OrthoRep &OR, const Layout &drawing);
-	void writeGML(ostream &os, const OrthoRep &OR, const Layout &drawing);
-	void writeGML(const char *fileName, const OrthoRep &OR, const GridLayoutMapped &drawing);
-	void writeGML(ostream &os, const OrthoRep &OR, const GridLayoutMapped &drawing);
+    // splits edge e
+    virtual edge split(edge e)
+    {
+
+        edge eNew = PlanRep::split(e);
+
+        //check this
+        if (m_alignUpward[e->adjSource()]) m_alignUpward[eNew->adjSource()] = true;
+        if (m_alignUpward[e->adjTarget()]) m_alignUpward[eNew->adjTarget()] = true;
+
+        return eNew;
+    }
+
+
+    // writes attributed graph in GML format to file fileName
+    // For Debugging only
+    void writeGML(const char *fileName, const Layout &drawing);
+    void writeGML(const char *fileName);
+    void writeGML(const char *fileName, GraphAttributes &AG);
+
+    // writes attributed graph in GML format to output stream os
+    // For Debugging only
+    void writeGML(ostream &os, const Layout &drawing);
+    void writeGML(const char *fileName, const OrthoRep &OR, const Layout &drawing);
+    void writeGML(ostream &os, const OrthoRep &OR, const Layout &drawing);
+    void writeGML(const char *fileName, const OrthoRep &OR, const GridLayoutMapped &drawing);
+    void writeGML(ostream &os, const OrthoRep &OR, const GridLayoutMapped &drawing);
 
 
 protected:
-	//insert mergers of generalizations in copy
-	void prepareIncrementalMergers(int indexCC, CombinatorialEmbedding &E);
+    //insert mergers of generalizations in copy
+    void prepareIncrementalMergers(int indexCC, CombinatorialEmbedding &E);
 
 
 protected:
-	//still some AdjEntry type: used by alignment procedures
-	//attention: this information is NOT updated during graph changes and only
-	//to be used during the embedding phase
-	AdjEntryArray<bool> m_alignUpward;
+    //still some AdjEntry type: used by alignment procedures
+    //attention: this information is NOT updated during graph changes and only
+    //to be used during the embedding phase
+    AdjEntryArray<bool> m_alignUpward;
 
 private:
-	const UMLGraph *m_pUmlGraph;
+    const UMLGraph *m_pUmlGraph;
 
-	EdgeArray<bool>     m_faceSplitter;
+    EdgeArray<bool>     m_faceSplitter;
 
-	SListPure<edge>       m_mergeEdges;
-	Array< SList<node> >  m_incMergers; //stores all incremental mergers in CC
+    SListPure<edge>       m_mergeEdges;
+    Array< SList<node> >  m_incMergers; //stores all incremental mergers in CC
 };
 
 

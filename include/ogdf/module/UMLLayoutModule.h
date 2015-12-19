@@ -53,7 +53,8 @@
 #include <ogdf/uml/UMLGraph.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -62,27 +63,30 @@ namespace ogdf {
 class OGDF_EXPORT UMLLayoutModule
 {
 public:
-	//! Initializes a UML layout module.
-	UMLLayoutModule() { }
+    //! Initializes a UML layout module.
+    UMLLayoutModule() { }
 
-	virtual ~UMLLayoutModule() { }
+    virtual ~UMLLayoutModule() { }
 
-	/**
-	 * \brief Computes a layout of UML graph \a umlGraph
-	 *
-	 * Must be implemented by derived classes.
-	 * @param umlGraph is the input UML graph and has to be assigned the UML layout.
-	 */
-	virtual void call(UMLGraph &umlGraph) = 0;
+    /**
+     * \brief Computes a layout of UML graph \a umlGraph
+     *
+     * Must be implemented by derived classes.
+     * @param umlGraph is the input UML graph and has to be assigned the UML layout.
+     */
+    virtual void call(UMLGraph &umlGraph) = 0;
 
-	/**
-	 * \brief Computes a layout of UML graph \a umlGraph
-	 *
-	 * @param umlGraph is the input UML graph and has to be assigned the UML layout.
-	 */
-	void operator()(UMLGraph &umlGraph) { call(umlGraph); }
+    /**
+     * \brief Computes a layout of UML graph \a umlGraph
+     *
+     * @param umlGraph is the input UML graph and has to be assigned the UML layout.
+     */
+    void operator()(UMLGraph &umlGraph)
+    {
+        call(umlGraph);
+    }
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 

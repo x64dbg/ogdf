@@ -53,7 +53,8 @@
 #include <ogdf/basic/GraphCopy.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
 
@@ -82,42 +83,49 @@ class HeapEntry;
 class HeapEntryPointer;
 
 template <class Priority, class HeapObject>
-class HeapBase {
+class HeapBase
+{
 
 public:
-	//! Constructor
-	HeapBase() { }
+    //! Constructor
+    HeapBase() { }
 
-	virtual ~HeapBase() { }
+    virtual ~HeapBase() { }
 
 
-	//! build a heap out of a given set of elements
-	virtual void makeHeap() = 0;
+    //! build a heap out of a given set of elements
+    virtual void makeHeap() = 0;
 
-	//HeapObject minRet() { }
+    //HeapObject minRet() { }
 
-	//*******************************************************
-	//Modification
+    //*******************************************************
+    //Modification
 
-	// insert a new element with priority key
-	//virtual void insert(HeapObject, Priority /* key */) { }
-	//extractMin
-	//derived classes should decide themselves if they have
-	//a specific delete function
-	//virtual void delete() = 0;
+    // insert a new element with priority key
+    //virtual void insert(HeapObject, Priority /* key */) { }
+    //extractMin
+    //derived classes should decide themselves if they have
+    //a specific delete function
+    //virtual void delete() = 0;
 
-	/// update the data structure by decreasing the key of an object
-	//virtual void decreaseKey() { }
+    /// update the data structure by decreasing the key of an object
+    //virtual void decreaseKey() { }
 
-	//*******************************************************
-	//constant functions
-	int size() const {return m_size;}
+    //*******************************************************
+    //constant functions
+    int size() const
+    {
+        return m_size;
+    }
 
-	bool empty() const {return m_size==0;}
+    bool empty() const
+    {
+        return m_size==0;
+    }
 
 
 protected:
-	int m_size; //number of elements stored in heap
+    int m_size; //number of elements stored in heap
 
 };
 

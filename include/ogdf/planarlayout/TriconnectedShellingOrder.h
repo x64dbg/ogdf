@@ -53,7 +53,8 @@
 #include <ogdf/module/ShellingOrderModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //---------------------------------------------------------
 // Computation of a shelling order for a triconnected and
@@ -62,16 +63,17 @@ namespace ogdf {
 class OGDF_EXPORT TriconnectedShellingOrder : public ShellingOrderModule
 {
 public:
-	TriconnectedShellingOrder() {
-		m_baseRatio = 0.33;
-	}
+    TriconnectedShellingOrder()
+    {
+        m_baseRatio = 0.33;
+    }
 
 protected:
-	// does the actual computation; must be overridden by derived classes
-	// the computed order is returned in partition
-	virtual void doCall(const Graph &G,
-		adjEntry adj,
-		List<ShellingOrderSet> &partition);
+    // does the actual computation; must be overridden by derived classes
+    // the computed order is returned in partition
+    virtual void doCall(const Graph &G,
+                        adjEntry adj,
+                        List<ShellingOrderSet> &partition);
 
 };
 

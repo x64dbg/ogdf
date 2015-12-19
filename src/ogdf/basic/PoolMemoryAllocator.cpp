@@ -45,19 +45,20 @@
 #include <ogdf/basic/basic.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 struct PoolMemoryAllocator::PoolElement
 {
-	MemElemPtr m_gp;
-	int        m_size;
+    MemElemPtr m_gp;
+    int        m_size;
 };
 
 struct PoolMemoryAllocator::BlockChain
 {
-	char m_fill[eBlockSize-sizeof(void*)];
-	BlockChain *m_next;
+    char m_fill[eBlockSize-sizeof(void*)];
+    BlockChain *m_next;
 };
 
 
@@ -83,38 +84,40 @@ void PoolMemoryAllocator::init()
 {
 #ifndef OGDF_MEMORY_POOL_NTS
 #ifdef OGDF_NO_COMPILER_TLS
-	pthread_key_create(&s_tpKey,NULL);
+    pthread_key_create(&s_tpKey,NULL);
 #endif
 
-	s_criticalSection = new CriticalSection(500);
+    s_criticalSection = new CriticalSection(500);
 #endif
 
-	initThread();
+    initThread();
 }
 
 
-void PoolMemoryAllocator::initThread() {
+void PoolMemoryAllocator::initThread()
+{
 #if !defined(OGDF_MEMORY_POOL_NTS) && defined(OGDF_NO_COMPILER_TLS)
-		pthread_setspecific(s_tpKey,calloc(eTableSize,sizeof(MemElemPtr)));
+    pthread_setspecific(s_tpKey,calloc(eTableSize,sizeof(MemElemPtr)));
 #endif
 }
 
 
 void PoolMemoryAllocator::cleanup()
 {
-	BlockChainPtr p = s_blocks;
-	while(p != 0) {
-		BlockChainPtr pNext = p->m_next;
-		free(p);
-		p = pNext;
-	}
+    BlockChainPtr p = s_blocks;
+    while(p != 0)
+    {
+        BlockChainPtr pNext = p->m_next;
+        free(p);
+        p = pNext;
+    }
 
 #ifndef OGDF_MEMORY_POOL_NTS
 #ifdef OGDF_NO_COMPILER_TLS
-	pthread_key_delete(s_tpKey);
+    pthread_key_delete(s_tpKey);
 #endif
 
-	delete s_criticalSection;
+    delete s_criticalSection;
 #endif
 }
 
@@ -122,7 +125,7 @@ void PoolMemoryAllocator::cleanup()
 inline void PoolMemoryAllocator::enterCS()
 {
 #ifndef OGDF_MEMORY_POOL_NTS
-	s_criticalSection->enter();
+    s_criticalSection->enter();
 #endif
 }
 
@@ -130,52 +133,59 @@ inline void PoolMemoryAllocator::enterCS()
 inline void PoolMemoryAllocator::leaveCS()
 {
 #ifndef OGDF_MEMORY_POOL_NTS
-	s_criticalSection->leave();
+    s_criticalSection->leave();
 #endif
 }
 
 
-bool PoolMemoryAllocator::checkSize(size_t nBytes) {
-	return nBytes < eTableSize;
+bool PoolMemoryAllocator::checkSize(size_t nBytes)
+{
+    return nBytes < eTableSize;
 }
 
 
-void *PoolMemoryAllocator::allocate(size_t nBytes) {
+void *PoolMemoryAllocator::allocate(size_t nBytes)
+{
 #if !defined(OGDF_MEMORY_POOL_NTS) && defined(OGDF_NO_COMPILER_TLS)
-	MemElemPtr &pFreeBytes = *((MemElemPtr*)pthread_getspecific(s_tpKey)+nBytes);
+    MemElemPtr &pFreeBytes = *((MemElemPtr*)pthread_getspecific(s_tpKey)+nBytes);
 #else
-	MemElemPtr &pFreeBytes = s_tp[nBytes];
+    MemElemPtr &pFreeBytes = s_tp[nBytes];
 #endif
-	if (OGDF_LIKELY(pFreeBytes != 0)) {
-		MemElemPtr p = pFreeBytes;
-		pFreeBytes = p->m_next;
-		p->m_next = 0;
-		return p;
-	} else {
-		return fillPool(pFreeBytes,__uint16(nBytes));
-	}
+    if (OGDF_LIKELY(pFreeBytes != 0))
+    {
+        MemElemPtr p = pFreeBytes;
+        pFreeBytes = p->m_next;
+        p->m_next = 0;
+        return p;
+    }
+    else
+    {
+        return fillPool(pFreeBytes,__uint16(nBytes));
+    }
 }
 
 
-void PoolMemoryAllocator::deallocate(size_t nBytes, void *p) {
+void PoolMemoryAllocator::deallocate(size_t nBytes, void *p)
+{
 #if !defined(OGDF_MEMORY_POOL_NTS) && defined(OGDF_NO_COMPILER_TLS)
-	MemElemPtr &pFreeBytes = *((MemElemPtr*)pthread_getspecific(s_tpKey)+nBytes);
+    MemElemPtr &pFreeBytes = *((MemElemPtr*)pthread_getspecific(s_tpKey)+nBytes);
 #else
-	MemElemPtr &pFreeBytes = s_tp[nBytes];
+    MemElemPtr &pFreeBytes = s_tp[nBytes];
 #endif
-	MemElemPtr(p)->m_next = pFreeBytes;
-	pFreeBytes = MemElemPtr(p);
+    MemElemPtr(p)->m_next = pFreeBytes;
+    pFreeBytes = MemElemPtr(p);
 }
 
 
-void PoolMemoryAllocator::deallocateList(size_t nBytes, void *pHead, void *pTail) {
+void PoolMemoryAllocator::deallocateList(size_t nBytes, void *pHead, void *pTail)
+{
 #if !defined(OGDF_MEMORY_POOL_NTS) && defined(OGDF_NO_COMPILER_TLS)
-	MemElemPtr &pFreeBytes = *((MemElemPtr*)pthread_getspecific(s_tpKey)+nBytes);
+    MemElemPtr &pFreeBytes = *((MemElemPtr*)pthread_getspecific(s_tpKey)+nBytes);
 #else
-	MemElemPtr &pFreeBytes = s_tp[nBytes];
+    MemElemPtr &pFreeBytes = s_tp[nBytes];
 #endif
-	MemElemPtr(pTail)->m_next = pFreeBytes;
-	pFreeBytes = MemElemPtr(pHead);
+    MemElemPtr(pTail)->m_next = pFreeBytes;
+    pFreeBytes = MemElemPtr(pHead);
 }
 
 
@@ -183,185 +193,196 @@ void PoolMemoryAllocator::deallocateList(size_t nBytes, void *pHead, void *pTail
 void PoolMemoryAllocator::flushPool()
 {
 #ifndef OGDF_MEMORY_POOL_NTS
-	for(__uint16 nBytes = 1; nBytes < eTableSize; ++nBytes) {
+    for(__uint16 nBytes = 1; nBytes < eTableSize; ++nBytes)
+    {
 #ifdef OGDF_NO_COMPILER_TLS
-		MemElemPtr &pHead =  *((MemElemPtr*)pthread_getspecific(s_tpKey)+nBytes);
+        MemElemPtr &pHead =  *((MemElemPtr*)pthread_getspecific(s_tpKey)+nBytes);
 #else
-		MemElemPtr &pHead = s_tp[nBytes];
+        MemElemPtr &pHead = s_tp[nBytes];
 #endif
-		if(pHead != 0) {
-			MemElemPtr pTail = pHead;
-			int n = 1;
+        if(pHead != 0)
+        {
+            MemElemPtr pTail = pHead;
+            int n = 1;
 
-			while(pTail->m_next != 0) {
-				pTail = pTail->m_next;
-				++n;
-			}
+            while(pTail->m_next != 0)
+            {
+                pTail = pTail->m_next;
+                ++n;
+            }
 
-			MemElemPtr pOldHead = pHead;
-			pHead = 0;
+            MemElemPtr pOldHead = pHead;
+            pHead = 0;
 
-			enterCS();
+            enterCS();
 
-			PoolElement &pe = s_pool[nBytes];
+            PoolElement &pe = s_pool[nBytes];
 
-			pTail->m_next = pe.m_gp;
-			pe.m_gp = pOldHead;
-			pe.m_size += n;
+            pTail->m_next = pe.m_gp;
+            pe.m_gp = pOldHead;
+            pe.m_size += n;
 
-			leaveCS();
-		}
-	}
+            leaveCS();
+        }
+    }
 #endif
 }
 
 
 void *PoolMemoryAllocator::fillPool(MemElemPtr &pFreeBytes, __uint16 nBytes)
 {
-	int nWords;
-	int nSlices = slicesPerBlock(max(nBytes,(__uint16)eMinBytes),nWords);
+    int nWords;
+    int nSlices = slicesPerBlock(max(nBytes,(__uint16)eMinBytes),nWords);
 
 #ifdef OGDF_MEMORY_POOL_NTS
-	pFreeBytes = allocateBlock();
-	makeSlices(pFreeBytes, nWords, nSlices);
+    pFreeBytes = allocateBlock();
+    makeSlices(pFreeBytes, nWords, nSlices);
 
 #else
-	enterCS();
+    enterCS();
 
-	PoolElement &pe = s_pool[nBytes];
-	if(pe.m_size >= nSlices) {
-		MemElemPtr p = pFreeBytes = pe.m_gp;
-		for(int i = 1; i < nSlices; ++i)
-			p = p->m_next;
+    PoolElement &pe = s_pool[nBytes];
+    if(pe.m_size >= nSlices)
+    {
+        MemElemPtr p = pFreeBytes = pe.m_gp;
+        for(int i = 1; i < nSlices; ++i)
+            p = p->m_next;
 
-		pe.m_gp = p->m_next;
-		pe.m_size -= nSlices;
+        pe.m_gp = p->m_next;
+        pe.m_size -= nSlices;
 
-		leaveCS();
+        leaveCS();
 
-		p->m_next = 0;
+        p->m_next = 0;
 
-	} else {
-		pFreeBytes = allocateBlock();
+    }
+    else
+    {
+        pFreeBytes = allocateBlock();
 
-		leaveCS();
+        leaveCS();
 
-		makeSlices(pFreeBytes, nWords, nSlices);
-	}
+        makeSlices(pFreeBytes, nWords, nSlices);
+    }
 #endif
 
-	MemElemPtr p = pFreeBytes;
-	pFreeBytes = p->m_next;
-	return p;
+    MemElemPtr p = pFreeBytes;
+    pFreeBytes = p->m_next;
+    return p;
 }
 
 
 PoolMemoryAllocator::MemElemPtr
 PoolMemoryAllocator::allocateBlock()
 {
-	BlockChainPtr pBlock = (BlockChainPtr) malloc(eBlockSize);
+    BlockChainPtr pBlock = (BlockChainPtr) malloc(eBlockSize);
 
-	pBlock->m_next = s_blocks;
-	s_blocks = pBlock;
+    pBlock->m_next = s_blocks;
+    s_blocks = pBlock;
 
-	return (MemElemPtr)pBlock;
+    return (MemElemPtr)pBlock;
 }
 
 
 void PoolMemoryAllocator::makeSlices(MemElemPtr pBlock, int nWords, int nSlices)
 {
-	do {
-		pBlock = pBlock->m_next = pBlock+nWords;
-	} while(--nSlices > 1);
-	pBlock->m_next = 0;
+    do
+    {
+        pBlock = pBlock->m_next = pBlock+nWords;
+    }
+    while(--nSlices > 1);
+    pBlock->m_next = 0;
 }
 
 
 
 size_t PoolMemoryAllocator::memoryAllocatedInBlocks()
 {
-	enterCS();
+    enterCS();
 
-	size_t nBlocks = 0;
-	for (BlockChainPtr p = s_blocks; p != 0; p = p->m_next)
-		++nBlocks;
+    size_t nBlocks = 0;
+    for (BlockChainPtr p = s_blocks; p != 0; p = p->m_next)
+        ++nBlocks;
 
-	leaveCS();
+    leaveCS();
 
-	return nBlocks * eBlockSize;
+    return nBlocks * eBlockSize;
 }
 
 
 size_t PoolMemoryAllocator::memoryInGlobalFreeList()
 {
-	enterCS();
+    enterCS();
 
-	size_t bytesFree = 0;
-	for (int sz = 1; sz < eTableSize; ++sz)
-	{
-		const PoolElement &pe = s_pool[sz];
-		bytesFree += pe.m_size * sz;
-	}
+    size_t bytesFree = 0;
+    for (int sz = 1; sz < eTableSize; ++sz)
+    {
+        const PoolElement &pe = s_pool[sz];
+        bytesFree += pe.m_size * sz;
+    }
 
-	leaveCS();
+    leaveCS();
 
-	return bytesFree;
+    return bytesFree;
 }
 
 
 size_t PoolMemoryAllocator::memoryInThreadFreeList()
 {
-	size_t bytesFree = 0;
-	for (int sz = 1; sz < eTableSize; ++sz)
-	{
+    size_t bytesFree = 0;
+    for (int sz = 1; sz < eTableSize; ++sz)
+    {
 #if !defined(OGDF_MEMORY_POOL_NTS) && defined(OGDF_NO_COMPILER_TLS)
-		MemElemPtr p = ((MemElemPtr*)pthread_getspecific(s_tpKey))[sz];
+        MemElemPtr p = ((MemElemPtr*)pthread_getspecific(s_tpKey))[sz];
 #else
-		MemElemPtr p = s_tp[sz];
+        MemElemPtr p = s_tp[sz];
 #endif
-		for(; p != 0; p = p->m_next)
-			bytesFree += sz;
-	}
+        for(; p != 0; p = p->m_next)
+            bytesFree += sz;
+    }
 
-	return bytesFree;
+    return bytesFree;
 }
 
 
 void PoolMemoryAllocator::defrag()
 {
-	enterCS();
+    enterCS();
 
-	int maxSize = 0;
-	for(int sz = 1; sz < eTableSize; ++sz) {
-		int size = s_pool[sz].m_size;
-		maxSize = max(maxSize, size);
-	}
+    int maxSize = 0;
+    for(int sz = 1; sz < eTableSize; ++sz)
+    {
+        int size = s_pool[sz].m_size;
+        maxSize = max(maxSize, size);
+    }
 
-	if(maxSize > 1) {
-		MemElemPtr *a = new MemElemPtr[maxSize];
+    if(maxSize > 1)
+    {
+        MemElemPtr *a = new MemElemPtr[maxSize];
 
-		for(int sz = 1; sz < eTableSize; ++sz)
-		{
-			PoolElement &pe = s_pool[sz];
-			int n = pe.m_size;
-			if(n > 1)
-			{
-				int i = 0;
-				for(MemElemPtr p = pe.m_gp; p != 0; p = p->m_next)
-					a[i++] = p;
-				OGDF_ASSERT(i == n);
-				std::sort(a, a+n);
-				pe.m_gp = a[0];
-				for(int i = 0; i < n-1; ++i) {
-					a[i]->m_next = a[i+1];
-				}
-				a[n-1]->m_next = 0;
-			}
-		}
-		delete [] a;
-	}
+        for(int sz = 1; sz < eTableSize; ++sz)
+        {
+            PoolElement &pe = s_pool[sz];
+            int n = pe.m_size;
+            if(n > 1)
+            {
+                int i = 0;
+                for(MemElemPtr p = pe.m_gp; p != 0; p = p->m_next)
+                    a[i++] = p;
+                OGDF_ASSERT(i == n);
+                std::sort(a, a+n);
+                pe.m_gp = a[0];
+                for(int i = 0; i < n-1; ++i)
+                {
+                    a[i]->m_next = a[i+1];
+                }
+                a[n-1]->m_next = 0;
+            }
+        }
+        delete [] a;
+    }
 
-	leaveCS();
+    leaveCS();
 }
 
 }

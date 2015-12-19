@@ -44,71 +44,74 @@
 #include <ogdf/basic/Stopwatch.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	ostream& operator<<(ostream& os, const Stopwatch &stopwatch)
-	{
-		__int64 centiSeconds = stopwatch.centiSeconds();
+ostream& operator<<(ostream& os, const Stopwatch &stopwatch)
+{
+    __int64 centiSeconds = stopwatch.centiSeconds();
 
-		__int64 sec  = centiSeconds/100;
-		__int64 mSec = centiSeconds - 100*sec;
-		__int64 rSec = sec%60;
-		__int64 min  = sec/60;
-		__int64 rMin = min%60;
+    __int64 sec  = centiSeconds/100;
+    __int64 mSec = centiSeconds - 100*sec;
+    __int64 rSec = sec%60;
+    __int64 min  = sec/60;
+    __int64 rMin = min%60;
 
-		os << min/60 << ":";
-		if(rMin < 10) os << '0';
-		os << rMin << ':';
-		if(rSec < 10) os << '0';
-		os << rSec << '.';
-		if (mSec < 10) os << '0';
-		os << mSec;
-		return os;
-	}
-
-
-	void Stopwatch::start(bool reset)
-	{
-		if (reset)
-			m_totalTime = 0;
-
-		else if (m_running) {
-			Logger::ifout() << "Stopwatch::start(): you cannot start a running stopwatch.\n";
-			OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcTimer);
-		}
-
-		m_running   = true;
-		m_startTime = theTime();
-	}
+    os << min/60 << ":";
+    if(rMin < 10) os << '0';
+    os << rMin << ':';
+    if(rSec < 10) os << '0';
+    os << rSec << '.';
+    if (mSec < 10) os << '0';
+    os << mSec;
+    return os;
+}
 
 
-	void Stopwatch::stop()
-	{
-		if(!m_running) {
-			Logger::ifout() << "Stopwatch::stop(): you cannot stop a non-running stopwatch.\n";
-			OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcTimer);
-		}
+void Stopwatch::start(bool reset)
+{
+    if (reset)
+        m_totalTime = 0;
 
-		m_totalTime += theTime() - m_startTime;
-		m_running   = false;
-	}
+    else if (m_running)
+    {
+        Logger::ifout() << "Stopwatch::start(): you cannot start a running stopwatch.\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcTimer);
+    }
 
-
-	__int64 StopwatchCPU::theTime() const
-	{
-		double t;
-		ogdf::usedTime(t);
-
-		return (__int64)(1000.0*t);
-	}
+    m_running   = true;
+    m_startTime = theTime();
+}
 
 
-	__int64 StopwatchWallClock::theTime() const
-	{
-		__int64 t;
-		ogdf::System::usedRealTime(t);
+void Stopwatch::stop()
+{
+    if(!m_running)
+    {
+        Logger::ifout() << "Stopwatch::stop(): you cannot stop a non-running stopwatch.\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcTimer);
+    }
 
-		return t;
-	}
+    m_totalTime += theTime() - m_startTime;
+    m_running   = false;
+}
 
- }
+
+__int64 StopwatchCPU::theTime() const
+{
+    double t;
+    ogdf::usedTime(t);
+
+    return (__int64)(1000.0*t);
+}
+
+
+__int64 StopwatchWallClock::theTime() const
+{
+    __int64 t;
+    ogdf::System::usedRealTime(t);
+
+    return t;
+}
+
+}

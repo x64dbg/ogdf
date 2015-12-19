@@ -55,104 +55,117 @@
 #include <ogdf/cluster/ClusterGraphAttributes.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief Manages access on copy of an attributed clustered graph.
  */
-class OGDF_EXPORT ClusterGraphCopyAttributes {
+class OGDF_EXPORT ClusterGraphCopyAttributes
+{
 
-	const ExtendedNestingGraph *m_pH;
-	ClusterGraphAttributes     *m_pACG;
-	NodeArray<double> m_x, m_y;
+    const ExtendedNestingGraph *m_pH;
+    ClusterGraphAttributes     *m_pACG;
+    NodeArray<double> m_x, m_y;
 
 public:
-	//! Initializes instance of class ClusterGraphCopyAttributes.
-	ClusterGraphCopyAttributes(
-		const ExtendedNestingGraph &H,
-		ClusterGraphAttributes &ACG) :
-		m_pH(&H), m_pACG(&ACG), m_x(H,0), m_y(H,0) { }
+    //! Initializes instance of class ClusterGraphCopyAttributes.
+    ClusterGraphCopyAttributes(
+        const ExtendedNestingGraph &H,
+        ClusterGraphAttributes &ACG) :
+        m_pH(&H), m_pACG(&ACG), m_x(H,0), m_y(H,0) { }
 
-	~ClusterGraphCopyAttributes() { }
+    ~ClusterGraphCopyAttributes() { }
 
-	//! Returns corresponding ClusterGraphAttributes.
-	const ClusterGraphAttributes &getClusterGraphAttributes() const { return *m_pACG; }
+    //! Returns corresponding ClusterGraphAttributes.
+    const ClusterGraphAttributes &getClusterGraphAttributes() const
+    {
+        return *m_pACG;
+    }
 
-	//! Returns width of node v.
-	double getWidth(node v) const {
-		node vOrig = m_pH->origNode(v);
-		return (vOrig == 0) ? 0.0 : m_pACG->width(vOrig);
-	}
+    //! Returns width of node v.
+    double getWidth(node v) const
+    {
+        node vOrig = m_pH->origNode(v);
+        return (vOrig == 0) ? 0.0 : m_pACG->width(vOrig);
+    }
 
-	//! Returns height of node v.
-	double getHeight(node v) const {
-		node vOrig = m_pH->origNode(v);
-		return (vOrig == 0) ? 0.0 : m_pACG->height(vOrig);
-	}
+    //! Returns height of node v.
+    double getHeight(node v) const
+    {
+        node vOrig = m_pH->origNode(v);
+        return (vOrig == 0) ? 0.0 : m_pACG->height(vOrig);
+    }
 
-	//! Returns reference to x-coord. of node v.
-	const double &x(node v) const {
-		return m_x[v];
-	}
+    //! Returns reference to x-coord. of node v.
+    const double &x(node v) const
+    {
+        return m_x[v];
+    }
 
-	//! Returns reference to x-coord. of node v.
-	double &x(node v) {
-		return m_x[v];
-	}
+    //! Returns reference to x-coord. of node v.
+    double &x(node v)
+    {
+        return m_x[v];
+    }
 
-	//! Returns reference to y-coord. of node v.
-	const double &y(node v) const {
-		return m_y[v];
-	}
+    //! Returns reference to y-coord. of node v.
+    const double &y(node v) const
+    {
+        return m_y[v];
+    }
 
-	//! Returns reference to y-coord. of node v.
-	double &y(node v) {
-		return m_y[v];
-	}
+    //! Returns reference to y-coord. of node v.
+    double &y(node v)
+    {
+        return m_y[v];
+    }
 
-	//! Returns coordinate of upper cluster boundary of original cluster \a cOrig.
-	double top(cluster cOrig) const {
-		return m_pACG->y(cOrig);
-	}
-	//! Returns coordinate of lower cluster boundary of original cluster \a cOrig.
-	double bottom(cluster cOrig) const {
-		return m_pACG->y(cOrig) + m_pACG->height(cOrig);
-	}
+    //! Returns coordinate of upper cluster boundary of original cluster \a cOrig.
+    double top(cluster cOrig) const
+    {
+        return m_pACG->y(cOrig);
+    }
+    //! Returns coordinate of lower cluster boundary of original cluster \a cOrig.
+    double bottom(cluster cOrig) const
+    {
+        return m_pACG->y(cOrig) + m_pACG->height(cOrig);
+    }
 
-	//! Sets the position of the cluster rectangle for original cluster \a cOrig.
-	void setClusterRect(
-		cluster cOrig,
-		double left,
-		double right,
-		double top,
-		double bottom)
-	{
-		m_pACG->x  (cOrig) = left;
-		m_pACG->y  (cOrig) = top;
-		m_pACG->width (cOrig) = right-left;
-		m_pACG->height(cOrig) = bottom-top;
-	}
+    //! Sets the position of the cluster rectangle for original cluster \a cOrig.
+    void setClusterRect(
+        cluster cOrig,
+        double left,
+        double right,
+        double top,
+        double bottom)
+    {
+        m_pACG->x  (cOrig) = left;
+        m_pACG->y  (cOrig) = top;
+        m_pACG->width (cOrig) = right-left;
+        m_pACG->height(cOrig) = bottom-top;
+    }
 
-	void setClusterLeftRight(
-		cluster cOrig,
-		double left,
-		double right)
-	{
-		m_pACG->x  (cOrig) = left;
-		m_pACG->width (cOrig) = right-left;
-	}
+    void setClusterLeftRight(
+        cluster cOrig,
+        double left,
+        double right)
+    {
+        m_pACG->x  (cOrig) = left;
+        m_pACG->width (cOrig) = right-left;
+    }
 
-	void setClusterTopBottom(
-		cluster cOrig,
-		double top,
-		double bottom)
-	{
-		m_pACG->y  (cOrig) = top;
-		m_pACG->height(cOrig) = bottom-top;
-	}
+    void setClusterTopBottom(
+        cluster cOrig,
+        double top,
+        double bottom)
+    {
+        m_pACG->y  (cOrig) = top;
+        m_pACG->height(cOrig) = bottom-top;
+    }
 
-	//! Sets attributes for the original graph in attributed graph.
-	void transform();
+    //! Sets attributes for the original graph in attributed graph.
+    void transform();
 };
 
 

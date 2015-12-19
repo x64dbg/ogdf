@@ -44,44 +44,45 @@
 #include <ogdf/internal/energybased/EdgeAttributes.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 ostream &operator<< (ostream & output, const EdgeAttributes & A)
 {
-	output <<"length: "<< A.length;
-	output<<"  index of original edge ";
-	if (A.e_original == NULL)
-		output <<"NULL";
-	else output<<A.e_original->index();
-	output<<"  index of subgraph edge ";
-	if (A.e_subgraph == NULL)
-		output <<"NULL";
-	if (A.moon_edge)
-		output<<" is moon edge ";
-	else
-		output <<" no moon edge ";
-	if (A.extra_edge)
-		output<<" is extra edge ";
-	else
-		output <<" no extra edge ";
-	return output;
+    output <<"length: "<< A.length;
+    output<<"  index of original edge ";
+    if (A.e_original == NULL)
+        output <<"NULL";
+    else output<<A.e_original->index();
+    output<<"  index of subgraph edge ";
+    if (A.e_subgraph == NULL)
+        output <<"NULL";
+    if (A.moon_edge)
+        output<<" is moon edge ";
+    else
+        output <<" no moon edge ";
+    if (A.extra_edge)
+        output<<" is extra edge ";
+    else
+        output <<" no extra edge ";
+    return output;
 }
 
 
 istream &operator>> (istream & input,  EdgeAttributes & A)
 {
-	input >> A.length;
-	return input;
+    input >> A.length;
+    return input;
 }
 
 
 EdgeAttributes::EdgeAttributes()
 {
-	length = 0;
-	e_original = NULL;
-	e_subgraph = NULL;
-	moon_edge = false;
-	extra_edge = false;
+    length = 0;
+    e_original = NULL;
+    e_subgraph = NULL;
+    moon_edge = false;
+    extra_edge = false;
 }
 
 }//namespace ogdf

@@ -52,7 +52,8 @@
 #include <ogdf/basic/basic.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 template<class E, class INDEX> class BoundedStack;
 
@@ -67,132 +68,166 @@ void print(ostream &os, const BoundedStack<E,INDEX> &S, char delim = ' ');
  * @tparam INDEX is the index type. The default index type is \c int, other possible types
  *               are \c short and <code>long long</code> (on 64-bit systems).
  */
-template<class E, class INDEX = int> class BoundedStack {
+template<class E, class INDEX = int> class BoundedStack
+{
 
-	E *m_pTop;   //!< Pointer to top element.
-	E *m_pStart; //!< Pointer to first element.
-	E *m_pStop;  //!< Pointer to one past last element.
+    E *m_pTop;   //!< Pointer to top element.
+    E *m_pStart; //!< Pointer to first element.
+    E *m_pStop;  //!< Pointer to one past last element.
 
 public:
-	//! Constructs an empty bounded stack for no elements at all.
-	/**
-	 * The default constructor does not allocate any space for elements; before
-	 * using the stack, it is required to initialize the stack with init().
-	 */
-	BoundedStack() {
-		m_pTop = m_pStart = m_pStop = 0;
-	}
+    //! Constructs an empty bounded stack for no elements at all.
+    /**
+     * The default constructor does not allocate any space for elements; before
+     * using the stack, it is required to initialize the stack with init().
+     */
+    BoundedStack()
+    {
+        m_pTop = m_pStart = m_pStop = 0;
+    }
 
-	//! Constructs an empty bounded stack for at most \a n elements.
-	explicit BoundedStack(INDEX n) {
-		OGDF_ASSERT(n >= 1)
-		m_pStart = new E[n];
-		if (m_pStart == 0) OGDF_THROW(InsufficientMemoryException);
-		m_pTop  = m_pStart - 1;
-		m_pStop = m_pStart+n;
-	}
+    //! Constructs an empty bounded stack for at most \a n elements.
+    explicit BoundedStack(INDEX n)
+    {
+        OGDF_ASSERT(n >= 1)
+        m_pStart = new E[n];
+        if (m_pStart == 0) OGDF_THROW(InsufficientMemoryException);
+        m_pTop  = m_pStart - 1;
+        m_pStop = m_pStart+n;
+    }
 
-	//! Constructs a bounded stack that is a copy of \a S.
-	BoundedStack(const BoundedStack<E> &S) {
-		copy(S);
-	}
+    //! Constructs a bounded stack that is a copy of \a S.
+    BoundedStack(const BoundedStack<E> &S)
+    {
+        copy(S);
+    }
 
-	// destruction
-	~BoundedStack() {
-		delete [] m_pStart;
-	}
+    // destruction
+    ~BoundedStack()
+    {
+        delete [] m_pStart;
+    }
 
-	//! Returns top element.
-	const E &top() const {
-		OGDF_ASSERT(m_pTop != m_pStart-1)
-		return *m_pTop;
-	}
+    //! Returns top element.
+    const E &top() const
+    {
+        OGDF_ASSERT(m_pTop != m_pStart-1)
+        return *m_pTop;
+    }
 
-	//! Returns top element.
-	E &top() {
-		OGDF_ASSERT(m_pTop != m_pStart-1)
-		return *m_pTop;
-	}
+    //! Returns top element.
+    E &top()
+    {
+        OGDF_ASSERT(m_pTop != m_pStart-1)
+        return *m_pTop;
+    }
 
-	//! Returns current size of the stack.
-	INDEX size() const { return (m_pStart != 0) ? (INDEX)(m_pTop+1 - m_pStart) : 0; }
+    //! Returns current size of the stack.
+    INDEX size() const
+    {
+        return (m_pStart != 0) ? (INDEX)(m_pTop+1 - m_pStart) : 0;
+    }
 
-	//! Returns true iff the stack is empty.
-	bool empty() { return m_pTop == (m_pStart-1); }
+    //! Returns true iff the stack is empty.
+    bool empty()
+    {
+        return m_pTop == (m_pStart-1);
+    }
 
-	//! Returns true iff the stack is full.
-	bool full() { return m_pTop == (m_pStop-1); }
+    //! Returns true iff the stack is full.
+    bool full()
+    {
+        return m_pTop == (m_pStop-1);
+    }
 
-	//! Returns true iff the stack was initialized.
-	bool valid() const { return m_pStart != 0; }
+    //! Returns true iff the stack was initialized.
+    bool valid() const
+    {
+        return m_pStart != 0;
+    }
 
-	//! Returns the capacity of the bounded stack.
-	INDEX capacity() const { return (INDEX)(m_pStop - m_pStart); }
+    //! Returns the capacity of the bounded stack.
+    INDEX capacity() const
+    {
+        return (INDEX)(m_pStop - m_pStart);
+    }
 
-	//! Reinitializes the stack for no elements at all (actually frees memory).
-	void init() {
-		delete [] m_pStart;
-		m_pTop = m_pStart = m_pStart = 0;
-	}
+    //! Reinitializes the stack for no elements at all (actually frees memory).
+    void init()
+    {
+        delete [] m_pStart;
+        m_pTop = m_pStart = m_pStart = 0;
+    }
 
-	//! Reinitializes the stack for \a n elements.
-	void init(INDEX n) {
-		OGDF_ASSERT(n >= 1)
+    //! Reinitializes the stack for \a n elements.
+    void init(INDEX n)
+    {
+        OGDF_ASSERT(n >= 1)
 
-		delete [] m_pStart;
+        delete [] m_pStart;
 
-		m_pStart = new E[n];
-		if (m_pStart == 0) OGDF_THROW(InsufficientMemoryException);
-		m_pTop = m_pStart - 1;
-		m_pStop = m_pStart+n;
-	}
+        m_pStart = new E[n];
+        if (m_pStart == 0) OGDF_THROW(InsufficientMemoryException);
+        m_pTop = m_pStart - 1;
+        m_pStop = m_pStart+n;
+    }
 
-	//! Assignment operator.
-	BoundedStack<E> &operator=(const BoundedStack &S) {
-		delete [] m_pStart;
-		copy(S);
-		return *this;
-	}
+    //! Assignment operator.
+    BoundedStack<E> &operator=(const BoundedStack &S)
+    {
+        delete [] m_pStart;
+        copy(S);
+        return *this;
+    }
 
-	//! Adds element \a x as top-most element to the stack.
-	void push(const E &x) {
-		OGDF_ASSERT(m_pTop != m_pStop-1)
-		*++m_pTop = x;
-	}
+    //! Adds element \a x as top-most element to the stack.
+    void push(const E &x)
+    {
+        OGDF_ASSERT(m_pTop != m_pStop-1)
+        *++m_pTop = x;
+    }
 
-	//! Removes the top-most element from the stack and returns it.
-	E pop() {
-		OGDF_ASSERT(m_pTop != (m_pStart-1))
-		return *m_pTop--;
-	}
+    //! Removes the top-most element from the stack and returns it.
+    E pop()
+    {
+        OGDF_ASSERT(m_pTop != (m_pStart-1))
+        return *m_pTop--;
+    }
 
-	//! Makes the stack empty.
-	void clear() { m_pTop = m_pStart-1; }
+    //! Makes the stack empty.
+    void clear()
+    {
+        m_pTop = m_pStart-1;
+    }
 
-	//! Prints the stack to output stream \a os.
-	void print(ostream &os, char delim = ' ') const
-	{
-		if(m_pStart != 0) {
-			for (const E *pX = m_pStart; pX <= m_pTop; ++pX)
-				os << *pX << delim;
-		}
-	}
+    //! Prints the stack to output stream \a os.
+    void print(ostream &os, char delim = ' ') const
+    {
+        if(m_pStart != 0)
+        {
+            for (const E *pX = m_pStart; pX <= m_pTop; ++pX)
+                os << *pX << delim;
+        }
+    }
 
 private:
-	void copy(const BoundedStack<E> &S)
-	{
-		if(!S.valid()) {
-			m_pTop = m_pStart = m_pStop = 0;
-		} else {
-			INDEX sz = S.m_pStop - S.m_pStart;
-			m_pStart = new E[sz+1];
-			if (m_pStart == 0) OGDF_THROW(InsufficientMemoryException);
-			m_pStop = m_pStart + sz;
-			m_pTop  = m_pStart-1;
-			for (E *pX = S.m_pStart-1; pX != S.m_pTop; )
-				*++m_pTop = *++pX;
-		}
-	}
+    void copy(const BoundedStack<E> &S)
+    {
+        if(!S.valid())
+        {
+            m_pTop = m_pStart = m_pStop = 0;
+        }
+        else
+        {
+            INDEX sz = S.m_pStop - S.m_pStart;
+            m_pStart = new E[sz+1];
+            if (m_pStart == 0) OGDF_THROW(InsufficientMemoryException);
+            m_pStop = m_pStart + sz;
+            m_pTop  = m_pStart-1;
+            for (E *pX = S.m_pStart-1; pX != S.m_pTop; )
+                *++m_pTop = *++pX;
+        }
+    }
 }; // class BoundedStack
 
 
@@ -201,8 +236,8 @@ private:
 template<class E, class INDEX>
 ostream &operator<<(ostream &os, const BoundedStack<E,INDEX> &S)
 {
-	S.print(os);
-	return os;
+    S.print(os);
+    return os;
 }
 
 } // end namespace ogdf

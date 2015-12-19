@@ -50,47 +50,54 @@
 #include <ogdf/basic/Graph.h>
 #include <ogdf/internal/energybased/MultilevelGraph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT MultilevelBuilder
 {
 private:
-	/**
-	 * \brief This method constructs one more level on top of an existing MultilevelGraph.
-	 * It must be implemented in any MultilevelBuilder. A level is built by
-	 *  adding node-merges to the MultilevelGraph and updating the graph accordingly.
-	 * This is achieved by calling MLG.
-	 *
-	 * @param MLG is the MultilevelGraph for which a new gevel will be built.
-	 *
-	 * @return true if the Graph was changed or false if no Level can be built.
-	 */
-	virtual bool buildOneLevel(MultilevelGraph &MLG) = 0;
+    /**
+     * \brief This method constructs one more level on top of an existing MultilevelGraph.
+     * It must be implemented in any MultilevelBuilder. A level is built by
+     *  adding node-merges to the MultilevelGraph and updating the graph accordingly.
+     * This is achieved by calling MLG.
+     *
+     * @param MLG is the MultilevelGraph for which a new gevel will be built.
+     *
+     * @return true if the Graph was changed or false if no Level can be built.
+     */
+    virtual bool buildOneLevel(MultilevelGraph &MLG) = 0;
 
 protected:
-	// if set to true the length of the edge between two merged nodes will be added to
-	//  all edges that are moved to the other node in this merge.
-	int m_adjustEdgeLengths;
-	int m_numLevels; //!< stores number of levels for statistics purposes
+    // if set to true the length of the edge between two merged nodes will be added to
+    //  all edges that are moved to the other node in this merge.
+    int m_adjustEdgeLengths;
+    int m_numLevels; //!< stores number of levels for statistics purposes
 
 public:
-	virtual ~MultilevelBuilder() { }
-	MultilevelBuilder():m_adjustEdgeLengths(0),m_numLevels(1) { }
+    virtual ~MultilevelBuilder() { }
+    MultilevelBuilder():m_adjustEdgeLengths(0),m_numLevels(1) { }
 
-	virtual void buildAllLevels(MultilevelGraph &MLG)
-	{
-		m_numLevels = 1;
-		MLG.updateReverseIndizes();
-		MLG.updateMergeWeights();
-		while (buildOneLevel(MLG))
-		{
-			m_numLevels++;
-		}
-		MLG.updateReverseIndizes();
-	}
+    virtual void buildAllLevels(MultilevelGraph &MLG)
+    {
+        m_numLevels = 1;
+        MLG.updateReverseIndizes();
+        MLG.updateMergeWeights();
+        while (buildOneLevel(MLG))
+        {
+            m_numLevels++;
+        }
+        MLG.updateReverseIndizes();
+    }
 
-	void setEdgeLengthAdjustment(int factor) { m_adjustEdgeLengths = factor; }
-	int getNumLevels() {return m_numLevels;}
+    void setEdgeLengthAdjustment(int factor)
+    {
+        m_adjustEdgeLengths = factor;
+    }
+    int getNumLevels()
+    {
+        return m_numLevels;
+    }
 
 };
 

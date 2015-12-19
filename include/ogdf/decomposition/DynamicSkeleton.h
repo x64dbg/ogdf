@@ -53,9 +53,10 @@
 #include <ogdf/decomposition/Skeleton.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class DynamicSPQRTree;
+class DynamicSPQRTree;
 
 
 //! %Skeleton graphs of nodes in a dynamic SPQR-tree.
@@ -76,70 +77,71 @@ namespace ogdf {
  */
 class OGDF_EXPORT DynamicSkeleton : public Skeleton
 {
-	friend class DynamicSPQRTree;
+    friend class DynamicSPQRTree;
 
 public:
 
-	// constructor
+    // constructor
 
-	//! Creates a skeleton \a S with owner tree \a T and corresponding node \a vT.
-	/**
-	 * \pre \a vT is a node in \a T
-	 *
-	 * \remarks Skeletons are created by the constructor of DynamicSPQRTree
-	 *          and can be accessed with the skeleton() function of DynamicSPQRTree.
-	 */
-	DynamicSkeleton(const DynamicSPQRTree *T, node vT);
-
-
-	// destructor
-	~DynamicSkeleton() { }
+    //! Creates a skeleton \a S with owner tree \a T and corresponding node \a vT.
+    /**
+     * \pre \a vT is a node in \a T
+     *
+     * \remarks Skeletons are created by the constructor of DynamicSPQRTree
+     *          and can be accessed with the skeleton() function of DynamicSPQRTree.
+     */
+    DynamicSkeleton(const DynamicSPQRTree *T, node vT);
 
 
-	//! Returns the owner tree \a T.
-	const SPQRTree &owner() const;
+    // destructor
+    ~DynamicSkeleton() { }
 
-	//! Returns the vertex in the original graph \a G that corresponds to \a v.
-	/**
-	 * \pre \a v is a node in \a M.
-	 */
-	node original (node v) const;
 
-	//! Returns the real edge that corresponds to skeleton edge \a e
-	/**
-	 * If \a e is virtual edge, then 0 is returned.
-	 * \pre \a e is an edge in \a M
-	 */
-	edge realEdge (edge e) const;
+    //! Returns the owner tree \a T.
+    const SPQRTree &owner() const;
 
-	//! Returns true iff \a e is a virtual edge.
-	/**
-	 * \pre \a e is an edge in \a M
-	 */
-	bool isVirtual (edge e) const {
-		return !realEdge(e);
-	}
+    //! Returns the vertex in the original graph \a G that corresponds to \a v.
+    /**
+     * \pre \a v is a node in \a M.
+     */
+    node original (node v) const;
 
-	//! Returns the twin edge of skeleton edge \a e.
-	/**
-	 * If \a e is not a virtual edge, then 0 is returned.
-	 * \pre \a e is an edge in \a M
-	 */
-	edge twinEdge (edge e) const;
+    //! Returns the real edge that corresponds to skeleton edge \a e
+    /**
+     * If \a e is virtual edge, then 0 is returned.
+     * \pre \a e is an edge in \a M
+     */
+    edge realEdge (edge e) const;
 
-	//! Returns the tree node in T containing the twin edge of skeleton edge \a e.
-	/**
-	 * If \a e is not a virtual edge, then 0 is returned.
-	 * \pre \a e is an edge in \a M
-	 */
-	node twinTreeNode (edge e) const;
+    //! Returns true iff \a e is a virtual edge.
+    /**
+     * \pre \a e is an edge in \a M
+     */
+    bool isVirtual (edge e) const
+    {
+        return !realEdge(e);
+    }
 
-	OGDF_NEW_DELETE
+    //! Returns the twin edge of skeleton edge \a e.
+    /**
+     * If \a e is not a virtual edge, then 0 is returned.
+     * \pre \a e is an edge in \a M
+     */
+    edge twinEdge (edge e) const;
+
+    //! Returns the tree node in T containing the twin edge of skeleton edge \a e.
+    /**
+     * If \a e is not a virtual edge, then 0 is returned.
+     * \pre \a e is an edge in \a M
+     */
+    node twinTreeNode (edge e) const;
+
+    OGDF_NEW_DELETE
 
 protected:
-	const DynamicSPQRTree *m_owner;     //!< owner tree
-	NodeArray<node>        m_origNode;  //!< corresp. original node
-	EdgeArray<edge>        m_origEdge;  //!< corresp. original edge
+    const DynamicSPQRTree *m_owner;     //!< owner tree
+    NodeArray<node>        m_origNode;  //!< corresp. original node
+    EdgeArray<edge>        m_origEdge;  //!< corresp. original edge
 };
 
 

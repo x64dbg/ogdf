@@ -46,7 +46,8 @@
 #include <ogdf/basic/Module.h>
 #include <ogdf/upward/UpwardPlanRep.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief Interface for feasible upward planar subgraph algorithms.
@@ -57,51 +58,51 @@ class OGDF_EXPORT FUPSModule : public Module
 
 public:
 
-	//! Initializes a feasible upward planar subgraph module.
-	FUPSModule() { }
+    //! Initializes a feasible upward planar subgraph module.
+    FUPSModule() { }
 
-	// destruction
-	virtual ~FUPSModule() { }
+    // destruction
+    virtual ~FUPSModule() { }
 
-	/**
-	 * \brief Computes a feasible upward planar subgraph of the input graph.
-	 *
-	 * @param UPR represents the feasible upward planar subgraph after the call. \a UPR has to be initialzed as a
-	 *		  UpwardPlanRep of the input graph \a G and is modified.
-	 *		  The subgraph is represented as an upward planar representation.
-	 * @param delEdges is the list of deleted edges which are deleted from the input graph in order to obtain the subgraph.
-	 *		  The edges are edges of the original graph of UPR.
-	 * \return the status of the result.
-	 */
-	ReturnType call(UpwardPlanRep &UPR,
-		List<edge> &delEdges)
-	{
-		return doCall(UPR, delEdges);
-	}
+    /**
+     * \brief Computes a feasible upward planar subgraph of the input graph.
+     *
+     * @param UPR represents the feasible upward planar subgraph after the call. \a UPR has to be initialzed as a
+     *        UpwardPlanRep of the input graph \a G and is modified.
+     *        The subgraph is represented as an upward planar representation.
+     * @param delEdges is the list of deleted edges which are deleted from the input graph in order to obtain the subgraph.
+     *        The edges are edges of the original graph of UPR.
+     * \return the status of the result.
+     */
+    ReturnType call(UpwardPlanRep &UPR,
+                    List<edge> &delEdges)
+    {
+        return doCall(UPR, delEdges);
+    }
 
-	//! Computes a upward planarized representation of the input graph (shorthand for call)
-	ReturnType operator()(UpwardPlanRep &UPR,
-			List<edge> &delEdges)
-	{
-		return call(UPR, delEdges);
-	}
+    //! Computes a upward planarized representation of the input graph (shorthand for call)
+    ReturnType operator()(UpwardPlanRep &UPR,
+                          List<edge> &delEdges)
+    {
+        return call(UPR, delEdges);
+    }
 
 
 protected:
-	/**
-	 * \brief Computes a feasible upward planar subgraph of the input graph.
-	 *
-	 * @param UPR represents the feasible upward planar subgraph after the call. \a UPR has to be initialzed as a
-	 *        UpwardPlanRep of the input graph \a G and is modified.
-	 *		  The subgraph is represented as an upward planar representation.
-	 * @param delEdges is the list of deleted edges which are deleted from the input graph in order to obtain the subgraph.
-	 *		  The edges are edges of the original graph G.
-	 * \return the status of the result.
-	 */
-	virtual ReturnType doCall(UpwardPlanRep &UPR,
-		List<edge> &delEdges) = 0;
+    /**
+     * \brief Computes a feasible upward planar subgraph of the input graph.
+     *
+     * @param UPR represents the feasible upward planar subgraph after the call. \a UPR has to be initialzed as a
+     *        UpwardPlanRep of the input graph \a G and is modified.
+     *        The subgraph is represented as an upward planar representation.
+     * @param delEdges is the list of deleted edges which are deleted from the input graph in order to obtain the subgraph.
+     *        The edges are edges of the original graph G.
+     * \return the status of the result.
+     */
+    virtual ReturnType doCall(UpwardPlanRep &UPR,
+                              List<edge> &delEdges) = 0;
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 
 };
 

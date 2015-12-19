@@ -53,7 +53,8 @@
 #include <ogdf/module/ShellingOrderModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief Computation of the shelling order for biconnected graphs.
@@ -64,16 +65,17 @@ namespace ogdf {
 class OGDF_EXPORT BiconnectedShellingOrder : public ShellingOrderModule
 {
 public:
-	//! Creates a biconnected shelling order module.
-	BiconnectedShellingOrder() {
-		m_baseRatio = 0.33;
-	}
+    //! Creates a biconnected shelling order module.
+    BiconnectedShellingOrder()
+    {
+        m_baseRatio = 0.33;
+    }
 
 protected:
-	//! The actual implementation of the module call.
-	virtual void doCall(const Graph &G,
-		adjEntry adj,
-		List<ShellingOrderSet> &partition);
+    //! The actual implementation of the module call.
+    virtual void doCall(const Graph &G,
+                        adjEntry adj,
+                        List<ShellingOrderSet> &partition);
 };
 
 

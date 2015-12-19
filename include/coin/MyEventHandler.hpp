@@ -15,33 +15,34 @@
     to pass in
 */
 
-class MyEventHandler : public ClpEventHandler {
+class MyEventHandler : public ClpEventHandler
+{
 
 public:
-     /**@name Overrides */
-     //@{
-     virtual int event(Event whichEvent);
-     //@}
+    /**@name Overrides */
+    //@{
+    virtual int event(Event whichEvent);
+    //@}
 
-     /**@name Constructors, destructor etc*/
-     //@{
-     /** Default constructor. */
-     MyEventHandler();
-     /// Constructor with pointer to model (redundant as setEventHandler does)
-     MyEventHandler(ClpSimplex * model);
-     /** Destructor */
-     virtual ~MyEventHandler();
-     /** The copy constructor. */
-     MyEventHandler(const MyEventHandler & rhs);
-     /// Assignment
-     MyEventHandler& operator=(const MyEventHandler & rhs);
-     /// Clone
-     virtual ClpEventHandler * clone() const ;
-     //@}
+    /**@name Constructors, destructor etc*/
+    //@{
+    /** Default constructor. */
+    MyEventHandler();
+    /// Constructor with pointer to model (redundant as setEventHandler does)
+    MyEventHandler(ClpSimplex * model);
+    /** Destructor */
+    virtual ~MyEventHandler();
+    /** The copy constructor. */
+    MyEventHandler(const MyEventHandler & rhs);
+    /// Assignment
+    MyEventHandler& operator=(const MyEventHandler & rhs);
+    /// Clone
+    virtual ClpEventHandler * clone() const ;
+    //@}
 
 
 protected:
-     // data goes here
+    // data goes here
 };
 
 #endif

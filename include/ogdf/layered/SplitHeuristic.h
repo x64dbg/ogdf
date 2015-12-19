@@ -52,39 +52,43 @@
 #include <ogdf/layered/CrossingsMatrix.h>
 #include <ogdf/simultaneous/TwoLayerCrossMinSimDraw.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //! The split heuristic for 2-layer crossing minimization.
 class OGDF_EXPORT SplitHeuristic : public TwoLayerCrossMinSimDraw
 {
 public:
-	//! Creates a new instance of the split heuristic.
-	SplitHeuristic() { }
+    //! Creates a new instance of the split heuristic.
+    SplitHeuristic() { }
 
-	//! Creates a new instance of the split heuristic.
-	SplitHeuristic(const SplitHeuristic &crossMin) { }
+    //! Creates a new instance of the split heuristic.
+    SplitHeuristic(const SplitHeuristic &crossMin) { }
 
-	//! Returns a new instance of the splitheurisitc with the same option settings.
-	TwoLayerCrossMinSimDraw *clone() const { return new SplitHeuristic(*this); }
+    //! Returns a new instance of the splitheurisitc with the same option settings.
+    TwoLayerCrossMinSimDraw *clone() const
+    {
+        return new SplitHeuristic(*this);
+    }
 
-	//! Initializes crossing minimization for hierarchy \a H.
-	void init (const HierarchyLevels &levels);
+    //! Initializes crossing minimization for hierarchy \a H.
+    void init (const HierarchyLevels &levels);
 
-	//! Calls the split heuristic for level \a L.
-	void call (Level &L);
+    //! Calls the split heuristic for level \a L.
+    void call (Level &L);
 
-	//! Calls the median heuristic for level \a L (simultaneous drawing).
-	void call (Level &L, const EdgeArray<__uint32> *edgeSubGraphs);
+    //! Calls the median heuristic for level \a L (simultaneous drawing).
+    void call (Level &L, const EdgeArray<__uint32> *edgeSubGraphs);
 
-	//! Does some clean-up after calls.
-	void cleanup ();
+    //! Does some clean-up after calls.
+    void cleanup ();
 
 private:
-	CrossingsMatrix *m_cm;
-	Array<node> buffer;
+    CrossingsMatrix *m_cm;
+    Array<node> buffer;
 
-	void recCall(Level&, int low, int high);
+    void recCall(Level&, int low, int high);
 };
 
 }// end namespace ogdf

@@ -48,51 +48,53 @@ static const std::size_t CoinAllocRoundMask = ~((std::size_t)7);
 
 //#############################################################################
 
-class CoinMempool 
+class CoinMempool
 {
 private:
 #if (COIN_MEMPOOL_SAVE_BLOCKHEADS == 1)
-   char** block_heads;
-   std::size_t block_num;
-   std::size_t max_block_num;
+    char** block_heads;
+    std::size_t block_num;
+    std::size_t max_block_num;
 #endif
 #if defined(COINUTILS_PTHREADS) && (COINUTILS_PTHREAD == 1)
-  pthread_mutex_t mutex_;
+    pthread_mutex_t mutex_;
 #endif
-  int last_block_size_;
-  char* first_free_;
-  const std::size_t entry_size_;
+    int last_block_size_;
+    char* first_free_;
+    const std::size_t entry_size_;
 
 private:
-  CoinMempool(const CoinMempool&);
-  CoinMempool& operator=(const CoinMempool&);
+    CoinMempool(const CoinMempool&);
+    CoinMempool& operator=(const CoinMempool&);
 
 private:
-  char* allocate_new_block();
-  inline void lock_mutex() {
+    char* allocate_new_block();
+    inline void lock_mutex()
+    {
 #if defined(COINUTILS_PTHREADS) && (COINUTILS_PTHREAD == 1)
-    pthread_mutex_lock(&mutex_);
+        pthread_mutex_lock(&mutex_);
 #endif
-  }
-  inline void unlock_mutex() {
+    }
+    inline void unlock_mutex()
+    {
 #if defined(COINUTILS_PTHREADS) && (COINUTILS_PTHREAD == 1)
-    pthread_mutex_unlock(&mutex_);
+        pthread_mutex_unlock(&mutex_);
 #endif
-  }
+    }
 
 public:
-  CoinMempool(std::size_t size = 0);
-  ~CoinMempool();
+    CoinMempool(std::size_t size = 0);
+    ~CoinMempool();
 
-  char* alloc();
-  inline void dealloc(char *p) 
-  {
-    char** pp = (char**)p;
-    lock_mutex();
-    *pp = first_free_;
-    first_free_ = p;
-    unlock_mutex();
-  }
+    char* alloc();
+    inline void dealloc(char *p)
+    {
+        char** pp = (char**)p;
+        lock_mutex();
+        *pp = first_free_;
+        first_free_ = p;
+        unlock_mutex();
+    }
 };
 
 //#############################################################################
@@ -112,49 +114,58 @@ public:
 class CoinAlloc
 {
 private:
-  CoinMempool* pool_;
-  int maxpooled_;
+    CoinMempool* pool_;
+    int maxpooled_;
 public:
-  CoinAlloc();
-  ~CoinAlloc() {}
+    CoinAlloc();
+    ~CoinAlloc() {}
 
-  inline void* alloc(const std::size_t n)
-  {
-    if (maxpooled_ <= 0) {
-      return std::malloc(n);
+    inline void* alloc(const std::size_t n)
+    {
+        if (maxpooled_ <= 0)
+        {
+            return std::malloc(n);
+        }
+        char *p = NULL;
+        const std::size_t to_alloc =
+            ((n+COINUTILS_MEMPOOL_ALIGNMENT-1) & CoinAllocRoundMask) +
+            COINUTILS_MEMPOOL_ALIGNMENT;
+        CoinMempool* pool = NULL;
+        if (maxpooled_ > 0 && to_alloc >= (size_t)maxpooled_)
+        {
+            p = static_cast<char*>(std::malloc(to_alloc));
+            if (p == NULL) throw std::bad_alloc();
+        }
+        else
+        {
+            pool = pool_ + (to_alloc >> CoinAllocPtrShift);
+            p = pool->alloc();
+        }
+        *((CoinMempool**)p) = pool;
+        return static_cast<void*>(p+COINUTILS_MEMPOOL_ALIGNMENT);
     }
-    char *p = NULL;
-    const std::size_t to_alloc =
-      ((n+COINUTILS_MEMPOOL_ALIGNMENT-1) & CoinAllocRoundMask) +
-      COINUTILS_MEMPOOL_ALIGNMENT;
-    CoinMempool* pool = NULL;
-    if (maxpooled_ > 0 && to_alloc >= (size_t)maxpooled_) {
-      p = static_cast<char*>(std::malloc(to_alloc));
-      if (p == NULL) throw std::bad_alloc();
-    } else {
-      pool = pool_ + (to_alloc >> CoinAllocPtrShift);
-      p = pool->alloc();
-    }
-    *((CoinMempool**)p) = pool;
-    return static_cast<void*>(p+COINUTILS_MEMPOOL_ALIGNMENT);
-  }
 
-  inline void dealloc(void* p)
-  {
-    if (maxpooled_ <= 0) {
-      std::free(p);
-      return;
+    inline void dealloc(void* p)
+    {
+        if (maxpooled_ <= 0)
+        {
+            std::free(p);
+            return;
+        }
+        if (p)
+        {
+            char* base = static_cast<char*>(p)-COINUTILS_MEMPOOL_ALIGNMENT;
+            CoinMempool* pool = *((CoinMempool**)base);
+            if (!pool)
+            {
+                std::free(base);
+            }
+            else
+            {
+                pool->dealloc(base);
+            }
+        }
     }
-    if (p) {
-      char* base = static_cast<char*>(p)-COINUTILS_MEMPOOL_ALIGNMENT;
-      CoinMempool* pool = *((CoinMempool**)base);
-      if (!pool) {
-	std::free(base);
-      } else {
-	pool->dealloc(base);
-      }
-    }
-  }
 };
 
 extern CoinAlloc CoinAllocator;

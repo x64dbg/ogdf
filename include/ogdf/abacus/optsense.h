@@ -40,7 +40,8 @@
 
 #include <ogdf/abacus/abacusroot.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 //! Sense of optimization
@@ -50,65 +51,76 @@ namespace abacus {
  * in various classes, e.g., in the master of the branch-and-bound algorithm and
  * in the linear program.
  */
-class  OptSense :  public AbacusRoot  {
+class  OptSense :  public AbacusRoot
+{
 public:
 
-	//! The enumeration defining the sense of optimization.
-	enum SENSE {
-		Min,	//!< Minimization problem.
-		Max,	//!< Maximization problem.
-		Unknown	//!< Unknown optimization sense, required to recognize uninitialized object.
-	};
+    //! The enumeration defining the sense of optimization.
+    enum SENSE
+    {
+        Min,    //!< Minimization problem.
+        Max,    //!< Maximization problem.
+        Unknown //!< Unknown optimization sense, required to recognize uninitialized object.
+    };
 
-	//! Initializes the optimization sense to\a s.
-	/**
-	 * \param s The sense of the optimization. The default value is \a Unknown.
-	 */
-	OptSense(SENSE s = Unknown) : sense_(s) { }
+    //! Initializes the optimization sense to\a s.
+    /**
+     * \param s The sense of the optimization. The default value is \a Unknown.
+     */
+    OptSense(SENSE s = Unknown) : sense_(s) { }
 
-	//! Output operator for optimization senses.
-	/**
-	 * The output operator writes the optimization sense on an output stream
-	 * in the form <tt>maximize</tt>, <tt>minimize</tt>, or <tt>unknown</tt>.
-	 *
-	 * \param out The output stream.
-	 * \param rhs The sense being output.
-	 *
-	 * \return The output stream.
-	 */
-	friend ostream &operator<<(ostream& out, const OptSense &rhs);
+    //! Output operator for optimization senses.
+    /**
+     * The output operator writes the optimization sense on an output stream
+     * in the form <tt>maximize</tt>, <tt>minimize</tt>, or <tt>unknown</tt>.
+     *
+     * \param out The output stream.
+     * \param rhs The sense being output.
+     *
+     * \return The output stream.
+     */
+    friend ostream &operator<<(ostream& out, const OptSense &rhs);
 
-	//! Sets the optimization sense to \a s.
-	/**
-	 * \param s The new sense of the optimization.
-	 */
-	void sense(SENSE s) { sense_ = s; }
-
-
-	//! Returns the sense of the optimization.
-	SENSE sense() const { return sense_; }
-
-
-	//! Returns true If it is minimization problem,, false otherwise.
-	bool min() const {
-		return (sense_ == Min);
-	}
+    //! Sets the optimization sense to \a s.
+    /**
+     * \param s The new sense of the optimization.
+     */
+    void sense(SENSE s)
+    {
+        sense_ = s;
+    }
 
 
-	//! Returns true if it is maximization problem,, false otherwise.
-	bool max() const {
-		return (sense_ == Max);
-	}
+    //! Returns the sense of the optimization.
+    SENSE sense() const
+    {
+        return sense_;
+    }
 
 
-	//! Returns true if the optimization sense  is unknown,, false otherwise.
-	bool unknown() const {
-		return (sense_ == Unknown);
-	}
+    //! Returns true If it is minimization problem,, false otherwise.
+    bool min() const
+    {
+        return (sense_ == Min);
+    }
+
+
+    //! Returns true if it is maximization problem,, false otherwise.
+    bool max() const
+    {
+        return (sense_ == Max);
+    }
+
+
+    //! Returns true if the optimization sense  is unknown,, false otherwise.
+    bool unknown() const
+    {
+        return (sense_ == Unknown);
+    }
 
 private:
 
-	SENSE sense_; //!< The optimization sense.
+    SENSE sense_; //!< The optimization sense.
 };
 
 

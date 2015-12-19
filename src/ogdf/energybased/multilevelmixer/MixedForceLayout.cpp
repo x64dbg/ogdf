@@ -44,34 +44,35 @@
 #include <ogdf/energybased/SpringEmbedderFR.h>
 #include <ogdf/energybased/FastMultipoleEmbedder.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 MixedForceLayout::MixedForceLayout()
 {
-	SpringEmbedderFR * FR = new SpringEmbedderFR();
-	FR->scaling(SpringEmbedderFR::scInput);
-	m_FR = FR;
+    SpringEmbedderFR * FR = new SpringEmbedderFR();
+    FR->scaling(SpringEmbedderFR::scInput);
+    m_FR = FR;
 
-	FastMultipoleEmbedder * FME = new FastMultipoleEmbedder();
-	FME->setNumIterations(1000);
-	FME->setRandomize(false);
-	FME->setNumberOfThreads(2);
+    FastMultipoleEmbedder * FME = new FastMultipoleEmbedder();
+    FME->setNumIterations(1000);
+    FME->setRandomize(false);
+    FME->setNumberOfThreads(2);
 
-	m_FME = FME;
+    m_FME = FME;
 }
 
 
 void MixedForceLayout::call(GraphAttributes &GA)
 {
-	m_FME->call(GA);
-	m_FR->call(GA);
+    m_FME->call(GA);
+    m_FR->call(GA);
 }
 
 
 void MixedForceLayout::call(MultilevelGraph &MLG)
 {
-	m_FME->call(MLG.getGraphAttributes());
-	m_FR->call(MLG.getGraphAttributes());
+    m_FME->call(MLG.getGraphAttributes());
+    m_FR->call(MLG.getGraphAttributes());
 }
 
 } // namespace ogdf

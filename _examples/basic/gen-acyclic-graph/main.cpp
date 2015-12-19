@@ -7,11 +7,11 @@ using namespace ogdf;
 
 int main()
 {
-	Graph G;
-	randomSimpleGraph(G, 10, 20);
-	DfsAcyclicSubgraph DAS;
-	DAS.callAndReverse(G);
-	GraphIO::writeGML(G, "test.gml");
+    Graph G;
+    randomSimpleGraph(G, 10, 20);
+    DfsAcyclicSubgraph DAS;
+    DAS.callAndReverse(G);
+    GraphIO::writeGML(G, "test.gml");
 
-	return 0;
+    return 0;
 }

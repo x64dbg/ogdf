@@ -56,194 +56,199 @@
 #include <ogdf/internal/cluster/ClusterPQContainer.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT CconnectClusterPlanarEmbed
 {
 public:
 
-	enum ccErrorCode {
-		none = 0,
-		nonConnected = 1,
-		nonCConnected = 2,
-		nonPlanar = 3,
-		nonCPlanar = 4
-	};
+    enum ccErrorCode
+    {
+        none = 0,
+        nonConnected = 1,
+        nonCConnected = 2,
+        nonPlanar = 3,
+        nonCPlanar = 4
+    };
 
-	ccErrorCode errCode() { return m_errorCode; }
+    ccErrorCode errCode()
+    {
+        return m_errorCode;
+    }
 
 
-	//*************************************************************************
-	// Constructor
-	CconnectClusterPlanarEmbed();
+    //*************************************************************************
+    // Constructor
+    CconnectClusterPlanarEmbed();
 
-	// Destructor
-	virtual ~CconnectClusterPlanarEmbed();
+    // Destructor
+    virtual ~CconnectClusterPlanarEmbed();
 
-	// Tests if a ClusterGraph is C-planar and embedds it.
-	virtual bool embed(ClusterGraph &C,Graph &G);
+    // Tests if a ClusterGraph is C-planar and embedds it.
+    virtual bool embed(ClusterGraph &C,Graph &G);
 
 
 private:
 
-	bool planarityTest(ClusterGraph &C, cluster &act, Graph &G);
+    bool planarityTest(ClusterGraph &C, cluster &act, Graph &G);
 
-	bool preProcess(ClusterGraph &Ccopy,Graph &Gcopy);
+    bool preProcess(ClusterGraph &Ccopy,Graph &Gcopy);
 
-	bool preparation(Graph &subGraph,cluster &origCluster,node superSink);
+    bool preparation(Graph &subGraph,cluster &origCluster,node superSink);
 
-	bool doEmbed(
-		Graph			*biconComp,
-		NodeArray<int>  &numbering,
-		cluster			&origCluster,
-		node			superSink,
-		Graph			&subGraph,
-		EdgeArray<edge> &tableEdgesBiComp2SubGraph,
-		EdgeArray<edge> &tableEdgesSubGraph2BiComp,
-		NodeArray<node> &tableNodesBiComp2SubGraph);
+    bool doEmbed(
+        Graph           *biconComp,
+        NodeArray<int>  &numbering,
+        cluster         &origCluster,
+        node            superSink,
+        Graph           &subGraph,
+        EdgeArray<edge> &tableEdgesBiComp2SubGraph,
+        EdgeArray<edge> &tableEdgesSubGraph2BiComp,
+        NodeArray<node> &tableNodesBiComp2SubGraph);
 
-	void entireEmbed(
-		Graph &biconComp,
-		NodeArray<SListPure<adjEntry> > &entireEmbedding,
-		NodeArray<SListIterator<adjEntry> > &adjMarker,
-		NodeArray<bool> &mark,
-		node v);
+    void entireEmbed(
+        Graph &biconComp,
+        NodeArray<SListPure<adjEntry> > &entireEmbedding,
+        NodeArray<SListIterator<adjEntry> > &adjMarker,
+        NodeArray<bool> &mark,
+        node v);
 
-	void recursiveEmbed(ClusterGraph &Ccopy,Graph &Gcopy);
+    void recursiveEmbed(ClusterGraph &Ccopy,Graph &Gcopy);
 
-	void prepareParallelEdges(Graph &G);
-
-
-	void constructWheelGraph(
-		ClusterGraph &C,
-		Graph &G,
-		cluster &parent,
-	 	cluster &origCl,
-		EmbedPQTree* T,
-		EdgeArray<node> &outgoingTable,
-		node superSink);
-
-	void hubControl(Graph &G,NodeArray<bool> &hubs);
-
-	void nonPlanarCleanup(ClusterGraph &Ccopy,Graph &Gcopy);
-
-	void copyEmbedding(ClusterGraph &Ccopy,Graph &Gcopy,ClusterGraph &C,Graph &G);
-
-	//---------------------------------------------------------
-	// private member variables for testing a cluster graph
-	//---------------------------------------------------------
-
-	// Stores for every cluster the PQTree corresponding
-	// to the biconnected component containing the outgoing
-	// edges of the cluster.
-	ClusterArray<EmbedPQTree*> m_clusterPQTree;
-
-	//save errorcode for postprocessing if not c-planar
-	ccErrorCode m_errorCode;
+    void prepareParallelEdges(Graph &G);
 
 
-	//private Members for handling parallel edges
-	EdgeArray<ListPure<edge> >	m_parallelEdges;
-	EdgeArray<bool>				m_isParallel;
-	int	m_parallelCount;
+    void constructWheelGraph(
+        ClusterGraph &C,
+        Graph &G,
+        cluster &parent,
+        cluster &origCl,
+        EmbedPQTree* T,
+        EdgeArray<node> &outgoingTable,
+        node superSink);
+
+    void hubControl(Graph &G,NodeArray<bool> &hubs);
+
+    void nonPlanarCleanup(ClusterGraph &Ccopy,Graph &Gcopy);
+
+    void copyEmbedding(ClusterGraph &Ccopy,Graph &Gcopy,ClusterGraph &C,Graph &G);
+
+    //---------------------------------------------------------
+    // private member variables for testing a cluster graph
+    //---------------------------------------------------------
+
+    // Stores for every cluster the PQTree corresponding
+    // to the biconnected component containing the outgoing
+    // edges of the cluster.
+    ClusterArray<EmbedPQTree*> m_clusterPQTree;
+
+    //save errorcode for postprocessing if not c-planar
+    ccErrorCode m_errorCode;
 
 
-	//---------------------------------------------------------
-	// private member variables for embedding a cluster graph
-	//---------------------------------------------------------
-
-	ClusterGraph *m_instance; //The graph that has to be embedded
-
-
-	// Stores for every cluster the (partial) embedding of the
-	// biconnected components not having outgoing
-	// edges of the cluster.
-	// The NodeArrays are associated with the subgraphs.
-	// The ClusterArray is associtated with the original graph.
-	ClusterArray<NodeArray<SListPure<adjEntry> >*> m_clusterEmbedding;
-
-	// Stores for every cluster the subgraph constructed to test
-	// the planarity of the cluster
-	// The ClusterArray is associated with the original graph.
-	ClusterArray<Graph*>				m_clusterSubgraph;
-
-	// Marks for every subgraph of a cluster the nodes that are
-	// hubs as true.
-	// The NodeArrays are associated with the subgraphs.
-	// The ClusterArray is associated with the original graph.
-	ClusterArray<NodeArray<bool> *>		m_clusterSubgraphHubs;
+    //private Members for handling parallel edges
+    EdgeArray<ListPure<edge> >  m_parallelEdges;
+    EdgeArray<bool>             m_isParallel;
+    int m_parallelCount;
 
 
-	// Stores for every node of every subgraph of a cluster
-	// if this node belongs to a wheel graph, corresponding to
-	// a child cluster
-	// The NodeArrays are associated with the subgraphs.
-	// The ClusterArray is associated with the original graph.
-	ClusterArray<NodeArray<cluster> *>	m_clusterSubgraphWheelGraph;
+    //---------------------------------------------------------
+    // private member variables for embedding a cluster graph
+    //---------------------------------------------------------
+
+    ClusterGraph *m_instance; //The graph that has to be embedded
 
 
-	// Stores for every mode of every subgraph of a cluster its
-	// corresponding node on the original graph G, if there exists one.
-	ClusterArray<NodeArray<node> *>		m_clusterNodeTableNew2Orig;
+    // Stores for every cluster the (partial) embedding of the
+    // biconnected components not having outgoing
+    // edges of the cluster.
+    // The NodeArrays are associated with the subgraphs.
+    // The ClusterArray is associtated with the original graph.
+    ClusterArray<NodeArray<SListPure<adjEntry> >*> m_clusterEmbedding;
+
+    // Stores for every cluster the subgraph constructed to test
+    // the planarity of the cluster
+    // The ClusterArray is associated with the original graph.
+    ClusterArray<Graph*>                m_clusterSubgraph;
+
+    // Marks for every subgraph of a cluster the nodes that are
+    // hubs as true.
+    // The NodeArrays are associated with the subgraphs.
+    // The ClusterArray is associated with the original graph.
+    ClusterArray<NodeArray<bool> *>     m_clusterSubgraphHubs;
 
 
-	ClusterArray<ClusterGraph*>			m_clusterClusterGraph;
-	ClusterArray<ClusterArray<cluster>*>m_clusterClusterTableOrig2New;
-
-	// When constructing a wheel graph, we store here for
-	// every wheel graph node the corresponding cluster
-	// Array is associated with the cluster graph copy.
-	NodeArray<cluster>					m_wheelGraphNodes;
-
-	// Stores for every node in the current graph, if
-	// it is a hub.
-	// Array is associated with the cluster graph copy.
-	NodeArray<bool>						m_currentHubs;
+    // Stores for every node of every subgraph of a cluster
+    // if this node belongs to a wheel graph, corresponding to
+    // a child cluster
+    // The NodeArrays are associated with the subgraphs.
+    // The ClusterArray is associated with the original graph.
+    ClusterArray<NodeArray<cluster> *>  m_clusterSubgraphWheelGraph;
 
 
-	// Stores for every cluster of Ccopy the corresponding cluster
-	// in the original graph. A key variable, since we track
-	// all information via the original clusters.
-	ClusterArray<cluster>	m_clusterTableCopy2Orig;
-
-	// Needed to construct the ClusterArray m_clusterTableCopy2Orig.
-	ClusterArray<cluster>	m_clusterTableOrig2Copy;
-
-	// Stores for every subgraph the super sink of the subgraph.
-	ClusterArray<node>		m_clusterSuperSink;
+    // Stores for every mode of every subgraph of a cluster its
+    // corresponding node on the original graph G, if there exists one.
+    ClusterArray<NodeArray<node> *>     m_clusterNodeTableNew2Orig;
 
 
-	// Stores for every node in Gcopy its corresponding node
-	// in the original graph unless the node belongs to
-	// a wheel graph.
-	// The NodeArray is associated with Gcopy.
-	NodeArray<node>			m_nodeTableCopy2Orig;
+    ClusterArray<ClusterGraph*>         m_clusterClusterGraph;
+    ClusterArray<ClusterArray<cluster>*>m_clusterClusterTableOrig2New;
 
-	// Needed to construct the NodeArray m_nodeTableCopy2Orig.
-	NodeArray<node>			m_nodeTableOrig2Copy;
+    // When constructing a wheel graph, we store here for
+    // every wheel graph node the corresponding cluster
+    // Array is associated with the cluster graph copy.
+    NodeArray<cluster>                  m_wheelGraphNodes;
+
+    // Stores for every node in the current graph, if
+    // it is a hub.
+    // Array is associated with the cluster graph copy.
+    NodeArray<bool>                     m_currentHubs;
 
 
-	EdgeArray<Stack<edge>*> m_outgoingEdgesAnker;
-	ClusterArray<EdgeArray<Stack<edge>*>*> m_clusterOutgoingEdgesAnker;
+    // Stores for every cluster of Ccopy the corresponding cluster
+    // in the original graph. A key variable, since we track
+    // all information via the original clusters.
+    ClusterArray<cluster>   m_clusterTableCopy2Orig;
 
-	// Stores for every original cluster all information on
-	// the PQ-Tree that is necessary to construct the embedding.
-	ClusterArray<ClusterPQContainer> m_clusterPQContainer;
+    // Needed to construct the ClusterArray m_clusterTableCopy2Orig.
+    ClusterArray<cluster>   m_clusterTableOrig2Copy;
 
-	// Stores the clusters in calling order of the testing algorithm
-	// The stack stores the clusters of the original graph.
-	// Needed for recursive embed.
-	Stack<cluster> m_callStack;
+    // Stores for every subgraph the super sink of the subgraph.
+    ClusterArray<node>      m_clusterSuperSink;
 
-	// Is true for every original cluster, if the cluster does not
-	// have a correspondand in the copy of the cluster graph.
-	// This is the case if:
-	// a. cluster is son of root cluster and does have exactly one
-	//    childcluster and no nodes;
-	// b. recursive version of a;
-	// c. cluster does have no child clusters and no nodes;
-	// d. recursive version of c.
-	ClusterArray<bool> m_unsatisfiedCluster;
+
+    // Stores for every node in Gcopy its corresponding node
+    // in the original graph unless the node belongs to
+    // a wheel graph.
+    // The NodeArray is associated with Gcopy.
+    NodeArray<node>         m_nodeTableCopy2Orig;
+
+    // Needed to construct the NodeArray m_nodeTableCopy2Orig.
+    NodeArray<node>         m_nodeTableOrig2Copy;
+
+
+    EdgeArray<Stack<edge>*> m_outgoingEdgesAnker;
+    ClusterArray<EdgeArray<Stack<edge>*>*> m_clusterOutgoingEdgesAnker;
+
+    // Stores for every original cluster all information on
+    // the PQ-Tree that is necessary to construct the embedding.
+    ClusterArray<ClusterPQContainer> m_clusterPQContainer;
+
+    // Stores the clusters in calling order of the testing algorithm
+    // The stack stores the clusters of the original graph.
+    // Needed for recursive embed.
+    Stack<cluster> m_callStack;
+
+    // Is true for every original cluster, if the cluster does not
+    // have a correspondand in the copy of the cluster graph.
+    // This is the case if:
+    // a. cluster is son of root cluster and does have exactly one
+    //    childcluster and no nodes;
+    // b. recursive version of a;
+    // c. cluster does have no child clusters and no nodes;
+    // d. recursive version of c.
+    ClusterArray<bool> m_unsatisfiedCluster;
 };
 
 } // end namespace ogdf

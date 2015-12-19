@@ -55,7 +55,8 @@
 #include <ogdf/basic/SList.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //---------------------------------------------------------
 // SPQRTree
@@ -95,151 +96,152 @@ class OGDF_EXPORT SPQRTree
 {
 public:
 
-	//! The type of a tree node in T.
-	enum NodeType { SNode, PNode, RNode };
+    //! The type of a tree node in T.
+    enum NodeType { SNode, PNode, RNode };
 
 
-	// destructor
+    // destructor
 
-	virtual ~SPQRTree() { }
-
-
-	//
-	// a) Access operations
-	//
-
-	//! Returns a reference to the original graph \a G.
-	virtual const Graph &originalGraph() const=0;
-
-	//! Returns a reference to the tree \a T.
-	virtual const Graph &tree() const=0;
-
-	//! Returns the edge of \a G at which \a T is rooted.
-	virtual edge rootEdge() const=0;
-
-	//! Returns the root node of \a T.
-	virtual node rootNode() const=0;
-
-	//! Returns the number of S-nodes in \a T.
-	virtual int numberOfSNodes() const=0;
-
-	//! Returns the number of P-nodes in \a T.
-	virtual int numberOfPNodes() const=0;
-
-	//! Returns the number of R-nodes in \a T.
-	virtual int numberOfRNodes() const=0;
-
-	/**
-	 * \brief Returns the type of node \a v.
-	 * \pre \a v is a node in \a T
-	 */
-	virtual NodeType typeOf(node v) const=0;
-
-	//! Returns the list of all nodes with type \a t.
-	virtual List<node> nodesOfType(NodeType t) const=0;
-
-	/**
-	 * \brief Returns the skeleton of node \a v.
-	 * \pre \a v is a node in \a T
-	 */
-	virtual Skeleton &skeleton(node v) const=0;
-
-	/**
-	 * \brief Returns the skeleton that contains the real edge \a e.
-	 * \pre \a e is an edge in \a G
-	 */
-	virtual const Skeleton &skeletonOfReal(edge e) const=0;
-
-	/**
-	 * \brief Returns the skeleton edge that corresponds to the real edge \a e.
-	 * \pre \a e is an edge in \a G
-	 */
-	virtual edge copyOfReal(edge e) const=0;
-
-	/**
-	 * \brief Returns the pertinent graph of tree node \a v in \a Gp.
-	 * \pre \a v is a node in \a T
-	 */
-	void pertinentGraph(node v, PertinentGraph &Gp) const
-	{
-		if (m_cpV == 0) m_cpV = OGDF_NEW NodeArray<node>(originalGraph(),0);
-		NodeArray<node> &cpV = *m_cpV;
-
-		Gp.init(v);
-		cpRec(v,Gp);
-
-		const Skeleton &S = skeleton(v);
-
-		edge e = Gp.m_skRefEdge = S.referenceEdge();
-		if (e != 0) e = Gp.m_P.newEdge(cpV[S.original(e->source())],cpV[S.original(e->target())]);
-		Gp.m_vEdge = e;
-
-		while (!m_cpVAdded.empty()) cpV[m_cpVAdded.popFrontRet()] = 0;
-	}
+    virtual ~SPQRTree() { }
 
 
-	//
-	// b) Update operations
-	//
+    //
+    // a) Access operations
+    //
 
-	/**
-	 * \brief Roots \a T at edge \a e and returns the new root node of \a T.
-	 * \pre \a e is an edge in \a G
-	 */
-	virtual node rootTreeAt(edge e) =0;
+    //! Returns a reference to the original graph \a G.
+    virtual const Graph &originalGraph() const=0;
 
-	/**
-	 * \brief Roots \a T at node \a v and returns \a v.
-	 * \pre \a v is a node in \a T
-	 */
-	virtual node rootTreeAt(node v) =0;
+    //! Returns a reference to the tree \a T.
+    virtual const Graph &tree() const=0;
+
+    //! Returns the edge of \a G at which \a T is rooted.
+    virtual edge rootEdge() const=0;
+
+    //! Returns the root node of \a T.
+    virtual node rootNode() const=0;
+
+    //! Returns the number of S-nodes in \a T.
+    virtual int numberOfSNodes() const=0;
+
+    //! Returns the number of P-nodes in \a T.
+    virtual int numberOfPNodes() const=0;
+
+    //! Returns the number of R-nodes in \a T.
+    virtual int numberOfRNodes() const=0;
+
+    /**
+     * \brief Returns the type of node \a v.
+     * \pre \a v is a node in \a T
+     */
+    virtual NodeType typeOf(node v) const=0;
+
+    //! Returns the list of all nodes with type \a t.
+    virtual List<node> nodesOfType(NodeType t) const=0;
+
+    /**
+     * \brief Returns the skeleton of node \a v.
+     * \pre \a v is a node in \a T
+     */
+    virtual Skeleton &skeleton(node v) const=0;
+
+    /**
+     * \brief Returns the skeleton that contains the real edge \a e.
+     * \pre \a e is an edge in \a G
+     */
+    virtual const Skeleton &skeletonOfReal(edge e) const=0;
+
+    /**
+     * \brief Returns the skeleton edge that corresponds to the real edge \a e.
+     * \pre \a e is an edge in \a G
+     */
+    virtual edge copyOfReal(edge e) const=0;
+
+    /**
+     * \brief Returns the pertinent graph of tree node \a v in \a Gp.
+     * \pre \a v is a node in \a T
+     */
+    void pertinentGraph(node v, PertinentGraph &Gp) const
+    {
+        if (m_cpV == 0) m_cpV = OGDF_NEW NodeArray<node>(originalGraph(),0);
+        NodeArray<node> &cpV = *m_cpV;
+
+        Gp.init(v);
+        cpRec(v,Gp);
+
+        const Skeleton &S = skeleton(v);
+
+        edge e = Gp.m_skRefEdge = S.referenceEdge();
+        if (e != 0) e = Gp.m_P.newEdge(cpV[S.original(e->source())],cpV[S.original(e->target())]);
+        Gp.m_vEdge = e;
+
+        while (!m_cpVAdded.empty()) cpV[m_cpVAdded.popFrontRet()] = 0;
+    }
 
 
-	void directSkEdge(node vT, edge e, node src)
-	{
-		OGDF_ASSERT(e != 0 && (src == e->source() || src == e->target()))
+    //
+    // b) Update operations
+    //
 
-		if(e->source() != src) skeleton(vT).getGraph().reverseEdge(e);
-	}
+    /**
+     * \brief Roots \a T at edge \a e and returns the new root node of \a T.
+     * \pre \a e is an edge in \a G
+     */
+    virtual node rootTreeAt(edge e) =0;
 
-	void replaceSkEdgeByPeak(node vT, edge e)
-	{
-		Graph &M = skeleton(vT).getGraph();
-		M.reverseEdge(M.split(e));
-	}
+    /**
+     * \brief Roots \a T at node \a v and returns \a v.
+     * \pre \a v is a node in \a T
+     */
+    virtual node rootTreeAt(node v) =0;
+
+
+    void directSkEdge(node vT, edge e, node src)
+    {
+        OGDF_ASSERT(e != 0 && (src == e->source() || src == e->target()))
+
+        if(e->source() != src) skeleton(vT).getGraph().reverseEdge(e);
+    }
+
+    void replaceSkEdgeByPeak(node vT, edge e)
+    {
+        Graph &M = skeleton(vT).getGraph();
+        M.reverseEdge(M.split(e));
+    }
 
 
 protected:
 
-	/**
-	 * \brief Recursively performs the task of adding edges (and nodes)
-	 * to the pertinent graph \a Gp for each involved skeleton graph.
-	 */
-	virtual void cpRec(node v, PertinentGraph &Gp) const=0;
+    /**
+     * \brief Recursively performs the task of adding edges (and nodes)
+     * to the pertinent graph \a Gp for each involved skeleton graph.
+     */
+    virtual void cpRec(node v, PertinentGraph &Gp) const=0;
 
-	//! Add an edge to \a Gp corresponding to \a eOrig.
-	edge cpAddEdge(edge eOrig, PertinentGraph &Gp) const
-	{
-		edge eP = Gp.m_P.newEdge(cpAddNode(eOrig->source(),Gp),cpAddNode(eOrig->target(),Gp));
-		Gp.m_origE[eP] = eOrig;
-		return eP;
-	}
+    //! Add an edge to \a Gp corresponding to \a eOrig.
+    edge cpAddEdge(edge eOrig, PertinentGraph &Gp) const
+    {
+        edge eP = Gp.m_P.newEdge(cpAddNode(eOrig->source(),Gp),cpAddNode(eOrig->target(),Gp));
+        Gp.m_origE[eP] = eOrig;
+        return eP;
+    }
 
-	//! Add a node to \a Gp corresponding to \a vOrig if required.
-	node cpAddNode(node vOrig, PertinentGraph &Gp) const
-	{
-		node &vP = (*m_cpV)[vOrig];
-		if (vP == 0) {
-			m_cpVAdded.pushBack(vOrig);
-			Gp.m_origV[vP = Gp.m_P.newNode()] = vOrig;
-		}
-		return vP;
-	}
+    //! Add a node to \a Gp corresponding to \a vOrig if required.
+    node cpAddNode(node vOrig, PertinentGraph &Gp) const
+    {
+        node &vP = (*m_cpV)[vOrig];
+        if (vP == 0)
+        {
+            m_cpVAdded.pushBack(vOrig);
+            Gp.m_origV[vP = Gp.m_P.newNode()] = vOrig;
+        }
+        return vP;
+    }
 
 
-	// auxiliary members used for computing pertinent graphs
-	mutable NodeArray<node> *m_cpV;       //!< node in pertinent graph corresponding to an original node (auxiliary member)
-	mutable SList<node>      m_cpVAdded;  //!< list of added nodes (auxiliary member)
+    // auxiliary members used for computing pertinent graphs
+    mutable NodeArray<node> *m_cpV;       //!< node in pertinent graph corresponding to an original node (auxiliary member)
+    mutable SList<node>      m_cpVAdded;  //!< list of added nodes (auxiliary member)
 
 }; // class SPQRTree
 

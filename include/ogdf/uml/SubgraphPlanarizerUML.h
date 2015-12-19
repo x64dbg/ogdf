@@ -121,86 +121,104 @@ namespace ogdf
 */
 class OGDF_EXPORT SubgraphPlanarizerUML : public UMLCrossingMinimizationModule, public Logger
 {
-	class ThreadMaster;
-	class Worker;
+    class ThreadMaster;
+    class Worker;
 
 protected:
-	//! Implements the algorithm call.
-	virtual ReturnType doCall(PlanRepUML &pr,
-		int cc,
-		const EdgeArray<int>  *pCostOrig,
-		int& crossingNumber);
+    //! Implements the algorithm call.
+    virtual ReturnType doCall(PlanRepUML &pr,
+                              int cc,
+                              const EdgeArray<int>  *pCostOrig,
+                              int& crossingNumber);
 
 public:
-	//! Creates an instance of subgraph planarizer with default settings.
-	SubgraphPlanarizerUML();
+    //! Creates an instance of subgraph planarizer with default settings.
+    SubgraphPlanarizerUML();
 
-	//! Creates an instance of subgraph planarizer with the same settings as \a planarizer.
-	SubgraphPlanarizerUML(const SubgraphPlanarizerUML &planarizer);
+    //! Creates an instance of subgraph planarizer with the same settings as \a planarizer.
+    SubgraphPlanarizerUML(const SubgraphPlanarizerUML &planarizer);
 
-	//! Returns a new instance of subgraph planarizer with the same option settings.
-	virtual UMLCrossingMinimizationModule *clone() const;
+    //! Returns a new instance of subgraph planarizer with the same option settings.
+    virtual UMLCrossingMinimizationModule *clone() const;
 
-	//! Assignment operator. Copies option settings only.
-	SubgraphPlanarizerUML &operator=(const SubgraphPlanarizerUML &planarizer);
+    //! Assignment operator. Copies option settings only.
+    SubgraphPlanarizerUML &operator=(const SubgraphPlanarizerUML &planarizer);
 
 
-	//! Sets the module option for the computation of the planar subgraph.
-	void setSubgraph(PlanarSubgraphModule *pSubgraph) {
-		m_subgraph.set(pSubgraph);
-	}
+    //! Sets the module option for the computation of the planar subgraph.
+    void setSubgraph(PlanarSubgraphModule *pSubgraph)
+    {
+        m_subgraph.set(pSubgraph);
+    }
 
-	//! Sets the module option for the edge insertion module.
-	void setInserter(UMLEdgeInsertionModule *pInserter) {
-		m_inserter.set(pInserter);
-	}
+    //! Sets the module option for the edge insertion module.
+    void setInserter(UMLEdgeInsertionModule *pInserter)
+    {
+        m_inserter.set(pInserter);
+    }
 
-	//! Returns the number of permutations.
-	int permutations() { return m_permutations; }
+    //! Returns the number of permutations.
+    int permutations()
+    {
+        return m_permutations;
+    }
 
-	//! Sets the number of permutations to \a p.
-	void permutations(int p) { m_permutations = p; }
+    //! Sets the number of permutations to \a p.
+    void permutations(int p)
+    {
+        m_permutations = p;
+    }
 
-	//! Returns the current setting of options <i>setTimeout</i>.
-	bool setTimeout() { return m_setTimeout; }
+    //! Returns the current setting of options <i>setTimeout</i>.
+    bool setTimeout()
+    {
+        return m_setTimeout;
+    }
 
-	//! Sets the option <i>setTimeout</i> to \a b.
-	void setTimeout(bool b) { m_setTimeout = b; }
+    //! Sets the option <i>setTimeout</i> to \a b.
+    void setTimeout(bool b)
+    {
+        m_setTimeout = b;
+    }
 
-	//! Returns the maximal number of used threads.
-	int maxThreads() const { return m_maxThreads; }
+    //! Returns the maximal number of used threads.
+    int maxThreads() const
+    {
+        return m_maxThreads;
+    }
 
-	//! Sets the maximal number of used threads to \a n.
-	void maxThreads(int n) {
+    //! Sets the maximal number of used threads to \a n.
+    void maxThreads(int n)
+    {
 #ifndef OGDF_MEMORY_POOL_NTS
-		m_maxThreads = n;
+        m_maxThreads = n;
 #endif
-	}
+    }
 
 private:
-	static void doWorkHelper(ThreadMaster &master, UMLEdgeInsertionModule &inserter
+    static void doWorkHelper(ThreadMaster &master, UMLEdgeInsertionModule &inserter
 #ifdef OGDF_HAVE_CPP11
-		, std::minstd_rand &rng
+                             , std::minstd_rand &rng
 #endif
-	);
+                            );
 
-	static bool doSinglePermutation(
-		PlanRepLight &prl,
-		int cc,
-		const EdgeArray<int>  *pCost,
-		Array<edge> &deletedEdges,
-		UMLEdgeInsertionModule &inserter,
+    static bool doSinglePermutation(
+        PlanRepLight &prl,
+        int cc,
+        const EdgeArray<int>  *pCost,
+        Array<edge> &deletedEdges,
+        UMLEdgeInsertionModule &inserter,
 #ifdef OGDF_HAVE_CPP11
-		std::minstd_rand &rng,
+        std::minstd_rand &rng,
 #endif
-		int &crossingNumber);
+        int &crossingNumber);
 
-	ModuleOption<PlanarSubgraphModule>   m_subgraph; //!< The planar subgraph algorithm.
-	ModuleOption<UMLEdgeInsertionModule> m_inserter; //!< The edge insertion module.
+    ModuleOption<PlanarSubgraphModule>   m_subgraph; //!< The planar subgraph algorithm.
+    ModuleOption<UMLEdgeInsertionModule> m_inserter; //!< The edge insertion module.
 
-	int m_permutations;	//!< The number of permutations.
-	bool m_setTimeout;	//!< The option for setting timeouts in submodules.
-	int m_maxThreads;	//!< The maximal number of used threads.
+    int m_permutations; //!< The number of permutations.
+    bool m_setTimeout;  //!< The option for setting timeouts in submodules.
+    int m_maxThreads;   //!< The maximal number of used threads.
 };
 
 }

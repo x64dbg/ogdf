@@ -316,41 +316,41 @@
 
 /*---------------------------- colgen_strat ---------------------------------*/
 #define COLGEN_STR_SIZE 5
-#define COLGEN_STR_ARRAY {				\
-      { "FATHOM__DO_NOT_GENERATE_COLS__DISCARD",	\
-	   FATHOM__DO_NOT_GENERATE_COLS__DISCARD },	\
-      { "FATHOM__DO_NOT_GENERATE_COLS__SEND",		\
-	   FATHOM__DO_NOT_GENERATE_COLS__SEND    },	\
-      { "FATHOM__GENERATE_COLS__RESOLVE",		\
-	   FATHOM__GENERATE_COLS__RESOLVE        },	\
-      { "BEFORE_BRANCH__DO_NOT_GENERATE_COLS",		\
-	   BEFORE_BRANCH__DO_NOT_GENERATE_COLS   },	\
-      { "BEFORE_BRANCH__GENERATE_COLS__RESOLVE",	\
-	   BEFORE_BRANCH__GENERATE_COLS__RESOLVE }	\
+#define COLGEN_STR_ARRAY {              \
+      { "FATHOM__DO_NOT_GENERATE_COLS__DISCARD",    \
+       FATHOM__DO_NOT_GENERATE_COLS__DISCARD }, \
+      { "FATHOM__DO_NOT_GENERATE_COLS__SEND",       \
+       FATHOM__DO_NOT_GENERATE_COLS__SEND    }, \
+      { "FATHOM__GENERATE_COLS__RESOLVE",       \
+       FATHOM__GENERATE_COLS__RESOLVE        }, \
+      { "BEFORE_BRANCH__DO_NOT_GENERATE_COLS",      \
+       BEFORE_BRANCH__DO_NOT_GENERATE_COLS   }, \
+      { "BEFORE_BRANCH__GENERATE_COLS__RESOLVE",    \
+       BEFORE_BRANCH__GENERATE_COLS__RESOLVE }  \
 }
 
 /*------------------------- candidate selection -----------------------------*/
 #ifdef COMPILE_FRAC_BRANCHING
 #define COMPARE_CAN_STR_SIZE 9
-#define COMPARE_CAN_STR_ARRAY {				\
-   { "LOWEST_LOW_FRAC", LOWEST_LOW_FRAC },			\
-   { "HIGHEST_LOW_FRAC", HIGHEST_LOW_FRAC },			\
-   { "LOWEST_HIGH_FRAC", LOWEST_HIGH_FRAC },			\
-   { "HIGHEST_HIGH_FRAC", HIGHEST_HIGH_FRAC },			\
-   { "BIGGEST_DIFFERENCE_OBJ", BIGGEST_DIFFERENCE_OBJ },	\
-   { "LOWEST_LOW_OBJ", LOWEST_LOW_OBJ },			\
-   { "HIGHEST_LOW_OBJ", HIGHEST_LOW_OBJ },			\
-   { "LOWEST_HIGH_OBJ", LOWEST_HIGH_OBJ },			\
-   { "HIGHEST_HIGH_OBJ", HIGHEST_HIGH_OBJ }			\
+#define COMPARE_CAN_STR_ARRAY {             \
+   { "LOWEST_LOW_FRAC", LOWEST_LOW_FRAC },          \
+   { "HIGHEST_LOW_FRAC", HIGHEST_LOW_FRAC },            \
+   { "LOWEST_HIGH_FRAC", LOWEST_HIGH_FRAC },            \
+   { "HIGHEST_HIGH_FRAC", HIGHEST_HIGH_FRAC },          \
+   { "BIGGEST_DIFFERENCE_OBJ", BIGGEST_DIFFERENCE_OBJ },    \
+   { "LOWEST_LOW_OBJ", LOWEST_LOW_OBJ },            \
+   { "HIGHEST_LOW_OBJ", HIGHEST_LOW_OBJ },          \
+   { "LOWEST_HIGH_OBJ", LOWEST_HIGH_OBJ },          \
+   { "HIGHEST_HIGH_OBJ", HIGHEST_HIGH_OBJ }         \
 }
 #else
 #define COMPARE_CAN_STR_SIZE 5
-#define COMPARE_CAN_STR_ARRAY {				\
-   { "BIGGEST_DIFFERENCE_OBJ", BIGGEST_DIFFERENCE_OBJ },	\
-   { "LOWEST_LOW_OBJ", LOWEST_LOW_OBJ },			\
-   { "HIGHEST_LOW_OBJ", HIGHEST_LOW_OBJ },			\
-   { "LOWEST_HIGH_OBJ", LOWEST_HIGH_OBJ },			\
-   { "HIGHEST_HIGH_OBJ", HIGHEST_HIGH_OBJ }			\
+#define COMPARE_CAN_STR_ARRAY {             \
+   { "BIGGEST_DIFFERENCE_OBJ", BIGGEST_DIFFERENCE_OBJ },    \
+   { "LOWEST_LOW_OBJ", LOWEST_LOW_OBJ },            \
+   { "HIGHEST_LOW_OBJ", HIGHEST_LOW_OBJ },          \
+   { "LOWEST_HIGH_OBJ", LOWEST_HIGH_OBJ },          \
+   { "HIGHEST_HIGH_OBJ", HIGHEST_HIGH_OBJ }         \
 }
 #endif
 

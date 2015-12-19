@@ -36,20 +36,21 @@
 
 #include <ogdf/abacus/srowcon.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 double SRowCon::slack(
-	Active<Variable, Constraint> * /* variables */,
-	double *x) const
+    Active<Variable, Constraint> * /* variables */,
+    double *x) const
 {
-	int nnz = row_.nnz();
+    int nnz = row_.nnz();
 
-	double lhs = 0.0;
+    double lhs = 0.0;
 
-	for (int i = 0; i < nnz; i++)
-		lhs += x[row_.support(i)] * row_.coeff(i);
+    for (int i = 0; i < nnz; i++)
+        lhs += x[row_.support(i)] * row_.coeff(i);
 
-	return rhs() - lhs;
+    return rhs() - lhs;
 }
 } //namespace abacus

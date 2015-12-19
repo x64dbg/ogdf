@@ -42,10 +42,11 @@
 
 #include <ogdf/basic/PreprocessorLayout.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 PreprocessorLayout::PreprocessorLayout()
-: m_randomize(false)
+    : m_randomize(false)
 {
 
 }
@@ -53,74 +54,87 @@ PreprocessorLayout::PreprocessorLayout()
 
 void PreprocessorLayout::call(GraphAttributes &GA)
 {
-	if (m_secondaryLayout.valid()) {
-		MultilevelGraph MLG(GA);
-		call(MLG);
-		MLG.exportAttributes(GA);
-	}
+    if (m_secondaryLayout.valid())
+    {
+        MultilevelGraph MLG(GA);
+        call(MLG);
+        MLG.exportAttributes(GA);
+    }
 }
 
 
 void PreprocessorLayout::call(MultilevelGraph &MLG)
 {
-	m_deletedEdges.clear();
-	Graph * G = &(MLG.getGraph());
+    m_deletedEdges.clear();
+    Graph * G = &(MLG.getGraph());
 
-	node v;
+    node v;
 
-	double sqrsize;
-	if (m_randomize) sqrsize = 2.0*sqrt((double)G->numberOfNodes())*MLG.averageRadius();
+    double sqrsize;
+    if (m_randomize) sqrsize = 2.0*sqrt((double)G->numberOfNodes())*MLG.averageRadius();
 
-	forall_nodes(v, *G) {
-		if (MLG.radius(v) <= 0) {
-			MLG.radius(v, 1.0);
-		}
-		if (m_randomize) {
-			MLG.x(v, randomDouble( -sqrsize, sqrsize ));//-5.0, 5.0));
-			MLG.y(v, randomDouble( -sqrsize, sqrsize ));
-		}
-	}
-	if (m_secondaryLayout.valid()) {
+    forall_nodes(v, *G)
+    {
+        if (MLG.radius(v) <= 0)
+        {
+            MLG.radius(v, 1.0);
+        }
+        if (m_randomize)
+        {
+            MLG.x(v, randomDouble( -sqrsize, sqrsize ));//-5.0, 5.0));
+            MLG.y(v, randomDouble( -sqrsize, sqrsize ));
+        }
+    }
+    if (m_secondaryLayout.valid())
+    {
 
-		call(*G, MLG);
+        call(*G, MLG);
 
-		m_secondaryLayout.get().call(MLG.getGraphAttributes());
-		MLG.updateReverseIndizes();
+        m_secondaryLayout.get().call(MLG.getGraphAttributes());
+        MLG.updateReverseIndizes();
 
-		for(std::vector<EdgeData>::iterator i = m_deletedEdges.begin(); i != m_deletedEdges.end(); i++ ) {
-			int index = (*i).edgeIndex;
-			edge temp = G->newEdge(MLG.getNode((*i).sourceIndex), MLG.getNode((*i).targetIndex), index);
-			MLG.weight(temp, (float)(*i).weight);
-		}
-	}
+        for(std::vector<EdgeData>::iterator i = m_deletedEdges.begin(); i != m_deletedEdges.end(); i++ )
+        {
+            int index = (*i).edgeIndex;
+            edge temp = G->newEdge(MLG.getNode((*i).sourceIndex), MLG.getNode((*i).targetIndex), index);
+            MLG.weight(temp, (float)(*i).weight);
+        }
+    }
 }
 
 
 void PreprocessorLayout::call(Graph &G, MultilevelGraph &MLG)
 {
-	std::vector<edge> deletedEdges;
+    std::vector<edge> deletedEdges;
 
-	edge e;
-	forall_edges(e, G) {
-		int index = e->index();
-		if (e->source() == e->target()) {
-			deletedEdges.push_back(e);
-			m_deletedEdges.push_back(EdgeData(index, e->source()->index(), e->target()->index(), MLG.weight(e)));
-		} else {
-			adjEntry adj;
-			forall_adj(adj, e->source()) {
-				if (adj->theEdge()->index() < index && adj->twinNode() == e->target()) {
-					deletedEdges.push_back(e);
-					m_deletedEdges.push_back(EdgeData(index, e->source()->index(), e->target()->index(), MLG.weight(e)));
-					break;
-				}
-			}
-		}
-	}
+    edge e;
+    forall_edges(e, G)
+    {
+        int index = e->index();
+        if (e->source() == e->target())
+        {
+            deletedEdges.push_back(e);
+            m_deletedEdges.push_back(EdgeData(index, e->source()->index(), e->target()->index(), MLG.weight(e)));
+        }
+        else
+        {
+            adjEntry adj;
+            forall_adj(adj, e->source())
+            {
+                if (adj->theEdge()->index() < index && adj->twinNode() == e->target())
+                {
+                    deletedEdges.push_back(e);
+                    m_deletedEdges.push_back(EdgeData(index, e->source()->index(), e->target()->index(), MLG.weight(e)));
+                    break;
+                }
+            }
+        }
+    }
 
-	for (std::vector<edge>::iterator i = deletedEdges.begin(); i != deletedEdges.end(); i++) {
-		G.delEdge(*i);
-	}
+    for (std::vector<edge>::iterator i = deletedEdges.begin(); i != deletedEdges.end(); i++)
+    {
+        G.delEdge(*i);
+    }
 }
 
 

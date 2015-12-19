@@ -49,77 +49,77 @@ static unsigned int randomSeed = 8609;
 
 //void randomize(unsigned int seed)
 //{
-//	randomSeed = seed + 123456;
+//  randomSeed = seed + 123456;
 //}
 
 double randomNumber()
 {
-	const unsigned int a = 16807;
-	const unsigned int c = 0;
-	const unsigned int m = 0x7fffffff;
+    const unsigned int a = 16807;
+    const unsigned int c = 0;
+    const unsigned int m = 0x7fffffff;
 
-	randomSeed = (a * randomSeed + c) & m;
-	return static_cast<double>(randomSeed) / m;
+    randomSeed = (a * randomSeed + c) & m;
+    return static_cast<double>(randomSeed) / m;
 }
 
 TEST(GeneratorsTest, RandomGraph)
 {
-	const int n = static_cast<int>(randomNumber() * 10 + 5);
-	const int m = std::max(n + 1, static_cast<int>((randomNumber() * n * (n - 1) / 2)));
-	ogdf::Graph G;
-	ogdf::randomGraph(G, n, m);
+    const int n = static_cast<int>(randomNumber() * 10 + 5);
+    const int m = std::max(n + 1, static_cast<int>((randomNumber() * n * (n - 1) / 2)));
+    ogdf::Graph G;
+    ogdf::randomGraph(G, n, m);
 }
 
 TEST(GeneratorsTest, RandomSimpleGraph)
 {
-	const int n = static_cast<int>(randomNumber() * 10 + 5);
-	const int m = std::max(n + 1, static_cast<int>((randomNumber() * n * (n - 1) / 2)));
-	ogdf::Graph G;
-	ogdf::randomSimpleGraph(G, n, m);
+    const int n = static_cast<int>(randomNumber() * 10 + 5);
+    const int m = std::max(n + 1, static_cast<int>((randomNumber() * n * (n - 1) / 2)));
+    ogdf::Graph G;
+    ogdf::randomSimpleGraph(G, n, m);
 }
 
 TEST(GeneratorsTest, RandomBiconnectedGraph)
 {
-	const int n = static_cast<int>(randomNumber() * 10 + 5);
-	const int m = std::max(n + 1, static_cast<int>((randomNumber() * n * (n - 1) / 2)));
-	ogdf::Graph G;
-	ogdf::randomBiconnectedGraph(G, n, m);
+    const int n = static_cast<int>(randomNumber() * 10 + 5);
+    const int m = std::max(n + 1, static_cast<int>((randomNumber() * n * (n - 1) / 2)));
+    ogdf::Graph G;
+    ogdf::randomBiconnectedGraph(G, n, m);
 }
 
 TEST(GeneratorsTest, RandomTriconnectedGraph)
 {
-	const int n = static_cast<int>(randomNumber() * 10 + 5);
-	double p = 0.618;
-	ogdf::Graph G;
-	ogdf::randomTriconnectedGraph(G, n, p, 1.0 - p);
+    const int n = static_cast<int>(randomNumber() * 10 + 5);
+    double p = 0.618;
+    ogdf::Graph G;
+    ogdf::randomTriconnectedGraph(G, n, p, 1.0 - p);
 }
 
 TEST(GeneratorsTest, RandomTree1)
 {
-	const int n = static_cast<int>(randomNumber() * 10 + 5);
-	ogdf::Graph G;
-	ogdf::randomTree(G, n);
+    const int n = static_cast<int>(randomNumber() * 10 + 5);
+    ogdf::Graph G;
+    ogdf::randomTree(G, n);
 }
 
 TEST(GeneratorsTest, RandomTree2)
 {
-	const int n = static_cast<int>(randomNumber() * 10 + 5);
-	ogdf::Graph G;
-	ogdf::randomTree(G, n, n / 2, 1024);
+    const int n = static_cast<int>(randomNumber() * 10 + 5);
+    ogdf::Graph G;
+    ogdf::randomTree(G, n, n / 2, 1024);
 }
 
 TEST(GeneratorsTest, RandomHierarchy)
 {
-	const int n = static_cast<int>(randomNumber() * 10 + 5);
-	const int m = std::max(n + 1, static_cast<int>((randomNumber() * n * (n - 1) / 2)));
-	ogdf::Graph G;
-	ogdf::randomHierarchy(G, n, m, true, false, true);
+    const int n = static_cast<int>(randomNumber() * 10 + 5);
+    const int m = std::max(n + 1, static_cast<int>((randomNumber() * n * (n - 1) / 2)));
+    ogdf::Graph G;
+    ogdf::randomHierarchy(G, n, m, true, false, true);
 }
 
 TEST(GeneratorsTest, RandomDiGraph)
 {
-	const int n = static_cast<int>(randomNumber() * 10 + 5);
-	double p = 0.618;
-	ogdf::Graph G;
-	ogdf::randomDiGraph(G, n, p);
+    const int n = static_cast<int>(randomNumber() * 10 + 5);
+    double p = 0.618;
+    ogdf::Graph G;
+    ogdf::randomDiGraph(G, n, p);
 }

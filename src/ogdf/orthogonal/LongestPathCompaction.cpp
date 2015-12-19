@@ -48,102 +48,108 @@
 #include <ogdf/basic/GridLayout.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 // constructor
 LongestPathCompaction::LongestPathCompaction(bool tighten,
-	int maxImprovementSteps)
+        int maxImprovementSteps)
 {
-	m_tighten             = tighten;
-	m_maxImprovementSteps = maxImprovementSteps;
+    m_tighten             = tighten;
+    m_maxImprovementSteps = maxImprovementSteps;
 }
 
 
 // constructive heuristics for orthogonal representation OR
 void LongestPathCompaction::constructiveHeuristics(
-	PlanRep &PG,
-	OrthoRep &OR,
-	const RoutingChannel<int> &rc,
-	GridLayoutMapped &drawing)
+    PlanRep &PG,
+    OrthoRep &OR,
+    const RoutingChannel<int> &rc,
+    GridLayoutMapped &drawing)
 {
-	OGDF_ASSERT(OR.isOrientated());
+    OGDF_ASSERT(OR.isOrientated());
 
-	// x-coordinates of vertical segments
-	CompactionConstraintGraph<int> Dx(OR, PG, odEast, rc.separation());
-	Dx.insertVertexSizeArcs(PG, drawing.width(), rc);
+    // x-coordinates of vertical segments
+    CompactionConstraintGraph<int> Dx(OR, PG, odEast, rc.separation());
+    Dx.insertVertexSizeArcs(PG, drawing.width(), rc);
 
-	NodeArray<int> xDx(Dx.getGraph(), 0);
-	computeCoords(Dx, xDx);
+    NodeArray<int> xDx(Dx.getGraph(), 0);
+    computeCoords(Dx, xDx);
 
-	// y-coordinates of horizontal segments
-	CompactionConstraintGraph<int> Dy(OR, PG, odNorth, rc.separation());
-	Dy.insertVertexSizeArcs(PG, drawing.height(), rc);
+    // y-coordinates of horizontal segments
+    CompactionConstraintGraph<int> Dy(OR, PG, odNorth, rc.separation());
+    Dy.insertVertexSizeArcs(PG, drawing.height(), rc);
 
-	NodeArray<int> yDy(Dy.getGraph(), 0);
-	computeCoords(Dy, yDy);
+    NodeArray<int> yDy(Dy.getGraph(), 0);
+    computeCoords(Dy, yDy);
 
-	// final coordinates of vertices
-	node v;
-	forall_nodes(v,PG) {
-		drawing.x(v) = xDx[Dx.pathNodeOf(v)];
-		drawing.y(v) = yDy[Dy.pathNodeOf(v)];
-	}
+    // final coordinates of vertices
+    node v;
+    forall_nodes(v,PG)
+    {
+        drawing.x(v) = xDx[Dx.pathNodeOf(v)];
+        drawing.y(v) = yDy[Dy.pathNodeOf(v)];
+    }
 }
 
 
 // improvement heuristics for orthogonal drawing
 void LongestPathCompaction::improvementHeuristics(
-	PlanRep &PG,
-	OrthoRep &OR,
-	const RoutingChannel<int> &rc,
-	GridLayoutMapped &drawing)
+    PlanRep &PG,
+    OrthoRep &OR,
+    const RoutingChannel<int> &rc,
+    GridLayoutMapped &drawing)
 {
-	OGDF_ASSERT(OR.isOrientated());
+    OGDF_ASSERT(OR.isOrientated());
 
-	int costs, lastCosts;
-	int steps = 0, maxSteps = m_maxImprovementSteps;
-	if (maxSteps == 0) maxSteps = numeric_limits<int>::max();
+    int costs, lastCosts;
+    int steps = 0, maxSteps = m_maxImprovementSteps;
+    if (maxSteps == 0) maxSteps = numeric_limits<int>::max();
 
-	// OPTIMIZATION POTENTIAL:
-	// update constraint graphs "incrementally" by only re-inserting
-	// visibility arcs
-	costs = 0;
-	do {
-		lastCosts = costs;
-		++steps;
+    // OPTIMIZATION POTENTIAL:
+    // update constraint graphs "incrementally" by only re-inserting
+    // visibility arcs
+    costs = 0;
+    do
+    {
+        lastCosts = costs;
+        ++steps;
 
-		// x-coordinates of vertical segments
-		CompactionConstraintGraph<int> Dx(OR, PG, odEast, rc.separation());
-		Dx.insertVertexSizeArcs(PG, drawing.width(), rc);
-		Dx.insertVisibilityArcs(PG, drawing.x(),drawing.y());
+        // x-coordinates of vertical segments
+        CompactionConstraintGraph<int> Dx(OR, PG, odEast, rc.separation());
+        Dx.insertVertexSizeArcs(PG, drawing.width(), rc);
+        Dx.insertVisibilityArcs(PG, drawing.x(),drawing.y());
 
-		NodeArray<int> xDx(Dx.getGraph(), 0);
-		computeCoords(Dx, xDx);
+        NodeArray<int> xDx(Dx.getGraph(), 0);
+        computeCoords(Dx, xDx);
 
-		// final x-coordinates of vertices
-		node v;
-		forall_nodes(v,PG) {
-			drawing.x(v) = xDx[Dx.pathNodeOf(v)];
-		}
+        // final x-coordinates of vertices
+        node v;
+        forall_nodes(v,PG)
+        {
+            drawing.x(v) = xDx[Dx.pathNodeOf(v)];
+        }
 
 
-		// y-coordinates of horizontal segments
-		CompactionConstraintGraph<int> Dy(OR, PG, odNorth, rc.separation());
-		Dy.insertVertexSizeArcs(PG, drawing.height(), rc);
-		Dy.insertVisibilityArcs(PG, drawing.y(),drawing.x());
+        // y-coordinates of horizontal segments
+        CompactionConstraintGraph<int> Dy(OR, PG, odNorth, rc.separation());
+        Dy.insertVertexSizeArcs(PG, drawing.height(), rc);
+        Dy.insertVisibilityArcs(PG, drawing.y(),drawing.x());
 
-		NodeArray<int> yDy(Dy.getGraph(), 0);
-		computeCoords(Dy, yDy);
+        NodeArray<int> yDy(Dy.getGraph(), 0);
+        computeCoords(Dy, yDy);
 
-		// final y-coordinates of vertices
-		forall_nodes(v,PG) {
-			drawing.y(v) = yDy[Dy.pathNodeOf(v)];
-		}
+        // final y-coordinates of vertices
+        forall_nodes(v,PG)
+        {
+            drawing.y(v) = yDy[Dy.pathNodeOf(v)];
+        }
 
-		costs = Dx.computeTotalCosts(xDx) + Dy.computeTotalCosts(yDy);
+        costs = Dx.computeTotalCosts(xDx) + Dy.computeTotalCosts(yDy);
 
-	} while (steps < maxSteps && (steps == 1 || costs < lastCosts));
+    }
+    while (steps < maxSteps && (steps == 1 || costs < lastCosts));
 }
 
 
@@ -151,177 +157,193 @@ void LongestPathCompaction::improvementHeuristics(
 // computes coordinates pos of horizontal (resp. vertical) segments by
 // computing longest paths in the constraint graph D
 void LongestPathCompaction::computeCoords(
-	const CompactionConstraintGraph<int> &D,
-	NodeArray<int> &pos)
+    const CompactionConstraintGraph<int> &D,
+    NodeArray<int> &pos)
 {
-	const Graph &Gd = D.getGraph();
+    const Graph &Gd = D.getGraph();
 
-	// compute a first ranking with usual longest paths
-	applyLongestPaths(D,pos);
-
-
-	if (m_tighten == true)
-	{
-		// improve cost of ranking by moving pseudo-components
-		moveComponents(D,pos);
+    // compute a first ranking with usual longest paths
+    applyLongestPaths(D,pos);
 
 
-		// find node with minimal position
-		SListConstIterator<node> it = m_pseudoSources.begin();
-		int min = pos[*it];
-		for(++it; it.valid(); ++it) {
-			if (pos[*it] < min)
-				min = pos[*it];
-		}
+    if (m_tighten == true)
+    {
+        // improve cost of ranking by moving pseudo-components
+        moveComponents(D,pos);
 
-		// move all nodes such that node with minimum position has position 0
-		node v;
-		forall_nodes(v,Gd)
-			pos[v] -= min;
 
-	}
+        // find node with minimal position
+        SListConstIterator<node> it = m_pseudoSources.begin();
+        int min = pos[*it];
+        for(++it; it.valid(); ++it)
+        {
+            if (pos[*it] < min)
+                min = pos[*it];
+        }
 
-	// free resources
-	m_pseudoSources.clear();
-	m_component.init();
+        // move all nodes such that node with minimum position has position 0
+        node v;
+        forall_nodes(v,Gd)
+        pos[v] -= min;
+
+    }
+
+    // free resources
+    m_pseudoSources.clear();
+    m_component.init();
 }
 
 
 void LongestPathCompaction::applyLongestPaths(
-	const CompactionConstraintGraph<int> &D,
-	NodeArray<int> &pos)
+    const CompactionConstraintGraph<int> &D,
+    NodeArray<int> &pos)
 {
-	const Graph &Gd = D.getGraph();
+    const Graph &Gd = D.getGraph();
 
-	m_component.init(Gd);
+    m_component.init(Gd);
 
-	NodeArray<int> indeg(Gd);
-	StackPure<node> sources;
+    NodeArray<int> indeg(Gd);
+    StackPure<node> sources;
 
-	node v;
-	forall_nodes(v,Gd) {
-		indeg[v] = v->indeg();
-		if(indeg[v] == 0)
-			sources.push(v);
-	}
+    node v;
+    forall_nodes(v,Gd)
+    {
+        indeg[v] = v->indeg();
+        if(indeg[v] == 0)
+            sources.push(v);
+    }
 
-	while(!sources.empty())
-	{
-		node v = sources.pop();
+    while(!sources.empty())
+    {
+        node v = sources.pop();
 
-		int predComp = -1; // means "unset"
-		bool isPseudoSource = true;
+        int predComp = -1; // means "unset"
+        bool isPseudoSource = true;
 
-		edge e;
-		forall_adj_edges(e,v) {
-			if(e->source() != v) {
-				// incoming edge
-				if (D.cost(e) > 0) {
-					isPseudoSource = false;
-					node w = e->source();
-					// is tight?
-					if (pos[w] + D.length(e) == pos[v]) {
-						if (predComp == -1)
-							predComp = m_component[w];
-						else if (predComp != m_component[w])
-							predComp = 0; // means "vertex is in no pseudo-comp.
-					}
-				}
+        edge e;
+        forall_adj_edges(e,v)
+        {
+            if(e->source() != v)
+            {
+                // incoming edge
+                if (D.cost(e) > 0)
+                {
+                    isPseudoSource = false;
+                    node w = e->source();
+                    // is tight?
+                    if (pos[w] + D.length(e) == pos[v])
+                    {
+                        if (predComp == -1)
+                            predComp = m_component[w];
+                        else if (predComp != m_component[w])
+                            predComp = 0; // means "vertex is in no pseudo-comp.
+                    }
+                }
 
-			} else {
-				// outgoing edge
-				node w = e->target();
+            }
+            else
+            {
+                // outgoing edge
+                node w = e->target();
 
-				if (pos[w] < pos[v] + D.length(e))
-					pos[w] = pos[v] + D.length(e);
+                if (pos[w] < pos[v] + D.length(e))
+                    pos[w] = pos[v] + D.length(e);
 
-				if (--indeg[w] == 0)
-					sources.push(w);
-			}
-		}
+                if (--indeg[w] == 0)
+                    sources.push(w);
+            }
+        }
 
-		if (predComp == -1)
-			predComp = 0;
+        if (predComp == -1)
+            predComp = 0;
 
-		if( isPseudoSource) {
-			m_pseudoSources.pushFront(v);
-			m_component[v] = m_pseudoSources.size();
-		} else {
-			m_component[v] = predComp;
-		}
-	}
+        if( isPseudoSource)
+        {
+            m_pseudoSources.pushFront(v);
+            m_component[v] = m_pseudoSources.size();
+        }
+        else
+        {
+            m_component[v] = predComp;
+        }
+    }
 }
 
 
 
 void LongestPathCompaction::moveComponents(
-	const CompactionConstraintGraph<int> &D,
-	NodeArray<int> &pos)
+    const CompactionConstraintGraph<int> &D,
+    NodeArray<int> &pos)
 {
-	const Graph &Gd = D.getGraph();
+    const Graph &Gd = D.getGraph();
 
-	// compute for each component the list of nodes contained
-	Array<SListPure<node> > nodesInComp(1,m_pseudoSources.size());
+    // compute for each component the list of nodes contained
+    Array<SListPure<node> > nodesInComp(1,m_pseudoSources.size());
 
-	node v;
-	forall_nodes(v,Gd) {
-		if (m_component[v] > 0)
-		nodesInComp[m_component[v]].pushBack(v);
-	}
+    node v;
+    forall_nodes(v,Gd)
+    {
+        if (m_component[v] > 0)
+            nodesInComp[m_component[v]].pushBack(v);
+    }
 
 
-	// iterate over all pseudo-sources in reverse topological order
-	SListConstIterator<node> it;
-	for(it = m_pseudoSources.begin(); it.valid(); ++it)
-	{
-		node v = *it;
-		int c = m_component[v];
+    // iterate over all pseudo-sources in reverse topological order
+    SListConstIterator<node> it;
+    for(it = m_pseudoSources.begin(); it.valid(); ++it)
+    {
+        node v = *it;
+        int c = m_component[v];
 
-		// list of outgoing/incoming edges of pseudo-component C(v)
-		SListPure<edge> outCompV, inCompV;
+        // list of outgoing/incoming edges of pseudo-component C(v)
+        SListPure<edge> outCompV, inCompV;
 
-		//cout << "component " << c << endl;
-		SListConstIterator<node> itW;
-		for(itW = nodesInComp[c].begin(); itW.valid(); ++itW)
-		{
-			node w = *itW;
-			//cout << " " << w;
-			edge e;
-			forall_adj_edges(e,w) {
-				if(m_component[e->target()] != c) {
-					outCompV.pushBack(e);
-				} else if (m_component[e->source()] != c)
-					inCompV.pushBack(e);
-			}
-		}
-		//cout << endl;
+        //cout << "component " << c << endl;
+        SListConstIterator<node> itW;
+        for(itW = nodesInComp[c].begin(); itW.valid(); ++itW)
+        {
+            node w = *itW;
+            //cout << " " << w;
+            edge e;
+            forall_adj_edges(e,w)
+            {
+                if(m_component[e->target()] != c)
+                {
+                    outCompV.pushBack(e);
+                }
+                else if (m_component[e->source()] != c)
+                    inCompV.pushBack(e);
+            }
+        }
+        //cout << endl;
 
-		if(outCompV.empty())
-			continue;
+        if(outCompV.empty())
+            continue;
 
-		SListConstIterator<edge> itE = outCompV.begin();
-		int costOut = D.cost(*itE);
-		int delta = (pos[(*itE)->target()] - pos[(*itE)->source()]) -
-						D.length(*itE);
+        SListConstIterator<edge> itE = outCompV.begin();
+        int costOut = D.cost(*itE);
+        int delta = (pos[(*itE)->target()] - pos[(*itE)->source()]) -
+                    D.length(*itE);
 
-		for(++itE; itE.valid(); ++itE) {
-			costOut += D.cost(*itE);
-			int d = (pos[(*itE)->target()] - pos[(*itE)->source()]) -
-						D.length(*itE);
-			if (d < delta)
-				delta = d;
-		}
+        for(++itE; itE.valid(); ++itE)
+        {
+            costOut += D.cost(*itE);
+            int d = (pos[(*itE)->target()] - pos[(*itE)->source()]) -
+                    D.length(*itE);
+            if (d < delta)
+                delta = d;
+        }
 
-		//cout << "  delta = " << delta << ", costOut = " << costOut << endl;
+        //cout << "  delta = " << delta << ", costOut = " << costOut << endl;
 
-		// if all outgoing edges have cost 0, we wouldn't save any cost!
-		if (costOut == 0) continue;
+        // if all outgoing edges have cost 0, we wouldn't save any cost!
+        if (costOut == 0) continue;
 
-		// move component up by delta; this shortens all outgoing edges and
-		// enlarges all incoming edges (which have cost 0)
-		for(itW = nodesInComp[c].begin(); itW.valid(); ++itW)
-			pos[*itW] += delta;
-	}
+        // move component up by delta; this shortens all outgoing edges and
+        // enlarges all incoming edges (which have cost 0)
+        for(itW = nodesInComp[c].begin(); itW.valid(); ++itW)
+            pos[*itW] += delta;
+    }
 
 }
 
@@ -331,38 +353,38 @@ void LongestPathCompaction::moveComponents(
 // computes coordinates pos of horizontal (resp. vertical) segments by
 // computing longest paths in the constraint graph D
 void LongestPathCompaction::computeCoords(
-	CompactionConstraintGraph &D,
-	NodeArray<double> &pos)
+    CompactionConstraintGraph &D,
+    NodeArray<double> &pos)
 {
-	const Graph &Gd = D.getGraph();
+    const Graph &Gd = D.getGraph();
 
-	NodeArray<int> indeg(Gd);
-	StackPure<node> sources;
+    NodeArray<int> indeg(Gd);
+    StackPure<node> sources;
 
-	node v;
-	forall_nodes(v,Gd) {
-		indeg[v] = v->indeg();
-		if(indeg[v] == 0)
-			sources.push(v);
-	}
+    node v;
+    forall_nodes(v,Gd) {
+        indeg[v] = v->indeg();
+        if(indeg[v] == 0)
+            sources.push(v);
+    }
 
-	while(!sources.empty())
-	{
-		node v = sources.pop();
+    while(!sources.empty())
+    {
+        node v = sources.pop();
 
-		edge e;
-		forall_adj_edges(e,v) {
-			if(e->source() != v) continue;
+        edge e;
+        forall_adj_edges(e,v) {
+            if(e->source() != v) continue;
 
-			node w = e->target();
+            node w = e->target();
 
-			if (pos[w] < pos[v] + D.length(e))
-				pos[w] = pos[v] + D.length(e);
+            if (pos[w] < pos[v] + D.length(e))
+                pos[w] = pos[v] + D.length(e);
 
-			if (--indeg[w] == 0)
-				sources.push(w);
-		}
-	}
+            if (--indeg[w] == 0)
+                sources.push(w);
+        }
+    }
 }
 */
 

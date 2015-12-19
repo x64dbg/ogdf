@@ -40,7 +40,8 @@
 
 #include <ogdf/abacus/variable.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 //! Variables identified by a number.
@@ -48,60 +49,65 @@ namespace abacus {
  * This class is derived from the class Variable and implements
  * a variable which is uniquely defined by a number.
  */
-class  NumVar :  public Variable  {
+class  NumVar :  public Variable
+{
 public:
 
-	//! The constructor.
-	/**
-	 * \param master  A pointer to the corresponding master of the optimization.
-	 * \param sub     A pointer to the subproblem associated with variable. This
-	 *                can also be the 0-pointer.
-	 * \param number  The number of the column associated with the variable.
-	 * \param dynamic If this argument is \a true, then the variable can also be
-	 *                removed again from the set of active variables after it is
-	 *                added once.
-	 * \param local   If this argument is \a true, then the variable is only locally
-	 *                valid, otherwise it is globally valid. As a locally valid variable
-	 *                is associated with a subproblem, \a sub must not be 0, if \a local
-	 *                is \a true.
-	 * \param obj     The objective function coefficient of the variable.
-	 * \param lBound  The lower bound of the variable.
-	 * \param uBound  The upper Bound of the variable.
-	 * \param type    The type of the variable.
-	 */
-	NumVar(Master *master,
-		const Sub *sub,
-		int number,
-		bool dynamic,
-		bool local,
-		double obj,
-		double lBound,
-		double uBound,
-		VarType::TYPE type)
-		: Variable(master, sub, dynamic, local, obj, lBound, uBound, type), number_(number)
-	{ }
+    //! The constructor.
+    /**
+     * \param master  A pointer to the corresponding master of the optimization.
+     * \param sub     A pointer to the subproblem associated with variable. This
+     *                can also be the 0-pointer.
+     * \param number  The number of the column associated with the variable.
+     * \param dynamic If this argument is \a true, then the variable can also be
+     *                removed again from the set of active variables after it is
+     *                added once.
+     * \param local   If this argument is \a true, then the variable is only locally
+     *                valid, otherwise it is globally valid. As a locally valid variable
+     *                is associated with a subproblem, \a sub must not be 0, if \a local
+     *                is \a true.
+     * \param obj     The objective function coefficient of the variable.
+     * \param lBound  The lower bound of the variable.
+     * \param uBound  The upper Bound of the variable.
+     * \param type    The type of the variable.
+     */
+    NumVar(Master *master,
+           const Sub *sub,
+           int number,
+           bool dynamic,
+           bool local,
+           double obj,
+           double lBound,
+           double uBound,
+           VarType::TYPE type)
+        : Variable(master, sub, dynamic, local, obj, lBound, uBound, type), number_(number)
+    { }
 
-	//! The destructor.
-	virtual ~NumVar() { }
+    //! The destructor.
+    virtual ~NumVar() { }
 
-	//! Writes the number of the variable to an output stream.
-	/**
-	 * \param out  The output stream.
-	 * \param rhs  The variable being output.
-	 *
-	 * \return A reference to the output stream.
-	 */
-	friend ostream &operator<<(ostream &out, const NumVar &rhs) {
-		return out << '(' << rhs.number_  << ')' << endl;
-	}
+    //! Writes the number of the variable to an output stream.
+    /**
+     * \param out  The output stream.
+     * \param rhs  The variable being output.
+     *
+     * \return A reference to the output stream.
+     */
+    friend ostream &operator<<(ostream &out, const NumVar &rhs)
+    {
+        return out << '(' << rhs.number_  << ')' << endl;
+    }
 
-	//! Returns the number of the variable.
-	int number() const { return number_; }
+    //! Returns the number of the variable.
+    int number() const
+    {
+        return number_;
+    }
 
 protected:
 
-	//! The identification number of the variable.
-	int number_;
+    //! The identification number of the variable.
+    int number_;
 };
 
 } //namespace abacus

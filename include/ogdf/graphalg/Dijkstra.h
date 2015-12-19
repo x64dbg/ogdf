@@ -51,7 +51,8 @@
 #include <ogdf/basic/BinaryHeap2.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 /*!
  * \brief Dijkstra's single source shortest path algorithm.
@@ -62,78 +63,87 @@ namespace ogdf {
  * to all others.
  */
 template<typename T>
-class Dijkstra {
+class Dijkstra
+{
 public:
 
-	/*!
-	 * \brief Calculates, based on the graph G with corresponding edge costs and source nodes,
-	 * the shortest paths and distances to all other nodes by Dijkstra's algorithm.
-	 */
-	void call(const Graph &G, //!< The original input graph
-		  const EdgeArray<T> &weight, //!< The edge weights
-		  const List<node> &sources, //!< A list of source nodes
-		  NodeArray<edge> &predecessor, //!< The resulting predecessor relation
-		  NodeArray<T> &distance, //!< The resulting distances to all other nodes
-		  bool directed = false) //!< True iff G should be interpreted as directed graph
-	{
-		BinaryHeap2<T, node> queue(G.numberOfNodes());
-		NodeArray<int> qpos(G);
+    /*!
+     * \brief Calculates, based on the graph G with corresponding edge costs and source nodes,
+     * the shortest paths and distances to all other nodes by Dijkstra's algorithm.
+     */
+    void call(const Graph &G, //!< The original input graph
+              const EdgeArray<T> &weight, //!< The edge weights
+              const List<node> &sources, //!< A list of source nodes
+              NodeArray<edge> &predecessor, //!< The resulting predecessor relation
+              NodeArray<T> &distance, //!< The resulting distances to all other nodes
+              bool directed = false) //!< True iff G should be interpreted as directed graph
+    {
+        BinaryHeap2<T, node> queue(G.numberOfNodes());
+        NodeArray<int> qpos(G);
 
-		// initialization
-		node v;
-		forall_nodes(v, G) {
-			distance[v] = numeric_limits<T>::max();
-			predecessor[v] = NULL;
-			queue.insert(v, distance[v], &qpos[v]);
-		}
-		forall_listiterators(node, s, sources) {
-			queue.decreaseKey(qpos[*s], (distance[*s] = 0));
-		}
+        // initialization
+        node v;
+        forall_nodes(v, G)
+        {
+            distance[v] = numeric_limits<T>::max();
+            predecessor[v] = NULL;
+            queue.insert(v, distance[v], &qpos[v]);
+        }
+        forall_listiterators(node, s, sources)
+        {
+            queue.decreaseKey(qpos[*s], (distance[*s] = 0));
+        }
 
 #ifdef OGDF_DEBUG
-		edge de;
-		forall_edges(de, G){
-			if (weight[de] <= 0) OGDF_THROW(PreconditionViolatedException);
-		}
+        edge de;
+        forall_edges(de, G)
+        {
+            if (weight[de] <= 0) OGDF_THROW(PreconditionViolatedException);
+        }
 #endif
 
-		while (!queue.empty()) {
-			v = queue.extractMin();
-			if (!predecessor[v] && distance[v]) { // v is unreachable, ignore
-				continue;
-			}
-			adjEntry adj;
-			forall_adj(adj, v) {
-				edge e = adj->theEdge();
-				node w = adj->twinNode();
-				if (directed && e->target() == v) { // edge is in wrong direction
-					continue;
-				}
-				if (distance[w] > distance[v] + weight[e]) {
-					if (numeric_limits<double>::max() - weight[e] < distance[v]) cerr << "Overflow\n";
-					if (-numeric_limits<double>::max() - weight[e] > distance[v]) cerr << "Overflow\n";
-					queue.decreaseKey(qpos[w], (distance[w] = distance[v] + weight[e]));
-					predecessor[w] = e;
-				}
-			}
-		}
-	}
+        while (!queue.empty())
+        {
+            v = queue.extractMin();
+            if (!predecessor[v] && distance[v])   // v is unreachable, ignore
+            {
+                continue;
+            }
+            adjEntry adj;
+            forall_adj(adj, v)
+            {
+                edge e = adj->theEdge();
+                node w = adj->twinNode();
+                if (directed && e->target() == v)   // edge is in wrong direction
+                {
+                    continue;
+                }
+                if (distance[w] > distance[v] + weight[e])
+                {
+                    if (numeric_limits<double>::max() - weight[e] < distance[v]) cerr << "Overflow\n";
+                    if (-numeric_limits<double>::max() - weight[e] > distance[v]) cerr << "Overflow\n";
+                    queue.decreaseKey(qpos[w], (distance[w] = distance[v] + weight[e]));
+                    predecessor[w] = e;
+                }
+            }
+        }
+    }
 
-	/*!
-	 * \brief Calculates, based on the graph G with corresponding edge costs and a source node s,
-	 * the shortest paths and distances to all other nodes by Dijkstra's algorithm.
-	 */
-	void call(const Graph &G, //!< The original input graph
-		  const EdgeArray<T> &weight, //!< The edge weights
-		  node s, //!< The source node
-		  NodeArray<edge> &predecessor, //!< The resulting predecessor relation
-		  NodeArray<T> &distance, //!< The resulting distances to all other nodes
-		  bool directed = false) //!< True iff G should be interpreted as directed graph
-	{
-		List<node> sources;
-		sources.pushBack(s);
-		call(G, weight, sources, predecessor, distance, directed);
-	}
+    /*!
+     * \brief Calculates, based on the graph G with corresponding edge costs and a source node s,
+     * the shortest paths and distances to all other nodes by Dijkstra's algorithm.
+     */
+    void call(const Graph &G, //!< The original input graph
+              const EdgeArray<T> &weight, //!< The edge weights
+              node s, //!< The source node
+              NodeArray<edge> &predecessor, //!< The resulting predecessor relation
+              NodeArray<T> &distance, //!< The resulting distances to all other nodes
+              bool directed = false) //!< True iff G should be interpreted as directed graph
+    {
+        List<node> sources;
+        sources.pushBack(s);
+        call(G, weight, sources, predecessor, distance, directed);
+    }
 };
 
 } // end namespace ogdf

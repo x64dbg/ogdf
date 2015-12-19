@@ -57,33 +57,35 @@
 #include <ogdf/abacus/lpsubosi.h>
 #endif
 
-namespace abacus {
+namespace abacus
+{
 
 //! The function Sub::generateLp().
 
 LpSub *Sub::generateLp()
 {
-	switch (master_->defaultLpSolver()) {
+    switch (master_->defaultLpSolver())
+    {
 #ifdef ABACUS_LP_OSI
-	case Master::Cbc:
-	case Master::Clp:
-	case Master::CPLEX:
-	case Master::DyLP:
-	case Master::FortMP:
-	case Master::GLPK:
-	case Master::MOSEK:
-	case Master::OSL:
-	case Master::SoPlex:
-	case Master::SYMPHONY:
-	case Master::XPRESS_MP:
-	case Master::Gurobi:
-	case Master::Csdp:
-		return new LpSubOsi(master_, this);
+    case Master::Cbc:
+    case Master::Clp:
+    case Master::CPLEX:
+    case Master::DyLP:
+    case Master::FortMP:
+    case Master::GLPK:
+    case Master::MOSEK:
+    case Master::OSL:
+    case Master::SoPlex:
+    case Master::SYMPHONY:
+    case Master::XPRESS_MP:
+    case Master::Gurobi:
+    case Master::Csdp:
+        return new LpSubOsi(master_, this);
 #endif
-	default:
-		Logger::ifout() << "Error: ABACUS library not compiled for\nselected LP-Solver " << Master::OSISOLVER_[master_->defaultLpSolver()] << "\n";
-		OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpIf);
-	}
+    default:
+        Logger::ifout() << "Error: ABACUS library not compiled for\nselected LP-Solver " << Master::OSISOLVER_[master_->defaultLpSolver()] << "\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpIf);
+    }
 }
 
 
@@ -92,7 +94,7 @@ LpSub *Sub::generateLp()
 void Master::_createLpMasters()
 {
 #ifdef ABACUS_LP_OSI
-	lpMasterOsi_ = new LpMasterOsi(this);
+    lpMasterOsi_ = new LpMasterOsi(this);
 #endif
 }
 
@@ -101,7 +103,7 @@ void Master::_createLpMasters()
 void Master::_deleteLpMasters()
 {
 #ifdef ABACUS_LP_OSI
-	delete lpMasterOsi_;
+    delete lpMasterOsi_;
 #endif
 }
 
@@ -110,7 +112,7 @@ void Master::_deleteLpMasters()
 void Master::_initializeLpParameters()
 {
 #ifdef ABACUS_LP_OSI
-	lpMasterOsi_->initializeLpParameters();
+    lpMasterOsi_->initializeLpParameters();
 #endif
 }
 
@@ -119,7 +121,7 @@ void Master::_initializeLpParameters()
 void Master::_setDefaultLpParameters()
 {
 #ifdef ABACUS_LP_OSI
-	lpMasterOsi_->setDefaultLpParameters();
+    lpMasterOsi_->setDefaultLpParameters();
 #endif
 }
 
@@ -128,7 +130,7 @@ void Master::_setDefaultLpParameters()
 void Master::_printLpParameters() const
 {
 #ifdef ABACUS_LP_OSI
-	lpMasterOsi_->printLpParameters();
+    lpMasterOsi_->printLpParameters();
 #endif
 }
 
@@ -137,7 +139,7 @@ void Master::_printLpParameters() const
 void Master::_outputLpStatistics() const
 {
 #ifdef ABACUS_LP_OSI
-	lpMasterOsi_->outputLpStatistics();
+    lpMasterOsi_->outputLpStatistics();
 #endif
 }
 } //namespace abacus

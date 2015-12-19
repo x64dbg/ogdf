@@ -60,7 +60,8 @@
 #include <ogdf/module/MinCostFlowModule.h>
 #include <ogdf/decomposition/StaticPlanarSPQRTree.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 /// The algorithm computes a planar embedding with minimum cost.
 ///
@@ -70,55 +71,57 @@ class OGDF_EXPORT EmbedderOptimalFlexDraw : public EmbedderModule
 {
 public:
 
-	EmbedderOptimalFlexDraw();
+    EmbedderOptimalFlexDraw();
 
-	~EmbedderOptimalFlexDraw() { }
+    ~EmbedderOptimalFlexDraw() { }
 
-	void call(Graph &G, adjEntry &adjExternal);
+    void call(Graph &G, adjEntry &adjExternal);
 
-	/// Sets the module option to compute min-cost flow.
-	void setMinCostFlowComputer(MinCostFlowModule *pMinCostFlowComputer) {
-		m_minCostFlowComputer.set(pMinCostFlowComputer);
-	}
+    /// Sets the module option to compute min-cost flow.
+    void setMinCostFlowComputer(MinCostFlowModule *pMinCostFlowComputer)
+    {
+        m_minCostFlowComputer.set(pMinCostFlowComputer);
+    }
 
-	/// Sets bend costs for each edge.
-	void cost(EdgeArray<int> *cost) {
-		m_cost = cost;
-	}
+    /// Sets bend costs for each edge.
+    void cost(EdgeArray<int> *cost)
+    {
+        m_cost = cost;
+    }
 
 private:
 
-	ModuleOption<MinCostFlowModule> m_minCostFlowComputer;
+    ModuleOption<MinCostFlowModule> m_minCostFlowComputer;
 
-	EdgeArray<int> *m_cost;
+    EdgeArray<int> *m_cost;
 
-	void createNetwork(
-			node parent,
-		node mu,
-		int bends,
-		NodeArray<int> cost[],
-		NodeArray<long long> embedding[],
-		Skeleton &skeleton,
-		EdgeArray<node> &edgeNode,
-		Graph &N,
-		EdgeArray<int> &upper,
-		EdgeArray<int> &perUnitCost,
-		NodeArray<int> &supply);
+    void createNetwork(
+        node parent,
+        node mu,
+        int bends,
+        NodeArray<int> cost[],
+        NodeArray<long long> embedding[],
+        Skeleton &skeleton,
+        EdgeArray<node> &edgeNode,
+        Graph &N,
+        EdgeArray<int> &upper,
+        EdgeArray<int> &perUnitCost,
+        NodeArray<int> &supply);
 
-	void optimizeOverEmbeddings(
-		StaticPlanarSPQRTree &T,
-		node parent,
-		node mu,
-		int bends,
-		NodeArray<int> cost[],
-		NodeArray<long long> embedding[]);
+    void optimizeOverEmbeddings(
+        StaticPlanarSPQRTree &T,
+        node parent,
+        node mu,
+        int bends,
+        NodeArray<int> cost[],
+        NodeArray<long long> embedding[]);
 
-	void computePrincipalSplitComponentCost(
-		StaticPlanarSPQRTree &T,
-		NodeArray<int> cost[],
-		NodeArray<long long> embedding[],
-		node parent,
-		node mu);
+    void computePrincipalSplitComponentCost(
+        StaticPlanarSPQRTree &T,
+        NodeArray<int> cost[],
+        NodeArray<long long> embedding[],
+        node parent,
+        node mu);
 };
 
 } // end namespace ogdf

@@ -298,12 +298,12 @@ Validator::Validator(double maxFillIn,
                      double minViolation,
                      bool scale,
                      double rhsScale):
-        maxFillIn_(maxFillIn),
-        maxRatio_(maxRatio),
-        minViolation_(minViolation),
-        scale_(scale),
-        rhsScale_(rhsScale),
-        numRejected_(DummyEnd,0)
+    maxFillIn_(maxFillIn),
+    maxRatio_(maxRatio),
+    minViolation_(minViolation),
+    scale_(scale),
+    rhsScale_(rhsScale),
+    numRejected_(DummyEnd,0)
 {
     fillRejectionReasons();
 }

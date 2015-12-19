@@ -38,47 +38,48 @@
 
 #include <ogdf/abacus/tailoff.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 ostream &operator<<(ostream &out, const TailOff &rhs)
 {
-	out << "LP-history:" << endl;
-	if (rhs.lpHistory_)
-		out << *(rhs.lpHistory_);
-	else
-		out << "no LP-history available" << endl;
+    out << "LP-history:" << endl;
+    if (rhs.lpHistory_)
+        out << *(rhs.lpHistory_);
+    else
+        out << "no LP-history available" << endl;
 
-	return out;
+    return out;
 }
 
 
 bool TailOff::tailOff() const
 {
-	if (!lpHistory_) return false;
+    if (!lpHistory_) return false;
 
-	if (!lpHistory_->filled()) return false;  //!< not enough iterations
+    if (!lpHistory_->filled()) return false;  //!< not enough iterations
 
-	//FIXME
-	double den = fabs(lpHistory_->oldest()) < 1e-30 ? 1e-30 : lpHistory_->oldest();
+    //FIXME
+    double den = fabs(lpHistory_->oldest()) < 1e-30 ? 1e-30 : lpHistory_->oldest();
 
-	if (fabs((lpHistory_->oldest() - lpHistory_->newest())*100.0
-		/den)
-		< master_->tailOffPercent()) return true;
-	else return false;
+    if (fabs((lpHistory_->oldest() - lpHistory_->newest())*100.0
+             /den)
+            < master_->tailOffPercent()) return true;
+    else return false;
 }
 
 
 int TailOff::diff(int nLps, double &d) const
 {
-	double oldVal;
-	if (lpHistory_->previous(nLps, oldVal))
-		return 1;
+    double oldVal;
+    if (lpHistory_->previous(nLps, oldVal))
+        return 1;
 
-	double lastVal = lpHistory_->newest();
+    double lastVal = lpHistory_->newest();
 
-	d = fabs((lastVal - oldVal)*100.0/oldVal);
+    d = fabs((lastVal - oldVal)*100.0/oldVal);
 
-	return 0;
+    return 0;
 }
 } //namespace abacus

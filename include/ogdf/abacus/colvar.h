@@ -47,7 +47,8 @@
 #include <ogdf/abacus/column.h>
 #include <ogdf/abacus/bheap.h>
 
-namespace abacus {
+namespace abacus
+{
 
 class SparVec;
 
@@ -63,130 +64,142 @@ class SparVec;
  * is the class NumCon which identifies constraints only by a unique
  * integer number. NumCon is an abstract class.
  */
-class  ColVar :  public Variable  {
+class  ColVar :  public Variable
+{
 public:
 
-	//! The constructor.
-	/**
-	 * \param master  A pointer to the corresponding master of the optimization.
-	 * \param sub     A pointer to the subproblem associated with the variable.
-	 *                This can be also the 0-pointer.
-	 * \param dynamic If this argument is \a true, then the variable can be removed
-	 *                from the active variable set during the subproblem optimization.
-	 * \param local   If this argument is \a true, then the constraint is considered
-	 *                to be only locally valid. As a local variable is associated with
-	 *                a subproblem, \a sub must not be 0 if local is \a true.
-	 * \param lBound  The lower bound of the variable.
-	 * \param uBound  The upper bound of the variable.
-	 * \param varType The type of the variable.
-	 * \param obj     The objective function coefficient of the variable.
-	 * \param nnz     The number of nonzero elements of the variable.
-	 * \param support The array storing the constraints with the nonzero coefficients.
-	 * \param coeff   The nonzero coefficients of the constraints stored in \a support.
-	 */
-	ColVar(Master *master,
-		const Sub *sub,
-		bool dynamic,
-		bool local,
-		double lBound,
-		double uBound,
-		VarType::TYPE varType,
-		double obj,
-		int nnz,
-		Array<int> &support,
-		Array<double> &coeff)
-	:
-		Variable(master, sub, dynamic, local, obj, lBound, uBound, varType),
-		column_(master, obj, lBound, uBound, nnz, support, coeff)
-	{ }
+    //! The constructor.
+    /**
+     * \param master  A pointer to the corresponding master of the optimization.
+     * \param sub     A pointer to the subproblem associated with the variable.
+     *                This can be also the 0-pointer.
+     * \param dynamic If this argument is \a true, then the variable can be removed
+     *                from the active variable set during the subproblem optimization.
+     * \param local   If this argument is \a true, then the constraint is considered
+     *                to be only locally valid. As a local variable is associated with
+     *                a subproblem, \a sub must not be 0 if local is \a true.
+     * \param lBound  The lower bound of the variable.
+     * \param uBound  The upper bound of the variable.
+     * \param varType The type of the variable.
+     * \param obj     The objective function coefficient of the variable.
+     * \param nnz     The number of nonzero elements of the variable.
+     * \param support The array storing the constraints with the nonzero coefficients.
+     * \param coeff   The nonzero coefficients of the constraints stored in \a support.
+     */
+    ColVar(Master *master,
+           const Sub *sub,
+           bool dynamic,
+           bool local,
+           double lBound,
+           double uBound,
+           VarType::TYPE varType,
+           double obj,
+           int nnz,
+           Array<int> &support,
+           Array<double> &coeff)
+        :
+        Variable(master, sub, dynamic, local, obj, lBound, uBound, varType),
+        column_(master, obj, lBound, uBound, nnz, support, coeff)
+    { }
 
-	//! Constructor using a sparse vector \a vector.
-	/**
-	 * \param master  A pointer to the corresponding master of the optimization.
-	 * \param sub     A pointer to the subproblem associated with the variable.
-	 *                This can be also the 0-pointer.
-	 * \param dynamic If this argument is \a true, then the variable can be removed
-	 *                from the active variable set during the subproblem optimization.
-	 * \param local   If this argument is \a true, then the constraint is considered
-	 *                to be only locally valid. As a local variable is associated with
-	 *                a subproblem, \a sub must not be 0 if local is \a true.
-	 * \param lBound  The lower bound of the variable.
-	 * \param uBound  The upper bound of the variable.
-	 * \param varType The type of the variable.
-	 * \param obj     The objective function coefficient of the variable.
-	 * \param vector  The constraints.
-	 */
-	ColVar(Master *master,
-		const Sub *sub,
-		bool dynamic,
-		bool local,
-		double lBound,
-		double uBound,
-		VarType::TYPE varType,
-		double obj, SparVec &vector)
-	:
-		Variable(master, sub, dynamic, local, obj, lBound, uBound, varType),
-		column_(master, obj, lBound, uBound, vector)
-	{ }
-
-
-	virtual ~ColVar() { }
-
-	//! Output operator for column variables.
-	/**
-	 * The output operator writes the column representing the variable to an output stream.
-	 *
-	 * \param out The output stream.
-	 * \param rhs The variable being output.
-	 *
-	 * \return A reference to the output stream.
-	 */
-	friend ostream &operator<<(ostream &out, const ColVar &rhs);
+    //! Constructor using a sparse vector \a vector.
+    /**
+     * \param master  A pointer to the corresponding master of the optimization.
+     * \param sub     A pointer to the subproblem associated with the variable.
+     *                This can be also the 0-pointer.
+     * \param dynamic If this argument is \a true, then the variable can be removed
+     *                from the active variable set during the subproblem optimization.
+     * \param local   If this argument is \a true, then the constraint is considered
+     *                to be only locally valid. As a local variable is associated with
+     *                a subproblem, \a sub must not be 0 if local is \a true.
+     * \param lBound  The lower bound of the variable.
+     * \param uBound  The upper bound of the variable.
+     * \param varType The type of the variable.
+     * \param obj     The objective function coefficient of the variable.
+     * \param vector  The constraints.
+     */
+    ColVar(Master *master,
+           const Sub *sub,
+           bool dynamic,
+           bool local,
+           double lBound,
+           double uBound,
+           VarType::TYPE varType,
+           double obj, SparVec &vector)
+        :
+        Variable(master, sub, dynamic, local, obj, lBound, uBound, varType),
+        column_(master, obj, lBound, uBound, vector)
+    { }
 
 
-	//! Writes the column representing the variable to output stream \a out.
-	/**
-	 * It redefines the virtual function \a print() of the base class ConVar.
-	 *
-	 * \param out The output stream.
-	 */
-	virtual void print(ostream &out) const {
-		out << *this;
-	}
+    virtual ~ColVar() { }
 
-	//! Returns the coefficient of the constraint \a con.
-	/**
-	 *\param con The constraint of which the coefficient is computed.
-	 *           This must be a pointer to the class NumCon.
-	 */
-	virtual double coeff(const Constraint *con) const {
-		return column_.origCoeff(((const NumCon*) con)->number());
-	}
-
-	//! Computes the coefficient of a constraint with given index \a i.
-	/**
-	 * \param i The number of the constraint.
-	 *
-	 * \return The coefficient of constraint \a i.
-	 */
-	double coeff(int i) const { return column_.origCoeff(i); }
+    //! Output operator for column variables.
+    /**
+     * The output operator writes the column representing the variable to an output stream.
+     *
+     * \param out The output stream.
+     * \param rhs The variable being output.
+     *
+     * \return A reference to the output stream.
+     */
+    friend ostream &operator<<(ostream &out, const ColVar &rhs);
 
 
-	//! Returns a pointer to the column representing the variable.
-	Column *column() { return &column_; }
+    //! Writes the column representing the variable to output stream \a out.
+    /**
+     * It redefines the virtual function \a print() of the base class ConVar.
+     *
+     * \param out The output stream.
+     */
+    virtual void print(ostream &out) const
+    {
+        out << *this;
+    }
 
-	//! Returns a const pointer to the column representing the variable.
-	const Column *column() const { return &column_; }
+    //! Returns the coefficient of the constraint \a con.
+    /**
+     *\param con The constraint of which the coefficient is computed.
+     *           This must be a pointer to the class NumCon.
+     */
+    virtual double coeff(const Constraint *con) const
+    {
+        return column_.origCoeff(((const NumCon*) con)->number());
+    }
+
+    //! Computes the coefficient of a constraint with given index \a i.
+    /**
+     * \param i The number of the constraint.
+     *
+     * \return The coefficient of constraint \a i.
+     */
+    double coeff(int i) const
+    {
+        return column_.origCoeff(i);
+    }
+
+
+    //! Returns a pointer to the column representing the variable.
+    Column *column()
+    {
+        return &column_;
+    }
+
+    //! Returns a const pointer to the column representing the variable.
+    const Column *column() const
+    {
+        return &column_;
+    }
 
 protected:
 
-	Column   column_;  //!> The column representing the variable.
+    Column   column_;  //!> The column representing the variable.
 };
 
 
 inline ostream &operator<<(ostream &out, const ColVar &rhs)
 {
-	return out << rhs.column_;
+    return out << rhs.column_;
 }
 
 } //namespace abacus

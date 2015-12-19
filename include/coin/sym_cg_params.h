@@ -16,9 +16,10 @@
 #define _CUT_GEN_PARAMS_H
 
 /*stores the parameters needed by the cut generator*/
-typedef struct CG_PARAMS{
-   int     verbosity;
-   int     do_findcuts;
-}cg_params;
+typedef struct CG_PARAMS
+{
+    int     verbosity;
+    int     do_findcuts;
+} cg_params;
 
 #endif

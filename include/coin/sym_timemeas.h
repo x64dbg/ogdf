@@ -46,59 +46,59 @@
    fprintf(f, "%10.6f ", elapsed_t);         \
 }
 
-#define	TVCLEAR(tvp)	(tvp.tv_sec = tvp.tv_usec = 0)
-#define	PTVCLEAR(tvp)	((tvp)->tv_sec = (tvp)->tv_usec = 0)
+#define TVCLEAR(tvp)    (tvp.tv_sec = tvp.tv_usec = 0)
+#define PTVCLEAR(tvp)   ((tvp)->tv_sec = (tvp)->tv_usec = 0)
 
-#define	TVISSET(tvp)	(tvp.tv_sec || tvp.tv_usec)
-#define	PTVISSET(tvp)	((tvp)->tv_sec || (tvp)->tv_usec)
+#define TVISSET(tvp)    (tvp.tv_sec || tvp.tv_usec)
+#define PTVISSET(tvp)   ((tvp)->tv_sec || (tvp)->tv_usec)
 
-#define	TVXLTY(xtv, ytv) 						\
-   ( (xtv.tv_sec < ytv.tv_sec) ||					\
+#define TVXLTY(xtv, ytv)                        \
+   ( (xtv.tv_sec < ytv.tv_sec) ||                   \
      (xtv.tv_sec == ytv.tv_sec && xtv.tv_usec < ytv.tv_usec))
-#define	PTVXLTY(xtv, ytv) 						  \
-   ( ((xtv)->tv_sec < (ytv)->tv_sec) ||					  \
+#define PTVXLTY(xtv, ytv)                         \
+   ( ((xtv)->tv_sec < (ytv)->tv_sec) ||                   \
      ((xtv)->tv_sec == (ytv)->tv_sec && (xtv)->tv_usec < (ytv)->tv_usec))
 
-#define	TVXADDY(ztv, xtv, ytv)						\
-     if ((ztv.tv_usec = xtv.tv_usec + ytv.tv_usec) < 1000000) {		\
-	ztv.tv_sec = xtv.tv_sec + ytv.tv_sec;				\
-     } else {								\
-	ztv.tv_usec -= 1000000;						\
-	ztv.tv_sec = xtv.tv_sec + ytv.tv_sec + 1;			\
+#define TVXADDY(ztv, xtv, ytv)                      \
+     if ((ztv.tv_usec = xtv.tv_usec + ytv.tv_usec) < 1000000) {     \
+    ztv.tv_sec = xtv.tv_sec + ytv.tv_sec;               \
+     } else {                               \
+    ztv.tv_usec -= 1000000;                     \
+    ztv.tv_sec = xtv.tv_sec + ytv.tv_sec + 1;           \
      }
-#define	PTVXADDY(ztv, xtv, ytv)						 \
+#define PTVXADDY(ztv, xtv, ytv)                      \
      if (((ztv)->tv_usec = (xtv)->tv_usec + (ytv)->tv_usec) < 1000000) { \
-	(ztv)->tv_sec = (xtv)->tv_sec + (ytv)->tv_sec;			 \
-     } else {								 \
-	(ztv)->tv_usec -= 1000000;					 \
-	(ztv)->tv_sec = (xtv)->tv_sec + (ytv)->tv_sec + 1;		 \
+    (ztv)->tv_sec = (xtv)->tv_sec + (ytv)->tv_sec;           \
+     } else {                                \
+    (ztv)->tv_usec -= 1000000;                   \
+    (ztv)->tv_sec = (xtv)->tv_sec + (ytv)->tv_sec + 1;       \
      }
 
-#define	TVXSUBY(ztv, xtv, ytv)						\
-     if (xtv.tv_usec >= ytv.tv_usec) {					\
-	ztv.tv_sec = xtv.tv_sec - ytv.tv_sec;				\
-	ztv.tv_usec = xtv.tv_usec - ytv.tv_usec;			\
-     } else {								\
-	ztv.tv_sec = xtv.tv_sec - ytv.tv_sec - 1;			\
-	ztv.tv_usec = xtv.tv_usec + 1000000 - ytv.tv_usec;		\
+#define TVXSUBY(ztv, xtv, ytv)                      \
+     if (xtv.tv_usec >= ytv.tv_usec) {                  \
+    ztv.tv_sec = xtv.tv_sec - ytv.tv_sec;               \
+    ztv.tv_usec = xtv.tv_usec - ytv.tv_usec;            \
+     } else {                               \
+    ztv.tv_sec = xtv.tv_sec - ytv.tv_sec - 1;           \
+    ztv.tv_usec = xtv.tv_usec + 1000000 - ytv.tv_usec;      \
      }
-#define	PTVXSUBY(ztv, xtv, ytv)						 \
-     if ((xtv)->tv_usec >= (ytv)->tv_usec) {				 \
-	(ztv)->tv_sec = (xtv)->tv_sec - (ytv)->tv_sec;			 \
-	(ztv)->tv_usec = (xtv)->tv_usec - (ytv)->tv_usec;		 \
-     } else {								 \
-	(ztv)->tv_sec = (xtv)->tv_sec - (ytv)->tv_sec - 1;		 \
-	(ztv)->tv_usec = (xtv)->tv_usec + 1000000 - (ytv)->tv_usec;	 \
+#define PTVXSUBY(ztv, xtv, ytv)                      \
+     if ((xtv)->tv_usec >= (ytv)->tv_usec) {                 \
+    (ztv)->tv_sec = (xtv)->tv_sec - (ytv)->tv_sec;           \
+    (ztv)->tv_usec = (xtv)->tv_usec - (ytv)->tv_usec;        \
+     } else {                                \
+    (ztv)->tv_sec = (xtv)->tv_sec - (ytv)->tv_sec - 1;       \
+    (ztv)->tv_usec = (xtv)->tv_usec + 1000000 - (ytv)->tv_usec;  \
      }
 
 #define TVTODBL(tvp)  ((double)tvp.tv_sec + ((double)tvp.tv_usec)/1000000 )
 #define TVPTODBL(tvp) ((double)(tvp)->tv_sec+((double)(tvp)->tv_usec)/1000000)
 
-#define DBLTOTV(x, tv)						\
-     tv.tv_sec = (int) floor(x);				\
+#define DBLTOTV(x, tv)                      \
+     tv.tv_sec = (int) floor(x);                \
      tv.tv_usec = (int) floor(1000000 * (x - (double)tv.tv_sec));
-#define DBLTOPTV(x, tvp)						\
-     (tvp)->tv_sec = (int) floor(x);					\
+#define DBLTOPTV(x, tvp)                        \
+     (tvp)->tv_sec = (int) floor(x);                    \
      (tvp)->tv_usec = (int) floor(1000000 * (x - (tvp)->tv_sec));
 
 void start_time PROTO((void));

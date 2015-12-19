@@ -60,9 +60,10 @@
 #include <ogdf/cluster/ClusterGraphAttributes.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class ExtendedNestingGraph;
+class ExtendedNestingGraph;
 
 /**
  * \brief Sugiyama's layout algorithm.
@@ -175,325 +176,422 @@ namespace ogdf {
  *   </tr>
  * </table>
  */
-class OGDF_EXPORT SugiyamaLayout : public LayoutModule {
+class OGDF_EXPORT SugiyamaLayout : public LayoutModule
+{
 
-	//class CrossMinMaster;
-	//class CrossMinWorker;
+    //class CrossMinMaster;
+    //class CrossMinWorker;
 
 protected:
 
-	//! the ranking module (level assignment)
-	ModuleOption<RankingModule>                m_ranking;
+    //! the ranking module (level assignment)
+    ModuleOption<RankingModule>                m_ranking;
 
-	//! the module for two-layer crossing minimization
-	ModuleOption<LayeredCrossMinModule>        m_crossMin;
+    //! the module for two-layer crossing minimization
+    ModuleOption<LayeredCrossMinModule>        m_crossMin;
 
-	ModuleOption<TwoLayerCrossMinSimDraw>      m_crossMinSimDraw;
+    ModuleOption<TwoLayerCrossMinSimDraw>      m_crossMinSimDraw;
 
-	//! the hierarchy layout module (final coordinate assignment)
-	ModuleOption<HierarchyLayoutModule>        m_layout;
+    //! the hierarchy layout module (final coordinate assignment)
+    ModuleOption<HierarchyLayoutModule>        m_layout;
 
-	//! the hierarchy cluster layout module (final coordinate assignment for clustered graphs)
-	ModuleOption<HierarchyClusterLayoutModule> m_clusterLayout;
+    //! the hierarchy cluster layout module (final coordinate assignment for clustered graphs)
+    ModuleOption<HierarchyClusterLayoutModule> m_clusterLayout;
 
-	//! The module for arranging connected components.
-	ModuleOption<CCLayoutPackModule>           m_packer;
+    //! The module for arranging connected components.
+    ModuleOption<CCLayoutPackModule>           m_packer;
 
-	int    m_fails;			//!< Option for maximal number of fails.
-	int    m_runs;			//!< Option for number of runs.
-	bool   m_transpose;		//!< Option for switching on transposal heuristic.
-	bool   m_arrangeCCs;	//!< Option for laying out components separately.
-	double m_minDistCC;		//!< Option for distance between connected components.
-	double m_pageRatio;		//!< Option for desired page ratio.
-	bool   m_permuteFirst;
-	int    m_maxThreads;	//!< The maximal number of used threads.
+    int    m_fails;         //!< Option for maximal number of fails.
+    int    m_runs;          //!< Option for number of runs.
+    bool   m_transpose;     //!< Option for switching on transposal heuristic.
+    bool   m_arrangeCCs;    //!< Option for laying out components separately.
+    double m_minDistCC;     //!< Option for distance between connected components.
+    double m_pageRatio;     //!< Option for desired page ratio.
+    bool   m_permuteFirst;
+    int    m_maxThreads;    //!< The maximal number of used threads.
 
-	int m_nCrossings;    //!< Number of crossings in computed layout.
-	RCCrossings m_nCrossingsCluster;
-	Array<bool> m_levelChanged;
+    int m_nCrossings;    //!< Number of crossings in computed layout.
+    RCCrossings m_nCrossingsCluster;
+    Array<bool> m_levelChanged;
 
-	bool m_alignBaseClasses; //!< Option for aligning base classes.
-	bool m_alignSiblings;    //!< Option for aligning siblings in inheritance trees.
+    bool m_alignBaseClasses; //!< Option for aligning base classes.
+    bool m_alignSiblings;    //!< Option for aligning siblings in inheritance trees.
 
-	EdgeArray<__uint32> *m_subgraphs; //!< Defines the subgraphs for simultaneous drawing.
+    EdgeArray<__uint32> *m_subgraphs; //!< Defines the subgraphs for simultaneous drawing.
 
 public:
 
-	//! Creates an instance of SugiyamaLayout and sets options to default values.
-	SugiyamaLayout();
+    //! Creates an instance of SugiyamaLayout and sets options to default values.
+    SugiyamaLayout();
 
-	// destructor
-	~SugiyamaLayout() { }
-
-
-	/**
-	 *  @name Algorithm call
-	 *  @{
-	 */
-
-	/**
-	 * \brief Calls the layout algorithm for graph \a GA.
-	 *
-	 * Returns the computed layout in \a GA.
-	 */
-	void call(GraphAttributes &GA);
-
-	void call(GraphAttributes &GA, GraphConstraints & GC) { call(GA); }
-
-	/**
-	 * \brief Calls the layout algorithm for clustered graph \a CGA.
-	 *
-	 * Returns the computed layout in \a CGA.
-	 */
-	void call(ClusterGraphAttributes &CGA);
-
-	/**
-	 * \brief Calls the layout algorithm for graph \a AG with a given level assignment.
-	 *
-	 * Returns the computed layout in \a AG.
-	 * @param GA is the input graph (with node size information) and is assigned
-	 *        the computed layout.
-	 * @param rank defines the level of each node.
-	 */
-	void call(GraphAttributes &GA, NodeArray<int> &rank);
-
-	// special call for UML graphs
-	void callUML(GraphAttributes &GA);
+    // destructor
+    ~SugiyamaLayout() { }
 
 
-	/** @}
-	 *  @name Optional parameters
-	 *  @{
-	 */
+    /**
+     *  @name Algorithm call
+     *  @{
+     */
 
-	/**
-	 * \brief Returns the current setting of option fails.
-	 *
-	 * This option determines, how many times the total number of crossings
-	 * after a complete top down or bottom up traversal may not decrease before
-	 * one repetition is stopped.
-	 */
-	int fails() const { return m_fails; }
+    /**
+     * \brief Calls the layout algorithm for graph \a GA.
+     *
+     * Returns the computed layout in \a GA.
+     */
+    void call(GraphAttributes &GA);
 
-	//! Sets the option fails to \a nFails.
-	void fails(int nFails) { m_fails = nFails; }
+    void call(GraphAttributes &GA, GraphConstraints & GC)
+    {
+        call(GA);
+    }
 
-	/**
-	 * \brief Returns the current setting of option runs.
-	 *
-	 * This option determines, how many times the crossing minimization is
-	 * repeated. Each repetition (except for the first) starts with randomly
-	 * permuted nodes on each layer. Deterministic behaviour can be achieved
-	 * by setting runs to 1.
-	 */
-	int runs() const { return m_runs; }
+    /**
+     * \brief Calls the layout algorithm for clustered graph \a CGA.
+     *
+     * Returns the computed layout in \a CGA.
+     */
+    void call(ClusterGraphAttributes &CGA);
 
-	//! Sets the option runs to \a nRuns.
-	void runs(int nRuns) { m_runs = nRuns; }
+    /**
+     * \brief Calls the layout algorithm for graph \a AG with a given level assignment.
+     *
+     * Returns the computed layout in \a AG.
+     * @param GA is the input graph (with node size information) and is assigned
+     *        the computed layout.
+     * @param rank defines the level of each node.
+     */
+    void call(GraphAttributes &GA, NodeArray<int> &rank);
 
-	/**
-	 * \brief Returns the current setting of option transpose.
-	 *
-	 * If this option is set to true an additional fine tuning step is
-	 * performed after each traversal, which tries to reduce the total number
-	 * of crossings by switching adjacent vertices on the same layer.
-	 */
-	bool transpose() const { return m_transpose; }
+    // special call for UML graphs
+    void callUML(GraphAttributes &GA);
 
-	//! Sets the option transpose to \a bTranspose.
-	void transpose(bool bTranspose) { m_transpose = bTranspose; }
 
-	/**
-	 * \brief Returns the current setting of option arrangeCCs.
-	 *
-	 * If this option is set to true, connected components are laid out
-	 * separately and arranged using a packing module.
-	 */
-	bool arrangeCCs() const { return m_arrangeCCs; }
+    /** @}
+     *  @name Optional parameters
+     *  @{
+     */
 
-	//! Sets the options arrangeCCs to \a bArrange.
-	void arrangeCCs(bool bArrange) { m_arrangeCCs = bArrange; }
+    /**
+     * \brief Returns the current setting of option fails.
+     *
+     * This option determines, how many times the total number of crossings
+     * after a complete top down or bottom up traversal may not decrease before
+     * one repetition is stopped.
+     */
+    int fails() const
+    {
+        return m_fails;
+    }
 
-	/**
-	 * \brief Returns the current setting of option minDistCC (distance between components).
-	 *
-	 * This options defines the minimum distance between connected
-	 * components of the graph.
-	 */
-	double minDistCC() const { return m_minDistCC; }
+    //! Sets the option fails to \a nFails.
+    void fails(int nFails)
+    {
+        m_fails = nFails;
+    }
 
-	//! Sets the option minDistCC to \a x.
-	void minDistCC(double x) { m_minDistCC = x; }
+    /**
+     * \brief Returns the current setting of option runs.
+     *
+     * This option determines, how many times the crossing minimization is
+     * repeated. Each repetition (except for the first) starts with randomly
+     * permuted nodes on each layer. Deterministic behaviour can be achieved
+     * by setting runs to 1.
+     */
+    int runs() const
+    {
+        return m_runs;
+    }
 
-	/**
-	 * \brief Returns the current setting of option pageRation.
-	 *
-	 * This option defines the desired page ratio of the layout and
-	 * is used by the packing algorithms used for laying out
-	 * connected components.
-	 */
-	double pageRatio() const { return m_pageRatio; }
+    //! Sets the option runs to \a nRuns.
+    void runs(int nRuns)
+    {
+        m_runs = nRuns;
+    }
 
-	//! Sets the option pageRatio to \a x.
-	void pageRatio(double x) { m_pageRatio = x; }
+    /**
+     * \brief Returns the current setting of option transpose.
+     *
+     * If this option is set to true an additional fine tuning step is
+     * performed after each traversal, which tries to reduce the total number
+     * of crossings by switching adjacent vertices on the same layer.
+     */
+    bool transpose() const
+    {
+        return m_transpose;
+    }
 
-	/**
-	 * \brief Returns the current setting of option alignBaseClasses.
-	 *
-	 * This option defines whether base classes in inheritance hierarchies
-	 * shall be aligned.
-	 */
-	bool alignBaseClasses() const { return m_alignBaseClasses; }
+    //! Sets the option transpose to \a bTranspose.
+    void transpose(bool bTranspose)
+    {
+        m_transpose = bTranspose;
+    }
 
-	//! Sets the option alignBaseClasses to \a b.
-	void alignBaseClasses(bool b) { m_alignBaseClasses = b; }
+    /**
+     * \brief Returns the current setting of option arrangeCCs.
+     *
+     * If this option is set to true, connected components are laid out
+     * separately and arranged using a packing module.
+     */
+    bool arrangeCCs() const
+    {
+        return m_arrangeCCs;
+    }
 
-	/**
-	 * \brief Returns the current setting of option alignSiblings.
-	 *
-	 * This option defines whether siblings in inheritance trees
-	 * shall be aligned.
-	 */
-	bool alignSiblings() const { return m_alignSiblings; }
+    //! Sets the options arrangeCCs to \a bArrange.
+    void arrangeCCs(bool bArrange)
+    {
+        m_arrangeCCs = bArrange;
+    }
 
-	//! Sets the option alignSiblings to \a b.
-	void alignSiblings(bool b) { m_alignSiblings = b; }
+    /**
+     * \brief Returns the current setting of option minDistCC (distance between components).
+     *
+     * This options defines the minimum distance between connected
+     * components of the graph.
+     */
+    double minDistCC() const
+    {
+        return m_minDistCC;
+    }
 
-	//! Sets the subgraphs for simultaneous drawing.
-	void setSubgraphs(EdgeArray<__uint32> *esg) { m_subgraphs = esg; }
+    //! Sets the option minDistCC to \a x.
+    void minDistCC(double x)
+    {
+        m_minDistCC = x;
+    }
 
-	//! Returns true iff subgraphs for simultaneous drawing are set.
-	bool useSubgraphs() const { return (m_subgraphs != 0); }
+    /**
+     * \brief Returns the current setting of option pageRation.
+     *
+     * This option defines the desired page ratio of the layout and
+     * is used by the packing algorithms used for laying out
+     * connected components.
+     */
+    double pageRatio() const
+    {
+        return m_pageRatio;
+    }
 
-	bool permuteFirst() const { return m_permuteFirst; }
-	void permuteFirst(bool b) { m_permuteFirst = b; }
+    //! Sets the option pageRatio to \a x.
+    void pageRatio(double x)
+    {
+        m_pageRatio = x;
+    }
 
-	//! Returns the maximal number of used threads.
-	int maxThreads() const { return m_maxThreads; }
+    /**
+     * \brief Returns the current setting of option alignBaseClasses.
+     *
+     * This option defines whether base classes in inheritance hierarchies
+     * shall be aligned.
+     */
+    bool alignBaseClasses() const
+    {
+        return m_alignBaseClasses;
+    }
 
-	//! Sets the maximal number of used threads to \a n.
-	void maxThreads(int n) {
+    //! Sets the option alignBaseClasses to \a b.
+    void alignBaseClasses(bool b)
+    {
+        m_alignBaseClasses = b;
+    }
+
+    /**
+     * \brief Returns the current setting of option alignSiblings.
+     *
+     * This option defines whether siblings in inheritance trees
+     * shall be aligned.
+     */
+    bool alignSiblings() const
+    {
+        return m_alignSiblings;
+    }
+
+    //! Sets the option alignSiblings to \a b.
+    void alignSiblings(bool b)
+    {
+        m_alignSiblings = b;
+    }
+
+    //! Sets the subgraphs for simultaneous drawing.
+    void setSubgraphs(EdgeArray<__uint32> *esg)
+    {
+        m_subgraphs = esg;
+    }
+
+    //! Returns true iff subgraphs for simultaneous drawing are set.
+    bool useSubgraphs() const
+    {
+        return (m_subgraphs != 0);
+    }
+
+    bool permuteFirst() const
+    {
+        return m_permuteFirst;
+    }
+    void permuteFirst(bool b)
+    {
+        m_permuteFirst = b;
+    }
+
+    //! Returns the maximal number of used threads.
+    int maxThreads() const
+    {
+        return m_maxThreads;
+    }
+
+    //! Sets the maximal number of used threads to \a n.
+    void maxThreads(int n)
+    {
 #ifndef OGDF_MEMORY_POOL_NTS
-		m_maxThreads = n;
+        m_maxThreads = n;
 #endif
-	}
+    }
 
 
-	/** @}
-	 *  @name Module options
-	 *  @{
-	 */
+    /** @}
+     *  @name Module options
+     *  @{
+     */
 
-	/**
-	 * \brief Sets the module option for the node ranking (layer assignment).
-	 *
-	 * The layer assignment is the first step of the Sugiyama algorithm
-	 * and distributes the nodes onto layers. The layer assignment usually
-	 * respects edge directions; if the graph is not acyclic, the ranking
-	 * module computes an acyclic subgraph. The ranking module specifies
-	 * which method is used and usually provides a module option for
-	 * the acyclic subgraph.
-	 */
-	void setRanking(RankingModule *pRanking) {
-		m_ranking.set(pRanking);
-	}
+    /**
+     * \brief Sets the module option for the node ranking (layer assignment).
+     *
+     * The layer assignment is the first step of the Sugiyama algorithm
+     * and distributes the nodes onto layers. The layer assignment usually
+     * respects edge directions; if the graph is not acyclic, the ranking
+     * module computes an acyclic subgraph. The ranking module specifies
+     * which method is used and usually provides a module option for
+     * the acyclic subgraph.
+     */
+    void setRanking(RankingModule *pRanking)
+    {
+        m_ranking.set(pRanking);
+    }
 
-	/**
-	 * \brief Sets the module option for the two-layer crossing minimization.
-	 *
-	 * This module is called within the top-down and bottom-up traversal
-	 * of the Sugiyama crossing minimization procedure.
-	 */
-	void setCrossMin(LayeredCrossMinModule *pCrossMin) {
-		m_crossMin.set(pCrossMin);
-	}
+    /**
+     * \brief Sets the module option for the two-layer crossing minimization.
+     *
+     * This module is called within the top-down and bottom-up traversal
+     * of the Sugiyama crossing minimization procedure.
+     */
+    void setCrossMin(LayeredCrossMinModule *pCrossMin)
+    {
+        m_crossMin.set(pCrossMin);
+    }
 
-	/**
-	 * \brief Sets the module option for the computation of the final layout.
-	 *
-	 * This module receives as input the computed layer assignment and
-	 * and order of nodes on each layer, and computes the final coordinates
-	 * of nodes and bend points.
-	 */
-	void setLayout(HierarchyLayoutModule *pLayout) {
-		m_layout.set(pLayout);
-	}
+    /**
+     * \brief Sets the module option for the computation of the final layout.
+     *
+     * This module receives as input the computed layer assignment and
+     * and order of nodes on each layer, and computes the final coordinates
+     * of nodes and bend points.
+     */
+    void setLayout(HierarchyLayoutModule *pLayout)
+    {
+        m_layout.set(pLayout);
+    }
 
-	/**
-	 * \brief Sets the module option for the computation of the final layout for clustered graphs.
-	 *
-	 * This module receives as input the computed layer assignment and
-	 * and order of nodes on each layer, and computes the final coordinates
-	 * of nodes and bend points.
-	 */
-	void setClusterLayout(HierarchyClusterLayoutModule *pLayout) {
-		m_clusterLayout.set(pLayout);
-	}
+    /**
+     * \brief Sets the module option for the computation of the final layout for clustered graphs.
+     *
+     * This module receives as input the computed layer assignment and
+     * and order of nodes on each layer, and computes the final coordinates
+     * of nodes and bend points.
+     */
+    void setClusterLayout(HierarchyClusterLayoutModule *pLayout)
+    {
+        m_clusterLayout.set(pLayout);
+    }
 
-	/**
-	 * \brief Sets the module option for the arrangement of connected components.
-	 *
-	 * If arrangeCCs is set to true, the Sugiyama layout algorithm draws each
-	 * connected component of the input graph seperately, and then arranges the
-	 * resulting drawings using this packing module.
-	 */
-	void setPacker(CCLayoutPackModule *pPacker) {
-		m_packer.set(pPacker);
-	}
+    /**
+     * \brief Sets the module option for the arrangement of connected components.
+     *
+     * If arrangeCCs is set to true, the Sugiyama layout algorithm draws each
+     * connected component of the input graph seperately, and then arranges the
+     * resulting drawings using this packing module.
+     */
+    void setPacker(CCLayoutPackModule *pPacker)
+    {
+        m_packer.set(pPacker);
+    }
 
-	/** @}
-	 *  @name Information after call
-	 *  The following information can be accessed after calling the algorithm.
-	 *  @{
-	 */
+    /** @}
+     *  @name Information after call
+     *  The following information can be accessed after calling the algorithm.
+     *  @{
+     */
 
-	//! Returns the number of crossings in the computed layout (usual graph).
-	int numberOfCrossings() const { return m_nCrossings; }
+    //! Returns the number of crossings in the computed layout (usual graph).
+    int numberOfCrossings() const
+    {
+        return m_nCrossings;
+    }
 
-	//! Returns the number of crossings in the computed layout (cluster graph).
-	RCCrossings numberOfCrossingsCluster() const { return m_nCrossingsCluster; }
+    //! Returns the number of crossings in the computed layout (cluster graph).
+    RCCrossings numberOfCrossingsCluster() const
+    {
+        return m_nCrossingsCluster;
+    }
 
-	//! Return the number of layers/levels}
-	int numberOfLevels() { return m_numLevels; }
+    //! Return the number of layers/levels}
+    int numberOfLevels()
+    {
+        return m_numLevels;
+    }
 
-	//! Return the max. number of elements on a layer
-	int maxLevelSize() { return m_maxLevelSize; }
+    //! Return the max. number of elements on a layer
+    int maxLevelSize()
+    {
+        return m_maxLevelSize;
+    }
 
-	double timeReduceCrossings() { return m_timeReduceCrossings; }
+    double timeReduceCrossings()
+    {
+        return m_timeReduceCrossings;
+    }
 
-	// needed by LayerByLayerSweep::
-	const EdgeArray<__uint32> *subgraphs() const { return m_subgraphs; };
-	int numCC() const { return m_numCC; };
-	const NodeArray<int>& compGC() const { return m_compGC; };
+    // needed by LayerByLayerSweep::
+    const EdgeArray<__uint32> *subgraphs() const
+    {
+        return m_subgraphs;
+    };
+    int numCC() const
+    {
+        return m_numCC;
+    };
+    const NodeArray<int>& compGC() const
+    {
+        return m_compGC;
+    };
 
 protected:
 
-	//void reduceCrossings(HierarchyLevels &levels);
-	void reduceCrossings(ExtendedNestingGraph &H);
+    //void reduceCrossings(HierarchyLevels &levels);
+    void reduceCrossings(ExtendedNestingGraph &H);
 
-	const HierarchyLevelsBase *reduceCrossings(Hierarchy &H);
+    const HierarchyLevelsBase *reduceCrossings(Hierarchy &H);
 
 private:
-	int m_numCC;
-	NodeArray<int> m_compGC;
+    int m_numCC;
+    NodeArray<int> m_compGC;
 
-	void doCall(GraphAttributes &AG, bool umlCall);
-	void doCall(GraphAttributes &AG, bool umlCall, NodeArray<int> &rank);
+    void doCall(GraphAttributes &AG, bool umlCall);
+    void doCall(GraphAttributes &AG, bool umlCall, NodeArray<int> &rank);
 
-	//int traverseTopDown (HierarchyLevels &levels);
-	//int traverseBottomUp(HierarchyLevels &levels);
+    //int traverseTopDown (HierarchyLevels &levels);
+    //int traverseBottomUp(HierarchyLevels &levels);
 
-	//bool transposeLevel(int i, HierarchyLevels &levels);
-	//void doTranspose(HierarchyLevels &levels);
-	//void doTransposeRev(HierarchyLevels &levels);
+    //bool transposeLevel(int i, HierarchyLevels &levels);
+    //void doTranspose(HierarchyLevels &levels);
+    //void doTransposeRev(HierarchyLevels &levels);
 
 
-	int m_numLevels;
-	int m_maxLevelSize;
-	double m_timeReduceCrossings;
+    int m_numLevels;
+    int m_maxLevelSize;
+    double m_timeReduceCrossings;
 
-	RCCrossings traverseTopDown (ExtendedNestingGraph &H);
-	RCCrossings traverseBottomUp(ExtendedNestingGraph &H);
+    RCCrossings traverseTopDown (ExtendedNestingGraph &H);
+    RCCrossings traverseBottomUp(ExtendedNestingGraph &H);
 };
 
 

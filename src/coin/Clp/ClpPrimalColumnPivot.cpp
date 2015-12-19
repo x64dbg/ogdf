@@ -16,9 +16,9 @@
 // Default Constructor
 //-------------------------------------------------------------------
 ClpPrimalColumnPivot::ClpPrimalColumnPivot () :
-     model_(NULL),
-     type_(-1),
-     looksOptimal_(false)
+    model_(NULL),
+    type_(-1),
+    looksOptimal_(false)
 {
 
 }
@@ -27,9 +27,9 @@ ClpPrimalColumnPivot::ClpPrimalColumnPivot () :
 // Copy constructor
 //-------------------------------------------------------------------
 ClpPrimalColumnPivot::ClpPrimalColumnPivot (const ClpPrimalColumnPivot & source) :
-     model_(source.model_),
-     type_(source.type_),
-     looksOptimal_(source.looksOptimal_)
+    model_(source.model_),
+    type_(source.type_),
+    looksOptimal_(source.looksOptimal_)
 {
 
 }
@@ -48,17 +48,18 @@ ClpPrimalColumnPivot::~ClpPrimalColumnPivot ()
 ClpPrimalColumnPivot &
 ClpPrimalColumnPivot::operator=(const ClpPrimalColumnPivot& rhs)
 {
-     if (this != &rhs) {
-          type_ = rhs.type_;
-          model_ = rhs.model_;
-          looksOptimal_ = rhs.looksOptimal_;
-     }
-     return *this;
+    if (this != &rhs)
+    {
+        type_ = rhs.type_;
+        model_ = rhs.model_;
+        looksOptimal_ = rhs.looksOptimal_;
+    }
+    return *this;
 }
 void
 ClpPrimalColumnPivot::saveWeights(ClpSimplex * model, int )
 {
-     model_ = model;
+    model_ = model;
 }
 // checks accuracy and may re-initialize (may be empty)
 
@@ -78,7 +79,7 @@ ClpPrimalColumnPivot::clearArrays()
 int
 ClpPrimalColumnPivot::numberSprintColumns(int & ) const
 {
-     return 0;
+    return 0;
 }
 // Switch off sprint idea
 void

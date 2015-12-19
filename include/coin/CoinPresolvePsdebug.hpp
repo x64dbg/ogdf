@@ -23,13 +23,13 @@
 
 /*! \relates CoinPresolveMatrix
     \brief Check column-major and/or row-major matrices for duplicate
-	   entries in the major vectors.
+       entries in the major vectors.
 
   By default, scans both the column- and row-major matrices. Set doCol (doRow)
   to false to suppress one or the other.
 */
 void presolve_no_dups(const CoinPresolveMatrix *preObj,
-		      bool doCol = true, bool doRow = true) ;
+                      bool doCol = true, bool doRow = true) ;
 
 /*! \relates CoinPresolveMatrix
     \brief Check the links which track storage order for major vectors in
@@ -41,7 +41,7 @@ void presolve_no_dups(const CoinPresolveMatrix *preObj,
   column-major links.
 */
 void presolve_links_ok(const CoinPresolveMatrix *preObj,
-		       bool doCol = true, bool doRow = false) ;
+                       bool doCol = true, bool doRow = false) ;
 
 /*! \relates CoinPresolveMatrix
     \brief Check for explicit zeros in the column- and/or row-major matrices.
@@ -50,7 +50,7 @@ void presolve_links_ok(const CoinPresolveMatrix *preObj,
   to false to suppress one or the other.
 */
 void presolve_no_zeros(const CoinPresolveMatrix *preObj,
-		       bool doCol = true, bool doRow = true) ;
+                       bool doCol = true, bool doRow = true) ;
 
 /*! \relates CoinPresolveMatrix
     \brief Checks for equivalence of the column- and row-major matrices.
@@ -59,7 +59,7 @@ void presolve_no_zeros(const CoinPresolveMatrix *preObj,
   \p chkvals to false to suppress the check for equal value.
 */
 void presolve_consistent(const CoinPresolveMatrix *preObj,
-			 bool chkvals = true) ;
+                         bool chkvals = true) ;
 
 /*! \relates CoinPostsolveMatrix
     \brief Checks that column threads agree with column lengths
@@ -77,11 +77,11 @@ void presolve_check_threads(const CoinPostsolveMatrix *obj) ;
     for checking a newly constructed postsolve matrix.
 */
 void presolve_check_free_list(const CoinPostsolveMatrix *obj,
-			      bool chkElemCnt = false) ;
+                              bool chkElemCnt = false) ;
 
 /*! \relates CoinPostsolveMatrix
     \brief Check stored reduced costs for accuracy and consistency with
-	   variable status.
+       variable status.
 
   The routine will check the value of the reduced costs for architectural
   variables (CoinPrePostsolveMatrix::rcosts_). It performs an accuracy check
@@ -110,8 +110,8 @@ void presolve_check_duals(const CoinPostsolveMatrix *postObj) ;
     CoinPresolvePsdebug.cpp for more information.
 */
 void presolve_check_sol(const CoinPresolveMatrix *preObj,
-			int chkColSol = 2, int chkRowAct = 1,
-			int chkStatus = 1) ;
+                        int chkColSol = 2, int chkRowAct = 1,
+                        int chkStatus = 1) ;
 
 /*! \relates CoinPostsolveMatrix
     \brief Check primal solution and architectural variable status.
@@ -122,8 +122,8 @@ void presolve_check_sol(const CoinPresolveMatrix *preObj,
     information.
 */
 void presolve_check_sol(const CoinPostsolveMatrix *postObj,
-			int chkColSol = 2, int chkRowAct = 2,
-			int chkStatus = 1) ;
+                        int chkColSol = 2, int chkRowAct = 2,
+                        int chkStatus = 1) ;
 
 /*! \relates CoinPresolveMatrix
     \brief Check for the proper number of basic variables.

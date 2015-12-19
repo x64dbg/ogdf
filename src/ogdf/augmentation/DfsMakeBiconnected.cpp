@@ -46,12 +46,13 @@
 #include <ogdf/basic/simple_graph_alg.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 void DfsMakeBiconnected::doCall(Graph &G, List<edge> &L)
 {
-	makeBiconnected(G,L);
+    makeBiconnected(G,L);
 }
 
 

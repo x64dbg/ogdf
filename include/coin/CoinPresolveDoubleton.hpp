@@ -6,7 +6,7 @@
 #ifndef CoinPresolveDoubleton_H
 #define CoinPresolveDoubleton_H
 
-#define	DOUBLETON	5
+#define DOUBLETON   5
 
 /*! \class doubleton_action
     \brief Solve ax+by=c for y and substitute y out of the problem.
@@ -14,59 +14,64 @@
   This moves the bounds information for y onto x, making y free and allowing
   us to substitute it away.
   \verbatim
-	   a x + b y = c
-	   l1 <= x <= u1
-	   l2 <= y <= u2	==>
-	  
-	   l2 <= (c - a x) / b <= u2
-	   b/-a > 0 ==> (b l2 - c) / -a <= x <= (b u2 - c) / -a
-	   b/-a < 0 ==> (b u2 - c) / -a <= x <= (b l2 - c) / -a
+       a x + b y = c
+       l1 <= x <= u1
+       l2 <= y <= u2    ==>
+
+       l2 <= (c - a x) / b <= u2
+       b/-a > 0 ==> (b l2 - c) / -a <= x <= (b u2 - c) / -a
+       b/-a < 0 ==> (b u2 - c) / -a <= x <= (b l2 - c) / -a
   \endverbatim
 */
-class doubleton_action : public CoinPresolveAction {
- public:
-  struct action {
+class doubleton_action : public CoinPresolveAction
+{
+public:
+    struct action
+    {
 
-    double clox;
-    double cupx;
-    double costx;
-    
-    double costy;
+        double clox;
+        double cupx;
+        double costx;
 
-    double rlo;
+        double costy;
 
-    double coeffx;
-    double coeffy;
+        double rlo;
 
-    double *colel;
+        double coeffx;
+        double coeffy;
 
-    int icolx;
-    int icoly;
-    int row;
-    int ncolx;
-    int ncoly;
-  };
+        double *colel;
 
-  const int nactions_;
-  const action *const actions_;
+        int icolx;
+        int icoly;
+        int row;
+        int ncolx;
+        int ncoly;
+    };
 
- private:
-  doubleton_action(int nactions,
-		      const action *actions,
-		      const CoinPresolveAction *next) :
-    CoinPresolveAction(next),
-    nactions_(nactions), actions_(actions)
-{}
+    const int nactions_;
+    const action *const actions_;
 
- public:
-  const char *name() const { return ("doubleton_action"); }
+private:
+    doubleton_action(int nactions,
+                     const action *actions,
+                     const CoinPresolveAction *next) :
+        CoinPresolveAction(next),
+        nactions_(nactions), actions_(actions)
+    {}
 
-  static const CoinPresolveAction *presolve(CoinPresolveMatrix *,
-					 const CoinPresolveAction *next);
-  
-  void postsolve(CoinPostsolveMatrix *prob) const;
+public:
+    const char *name() const
+    {
+        return ("doubleton_action");
+    }
 
-  ~doubleton_action();
+    static const CoinPresolveAction *presolve(CoinPresolveMatrix *,
+            const CoinPresolveAction *next);
+
+    void postsolve(CoinPostsolveMatrix *prob) const;
+
+    ~doubleton_action();
 };
 #endif
 

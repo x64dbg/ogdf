@@ -57,7 +57,8 @@
 #include <ogdf/decomposition/PlanarSPQRTree.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 template<class A, class B> class Tuple2;
@@ -85,36 +86,36 @@ class OGDF_EXPORT StaticPlanarSPQRTree : public StaticSPQRTree, public PlanarSPQ
 {
 public:
 
-	// constructors
+    // constructors
 
-	//! Creates an SPQR tree \a T for planar graph \a G rooted at the first edge of \a G.
-	/**
-	 * If \a isEmbedded is set to true, \a G must represent a combinatorial
-	 * embedding, i.e., the counter-clockwise order of the adjacency entries
-	 * around each vertex defines an embedding.
-	 * \pre \a G is planar and biconnected and contains at least 3 nodes,
-	 *      or \a G has exactly 2 nodes and at least 3  edges.
-	 */
-	StaticPlanarSPQRTree(const Graph &G, bool isEmbedded = false) :
-		StaticSPQRTree(G)
-	{
-		PlanarSPQRTree::init(isEmbedded);
-	}
+    //! Creates an SPQR tree \a T for planar graph \a G rooted at the first edge of \a G.
+    /**
+     * If \a isEmbedded is set to true, \a G must represent a combinatorial
+     * embedding, i.e., the counter-clockwise order of the adjacency entries
+     * around each vertex defines an embedding.
+     * \pre \a G is planar and biconnected and contains at least 3 nodes,
+     *      or \a G has exactly 2 nodes and at least 3  edges.
+     */
+    StaticPlanarSPQRTree(const Graph &G, bool isEmbedded = false) :
+        StaticSPQRTree(G)
+    {
+        PlanarSPQRTree::init(isEmbedded);
+    }
 
-	//! Creates an SPQR tree \a T for planar graph \a G rooted at edge \a e.
-	/**
-	 * If \a isEmbedded is set to true, \a G must represent a combinatorial
-	 * embedding, i.e., the counter-clockwise order of the adjacency entries
-	 * around each vertex defines an embedding.
-	 * \pre \a e is an edge in \a G, and \a G is planar and biconnected and
-	 * contains at least 3 nodes, or \a G has exactly 2 nodes and at least 3
-	 * edges.
-	 */
-	StaticPlanarSPQRTree(const Graph &G, edge e, bool isEmbedded = false) :
-		StaticSPQRTree(G,e)
-	{
-		PlanarSPQRTree::init(isEmbedded);
-	}
+    //! Creates an SPQR tree \a T for planar graph \a G rooted at edge \a e.
+    /**
+     * If \a isEmbedded is set to true, \a G must represent a combinatorial
+     * embedding, i.e., the counter-clockwise order of the adjacency entries
+     * around each vertex defines an embedding.
+     * \pre \a e is an edge in \a G, and \a G is planar and biconnected and
+     * contains at least 3 nodes, or \a G has exactly 2 nodes and at least 3
+     * edges.
+     */
+    StaticPlanarSPQRTree(const Graph &G, edge e, bool isEmbedded = false) :
+        StaticSPQRTree(G,e)
+    {
+        PlanarSPQRTree::init(isEmbedded);
+    }
 };
 
 

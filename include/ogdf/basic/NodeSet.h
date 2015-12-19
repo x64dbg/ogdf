@@ -56,7 +56,8 @@
 
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //! Simple node sets.
@@ -69,68 +70,75 @@ namespace ogdf {
  *   - NodeSet, NodeSetPure
  *   - FaceSet, FaceSetPure, FaceSetSimple
  */
-class OGDF_EXPORT NodeSetSimple {
+class OGDF_EXPORT NodeSetSimple
+{
 public:
-	//! Creates an empty node set associated with graph \a G.
-	NodeSetSimple(const Graph &G) : m_isContained(G,false) { }
+    //! Creates an empty node set associated with graph \a G.
+    NodeSetSimple(const Graph &G) : m_isContained(G,false) { }
 
-	// destructor
-	~NodeSetSimple() { }
+    // destructor
+    ~NodeSetSimple() { }
 
-	//! Inserts node \a v into \a S.
-	/**
-	 * This operation has constant runtime.
-	 *
-	 * \pre \a v is a node in the associated graph.
-	 */
-	void insert(node v) {
-		OGDF_ASSERT(v->graphOf() == m_isContained.graphOf());
-		bool &isContained = m_isContained[v];
-		if (isContained == false) {
-			isContained = true;
-			m_nodes.pushFront(v);
-		}
-	}
+    //! Inserts node \a v into \a S.
+    /**
+     * This operation has constant runtime.
+     *
+     * \pre \a v is a node in the associated graph.
+     */
+    void insert(node v)
+    {
+        OGDF_ASSERT(v->graphOf() == m_isContained.graphOf());
+        bool &isContained = m_isContained[v];
+        if (isContained == false)
+        {
+            isContained = true;
+            m_nodes.pushFront(v);
+        }
+    }
 
-	//! Removes all nodes from \a S.
-	/**
-	 * After this operation, \a S is empty and still associated with the same graph.
-	 * The runtime of this operations is O(k), where k is the number of nodes in \a S
-	 * before this operation.
-	 */
-	void clear() {
-		SListIterator<node> it;
-		for(it = m_nodes.begin(); it.valid(); ++it) {
-			m_isContained[*it] = false;
-		}
-		m_nodes.clear();
-	}
+    //! Removes all nodes from \a S.
+    /**
+     * After this operation, \a S is empty and still associated with the same graph.
+     * The runtime of this operations is O(k), where k is the number of nodes in \a S
+     * before this operation.
+     */
+    void clear()
+    {
+        SListIterator<node> it;
+        for(it = m_nodes.begin(); it.valid(); ++it)
+        {
+            m_isContained[*it] = false;
+        }
+        m_nodes.clear();
+    }
 
-	//! Returns true if node \a v is contained in \a S, false otherwise.
-	/**
-	 * This operation has constant runtime.
-	 *
-	 * \pre \a v is a node in the associated graph.
-	 */
-	bool isMember(node v) const {
-		OGDF_ASSERT(v->graphOf() == m_isContained.graphOf());
-		return m_isContained[v];
-	}
+    //! Returns true if node \a v is contained in \a S, false otherwise.
+    /**
+     * This operation has constant runtime.
+     *
+     * \pre \a v is a node in the associated graph.
+     */
+    bool isMember(node v) const
+    {
+        OGDF_ASSERT(v->graphOf() == m_isContained.graphOf());
+        return m_isContained[v];
+    }
 
-	//! Returns a reference to the list of nodes contained in \a S.
-	/**
-	 * This list can be used for iterating over all nodes in \a S.
-	 */
-	const SListPure<node> &nodes() const {
-		return m_nodes;
-	}
+    //! Returns a reference to the list of nodes contained in \a S.
+    /**
+     * This list can be used for iterating over all nodes in \a S.
+     */
+    const SListPure<node> &nodes() const
+    {
+        return m_nodes;
+    }
 
 private:
-	//! m_isContained[v] is true iff \a v is contained in \a S.
-	NodeArray<bool> m_isContained;
+    //! m_isContained[v] is true iff \a v is contained in \a S.
+    NodeArray<bool> m_isContained;
 
-	//! The list of nodes contained in \a S.
-	SListPure<node> m_nodes;
+    //! The list of nodes contained in \a S.
+    SListPure<node> m_nodes;
 };
 
 
@@ -148,101 +156,113 @@ private:
  *   - NodeSet, NodeSetSimple
  *   - FaceSet, FaceSetPure, FaceSetSimple
  */
-class OGDF_EXPORT NodeSetPure {
+class OGDF_EXPORT NodeSetPure
+{
 public:
-	//! Creates an empty node set associated with graph \a G.
-	NodeSetPure(const Graph &G) : m_it(G,ListIterator<node>()) { }
+    //! Creates an empty node set associated with graph \a G.
+    NodeSetPure(const Graph &G) : m_it(G,ListIterator<node>()) { }
 
-	// destructor
-	~NodeSetPure() { }
+    // destructor
+    ~NodeSetPure() { }
 
-	//! Inserts node \a v into \a S.
-	/**
-	 * This operation has constant runtime.
-	 *
-	 * \pre \a v is a node in the associated graph.
-	 */
-	void insert(node v) {
-		OGDF_ASSERT(v->graphOf() == m_it.graphOf());
-		ListIterator<node> &itV = m_it[v];
-		if (!itV.valid())
-			itV = m_nodes.pushBack(v);
-	}
+    //! Inserts node \a v into \a S.
+    /**
+     * This operation has constant runtime.
+     *
+     * \pre \a v is a node in the associated graph.
+     */
+    void insert(node v)
+    {
+        OGDF_ASSERT(v->graphOf() == m_it.graphOf());
+        ListIterator<node> &itV = m_it[v];
+        if (!itV.valid())
+            itV = m_nodes.pushBack(v);
+    }
 
-	//! Removes node \a v from \a S.
-	/**
-	 * This operation has constant runtime.
-	 *
-	 * \pre \a v is a node in the associated graph.
-	 */
-	void remove(node v) {
-		OGDF_ASSERT(v->graphOf() == m_it.graphOf());
-		ListIterator<node> &itV = m_it[v];
-		if (itV.valid()) {
-			m_nodes.del(itV);
-			itV = ListIterator<node>();
-		}
-	}
-
-
-	//! Removes all nodes from \a S.
-	/**
-	 * After this operation, \a S is empty and still associated with the same graph.
-	 * The runtime of this operations is O(k), where k is the number of nodes in \a S
-	 * before this operation.
-	 */
-	void clear() {
-		ListIterator<node> it;
-		for(it = m_nodes.begin(); it.valid(); ++it) {
-			m_it[*it] = ListIterator<node>();
-		}
-		m_nodes.clear();
-	}
+    //! Removes node \a v from \a S.
+    /**
+     * This operation has constant runtime.
+     *
+     * \pre \a v is a node in the associated graph.
+     */
+    void remove(node v)
+    {
+        OGDF_ASSERT(v->graphOf() == m_it.graphOf());
+        ListIterator<node> &itV = m_it[v];
+        if (itV.valid())
+        {
+            m_nodes.del(itV);
+            itV = ListIterator<node>();
+        }
+    }
 
 
-	//! Returns true if node \a v is contained in \a S, false otherwise.
-	/**
-	 * This operation has constant runtime.
-	 *
-	 * \pre \a v is a node in the associated graph.
-	 */
-	bool isMember(node v) const {
-		OGDF_ASSERT(v->graphOf() == m_it.graphOf());
-		return m_it[v].valid();
-	}
+    //! Removes all nodes from \a S.
+    /**
+     * After this operation, \a S is empty and still associated with the same graph.
+     * The runtime of this operations is O(k), where k is the number of nodes in \a S
+     * before this operation.
+     */
+    void clear()
+    {
+        ListIterator<node> it;
+        for(it = m_nodes.begin(); it.valid(); ++it)
+        {
+            m_it[*it] = ListIterator<node>();
+        }
+        m_nodes.clear();
+    }
 
-	//! Returns a reference to the list of nodes contained in \a S.
-	/**
-	 * This list can be used for iterating over all nodes in \a S.
-	 */
-	const ListPure<node> &nodes() const {
-		return m_nodes;
-	}
 
-	//! Copy constructor.
-	NodeSetPure(const NodeSetPure& V) : m_it(*V.m_it.graphOf(), ListIterator<node>()) {
-		forall_listiterators(node, it, V.m_nodes) {
-			insert(*it);
-		}
-	}
+    //! Returns true if node \a v is contained in \a S, false otherwise.
+    /**
+     * This operation has constant runtime.
+     *
+     * \pre \a v is a node in the associated graph.
+     */
+    bool isMember(node v) const
+    {
+        OGDF_ASSERT(v->graphOf() == m_it.graphOf());
+        return m_it[v].valid();
+    }
 
-	//! Assignment operator.
-	NodeSetPure &operator=(const NodeSetPure &V) {
-		m_nodes.clear();
-		m_it.init(*V.m_it.graphOf());
-		forall_listiterators(node, it, V.m_nodes) {
-			insert(*it);
-		}
-		return *this;
-	}
+    //! Returns a reference to the list of nodes contained in \a S.
+    /**
+     * This list can be used for iterating over all nodes in \a S.
+     */
+    const ListPure<node> &nodes() const
+    {
+        return m_nodes;
+    }
+
+    //! Copy constructor.
+    NodeSetPure(const NodeSetPure& V) : m_it(*V.m_it.graphOf(), ListIterator<node>())
+    {
+        forall_listiterators(node, it, V.m_nodes)
+        {
+            insert(*it);
+        }
+    }
+
+    //! Assignment operator.
+    NodeSetPure &operator=(const NodeSetPure &V)
+    {
+        m_nodes.clear();
+        m_it.init(*V.m_it.graphOf());
+        forall_listiterators(node, it, V.m_nodes)
+        {
+            insert(*it);
+        }
+        return *this;
+    }
 
 private:
-	//! m_it[v] contains the list iterator pointing to \a v if \a v is contained in S,
-	//! an invalid list iterator otherwise.
-	NodeArray<ListIterator<node> > m_it;
+    //! m_it[v] contains the list iterator pointing to \a v if \a v is contained in S,
+    //! an invalid list iterator otherwise.
+    NodeArray<ListIterator<node> > m_it;
 
-	//! The list of nodes contained in \a S.
-	ListPure<node> m_nodes;
+    //! The list of nodes contained in \a S.
+    ListPure<node> m_nodes;
 };
 
 
@@ -260,109 +280,122 @@ private:
  *   - NodeSetPure, NodeSetSimple
  *   - FaceSet, FaceSetPure, FaceSetSimple
  */
-class OGDF_EXPORT NodeSet {
+class OGDF_EXPORT NodeSet
+{
 public:
-	//! Creates an empty node set associated with graph \a G.
-	NodeSet(const Graph &G) : m_it(G,ListIterator<node>()) { }
+    //! Creates an empty node set associated with graph \a G.
+    NodeSet(const Graph &G) : m_it(G,ListIterator<node>()) { }
 
-	// destructor
-	~NodeSet() { }
+    // destructor
+    ~NodeSet() { }
 
-	//! Inserts node \a v into \a S.
-	/**
-	 * This operation has constant runtime.
-	 *
-	 * \pre \a v is a node in the associated graph.
-	 */
-	void insert(node v) {
-		OGDF_ASSERT(v->graphOf() == m_it.graphOf());
-		ListIterator<node> &itV = m_it[v];
-		if (!itV.valid())
-			itV = m_nodes.pushBack(v);
-	}
+    //! Inserts node \a v into \a S.
+    /**
+     * This operation has constant runtime.
+     *
+     * \pre \a v is a node in the associated graph.
+     */
+    void insert(node v)
+    {
+        OGDF_ASSERT(v->graphOf() == m_it.graphOf());
+        ListIterator<node> &itV = m_it[v];
+        if (!itV.valid())
+            itV = m_nodes.pushBack(v);
+    }
 
-	//! Removes node \a v from \a S.
-	/**
-	 * This operation has constant runtime.
-	 *
-	 * \pre \a v is a node in the associated graph.
-	 */
-	void remove(node v) {
-		OGDF_ASSERT(v->graphOf() == m_it.graphOf());
-		ListIterator<node> &itV = m_it[v];
-		if (itV.valid()) {
-			m_nodes.del(itV);
-			itV = ListIterator<node>();
-		}
-	}
-
-
-	//! Removes all nodes from \a S.
-	/**
-	 * After this operation, \a S is empty and still associated with the same graph.
-	 * The runtime of this operations is O(k), where k is the number of nodes in \a S
-	 * before this operation.
-	 */
-	void clear() {
-		ListIterator<node> it;
-		for(it = m_nodes.begin(); it.valid(); ++it) {
-			m_it[*it] = ListIterator<node>();
-		}
-		m_nodes.clear();
-	}
+    //! Removes node \a v from \a S.
+    /**
+     * This operation has constant runtime.
+     *
+     * \pre \a v is a node in the associated graph.
+     */
+    void remove(node v)
+    {
+        OGDF_ASSERT(v->graphOf() == m_it.graphOf());
+        ListIterator<node> &itV = m_it[v];
+        if (itV.valid())
+        {
+            m_nodes.del(itV);
+            itV = ListIterator<node>();
+        }
+    }
 
 
-	//! Returns true if node \a v is contained in \a S, false otherwise.
-	/**
-	 * This operation has constant runtime.
-	 *
-	 * \pre \a v is a node in the associated graph.
-	 */
-	bool isMember(node v) const {
-		OGDF_ASSERT(v->graphOf() == m_it.graphOf());
-		return m_it[v].valid();
-	}
+    //! Removes all nodes from \a S.
+    /**
+     * After this operation, \a S is empty and still associated with the same graph.
+     * The runtime of this operations is O(k), where k is the number of nodes in \a S
+     * before this operation.
+     */
+    void clear()
+    {
+        ListIterator<node> it;
+        for(it = m_nodes.begin(); it.valid(); ++it)
+        {
+            m_it[*it] = ListIterator<node>();
+        }
+        m_nodes.clear();
+    }
 
-	//! Returns the size of \a S.
-	/**
-	 * This operation has constant runtime.
-	 */
-	int size() const {
-		return m_nodes.size();
-	}
 
-	//! Returns a reference to the list of nodes contained in \a S.
-	/**
-	 * This list can be used for iterating over all nodes in \a S.
-	 */
-	const List<node> &nodes() const {
-		return m_nodes;
-	}
+    //! Returns true if node \a v is contained in \a S, false otherwise.
+    /**
+     * This operation has constant runtime.
+     *
+     * \pre \a v is a node in the associated graph.
+     */
+    bool isMember(node v) const
+    {
+        OGDF_ASSERT(v->graphOf() == m_it.graphOf());
+        return m_it[v].valid();
+    }
 
-	//! Copy constructor.
-	NodeSet(const NodeSet& V) : m_it(*V.m_it.graphOf(), ListIterator<node>()) {
-		forall_listiterators(node, it, V.m_nodes) {
-			insert(*it);
-		}
-	}
+    //! Returns the size of \a S.
+    /**
+     * This operation has constant runtime.
+     */
+    int size() const
+    {
+        return m_nodes.size();
+    }
 
-	//! Assignment operator.
-	NodeSet &operator=(const NodeSet &V) {
-		m_nodes.clear();
-		m_it.init(*V.m_it.graphOf());
-		forall_listiterators(node, it, V.m_nodes) {
-			insert(*it);
-		}
-		return *this;
-	}
+    //! Returns a reference to the list of nodes contained in \a S.
+    /**
+     * This list can be used for iterating over all nodes in \a S.
+     */
+    const List<node> &nodes() const
+    {
+        return m_nodes;
+    }
+
+    //! Copy constructor.
+    NodeSet(const NodeSet& V) : m_it(*V.m_it.graphOf(), ListIterator<node>())
+    {
+        forall_listiterators(node, it, V.m_nodes)
+        {
+            insert(*it);
+        }
+    }
+
+    //! Assignment operator.
+    NodeSet &operator=(const NodeSet &V)
+    {
+        m_nodes.clear();
+        m_it.init(*V.m_it.graphOf());
+        forall_listiterators(node, it, V.m_nodes)
+        {
+            insert(*it);
+        }
+        return *this;
+    }
 
 private:
-	//! m_it[v] contains the list iterator pointing to \a v if \a v is contained in S,
-	//! an invalid list iterator otherwise.
-	NodeArray<ListIterator<node> > m_it;
+    //! m_it[v] contains the list iterator pointing to \a v if \a v is contained in S,
+    //! an invalid list iterator otherwise.
+    NodeArray<ListIterator<node> > m_it;
 
-	//! The list of nodes contained in \a S.
-	List<node> m_nodes;
+    //! The list of nodes contained in \a S.
+    List<node> m_nodes;
 };
 
 

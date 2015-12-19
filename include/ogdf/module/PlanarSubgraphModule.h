@@ -56,168 +56,180 @@
 #include <ogdf/basic/Timeouter.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief Interface for planar subgraph algorithms.
  *
  * \see PlanarizationLayout, PlanarizationGridLayout
  */
-class OGDF_EXPORT PlanarSubgraphModule : public Module, public Timeouter {
+class OGDF_EXPORT PlanarSubgraphModule : public Module, public Timeouter
+{
 
-	int m_maxThreads;	//!< The maximal number of used threads.
+    int m_maxThreads;   //!< The maximal number of used threads.
 
 public:
-	//! Initializes a planar subgraph module (default constructor).
-	PlanarSubgraphModule() {
+    //! Initializes a planar subgraph module (default constructor).
+    PlanarSubgraphModule()
+    {
 #ifdef OGDF_MEMORY_POOL_NTS
-		m_maxThreads = 1;
+        m_maxThreads = 1;
 #else
-		m_maxThreads = System::numberOfProcessors();
+        m_maxThreads = System::numberOfProcessors();
 #endif
-	}
+    }
 
-	//! Initializes a planar subgraph module (copy constructor).
-	PlanarSubgraphModule(const PlanarSubgraphModule &psm) : Timeouter(psm) {
-		m_maxThreads = psm.m_maxThreads;
-	}
+    //! Initializes a planar subgraph module (copy constructor).
+    PlanarSubgraphModule(const PlanarSubgraphModule &psm) : Timeouter(psm)
+    {
+        m_maxThreads = psm.m_maxThreads;
+    }
 
-	// destruction
-	virtual ~PlanarSubgraphModule() { }
-
-
-	/**
-	 * \brief Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
-	 * @param G is the input graph.
-	 * @param cost are the costs of edges.
-	 * @param preferedEdges are edges that should be contained in the planar subgraph.
-	 * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
-	 * @param preferedImplyPlanar indicates that the edges \a preferedEdges induce a planar graph.
-	 */
-	ReturnType call(const Graph &G,
-		const EdgeArray<int> &cost,
-		const List<edge> &preferedEdges,
-		List<edge> &delEdges,
-		bool preferedImplyPlanar = false)
-	{
-		return doCall(G,preferedEdges,delEdges,&cost,preferedImplyPlanar);
-	}
+    // destruction
+    virtual ~PlanarSubgraphModule() { }
 
 
-	/**
-	 * \brief Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
-	 * @param G is the input graph.
-	 * @param preferedEdges are edges that should be contained in the planar subgraph.
-	 * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
-	 * @param preferedImplyPlanar indicates that the edges \a preferedEdges induce a planar graph.
-	 */
-	ReturnType call(const Graph &G,
-		const List<edge> &preferedEdges,
-		List<edge> &delEdges,
-		bool preferedImplyPlanar = false)
-	{
-		return doCall(G,preferedEdges,delEdges,0,preferedImplyPlanar);
-	}
+    /**
+     * \brief Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
+     * @param G is the input graph.
+     * @param cost are the costs of edges.
+     * @param preferedEdges are edges that should be contained in the planar subgraph.
+     * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
+     * @param preferedImplyPlanar indicates that the edges \a preferedEdges induce a planar graph.
+     */
+    ReturnType call(const Graph &G,
+                    const EdgeArray<int> &cost,
+                    const List<edge> &preferedEdges,
+                    List<edge> &delEdges,
+                    bool preferedImplyPlanar = false)
+    {
+        return doCall(G,preferedEdges,delEdges,&cost,preferedImplyPlanar);
+    }
 
 
-	/**
-	 * \brief Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
-	 * @param G is the input graph.
-	 * @param cost are the costs of edges.
-	 * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
-	 */
-	ReturnType call(const Graph &G, const EdgeArray<int> &cost, List<edge> &delEdges) {
-		List<edge> preferedEdges;
-		return doCall(G,preferedEdges,delEdges, &cost);
-	}
-
-	/**
-	 * \brief Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
-	 * @param G is the input graph.
-	 * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
-	 */
-	ReturnType call(const Graph &G, List<edge> &delEdges) {
-		List<edge> preferedEdges;
-		return doCall(G,preferedEdges,delEdges);
-	}
+    /**
+     * \brief Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
+     * @param G is the input graph.
+     * @param preferedEdges are edges that should be contained in the planar subgraph.
+     * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
+     * @param preferedImplyPlanar indicates that the edges \a preferedEdges induce a planar graph.
+     */
+    ReturnType call(const Graph &G,
+                    const List<edge> &preferedEdges,
+                    List<edge> &delEdges,
+                    bool preferedImplyPlanar = false)
+    {
+        return doCall(G,preferedEdges,delEdges,0,preferedImplyPlanar);
+    }
 
 
-	//! Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
-	ReturnType operator()(const Graph &G,
-		const List<edge> &preferedEdges,
-		List<edge> &delEdges,
-		bool preferedImplyPlanar = false)
-	{
-		return call(G,preferedEdges,delEdges,preferedImplyPlanar);
-	}
+    /**
+     * \brief Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
+     * @param G is the input graph.
+     * @param cost are the costs of edges.
+     * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
+     */
+    ReturnType call(const Graph &G, const EdgeArray<int> &cost, List<edge> &delEdges)
+    {
+        List<edge> preferedEdges;
+        return doCall(G,preferedEdges,delEdges, &cost);
+    }
 
-	//! Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
-	ReturnType operator()(const Graph &G, List<edge> &delEdges) {
-		return call(G,delEdges);
-	}
+    /**
+     * \brief Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
+     * @param G is the input graph.
+     * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
+     */
+    ReturnType call(const Graph &G, List<edge> &delEdges)
+    {
+        List<edge> preferedEdges;
+        return doCall(G,preferedEdges,delEdges);
+    }
 
 
-	/**
-	 * \brief Makes \a G planar by deleting edges.
-	 * @param GC is a copy of the input graph.
-	 * @param preferedEdges are edges in \a GC that should be contained in the planar subgraph.
-	 * @param delOrigEdges is the set of original edges whose copy has been deleted in \a GC.
-	 * @param preferedImplyPlanar indicates that the edges \a preferedEdges induce a planar graph.
-	 */
-	ReturnType callAndDelete(GraphCopy &GC,
-		const List<edge> &preferedEdges,
-		List<edge> &delOrigEdges,
-		bool preferedImplyPlanar = false);
+    //! Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
+    ReturnType operator()(const Graph &G,
+                          const List<edge> &preferedEdges,
+                          List<edge> &delEdges,
+                          bool preferedImplyPlanar = false)
+    {
+        return call(G,preferedEdges,delEdges,preferedImplyPlanar);
+    }
 
-	/**
-	 * \brief Makes \a G planar by deleting edges.
-	 * @param GC is a copy of the input graph.
-	 * @param delOrigEdges is the set of original edges whose copy has been deleted in \a GC.
-	 */
-	ReturnType callAndDelete(GraphCopy &GC, List<edge> &delOrigEdges) {
-		List<edge> preferedEdges;
-		return callAndDelete(GC,preferedEdges,delOrigEdges);
-	}
+    //! Returns the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
+    ReturnType operator()(const Graph &G, List<edge> &delEdges)
+    {
+        return call(G,delEdges);
+    }
 
-	//! Returns a new instance of the planar subgraph module with the same option settings.
-	virtual PlanarSubgraphModule *clone() const = 0;
 
-	//! Returns the maximal number of used threads.
-	int maxThreads() const { return m_maxThreads; }
+    /**
+     * \brief Makes \a G planar by deleting edges.
+     * @param GC is a copy of the input graph.
+     * @param preferedEdges are edges in \a GC that should be contained in the planar subgraph.
+     * @param delOrigEdges is the set of original edges whose copy has been deleted in \a GC.
+     * @param preferedImplyPlanar indicates that the edges \a preferedEdges induce a planar graph.
+     */
+    ReturnType callAndDelete(GraphCopy &GC,
+                             const List<edge> &preferedEdges,
+                             List<edge> &delOrigEdges,
+                             bool preferedImplyPlanar = false);
 
-	//! Sets the maximal number of used threads to \a n.
-	void maxThreads(int n) {
+    /**
+     * \brief Makes \a G planar by deleting edges.
+     * @param GC is a copy of the input graph.
+     * @param delOrigEdges is the set of original edges whose copy has been deleted in \a GC.
+     */
+    ReturnType callAndDelete(GraphCopy &GC, List<edge> &delOrigEdges)
+    {
+        List<edge> preferedEdges;
+        return callAndDelete(GC,preferedEdges,delOrigEdges);
+    }
+
+    //! Returns a new instance of the planar subgraph module with the same option settings.
+    virtual PlanarSubgraphModule *clone() const = 0;
+
+    //! Returns the maximal number of used threads.
+    int maxThreads() const
+    {
+        return m_maxThreads;
+    }
+
+    //! Sets the maximal number of used threads to \a n.
+    void maxThreads(int n)
+    {
 #ifndef OGDF_MEMORY_POOL_NTS
-		m_maxThreads = n;
+        m_maxThreads = n;
 #endif
-	}
+    }
 
 protected:
-	// computes set of edges delEdges, which have to be deleted
-	// in order to get a planar subgraph; edges in preferedEdges
-	// should be contained in planar subgraph
-	// must be implemented by derived classes!
-	/**
-	 * \brief Computes the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
-	 *
-	 * This is the actual algorithm call and needs to be implemented
-	 * by derived classes.
-	 * @param G is the input graph.
-	 * @param preferedEdges are edges that should be contained in the planar subgraph.
-	 * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
-	 * @param pCost is apointer to an edge array containing the edge costs; this pointer
-	 *        can be 0 if no costs are given (all edges have cost 1).
-	 * @param preferedImplyPlanar indicates that the edges \a preferedEdges induce a planar graph.
-	 */
-	virtual ReturnType doCall(const Graph &G,
-		const List<edge> &preferedEdges,
-		List<edge> &delEdges,
-		const EdgeArray<int>  *pCost = 0,
-		bool preferedImplyPlanar = false) = 0;
+    // computes set of edges delEdges, which have to be deleted
+    // in order to get a planar subgraph; edges in preferedEdges
+    // should be contained in planar subgraph
+    // must be implemented by derived classes!
+    /**
+     * \brief Computes the set of edges \a delEdges which have to be deleted to obtain the planar subgraph.
+     *
+     * This is the actual algorithm call and needs to be implemented
+     * by derived classes.
+     * @param G is the input graph.
+     * @param preferedEdges are edges that should be contained in the planar subgraph.
+     * @param delEdges is the set of edges that need to be deleted to obtain the planar subgraph.
+     * @param pCost is apointer to an edge array containing the edge costs; this pointer
+     *        can be 0 if no costs are given (all edges have cost 1).
+     * @param preferedImplyPlanar indicates that the edges \a preferedEdges induce a planar graph.
+     */
+    virtual ReturnType doCall(const Graph &G,
+                              const List<edge> &preferedEdges,
+                              List<edge> &delEdges,
+                              const EdgeArray<int>  *pCost = 0,
+                              bool preferedImplyPlanar = false) = 0;
 
 
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 } // end namespace ogdf

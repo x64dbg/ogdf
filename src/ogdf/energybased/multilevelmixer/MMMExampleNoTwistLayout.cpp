@@ -50,7 +50,8 @@
 #include <ogdf/energybased/multilevelmixer/LocalBiconnectedMerger.h>
 #include <ogdf/energybased/multilevelmixer/BarycenterPlacer.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 MMMExampleNoTwistLayout::MMMExampleNoTwistLayout()
 {
@@ -59,51 +60,51 @@ MMMExampleNoTwistLayout::MMMExampleNoTwistLayout()
 
 void MMMExampleNoTwistLayout::call(GraphAttributes &GA)
 {
-	MultilevelGraph MLG(GA);
-	call(MLG);
-	MLG.exportAttributes(GA);
+    MultilevelGraph MLG(GA);
+    call(MLG);
+    MLG.exportAttributes(GA);
 }
 
 
 void MMMExampleNoTwistLayout::call(MultilevelGraph &MLG)
 {
-	// Fast Multipole Embedder
-	FastMultipoleEmbedder * FME = new FastMultipoleEmbedder();
-	FME->setNumIterations(1000);
-	FME->setRandomize(false);
+    // Fast Multipole Embedder
+    FastMultipoleEmbedder * FME = new FastMultipoleEmbedder();
+    FME->setNumIterations(1000);
+    FME->setRandomize(false);
 
-	// Local Biconnected Merger
-	LocalBiconnectedMerger * LBCM = new LocalBiconnectedMerger();
-	LBCM->setFactor(2.0);
-	LBCM->setEdgeLengthAdjustment(0); // BEFORE (but arg is int!): LBCM->setEdgeLengthAdjustment(0.1);
+    // Local Biconnected Merger
+    LocalBiconnectedMerger * LBCM = new LocalBiconnectedMerger();
+    LBCM->setFactor(2.0);
+    LBCM->setEdgeLengthAdjustment(0); // BEFORE (but arg is int!): LBCM->setEdgeLengthAdjustment(0.1);
 
-	// Barycenter Placer with weighted Positions
-	BarycenterPlacer * BP = new BarycenterPlacer();
-	BP->weightedPositionPriority(true);
+    // Barycenter Placer with weighted Positions
+    BarycenterPlacer * BP = new BarycenterPlacer();
+    BP->weightedPositionPriority(true);
 
-	// No Scaling
-	ScalingLayout *SL = new ScalingLayout();
-	SL->setExtraScalingSteps(1);
-	SL->setScaling(5.0, 10.0);
-	SL->setScalingType(ScalingLayout::st_relativeToDesiredLength);
-	SL->setSecondaryLayout(FME);
-	SL->setLayoutRepeats(1);
+    // No Scaling
+    ScalingLayout *SL = new ScalingLayout();
+    SL->setExtraScalingSteps(1);
+    SL->setScaling(5.0, 10.0);
+    SL->setScalingType(ScalingLayout::st_relativeToDesiredLength);
+    SL->setSecondaryLayout(FME);
+    SL->setLayoutRepeats(1);
 
-	ModularMultilevelMixer *MMM = new ModularMultilevelMixer;
-	MMM->setLayoutRepeats(1);
-//	MMM->setAllEdgeLenghts(5.0);
-//	MMM->setAllNodeSizes(1.0);
-	MMM->setLevelLayoutModule(SL);
-	MMM->setInitialPlacer(BP);
-	MMM->setMultilevelBuilder(LBCM);
+    ModularMultilevelMixer *MMM = new ModularMultilevelMixer;
+    MMM->setLayoutRepeats(1);
+//  MMM->setAllEdgeLenghts(5.0);
+//  MMM->setAllNodeSizes(1.0);
+    MMM->setLevelLayoutModule(SL);
+    MMM->setInitialPlacer(BP);
+    MMM->setMultilevelBuilder(LBCM);
 
-	ComponentSplitterLayout *CS = new ComponentSplitterLayout;
-	CS->setLayoutModule(MMM);
-	PreprocessorLayout PPL;
-	PPL.setLayoutModule(CS);
-	PPL.setRandomizePositions(true);
+    ComponentSplitterLayout *CS = new ComponentSplitterLayout;
+    CS->setLayoutModule(MMM);
+    PreprocessorLayout PPL;
+    PPL.setLayoutModule(CS);
+    PPL.setRandomizePositions(true);
 
-	PPL.call(MLG);
+    PPL.call(MLG);
 }
 
 } // namespace ogdf

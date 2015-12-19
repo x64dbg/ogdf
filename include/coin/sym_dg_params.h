@@ -116,26 +116,27 @@
 #define NODEWEIGHT_FONT                   15
 #define EDGEWEIGHT_FONT                   16
 
-typedef struct DRAW_GRAPH_PARAMS{
-   char   source_path[MAX_FILE_NAME_LENGTH +1];
-   int    echo_commands;
+typedef struct DRAW_GRAPH_PARAMS
+{
+    char   source_path[MAX_FILE_NAME_LENGTH +1];
+    int    echo_commands;
 
-   int    canvas_width;
-   int    canvas_height;
-   int    viewable_width;
-   int    viewable_height;
-   int    disp_nodelabels;
-   int    disp_nodeweights;
-   int    disp_edgeweights;
-   char   node_dash[MAX_DASH_PATTERN_LENGTH +1];
-   char   edge_dash[MAX_DASH_PATTERN_LENGTH +1];
-   int    node_radius;
-   int    interactive_mode;
-   int    mouse_tracking;
-   double scale_factor;
-   char   nodelabel_font[MAX_FONT_LENGTH +1];
-   char   nodeweight_font[MAX_FONT_LENGTH +1];
-   char   edgeweight_font[MAX_FONT_LENGTH +1];
-}dg_params;
+    int    canvas_width;
+    int    canvas_height;
+    int    viewable_width;
+    int    viewable_height;
+    int    disp_nodelabels;
+    int    disp_nodeweights;
+    int    disp_edgeweights;
+    char   node_dash[MAX_DASH_PATTERN_LENGTH +1];
+    char   edge_dash[MAX_DASH_PATTERN_LENGTH +1];
+    int    node_radius;
+    int    interactive_mode;
+    int    mouse_tracking;
+    double scale_factor;
+    char   nodelabel_font[MAX_FONT_LENGTH +1];
+    char   nodeweight_font[MAX_FONT_LENGTH +1];
+    char   edgeweight_font[MAX_FONT_LENGTH +1];
+} dg_params;
 
 #endif

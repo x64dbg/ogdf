@@ -53,24 +53,25 @@
 #include <ogdf/basic/Array.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 // sorts list L using quicksort
 template<class LIST>
 void quicksortTemplate(LIST &L)
 {
-	const int n = L.size();
-	Array<typename LIST::value_type> A(n);
+    const int n = L.size();
+    Array<typename LIST::value_type> A(n);
 
-	int i = 0;
-	typename LIST::iterator it;
-	for (it = L.begin(); it.valid(); ++it)
-		A[i++] = *it;
+    int i = 0;
+    typename LIST::iterator it;
+    for (it = L.begin(); it.valid(); ++it)
+        A[i++] = *it;
 
-	A.quicksort();
+    A.quicksort();
 
-	for (i = 0, it = L.begin(); i < n; i++)
-		*it++ = A[i];
+    for (i = 0, it = L.begin(); i < n; i++)
+        *it++ = A[i];
 }
 
 
@@ -78,18 +79,18 @@ void quicksortTemplate(LIST &L)
 template<class LIST, class COMPARER>
 void quicksortTemplate(LIST &L, COMPARER &comp)
 {
-	const int n = L.size();
-	Array<typename LIST::value_type> A(n);
+    const int n = L.size();
+    Array<typename LIST::value_type> A(n);
 
-	int i = 0;
-	typename LIST::iterator it;
-	for (it = L.begin(); it.valid(); ++it)
-		A[i++] = *it;
+    int i = 0;
+    typename LIST::iterator it;
+    for (it = L.begin(); it.valid(); ++it)
+        A[i++] = *it;
 
-	A.quicksort(comp);
+    A.quicksort(comp);
 
-	for (i = 0, it = L.begin(); i < n; i++)
-		*it++ = A[i];
+    for (i = 0, it = L.begin(); i < n; i++)
+        *it++ = A[i];
 }
 
 

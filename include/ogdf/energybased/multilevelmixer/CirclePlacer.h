@@ -49,29 +49,31 @@
 
 #include <ogdf/energybased/multilevelmixer/InitialPlacer.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT CirclePlacer : public InitialPlacer
 {
 public:
 
-	enum NodeSelection {
-		nsNew,
-		nsOld,
-		nsAll
-	};
+    enum NodeSelection
+    {
+        nsNew,
+        nsOld,
+        nsAll
+    };
 
-	CirclePlacer();
-	void setRadiusFixed(bool fixed);
-	void setCircleSize(float sizeIncrease);
-	void setNodeSelection(NodeSelection nodeSel);
-	void placeOneLevel(MultilevelGraph &MLG);
+    CirclePlacer();
+    void setRadiusFixed(bool fixed);
+    void setCircleSize(float sizeIncrease);
+    void setNodeSelection(NodeSelection nodeSel);
+    void placeOneLevel(MultilevelGraph &MLG);
 
 private:
 
-	float m_circleSize;
-	bool m_fixedRadius;
-	NodeSelection m_nodeSelection;
+    float m_circleSize;
+    bool m_fixedRadius;
+    NodeSelection m_nodeSelection;
 };
 
 } // namespace ogdf

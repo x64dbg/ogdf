@@ -12,7 +12,7 @@
   \file
 */
 
-#define	DUPCOL	10
+#define DUPCOL  10
 
 /*! \class dupcol_action
     \brief Detect and remove duplicate columns
@@ -29,42 +29,44 @@
    to remove the duplicate, it must be possible to fix the variable at a bound.
 */
 
-class dupcol_action : public CoinPresolveAction {
-  dupcol_action();
-  dupcol_action(const dupcol_action& rhs);
-  dupcol_action& operator=(const dupcol_action& rhs);
+class dupcol_action : public CoinPresolveAction
+{
+    dupcol_action();
+    dupcol_action(const dupcol_action& rhs);
+    dupcol_action& operator=(const dupcol_action& rhs);
 
-  struct action {
-    double thislo;
-    double thisup;
-    double lastlo;
-    double lastup;
-    int ithis;
-    int ilast;
+    struct action
+    {
+        double thislo;
+        double thisup;
+        double lastlo;
+        double lastup;
+        int ithis;
+        int ilast;
 
-    double *colels;
-    int nincol;
-  };
+        double *colels;
+        int nincol;
+    };
 
-  const int nactions_;
-  // actions_ is owned by the class and must be deleted at destruction
-  const action *const actions_;
+    const int nactions_;
+    // actions_ is owned by the class and must be deleted at destruction
+    const action *const actions_;
 
-  dupcol_action(int nactions, const action *actions,
-		const CoinPresolveAction *next) :
-      CoinPresolveAction(next),
-      nactions_(nactions),
-      actions_(actions) {}
+    dupcol_action(int nactions, const action *actions,
+                  const CoinPresolveAction *next) :
+        CoinPresolveAction(next),
+        nactions_(nactions),
+        actions_(actions) {}
 
- public:
-  const char *name() const;
+public:
+    const char *name() const;
 
-  static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-					 const CoinPresolveAction *next);
+    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
+            const CoinPresolveAction *next);
 
-  void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix *prob) const;
 
-  ~dupcol_action();
+    ~dupcol_action();
 
 };
 
@@ -84,32 +86,34 @@ class dupcol_action : public CoinPresolveAction {
     This doesn't matter as it uses useless_constraint.
 */
 
-class duprow_action : public CoinPresolveAction {
-  struct action {
-    int row;
-    double lbound;
-    double ubound;
-  };
+class duprow_action : public CoinPresolveAction
+{
+    struct action
+    {
+        int row;
+        double lbound;
+        double ubound;
+    };
 
-  const int nactions_;
-  const action *const actions_;
+    const int nactions_;
+    const action *const actions_;
 
-  duprow_action():CoinPresolveAction(NULL),nactions_(0),actions_(NULL) {}
-  duprow_action(int nactions,
-		      const action *actions,
-		      const CoinPresolveAction *next) :
-    CoinPresolveAction(next),
-    nactions_(nactions), actions_(actions) {}
+    duprow_action():CoinPresolveAction(NULL),nactions_(0),actions_(NULL) {}
+    duprow_action(int nactions,
+                  const action *actions,
+                  const CoinPresolveAction *next) :
+        CoinPresolveAction(next),
+        nactions_(nactions), actions_(actions) {}
 
- public:
-  const char *name() const;
+public:
+    const char *name() const;
 
-  static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-					 const CoinPresolveAction *next);
+    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
+            const CoinPresolveAction *next);
 
-  void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix *prob) const;
 
-  //~duprow_action() { delete[]actions_; }
+    //~duprow_action() { delete[]actions_; }
 };
 
 /*! \class gubrow_action
@@ -122,32 +126,34 @@ class duprow_action : public CoinPresolveAction {
     unimplemented.
 */
 
-class gubrow_action : public CoinPresolveAction {
-  struct action {
-    int row;
-    double lbound;
-    double ubound;
-  };
+class gubrow_action : public CoinPresolveAction
+{
+    struct action
+    {
+        int row;
+        double lbound;
+        double ubound;
+    };
 
-  const int nactions_;
-  const action *const actions_;
+    const int nactions_;
+    const action *const actions_;
 
-  gubrow_action():CoinPresolveAction(NULL),nactions_(0),actions_(NULL) {}
-  gubrow_action(int nactions,
-		      const action *actions,
-		      const CoinPresolveAction *next) :
-    CoinPresolveAction(next),
-    nactions_(nactions), actions_(actions) {}
+    gubrow_action():CoinPresolveAction(NULL),nactions_(0),actions_(NULL) {}
+    gubrow_action(int nactions,
+                  const action *actions,
+                  const CoinPresolveAction *next) :
+        CoinPresolveAction(next),
+        nactions_(nactions), actions_(actions) {}
 
- public:
-  const char *name() const;
+public:
+    const char *name() const;
 
-  static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-					 const CoinPresolveAction *next);
+    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
+            const CoinPresolveAction *next);
 
-  void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix *prob) const;
 
-  //~gubrow_action() { delete[]actions_; }
+    //~gubrow_action() { delete[]actions_; }
 };
 
 #endif

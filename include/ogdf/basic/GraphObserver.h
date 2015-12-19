@@ -57,7 +57,8 @@
 #include <ogdf/basic/List.h>
 #include <ogdf/basic/Graph.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //
 // in embedded graphs, adjacency lists are given in clockwise order.
@@ -77,64 +78,69 @@ namespace ogdf {
  *
  */
 
-class OGDF_EXPORT GraphObserver {
-	friend class Graph;
+class OGDF_EXPORT GraphObserver
+{
+    friend class Graph;
 
 public:
-	//! Constructs instance of GraphObserver class
-	GraphObserver() : m_pGraph(0) { }
+    //! Constructs instance of GraphObserver class
+    GraphObserver() : m_pGraph(0) { }
 
-	/**
-	 *\brief Constructs instance of GraphObserver class
-	 * \param G is the graph to be watched
-	 */
-	GraphObserver(const Graph* G) : m_pGraph(G)
-	{
-		m_itGList = G->registerStructure(this);
-	}//constructor
+    /**
+     *\brief Constructs instance of GraphObserver class
+     * \param G is the graph to be watched
+     */
+    GraphObserver(const Graph* G) : m_pGraph(G)
+    {
+        m_itGList = G->registerStructure(this);
+    }//constructor
 
-	//! Destroys the instance, unregisters it from watched graph
-	virtual ~GraphObserver()
-	{
-		if (m_pGraph) m_pGraph->unregisterStructure(m_itGList);
-	}//destructor
+    //! Destroys the instance, unregisters it from watched graph
+    virtual ~GraphObserver()
+    {
+        if (m_pGraph) m_pGraph->unregisterStructure(m_itGList);
+    }//destructor
 
-	//! Associates observer instance with graph \a G
-	void reregister(const Graph *pG) {
-		//small speedup: check if == m_pGraph
-		if (m_pGraph) m_pGraph->unregisterStructure(m_itGList);
-		if ((m_pGraph = pG) != 0) m_itGList = pG->registerStructure(this);
-	}
+    //! Associates observer instance with graph \a G
+    void reregister(const Graph *pG)
+    {
+        //small speedup: check if == m_pGraph
+        if (m_pGraph) m_pGraph->unregisterStructure(m_itGList);
+        if ((m_pGraph = pG) != 0) m_itGList = pG->registerStructure(this);
+    }
 
-	//! Called by watched graph when a node is deleted
-	//! Has to be implemented by derived classes
-	virtual void nodeDeleted(node v) = 0;
+    //! Called by watched graph when a node is deleted
+    //! Has to be implemented by derived classes
+    virtual void nodeDeleted(node v) = 0;
 
-	//! Called by watched graph when a node is added
-	//! Has to be implemented by derived classes
-	virtual void nodeAdded(node v)   = 0;
+    //! Called by watched graph when a node is added
+    //! Has to be implemented by derived classes
+    virtual void nodeAdded(node v)   = 0;
 
-	//! Called by watched graph when an edge is deleted
-	//! Has to be implemented by derived classes
-	virtual void edgeDeleted(edge e) = 0;
+    //! Called by watched graph when an edge is deleted
+    //! Has to be implemented by derived classes
+    virtual void edgeDeleted(edge e) = 0;
 
-	//! Called by watched graph when an edge is added
-	//! Has to be implemented by derived classes
-	virtual void edgeAdded(edge e)   = 0;
+    //! Called by watched graph when an edge is added
+    //! Has to be implemented by derived classes
+    virtual void edgeAdded(edge e)   = 0;
 
-	//! Called by watched graph when it is reinitialized
-	//! Has to be implemented by derived classes
-	virtual void reInit()            = 0;
+    //! Called by watched graph when it is reinitialized
+    //! Has to be implemented by derived classes
+    virtual void reInit()            = 0;
 
-	//! Called by watched graph when its clear function is called
-	//! Has to be implemented by derived classes
-	virtual void cleared()           = 0;
+    //! Called by watched graph when its clear function is called
+    //! Has to be implemented by derived classes
+    virtual void cleared()           = 0;
 
-	const Graph*  getGraph() const { return m_pGraph; }
+    const Graph*  getGraph() const
+    {
+        return m_pGraph;
+    }
 
 protected:
-	const Graph* m_pGraph; //! watched graph
-	ListIterator<GraphObserver*> m_itGList; //! List entry in graphs list of all registered graphobservers
+    const Graph* m_pGraph; //! watched graph
+    ListIterator<GraphObserver*> m_itGList; //! List entry in graphs list of all registered graphobservers
 
 
 };

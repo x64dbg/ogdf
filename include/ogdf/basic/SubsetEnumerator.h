@@ -49,7 +49,8 @@
 
 #include <ogdf/basic/List.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! Enumerator for k-subsets of a given type.
 /**
@@ -101,140 +102,162 @@ namespace ogdf {
  * Otherwise the data structure will slow down due to extensive implicit copying.
  */
 template<typename T>
-class SubsetEnumerator {
+class SubsetEnumerator
+{
 protected:
-	const List<T> &m_set;
-	bool m_valid;
-	int m_maxCard;
-	Array<T> m_subset;
-	Array<int> m_index;
+    const List<T> &m_set;
+    bool m_valid;
+    int m_maxCard;
+    Array<T> m_subset;
+    Array<int> m_index;
 
-	void initSubset(int card)
-	{
-		if (card >= 0 && card <= m_subset.size()) {
-			m_index.init(card);
-			for (int i = 0; i < card; ++i) {
-				m_index[i] = i;
-			}
-			m_valid = true;
-		}
-	}
+    void initSubset(int card)
+    {
+        if (card >= 0 && card <= m_subset.size())
+        {
+            m_index.init(card);
+            for (int i = 0; i < card; ++i)
+            {
+                m_index[i] = i;
+            }
+            m_valid = true;
+        }
+    }
 
 public:
-	//! \brief Constructor.
-	//! @param set The list of elements we want to enumerate subsets for.
-	SubsetEnumerator(const List<T> &set)
-	  : m_set(set)
-	  , m_valid(false)
-	  , m_subset(set.size())
-	{
-		int i = 0;
-		forall_listiterators(T, it, m_set) {
-			m_subset[i++] = *it;
-		}
-	}
+    //! \brief Constructor.
+    //! @param set The list of elements we want to enumerate subsets for.
+    SubsetEnumerator(const List<T> &set)
+        : m_set(set)
+        , m_valid(false)
+        , m_subset(set.size())
+    {
+        int i = 0;
+        forall_listiterators(T, it, m_set)
+        {
+            m_subset[i++] = *it;
+        }
+    }
 
-	//! Initialize the SubsetEnumerator to enumerate subsets of cardinalities from low to high.
-	void begin(int low, int high)
-	{
-		m_maxCard = high;
-		initSubset(low);
-	}
+    //! Initialize the SubsetEnumerator to enumerate subsets of cardinalities from low to high.
+    void begin(int low, int high)
+    {
+        m_maxCard = high;
+        initSubset(low);
+    }
 
-	//! Initialize the SubsetEnumerator to enumerate subsets of given cardinality.
-	void begin(int card)
-	{
-		begin(card, card);
-	}
+    //! Initialize the SubsetEnumerator to enumerate subsets of given cardinality.
+    void begin(int card)
+    {
+        begin(card, card);
+    }
 
-	//! Initialize the SubsetEnumerator to enumerate all subsets.
-	void begin()
-	{
-		begin(0, m_set.size());
-	}
+    //! Initialize the SubsetEnumerator to enumerate all subsets.
+    void begin()
+    {
+        begin(0, m_set.size());
+    }
 
-	//! Return the cardinality of the subset.
-	int size() const
-	{
-		return m_index.size();
-	}
+    //! Return the cardinality of the subset.
+    int size() const
+    {
+        return m_index.size();
+    }
 
-	//! Is the current subset valid? If not, all subsets have already been enumerated.
-	bool valid() const
-	{
-		return m_valid;
-	}
+    //! Is the current subset valid? If not, all subsets have already been enumerated.
+    bool valid() const
+    {
+        return m_valid;
+    }
 
-	//! Check in O(subset cardinality) whether the argument is a member of the subset.
-	bool hasMember(const T &element) const
-	{
-		for (int i = 0; i < m_index.size(); ++i) {
-			if (element == m_subset[m_index[i]]) {
-				return true;
-			}
-		}
-		return false;
-	}
+    //! Check in O(subset cardinality) whether the argument is a member of the subset.
+    bool hasMember(const T &element) const
+    {
+        for (int i = 0; i < m_index.size(); ++i)
+        {
+            if (element == m_subset[m_index[i]])
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	//! Get element of subset by index (starting from 0).
-	T operator[](int i) const
-	{
-		OGDF_ASSERT(i >= 0 && i < m_index.size());
-		return m_subset[m_index[i]];
-	}
+    //! Get element of subset by index (starting from 0).
+    T operator[](int i) const
+    {
+        OGDF_ASSERT(i >= 0 && i < m_index.size());
+        return m_subset[m_index[i]];
+    }
 
-	//! Obtain the next subset if possible. The result should be checked using the valid() method.
-	void next()
-	{
-		if (m_valid) {
-			const int t = m_index.size();
-			if (t == 0) { // last (empty) subset has been found
-				if (t < m_maxCard) {
-					initSubset(t + 1);
-				} else {
-					m_valid = false;
-				}
-				return;
-			}
-			const int n = m_subset.size();
-			int i;
-			for (i = t - 1; m_index[i] == i + n - t; --i) {
-				if (i == 0) { // the last subset of this cardinality has been found
-					if (t < m_maxCard) {
-						initSubset(t + 1);
-					} else {
-						m_valid = false;
-					}
-					return;
-				}
-			}
-			for (++m_index[i]; i < t - 1; ++i) {
-				m_index[i + 1] = m_index[i] + 1;
-			}
-		}
-	}
+    //! Obtain the next subset if possible. The result should be checked using the valid() method.
+    void next()
+    {
+        if (m_valid)
+        {
+            const int t = m_index.size();
+            if (t == 0)   // last (empty) subset has been found
+            {
+                if (t < m_maxCard)
+                {
+                    initSubset(t + 1);
+                }
+                else
+                {
+                    m_valid = false;
+                }
+                return;
+            }
+            const int n = m_subset.size();
+            int i;
+            for (i = t - 1; m_index[i] == i + n - t; --i)
+            {
+                if (i == 0)   // the last subset of this cardinality has been found
+                {
+                    if (t < m_maxCard)
+                    {
+                        initSubset(t + 1);
+                    }
+                    else
+                    {
+                        m_valid = false;
+                    }
+                    return;
+                }
+            }
+            for (++m_index[i]; i < t - 1; ++i)
+            {
+                m_index[i + 1] = m_index[i] + 1;
+            }
+        }
+    }
 
-	//! Obtain (append) a list of the elements in the subset.
-	void list(List<T> &list) const
-	{
-		for (int i = 0; i < m_index.size(); ++i) {
-			list.pushBack(m_subset[m_index[i]]);
-		}
-	}
+    //! Obtain (append) a list of the elements in the subset.
+    void list(List<T> &list) const
+    {
+        for (int i = 0; i < m_index.size(); ++i)
+        {
+            list.pushBack(m_subset[m_index[i]]);
+        }
+    }
 
-	//! Obtain (append) a list of the elements in the subset and a list of the other elements of the set.
-	void list(List<T> &list, List<T> &complement) const
-	{
-		int j = 0;
-		for (int i = 0; i < m_subset.size(); ++i) {
-			if (j < m_index.size() && m_index[j] == i) {
-				list.pushBack(m_subset[i]);
-				++j;
-			} else {
-				complement.pushBack(m_subset[i]);
-			}
-		}
-	}
+    //! Obtain (append) a list of the elements in the subset and a list of the other elements of the set.
+    void list(List<T> &list, List<T> &complement) const
+    {
+        int j = 0;
+        for (int i = 0; i < m_subset.size(); ++i)
+        {
+            if (j < m_index.size() && m_index[j] == i)
+            {
+                list.pushBack(m_subset[i]);
+                ++j;
+            }
+            else
+            {
+                complement.pushBack(m_subset[i]);
+            }
+        }
+    }
 };
 
 
@@ -242,21 +265,23 @@ public:
 template<class T>
 void print(ostream &os, const SubsetEnumerator<T> &subset, string delim = " ")
 {
-	OGDF_ASSERT(subset.valid());
-	if (subset.size() > 0) {
-		os << subset[0];
-	}
-	for (int i = 1; i < subset.size(); ++i) {
-		os << delim << subset[i];
-	}
+    OGDF_ASSERT(subset.valid());
+    if (subset.size() > 0)
+    {
+        os << subset[0];
+    }
+    for (int i = 1; i < subset.size(); ++i)
+    {
+        os << delim << subset[i];
+    }
 }
 
 // prints subset to output stream os
 template<class T>
 ostream &operator<<(ostream &os, const SubsetEnumerator<T> &subset)
 {
-	print(os, subset);
-	return os;
+    print(os, subset);
+    return os;
 }
 
 }

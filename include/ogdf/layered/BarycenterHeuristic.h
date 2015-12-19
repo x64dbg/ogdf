@@ -53,33 +53,43 @@
 #include <ogdf/module/LayerByLayerSweep.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //! The barycenter heuristic for 2-layer crossing minimization.
 class OGDF_EXPORT BarycenterHeuristic : public LayerByLayerSweep
 {
 public:
-	//! Creates a new instance of the barycenter heuristic.
-	BarycenterHeuristic() { }
+    //! Creates a new instance of the barycenter heuristic.
+    BarycenterHeuristic() { }
 
-	//! Creates a new instance of the barycenter heuristic.
-	BarycenterHeuristic(const BarycenterHeuristic &crossMin) { }
+    //! Creates a new instance of the barycenter heuristic.
+    BarycenterHeuristic(const BarycenterHeuristic &crossMin) { }
 
-	//! Returns a new instance of the barycenter heuristic with the same option settings.
-	LayerByLayerSweep *clone() const { return new BarycenterHeuristic(*this); }
+    //! Returns a new instance of the barycenter heuristic with the same option settings.
+    LayerByLayerSweep *clone() const
+    {
+        return new BarycenterHeuristic(*this);
+    }
 
-	//! Initializes crossing minimization for hierarchy \a H.
-	void init (const HierarchyLevels &levels) { m_weight.init(levels.hierarchy()); }
+    //! Initializes crossing minimization for hierarchy \a H.
+    void init (const HierarchyLevels &levels)
+    {
+        m_weight.init(levels.hierarchy());
+    }
 
-	//! Calls the barycenter heuristic for level \a L.
-	void call (Level &L);
+    //! Calls the barycenter heuristic for level \a L.
+    void call (Level &L);
 
-	//! Does some clean-up after calls.
-	void cleanup () { m_weight.init(); }
+    //! Does some clean-up after calls.
+    void cleanup ()
+    {
+        m_weight.init();
+    }
 
 private:
-	NodeArray<double> m_weight; //!< The  barycenter weight of the nodes.
+    NodeArray<double> m_weight; //!< The  barycenter weight of the nodes.
 };
 
 

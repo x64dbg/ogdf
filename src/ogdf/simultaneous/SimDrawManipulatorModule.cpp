@@ -42,16 +42,17 @@
 
 #include<ogdf/simultaneous/SimDrawManipulatorModule.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //*************************************************************
 // default constructor
 //
 SimDrawManipulatorModule::SimDrawManipulatorModule()
 {
-	m_SD = new SimDraw;
-	m_G = &(m_SD->m_G);
-	m_GA = &(m_SD->m_GA);
+    m_SD = new SimDraw;
+    m_G = &(m_SD->m_G);
+    m_GA = &(m_SD->m_GA);
 } //end default constructor
 
 
@@ -60,10 +61,10 @@ SimDrawManipulatorModule::SimDrawManipulatorModule()
 //
 void SimDrawManipulatorModule::init(SimDraw &SD)
 {
-	m_SD = &SD;
-	m_G = &(SD.m_G);
-	m_GA = &(SD.m_GA);
-	OGDF_ASSERT( &(*m_G) == &(m_GA->constGraph()) );
+    m_SD = &SD;
+    m_G = &(SD.m_G);
+    m_GA = &(SD.m_GA);
+    OGDF_ASSERT( &(*m_G) == &(m_GA->constGraph()) );
 } //end constructor
 
 

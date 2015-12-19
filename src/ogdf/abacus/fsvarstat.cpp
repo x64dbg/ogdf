@@ -37,128 +37,132 @@
 #include <ogdf/abacus/fsvarstat.h>
 #include <ogdf/abacus/global.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 ostream &operator<<(ostream& out, const FSVarStat &rhs)
 {
-	switch (rhs.status_)
-	{
-	case FSVarStat::Free:
-		out << "Free";
-		break;
-	case FSVarStat::SetToLowerBound:
-		out << "SetToLowerBound";
-		break;
-	case FSVarStat::Set:
-		out << "Set to " << rhs.value_;
-		break;
-	case FSVarStat::SetToUpperBound:
-		out << "SetToUpperBound";
-		break;
-	case FSVarStat::FixedToLowerBound:
-		out << "FixedToLowerBound";
-		break;
-	case FSVarStat::Fixed:
-		out << "Fixed to "<< rhs.value_;
-		break;
-	case FSVarStat::FixedToUpperBound:
-		out << "FixedToUpperBound";
-		break;
-	default:
-		Logger::ifout() << "FSVarStat: unknonw status\n";
-		OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcFsVarStat);
-	}
-	return out;
+    switch (rhs.status_)
+    {
+    case FSVarStat::Free:
+        out << "Free";
+        break;
+    case FSVarStat::SetToLowerBound:
+        out << "SetToLowerBound";
+        break;
+    case FSVarStat::Set:
+        out << "Set to " << rhs.value_;
+        break;
+    case FSVarStat::SetToUpperBound:
+        out << "SetToUpperBound";
+        break;
+    case FSVarStat::FixedToLowerBound:
+        out << "FixedToLowerBound";
+        break;
+    case FSVarStat::Fixed:
+        out << "Fixed to "<< rhs.value_;
+        break;
+    case FSVarStat::FixedToUpperBound:
+        out << "FixedToUpperBound";
+        break;
+    default:
+        Logger::ifout() << "FSVarStat: unknonw status\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcFsVarStat);
+    }
+    return out;
 }
 
 
 bool FSVarStat::fixed() const
 {
-	switch (status_)
-	{
-	case FixedToLowerBound:
-	case FixedToUpperBound:
-	case Fixed:
-		return true;
-	default:
-		return false;
-	}
+    switch (status_)
+    {
+    case FixedToLowerBound:
+    case FixedToUpperBound:
+    case Fixed:
+        return true;
+    default:
+        return false;
+    }
 }
 
 
 bool FSVarStat::set() const
 {
-	switch (status_)
-	{
-	case SetToLowerBound:
-	case SetToUpperBound:
-	case Set:
-		return true;
-	default:
-		return false;
-	}
+    switch (status_)
+    {
+    case SetToLowerBound:
+    case SetToUpperBound:
+    case Set:
+        return true;
+    default:
+        return false;
+    }
 }
 
 
 bool FSVarStat::contradiction(FSVarStat *fsVarStat) const
 {
-	STATUS status = fsVarStat->status();
+    STATUS status = fsVarStat->status();
 
-	switch (status)
-	{
-	case Set:
-	case Fixed:
-		return contradiction(status, fsVarStat->value());
-	default:
-		return contradiction(status);
-	}
+    switch (status)
+    {
+    case Set:
+    case Fixed:
+        return contradiction(status, fsVarStat->value());
+    default:
+        return contradiction(status);
+    }
 }
 
 
 bool FSVarStat::contradiction(STATUS status, double value) const
 {
-	switch (status_)
-	{
-	case SetToLowerBound:
-	case FixedToLowerBound:
-		switch (status) {
-		case SetToUpperBound:
-		case FixedToUpperBound:
-		case Set:
-		case Fixed:
-			return true;
-		default:
-			return false;
-		}
+    switch (status_)
+    {
+    case SetToLowerBound:
+    case FixedToLowerBound:
+        switch (status)
+        {
+        case SetToUpperBound:
+        case FixedToUpperBound:
+        case Set:
+        case Fixed:
+            return true;
+        default:
+            return false;
+        }
 
-	case SetToUpperBound:
-	case FixedToUpperBound:
-		switch (status) {
-		case SetToLowerBound:
-		case FixedToLowerBound:
-		case Set:
-		case Fixed:
-			return true;
-		default:
-			return false;
-		}
+    case SetToUpperBound:
+    case FixedToUpperBound:
+        switch (status)
+        {
+        case SetToLowerBound:
+        case FixedToLowerBound:
+        case Set:
+        case Fixed:
+            return true;
+        default:
+            return false;
+        }
 
-	case Fixed:
-	case Set:
-		switch (status) {
-		case Fixed:
-		case Set:
-			if (glob_->equal(value_, value))
-				return true;
-			else
-				return false;
-		default:
-			return false;
-		}
+    case Fixed:
+    case Set:
+        switch (status)
+        {
+        case Fixed:
+        case Set:
+            if (glob_->equal(value_, value))
+                return true;
+            else
+                return false;
+        default:
+            return false;
+        }
 
-	default:
-		return false;
-	}
+    default:
+        return false;
+    }
 }
 } //namespace abacus

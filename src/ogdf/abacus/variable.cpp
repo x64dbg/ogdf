@@ -37,109 +37,114 @@
 #include <ogdf/abacus/variable.h>
 #include <ogdf/abacus/column.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 int Variable::genColumn(
-	Active<Constraint, Variable> *actCon,
-	Column &col) const
+    Active<Constraint, Variable> *actCon,
+    Column &col) const
 {
-	double eps      = master_->machineEps();
-	double minusEps = -eps;
-	double co;
-	int    n        = actCon->number();
+    double eps      = master_->machineEps();
+    double minusEps = -eps;
+    double co;
+    int    n        = actCon->number();
 
-	expand();
+    expand();
 
-	for (int i = 0; i < n; i++) {
-		co = (*actCon)[i]->coeff(this);
-		if (co > eps || co < minusEps) col.insert(i,co);
-	}
+    for (int i = 0; i < n; i++)
+    {
+        co = (*actCon)[i]->coeff(this);
+        if (co > eps || co < minusEps) col.insert(i,co);
+    }
 
-	col.obj(obj());
-	col.lBound(lBound());
-	col.uBound(uBound());
+    col.obj(obj());
+    col.lBound(lBound());
+    col.uBound(uBound());
 
-	compress();
+    compress();
 
-	return col.nnz();
+    return col.nnz();
 
 }
 
 
 bool Variable::violated(double rc) const
 {
-	if (master_->optSense()->max()) {
-		return rc > master_->eps();
-	}
-	else {
-		return rc < -master_->eps();
-	}
+    if (master_->optSense()->max())
+    {
+        return rc > master_->eps();
+    }
+    else
+    {
+        return rc < -master_->eps();
+    }
 }
 
 
 bool Variable::violated(
-	Active<Constraint, Variable> *constraints,
-	double *y,
-	double *r) const
+    Active<Constraint, Variable> *constraints,
+    double *y,
+    double *r) const
 {
-	double rc = redCost(constraints, y);
+    double rc = redCost(constraints, y);
 
-	if (r) *r = rc;
+    if (r) *r = rc;
 
-	return violated(rc);
+    return violated(rc);
 }
 
 
 double Variable::redCost(
-	Active<Constraint, Variable> *actCon,
-	double *y) const
+    Active<Constraint, Variable> *actCon,
+    double *y) const
 {
-	double c;
-	double eps = master_->machineEps();
-	double minusEps = -eps;
-	double rc = obj();
-	int    n  = actCon->number();
+    double c;
+    double eps = master_->machineEps();
+    double minusEps = -eps;
+    double rc = obj();
+    int    n  = actCon->number();
 
-	expand();
+    expand();
 
-	for (int i = 0; i < n; i++) {
-		c = (*actCon)[i]->coeff(this);
-		if (c > eps || c < minusEps)
-			rc -= y[i] * c;
-	}
+    for (int i = 0; i < n; i++)
+    {
+        c = (*actCon)[i]->coeff(this);
+        if (c > eps || c < minusEps)
+            rc -= y[i] * c;
+    }
 
-	compress();
+    compress();
 
-	return rc;
+    return rc;
 }
 
 
 bool Variable::useful(
-	Active<Constraint, Variable> *actCon,
-	double *y,
-	double lpVal) const
+    Active<Constraint, Variable> *actCon,
+    double *y,
+    double lpVal) const
 {
-	if (!discrete()) return true;
+    if (!discrete()) return true;
 
-	double rc = redCost(actCon, y);
+    double rc = redCost(actCon, y);
 
-	if (master_->optSense()->max())
-		return (lpVal + rc > master_->primalBound());
-	else
-		return (lpVal + rc < master_->primalBound());
+    if (master_->optSense()->max())
+        return (lpVal + rc > master_->primalBound());
+    else
+        return (lpVal + rc < master_->primalBound());
 }
 
 
 void Variable::printCol(
-	ostream &out,
-	Active<Constraint, Variable> *constraints) const
+    ostream &out,
+    Active<Constraint, Variable> *constraints) const
 {
-	Column col(master_, constraints->number());
+    Column col(master_, constraints->number());
 
-	genColumn(constraints, col);
+    genColumn(constraints, col);
 
-	out << col;
+    out << col;
 }
 
 } //namespace abacus

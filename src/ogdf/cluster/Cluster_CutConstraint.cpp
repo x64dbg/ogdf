@@ -54,26 +54,31 @@ using namespace ogdf;
 using namespace abacus;
 
 CutConstraint::CutConstraint(Master *master, Sub *sub, List<nodePair> &edges) :
-	BaseConstraint(master, sub, CSense::Greater, 1.0, true, true, true)
+    BaseConstraint(master, sub, CSense::Greater, 1.0, true, true, true)
 {
-	ListConstIterator<nodePair> it;
-	for (it = edges.begin(); it.valid(); ++it) {
-		m_cutEdges.pushBack(*it);
-	}
+    ListConstIterator<nodePair> it;
+    for (it = edges.begin(); it.valid(); ++it)
+    {
+        m_cutEdges.pushBack(*it);
+    }
 }
 
 
 CutConstraint::~CutConstraint() {}
 
 
-int CutConstraint::coeff(node n1, node n2) const {
-	ListConstIterator<nodePair> it;
-	for (it = m_cutEdges.begin(); it.valid(); ++it) {
-		if ( ((*it).v1 == n1 && (*it).v2 == n2) ||
-			 ((*it).v2 == n1 && (*it).v1 == n2) )
-		{return 1;}
-	}
-	return 0;
+int CutConstraint::coeff(node n1, node n2) const
+{
+    ListConstIterator<nodePair> it;
+    for (it = m_cutEdges.begin(); it.valid(); ++it)
+    {
+        if ( ((*it).v1 == n1 && (*it).v2 == n2) ||
+                ((*it).v2 == n1 && (*it).v1 == n2) )
+        {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 #endif // USE_ABACUS

@@ -43,7 +43,8 @@
 #include <ogdf/abacus/constraint.h>
 #include <ogdf/abacus/variable.h>
 
-namespace abacus {
+namespace abacus
+{
 
 template<class BaseType, class CoType>
 class  PoolSlotRef;
@@ -60,121 +61,131 @@ ostream &operator<< (ostream &out, const PoolSlotRef<BaseType, CoType> &slot);
  * class PoolSlotRef.
  */
 template<class BaseType, class CoType>
-class  PoolSlotRef :  public AbacusRoot {
+class  PoolSlotRef :  public AbacusRoot
+{
 public:
 
-	//! Creates an object referencing no pool slot.
-	/**
-	 * \param master A pointer to the corresponding master of the optimization.
-	 */
-	PoolSlotRef(Master *master) : master_(master), slot_(0), version_(0) { }
+    //! Creates an object referencing no pool slot.
+    /**
+     * \param master A pointer to the corresponding master of the optimization.
+     */
+    PoolSlotRef(Master *master) : master_(master), slot_(0), version_(0) { }
 
-	//! Creates an object referencing a pool slot \a slot.
-	/**
-	 * Also the constraint/variable contained in this slot receives a
-	 * message that a new references to it is created.
-	 *
-	 * \param slot The pool slot that is referenced now.
-	 */
-	PoolSlotRef(PoolSlot<BaseType, CoType> *slot) : master_(slot->master()), slot_(slot), version_(slot->version())
-	{
-		ConVar *cv = slot_->conVar();
-		if(cv) cv->addReference();
-	}
+    //! Creates an object referencing a pool slot \a slot.
+    /**
+     * Also the constraint/variable contained in this slot receives a
+     * message that a new references to it is created.
+     *
+     * \param slot The pool slot that is referenced now.
+     */
+    PoolSlotRef(PoolSlot<BaseType, CoType> *slot) : master_(slot->master()), slot_(slot), version_(slot->version())
+    {
+        ConVar *cv = slot_->conVar();
+        if(cv) cv->addReference();
+    }
 
-	//! Copy constructor
-	/**
-	 * May increment the reference counter of the
-	 * constraint/variable only if version number of the slot and
-	 * version number of the reference are equal, since otherwise
-	 * this is not a correct reference to \a slot_->conVar().
-	 *
-	 * \param rhs The pool slot that is copied in the initialization process.
-	 */
-	PoolSlotRef(const PoolSlotRef<BaseType, CoType> &rhs) : master_(rhs.master_), slot_(rhs.slot_), version_(rhs.version_)
-	{
-		ConVar *cv = slot_->conVar();
-		if (version_ == slot_->version() && cv)
-			cv->addReference();
-	}
+    //! Copy constructor
+    /**
+     * May increment the reference counter of the
+     * constraint/variable only if version number of the slot and
+     * version number of the reference are equal, since otherwise
+     * this is not a correct reference to \a slot_->conVar().
+     *
+     * \param rhs The pool slot that is copied in the initialization process.
+     */
+    PoolSlotRef(const PoolSlotRef<BaseType, CoType> &rhs) : master_(rhs.master_), slot_(rhs.slot_), version_(rhs.version_)
+    {
+        ConVar *cv = slot_->conVar();
+        if (version_ == slot_->version() && cv)
+            cv->addReference();
+    }
 
-	//! The destructor
-	/**
-	 * Sends a message to the constraint that it
-	 * will no longer be referred from this place in the program.
-	 *
-	 * If the version number of the reference and the version number
-	 * of the slot do not equal, we must not decrement the
-	 * reference counter of \a slot_->conVar() because this is
-	 * not a correct reference to this constraint/variable.
-	 */
-	~PoolSlotRef() {
-		if(slot_) {
-			ConVar *cv = slot_->conVar();
-			if (cv && version_ == slot_->version())
-				cv->removeReference();
-		}
-	}
+    //! The destructor
+    /**
+     * Sends a message to the constraint that it
+     * will no longer be referred from this place in the program.
+     *
+     * If the version number of the reference and the version number
+     * of the slot do not equal, we must not decrement the
+     * reference counter of \a slot_->conVar() because this is
+     * not a correct reference to this constraint/variable.
+     */
+    ~PoolSlotRef()
+    {
+        if(slot_)
+        {
+            ConVar *cv = slot_->conVar();
+            if (cv && version_ == slot_->version())
+                cv->removeReference();
+        }
+    }
 
-	//! Output operator for pool slot references.
-	/**
-	 * The output operator writes the constraint/variable stored in the
-	 * referenced slot to an output stream.
-	 *
-	 * \param out  The output stream.
-	 * \param slot The reference to a pool slot being output.
-	 *
-	 * \return A reference to the output stream.
-	 */
-	friend ostream &operator<< <> (ostream &out, const PoolSlotRef<BaseType, CoType> &slot);
+    //! Output operator for pool slot references.
+    /**
+     * The output operator writes the constraint/variable stored in the
+     * referenced slot to an output stream.
+     *
+     * \param out  The output stream.
+     * \param slot The reference to a pool slot being output.
+     *
+     * \return A reference to the output stream.
+     */
+    friend ostream &operator<< <> (ostream &out, const PoolSlotRef<BaseType, CoType> &slot);
 
-	//! Returns a pointer to the constraint/variable stored in the referenced slot.
-	/**
-	 * If the version number of the slot differs from the version number at construction/initialization time
-	 * of this slot 0 is returned.
-	 */
-	BaseType *conVar() const {
-		if(version_ == slot_->version())
-			return slot_->conVar();
-		printDifferentVersionError();
+    //! Returns a pointer to the constraint/variable stored in the referenced slot.
+    /**
+     * If the version number of the slot differs from the version number at construction/initialization time
+     * of this slot 0 is returned.
+     */
+    BaseType *conVar() const
+    {
+        if(version_ == slot_->version())
+            return slot_->conVar();
+        printDifferentVersionError();
 
-		return 0;
-	}
+        return 0;
+    }
 
-	//! Returns the version number of the constraint/variable stored in the referenced slot at construction time.
-	unsigned long version() const { return version_; }
+    //! Returns the version number of the constraint/variable stored in the referenced slot at construction time.
+    unsigned long version() const
+    {
+        return version_;
+    }
 
-	//! Returns a pointer to the referenced slot.
-	PoolSlot<BaseType, CoType> *slot() const { return slot_; }
+    //! Returns a pointer to the referenced slot.
+    PoolSlot<BaseType, CoType> *slot() const
+    {
+        return slot_;
+    }
 
 
-	//! Initializes the referenced pool slot with \a s.
-	/**
-	 * The function \a slot() may decrement the reference counter
-	 * of \a slot_->conVar() only if the version number of the reference
-	 * and the version number of the slot are equal since otherwise this
-	 * is not a valid reference.
-	 *
-	 * \param s The new slot that is referenced. This must not be a 0-pointer.
-	 */
-	void slot(PoolSlot<BaseType, CoType> *s);
+    //! Initializes the referenced pool slot with \a s.
+    /**
+     * The function \a slot() may decrement the reference counter
+     * of \a slot_->conVar() only if the version number of the reference
+     * and the version number of the slot are equal since otherwise this
+     * is not a valid reference.
+     *
+     * \param s The new slot that is referenced. This must not be a 0-pointer.
+     */
+    void slot(PoolSlot<BaseType, CoType> *s);
 
 private:
 
-	Master *master_; //!< A pointer to the corresponding master of the optimization.
+    Master *master_; //!< A pointer to the corresponding master of the optimization.
 
-	PoolSlot<BaseType, CoType> *slot_; //!< A pointer to the referenced pool slot.
+    PoolSlot<BaseType, CoType> *slot_; //!< A pointer to the referenced pool slot.
 
-	//! The version number of the slot at construction/initialization time of this reference.
-	unsigned long version_;
+    //! The version number of the slot at construction/initialization time of this reference.
+    unsigned long version_;
 
-	void printDifferentVersionError() const;
+    void printDifferentVersionError() const;
 
 
-	const PoolSlotRef<BaseType, CoType>
-		&operator=(const PoolSlotRef<BaseType, CoType> &rhs);
+    const PoolSlotRef<BaseType, CoType>
+    &operator=(const PoolSlotRef<BaseType, CoType> &rhs);
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 } //namespace abacus

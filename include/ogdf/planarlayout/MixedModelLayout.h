@@ -57,7 +57,8 @@
 #include <ogdf/module/MixedModelCrossingsBeautifierModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -132,57 +133,61 @@ namespace ogdf {
 class OGDF_EXPORT MixedModelLayout : public GridLayoutPlanRepModule
 {
 public:
-	//! Constructs an instance of the Mixed-Model layout algorithm.
-	MixedModelLayout();
+    //! Constructs an instance of the Mixed-Model layout algorithm.
+    MixedModelLayout();
 
-	virtual ~MixedModelLayout() { }
+    virtual ~MixedModelLayout() { }
 
-	/**
-	 *  @name Module options
-	 *  @{
-	 */
+    /**
+     *  @name Module options
+     *  @{
+     */
 
-	/**
-	 * \brief Sets the augmentation module.
-	 *
-	 * The augmentation module needs to make sure that the graph gets the
-	 * connectivity required for calling the shelling order module.
-	 */
-	void setAugmenter(AugmentationModule *pAugmenter) {
-		m_augmenter.set(pAugmenter);
-	}
+    /**
+     * \brief Sets the augmentation module.
+     *
+     * The augmentation module needs to make sure that the graph gets the
+     * connectivity required for calling the shelling order module.
+     */
+    void setAugmenter(AugmentationModule *pAugmenter)
+    {
+        m_augmenter.set(pAugmenter);
+    }
 
-	//! Sets the shelling order module.
-	void setShellingOrder(ShellingOrderModule *pOrder) {
-		m_compOrder.set(pOrder);
-	}
+    //! Sets the shelling order module.
+    void setShellingOrder(ShellingOrderModule *pOrder)
+    {
+        m_compOrder.set(pOrder);
+    }
 
-	//! Sets the crossings beautifier module.
-	void setCrossingsBeautifier(MixedModelCrossingsBeautifierModule *pBeautifier) {
-		m_crossingsBeautifier.set(pBeautifier);
-	}
+    //! Sets the crossings beautifier module.
+    void setCrossingsBeautifier(MixedModelCrossingsBeautifierModule *pBeautifier)
+    {
+        m_crossingsBeautifier.set(pBeautifier);
+    }
 
-	//! Sets the module option for the graph embedding algorithm.
-	void setEmbedder(EmbedderModule *pEmbedder) {
-		m_embedder.set(pEmbedder);
-	}
+    //! Sets the module option for the graph embedding algorithm.
+    void setEmbedder(EmbedderModule *pEmbedder)
+    {
+        m_embedder.set(pEmbedder);
+    }
 
-	//! @}
+    //! @}
 
 protected:
-	//! Implements the algorithm call.
-	void doCall(
-		PlanRep &PG,
-		adjEntry adjExternal,
-		GridLayout &gridLayout,
-		IPoint &boundingBox,
-		bool fixEmbedding);
+    //! Implements the algorithm call.
+    void doCall(
+        PlanRep &PG,
+        adjEntry adjExternal,
+        GridLayout &gridLayout,
+        IPoint &boundingBox,
+        bool fixEmbedding);
 
 private:
-	ModuleOption<EmbedderModule>      m_embedder;  //!< The planar embedder module.
-	ModuleOption<AugmentationModule>  m_augmenter; //!< The augmentation module.
-	ModuleOption<ShellingOrderModule> m_compOrder; //!< The shelling order module.
-	ModuleOption<MixedModelCrossingsBeautifierModule> m_crossingsBeautifier; //!< The crossings beautifier module.
+    ModuleOption<EmbedderModule>      m_embedder;  //!< The planar embedder module.
+    ModuleOption<AugmentationModule>  m_augmenter; //!< The augmentation module.
+    ModuleOption<ShellingOrderModule> m_compOrder; //!< The shelling order module.
+    ModuleOption<MixedModelCrossingsBeautifierModule> m_crossingsBeautifier; //!< The crossings beautifier module.
 };
 
 

@@ -52,192 +52,203 @@
 #include <ogdf/basic/basic.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	//---------------------------------------------------------
-	// L i n e B u f f e r P o s i t i o n
-	//---------------------------------------------------------
-	/** This class characterizes uniquely a position in the line
-	 *  buffer.
-	 *
-	 * Note that the element m_lineUpdateCount allows to check
-	 * if a position is obsolete, i.e. its content has already
-	 * been overwritten.
-	 */
-	class OGDF_EXPORT LineBufferPosition {
+//---------------------------------------------------------
+// L i n e B u f f e r P o s i t i o n
+//---------------------------------------------------------
+/** This class characterizes uniquely a position in the line
+ *  buffer.
+ *
+ * Note that the element m_lineUpdateCount allows to check
+ * if a position is obsolete, i.e. its content has already
+ * been overwritten.
+ */
+class OGDF_EXPORT LineBufferPosition
+{
 
-	private:
+private:
 
-		/** Contains the lineNumber; Range [0 .. c_maxNoOfLines-1] */
-		int m_lineNumber;
+    /** Contains the lineNumber; Range [0 .. c_maxNoOfLines-1] */
+    int m_lineNumber;
 
-		/** Contains the number of times line m_lineNumber has been
-		 * overwritten by new data; Range [0 .. ]
-		 */
-		int m_lineUpdateCount;
+    /** Contains the number of times line m_lineNumber has been
+     * overwritten by new data; Range [0 .. ]
+     */
+    int m_lineUpdateCount;
 
-		/** Contains the position in line m_lineNumber; Range [0 .. c_maxLineLength-1] */
-		int m_linePosition;
+    /** Contains the position in line m_lineNumber; Range [0 .. c_maxLineLength-1] */
+    int m_linePosition;
 
-	public:
+public:
 
-		/** Default Constructor */
-		LineBufferPosition() :
-			m_lineNumber(0),
-			m_lineUpdateCount(0),
-			m_linePosition(0)
-		{ }
+    /** Default Constructor */
+    LineBufferPosition() :
+        m_lineNumber(0),
+        m_lineUpdateCount(0),
+        m_linePosition(0)
+    { }
 
-		/** Constructor */
-		LineBufferPosition(
-			int lineNumber,
-			int lineUpdateCount,
-			int linePosition);
+    /** Constructor */
+    LineBufferPosition(
+        int lineNumber,
+        int lineUpdateCount,
+        int linePosition);
 
-		/** Copy Constructor */
-		LineBufferPosition(const LineBufferPosition &position);
+    /** Copy Constructor */
+    LineBufferPosition(const LineBufferPosition &position);
 
-		/** Get the line number */
-		inline int getLineNumber() const {
-			return m_lineNumber;
-		}
+    /** Get the line number */
+    inline int getLineNumber() const
+    {
+        return m_lineNumber;
+    }
 
-		/** Get the update count of the line */
-		inline int getLineUpdateCount() const {
-			return m_lineUpdateCount;
-		}
+    /** Get the update count of the line */
+    inline int getLineUpdateCount() const
+    {
+        return m_lineUpdateCount;
+    }
 
-		/** Get the position in the line */
-		inline int getLinePosition() const {
-			return m_linePosition;
-		}
+    /** Get the position in the line */
+    inline int getLinePosition() const
+    {
+        return m_linePosition;
+    }
 
-		/** Set all values */
-		void set(int lineNumber, int lineUpdateCount, int linePosition);
+    /** Set all values */
+    void set(int lineNumber, int lineUpdateCount, int linePosition);
 
-		/** Increments the position by 1 */
-		void incrementPosition();
+    /** Increments the position by 1 */
+    void incrementPosition();
 
-		/** Test if inequal */
-		bool operator!=(const LineBufferPosition &position) const;
+    /** Test if inequal */
+    bool operator!=(const LineBufferPosition &position) const;
 
-		/** Assignment */
-		const LineBufferPosition &operator=(const LineBufferPosition &position);
+    /** Assignment */
+    const LineBufferPosition &operator=(const LineBufferPosition &position);
 
-	}; // LineBufferPosition
+}; // LineBufferPosition
 
-	//---------------------------------------------------------
-	// L i n e B u f f e r
-	//---------------------------------------------------------
-	/** This class maintains the input file and provides a
-	 *  convenient interface to handle it.
-	 */
-	class OGDF_EXPORT LineBuffer {
+//---------------------------------------------------------
+// L i n e B u f f e r
+//---------------------------------------------------------
+/** This class maintains the input file and provides a
+ *  convenient interface to handle it.
+ */
+class OGDF_EXPORT LineBuffer
+{
 
-	public:
+public:
 
-		// Maximal length of a string handled by extractString()
-		const static int c_maxStringLength;
+    // Maximal length of a string handled by extractString()
+    const static int c_maxStringLength;
 
-		// Maximal length of one line
-		const static int c_maxLineLength;
+    // Maximal length of one line
+    const static int c_maxLineLength;
 
-		// Maximal number of lines
-		const static int c_maxNoOfLines;
+    // Maximal number of lines
+    const static int c_maxNoOfLines;
 
-	private:
+private:
 
-		// Handle to the input file
-		istream *m_pIs;
+    // Handle to the input file
+    istream *m_pIs;
 
-		// Contains for each line of the line buffer its update count
-		// Range is [0 .. c_maxNoOfLines]
-		int *m_lineUpdateCountArray;
+    // Contains for each line of the line buffer its update count
+    // Range is [0 .. c_maxNoOfLines]
+    int *m_lineUpdateCountArray;
 
-		// Pointer to the line buffer
-		char *m_pLinBuf;
+    // Pointer to the line buffer
+    char *m_pLinBuf;
 
-		// The current position in m_pLinBuf
-		LineBufferPosition m_currentPosition;
+    // The current position in m_pLinBuf
+    LineBufferPosition m_currentPosition;
 
-		// The line which has been read from the file most recently;
-		// this does not have to be equal to m_currentPosition.m_lineNumber
-		// because of the lookahead facilities.
-		// Range is [0 .. c_maxNoOfLines - 1]
-		int m_numberOfMostRecentlyReadLine;
+    // The line which has been read from the file most recently;
+    // this does not have to be equal to m_currentPosition.m_lineNumber
+    // because of the lookahead facilities.
+    // Range is [0 .. c_maxNoOfLines - 1]
+    int m_numberOfMostRecentlyReadLine;
 
-		// Contains the current line number of the input file;
-		int m_inputFileLineCounter;
+    // Contains the current line number of the input file;
+    int m_inputFileLineCounter;
 
-	public:
+public:
 
-		// construction
-		LineBuffer(istream &is);
+    // construction
+    LineBuffer(istream &is);
 
-		// destruction
-		~LineBuffer();
+    // destruction
+    ~LineBuffer();
 
-		// Returns the current position (as a copy)
-		LineBufferPosition getCurrentPosition() const{
-			return m_currentPosition;
-		}
+    // Returns the current position (as a copy)
+    LineBufferPosition getCurrentPosition() const
+    {
+        return m_currentPosition;
+    }
 
-		// Returns the character which is currently pointed to
-		inline char getCurrentCharacter() const {
-			return m_pLinBuf[(m_currentPosition.getLineNumber() * LineBuffer::c_maxLineLength) +
-								 m_currentPosition.getLinePosition()];
-		}
+    // Returns the character which is currently pointed to
+    inline char getCurrentCharacter() const
+    {
+        return m_pLinBuf[(m_currentPosition.getLineNumber() * LineBuffer::c_maxLineLength) +
+                         m_currentPosition.getLinePosition()];
+    }
 
-		// Returns line number of the most recently read line of the input file
-		inline int getInputFileLineCounter() const {
-			return m_inputFileLineCounter;
-		}
+    // Returns line number of the most recently read line of the input file
+    inline int getInputFileLineCounter() const
+    {
+        return m_inputFileLineCounter;
+    }
 
-		// Moves to the next position;
-		// reading of new lines and handling of eof are done internally.
-		// If end of file is reached the position will stuck to EOF character.
-		// The current character after moving is returned
-		char moveToNextCharacter();
+    // Moves to the next position;
+    // reading of new lines and handling of eof are done internally.
+    // If end of file is reached the position will stuck to EOF character.
+    // The current character after moving is returned
+    char moveToNextCharacter();
 
-		// Sets the current position to new positon.
-		// Takes care if the given newPosition is valid.
-		// Returns false if given position is invalid
-		bool setCurrentPosition(const LineBufferPosition &newPosition);
+    // Sets the current position to new positon.
+    // Takes care if the given newPosition is valid.
+    // Returns false if given position is invalid
+    bool setCurrentPosition(const LineBufferPosition &newPosition);
 
-		// Moves to the next character until the currentCharacter is
-		// no whitespace.
-		void skipWhitespace();
+    // Moves to the next character until the currentCharacter is
+    // no whitespace.
+    void skipWhitespace();
 
-		// Copys the characters which have been extracted from the
-		// line buffer starting from position startPosition (including it)
-		// to endPosition (excluding it) to targetString (terminated by '\0').
-		// The length of strings is limited to c_maxStringLength
-		//
-		// Returns false if the startPosition is not valid, i.e. the string
-		// is too long; targetString will contain the message "String too long!"
-		bool extractString(
-			const LineBufferPosition &startPostion,
-			const LineBufferPosition &endPosition,
-			char *targetString);
+    // Copys the characters which have been extracted from the
+    // line buffer starting from position startPosition (including it)
+    // to endPosition (excluding it) to targetString (terminated by '\0').
+    // The length of strings is limited to c_maxStringLength
+    //
+    // Returns false if the startPosition is not valid, i.e. the string
+    // is too long; targetString will contain the message "String too long!"
+    bool extractString(
+        const LineBufferPosition &startPostion,
+        const LineBufferPosition &endPosition,
+        char *targetString);
 
-	private:
+private:
 
-		// Returns a pointer to the character which is currently pointed to
-		inline char *getCurrentCharacterPointer() {
-			return &m_pLinBuf[(m_currentPosition.getLineNumber() * LineBuffer::c_maxLineLength) +
-				m_currentPosition.getLinePosition()];
-		}
+    // Returns a pointer to the character which is currently pointed to
+    inline char *getCurrentCharacterPointer()
+    {
+        return &m_pLinBuf[(m_currentPosition.getLineNumber() * LineBuffer::c_maxLineLength) +
+                          m_currentPosition.getLinePosition()];
+    }
 
-		// Sets the given character to the current position
-		inline void setCurrentCharacter(char c) {
-			m_pLinBuf[(m_currentPosition.getLineNumber() * LineBuffer::c_maxLineLength) +
-				m_currentPosition.getLinePosition()] = c;
-		}
+    // Sets the given character to the current position
+    inline void setCurrentCharacter(char c)
+    {
+        m_pLinBuf[(m_currentPosition.getLineNumber() * LineBuffer::c_maxLineLength) +
+                  m_currentPosition.getLinePosition()] = c;
+    }
 
-		// Checks wether the given position is valid
-		bool isValidPosition(const LineBufferPosition &position) const;
+    // Checks wether the given position is valid
+    bool isValidPosition(const LineBufferPosition &position) const;
 
-	}; // class LineBuffer
+}; // class LineBuffer
 
 } // end namespace ogdf
 

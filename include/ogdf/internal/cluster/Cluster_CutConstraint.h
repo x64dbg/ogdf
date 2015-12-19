@@ -53,34 +53,45 @@
 
 #include <ogdf/abacus/constraint.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
-class CutConstraint : public BaseConstraint {
+class CutConstraint : public BaseConstraint
+{
 
 public:
 
-	CutConstraint(abacus::Master *master, abacus::Sub *sub, List<nodePair> &edges);
+    CutConstraint(abacus::Master *master, abacus::Sub *sub, List<nodePair> &edges);
 
-	virtual ~CutConstraint();
+    virtual ~CutConstraint();
 
-	// Computes and returns the coefficient for the given variable
-	virtual double coeff(const abacus::Variable *v) const { const EdgeVar *ev = (const EdgeVar *)v; return (double)coeff(ev->sourceNode(), ev->targetNode()); }
-	inline int coeff(const nodePair& n) const { return coeff(n.v1,n.v2); }
-	int coeff(node n1, node n2) const;
+    // Computes and returns the coefficient for the given variable
+    virtual double coeff(const abacus::Variable *v) const
+    {
+        const EdgeVar *ev = (const EdgeVar *)v;
+        return (double)coeff(ev->sourceNode(), ev->targetNode());
+    }
+    inline int coeff(const nodePair& n) const
+    {
+        return coeff(n.v1,n.v2);
+    }
+    int coeff(node n1, node n2) const;
 
-	void printMe(ostream& out) const {
-		out << "[CutCon: ";
-		forall_listiterators(nodePair, it, m_cutEdges) {
-			(*it).printMe(out);
-			out << ",";
-		}
-		out << "]";
-	}
+    void printMe(ostream& out) const
+    {
+        out << "[CutCon: ";
+        forall_listiterators(nodePair, it, m_cutEdges)
+        {
+            (*it).printMe(out);
+            out << ",";
+        }
+        out << "]";
+    }
 
 private:
 
-	// The list containing the node pairs corresponding to the cut edges
-	List<nodePair> m_cutEdges;
+    // The list containing the node pairs corresponding to the cut edges
+    List<nodePair> m_cutEdges;
 
 };
 

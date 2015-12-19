@@ -57,117 +57,120 @@
 #include <ogdf/uml/UMLGraph.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //descent the hierarchy tree at "sink" v recursively
 bool dfsGenTreeRec(
-	UMLGraph& UG,
-	EdgeArray<bool> &used,
-	NodeArray<int> &hierNumber, //number of hierarchy tree
-	// A node is visited if its hierNumber != 0
-	int hierNum,
-	node v,
-	List<edge>& fakedGens, //temporary
-	bool fakeTree)
+    UMLGraph& UG,
+    EdgeArray<bool> &used,
+    NodeArray<int> &hierNumber, //number of hierarchy tree
+    // A node is visited if its hierNumber != 0
+    int hierNum,
+    node v,
+    List<edge>& fakedGens, //temporary
+    bool fakeTree)
 {
-	OGDF_ASSERT(hierNumber[v] == 0);
-	hierNumber[v] = hierNum;
+    OGDF_ASSERT(hierNumber[v] == 0);
+    hierNumber[v] = hierNum;
 
-	bool returnValue = true;
+    bool returnValue = true;
 
-	edge e;
-	forall_adj_edges(e,v) {
-		if (e->source() == v) continue;
-		if (!(UG.type(e) == Graph::generalization)) continue;
-		if (used[e]) continue; //error ??
-		used[e] = true;
+    edge e;
+    forall_adj_edges(e,v)
+    {
+        if (e->source() == v) continue;
+        if (!(UG.type(e) == Graph::generalization)) continue;
+        if (used[e]) continue; //error ??
+        used[e] = true;
 
-		node w = e->opposite(v);
+        node w = e->opposite(v);
 
-		if (hierNumber[w]) {
-			//temporarily fake trees
-			//if (hierNumber[w] == hierNum) //forward search edge
-			if (fakeTree)
-			{
-				//UG.type(e) = Graph::association;
-				fakedGens.pushBack(e);
-				continue;
-			}
-			else return false;//reached w over unused edge => no tree
-		}
+        if (hierNumber[w])
+        {
+            //temporarily fake trees
+            //if (hierNumber[w] == hierNum) //forward search edge
+            if (fakeTree)
+            {
+                //UG.type(e) = Graph::association;
+                fakedGens.pushBack(e);
+                continue;
+            }
+            else return false;//reached w over unused edge => no tree
+        }
 
-		returnValue = dfsGenTreeRec(UG, used, hierNumber, hierNum, w, fakedGens, fakeTree);
-		//shortcut
-		if (!returnValue) return false;
-	}
+        returnValue = dfsGenTreeRec(UG, used, hierNumber, hierNum, w, fakedGens, fakeTree);
+        //shortcut
+        if (!returnValue) return false;
+    }
 
-	return returnValue;
+    return returnValue;
 }
 
 edge firstOutGen(UMLGraph& UG, node v, EdgeArray<bool>& /* used */)
 {
-	edge e;
-	forall_adj_edges(e, v)
-	{
-		if (e->target() == v) continue;
-		if (UG.type(e) == Graph::generalization)
-		{
-			//OGDF_ASSERT(!used[e]);
-			return e;
-		}
-		else continue;
-	}//forall
-	return 0;
+    edge e;
+    forall_adj_edges(e, v)
+    {
+        if (e->target() == v) continue;
+        if (UG.type(e) == Graph::generalization)
+        {
+            //OGDF_ASSERT(!used[e]);
+            return e;
+        }
+        else continue;
+    }//forall
+    return 0;
 }//firstOutGen
 
 bool dfsGenTree(
-	UMLGraph& UG,
-	List<edge>& fakedGens,
-	bool fakeTree)
+    UMLGraph& UG,
+    List<edge>& fakedGens,
+    bool fakeTree)
 {
-	edge e;
-	EdgeArray<bool> used(UG.constGraph(), false);
-	//NodeArray<bool> visited(UG,false);
-	NodeArray<int>  hierNumber(UG.constGraph(), 0);
+    edge e;
+    EdgeArray<bool> used(UG.constGraph(), false);
+    //NodeArray<bool> visited(UG,false);
+    NodeArray<int>  hierNumber(UG.constGraph(), 0);
 
-	int hierNum = 0; //number of hierarchy tree
+    int hierNum = 0; //number of hierarchy tree
 
-	const Graph& G = UG.constGraph();
-	forall_edges(e, G)
-	{
-		//descent in the hierarchy containing e
-		if ((!used[e]) && (UG.type(e) == Graph::generalization))
-		{
-			hierNum++; //current hierarchy tree
-			//first we search for the sink
-			node sink = e->target();
-			edge sinkPath = firstOutGen(UG, e->target(), used);
-			int cycleCounter = 0;
-			while (sinkPath)
-			{
-				sink = sinkPath->target();
-				sinkPath = firstOutGen(UG, sinkPath->target(), used);
-				cycleCounter++;
-				//if there is no sink, convert Generalizations to Associations and draw
-				if (cycleCounter > G.numberOfEdges())
-				{
-					UG.type(sinkPath) = Graph::association;
-					fakedGens.pushBack(sinkPath);
-					sink = sinkPath->source();
-					sinkPath = 0;
-				}
-			}
+    const Graph& G = UG.constGraph();
+    forall_edges(e, G)
+    {
+        //descent in the hierarchy containing e
+        if ((!used[e]) && (UG.type(e) == Graph::generalization))
+        {
+            hierNum++; //current hierarchy tree
+            //first we search for the sink
+            node sink = e->target();
+            edge sinkPath = firstOutGen(UG, e->target(), used);
+            int cycleCounter = 0;
+            while (sinkPath)
+            {
+                sink = sinkPath->target();
+                sinkPath = firstOutGen(UG, sinkPath->target(), used);
+                cycleCounter++;
+                //if there is no sink, convert Generalizations to Associations and draw
+                if (cycleCounter > G.numberOfEdges())
+                {
+                    UG.type(sinkPath) = Graph::association;
+                    fakedGens.pushBack(sinkPath);
+                    sink = sinkPath->source();
+                    sinkPath = 0;
+                }
+            }
 
-			//now sink is the hierarchy sink
+            //now sink is the hierarchy sink
 
-			//used is set in dfsGenTreeRec
-			bool isTree = dfsGenTreeRec(UG, used, hierNumber, hierNum, sink, fakedGens, fakeTree);
-			if (!isTree) return false;
-		}
+            //used is set in dfsGenTreeRec
+            bool isTree = dfsGenTreeRec(UG, used, hierNumber, hierNum, sink, fakedGens, fakeTree);
+            if (!isTree) return false;
+        }
 
-	}//forall_edges
+    }//forall_edges
 
-	return true;
+    return true;
 }
 
 }//end namespace ogdf

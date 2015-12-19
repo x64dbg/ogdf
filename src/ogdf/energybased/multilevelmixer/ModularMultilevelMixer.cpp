@@ -54,129 +54,140 @@
 #endif
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 ModularMultilevelMixer::ModularMultilevelMixer()
 {
-	// options
-	m_times              = 1;
-	m_fixedEdgeLength    = -1.0f;
-	m_fixedNodeSize      = -1.0f;
-	m_coarseningRatio    = 1.0;
-	m_levelBound         = false;
-	m_randomize          = false;
+    // options
+    m_times              = 1;
+    m_fixedEdgeLength    = -1.0f;
+    m_fixedNodeSize      = -1.0f;
+    m_coarseningRatio    = 1.0;
+    m_levelBound         = false;
+    m_randomize          = false;
 
-	// module options
-	setMultilevelBuilder(new SolarMerger);
-	setInitialPlacer    (new BarycenterPlacer);
-	setLevelLayoutModule(new SpringEmbedderFR);
+    // module options
+    setMultilevelBuilder(new SolarMerger);
+    setInitialPlacer    (new BarycenterPlacer);
+    setLevelLayoutModule(new SpringEmbedderFR);
 }
 
 
 void ModularMultilevelMixer::call(GraphAttributes &GA)
-{   //ensure consistent behaviour of the two call Methods
-	MultilevelGraph MLG(GA);
-	call(MLG);
-	MLG.exportAttributes(GA);
+{
+    //ensure consistent behaviour of the two call Methods
+    MultilevelGraph MLG(GA);
+    call(MLG);
+    MLG.exportAttributes(GA);
 }
 
 
 void ModularMultilevelMixer::call(MultilevelGraph &MLG)
 {
-	const Graph &G = MLG.getGraph();
+    const Graph &G = MLG.getGraph();
 
-	m_errorCode = ercNone;
-	clock_t time = clock();
-	if ((m_multilevelBuilder.valid() == false || m_initialPlacement.valid() == false) && m_oneLevelLayoutModule.valid() == false) {
-		OGDF_THROW(AlgorithmFailureException);
-	}
+    m_errorCode = ercNone;
+    clock_t time = clock();
+    if ((m_multilevelBuilder.valid() == false || m_initialPlacement.valid() == false) && m_oneLevelLayoutModule.valid() == false)
+    {
+        OGDF_THROW(AlgorithmFailureException);
+    }
 
-	if (m_fixedEdgeLength > 0.0) {
-		edge e;
-		forall_edges(e,G) {
-			MLG.weight(e, m_fixedEdgeLength);
-		}
-	}
+    if (m_fixedEdgeLength > 0.0)
+    {
+        edge e;
+        forall_edges(e,G)
+        {
+            MLG.weight(e, m_fixedEdgeLength);
+        }
+    }
 
-	if (m_fixedNodeSize > 0.0) {
-		node v;
-		forall_nodes(v,G) {
-			MLG.radius(v, m_fixedNodeSize);
-		}
-	}
+    if (m_fixedNodeSize > 0.0)
+    {
+        node v;
+        forall_nodes(v,G)
+        {
+            MLG.radius(v, m_fixedNodeSize);
+        }
+    }
 
-	if (m_multilevelBuilder.valid() && m_initialPlacement.valid())
-	{
-		double lbound = 16.0 * log(double(G.numberOfNodes()))/log(2.0);
-		m_multilevelBuilder.get().buildAllLevels(MLG);
+    if (m_multilevelBuilder.valid() && m_initialPlacement.valid())
+    {
+        double lbound = 16.0 * log(double(G.numberOfNodes()))/log(2.0);
+        m_multilevelBuilder.get().buildAllLevels(MLG);
 
-		//Part for experiments: Stop if number of levels too high
+        //Part for experiments: Stop if number of levels too high
 #ifdef OGDF_MMM_LEVEL_OUTPUTS
-		int nlevels = m_multilevelBuilder.get().getNumLevels();
+        int nlevels = m_multilevelBuilder.get().getNumLevels();
 #endif
-		if (m_levelBound)
-		{
-			if ( m_multilevelBuilder.get().getNumLevels() > lbound)
-			{
-				m_errorCode = ercLevelBound;
-				return;
-			}
-		}
-		node v;
-		if (m_randomize)
-		{
-			forall_nodes(v,G) {
-				MLG.x(v, (float)randomDouble(-1.0, 1.0));
-				MLG.y(v, (float)randomDouble(-1.0, 1.0));
-			}
-		}
+        if (m_levelBound)
+        {
+            if ( m_multilevelBuilder.get().getNumLevels() > lbound)
+            {
+                m_errorCode = ercLevelBound;
+                return;
+            }
+        }
+        node v;
+        if (m_randomize)
+        {
+            forall_nodes(v,G)
+            {
+                MLG.x(v, (float)randomDouble(-1.0, 1.0));
+                MLG.y(v, (float)randomDouble(-1.0, 1.0));
+            }
+        }
 
-		while(MLG.getLevel() > 0)
-		{
-			if (m_oneLevelLayoutModule.valid()) {
-				for(int i = 1; i <= m_times; i++) {
-					m_oneLevelLayoutModule.get().call(MLG.getGraphAttributes());
-				}
-			}
-
-#ifdef OGDF_MMM_LEVEL_OUTPUTS
-			//Debugging output
-			std::stringstream ss;
-			ss << nlevels--;
-			string s;
-			ss >> s;
-			s = "LevelLayout" + s;
-			string fs(s);
-			fs += ".gml";
-			MLG.writeGML(fs.c_str());
-#endif
-
-			MLG.moveToZero();
-
-			int nNodes = G.numberOfNodes();
-			m_initialPlacement.get().placeOneLevel(MLG);
-			m_coarseningRatio = double(G.numberOfNodes()) / nNodes;
+        while(MLG.getLevel() > 0)
+        {
+            if (m_oneLevelLayoutModule.valid())
+            {
+                for(int i = 1; i <= m_times; i++)
+                {
+                    m_oneLevelLayoutModule.get().call(MLG.getGraphAttributes());
+                }
+            }
 
 #ifdef OGDF_MMM_LEVEL_OUTPUTS
-			//debug only
-			s = s + "_placed.gml";
-			MLG.writeGML(s.c_str());
+            //Debugging output
+            std::stringstream ss;
+            ss << nlevels--;
+            string s;
+            ss >> s;
+            s = "LevelLayout" + s;
+            string fs(s);
+            fs += ".gml";
+            MLG.writeGML(fs.c_str());
 #endif
-		} //while level
-	}
 
-	//Final level
+            MLG.moveToZero();
 
-	if(m_finalLayoutModule.valid() ||  m_oneLevelLayoutModule.valid())
-	{
-		LayoutModule &lastLayoutModule = (m_finalLayoutModule.valid() != 0 ? m_finalLayoutModule.get() : m_oneLevelLayoutModule.get());
+            int nNodes = G.numberOfNodes();
+            m_initialPlacement.get().placeOneLevel(MLG);
+            m_coarseningRatio = double(G.numberOfNodes()) / nNodes;
 
-		for(int i = 1; i <= m_times; i++) {
-			lastLayoutModule.call(MLG.getGraphAttributes());
-		}
-	}
+#ifdef OGDF_MMM_LEVEL_OUTPUTS
+            //debug only
+            s = s + "_placed.gml";
+            MLG.writeGML(s.c_str());
+#endif
+        } //while level
+    }
 
-	time = clock() - time;
+    //Final level
+
+    if(m_finalLayoutModule.valid() ||  m_oneLevelLayoutModule.valid())
+    {
+        LayoutModule &lastLayoutModule = (m_finalLayoutModule.valid() != 0 ? m_finalLayoutModule.get() : m_oneLevelLayoutModule.get());
+
+        for(int i = 1; i <= m_times; i++)
+        {
+            lastLayoutModule.call(MLG.getGraphAttributes());
+        }
+    }
+
+    time = clock() - time;
 }
 
 

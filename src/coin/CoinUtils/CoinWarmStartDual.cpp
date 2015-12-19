@@ -26,21 +26,23 @@
 CoinWarmStartDiff*
 CoinWarmStartDual::generateDiff (const CoinWarmStart *const oldCWS) const
 {
-/*
-  Make sure the parameter is CoinWarmStartDual or derived class.
-*/
-  const CoinWarmStartDual *oldDual =
-      dynamic_cast<const CoinWarmStartDual *>(oldCWS) ;
-  if (!oldDual)
-  { throw CoinError("Old warm start not derived from CoinWarmStartDual.",
-		    "generateDiff","CoinWarmStartDual") ; }
+    /*
+      Make sure the parameter is CoinWarmStartDual or derived class.
+    */
+    const CoinWarmStartDual *oldDual =
+        dynamic_cast<const CoinWarmStartDual *>(oldCWS) ;
+    if (!oldDual)
+    {
+        throw CoinError("Old warm start not derived from CoinWarmStartDual.",
+                        "generateDiff","CoinWarmStartDual") ;
+    }
 
-  CoinWarmStartDualDiff* diff = new CoinWarmStartDualDiff;
-  CoinWarmStartDiff* vecdiff = dual_.generateDiff(&oldDual->dual_);
-  diff->diff_.swap(*dynamic_cast<CoinWarmStartVectorDiff<double>*>(vecdiff));
-  delete vecdiff;
+    CoinWarmStartDualDiff* diff = new CoinWarmStartDualDiff;
+    CoinWarmStartDiff* vecdiff = dual_.generateDiff(&oldDual->dual_);
+    diff->diff_.swap(*dynamic_cast<CoinWarmStartVectorDiff<double>*>(vecdiff));
+    delete vecdiff;
 
-  return diff;
+    return diff;
 }
 
 //=============================================================================
@@ -53,14 +55,16 @@ CoinWarmStartDual::generateDiff (const CoinWarmStart *const oldCWS) const
 
 void CoinWarmStartDual::applyDiff (const CoinWarmStartDiff *const cwsdDiff)
 {
-/*
-  Make sure we have a CoinWarmStartDualDiff
-*/
-  const CoinWarmStartDualDiff *diff =
-    dynamic_cast<const CoinWarmStartDualDiff *>(cwsdDiff) ;
-  if (!diff)
-  { throw CoinError("Diff not derived from CoinWarmStartDualDiff.",
-		    "applyDiff","CoinWarmStartDual") ; }
+    /*
+      Make sure we have a CoinWarmStartDualDiff
+    */
+    const CoinWarmStartDualDiff *diff =
+        dynamic_cast<const CoinWarmStartDualDiff *>(cwsdDiff) ;
+    if (!diff)
+    {
+        throw CoinError("Diff not derived from CoinWarmStartDualDiff.",
+                        "applyDiff","CoinWarmStartDual") ;
+    }
 
-  dual_.applyDiff(&diff->diff_);
+    dual_.applyDiff(&diff->diff_);
 }

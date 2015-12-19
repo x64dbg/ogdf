@@ -56,37 +56,42 @@ using namespace abacus;
 
 
 MaxPlanarEdgesConstraint::MaxPlanarEdgesConstraint(Master *master, int edgeBound, List<nodePair> &edges) :
-	Constraint(master, 0, CSense::Less, edgeBound, false, false, true)
+    Constraint(master, 0, CSense::Less, edgeBound, false, false, true)
 {
-	m_graphCons = false;
-	ListConstIterator<nodePair> it;
-	for (it=edges.begin(); it.valid(); ++it) {
-		m_edges.pushBack(*it);
-	}
+    m_graphCons = false;
+    ListConstIterator<nodePair> it;
+    for (it=edges.begin(); it.valid(); ++it)
+    {
+        m_edges.pushBack(*it);
+    }
 }
 
 MaxPlanarEdgesConstraint::MaxPlanarEdgesConstraint(Master *master, int edgeBound) :
-	Constraint(master, 0, CSense::Less, edgeBound, false, false, true)
+    Constraint(master, 0, CSense::Less, edgeBound, false, false, true)
 {
-	m_graphCons = true;
+    m_graphCons = true;
 }
 
 
 MaxPlanarEdgesConstraint::~MaxPlanarEdgesConstraint() {}
 
 
-double MaxPlanarEdgesConstraint::coeff(const Variable *v) const {
-	//TODO: speedup, we know between which nodepairs edges exist...
-	if (m_graphCons) return 1.0;
+double MaxPlanarEdgesConstraint::coeff(const Variable *v) const
+{
+    //TODO: speedup, we know between which nodepairs edges exist...
+    if (m_graphCons) return 1.0;
 
-	const EdgeVar *e = (const EdgeVar*)v;
-	ListConstIterator<nodePair> it;
-	for (it=m_edges.begin(); it.valid(); ++it) {
-		if ( ((*it).v1 == e->sourceNode() && (*it).v2 == e->targetNode()) ||
-			((*it).v1 == e->targetNode() && (*it).v2 == e->sourceNode()) )
-		{return 1.0;}
-	}
-	return 0.0;
+    const EdgeVar *e = (const EdgeVar*)v;
+    ListConstIterator<nodePair> it;
+    for (it=m_edges.begin(); it.valid(); ++it)
+    {
+        if ( ((*it).v1 == e->sourceNode() && (*it).v2 == e->targetNode()) ||
+                ((*it).v1 == e->targetNode() && (*it).v2 == e->sourceNode()) )
+        {
+            return 1.0;
+        }
+    }
+    return 0.0;
 }
 
 #endif // USE_ABACUS

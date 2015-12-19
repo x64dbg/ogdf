@@ -50,7 +50,7 @@ int receive_dbl_array PROTO((double *array, int size));
 int receive_float_array PROTO((float *array, int size));
 int receive_str PROTO((char *str));
 int spawn PROTO((char *task, char **argv, int flag, char *where, int ntask,
-		 int *tids));
+                 int *tids));
 int pstat PROTO((int tid));
 void kill_proc PROTO((int tid));
 void comm_exit PROTO((void));

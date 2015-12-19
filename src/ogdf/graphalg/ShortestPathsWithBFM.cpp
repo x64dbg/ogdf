@@ -41,7 +41,7 @@
  ***************************************************************/
 // Purpose:
 //   implementation of shortest path computation
-//	 via Bellman-Ford-Moore
+//   via Bellman-Ford-Moore
 //
 //   implementation follows Cormen/Leiserson/Rivest
 
@@ -51,43 +51,50 @@
 #include <ogdf/basic/EdgeArray.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	bool ShortestPathWithBFM::call
-	(
-		const Graph &G,						// directed graph
-		const node s,						// source node
-		const EdgeArray<int> &length,		// length of an edge
-		NodeArray<int> &d,					// contains shortest path distances after call
-		NodeArray<edge> &pi					// predecessors
-	)
-	{
-		const int infinity = 20000000;		// big number. danger. think about it.
+bool ShortestPathWithBFM::call
+(
+    const Graph &G,                     // directed graph
+    const node s,                       // source node
+    const EdgeArray<int> &length,       // length of an edge
+    NodeArray<int> &d,                  // contains shortest path distances after call
+    NodeArray<edge> &pi                 // predecessors
+)
+{
+    const int infinity = 20000000;      // big number. danger. think about it.
 
-		//Initialize-Single-Source(G, s):
-		node v; edge e;
-		forall_nodes (v, G) {
-			d[v] = infinity;
-			pi[v] = NULL;
-		}
-		d[s] = 0;
-		for (int i = 1; i < G.numberOfNodes(); ++i) {
-			forall_edges (e, G)	{
-			//relax(u, v, w): // e == (u, v), length == w
-				if (d[e->target()] > d[e->source()] + length[e]) {
-					d[e->target()] = d[e->source()] + length[e];
-					pi[e->target()] = e;
-				}
-			}
-		}
+    //Initialize-Single-Source(G, s):
+    node v;
+    edge e;
+    forall_nodes (v, G)
+    {
+        d[v] = infinity;
+        pi[v] = NULL;
+    }
+    d[s] = 0;
+    for (int i = 1; i < G.numberOfNodes(); ++i)
+    {
+        forall_edges (e, G)
+        {
+            //relax(u, v, w): // e == (u, v), length == w
+            if (d[e->target()] > d[e->source()] + length[e])
+            {
+                d[e->target()] = d[e->source()] + length[e];
+                pi[e->target()] = e;
+            }
+        }
+    }
 
-		//check for negative cycle:
-		forall_edges (e, G) {
-			if (d[e->target()] > d[e->source()] + length[e]) return false;
-		}
+    //check for negative cycle:
+    forall_edges (e, G)
+    {
+        if (d[e->target()] > d[e->source()] + length[e]) return false;
+    }
 
-		return true;
-	}
+    return true;
+}
 
 
 } // end namespace ogdf

@@ -60,50 +60,59 @@
 
 #include <ogdf/abacus/constraint.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-class ChunkConnection : public BaseConstraint {
+class ChunkConnection : public BaseConstraint
+{
 #ifdef OGDF_DEBUG
-	//Mainly for debugging output purposes
-	friend class MaxCPlanarMaster;
-	friend class MaxCPlanarSub;
-	friend class CPlanarMaster;
-	friend class CPlanarSub;
+    //Mainly for debugging output purposes
+    friend class MaxCPlanarMaster;
+    friend class MaxCPlanarSub;
+    friend class CPlanarMaster;
+    friend class CPlanarSub;
 #endif
 public:
 
-	ChunkConnection(abacus::Master *master, const ArrayBuffer<node>& chunk, const ArrayBuffer<node>& cochunk);
+    ChunkConnection(abacus::Master *master, const ArrayBuffer<node>& chunk, const ArrayBuffer<node>& cochunk);
 
-	virtual ~ChunkConnection();
+    virtual ~ChunkConnection();
 
-	// Computes and returns the coefficient for the given variable
-	virtual double coeff(const abacus::Variable *v) const {
-		const EdgeVar *ev = (const EdgeVar *)v;
-		//Safe for both clustered planarity testing and maximum c-planar subgraph
-		return (ev->theEdgeType() != EdgeVar::CONNECT) ? 0.0 : (double)coeff(ev->sourceNode(), ev->targetNode());
-	}
-	inline int coeff(const nodePair& n) const { return coeff(n.v1,n.v2); }
-	int coeff(node v1, node v2) const;
+    // Computes and returns the coefficient for the given variable
+    virtual double coeff(const abacus::Variable *v) const
+    {
+        const EdgeVar *ev = (const EdgeVar *)v;
+        //Safe for both clustered planarity testing and maximum c-planar subgraph
+        return (ev->theEdgeType() != EdgeVar::CONNECT) ? 0.0 : (double)coeff(ev->sourceNode(), ev->targetNode());
+    }
+    inline int coeff(const nodePair& n) const
+    {
+        return coeff(n.v1,n.v2);
+    }
+    int coeff(node v1, node v2) const;
 
-	void printMe(ostream& out) const {
-		out << "[ChunkCon: (";
-		int j;
-		forall_arrayindices(j,m_chunk) {
-			Logger::slout() << m_chunk[j] << ",";
-		}
-		out << "|";
-		forall_arrayindices(j,m_cochunk) {
-			Logger::slout() << m_cochunk[j] << ",";
-		}
-		out << ")]";
-	}
+    void printMe(ostream& out) const
+    {
+        out << "[ChunkCon: (";
+        int j;
+        forall_arrayindices(j,m_chunk)
+        {
+            Logger::slout() << m_chunk[j] << ",";
+        }
+        out << "|";
+        forall_arrayindices(j,m_cochunk)
+        {
+            Logger::slout() << m_cochunk[j] << ",";
+        }
+        out << ")]";
+    }
 
 private:
 
-	// The nodePairs corresponding to the constraint
-	Array<node> m_chunk;
-	Array<node> m_cochunk;
+    // The nodePairs corresponding to the constraint
+    Array<node> m_chunk;
+    Array<node> m_cochunk;
 };
 
 }

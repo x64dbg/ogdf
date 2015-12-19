@@ -16,42 +16,42 @@
 //#############################################################################
 
 #if defined(_MSC_VER)
-   typedef void (__cdecl *CoinSighandler_t) (int);
+typedef void (__cdecl *CoinSighandler_t) (int);
 #  define CoinSighandler_t_defined
 #endif
 
 //-----------------------------------------------------------------------------
 
 #if (defined(__GNUC__) && defined(__linux__))
-  typedef sighandler_t CoinSighandler_t;
+typedef sighandler_t CoinSighandler_t;
 # define CoinSighandler_t_defined
 #endif
 
 //-----------------------------------------------------------------------------
 
 #if defined(__CYGWIN__) && defined(__GNUC__)
-   typedef typeof(SIG_DFL) CoinSighandler_t;
+typedef typeof(SIG_DFL) CoinSighandler_t;
 #  define CoinSighandler_t_defined
 #endif
 
 //-----------------------------------------------------------------------------
 
 #if defined(__MINGW32__) && defined(__GNUC__)
-   typedef typeof(SIG_DFL) CoinSighandler_t;
+typedef typeof(SIG_DFL) CoinSighandler_t;
 #  define CoinSighandler_t_defined
 #endif
 
 //-----------------------------------------------------------------------------
 
 #if defined(__FreeBSD__) && defined(__GNUC__)
-   typedef typeof(SIG_DFL) CoinSighandler_t;
+typedef typeof(SIG_DFL) CoinSighandler_t;
 #  define CoinSighandler_t_defined
 #endif
 
 //-----------------------------------------------------------------------------
 
 #if defined(__NetBSD__) && defined(__GNUC__)
-   typedef typeof(SIG_DFL) CoinSighandler_t;
+typedef typeof(SIG_DFL) CoinSighandler_t;
 #  define CoinSighandler_t_defined
 #endif
 
@@ -59,7 +59,7 @@
 
 #if defined(_AIX)
 #  if defined(__GNUC__)
-      typedef typeof(SIG_DFL) CoinSighandler_t;
+typedef typeof(SIG_DFL) CoinSighandler_t;
 #     define CoinSighandler_t_defined
 #  endif
 #endif
@@ -69,11 +69,11 @@
 #if defined (__hpux)
 #  define CoinSighandler_t_defined
 #  if defined(__GNUC__)
-      typedef typeof(SIG_DFL) CoinSighandler_t;
+typedef typeof(SIG_DFL) CoinSighandler_t;
 #  else
-      extern "C" {
-         typedef void (*CoinSighandler_t) (int);
-      }
+extern "C" {
+    typedef void (*CoinSighandler_t) (int);
+}
 #  endif
 #endif
 
@@ -82,13 +82,13 @@
 #if defined(__sun)
 #  if defined(__SUNPRO_CC)
 #     include <signal.h>
-      extern "C" {
-         typedef void (*CoinSighandler_t) (int);
-      }
+extern "C" {
+    typedef void (*CoinSighandler_t) (int);
+}
 #     define CoinSighandler_t_defined
 #  endif
 #  if defined(__GNUC__)
-      typedef typeof(SIG_DFL) CoinSighandler_t;
+typedef typeof(SIG_DFL) CoinSighandler_t;
 #     define CoinSighandler_t_defined
 #  endif
 #endif
@@ -97,9 +97,9 @@
 
 #if defined(__MACH__) && defined(__GNUC__)
 #if defined(__clang__)
-	  typedef void(*CoinSighandler_t)(int);
+typedef void(*CoinSighandler_t)(int);
 #else
-	  typedef typeof(SIG_DFL) CoinSighandler_t;
+typedef typeof(SIG_DFL) CoinSighandler_t;
 #endif
 #define CoinSighandler_t_defined
 #endif
@@ -111,9 +111,9 @@
 #  warning("extern "C" {")
 #  warning("   typedef void (*CoinSighandler_t) (int);")
 #  warning("}")
-   extern "C" {
-      typedef void (*CoinSighandler_t) (int);
-   }
+extern "C" {
+    typedef void (*CoinSighandler_t) (int);
+}
 #endif
 
 //#############################################################################

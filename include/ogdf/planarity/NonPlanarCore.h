@@ -56,10 +56,11 @@
 #include <ogdf/basic/EdgeArray.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class OGDF_EXPORT SPQRTree;
-	class OGDF_EXPORT Skeleton;
+class OGDF_EXPORT SPQRTree;
+class OGDF_EXPORT Skeleton;
 
 
 //---------------------------------------------------------
@@ -68,31 +69,55 @@ namespace ogdf {
 class OGDF_EXPORT NonPlanarCore
 {
 public:
-	NonPlanarCore(const Graph &G);
+    NonPlanarCore(const Graph &G);
 
-	const Graph &core() const { return m_graph; }
-	const Graph &originalGraph() const { return *m_pOriginal; }
+    const Graph &core() const
+    {
+        return m_graph;
+    }
+    const Graph &originalGraph() const
+    {
+        return *m_pOriginal;
+    }
 
-	node original(node v) const { return m_orig[v]; }
+    node original(node v) const
+    {
+        return m_orig[v];
+    }
 
-	bool isVirtual(edge e) const { return m_real[e] == 0; }
-	edge realEdge(edge e) const { return m_real[e]; }
+    bool isVirtual(edge e) const
+    {
+        return m_real[e] == 0;
+    }
+    edge realEdge(edge e) const
+    {
+        return m_real[e];
+    }
 
-	const EdgeArray<int> &cost() const { return m_cost; }
-	int cost(edge e) const { return m_cost[e]; }
-	const List<edge> &mincut(edge e) const { return m_mincut[e]; }
+    const EdgeArray<int> &cost() const
+    {
+        return m_cost;
+    }
+    int cost(edge e) const
+    {
+        return m_cost[e];
+    }
+    const List<edge> &mincut(edge e) const
+    {
+        return m_mincut[e];
+    }
 
 protected:
-	void markCore(const SPQRTree &T, NodeArray<bool> &mark);
-	void traversingPath(Skeleton &S, edge eS, List<edge> &path, NodeArray<node> &mapV);
+    void markCore(const SPQRTree &T, NodeArray<bool> &mark);
+    void traversingPath(Skeleton &S, edge eS, List<edge> &path, NodeArray<node> &mapV);
 
-	Graph m_graph;
-	const Graph *m_pOriginal;
+    Graph m_graph;
+    const Graph *m_pOriginal;
 
-	NodeArray<node> m_orig;  // corresp. original node
-	EdgeArray<edge> m_real;  // corresp. original edge (0 if virtual)
-	EdgeArray<List<edge> > m_mincut;  // traversing path for an edge in the core
-	EdgeArray<int> m_cost;
+    NodeArray<node> m_orig;  // corresp. original node
+    EdgeArray<edge> m_real;  // corresp. original edge (0 if virtual)
+    EdgeArray<List<edge> > m_mincut;  // traversing path for an edge in the core
+    EdgeArray<int> m_cost;
 }; // class NonPlanarCore
 
 

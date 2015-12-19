@@ -48,36 +48,37 @@
 #include <ogdf/fileformats/Ogml.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 bool Constraint::buildFromOgml(XmlTagObject* constraintTag, Hashing <string, node> * nodes)
 {
-	return true;
+    return true;
 }
 
 bool Constraint::storeToOgml(int id, ostream & os, int indentStep)
 {
-	return true;
+    return true;
 }
 
 /*
 void Constraint::generateIndent(char ** indent, const int & indentSize)
 {
-	// free memory block (INFO: indent must point to an array of chars or to NULL)
-	delete [] *indent;
-	// instantiate array of chars
-	*indent = new char[indentSize + 1];
-	// if memory couldn't be allocated, we throw an exception
-	if (!*indent) {
-		OGDF_THROW(InsufficientMemoryException); // don't use regular throw!
-	}
-	// fill char array
-	for(int i = 0; i < indentSize; ++i) {
-		(*indent)[i] = INDENTCHAR;
-	}
-	// terminate string
-	(*indent)[indentSize] = '\0';
+    // free memory block (INFO: indent must point to an array of chars or to NULL)
+    delete [] *indent;
+    // instantiate array of chars
+    *indent = new char[indentSize + 1];
+    // if memory couldn't be allocated, we throw an exception
+    if (!*indent) {
+        OGDF_THROW(InsufficientMemoryException); // don't use regular throw!
+    }
+    // fill char array
+    for(int i = 0; i < indentSize; ++i) {
+        (*indent)[i] = INDENTCHAR;
+    }
+    // terminate string
+    (*indent)[indentSize] = '\0';
 }*/
 
 } //end namespace ogdf

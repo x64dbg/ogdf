@@ -30,7 +30,7 @@
 # include <BaseTsd.h>
 # define COIN_INT64_T INT64
 # define COIN_UINT64_T UINT64
-  /* Define to integer type capturing pointer */
+/* Define to integer type capturing pointer */
 # define COIN_INTPTR_T ULONG_PTR
 #else
 # define COIN_INT64_T long long

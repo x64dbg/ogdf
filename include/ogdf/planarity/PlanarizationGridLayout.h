@@ -57,7 +57,8 @@
 #include <ogdf/module/CCLayoutPackModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -115,97 +116,103 @@ namespace ogdf {
 class OGDF_EXPORT PlanarizationGridLayout : public GridLayoutModule
 {
 public:
-	//! Creates an instance of planarization layout and sets options to default values.
-	PlanarizationGridLayout();
+    //! Creates an instance of planarization layout and sets options to default values.
+    PlanarizationGridLayout();
 
-	~PlanarizationGridLayout() { }
+    ~PlanarizationGridLayout() { }
 
-	/**
-	 *  @name Optional parameters
-	 *  @{
-	 */
+    /**
+     *  @name Optional parameters
+     *  @{
+     */
 
-	/**
-	 * \brief Returns the current setting of option pageRatio.
-	 *
-	 * This option specifies the desired ration width / height of the computed
-	 * layout. It is currently only used for packing connected components.
-	 */
-	double pageRatio() const {
-		return m_pageRatio;
-	}
+    /**
+     * \brief Returns the current setting of option pageRatio.
+     *
+     * This option specifies the desired ration width / height of the computed
+     * layout. It is currently only used for packing connected components.
+     */
+    double pageRatio() const
+    {
+        return m_pageRatio;
+    }
 
-	//! Sets the option pageRatio to \a ratio.
-	void pageRatio(double ratio) {
-		m_pageRatio = ratio;
-	}
+    //! Sets the option pageRatio to \a ratio.
+    void pageRatio(double ratio)
+    {
+        m_pageRatio = ratio;
+    }
 
-	/** @}
-	 *  @name Module options
-	 *  @{
-	 */
+    /** @}
+     *  @name Module options
+     *  @{
+     */
 
-	//! Sets the module option for crossing minimization.
-	void setCrossMin(CrossingMinimizationModule *pCrossMin) {
-		m_crossMin.set(pCrossMin);
-	}
-
-
-	/**
-	 * \brief Sets the module option for the planar grid layout algorithm.
-	 *
-	 * The planar layout algorithm is used to compute a planar layout
-	 * of the planarized representation resulting from the crossing
-	 * minimization step. Planarized representation means that edge crossings
-	 * are replaced by dummy nodes of degree four, so the actual layout
-	 * algorithm obtains a planar graph as input. By default, the planar
-	 * layout algorithm produces an orthogonal drawing.
-	 */
-	void setPlanarLayouter(GridLayoutPlanRepModule *pPlanarLayouter) {
-		m_planarLayouter.set(pPlanarLayouter);
-	}
-
-	/**
-	 * \brief Sets the module option for the arrangement of connected components.
-	 *
-	 * The planarization layout algorithm draws each connected component of
-	 * the input graph seperately, and then arranges the resulting drawings
-	 * using a packing algorithm.
-	 */
-	void setPacker(CCLayoutPackModule *pPacker) {
-		m_packer.set(pPacker);
-	}
+    //! Sets the module option for crossing minimization.
+    void setCrossMin(CrossingMinimizationModule *pCrossMin)
+    {
+        m_crossMin.set(pCrossMin);
+    }
 
 
-	/** @}
-	 *  @name Further information
-	 *  @{
-	 */
+    /**
+     * \brief Sets the module option for the planar grid layout algorithm.
+     *
+     * The planar layout algorithm is used to compute a planar layout
+     * of the planarized representation resulting from the crossing
+     * minimization step. Planarized representation means that edge crossings
+     * are replaced by dummy nodes of degree four, so the actual layout
+     * algorithm obtains a planar graph as input. By default, the planar
+     * layout algorithm produces an orthogonal drawing.
+     */
+    void setPlanarLayouter(GridLayoutPlanRepModule *pPlanarLayouter)
+    {
+        m_planarLayouter.set(pPlanarLayouter);
+    }
 
-	//! Returns the number of crossings in computed layout.
-	int numberOfCrossings() const {
-		return m_nCrossings;
-	}
+    /**
+     * \brief Sets the module option for the arrangement of connected components.
+     *
+     * The planarization layout algorithm draws each connected component of
+     * the input graph seperately, and then arranges the resulting drawings
+     * using a packing algorithm.
+     */
+    void setPacker(CCLayoutPackModule *pPacker)
+    {
+        m_packer.set(pPacker);
+    }
 
-	//! @}
+
+    /** @}
+     *  @name Further information
+     *  @{
+     */
+
+    //! Returns the number of crossings in computed layout.
+    int numberOfCrossings() const
+    {
+        return m_nCrossings;
+    }
+
+    //! @}
 
 protected:
-	void doCall(const Graph &G, GridLayout &gridLayout, IPoint &boundingBox);
+    void doCall(const Graph &G, GridLayout &gridLayout, IPoint &boundingBox);
 
 
 private:
-	//! The module for computing a planar subgraph.
-	ModuleOption<CrossingMinimizationModule> m_crossMin;
+    //! The module for computing a planar subgraph.
+    ModuleOption<CrossingMinimizationModule> m_crossMin;
 
-	//! The module for computing a planar grid layout.
-	ModuleOption<GridLayoutPlanRepModule> m_planarLayouter;
+    //! The module for computing a planar grid layout.
+    ModuleOption<GridLayoutPlanRepModule> m_planarLayouter;
 
-	//! The module for arranging connected components.
-	ModuleOption<CCLayoutPackModule>      m_packer;
+    //! The module for arranging connected components.
+    ModuleOption<CCLayoutPackModule>      m_packer;
 
-	double m_pageRatio; //!< The desired page ratio.
+    double m_pageRatio; //!< The desired page ratio.
 
-	int m_nCrossings; //!< The number of crossings in the computed layout.
+    int m_nCrossings; //!< The number of crossings in the computed layout.
 };
 
 

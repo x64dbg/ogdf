@@ -55,58 +55,66 @@
 #include <ogdf/basic/GraphAttributes.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 //---------------------------------------------------------
 // GraphCopyAttributes
 // manages access on copy of an attributed graph
 //---------------------------------------------------------
-class OGDF_EXPORT GraphCopyAttributes {
+class OGDF_EXPORT GraphCopyAttributes
+{
 
-	const GraphCopy *m_pGC;
-	GraphAttributes *m_pAG;
-	NodeArray<double> m_x, m_y;
+    const GraphCopy *m_pGC;
+    GraphAttributes *m_pAG;
+    NodeArray<double> m_x, m_y;
 
 public:
-	// construction
-	GraphCopyAttributes(const GraphCopy &GC, GraphAttributes &AG) :
-		m_pGC(&GC), m_pAG(&AG), m_x(GC,0), m_y(GC,0) { }
+    // construction
+    GraphCopyAttributes(const GraphCopy &GC, GraphAttributes &AG) :
+        m_pGC(&GC), m_pAG(&AG), m_x(GC,0), m_y(GC,0) { }
 
-	// destruction
-	~GraphCopyAttributes() { }
+    // destruction
+    ~GraphCopyAttributes() { }
 
-	// returns width of node v
-	double getWidth(node v) const {
-		return (m_pGC->isDummy(v) ? 0.0 : m_pAG->width(m_pGC->original(v)));
-	}
+    // returns width of node v
+    double getWidth(node v) const
+    {
+        return (m_pGC->isDummy(v) ? 0.0 : m_pAG->width(m_pGC->original(v)));
+    }
 
-	// returns height of node v
-	double getHeight(node v) const {
-		return (m_pGC->isDummy(v) ? 0.0 : m_pAG->height(m_pGC->original(v)));
-	}
+    // returns height of node v
+    double getHeight(node v) const
+    {
+        return (m_pGC->isDummy(v) ? 0.0 : m_pAG->height(m_pGC->original(v)));
+    }
 
-	// returns reference to x-coord. of node v
-	const double &x(node v) const {
-		return m_x[v];
-	}
+    // returns reference to x-coord. of node v
+    const double &x(node v) const
+    {
+        return m_x[v];
+    }
 
-	// returns reference to x-coord. of node v
-	double &x(node v) {
-		return m_x[v];
-	}
+    // returns reference to x-coord. of node v
+    double &x(node v)
+    {
+        return m_x[v];
+    }
 
-	// returns reference to y-coord. of node v
-	const double &y(node v) const {
-		return m_y[v];
-	}
+    // returns reference to y-coord. of node v
+    const double &y(node v) const
+    {
+        return m_y[v];
+    }
 
-	// returns reference to y-coord. of node v
-	double &y(node v) {
-		return m_y[v];
-	}
+    // returns reference to y-coord. of node v
+    double &y(node v)
+    {
+        return m_y[v];
+    }
 
-	// sets attributes for the original graph in AG
-	void transform();
+    // sets attributes for the original graph in AG
+    void transform();
 };
 
 

@@ -18,8 +18,9 @@
 /*===========================================================================*/
 /*===========================================================================*/
 
-static int cmpint(const void *p1, const void *p2){
-   return (*((int *)p1) - *((int *)p2));
+static int cmpint(const void *p1, const void *p2)
+{
+    return (*((int *)p1) - *((int *)p2));
 }
 
 /*===========================================================================*/
@@ -27,7 +28,7 @@ static int cmpint(const void *p1, const void *p2){
 
 void qsort_i(int *bot, int nmemb)
 {
-  qsort (bot, nmemb, sizeof(int), cmpint);
+    qsort (bot, nmemb, sizeof(int), cmpint);
 }
 
 /*===========================================================================*/
@@ -35,7 +36,7 @@ void qsort_i(int *bot, int nmemb)
 
 void qsort_id(int *bot, double *botd, int nmemb)
 {
-   CoinSort_2(bot, bot+nmemb, botd);
+    CoinSort_2(bot, bot+nmemb, botd);
 }
 
 /*===========================================================================*/
@@ -43,7 +44,7 @@ void qsort_id(int *bot, double *botd, int nmemb)
 
 void qsort_ic(int *bot, char *botc, int nmemb)
 {
-   CoinSort_2(bot, bot+nmemb, botc);
+    CoinSort_2(bot, bot+nmemb, botc);
 }
 
 /*===========================================================================*/
@@ -51,7 +52,7 @@ void qsort_ic(int *bot, char *botc, int nmemb)
 
 void qsort_ii(int *bot, int *bota, int nmemb)
 {
-   CoinSort_2(bot, bot+nmemb, bota);
+    CoinSort_2(bot, bot+nmemb, bota);
 }
 
 /*===========================================================================*/
@@ -59,7 +60,7 @@ void qsort_ii(int *bot, int *bota, int nmemb)
 
 void qsort_di(double *botd, int *boti, int nmemb)
 {
-   CoinSort_2(botd, botd+nmemb, boti);
+    CoinSort_2(botd, botd+nmemb, boti);
 }
 
 /*===========================================================================*/
@@ -69,36 +70,45 @@ void qsort_di(double *botd, int *boti, int nmemb)
 
 int sym_gcd(int i1, int i2)
 {
-   int i;
-   if (i1==0 && i2==0) {
-      return 0;
-   }
+    int i;
+    if (i1==0 && i2==0)
+    {
+        return 0;
+    }
 
-   if (i1<0) {
-      i1 = -1*i1;
-   }
+    if (i1<0)
+    {
+        i1 = -1*i1;
+    }
 
-   if (i2<0) {
-      i2 = -1*i2;
-   }
+    if (i2<0)
+    {
+        i2 = -1*i2;
+    }
 
-   if (i1==0) {
-      return i2;
-   }
-   if (i2==0) {
-      return i1;
-   }
+    if (i1==0)
+    {
+        return i2;
+    }
+    if (i2==0)
+    {
+        return i1;
+    }
 
-   while(1) {
-      i = i2%i1;
-      if (i==0) {
-         return i1;
-      } else {
-         i2 = i1;
-         i1 = i;
-      }
-   }
-   return 0;
+    while(1)
+    {
+        i = i2%i1;
+        if (i==0)
+        {
+            return i1;
+        }
+        else
+        {
+            i2 = i1;
+            i1 = i;
+        }
+    }
+    return 0;
 }
 
 /*===========================================================================*/

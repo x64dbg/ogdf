@@ -56,36 +56,40 @@
 #include <string>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-namespace gdf {
+namespace gdf
+{
 
 
-enum NodeAttribute {
-	// GDF standard
-	na_name = 0,
-	na_label,
-	na_x, na_y, na_z,
-	na_fillColor, na_strokeColor,
-	na_shape,
-	na_width, na_height,
-	// OGDF specific
-	na_template,
-	na_weight,
-	na_unknown
+enum NodeAttribute
+{
+    // GDF standard
+    na_name = 0,
+    na_label,
+    na_x, na_y, na_z,
+    na_fillColor, na_strokeColor,
+    na_shape,
+    na_width, na_height,
+    // OGDF specific
+    na_template,
+    na_weight,
+    na_unknown
 };
 
 
-enum EdgeAttribute {
-	// GDF standard
-	ea_label = 0,
-	ea_source, ea_target,
-	ea_weight,
-	ea_directed,
-	ea_color,
-	// OGDF specific
-	ea_bends,
-	ea_unknown
+enum EdgeAttribute
+{
+    // GDF standard
+    ea_label = 0,
+    ea_source, ea_target,
+    ea_weight,
+    ea_directed,
+    ea_color,
+    // OGDF specific
+    ea_bends,
+    ea_unknown
 };
 
 

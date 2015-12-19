@@ -52,7 +52,8 @@
 #include <ogdf/basic/Module.h>
 #include <ogdf/basic/Timeouter.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 /**
  * \brief Base class for embedder algorithms.
@@ -62,25 +63,29 @@ namespace ogdf {
  *
  * \see PlanarizationLayout, PlanarizationGridLayout
  */
-class OGDF_EXPORT EmbedderModule : public Module, public Timeouter {
+class OGDF_EXPORT EmbedderModule : public Module, public Timeouter
+{
 public:
-	//! Initializes an embedder module.
-	EmbedderModule() { }
+    //! Initializes an embedder module.
+    EmbedderModule() { }
 
-	virtual ~EmbedderModule() { }
+    virtual ~EmbedderModule() { }
 
-	/**
-	 * \brief Calls the embedder algorithm for graph \a G.
-	 * \param G is the graph that shall be embedded.
-	 * \param adjExternal is set (by the algorithm) to an adjacency entry on the
-	 *        external face of \a G.
-	 */
-	virtual void call(Graph& G, adjEntry& adjExternal) = 0;
+    /**
+     * \brief Calls the embedder algorithm for graph \a G.
+     * \param G is the graph that shall be embedded.
+     * \param adjExternal is set (by the algorithm) to an adjacency entry on the
+     *        external face of \a G.
+     */
+    virtual void call(Graph& G, adjEntry& adjExternal) = 0;
 
-	//! Calls the embedder algorithm for planarized representation \a PG.
-	void operator()(Graph& G, adjEntry& adjExternal) { call(G, adjExternal); }
+    //! Calls the embedder algorithm for planarized representation \a PG.
+    void operator()(Graph& G, adjEntry& adjExternal)
+    {
+        call(G, adjExternal);
+    }
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 } // end namespace ogdf

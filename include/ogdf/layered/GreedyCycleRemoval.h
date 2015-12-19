@@ -54,7 +54,8 @@
 #include <ogdf/basic/NodeArray.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //! Greedy algorithm for computing a maximal acyclic subgraph.
@@ -62,20 +63,21 @@ namespace ogdf {
  * The algorithm applies a greedy heuristic to compute a maximal
  * acyclic subgraph and works in linear-time.
  */
-class OGDF_EXPORT GreedyCycleRemoval : public AcyclicSubgraphModule {
+class OGDF_EXPORT GreedyCycleRemoval : public AcyclicSubgraphModule
+{
 public:
-	//! Computes the set of edges \a arcSet, which have to be deleted in the acyclic subgraph.
-	void call (const Graph &G, List<edge> &arcSet);
+    //! Computes the set of edges \a arcSet, which have to be deleted in the acyclic subgraph.
+    void call (const Graph &G, List<edge> &arcSet);
 
 private:
-	void dfs (node v, const Graph &G);
+    void dfs (node v, const Graph &G);
 
-	int m_min, m_max, m_counter;
+    int m_min, m_max, m_counter;
 
-	NodeArray<int> m_in, m_out, m_index;
-	Array<ListPure<node> > m_B;
-	NodeArray<ListIterator<node> > m_item;
-	NodeArray<bool> m_visited;
+    NodeArray<int> m_in, m_out, m_index;
+    Array<ListPure<node> > m_B;
+    NodeArray<ListIterator<node> > m_item;
+    NodeArray<bool> m_visited;
 };
 
 

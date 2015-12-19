@@ -55,17 +55,18 @@
 #include <ogdf/basic/Math.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-	class OGDF_EXPORT GraphCopy;
-	class OGDF_EXPORT GraphCopyAttributes;
+class OGDF_EXPORT GraphCopy;
+class OGDF_EXPORT GraphCopyAttributes;
 
 //---------------------------------------------------------
 // GEMLayout
 //
 // Fast force-directed layout algorithm. See
 // - A. Frick, A. Ludwig, H. Mehldau: "A Fast Adaptive
-//	 Layout Algorithm for Undirected Graphs"
+//   Layout Algorithm for Undirected Graphs"
 //
 //---------------------------------------------------------
 
@@ -128,184 +129,242 @@ namespace ogdf {
 class OGDF_EXPORT GEMLayout : public LayoutModule
 {
 
-	// algorithm parameters (see below)
+    // algorithm parameters (see below)
 
-	int m_numberOfRounds;		    //!< The maximal number of rounds per node.
-	double m_minimalTemperature;    //!< The minimal temperature.
-	double m_initialTemperature;    //!< The initial temperature.
-	double m_gravitationalConstant; //!< The gravitational constant.
-	double m_desiredLength;         //!< The desired edge length.
-	double m_maximalDisturbance;	//!< The maximal disturbance.
-	double m_rotationAngle;         //!< The opening angle for rotations.
-	double m_oscillationAngle;      //!< The opening angle for oscillations.
-	double m_rotationSensitivity;   //!< The rotation sensitivity.
-	double m_oscillationSensitivity;//!< The oscillation sensitivity.
-	int m_attractionFormula;        //!< The used formula for attraction.
-	double m_minDistCC;             //!< The minimal distance between connected components.
-	double m_pageRatio;             //!< The page ratio used for the layout of connected components.
+    int m_numberOfRounds;           //!< The maximal number of rounds per node.
+    double m_minimalTemperature;    //!< The minimal temperature.
+    double m_initialTemperature;    //!< The initial temperature.
+    double m_gravitationalConstant; //!< The gravitational constant.
+    double m_desiredLength;         //!< The desired edge length.
+    double m_maximalDisturbance;    //!< The maximal disturbance.
+    double m_rotationAngle;         //!< The opening angle for rotations.
+    double m_oscillationAngle;      //!< The opening angle for oscillations.
+    double m_rotationSensitivity;   //!< The rotation sensitivity.
+    double m_oscillationSensitivity;//!< The oscillation sensitivity.
+    int m_attractionFormula;        //!< The used formula for attraction.
+    double m_minDistCC;             //!< The minimal distance between connected components.
+    double m_pageRatio;             //!< The page ratio used for the layout of connected components.
 
-	// node data used by the algorithm
+    // node data used by the algorithm
 
-	NodeArray<double> m_impulseX; //!< x-coordinate of the last impulse of the node
-	NodeArray<double> m_impulseY; //!< y-coordinate of the last impulse of the node
-	NodeArray<double> m_localTemperature; //!< local temperature of the node
-	NodeArray<double> m_skewGauge; //!< skew gauge of the node
+    NodeArray<double> m_impulseX; //!< x-coordinate of the last impulse of the node
+    NodeArray<double> m_impulseY; //!< y-coordinate of the last impulse of the node
+    NodeArray<double> m_localTemperature; //!< local temperature of the node
+    NodeArray<double> m_skewGauge; //!< skew gauge of the node
 
-	// other data used by the algorithm
+    // other data used by the algorithm
 
-	double m_barycenterX; //!< Weighted sum of x-coordinates of all nodes.
-	double m_barycenterY; //!< Weighted sum of y-coordinates of all nodes.
-	double m_newImpulseX; //!< x-coordinate of the new impulse of the current node.
-	double m_newImpulseY; //!< y-coordinate of the new impulse of the current node.
-	double m_globalTemperature; //!< Average of all node temperatures.
-	double m_cos; //!< Cosine of m_oscillationAngle / 2.
-	double m_sin; //!< Sine of (pi + m_rotationAngle) / 2.
+    double m_barycenterX; //!< Weighted sum of x-coordinates of all nodes.
+    double m_barycenterY; //!< Weighted sum of y-coordinates of all nodes.
+    double m_newImpulseX; //!< x-coordinate of the new impulse of the current node.
+    double m_newImpulseY; //!< y-coordinate of the new impulse of the current node.
+    double m_globalTemperature; //!< Average of all node temperatures.
+    double m_cos; //!< Cosine of m_oscillationAngle / 2.
+    double m_sin; //!< Sine of (pi + m_rotationAngle) / 2.
 
 public:
 
-	//! Creates an instance of GEM layout.
-	GEMLayout();
+    //! Creates an instance of GEM layout.
+    GEMLayout();
 
-	//! Copy constructor.
-	GEMLayout(const GEMLayout &fl);
+    //! Copy constructor.
+    GEMLayout(const GEMLayout &fl);
 
-	// destructor
-	~GEMLayout();
+    // destructor
+    ~GEMLayout();
 
-	//! Assignment operator.
-	GEMLayout &operator=(const GEMLayout &fl);
+    //! Assignment operator.
+    GEMLayout &operator=(const GEMLayout &fl);
 
-	//! Calls the layout algorithm for graph attributes \a GA.
-	void call(GraphAttributes &GA);
+    //! Calls the layout algorithm for graph attributes \a GA.
+    void call(GraphAttributes &GA);
 
-	//! Returns the maximal number of rounds per node.
-	int numberOfRounds() const { return m_numberOfRounds; }
+    //! Returns the maximal number of rounds per node.
+    int numberOfRounds() const
+    {
+        return m_numberOfRounds;
+    }
 
-	//! Sets the maximal number of round per node to \a n.
-	void numberOfRounds(int n) {
-		m_numberOfRounds = (n < 0) ? 0 : n;
-	}
+    //! Sets the maximal number of round per node to \a n.
+    void numberOfRounds(int n)
+    {
+        m_numberOfRounds = (n < 0) ? 0 : n;
+    }
 
-	//! Returns the minimal temperature.
-	double minimalTemperature() const { return m_minimalTemperature; }
+    //! Returns the minimal temperature.
+    double minimalTemperature() const
+    {
+        return m_minimalTemperature;
+    }
 
-	//! Sets the minimal temperature to \a x.
-	void minimalTemperature(double x) {
-		m_minimalTemperature = (x < 0) ? 0 : x;
-	}
+    //! Sets the minimal temperature to \a x.
+    void minimalTemperature(double x)
+    {
+        m_minimalTemperature = (x < 0) ? 0 : x;
+    }
 
-	//! Returns the initial temperature.
-	double initialTemperature() const { return m_initialTemperature; }
+    //! Returns the initial temperature.
+    double initialTemperature() const
+    {
+        return m_initialTemperature;
+    }
 
-	//! Sets the initial temperature to \a x; must be >= minimalTemperature.
-	void initialTemperature(double x) {
-		m_initialTemperature = (x < m_minimalTemperature) ? m_minimalTemperature : x;
-	}
+    //! Sets the initial temperature to \a x; must be >= minimalTemperature.
+    void initialTemperature(double x)
+    {
+        m_initialTemperature = (x < m_minimalTemperature) ? m_minimalTemperature : x;
+    }
 
-	//! Returns the gravitational constant.
-	double gravitationalConstant() const { return m_gravitationalConstant; }
+    //! Returns the gravitational constant.
+    double gravitationalConstant() const
+    {
+        return m_gravitationalConstant;
+    }
 
-	//! Sets the gravitational constant to \a x; must be >= 0.
-	//! Attention! Only (very) small values give acceptable results.
-	void gravitationalConstant(double x) {
-		m_gravitationalConstant = (x < 0) ? 0 : x;
-	}
+    //! Sets the gravitational constant to \a x; must be >= 0.
+    //! Attention! Only (very) small values give acceptable results.
+    void gravitationalConstant(double x)
+    {
+        m_gravitationalConstant = (x < 0) ? 0 : x;
+    }
 
-	//! Returns the desired edge length.
-	double desiredLength() const { return m_desiredLength; }
+    //! Returns the desired edge length.
+    double desiredLength() const
+    {
+        return m_desiredLength;
+    }
 
-	//! Sets the desired edge length to \a x; must be >= 0.
-	void desiredLength(double x) {
-		m_desiredLength = (x < 0) ? 0 : x;
-	}
+    //! Sets the desired edge length to \a x; must be >= 0.
+    void desiredLength(double x)
+    {
+        m_desiredLength = (x < 0) ? 0 : x;
+    }
 
-	//! Returns the maximal disturbance.
-	double maximalDisturbance() const { return m_maximalDisturbance; }
+    //! Returns the maximal disturbance.
+    double maximalDisturbance() const
+    {
+        return m_maximalDisturbance;
+    }
 
-	//! Sets the maximal disturbance to \a x; must be >= 0.
-	void maximalDisturbance(double x) {
-		m_maximalDisturbance = (x < 0) ? 0 : x;
-	}
+    //! Sets the maximal disturbance to \a x; must be >= 0.
+    void maximalDisturbance(double x)
+    {
+        m_maximalDisturbance = (x < 0) ? 0 : x;
+    }
 
-	//! Returns the opening angle for rotations.
-	double rotationAngle() const { return m_rotationAngle; }
+    //! Returns the opening angle for rotations.
+    double rotationAngle() const
+    {
+        return m_rotationAngle;
+    }
 
-	//! Sets the opening angle for rotations to \a x (0 <= \a x <= pi / 2).
-	void rotationAngle(double x) {
-		if(x < 0) x = 0;
-		if(x > Math::pi / 2.0) x = Math::pi / 2.0;
-		m_rotationAngle = x;
-	}
+    //! Sets the opening angle for rotations to \a x (0 <= \a x <= pi / 2).
+    void rotationAngle(double x)
+    {
+        if(x < 0) x = 0;
+        if(x > Math::pi / 2.0) x = Math::pi / 2.0;
+        m_rotationAngle = x;
+    }
 
-	//! Returns the opening angle for oscillations.
-	double oscillationAngle() const { return m_oscillationAngle; }
+    //! Returns the opening angle for oscillations.
+    double oscillationAngle() const
+    {
+        return m_oscillationAngle;
+    }
 
-	//! Sets the opening angle for oscillations to \a x (0 <= \a x <= pi / 2).
-	void oscillationAngle(double x) {
-		if(x < 0) x = 0;
-		if(x > Math::pi / 2.0) x = Math::pi / 2.0;
-		m_oscillationAngle = x;
-	}
+    //! Sets the opening angle for oscillations to \a x (0 <= \a x <= pi / 2).
+    void oscillationAngle(double x)
+    {
+        if(x < 0) x = 0;
+        if(x > Math::pi / 2.0) x = Math::pi / 2.0;
+        m_oscillationAngle = x;
+    }
 
-	//! Returns the rotation sensitivity.
-	double rotationSensitivity() const { return m_rotationSensitivity; }
+    //! Returns the rotation sensitivity.
+    double rotationSensitivity() const
+    {
+        return m_rotationSensitivity;
+    }
 
-	//! Sets the rotation sensitivity to \a x (0 <= \a x <= 1).
-	void rotationSensitivity(double x) {
-		if(x < 0) x = 0;
-		if(x > 1) x = 1;
-		m_rotationSensitivity = x;
-	}
+    //! Sets the rotation sensitivity to \a x (0 <= \a x <= 1).
+    void rotationSensitivity(double x)
+    {
+        if(x < 0) x = 0;
+        if(x > 1) x = 1;
+        m_rotationSensitivity = x;
+    }
 
-	//! Returns the oscillation sensitivity.
-	double oscillationSensitivity() const { return m_oscillationSensitivity; }
+    //! Returns the oscillation sensitivity.
+    double oscillationSensitivity() const
+    {
+        return m_oscillationSensitivity;
+    }
 
-	//! Sets the oscillation sensitivity to \a x (0 <= \a x <= 1).
-	void oscillationSensitivity(double x) {
-		if(x < 0) x = 0;
-		if(x > 1) x = 1;
-		m_oscillationSensitivity = x;
-	}
+    //! Sets the oscillation sensitivity to \a x (0 <= \a x <= 1).
+    void oscillationSensitivity(double x)
+    {
+        if(x < 0) x = 0;
+        if(x > 1) x = 1;
+        m_oscillationSensitivity = x;
+    }
 
-	//! Returns the used formula for attraction (1 = Fruchterman / Reingold, 2 = GEM).
-	int attractionFormula() const { return m_attractionFormula; }
+    //! Returns the used formula for attraction (1 = Fruchterman / Reingold, 2 = GEM).
+    int attractionFormula() const
+    {
+        return m_attractionFormula;
+    }
 
-	//! sets the formula for attraction to \a n (1 = Fruchterman / Reingold, 2 = GEM).
-	void attractionFormula(int n) {
-		if(n == 1 || n == 2) m_attractionFormula = n;
-	}
+    //! sets the formula for attraction to \a n (1 = Fruchterman / Reingold, 2 = GEM).
+    void attractionFormula(int n)
+    {
+        if(n == 1 || n == 2) m_attractionFormula = n;
+    }
 
-	//! Returns the minimal distance between connected components.
-	double minDistCC() const { return m_minDistCC; }
+    //! Returns the minimal distance between connected components.
+    double minDistCC() const
+    {
+        return m_minDistCC;
+    }
 
-	//! Sets the minimal distance between connected components to \a x.
-	void minDistCC(double x) { m_minDistCC = x; }
+    //! Sets the minimal distance between connected components to \a x.
+    void minDistCC(double x)
+    {
+        m_minDistCC = x;
+    }
 
-	//! Returns the page ratio used for the layout of connected components.
-	double pageRatio() const { return m_pageRatio; }
+    //! Returns the page ratio used for the layout of connected components.
+    double pageRatio() const
+    {
+        return m_pageRatio;
+    }
 
-	//! Sets the page ratio used for the layout of connected components to \a x.
-	void pageRatio(double x) { m_pageRatio = x; }
+    //! Sets the page ratio used for the layout of connected components to \a x.
+    void pageRatio(double x)
+    {
+        m_pageRatio = x;
+    }
 
 
 private:
-	//! Returns the length of the vector (\a x,\a y).
-	double length(double x,double y = 0) const {
-		return sqrt(x * x + y * y);
-	}
+    //! Returns the length of the vector (\a x,\a y).
+    double length(double x,double y = 0) const
+    {
+        return sqrt(x * x + y * y);
+    }
 
-	//! Returns the weight of node \a v according to its degree.
-	double weight(node v) const {
-		return (double)(v->degree()) / 2.5 + 1.0;
-	}
+    //! Returns the weight of node \a v according to its degree.
+    double weight(node v) const
+    {
+        return (double)(v->degree()) / 2.5 + 1.0;
+    }
 
-	//! Computes the new impulse for node \a v.
-	void computeImpulse(GraphCopy &GC, GraphCopyAttributes &AGC,node v);
+    //! Computes the new impulse for node \a v.
+    void computeImpulse(GraphCopy &GC, GraphCopyAttributes &AGC,node v);
 
-	//! Updates the node data for node \a v.
-	void updateNode(GraphCopy &GC, GraphCopyAttributes &AGC,node v);
+    //! Updates the node data for node \a v.
+    void updateNode(GraphCopy &GC, GraphCopyAttributes &AGC,node v);
 
-	OGDF_NEW_DELETE
+    OGDF_NEW_DELETE
 };
 
 } // end namespace ogdf

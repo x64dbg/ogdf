@@ -56,38 +56,41 @@
 #include <vector>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 class OGDF_EXPORT ComponentSplitterLayout : public LayoutModule
 {
 private:
-	ModuleOption<LayoutModule> m_secondaryLayout;
-	ModuleOption<CCLayoutPackModule> m_packer;
+    ModuleOption<LayoutModule> m_secondaryLayout;
+    ModuleOption<CCLayoutPackModule> m_packer;
 
-	// keeps a list of nodes for each connected component,
-	// up to date only in call method
-	Array<List<node> > nodesInCC;
-	int m_numberOfComponents;
-	double m_targetRatio;
-	int m_border;
+    // keeps a list of nodes for each connected component,
+    // up to date only in call method
+    Array<List<node> > nodesInCC;
+    int m_numberOfComponents;
+    double m_targetRatio;
+    int m_border;
 
-	//! Combines drawings of connected components to
-	//! a single drawing by rotating components and packing
-	//! the result (optimizes area of axis-parallel rectangle).
-	void reassembleDrawings(GraphAttributes &GA);
+    //! Combines drawings of connected components to
+    //! a single drawing by rotating components and packing
+    //! the result (optimizes area of axis-parallel rectangle).
+    void reassembleDrawings(GraphAttributes &GA);
 
 public:
-	ComponentSplitterLayout();
+    ComponentSplitterLayout();
 
-	void call(GraphAttributes &GA);
+    void call(GraphAttributes &GA);
 
-	void setLayoutModule(LayoutModule *layout) {
-		m_secondaryLayout.set(layout);
-	}
+    void setLayoutModule(LayoutModule *layout)
+    {
+        m_secondaryLayout.set(layout);
+    }
 
-	void setPacker(CCLayoutPackModule *packer) {
-		m_packer.set(packer);
-	}
+    void setPacker(CCLayoutPackModule *packer)
+    {
+        m_packer.set(packer);
+    }
 };
 
 } // namespace ogdf

@@ -56,7 +56,8 @@
 
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 /**
@@ -64,63 +65,70 @@ namespace ogdf {
  *
  * \see PlanarizationLayout
  */
-class OGDF_EXPORT LayoutPlanRepUMLModule {
+class OGDF_EXPORT LayoutPlanRepUMLModule
+{
 public:
-	//! Initializes a UML planar layout module.
-	LayoutPlanRepUMLModule() { }
+    //! Initializes a UML planar layout module.
+    LayoutPlanRepUMLModule() { }
 
-	virtual ~LayoutPlanRepUMLModule() { }
+    virtual ~LayoutPlanRepUMLModule() { }
 
-	/** \brief Computes a planar layout of \a PG in \a drawing.
-	 *
-	 * Must be overridden by derived classes.
-	 * @param PG is the input planarized representation which may be modified.
-	 * @param adjExternal is an adjacenty entry on the external face.
-	 * @param drawing is the computed layout of \a PG.
-	 */
-	virtual void call(PlanRepUML &PG,
-		adjEntry adjExternal,
-		Layout &drawing) = 0;
+    /** \brief Computes a planar layout of \a PG in \a drawing.
+     *
+     * Must be overridden by derived classes.
+     * @param PG is the input planarized representation which may be modified.
+     * @param adjExternal is an adjacenty entry on the external face.
+     * @param drawing is the computed layout of \a PG.
+     */
+    virtual void call(PlanRepUML &PG,
+                      adjEntry adjExternal,
+                      Layout &drawing) = 0;
 
-	//! Computes a planar layout of \a PG in \a drawing.
-	void operator()(PlanRepUML &PG, adjEntry adjExternal, Layout &drawing) {
-		call(PG,adjExternal,drawing);
-	}
+    //! Computes a planar layout of \a PG in \a drawing.
+    void operator()(PlanRepUML &PG, adjEntry adjExternal, Layout &drawing)
+    {
+        call(PG,adjExternal,drawing);
+    }
 
-	//! Returns the bounding box of the computed layout.
-	const DPoint &getBoundingBox() const {
-		return m_boundingBox;
-	}
+    //! Returns the bounding box of the computed layout.
+    const DPoint &getBoundingBox() const
+    {
+        return m_boundingBox;
+    }
 
-	//! Sets the (generic) options; derived classes have to cope with the interpretation)
-	virtual void setOptions(int /* optionField */) { } //don't make it abstract
+    //! Sets the (generic) options; derived classes have to cope with the interpretation)
+    virtual void setOptions(int /* optionField */) { } //don't make it abstract
 
-	//! Returns the (generic) options.
-	virtual int getOptions() { return 0; } //don't make it abstract
+    //! Returns the (generic) options.
+    virtual int getOptions()
+    {
+        return 0;    //don't make it abstract
+    }
 
-	//! Returns the minimal allowed distance between edges and vertices.
-	virtual double separation() const = 0;
+    //! Returns the minimal allowed distance between edges and vertices.
+    virtual double separation() const = 0;
 
-	//! Sets the minimal allowed distance between edges and vertices to \a sep.
-	virtual void separation(double sep) = 0;
+    //! Sets the minimal allowed distance between edges and vertices to \a sep.
+    virtual void separation(double sep) = 0;
 
 protected:
-	/**
-	 * \brief Stores the bounding box of the computed layout.
-	 * <b>Must be set by derived algorithms!</b>
-	 */
-	DPoint m_boundingBox;
+    /**
+     * \brief Stores the bounding box of the computed layout.
+     * <b>Must be set by derived algorithms!</b>
+     */
+    DPoint m_boundingBox;
 
-	/**
-	 * \brief Computes and sets the bounding box variable \a m_boundingBox.
-	 * An algorithm can call setBoundingBox() for setting the
-	 * m_boundingBox variable if no faster implementation is available.
-	 */
-	void setBoundingBox(PlanRep &PG, Layout &drawing) {
-		m_boundingBox = drawing.computeBoundingBox(PG);
-	}
+    /**
+     * \brief Computes and sets the bounding box variable \a m_boundingBox.
+     * An algorithm can call setBoundingBox() for setting the
+     * m_boundingBox variable if no faster implementation is available.
+     */
+    void setBoundingBox(PlanRep &PG, Layout &drawing)
+    {
+        m_boundingBox = drawing.computeBoundingBox(PG);
+    }
 
-	OGDF_MALLOC_NEW_DELETE
+    OGDF_MALLOC_NEW_DELETE
 };
 
 

@@ -52,74 +52,74 @@ namespace ogdf
 
 void SplitHeuristic::init (const HierarchyLevels &levels)
 {
-	m_cm = new CrossingsMatrix(levels);
+    m_cm = new CrossingsMatrix(levels);
 }
 
 void SplitHeuristic::cleanup()
 {
-	delete m_cm;
+    delete m_cm;
 }
 
 // ordinary call
 void SplitHeuristic::call(Level &L)
 {
-	m_cm->init(L);
-	buffer = Array<node>(L.size());
+    m_cm->init(L);
+    buffer = Array<node>(L.size());
 
-	recCall(L, 0, L.size() - 1);
+    recCall(L, 0, L.size() - 1);
 
-	buffer = Array<node>(-1);
+    buffer = Array<node>(-1);
 }
 
 // SimDraw call
 void SplitHeuristic::call(Level &L, const EdgeArray<__uint32> *edgeSubGraphs)
 {
-	// only difference to call is the different calculation of the crossingsmatrix
-	m_cm->init(L, edgeSubGraphs);
-	buffer = Array<node>(L.size());
+    // only difference to call is the different calculation of the crossingsmatrix
+    m_cm->init(L, edgeSubGraphs);
+    buffer = Array<node>(L.size());
 
-	recCall(L, 0, L.size() - 1);
+    recCall(L, 0, L.size() - 1);
 
-	buffer = Array<node>(-1);
+    buffer = Array<node>(-1);
 }
 
 void SplitHeuristic::recCall(Level &L, int low, int high)
 {
-	if (high <= low) return;
+    if (high <= low) return;
 
-	const HierarchyLevels &levels = L.levels();
-	CrossingsMatrix &crossings = *m_cm;
-	int up = high, down = low;
+    const HierarchyLevels &levels = L.levels();
+    CrossingsMatrix &crossings = *m_cm;
+    int up = high, down = low;
 
-	// chooses L[low] as pivot
-	int i;
-	for (i = low+1; i <= high; i++)
-	{
-		if (crossings(i,low) < crossings(low,i))
-			buffer[down++] = L[i];
-	}
+    // chooses L[low] as pivot
+    int i;
+    for (i = low+1; i <= high; i++)
+    {
+        if (crossings(i,low) < crossings(low,i))
+            buffer[down++] = L[i];
+    }
 
-	// use two for-loops in order to keep the number of swaps low
-	for (i = high; i >= low+1; i--)
-	{
-		if (crossings(i,low) >= crossings(low,i))
-			buffer[up--] = L[i];
-	}
+    // use two for-loops in order to keep the number of swaps low
+    for (i = high; i >= low+1; i--)
+    {
+        if (crossings(i,low) >= crossings(low,i))
+            buffer[up--] = L[i];
+    }
 
-	buffer[down] = L[low];
+    buffer[down] = L[low];
 
-	for (i = low; i < high; i++)
-	{
-		int j = levels.pos(buffer[i]);
-		if (i != j)
-		{
-			L.swap(i,j);
-			crossings.swap(i,j);
-		}
-	}
+    for (i = low; i < high; i++)
+    {
+        int j = levels.pos(buffer[i]);
+        if (i != j)
+        {
+            L.swap(i,j);
+            crossings.swap(i,j);
+        }
+    }
 
-	recCall(L,low,down-1);
-	recCall(L,up+1,high);
+    recCall(L,low,down-1);
+    recCall(L,up+1,high);
 }
 
 } // end namespace ogdf

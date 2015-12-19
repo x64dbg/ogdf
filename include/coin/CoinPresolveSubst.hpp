@@ -5,60 +5,62 @@
 
 #ifndef CoinPresolveSubst_H
 #define CoinPresolveSubst_H
-#define	SUBST_ROW	21
+#define SUBST_ROW   21
 
 #include "CoinPresolveMatrix.hpp"
 
-class subst_constraint_action : public CoinPresolveAction {
+class subst_constraint_action : public CoinPresolveAction
+{
 private:
-  subst_constraint_action();
-  subst_constraint_action(const subst_constraint_action& rhs);
-  subst_constraint_action& operator=(const subst_constraint_action& rhs);
+    subst_constraint_action();
+    subst_constraint_action(const subst_constraint_action& rhs);
+    subst_constraint_action& operator=(const subst_constraint_action& rhs);
 
-  struct action {
-    double *rlos;
-    double *rups;
+    struct action
+    {
+        double *rlos;
+        double *rups;
 
-    double *coeffxs;
-    int *rows;
-    
-    int *ninrowxs;
-    /*const*/ int *rowcolsxs;
-    /*const*/ double *rowelsxs;
+        double *coeffxs;
+        int *rows;
 
-    const double *costsx;
-    int col;
-    int rowy;
+        int *ninrowxs;
+        /*const*/ int *rowcolsxs;
+        /*const*/ double *rowelsxs;
 
-    int nincol;
-  };
+        const double *costsx;
+        int col;
+        int rowy;
 
-  const int nactions_;
-  // actions_ is owned by the class and must be deleted at destruction
-  const action *const actions_;
+        int nincol;
+    };
 
-  subst_constraint_action(int nactions,
-			  action *actions,
-			  const CoinPresolveAction *next) :
-    CoinPresolveAction(next),
-    nactions_(nactions), actions_(actions) {}
+    const int nactions_;
+    // actions_ is owned by the class and must be deleted at destruction
+    const action *const actions_;
 
- public:
-  const char *name() const;
+    subst_constraint_action(int nactions,
+                            action *actions,
+                            const CoinPresolveAction *next) :
+        CoinPresolveAction(next),
+        nactions_(nactions), actions_(actions) {}
 
-  static const CoinPresolveAction *presolve(CoinPresolveMatrix * prob,
-					    const int *implied_free,
-					    const int * which,
-					    int numberFree,
-					    const CoinPresolveAction *next,
-					    int & fill_level);
-  static const CoinPresolveAction *presolveX(CoinPresolveMatrix * prob,
-				  const CoinPresolveAction *next,
-				  int fillLevel);
+public:
+    const char *name() const;
 
-  void postsolve(CoinPostsolveMatrix *prob) const;
+    static const CoinPresolveAction *presolve(CoinPresolveMatrix * prob,
+            const int *implied_free,
+            const int * which,
+            int numberFree,
+            const CoinPresolveAction *next,
+            int & fill_level);
+    static const CoinPresolveAction *presolveX(CoinPresolveMatrix * prob,
+            const CoinPresolveAction *next,
+            int fillLevel);
 
-  ~subst_constraint_action();
+    void postsolve(CoinPostsolveMatrix *prob) const;
+
+    ~subst_constraint_action();
 };
 
 
@@ -66,11 +68,11 @@ private:
 
 
 /*static*/ void implied_bounds(const double *els,
-			   const double *clo, const double *cup,
-			   const int *hcol,
-			   CoinBigIndex krs, CoinBigIndex kre,
-			   double *maxupp, double *maxdownp,
-			   int jcol,
-			   double rlo, double rup,
-			   double *iclb, double *icub);
+                               const double *clo, const double *cup,
+                               const int *hcol,
+                               CoinBigIndex krs, CoinBigIndex kre,
+                               double *maxupp, double *maxdownp,
+                               int jcol,
+                               double rlo, double rup,
+                               double *iclb, double *icub);
 #endif

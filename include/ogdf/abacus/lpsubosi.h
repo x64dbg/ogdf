@@ -46,38 +46,40 @@
 #include <ogdf/abacus/lpsub.h>
 #include <ogdf/abacus/osiif.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 class Master;
 
 
-class  LpSubOsi :  public LpSub, public OsiIF  {
+class  LpSubOsi :  public LpSub, public OsiIF
+{
 public:
 
-	//! The constructor.
-	/**
-	 * Calls the function \a initialize() of the base
-	 * classLpSub, which sets up the
-	 * linear program and passes the data to the LP-solver.
-	 *
-	 * \param master A pointer to the corresponding master of the optimization.
-	 * \param sub    The subproblem of which the LP-relaxation is solved.
-	 */
-	LpSubOsi(Master *master, Sub *sub) :
-		LP(master),
-		LpSub(master, sub),
-		OsiIF(master)
-	{
-		initialize();
-	}
+    //! The constructor.
+    /**
+     * Calls the function \a initialize() of the base
+     * classLpSub, which sets up the
+     * linear program and passes the data to the LP-solver.
+     *
+     * \param master A pointer to the corresponding master of the optimization.
+     * \param sub    The subproblem of which the LP-relaxation is solved.
+     */
+    LpSubOsi(Master *master, Sub *sub) :
+        LP(master),
+        LpSub(master, sub),
+        OsiIF(master)
+    {
+        initialize();
+    }
 
-	//! The destructor.
-	virtual ~LpSubOsi() { }
+    //! The destructor.
+    virtual ~LpSubOsi() { }
 
 private:
-	LpSubOsi(const LpSubOsi &rhs);
-	const LpSubOsi &operator=(const LpSubOsi &rhs);
+    LpSubOsi(const LpSubOsi &rhs);
+    const LpSubOsi &operator=(const LpSubOsi &rhs);
 };
 
 } //namespace abacus

@@ -62,7 +62,8 @@
 #include <ogdf/basic/GraphObserver.h>
 #include <ogdf/basic/IncNodeInserter.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //===============================================
@@ -75,48 +76,48 @@ namespace ogdf {
 class OGDF_EXPORT SimpleIncNodeInserter : public IncNodeInserter
 {
 public:
-	//creates inserter on PG
-	SimpleIncNodeInserter(PlanRepInc &PG);
-	virtual ~SimpleIncNodeInserter();
+    //creates inserter on PG
+    SimpleIncNodeInserter(PlanRepInc &PG);
+    virtual ~SimpleIncNodeInserter();
 
-	//insert copy in m_planRep for original node v
-	void insertCopyNode(node v, CombinatorialEmbedding &E,
-		Graph::NodeType vTyp);
+    //insert copy in m_planRep for original node v
+    void insertCopyNode(node v, CombinatorialEmbedding &E,
+                        Graph::NodeType vTyp);
 
-	//insert copy without respecting embedding
-	void insertCopyNode(node v, Graph::NodeType vTyp);
+    //insert copy without respecting embedding
+    void insertCopyNode(node v, Graph::NodeType vTyp);
 
 protected:
-	//insertAfterAdj will be filled with adjEntries for the
-	//(new) edges around the copy of v to be inserted after.
-	//sorted in the order of the edge around v
-	face getInsertionFace(node v, CombinatorialEmbedding &E);
+    //insertAfterAdj will be filled with adjEntries for the
+    //(new) edges around the copy of v to be inserted after.
+    //sorted in the order of the edge around v
+    face getInsertionFace(node v, CombinatorialEmbedding &E);
 
-	//constructs a dual graph on the copy PlanRep,
-	//vCopy is the node to be inserted
-	void constructDual(const Graph &G, const CombinatorialEmbedding &E,
-		bool forbidCrossings = true);
+    //constructs a dual graph on the copy PlanRep,
+    //vCopy is the node to be inserted
+    void constructDual(const Graph &G, const CombinatorialEmbedding &E,
+                       bool forbidCrossings = true);
 
-	void insertFaceEdges(node v, node vCopy, face f, CombinatorialEmbedding &E,
-		adjEntry &adExternal);
-	void insertCrossingEdges(node v, node vCopy, CombinatorialEmbedding &E, adjEntry &adExternal);
-	void findShortestPath(const CombinatorialEmbedding &E, node s,
-		node t, Graph::EdgeType eType, SList<adjEntry> &crossed);
-	void insertEdge(CombinatorialEmbedding &E, edge eOrig,
-		const SList<adjEntry> &crossed, bool forbidCrossingGens);
+    void insertFaceEdges(node v, node vCopy, face f, CombinatorialEmbedding &E,
+                         adjEntry &adExternal);
+    void insertCrossingEdges(node v, node vCopy, CombinatorialEmbedding &E, adjEntry &adExternal);
+    void findShortestPath(const CombinatorialEmbedding &E, node s,
+                          node t, Graph::EdgeType eType, SList<adjEntry> &crossed);
+    void insertEdge(CombinatorialEmbedding &E, edge eOrig,
+                    const SList<adjEntry> &crossed, bool forbidCrossingGens);
 
 private:
-	//dual graph for the edge insertion
-	Graph m_dual;
-	FaceArray<node> m_nodeOf;	// node in dual corresponding to to face in primal
-	NodeArray<bool> m_insertFaceNode; //node lies at border of insertionface
-	NodeArray<bool> m_vAdjNodes; //node is adjacent to insertion node
-	NodeArray< List<edge>* > m_incidentEdges; //original edges(insertionnode) incident to original(node)
-	EdgeArray<adjEntry> m_primalAdj; //copy adj for edges in dual graph
-	EdgeArray<bool>     m_primalIsGen; // true iff corresponding primal edge is a generalization
-	bool m_forbidCrossings; //should generalization crossings be avoided
-	node m_vS; //source and sink in the dual graph for edge insertion
-	node m_vT;
+    //dual graph for the edge insertion
+    Graph m_dual;
+    FaceArray<node> m_nodeOf;   // node in dual corresponding to to face in primal
+    NodeArray<bool> m_insertFaceNode; //node lies at border of insertionface
+    NodeArray<bool> m_vAdjNodes; //node is adjacent to insertion node
+    NodeArray< List<edge>* > m_incidentEdges; //original edges(insertionnode) incident to original(node)
+    EdgeArray<adjEntry> m_primalAdj; //copy adj for edges in dual graph
+    EdgeArray<bool>     m_primalIsGen; // true iff corresponding primal edge is a generalization
+    bool m_forbidCrossings; //should generalization crossings be avoided
+    node m_vS; //source and sink in the dual graph for edge insertion
+    node m_vT;
 
 }; //simpleincnodeinserter
 

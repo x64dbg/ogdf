@@ -45,22 +45,24 @@
 #include <ogdf/module/MixedModelCrossingsBeautifierModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 void MixedModelCrossingsBeautifierModule::call (const PlanRep &PG, GridLayout &gl)
 {
-	node v;
-	List<node> crossings;
-	forall_nodes(v,PG) {
-		if (PG.isDummy(v))
-			crossings.pushBack(v);
-	}
+    node v;
+    List<node> crossings;
+    forall_nodes(v,PG)
+    {
+        if (PG.isDummy(v))
+            crossings.pushBack(v);
+    }
 
-	gl.compactAllBends();
-	doCall(PG,gl,crossings);
-	m_nCrossings = crossings.size();
-	gl.compactAllBends();
+    gl.compactAllBends();
+    doCall(PG,gl,crossings);
+    m_nCrossings = crossings.size();
+    gl.compactAllBends();
 }
 
 

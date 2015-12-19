@@ -54,7 +54,8 @@
 #include <stdlib.h>
 #include <ogdf/internal/planarity/PQBasicKey.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 template<class T,class X,class Y> class PQNode;
@@ -110,29 +111,41 @@ class PQLeafKey : public PQBasicKey<T,X,Y>
 {
 public:
 
-	/**
-	 * The \a m_userStructKey has to be overloaded by the client. This
-	 * element is kept public, since the user has to have the opportunity
-	 * to manipulate the information that was stored by her algorithm at a
-	 * node.
-	 */
-	T m_userStructKey;
+    /**
+     * The \a m_userStructKey has to be overloaded by the client. This
+     * element is kept public, since the user has to have the opportunity
+     * to manipulate the information that was stored by her algorithm at a
+     * node.
+     */
+    T m_userStructKey;
 
-	// Constructor
-	PQLeafKey(T element)
-		: PQBasicKey<T,X,Y>() { m_userStructKey = element; }
+    // Constructor
+    PQLeafKey(T element)
+        : PQBasicKey<T,X,Y>()
+    {
+        m_userStructKey = element;
+    }
 
-	//Destructor
-	virtual ~PQLeafKey() {}
+    //Destructor
+    virtual ~PQLeafKey() {}
 
-	//! Returns 0.
-	virtual X userStructInfo() { return 0; }
+    //! Returns 0.
+    virtual X userStructInfo()
+    {
+        return 0;
+    }
 
-	//! Returns 0;
-	virtual Y userStructInternal() {return 0; }
+    //! Returns 0;
+    virtual Y userStructInternal()
+    {
+        return 0;
+    }
 
-	//! Returns \a m_userStructKey.
-	virtual T userStructKey() { return m_userStructKey; }
+    //! Returns \a m_userStructKey.
+    virtual T userStructKey()
+    {
+        return m_userStructKey;
+    }
 
 };
 

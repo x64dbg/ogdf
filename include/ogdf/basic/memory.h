@@ -58,24 +58,25 @@
 #include <ogdf/internal/basic/MallocMemoryAllocator.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 #define OGDF_MM(Alloc) \
 public: \
 static void *operator new(size_t nBytes) { \
-	if(OGDF_LIKELY(Alloc::checkSize(nBytes))) \
-		return Alloc::allocate(nBytes); \
-	else \
-	return ogdf::MallocMemoryAllocator::allocate(nBytes); \
+    if(OGDF_LIKELY(Alloc::checkSize(nBytes))) \
+        return Alloc::allocate(nBytes); \
+    else \
+    return ogdf::MallocMemoryAllocator::allocate(nBytes); \
 } \
 \
 static void operator delete(void *p, size_t nBytes) { \
-	if(OGDF_LIKELY(p != 0)) { \
-		if(OGDF_LIKELY(Alloc::checkSize(nBytes))) \
-			Alloc::deallocate(nBytes, p); \
-		else \
-			ogdf::MallocMemoryAllocator::deallocate(nBytes, p); \
-	} \
+    if(OGDF_LIKELY(p != 0)) { \
+        if(OGDF_LIKELY(Alloc::checkSize(nBytes))) \
+            Alloc::deallocate(nBytes, p); \
+        else \
+            ogdf::MallocMemoryAllocator::deallocate(nBytes, p); \
+    } \
 } \
 static void *operator new(size_t, void *p) { return p; } \
 static void operator delete(void *, void *) { }

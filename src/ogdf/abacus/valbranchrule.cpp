@@ -39,38 +39,39 @@
 #include <ogdf/abacus/fsvarstat.h>
 #include <ogdf/abacus/sub.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 ostream &operator<<(ostream &out, const ValBranchRule &rhs)
 {
-	return out << "x" << rhs.variable_ << " = " << rhs.value_;
+    return out << "x" << rhs.variable_ << " = " << rhs.value_;
 }
 
 
 int ValBranchRule::extract(Sub *sub)
 {
-	if (sub->fsVarStat(variable_)->contradiction(FSVarStat::Set, value_))
-		return 1;
+    if (sub->fsVarStat(variable_)->contradiction(FSVarStat::Set, value_))
+        return 1;
 
-	sub->fsVarStat(variable_)->status(FSVarStat::Set, value_);
-	return 0;
+    sub->fsVarStat(variable_)->status(FSVarStat::Set, value_);
+    return 0;
 }
 
 
 void ValBranchRule::extract(LpSub *lp)
 {
-	oldLpLBound_ = lp->lBound(variable_);
-	oldLpUBound_ = lp->uBound(variable_);
+    oldLpLBound_ = lp->lBound(variable_);
+    oldLpUBound_ = lp->uBound(variable_);
 
-	lp->changeLBound(variable_, value_);
-	lp->changeUBound(variable_, value_);
+    lp->changeLBound(variable_, value_);
+    lp->changeUBound(variable_, value_);
 }
 
 
 void ValBranchRule::unExtract(LpSub *lp)
 {
-	lp->changeLBound(variable_, oldLpLBound_);
-	lp->changeUBound(variable_, oldLpUBound_);
+    lp->changeLBound(variable_, oldLpLBound_);
+    lp->changeUBound(variable_, oldLpUBound_);
 }
 } //namespace abacus

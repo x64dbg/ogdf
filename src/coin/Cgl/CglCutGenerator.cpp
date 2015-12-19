@@ -20,19 +20,19 @@
 // Default Constructor
 //-------------------------------------------------------------------
 CglCutGenerator::CglCutGenerator ()
-  : aggressive_(0)
+    : aggressive_(0)
 {
-  // nothing to do here
+    // nothing to do here
 }
 
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
 CglCutGenerator::CglCutGenerator (
-                  const CglCutGenerator & source)
-  : aggressive_(source.aggressive_)
+    const CglCutGenerator & source)
+    : aggressive_(source.aggressive_)
 {
-  // nothing to do here
+    // nothing to do here
 }
 
 
@@ -41,7 +41,7 @@ CglCutGenerator::CglCutGenerator (
 //-------------------------------------------------------------------
 CglCutGenerator::~CglCutGenerator ()
 {
-  // nothing to do here
+    // nothing to do here
 }
 
 //----------------------------------------------------------------
@@ -49,23 +49,24 @@ CglCutGenerator::~CglCutGenerator ()
 //-------------------------------------------------------------------
 CglCutGenerator &
 CglCutGenerator::operator=(
-                   const CglCutGenerator& rhs)
+    const CglCutGenerator& rhs)
 {
-  if (this != &rhs) {
-    aggressive_ = rhs.aggressive_;
-  }
-  return *this;
+    if (this != &rhs)
+    {
+        aggressive_ = rhs.aggressive_;
+    }
+    return *this;
 }
 bool
 CglCutGenerator::mayGenerateRowCutsInTree() const
 {
-  return true;
+    return true;
 }
 // Return true if needs optimal basis to do cuts
 bool
 CglCutGenerator::needsOptimalBasis() const
 {
-  return false;
+    return false;
 }
 
 #ifdef NDEBUG

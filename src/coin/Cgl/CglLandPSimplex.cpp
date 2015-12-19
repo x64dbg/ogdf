@@ -41,7 +41,7 @@ static void MyAssertFunc(bool c, const std::string &s, const std::string&  file,
 */
 
 static void DblGtAssertFunc(const double& a, const std::string &a_s, const double&b, const std::string& b_s,
-                     const std::string&  file, unsigned int line)
+                            const std::string&  file, unsigned int line)
 {
     if (a<b)
     {
@@ -52,7 +52,7 @@ static void DblGtAssertFunc(const double& a, const std::string &a_s, const doubl
 }
 
 static void DblEqAssertFunc(const double& a, const std::string &a_s, const double&b, const std::string& b_s,
-                     const std::string&  file, unsigned int line)
+                            const std::string&  file, unsigned int line)
 {
     CoinRelFltEq eq(1e-7);
     if (!eq(a,b))
@@ -64,8 +64,8 @@ static void DblEqAssertFunc(const double& a, const std::string &a_s, const doubl
 }
 
 static void VecModEqAssertFunc(const CoinIndexedVector& a, const std::string a_s,
-                        const CoinIndexedVector& b, const std::string b_s,
-                        const std::string file, unsigned int line)
+                               const CoinIndexedVector& b, const std::string b_s,
+                               const std::string file, unsigned int line)
 {
     CoinRelFltEq eq(1e-7);
     assert(a.capacity()==b.capacity());
@@ -88,8 +88,8 @@ static void VecModEqAssertFunc(const CoinIndexedVector& a, const std::string a_s
 }
 
 static void VecEqAssertFunc(const CoinIndexedVector& a, const std::string a_s,
-                     const CoinIndexedVector& b, const std::string b_s,
-                     const std::string file, unsigned int line)
+                            const CoinIndexedVector& b, const std::string b_s,
+                            const std::string file, unsigned int line)
 {
     CoinRelFltEq eq(1e-7);
     assert(a.capacity()==b.capacity());
@@ -200,29 +200,29 @@ CglLandPSimplex::CglLandPSimplex(const OsiSolverInterface &si,
                                  const CglLandP::Parameters &params,
                                  const Validator& validator):
 #ifdef COIN_HAS_OSICLP
-        clp_(NULL),
+    clp_(NULL),
 #endif
-        row_k_(this),
-        original_row_k_(this),
-        row_i_(this),
-        new_row_(this),
-        gammas_(false),
-        rowFlags_(NULL),
-        col_in_subspace(),
-        colCandidateToLeave_(NULL),
-        basics_(NULL), nonBasics_(NULL),
-        M1_(), M2_(), M3_(),
-        sigma_(0), basis_(NULL), colsolToCut_(NULL),
-        colsol_(NULL),
-        ncols_orig_(0),nrows_orig_(0),
-        inDegenerateSequence_(false),
-        chosenReducedCostVal_(1e100),
-        original_index_(),
-        si_(NULL),
-        validator_(validator),
-        numPivots_(0),
-        numSourceRowEntered_(0),
-        numIncreased_(0)
+    row_k_(this),
+    original_row_k_(this),
+    row_i_(this),
+    new_row_(this),
+    gammas_(false),
+    rowFlags_(NULL),
+    col_in_subspace(),
+    colCandidateToLeave_(NULL),
+    basics_(NULL), nonBasics_(NULL),
+    M1_(), M2_(), M3_(),
+    sigma_(0), basis_(NULL), colsolToCut_(NULL),
+    colsol_(NULL),
+    ncols_orig_(0),nrows_orig_(0),
+    inDegenerateSequence_(false),
+    chosenReducedCostVal_(1e100),
+    original_index_(),
+    si_(NULL),
+    validator_(validator),
+    numPivots_(0),
+    numSourceRowEntered_(0),
+    numIncreased_(0)
 {
     ncols_orig_ = si.getNumCols();
     nrows_orig_ = si.getNumRows();
@@ -405,8 +405,8 @@ CglLandPSimplex::computeWeights(CglLandP::LHSnorm norm, CglLandP::Normalization 
         }
         if (type== CglLandP::WeightBoth)
         {
-           rhs_weight_ += (ncols_orig_ + 1);
-           std::cout<<"rhs_weight : "<<rhs_weight_<<std::endl;
+            rhs_weight_ += (ncols_orig_ + 1);
+            std::cout<<"rhs_weight : "<<rhs_weight_<<std::endl;
         }
     }
     else if (norm == CglLandP::L2)
@@ -428,7 +428,7 @@ CglLandPSimplex::computeWeights(CglLandP::LHSnorm norm, CglLandP::Normalization 
         }
         if (type== CglLandP::WeightBoth)
         {
-          rhs_weight_ = (ncols_orig_ + 1);
+            rhs_weight_ = (ncols_orig_ + 1);
         }
     }
     else if (norm == CglLandP::SupportSize)
@@ -448,9 +448,9 @@ CglLandPSimplex::computeWeights(CglLandP::LHSnorm norm, CglLandP::Normalization 
             rows_weights[i] = 1./ static_cast<double> (nnz[i]);
         }
 
-       if (type== CglLandP::WeightBoth)
+        if (type== CglLandP::WeightBoth)
         {
-          rhs_weight_ = (ncols_orig_ + 1);
+            rhs_weight_ = (ncols_orig_ + 1);
         }
 
     }
@@ -460,9 +460,9 @@ CglLandPSimplex::computeWeights(CglLandP::LHSnorm norm, CglLandP::Normalization 
         {
             rows_weights[i] = static_cast<double> (1);
         }
-       if (type== CglLandP::WeightBoth)
+        if (type== CglLandP::WeightBoth)
         {
-          rhs_weight_ = (ncols_orig_ + 1);
+            rhs_weight_ = (ncols_orig_ + 1);
         }
 
     }
@@ -791,7 +791,7 @@ CglLandPSimplex::optimize
 
 #ifndef OLD_COMPUTATION
                 bool recompute_source_row = (numPivots && (numPivots % 10 == 0 ||
-                                            fabs(gamma) < 1e-05));
+                                             fabs(gamma) < 1e-05));
 #endif
 
                 std::pair<int, int> cur_pivot(nonBasics_[incoming],basics_[leaving]);
@@ -817,22 +817,22 @@ CglLandPSimplex::optimize
                     double lastSigma = sigma_;
                     if (params.modularize)
                     {
-		      row_k_.modularize(integers_);
+                        row_k_.modularize(integers_);
                     }
                     sigma_ = computeCglpObjective(row_k_);
 
                     if (sigma_ - lastSigma > -1e-4*(lastSigma))
                     {
-                      if(sigma_ > 0) return 0;
+                        if(sigma_ > 0) return 0;
 #if 0
-		      if (sigma_ > 0 || sigma_ - lastSigma > 1e1*(-lastSigma))
-			return 0;
+                        if (sigma_ > 0 || sigma_ - lastSigma > 1e1*(-lastSigma))
+                            return 0;
 #endif
                     }
 
 
                     handler_->message(PivotLog,messages_)<<numPivots<<sigma_<<
-                    nonBasics_[incoming]<<basics_[leaving]<<direction<<gamma<<inDegenerateSequence_<<CoinMessageEol<<CoinMessageEol;
+                                                         nonBasics_[incoming]<<basics_[leaving]<<direction<<gamma<<inDegenerateSequence_<<CoinMessageEol<<CoinMessageEol;
                 }
                 else   //pivot failed
                 {
@@ -910,9 +910,9 @@ CglLandPSimplex::optimize
         generateExtraCuts(cached, params);
     }
     handler_->message(CutStat, messages_)<<row<<numPivots
-    <<numSourceRowEntered_ - saveNumSourceEntered
-    <<numIncreased_- saveNumIncreased
-    <<numCycle<<CoinMessageEol;
+                                         <<numSourceRowEntered_ - saveNumSourceEntered
+                                         <<numIncreased_- saveNumIncreased
+                                         <<numCycle<<CoinMessageEol;
     return 1;//At this point nothing failed, always generate a cut
 }
 
@@ -946,16 +946,17 @@ CglLandPSimplex::changeBasis(int incoming, int leaving, int leavingStatus,
             pullTableauRow(row_k_);
             row_k_.rhs = row_k_.rhs - floor(row_k_.rhs);
         }
-	else{
-	  int & indexLeaving = basics_[leaving];
-	  if (leavingStatus==1)
-	  {
-	    setColsolToCut(indexLeaving, getUpBound(indexLeaving) - getColsolToCut(indexLeaving));
-	  }
-	else
-	  {
-	    setColsolToCut(indexLeaving, getColsolToCut(indexLeaving) + getLoBound(indexLeaving));
-	  }
+        else
+        {
+            int & indexLeaving = basics_[leaving];
+            if (leavingStatus==1)
+            {
+                setColsolToCut(indexLeaving, getUpBound(indexLeaving) - getColsolToCut(indexLeaving));
+            }
+            else
+            {
+                setColsolToCut(indexLeaving, getColsolToCut(indexLeaving) + getLoBound(indexLeaving));
+            }
         }
 #endif
         return 0;
@@ -965,51 +966,51 @@ CglLandPSimplex::changeBasis(int incoming, int leaving, int leavingStatus,
     int & indexLeaving = basics_[leaving];
 #ifdef OLD_COMPUTATION
     if (!modularize)
-      {
-	if (leavingStatus==1)
-	  {
-	    setColsolToCut(indexLeaving, getUpBound(indexLeaving) - getColsolToCut(indexLeaving));
-	  }
-	else
-	  {
-	    setColsolToCut(indexLeaving, getColsolToCut(indexLeaving) - getLoBound(indexLeaving));
-	  }
-      }
+    {
+        if (leavingStatus==1)
+        {
+            setColsolToCut(indexLeaving, getUpBound(indexLeaving) - getColsolToCut(indexLeaving));
+        }
+        else
+        {
+            setColsolToCut(indexLeaving, getColsolToCut(indexLeaving) - getLoBound(indexLeaving));
+        }
+    }
 #endif
 
     if (indexLeaving < ncols_)
-      {
-	basis_->setStructStatus(indexLeaving, leavingStatus==1 ? CoinWarmStartBasis::atUpperBound : CoinWarmStartBasis::atLowerBound);
-      }
+    {
+        basis_->setStructStatus(indexLeaving, leavingStatus==1 ? CoinWarmStartBasis::atUpperBound : CoinWarmStartBasis::atLowerBound);
+    }
     else
-      {
-	int iRow = basics_[leaving] - ncols_;
-	basis_->setArtifStatus(iRow,  leavingStatus==1 ? CoinWarmStartBasis::atUpperBound : CoinWarmStartBasis::atLowerBound);
-	//    assert(leavingStatus==-1 || (rowLower_[iRow]>-1e50 && rowUpper_[iRow] < 1e50));
-      }
+    {
+        int iRow = basics_[leaving] - ncols_;
+        basis_->setArtifStatus(iRow,  leavingStatus==1 ? CoinWarmStartBasis::atUpperBound : CoinWarmStartBasis::atLowerBound);
+        //    assert(leavingStatus==-1 || (rowLower_[iRow]>-1e50 && rowUpper_[iRow] < 1e50));
+    }
 
     if (nonBasics_[incoming] < ncols_)
-      {
-	int & indexIncoming = nonBasics_[incoming];
-	CoinWarmStartBasis::Status status = basis_->getStructStatus(indexIncoming);
-	if (status==CoinWarmStartBasis::atUpperBound)
-	  setColsolToCut(indexIncoming, getUpBound(indexIncoming) - getColsolToCut(indexIncoming));
-	else
-	  setColsolToCut(indexIncoming, getColsolToCut(indexIncoming) + getLoBound(indexIncoming));
-	basis_->setStructStatus(indexIncoming, CoinWarmStartBasis::basic);
-      }
+    {
+        int & indexIncoming = nonBasics_[incoming];
+        CoinWarmStartBasis::Status status = basis_->getStructStatus(indexIncoming);
+        if (status==CoinWarmStartBasis::atUpperBound)
+            setColsolToCut(indexIncoming, getUpBound(indexIncoming) - getColsolToCut(indexIncoming));
+        else
+            setColsolToCut(indexIncoming, getColsolToCut(indexIncoming) + getLoBound(indexIncoming));
+        basis_->setStructStatus(indexIncoming, CoinWarmStartBasis::basic);
+    }
     else
-      {
-	int iRow = nonBasics_[incoming] - ncols_;
-	int & indexIncoming = nonBasics_[incoming];
+    {
+        int iRow = nonBasics_[incoming] - ncols_;
+        int & indexIncoming = nonBasics_[incoming];
 
-	if (basis_->getArtifStatus(iRow)==CoinWarmStartBasis::atUpperBound)
-	  setColsolToCut(indexIncoming, getUpBound(indexIncoming) - getColsolToCut(indexIncoming));
-	else
-	  setColsolToCut(indexIncoming, getColsolToCut(indexIncoming) + getLoBound(indexIncoming));
+        if (basis_->getArtifStatus(iRow)==CoinWarmStartBasis::atUpperBound)
+            setColsolToCut(indexIncoming, getUpBound(indexIncoming) - getColsolToCut(indexIncoming));
+        else
+            setColsolToCut(indexIncoming, getColsolToCut(indexIncoming) + getLoBound(indexIncoming));
 
-	basis_->setArtifStatus(iRow,  CoinWarmStartBasis::basic);
-      }
+        basis_->setArtifStatus(iRow,  CoinWarmStartBasis::basic);
+    }
 
     int swap = basics_[leaving];
     basics_[leaving] = nonBasics_[incoming];
@@ -1076,16 +1077,17 @@ else //Update row k by hand
     double gamma = - row_k_[basics_[leaving]] / row_i_[basics_[leaving]];
     row_k_[basics_[leaving]] = 0;
     row_k_.quickAdd(nonBasics_[incoming], gamma);
-    if(1 || fabs(gamma) > 1e-9){
-      int nnz = row_i_.getNumElements();
-      const int * indices = row_i_.getIndices();
-      for (int i = 0 ; i < nnz; i++)
-	{
-	  if(row_k_.getNumElements() > row_k_.capacity() - 2) row_k_.scan();
-	  if (indices[i] != nonBasics_[incoming] && indices[i] != basics_[leaving])
-	    row_k_.quickAdd(indices[i], gamma * row_i_[indices[i]]);
-	}
-      row_k_.rhs += gamma * row_i_.rhs;
+    if(1 || fabs(gamma) > 1e-9)
+    {
+        int nnz = row_i_.getNumElements();
+        const int * indices = row_i_.getIndices();
+        for (int i = 0 ; i < nnz; i++)
+        {
+            if(row_k_.getNumElements() > row_k_.capacity() - 2) row_k_.scan();
+            if (indices[i] != nonBasics_[incoming] && indices[i] != basics_[leaving])
+                row_k_.quickAdd(indices[i], gamma * row_i_[indices[i]]);
+        }
+        row_k_.rhs += gamma * row_i_.rhs;
     }
     row_k_.scan();
     row_k_.clean(1e-10);
@@ -1101,7 +1103,7 @@ else //Update row k by hand
 #endif
 }
 
-    return true;
+return true;
 }
 
 /** Find a row which can be used to perform an improving pivot return index of the cut or -1 if none exists
@@ -1433,7 +1435,7 @@ CglLandPSimplex::fastFindCutImprovingPivotRow( int &direction, int &gammaSign,
     double bestReducedCost = -tolerance;
     for (int i = 0 ; i < nrows_ ; i++)
     {
-      //if ((!row_k_.modularized_ && i == row_k_.num)//obviously not necessary to combine row k with itself
+        //if ((!row_k_.modularized_ && i == row_k_.num)//obviously not necessary to combine row k with itself
         if ((i == row_k_.num)//obviously not necessary to combine row k with itself
                 //   && fabs(getUpBound(basics_[row_i_.num]) - getLoBound(basics_[row_i_.num]))>1e-09 //variable is not fixed
                 || col_in_subspace[basics_[i]] == false
@@ -1608,8 +1610,8 @@ CglLandPSimplex::fastFindCutImprovingPivotRow( int &direction, int &gammaSign,
         row_i_.num=bestRow;
         pullTableauRow(row_i_);
         handler_->message(FoundImprovingRow, messages_)<<
-        bestRow<<basics_[bestRow]<<direction<<gammaSign<<bestReducedCost
-        <<CoinMessageEol;
+                bestRow<<basics_[bestRow]<<direction<<gammaSign<<bestReducedCost
+                <<CoinMessageEol;
     }
     assert (bestRow<0||direction!=0);
     return bestRow;
@@ -1687,8 +1689,8 @@ CglLandPSimplex::rescanReducedCosts( int &direction, int &gammaSign, double tole
         row_i_.num=bestRow;
         pullTableauRow(row_i_);
         handler_->message(FoundImprovingRow, messages_)<<
-        bestRow<<basics_[bestRow]<<direction<<gammaSign<<bestReducedCost
-        <<CoinMessageEol;
+                bestRow<<basics_[bestRow]<<direction<<gammaSign<<bestReducedCost
+                <<CoinMessageEol;
     }
     assert (bestRow<0||direction!=0);
     return bestRow;
@@ -1770,13 +1772,15 @@ CglLandPSimplex::fastFindBestPivotColumn(int direction, int gammaSign,
 
     double p = 0;
     double q = 0;
-    if(!modularize){//Take a shortcut
-      p = -row_k_.rhs * (1 - fzero);
-      q = row_i_.rhs * fzero;
+    if(!modularize) //Take a shortcut
+    {
+        p = -row_k_.rhs * (1 - fzero);
+        q = row_i_.rhs * fzero;
 
-      if (gammaSign < 0){
-	q -= row_i_.rhs;
-      }
+        if (gammaSign < 0)
+        {
+            q -= row_i_.rhs;
+        }
     }
     double r = 1.;
     double s = normedCoef( static_cast<double> (gammaSign), basics_[row_i_.num]);
@@ -1792,10 +1796,11 @@ CglLandPSimplex::fastFindBestPivotColumn(int direction, int gammaSign,
         const double& val = getColsolToCut(ii); //value in solution to cut
         const double& row_k = row_k_[ii]; // coefficient in row k
         const double& row_i = row_i_[ii]; // coefficient in row i
-        if(modularize){
-	  p-=row_k_.rhs*row_k*val;
-	  q-=row_i_.rhs*row_k*val;
-	}
+        if(modularize)
+        {
+            p-=row_k_.rhs*row_k*val;
+            q-=row_i_.rhs*row_k*val;
+        }
 
         if (reducedSpace && colCandidateToLeave_[i]==false)
         {
@@ -1853,12 +1858,14 @@ CglLandPSimplex::fastFindBestPivotColumn(int direction, int gammaSign,
     }
 
 
-    if(modularize){
-      p -= row_k_.rhs * (1 - row_k_.rhs);
-      q += row_i_.rhs * row_k_.rhs;
-      if (gammaSign < 0){
-	q -= row_i_.rhs;
-      }
+    if(modularize)
+    {
+        p -= row_k_.rhs * (1 - row_k_.rhs);
+        q += row_i_.rhs * row_k_.rhs;
+        if (gammaSign < 0)
+        {
+            q -= row_i_.rhs;
+        }
     }
 
     int n = gammas_.getNumElements();
@@ -1892,7 +1899,7 @@ CglLandPSimplex::fastFindBestPivotColumn(int direction, int gammaSign,
         double newRhs = row_k_.rhs + gammaSign * elements[i] * row_i_.rhs;
         if (newRhs < rhsTol || newRhs > 1 - rhsTol)
         {
-            //	if(i == 0)
+            //  if(i == 0)
             break;
         }
         newSigma = (p + gammaSign * elements[i] * q)*rhs_weight_/(r + gammaSign*elements[i] * s);
@@ -2055,7 +2062,7 @@ CglLandPSimplex::findBestPivotColumn(int direction,
     {
         handler_->message(FoundBestImprovingCol, messages_)<<nonBasics_[varOut]<<gamma<<m<<CoinMessageEol<<CoinMessageEol;
         inDegenerateSequence_ = false;
-         assert (varOut<0||direction!=0);
+        assert (varOut<0||direction!=0);
         return varOut;
     }
     else if (allowDegenerate && m<=sigma_)
@@ -2348,8 +2355,9 @@ CglLandPSimplex::computeCglpObjective(double gamma, bool strengthen)
                  getColsolToCut(basics_[row_i_.num]);
     for (int j = 0 ; j < ncols_ ; j++)
     {
-        if (col_in_subspace[nonBasics_[j]]==false) {
-          continue;
+        if (col_in_subspace[nonBasics_[j]]==false)
+        {
+            continue;
         }
         coeff = newRowCoefficient(nonBasics_[j], gamma);
         if (strengthen && nonBasics_[j] < ncols_orig_ &&  isInteger(j))
@@ -2376,9 +2384,9 @@ CglLandPSimplex::computeCglpObjective(double gamma, bool strengthen, TabRow & ne
     int k = 0;
     {
         if (col_in_subspace[basics_[row_i_.num]]==false)
-          {
+        {
             DblEqAssert(0.,1.);
-          }
+        }
         double & val = newRow[ basics_[row_i_.num]] = gamma;//newRowCoefficient(basics_[row_i_.num], gamma);
         indices[k++] = basics_[row_i_.num];
         if (strengthen && row_i_.num < ncols_orig_ && isInteger(row_i_.num))
@@ -3312,45 +3320,52 @@ CglLandPSimplex::removeRows(int nDelete, const int * rowsIdx)
     assert (nNonBasics == ncols_);
 }
 
-  void
-  CglLandPSimplex::printEverything(){
+void
+CglLandPSimplex::printEverything()
+{
     row_k_.print(std::cout, 2, nonBasics_, ncols_);
     printf("nonBasics_: ");
-    for(int i = 0 ; i < ncols_ ; i++){
-      printf("%5i ",nonBasics_[i]);
+    for(int i = 0 ; i < ncols_ ; i++)
+    {
+        printf("%5i ",nonBasics_[i]);
     }
     printf("\n");
 
- printf("basics_: ");
-    for(int i = 0 ; i < nrows_ ; i++){
-      printf("%5i ",basics_[i]);
+    printf("basics_: ");
+    for(int i = 0 ; i < nrows_ ; i++)
+    {
+        printf("%5i ",basics_[i]);
     }
     printf("\n");
 
     printf("source row:");
-    for(int i = 0 ; i < ncols_ + nrows_ ; i++){
-      printf("%10.9g ", row_k_[i]);
+    for(int i = 0 ; i < ncols_ + nrows_ ; i++)
+    {
+        printf("%10.9g ", row_k_[i]);
     }
     printf("%10.9g", row_k_.rhs);
     printf("\n");
 
     printf(" source indices: ");
-    for(int i = 0 ; i < row_k_.getNumElements() ; i++){
-      printf("%5i %20.20g ", row_k_.getIndices()[i], row_k_[row_k_.getIndices()[i]]);
+    for(int i = 0 ; i < row_k_.getNumElements() ; i++)
+    {
+        printf("%5i %20.20g ", row_k_.getIndices()[i], row_k_[row_k_.getIndices()[i]]);
     }
     printf("\n");
 
     printf("colsolToCut: ");
-    for(int i = 0 ; i < ncols_ + nrows_ ; i++){
-      printf("%10.6g ", colsolToCut_[i]);
+    for(int i = 0 ; i < ncols_ + nrows_ ; i++)
+    {
+        printf("%10.6g ", colsolToCut_[i]);
     }
     printf("\n");
 
     printf("colsol: ");
-    for(int i = 0 ; i < ncols_ + nrows_ ; i++){
-      printf("%10.6g ", colsol_[i]);
+    for(int i = 0 ; i < ncols_ + nrows_ ; i++)
+    {
+        printf("%10.6g ", colsol_[i]);
     }
     printf("\n");
-  }
+}
 }/* Ends LAP namespace.*/
 

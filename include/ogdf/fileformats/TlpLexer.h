@@ -54,86 +54,100 @@
 #include <vector>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
-namespace tlp {
+namespace tlp
+{
 
 
-struct Token {
+struct Token
+{
 
-	enum Type {
-		tok_leftParen, tok_rightParen,
-		tok_identifier, tok_string
-	} type;
+    enum Type
+    {
+        tok_leftParen, tok_rightParen,
+        tok_identifier, tok_string
+    } type;
 
-	std::string *value; // Optional token value (avaliable in id and string).
-	size_t line, column; // Where given token occured for printing nice info.
+    std::string *value; // Optional token value (avaliable in id and string).
+    size_t line, column; // Where given token occured for printing nice info.
 
-	Token(const Type &type, size_t line, size_t column);
-	friend std::ostream &operator <<(std::istream &os, const Token &token);
+    Token(const Type &type, size_t line, size_t column);
+    friend std::ostream &operator <<(std::istream &os, const Token &token);
 
-	bool inline leftParen() const {
-		return type == tok_leftParen;
-	}
+    bool inline leftParen() const
+    {
+        return type == tok_leftParen;
+    }
 
-	bool inline rightParen() const {
-		return type == tok_rightParen;
-	}
+    bool inline rightParen() const
+    {
+        return type == tok_rightParen;
+    }
 
-	bool inline identifier() const {
-		return type == tok_identifier;
-	}
+    bool inline identifier() const
+    {
+        return type == tok_identifier;
+    }
 
-	bool inline identifier(const char *str) const {
-		return type == tok_identifier && (*value) == str;
-	}
+    bool inline identifier(const char *str) const
+    {
+        return type == tok_identifier && (*value) == str;
+    }
 
-	bool inline string() const {
-		return type == tok_string;
-	}
+    bool inline string() const
+    {
+        return type == tok_string;
+    }
 
-	bool inline string(const char *str) const {
-		return type == tok_string && (*value) == str;
-	}
+    bool inline string(const char *str) const
+    {
+        return type == tok_string && (*value) == str;
+    }
 };
 
 std::ostream &operator <<(std::ostream &os, const Token &token);
 
 
-class Lexer {
+class Lexer
+{
 private:
-	std::istream &m_istream;
-	std::string m_buffer;
-	std::string::const_iterator m_begin, m_end;
-	size_t m_line;
+    std::istream &m_istream;
+    std::string m_buffer;
+    std::string::const_iterator m_begin, m_end;
+    size_t m_line;
 
-	std::vector<Token> m_tokens;
+    std::vector<Token> m_tokens;
 
-	bool fetchBuffer();
-	void cleanValues();
+    bool fetchBuffer();
+    void cleanValues();
 
-	bool tokenizeLine();
-	bool tokenizeString();
-	bool tokenizeIdentifier();
+    bool tokenizeLine();
+    bool tokenizeString();
+    bool tokenizeIdentifier();
 
-	size_t line() const {
-		return m_line;
-	}
+    size_t line() const
+    {
+        return m_line;
+    }
 
-	size_t column() const {
-		return std::distance(m_buffer.begin(), m_begin) + 1;
-	}
+    size_t column() const
+    {
+        return std::distance(m_buffer.begin(), m_begin) + 1;
+    }
 
-	static bool isIdentifier(char c);
+    static bool isIdentifier(char c);
 
 public:
-	Lexer(std::istream &is);
-	~Lexer();
+    Lexer(std::istream &is);
+    ~Lexer();
 
-	bool tokenize();
-	const std::vector<Token> &tokens() const {
-		return m_tokens;
-	}
+    bool tokenize();
+    const std::vector<Token> &tokens() const
+    {
+        return m_tokens;
+    }
 };
 
 

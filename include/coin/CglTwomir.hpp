@@ -13,59 +13,61 @@
 typedef struct
 {
 
-  int nz;             /* current length of arrays index[] and coeff[] */
-  int max_nz;         /* max length of arrays index[] and coeff[] */
-  double *coeff;      /* coefficient of each variable in the constraint */
-  int *index;         /* index of the variable (value in 0 ... nrow+ncol) */
-  double rhs;         /* rhs of the constraint */
-  char sense;         /* ?? is it necessary */
+    int nz;             /* current length of arrays index[] and coeff[] */
+    int max_nz;         /* max length of arrays index[] and coeff[] */
+    double *coeff;      /* coefficient of each variable in the constraint */
+    int *index;         /* index of the variable (value in 0 ... nrow+ncol) */
+    double rhs;         /* rhs of the constraint */
+    char sense;         /* ?? is it necessary */
 
 } DGG_constraint_t;
 
-typedef struct{
-  int n;
-  DGG_constraint_t **c;
-  int *ctype;
-  double *alpha;
+typedef struct
+{
+    int n;
+    DGG_constraint_t **c;
+    int *ctype;
+    double *alpha;
 } DGG_list_t;
 
 /******************** BASIS INFORMATION ADTs **********************************/
-typedef struct{
-  int q_min;
-  int q_max;
-  int t_min;
-  int t_max;
-  int a_max;
-  int max_elements;
+typedef struct
+{
+    int q_min;
+    int q_max;
+    int t_min;
+    int t_max;
+    int a_max;
+    int max_elements;
 } cutParams;
 
 typedef struct
 {
-  double gomory_threshold; /* factional variable must be this away from int */
-  int ncol,        /* number of columns in LP */
-    nrow,        /* number of constaints in LP */
-    ninteger;    /* number of integer variables in LP */
+    double gomory_threshold; /* factional variable must be this away from int */
+    int ncol,        /* number of columns in LP */
+        nrow,        /* number of constaints in LP */
+        ninteger;    /* number of integer variables in LP */
 
-  int nbasic_col,  /* number of basic columns in the LP */
-    nbasic_row;  /* number of basic rows in the LP */
+    int nbasic_col,  /* number of basic columns in the LP */
+        nbasic_row;  /* number of basic rows in the LP */
 
-  /* the following arrays are all of size (ncol+nrow) */
-  int *info;       /* description of each variable (see below) */
-  double *lb;      /* specifies the lower bound (if any) of each variable */
-  double *ub;      /* specifies the upper bound (if any) of each variable */
-  double *x;       /* current solution */
-  double *rc;      /* current reduced cost */
-  double *opt_x;
+    /* the following arrays are all of size (ncol+nrow) */
+    int *info;       /* description of each variable (see below) */
+    double *lb;      /* specifies the lower bound (if any) of each variable */
+    double *ub;      /* specifies the upper bound (if any) of each variable */
+    double *x;       /* current solution */
+    double *rc;      /* current reduced cost */
+    double *opt_x;
 
-  cutParams cparams;
+    cutParams cparams;
 } DGG_data_t;
 
 /* the following macros allow us to decode the info of the DGG_data
    type. The encoding is as follows,
    bit 1 : if the variable is basic or not (non-basic).
    bit 2 : if the variable is integer or or not (rational).
-   bit 3 : if the variable is structural or not (artifical). 
-   bit 4 : if the variable is non-basic and at its upper bound 
+   bit 3 : if the variable is structural or not (artifical).
+   bit 4 : if the variable is non-basic and at its upper bound
    (else if non-basic at lower bound). */
 
 #define DGG_isBasic(data,idx) ((data->info[idx])&1)
@@ -88,114 +90,175 @@ typedef struct
 
 class CoinWarmStartBasis;
 /** Twostep MIR Cut Generator Class */
-class CglTwomir : public CglCutGenerator {
+class CglTwomir : public CglCutGenerator
+{
 
-  friend void CglTwomirUnitTest(const OsiSolverInterface * siP,
-					  const std::string mpdDir );
+    friend void CglTwomirUnitTest(const OsiSolverInterface * siP,
+                                  const std::string mpdDir );
 
 
 public:
 
-  /// Problem name
-  mutable std::string probname_;
-    
-  /**@name Generate Cuts */
-  //@{
-  /** Generate Two step MIR cuts either from the tableau rows or from the
-      formulation rows
-  */
-  virtual void generateCuts( const OsiSolverInterface & si, OsiCuts & cs, 
-			     const CglTreeInfo info = CglTreeInfo()) const;
-  /// Return true if needs optimal basis to do cuts (will return true)
-  virtual bool needsOptimalBasis() const;
+    /// Problem name
+    mutable std::string probname_;
 
-  /**@name Change criterion on which scalings to use (default = 1,1,1,1) */
-  //@{
-  /// Set
-  void setMirScale (int tmin, int tmax) {t_min_ = tmin; t_max_ = tmax;}
-  void setTwomirScale (int qmin, int qmax) {q_min_ = qmin; q_max_ = qmax;}
-  void setAMax (int a) {a_max_ = a;}
-  void setMaxElements (int n) {max_elements_ = n;}
-  void setMaxElementsRoot (int n) {max_elements_root_ = n;}
-  void setCutTypes (bool mir, bool twomir, bool tab, bool form)
-  { do_mir_ = mir; do_2mir_ = twomir; do_tab_ = tab; do_form_ = form;}
-  void setFormulationRows (int n) {form_nrows_ = n;}
+    /**@name Generate Cuts */
+    //@{
+    /** Generate Two step MIR cuts either from the tableau rows or from the
+        formulation rows
+    */
+    virtual void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
+                               const CglTreeInfo info = CglTreeInfo()) const;
+    /// Return true if needs optimal basis to do cuts (will return true)
+    virtual bool needsOptimalBasis() const;
 
-  /// Get
-  int getTmin() const {return t_min_;}
-  int getTmax() const {return t_max_;}
-  int getQmin() const {return q_min_;}
-  int getQmax() const {return q_max_;}
-  int getAmax() const {return a_max_;}
-  int getMaxElements() const {return max_elements_;}
-  int getMaxElementsRoot() const {return max_elements_root_;}
-  int getIfMir() const { return do_mir_;}
-  int getIfTwomir() const { return do_2mir_;}
-  int getIfTableau() const { return do_tab_;}
-  int getIfFormulation() const { return do_form_;}
-  //@}
+    /**@name Change criterion on which scalings to use (default = 1,1,1,1) */
+    //@{
+    /// Set
+    void setMirScale (int tmin, int tmax)
+    {
+        t_min_ = tmin;
+        t_max_ = tmax;
+    }
+    void setTwomirScale (int qmin, int qmax)
+    {
+        q_min_ = qmin;
+        q_max_ = qmax;
+    }
+    void setAMax (int a)
+    {
+        a_max_ = a;
+    }
+    void setMaxElements (int n)
+    {
+        max_elements_ = n;
+    }
+    void setMaxElementsRoot (int n)
+    {
+        max_elements_root_ = n;
+    }
+    void setCutTypes (bool mir, bool twomir, bool tab, bool form)
+    {
+        do_mir_ = mir;
+        do_2mir_ = twomir;
+        do_tab_ = tab;
+        do_form_ = form;
+    }
+    void setFormulationRows (int n)
+    {
+        form_nrows_ = n;
+    }
 
-  /**@name Change criterion on which variables to look at.  All ones
-   more than "away" away from integrality will be investigated 
-  (default 0.05) */
-  //@{
-  /// Set away
-  void setAway(double value);
-  /// Get away
-  double getAway() const;
-  /// Set away at root
-  void setAwayAtRoot(double value);
-  /// Get away at root
-  double getAwayAtRoot() const;
-  /// Return maximum length of cut in tree
-  virtual int maximumLengthOfCutInTree() const
-  { return max_elements_;}
-  //@}
+    /// Get
+    int getTmin() const
+    {
+        return t_min_;
+    }
+    int getTmax() const
+    {
+        return t_max_;
+    }
+    int getQmin() const
+    {
+        return q_min_;
+    }
+    int getQmax() const
+    {
+        return q_max_;
+    }
+    int getAmax() const
+    {
+        return a_max_;
+    }
+    int getMaxElements() const
+    {
+        return max_elements_;
+    }
+    int getMaxElementsRoot() const
+    {
+        return max_elements_root_;
+    }
+    int getIfMir() const
+    {
+        return do_mir_;
+    }
+    int getIfTwomir() const
+    {
+        return do_2mir_;
+    }
+    int getIfTableau() const
+    {
+        return do_tab_;
+    }
+    int getIfFormulation() const
+    {
+        return do_form_;
+    }
+    //@}
 
-  /**@name Constructors and destructors */
-  //@{
-  /// Default constructor 
-  CglTwomir ();
+    /**@name Change criterion on which variables to look at.  All ones
+     more than "away" away from integrality will be investigated
+    (default 0.05) */
+    //@{
+    /// Set away
+    void setAway(double value);
+    /// Get away
+    double getAway() const;
+    /// Set away at root
+    void setAwayAtRoot(double value);
+    /// Get away at root
+    double getAwayAtRoot() const;
+    /// Return maximum length of cut in tree
+    virtual int maximumLengthOfCutInTree() const
+    {
+        return max_elements_;
+    }
+    //@}
 
-  /// Copy constructor 
-  CglTwomir (const CglTwomir &);
+    /**@name Constructors and destructors */
+    //@{
+    /// Default constructor
+    CglTwomir ();
 
-  /// Clone
-  virtual CglCutGenerator * clone() const;
+    /// Copy constructor
+    CglTwomir (const CglTwomir &);
 
-  /// Assignment operator 
-  CglTwomir & operator=(const CglTwomir& rhs);
-  
-  /// Destructor 
-  virtual  ~CglTwomir ();
-  /// Create C++ lines to get to current state
-  virtual std::string generateCpp( FILE * fp);
-  //@}
-      
+    /// Clone
+    virtual CglCutGenerator * clone() const;
+
+    /// Assignment operator
+    CglTwomir & operator=(const CglTwomir& rhs);
+
+    /// Destructor
+    virtual  ~CglTwomir ();
+    /// Create C++ lines to get to current state
+    virtual std::string generateCpp( FILE * fp);
+    //@}
+
 private:
-  // Private member data
-  /**@name Private member data */
-  //@{
-  /// Threadsafe random number generator
-  mutable CoinThreadRandom randomNumberGenerator_;
-  /// Only investigate if more than this away from integrality
-  double away_;
-  /// Only investigate if more than this away from integrality (at root)
-  double awayAtRoot_;
-  bool do_mir_;
-  bool do_2mir_;
-  bool do_tab_;
-  bool do_form_;
+    // Private member data
+    /**@name Private member data */
+    //@{
+    /// Threadsafe random number generator
+    mutable CoinThreadRandom randomNumberGenerator_;
+    /// Only investigate if more than this away from integrality
+    double away_;
+    /// Only investigate if more than this away from integrality (at root)
+    double awayAtRoot_;
+    bool do_mir_;
+    bool do_2mir_;
+    bool do_tab_;
+    bool do_form_;
 
-  int t_min_;  /// t_min - first value of t to use for tMIR inequalities
-  int t_max_;  /// t_max - last value of t to use for tMIR inequalities
-  int q_min_;  /// q_min - first value of t to use for 2-Step tMIR inequalities
-  int q_max_;  /// q_max - last value of t to use for 2-Step tMIR inequalities
-  int a_max_;  /// a_max - maximum value of bhat/alpha
-  int max_elements_; /// Maximum number of elements in cut
-  int max_elements_root_; /// Maximum number of elements in cut at root
-  int form_nrows_; //number of rows on which formulation cuts will be generated
-  //@}
+    int t_min_;  /// t_min - first value of t to use for tMIR inequalities
+    int t_max_;  /// t_max - last value of t to use for tMIR inequalities
+    int q_min_;  /// q_min - first value of t to use for 2-Step tMIR inequalities
+    int q_max_;  /// q_max - last value of t to use for 2-Step tMIR inequalities
+    int a_max_;  /// a_max - maximum value of bhat/alpha
+    int max_elements_; /// Maximum number of elements in cut
+    int max_elements_root_; /// Maximum number of elements in cut at root
+    int form_nrows_; //number of rows on which formulation cuts will be generated
+    //@}
 };
 
 //#############################################################################
@@ -226,7 +289,7 @@ private:
 #define DGG_DEFAULT_TAUMAX 6
 #define DGG_DEFAULT_MAX_CUTS 500
 #define DGG_DEFAULT_IMPROVEMENT_THRESH 0.001
-#define DGG_DEFAULT_NBELOW_THRESH INT_MAX 
+#define DGG_DEFAULT_NBELOW_THRESH INT_MAX
 #define DGG_DEFAULT_NROOT_ROUNDS 2
 #define DGG_DEFAULT_NEGATIVE_SCALED_TWOSTEPS 0
 #define DGG_DEFAULT_ALPHA_RULE 0
@@ -234,7 +297,7 @@ private:
 #define DGG_DEFAULT_CUT_FORM 0
 #define DGG_DEFAULT_NICEFY 0
 #define DGG_DEFAULT_ONLY_DELAYED 0
-#define DGG_DEFAULT_DELAYED_FREQ 9999999 
+#define DGG_DEFAULT_DELAYED_FREQ 9999999
 #define DGG_DEFAULT_LPROWS_FREQ 9999999
 #define DGG_DEFAULT_WHICH_FORMULATION_CUTS 2
 
@@ -287,7 +350,7 @@ private:
 
 /* used for comparing variables to their upper bounds.
    OSI's default is 1.0e-7.
-   We set it to 1.0e6 because e-7 seems too sensitive. 
+   We set it to 1.0e6 because e-7 seems too sensitive.
    In fact, with e-7 the problem dsbmip.mps complains. */
 #define DGG_BOUND_THRESH 1.0e-6
 
@@ -356,9 +419,9 @@ private:
 
 #define DGG_WARNING(A, REST...) {\
   if(A) {\
-	  fprintf(stdout, ##REST); \
-		__DGG_PRINT_LOC__(stdout); \
-		}}
+      fprintf(stdout, ##REST); \
+        __DGG_PRINT_LOC__(stdout); \
+        }}
 
 #define DGG_TEST(A,B,REST...) {\
  if(A) DGG_THROW(B,##REST) }
@@ -416,50 +479,50 @@ DGG_data_t *DGG_getData(const void *solver_ptr);
 
 /******************* CONSTRAINT MANIPULATION **********************************/
 
-/* DGG_transformConstraint: manipulates a constraint in the following way: 
+/* DGG_transformConstraint: manipulates a constraint in the following way:
 
 packs everything in output
 
-1 - variables at their upper bounds are substituted for their 
-complements. This is done by adjusting the coefficients and 
-the right hand side (simple substitution). 
+1 - variables at their upper bounds are substituted for their
+complements. This is done by adjusting the coefficients and
+the right hand side (simple substitution).
 
 2 - variables with non-zero lower bounds are shifted.            */
 
 int DGG_transformConstraint( DGG_data_t *data,
-                             double **x_out, 
-			     double **rc_out,
+                             double **x_out,
+                             double **rc_out,
                              char **isint_out,
                              DGG_constraint_t *constraint );
 
-/* DGG_unTransformConstraint : 
+/* DGG_unTransformConstraint :
 
-1 - Undoes step (1) of DGG_transformConstraint 
+1 - Undoes step (1) of DGG_transformConstraint
 2 - Undoes step (2) of DGG_transformConstraint                  */
- 
-int DGG_unTransformConstraint( DGG_data_t *data, 
+
+int DGG_unTransformConstraint( DGG_data_t *data,
                                DGG_constraint_t *constraint );
 
-/* substitutes each slack variable by the structural variables which 
+/* substitutes each slack variable by the structural variables which
    define it. This function, hence, changes the constraint 'cut'.    */
 
-int DGG_substituteSlacks( const void *solver_ptr, 
-                          DGG_data_t *data, 
+int DGG_substituteSlacks( const void *solver_ptr,
+                          DGG_data_t *data,
                           DGG_constraint_t *cut );
 
-int DGG_nicefyConstraint( const void *solver_ptr, 
+int DGG_nicefyConstraint( const void *solver_ptr,
                           DGG_data_t *data,
-			  DGG_constraint_t *cut);
+                          DGG_constraint_t *cut);
 
 /******************* CUT GENERATION *******************************************/
-int DGG_getFormulaConstraint( int row_idx,  
-                              const void *solver_ptr,   
-			      DGG_data_t *data, 
+int DGG_getFormulaConstraint( int row_idx,
+                              const void *solver_ptr,
+                              DGG_data_t *data,
                               DGG_constraint_t* row );
 
-int DGG_getTableauConstraint( int index, 
-                              const void *solver_ptr, 
-                              DGG_data_t *data, 
+int DGG_getTableauConstraint( int index,
+                              const void *solver_ptr,
+                              DGG_data_t *data,
                               DGG_constraint_t* tabrow,
                               const int * colIsBasic,
                               const int * rowIsBasic,
@@ -468,28 +531,28 @@ int DGG_getTableauConstraint( int index,
 
 DGG_constraint_t* DGG_getSlackExpression(const void *solver_ptr, DGG_data_t* data, int row_index);
 
-  int DGG_generateTabRowCuts( DGG_list_t *list,
-			      DGG_data_t *data,
-			      const void *solver_ptr );
+int DGG_generateTabRowCuts( DGG_list_t *list,
+                            DGG_data_t *data,
+                            const void *solver_ptr );
 
-  int DGG_generateFormulationCuts( DGG_list_t *list,
-				   DGG_data_t *data,
-				   const void *solver_ptr,
-				   int nrows,
-				   CoinThreadRandom & generator);
+int DGG_generateFormulationCuts( DGG_list_t *list,
+                                 DGG_data_t *data,
+                                 const void *solver_ptr,
+                                 int nrows,
+                                 CoinThreadRandom & generator);
 
 
-  int DGG_generateFormulationCutsFromBase( DGG_constraint_t *base,
-					   double slack,
-					   DGG_list_t *list,
-					   DGG_data_t *data,
-					   const void *solver_ptr,
-					   CoinThreadRandom & generator);
+int DGG_generateFormulationCutsFromBase( DGG_constraint_t *base,
+        double slack,
+        DGG_list_t *list,
+        DGG_data_t *data,
+        const void *solver_ptr,
+        CoinThreadRandom & generator);
 
-  int DGG_generateCutsFromBase( DGG_constraint_t *base,
-				DGG_list_t *list,
-				DGG_data_t *data,
-				const void *solver_ptr );
+int DGG_generateCutsFromBase( DGG_constraint_t *base,
+                              DGG_list_t *list,
+                              DGG_data_t *data,
+                              const void *solver_ptr );
 
 int DGG_buildMir( char *isint,
                   DGG_constraint_t *base,
@@ -500,20 +563,20 @@ int DGG_build2step( double alpha,
                     DGG_constraint_t *base,
                     DGG_constraint_t **cut_out );
 
-  int DGG_addMirToList   ( DGG_constraint_t *base,
-			   char *isint,
-			   double *x,
-			   DGG_list_t *list,
-			   DGG_data_t *data,
-			   DGG_constraint_t *orig_base );
+int DGG_addMirToList   ( DGG_constraint_t *base,
+                         char *isint,
+                         double *x,
+                         DGG_list_t *list,
+                         DGG_data_t *data,
+                         DGG_constraint_t *orig_base );
 
-  int DGG_add2stepToList ( DGG_constraint_t *base,
-			   char *isint,
-			   double *x,
-			   double *rc,
-			   DGG_list_t *list,
-			   DGG_data_t *data,
-			   DGG_constraint_t *orig_base );
+int DGG_add2stepToList ( DGG_constraint_t *base,
+                         char *isint,
+                         double *x,
+                         double *rc,
+                         DGG_list_t *list,
+                         DGG_data_t *data,
+                         DGG_constraint_t *orig_base );
 
 /******************* CUT INFORMATION ******************************************/
 
@@ -536,7 +599,7 @@ int DGG_cutsOffPoint(double *x, DGG_constraint_t *cut);
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
 void CglTwomirUnitTest(const OsiSolverInterface * siP,
-		       const std::string mpdDir);
+                       const std::string mpdDir);
 
 
 #endif

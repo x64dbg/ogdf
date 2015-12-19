@@ -51,121 +51,133 @@ namespace ogdf
 
 CrossingsMatrix::CrossingsMatrix(const HierarchyLevels &levels)
 {
-	int max_len = 0;
-	for (int i = 0; i < levels.size(); i++)
-	{
-		int len = levels[i].size();
-		if (len > max_len)
-			max_len = len;
-	}
+    int max_len = 0;
+    for (int i = 0; i < levels.size(); i++)
+    {
+        int len = levels[i].size();
+        if (len > max_len)
+            max_len = len;
+    }
 
-	map.init(max_len);
-	matrix.init(0, max_len - 1, 0, max_len - 1);
-	m_bigM = 10000;
+    map.init(max_len);
+    matrix.init(0, max_len - 1, 0, max_len - 1);
+    m_bigM = 10000;
 }
 
 
 void CrossingsMatrix::init(Level &L)
 {
-	const HierarchyLevels &levels = L.levels();
+    const HierarchyLevels &levels = L.levels();
 
-	for (int i = 0; i < L.size(); i++)
-	{
-		map[i] = i;
-		for (int j = 0; j < L.size(); j++)
-			matrix(i,j) = 0;
-	}
+    for (int i = 0; i < L.size(); i++)
+    {
+        map[i] = i;
+        for (int j = 0; j < L.size(); j++)
+            matrix(i,j) = 0;
+    }
 
-	for (int i = 0; i < L.size(); i++)
-	{
-		node v = L[i];
-		const Array<node> &L_adj_i = L.adjNodes(v);
+    for (int i = 0; i < L.size(); i++)
+    {
+        node v = L[i];
+        const Array<node> &L_adj_i = L.adjNodes(v);
 
-		for(int k = 0; k < L_adj_i.size(); k++)
-		{
-			int pos_adj_k = levels.pos(L_adj_i[k]);
-			for (int j = i + 1; j < L.size(); j++)
-			{
-				const Array<node> &L_adj_j = L.adjNodes(L[j]);
+        for(int k = 0; k < L_adj_i.size(); k++)
+        {
+            int pos_adj_k = levels.pos(L_adj_i[k]);
+            for (int j = i + 1; j < L.size(); j++)
+            {
+                const Array<node> &L_adj_j = L.adjNodes(L[j]);
 
-				for (int l = 0; l < L_adj_j.size(); l++)
-				{
-					int pos_adj_l = levels.pos(L_adj_j[l]);
-					matrix(i,j) += (pos_adj_k > pos_adj_l);
-					matrix(j,i) += (pos_adj_l > pos_adj_k);
-				}
-			}
-		}
-	}
+                for (int l = 0; l < L_adj_j.size(); l++)
+                {
+                    int pos_adj_l = levels.pos(L_adj_j[l]);
+                    matrix(i,j) += (pos_adj_k > pos_adj_l);
+                    matrix(j,i) += (pos_adj_l > pos_adj_k);
+                }
+            }
+        }
+    }
 }
 
 
 void CrossingsMatrix::init(Level &L, const EdgeArray<__uint32> *edgeSubGraphs)
 {
-	OGDF_ASSERT(edgeSubGraphs != 0);
-	init(L);
+    OGDF_ASSERT(edgeSubGraphs != 0);
+    init(L);
 
-	const HierarchyLevels &levels = L.levels();
-	const GraphCopy &GC = levels.hierarchy();
+    const HierarchyLevels &levels = L.levels();
+    const GraphCopy &GC = levels.hierarchy();
 
-	// calculate max number of graphs in edgeSubGraphs
-	edge d;
-	int max = 0;
-	forall_edges(d, GC.original()) {
-		for (int i = 31; i > max; i--)
-		{
-			if((*edgeSubGraphs)[d] & (1 << i))
-				max = i;
-		}
-	}
+    // calculate max number of graphs in edgeSubGraphs
+    edge d;
+    int max = 0;
+    forall_edges(d, GC.original())
+    {
+        for (int i = 31; i > max; i--)
+        {
+            if((*edgeSubGraphs)[d] & (1 << i))
+                max = i;
+        }
+    }
 
-	// calculation differs from ordinary init since we need the edges and not only the nodes
-	for (int k = 0; k <= max; k++) {
-		for (int i = 0; i < L.size(); i++)
-		{
-			node v = L[i];
-			edge e;
-			// H.direction == 1 if direction == upward
-			if (levels.direction()) {
-				forall_adj_edges(e,v) {
-					if ((e->source() == v) && ((*edgeSubGraphs)[GC.original(e)] & (1 << k))) {
-						int pos_adj_e = levels.pos(e->target());
-						for (int j = i+1; j < L.size(); j++) {
-							node w = L[j];
-							edge f;
-							forall_adj_edges(f,w) {
-								if ((f->source() == w) && ((*edgeSubGraphs)[GC.original(f)] & (1 << k)))
-								{
-									int pos_adj_f = levels.pos(f->target());
-									matrix(i,j) += m_bigM * (pos_adj_e > pos_adj_f);
-									matrix(j,i) += m_bigM * (pos_adj_f > pos_adj_e);
-								}
-							}
-						}
-					}
-				}
-			}
-			else {
-				forall_adj_edges(e,v) {
-					if ((e->target() == v) && ((*edgeSubGraphs)[GC.original(e)] & (1 << k))) {
-						int pos_adj_e = levels.pos(e->source());
-						for (int j = i+1; j < L.size(); j++) {
-							node w = L[j];
-							edge f;
-							forall_adj_edges(f,w) {
-								if ((f->target() == w) && ((*edgeSubGraphs)[GC.original(f)] & (1 << k)))
-								{
-									int pos_adj_f = levels.pos(f->source());
-									matrix(i,j) += m_bigM * (pos_adj_e > pos_adj_f);
-									matrix(j,i) += m_bigM * (pos_adj_f > pos_adj_e);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    // calculation differs from ordinary init since we need the edges and not only the nodes
+    for (int k = 0; k <= max; k++)
+    {
+        for (int i = 0; i < L.size(); i++)
+        {
+            node v = L[i];
+            edge e;
+            // H.direction == 1 if direction == upward
+            if (levels.direction())
+            {
+                forall_adj_edges(e,v)
+                {
+                    if ((e->source() == v) && ((*edgeSubGraphs)[GC.original(e)] & (1 << k)))
+                    {
+                        int pos_adj_e = levels.pos(e->target());
+                        for (int j = i+1; j < L.size(); j++)
+                        {
+                            node w = L[j];
+                            edge f;
+                            forall_adj_edges(f,w)
+                            {
+                                if ((f->source() == w) && ((*edgeSubGraphs)[GC.original(f)] & (1 << k)))
+                                {
+                                    int pos_adj_f = levels.pos(f->target());
+                                    matrix(i,j) += m_bigM * (pos_adj_e > pos_adj_f);
+                                    matrix(j,i) += m_bigM * (pos_adj_f > pos_adj_e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                forall_adj_edges(e,v)
+                {
+                    if ((e->target() == v) && ((*edgeSubGraphs)[GC.original(e)] & (1 << k)))
+                    {
+                        int pos_adj_e = levels.pos(e->source());
+                        for (int j = i+1; j < L.size(); j++)
+                        {
+                            node w = L[j];
+                            edge f;
+                            forall_adj_edges(f,w)
+                            {
+                                if ((f->target() == w) && ((*edgeSubGraphs)[GC.original(f)] & (1 << k)))
+                                {
+                                    int pos_adj_f = levels.pos(f->source());
+                                    matrix(i,j) += m_bigM * (pos_adj_e > pos_adj_f);
+                                    matrix(j,i) += m_bigM * (pos_adj_f > pos_adj_e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 

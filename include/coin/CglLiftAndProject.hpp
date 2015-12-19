@@ -10,86 +10,91 @@
 #include "CglCutGenerator.hpp"
 
 /** Lift And Project Cut Generator Class */
-class CglLiftAndProject : public CglCutGenerator {
-   friend void CglLiftAndProjectUnitTest(const OsiSolverInterface * siP,
-					const std::string mpdDir );
+class CglLiftAndProject : public CglCutGenerator
+{
+    friend void CglLiftAndProjectUnitTest(const OsiSolverInterface * siP,
+                                          const std::string mpdDir );
 
 public:
-  /**@name Generate Cuts */
-  //@{
-  /** Generate lift-and-project cuts for the 
-      model of the solver interface, si. 
-      Insert the generated cuts into OsiCut, cs.
-  */
-  virtual void generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
-			    const CglTreeInfo info = CglTreeInfo()) const;
+    /**@name Generate Cuts */
+    //@{
+    /** Generate lift-and-project cuts for the
+        model of the solver interface, si.
+        Insert the generated cuts into OsiCut, cs.
+    */
+    virtual void generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
+                              const CglTreeInfo info = CglTreeInfo()) const;
 
-  /** Get the normalization : Either beta=+1 or beta=-1.
-  */
+    /** Get the normalization : Either beta=+1 or beta=-1.
+    */
 
-  double getBeta() const {
-    return beta_;
-  }
-
-  /** Set the normalization : Either beta=+1 or beta=-1.
-      Default value is 1.
-  */
-  void setBeta(int oneOrMinusOne){
-    if (oneOrMinusOne==1 || oneOrMinusOne==-1){
-      beta_= static_cast<double>(oneOrMinusOne);
+    double getBeta() const
+    {
+        return beta_;
     }
-    else {
-      throw CoinError("Unallowable value. Beta must be 1 or -1",
-		      "cutGeneration","CglLiftAndProject");
+
+    /** Set the normalization : Either beta=+1 or beta=-1.
+        Default value is 1.
+    */
+    void setBeta(int oneOrMinusOne)
+    {
+        if (oneOrMinusOne==1 || oneOrMinusOne==-1)
+        {
+            beta_= static_cast<double>(oneOrMinusOne);
+        }
+        else
+        {
+            throw CoinError("Unallowable value. Beta must be 1 or -1",
+                            "cutGeneration","CglLiftAndProject");
+        }
     }
-  }
 
-  //@}
+    //@}
 
-  /**@name Constructors and destructors */
-  //@{
-  /// Default constructor 
-  CglLiftAndProject ();
- 
-  /// Copy constructor 
-  CglLiftAndProject (
-    const CglLiftAndProject &);
+    /**@name Constructors and destructors */
+    //@{
+    /// Default constructor
+    CglLiftAndProject ();
 
-  /// Clone
-  virtual CglCutGenerator * clone() const;
+    /// Copy constructor
+    CglLiftAndProject (
+        const CglLiftAndProject &);
 
-  /// Assignment operator 
-  CglLiftAndProject &
+    /// Clone
+    virtual CglCutGenerator * clone() const;
+
+    /// Assignment operator
+    CglLiftAndProject &
     operator=(
-    const CglLiftAndProject& rhs);
-  
-  /// Destructor 
-  virtual
+        const CglLiftAndProject& rhs);
+
+    /// Destructor
+    virtual
     ~CglLiftAndProject ();
-  /// Create C++ lines to get to current state
-  virtual std::string generateCpp( FILE * fp);
-  //@}
+    /// Create C++ lines to get to current state
+    virtual std::string generateCpp( FILE * fp);
+    //@}
 
 private:
-  
- // Private member methods
 
-  /**@name Private methods */
-  //@{
+// Private member methods
 
-  //@}
+    /**@name Private methods */
+    //@{
 
-  // Private member data
+    //@}
 
-  /**@name Private member data */
-  //@{
-  /// The normalization is beta_=1 or beta_=-1
-  double beta_;  
-  /// epsilon
-  double epsilon_;  
-  /// 1-epsilon
-  double onetol_;  
-  //@}
+    // Private member data
+
+    /**@name Private member data */
+    //@{
+    /// The normalization is beta_=1 or beta_=-1
+    double beta_;
+    /// epsilon
+    double epsilon_;
+    /// 1-epsilon
+    double onetol_;
+    //@}
 };
 
 //#############################################################################
@@ -99,6 +104,6 @@ private:
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
 void CglLiftAndProjectUnitTest(const OsiSolverInterface * siP,
-			      const std::string mpdDir );
-  
+                               const std::string mpdDir );
+
 #endif

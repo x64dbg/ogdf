@@ -45,193 +45,223 @@
 #include <ogdf/basic/HashArray.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 static string::size_type extractIdentifierLength(const string &from, string::size_type start, int line)
 {
-	string::size_type p = start+1;
-	while(from[p] != ',' && from[p] != ')' && from[p] != ' ' && from[p] != '(') {
-		++p;
-		if(p >= from.size()) {
-			Logger::slout() << "GraphIO::readBENCH: Error in line " << line <<
-				". Expected comma, bracket or whitespace before EOL; Ignoring.\n";
-			break;
-		}
-	}
-	return p-start;
+    string::size_type p = start+1;
+    while(from[p] != ',' && from[p] != ')' && from[p] != ' ' && from[p] != '(')
+    {
+        ++p;
+        if(p >= from.size())
+        {
+            Logger::slout() << "GraphIO::readBENCH: Error in line " << line <<
+                            ". Expected comma, bracket or whitespace before EOL; Ignoring.\n";
+            break;
+        }
+    }
+    return p-start;
 }
 
 static string::size_type newStartPos(const string &from, string::size_type p, int line)
 {
-	while(from[p] == '\t' || from[p] == ' ' || from[p] == ',') {
-		++p;
-		if(p >= from.size()) {
-			Logger::slout() << "GraphIO::readBENCH: Error in line " << line <<
-				". Expected whitespace or delimiter before EOL; Ignoring.\n";
-			break;
-		}
-	}
+    while(from[p] == '\t' || from[p] == ' ' || from[p] == ',')
+    {
+        ++p;
+        if(p >= from.size())
+        {
+            Logger::slout() << "GraphIO::readBENCH: Error in line " << line <<
+                            ". Expected whitespace or delimiter before EOL; Ignoring.\n";
+            break;
+        }
+    }
 
-	return p;
+    return p;
 }
 
 static string::size_type findOpen(const string &from, int line)
 {
-	string::size_type p = 0;
-	while(from[p] != '(') {
-		++p;
-		if(p >= from.size()) {
-			Logger::slout() << "GraphIO::readBENCH: Error in line " << line <<
-				". Expected opening bracket before EOL; Ignoring.\n";
-			break;
-		}
-	}
-	return p;
+    string::size_type p = 0;
+    while(from[p] != '(')
+    {
+        ++p;
+        if(p >= from.size())
+        {
+            Logger::slout() << "GraphIO::readBENCH: Error in line " << line <<
+                            ". Expected opening bracket before EOL; Ignoring.\n";
+            break;
+        }
+    }
+    return p;
 }
 
 
 bool GraphIO::readBENCH(Graph &G, List<node>& hypernodes, List<edge>* shell, istream &is)
 {
-	G.clear();
-	hypernodes.clear();
-	if(shell) shell->clear();
+    G.clear();
+    hypernodes.clear();
+    if(shell) shell->clear();
 
-	string buffer;
-	HashArray<string,node> hm(0);
+    string buffer;
+    HashArray<string,node> hm(0);
 
-	node si = 0, so = 0;
-	if(shell) {
-		si = G.newNode();
-		so = G.newNode();
-		shell->pushBack( G.newEdge(si,so) );
-	}
+    node si = 0, so = 0;
+    if(shell)
+    {
+        si = G.newNode();
+        so = G.newNode();
+        shell->pushBack( G.newEdge(si,so) );
+    }
 
-	int line = 0;
-	while(getline(is,buffer))
-	{
-		++line;
+    int line = 0;
+    while(getline(is,buffer))
+    {
+        ++line;
 
-		if(buffer.empty() || buffer[0] == ' ' || buffer[0] == '#')
-			continue;
+        if(buffer.empty() || buffer[0] == ' ' || buffer[0] == '#')
+            continue;
 
-		if(prefixIgnoreCase("INPUT(", buffer)) {
-			string s(buffer, 6, extractIdentifierLength(buffer, 6, line));
-			node n = G.newNode();
-			hm[s] = n;
-			hypernodes.pushBack(n);
-			if(shell) shell->pushBack( G.newEdge(si,n) );
+        if(prefixIgnoreCase("INPUT(", buffer))
+        {
+            string s(buffer, 6, extractIdentifierLength(buffer, 6, line));
+            node n = G.newNode();
+            hm[s] = n;
+            hypernodes.pushBack(n);
+            if(shell) shell->pushBack( G.newEdge(si,n) );
 
-		} else if(prefixIgnoreCase("OUTPUT(", buffer)) {
-			string s(buffer, 7, extractIdentifierLength(buffer, 7, line));
-			node n = G.newNode();
-			hm[s] = n;
-			hypernodes.pushBack(n);
-			if(shell) shell->pushBack( G.newEdge(n,so) );
+        }
+        else if(prefixIgnoreCase("OUTPUT(", buffer))
+        {
+            string s(buffer, 7, extractIdentifierLength(buffer, 7, line));
+            node n = G.newNode();
+            hm[s] = n;
+            hypernodes.pushBack(n);
+            if(shell) shell->pushBack( G.newEdge(n,so) );
 
-		} else {
-			string::size_type p = extractIdentifierLength(buffer, 0, line);
-			string s(buffer, 0, p); // gatename
-			node m = hm[s]; // found as outputname -> refOut
-			if(!m) {
-				m = hm[s + "%$@"]; // found as innernode input.
-				if(!m) { // generate it anew.
-					node in = G.newNode();
-					node out = G.newNode();
-					hm[s + "%$@"] = in;
-					hm[s] = out;
-					hypernodes.pushBack(out);
-					G.newEdge(in,out);
-					m = in;
-				}
-			}
-			p = findOpen(buffer, line);
-			do {
-				p = newStartPos(buffer, p+1, line);
-				string::size_type pp = extractIdentifierLength(buffer, p, line);
-				string s(buffer, p, pp);
-				p += pp;
-				node mm = hm[s];
-				if(!mm) {
-					// new
-					node in = G.newNode();
-					node out = G.newNode();
-					hm[s + "%$@"] = in;
-					hm[s] = out;
-					hypernodes.pushBack(out);
-					G.newEdge(in,out);
-					mm = out;
-				}
-				G.newEdge(mm,m);
-			} while(buffer[p] == ',');
-		}
-	}
+        }
+        else
+        {
+            string::size_type p = extractIdentifierLength(buffer, 0, line);
+            string s(buffer, 0, p); // gatename
+            node m = hm[s]; // found as outputname -> refOut
+            if(!m)
+            {
+                m = hm[s + "%$@"]; // found as innernode input.
+                if(!m)   // generate it anew.
+                {
+                    node in = G.newNode();
+                    node out = G.newNode();
+                    hm[s + "%$@"] = in;
+                    hm[s] = out;
+                    hypernodes.pushBack(out);
+                    G.newEdge(in,out);
+                    m = in;
+                }
+            }
+            p = findOpen(buffer, line);
+            do
+            {
+                p = newStartPos(buffer, p+1, line);
+                string::size_type pp = extractIdentifierLength(buffer, p, line);
+                string s(buffer, p, pp);
+                p += pp;
+                node mm = hm[s];
+                if(!mm)
+                {
+                    // new
+                    node in = G.newNode();
+                    node out = G.newNode();
+                    hm[s + "%$@"] = in;
+                    hm[s] = out;
+                    hypernodes.pushBack(out);
+                    G.newEdge(in,out);
+                    mm = out;
+                }
+                G.newEdge(mm,m);
+            }
+            while(buffer[p] == ',');
+        }
+    }
 
-	return true;
+    return true;
 }
 
 
 bool GraphIO::readPLA(Graph &G, List<node>& hypernodes, List<edge>* shell, istream &is)
 {
-	G.clear();
-	hypernodes.clear();
-	if(shell) shell->clear();
+    G.clear();
+    hypernodes.clear();
+    if(shell) shell->clear();
 
-	int i;
-	int numGates = -1;
-	is >> numGates;
+    int i;
+    int numGates = -1;
+    is >> numGates;
 
-	if(numGates < 0) {
-		return false;
-	}
+    if(numGates < 0)
+    {
+        return false;
+    }
 
-	Array<node> outport(1,numGates);
-	for(i = 1; i <= numGates; ++i) {
-		node out = G.newNode();
-		outport[i] = out;
-		hypernodes.pushBack(out);
-	}
+    Array<node> outport(1,numGates);
+    for(i = 1; i <= numGates; ++i)
+    {
+        node out = G.newNode();
+        outport[i] = out;
+        hypernodes.pushBack(out);
+    }
 
-	for(i = 1; i <= numGates; ++i) {
-		int id, type, numinput;
-		is >> id >> type >> numinput;
-		if(id != i) {
-			Logger::slout() << "GraphIO::readPLA: ID and linenum do not match\n";
-			return false;
-		}
+    for(i = 1; i <= numGates; ++i)
+    {
+        int id, type, numinput;
+        is >> id >> type >> numinput;
+        if(id != i)
+        {
+            Logger::slout() << "GraphIO::readPLA: ID and linenum do not match\n";
+            return false;
+        }
 
-		node in = G.newNode();
-		G.newEdge(in,outport[i]);
-		for(int j = 0; j < numinput; ++j) {
-			int from = -1;
-			is >> from;
-			if(from < 1 || from > numGates) {
-				Logger::slout() << "GraphIO::readPLA: illegal node index\n";
-				return false;
-			}
-			G.newEdge(outport[from],in);
-		}
-		while(!is.eof() && is.get() != '\n')
-			;
-	}
+        node in = G.newNode();
+        G.newEdge(in,outport[i]);
+        for(int j = 0; j < numinput; ++j)
+        {
+            int from = -1;
+            is >> from;
+            if(from < 1 || from > numGates)
+            {
+                Logger::slout() << "GraphIO::readPLA: illegal node index\n";
+                return false;
+            }
+            G.newEdge(outport[from],in);
+        }
+        while(!is.eof() && is.get() != '\n')
+            ;
+    }
 
-	if(shell) {
-		node si = G.newNode();
-		node so = G.newNode();
-		shell->pushBack( G.newEdge(si,so) );
+    if(shell)
+    {
+        node si = G.newNode();
+        node so = G.newNode();
+        shell->pushBack( G.newEdge(si,so) );
 
-		node n;
-		forall_nodes(n,G) {
-			if(n->degree() == 1) {
-				if(n->outdeg() == 1) { //input
-					shell->pushBack( G.newEdge( si, n ) );
-				} else { // output
-					shell->pushBack( G.newEdge( n, so ) );
-				}
-			}
-		}
-	}
+        node n;
+        forall_nodes(n,G)
+        {
+            if(n->degree() == 1)
+            {
+                if(n->outdeg() == 1)   //input
+                {
+                    shell->pushBack( G.newEdge( si, n ) );
+                }
+                else     // output
+                {
+                    shell->pushBack( G.newEdge( n, so ) );
+                }
+            }
+        }
+    }
 
-	return true;
+    return true;
 }
 
 

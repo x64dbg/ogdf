@@ -57,33 +57,37 @@
 
 #include <ogdf/abacus/constraint.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-class ClusterKuratowskiConstraint : public abacus::Constraint {
+class ClusterKuratowskiConstraint : public abacus::Constraint
+{
 
 public:
 
-	ClusterKuratowskiConstraint(abacus::Master *master, int nEdges, SListPure<nodePair> &ks);
+    ClusterKuratowskiConstraint(abacus::Master *master, int nEdges, SListPure<nodePair> &ks);
 
-	virtual ~ClusterKuratowskiConstraint();
+    virtual ~ClusterKuratowskiConstraint();
 
-	// Computes and returns the coefficient for the given variable
-	virtual double coeff(const abacus::Variable *v) const;
+    // Computes and returns the coefficient for the given variable
+    virtual double coeff(const abacus::Variable *v) const;
 
-	void printMe(ostream& out) const {
-		out << "[KuraCon: ";
-		forall_listiterators(nodePair, it, m_subdivision) {
-			(*it).printMe(out);
-			out << ",";
-		}
-		out << "]";
-	}
+    void printMe(ostream& out) const
+    {
+        out << "[KuraCon: ";
+        forall_listiterators(nodePair, it, m_subdivision)
+        {
+            (*it).printMe(out);
+            out << ",";
+        }
+        out << "]";
+    }
 
 private:
 
-	// The subdivision containing edges forming a SubGraph that is not planar
-	List<nodePair> m_subdivision;
+    // The subdivision containing edges forming a SubGraph that is not planar
+    List<nodePair> m_subdivision;
 
 };
 

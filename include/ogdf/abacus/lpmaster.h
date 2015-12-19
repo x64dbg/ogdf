@@ -43,7 +43,8 @@
 
 #include <ogdf/abacus/abacusroot.h>
 
-namespace abacus {
+namespace abacus
+{
 
 class Master;
 
@@ -53,19 +54,20 @@ class Master;
  * The class LpMaster is an abstract base class. An LP solver
  * specific master class has to be derived from this class.
  */
-class  LpMaster :  public AbacusRoot  {
+class  LpMaster :  public AbacusRoot
+{
 public:
-	LpMaster(Master *master) : master_(master) { }
+    LpMaster(Master *master) : master_(master) { }
 
-	virtual ~LpMaster() { }
+    virtual ~LpMaster() { }
 
-	virtual void initializeLpParameters() = 0;
-	virtual void setDefaultLpParameters() = 0;
-	virtual void printLpParameters() const = 0;
-	virtual void outputLpStatistics() const = 0;
+    virtual void initializeLpParameters() = 0;
+    virtual void setDefaultLpParameters() = 0;
+    virtual void printLpParameters() const = 0;
+    virtual void outputLpStatistics() const = 0;
 
 protected:
-	Master *master_;
+    Master *master_;
 };
 
 } //namespace abacus

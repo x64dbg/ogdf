@@ -52,7 +52,8 @@
 #include <ogdf/module/AcyclicSubgraphModule.h>
 
 
-namespace ogdf {
+namespace ogdf
+{
 
 class GraphAttributes;
 
@@ -62,32 +63,33 @@ class GraphAttributes;
 /**
  * The algorithm simply removes all DFS-backedges and works in linear-time.
  */
-class OGDF_EXPORT DfsAcyclicSubgraph : public AcyclicSubgraphModule {
+class OGDF_EXPORT DfsAcyclicSubgraph : public AcyclicSubgraphModule
+{
 public:
-	//! Computes the set of edges \a arcSet, which have to be deleted in the acyclic subgraph.
-	void call (const Graph &G, List<edge> &arcSet);
+    //! Computes the set of edges \a arcSet, which have to be deleted in the acyclic subgraph.
+    void call (const Graph &G, List<edge> &arcSet);
 
-	//! Call for UML graph.
-	/**
-	 * Computes the set of edges \a arcSet, which have to be deleted
-	 * in the acyclic subgraph.
-	 */
-	void callUML (const GraphAttributes &AG, List<edge> &arcSet);
+    //! Call for UML graph.
+    /**
+     * Computes the set of edges \a arcSet, which have to be deleted
+     * in the acyclic subgraph.
+     */
+    void callUML (const GraphAttributes &AG, List<edge> &arcSet);
 
 private:
-	int dfsFindHierarchies(
-		const GraphAttributes &AG,
-		NodeArray<int> &hierarchy,
-		int i,
-		node v);
+    int dfsFindHierarchies(
+        const GraphAttributes &AG,
+        NodeArray<int> &hierarchy,
+        int i,
+        node v);
 
-	void dfsBackedgesHierarchies(
-		const GraphAttributes &AG,
-		node v,
-		NodeArray<int> &number,
-		NodeArray<int> &completion,
-		int &nNumber,
-		int &nCompletion);
+    void dfsBackedgesHierarchies(
+        const GraphAttributes &AG,
+        node v,
+        NodeArray<int> &number,
+        NodeArray<int> &completion,
+        int &nNumber,
+        int &nCompletion);
 
 };
 

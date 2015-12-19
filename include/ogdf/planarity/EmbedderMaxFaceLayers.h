@@ -51,7 +51,8 @@
 #include <ogdf/decomposition/BCTree.h>
 #include <ogdf/decomposition/StaticSPQRTree.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 //! Planar graph embedding with maximum external face (plus layers approach).
 /**
@@ -66,102 +67,102 @@ namespace ogdf {
 class OGDF_EXPORT EmbedderMaxFaceLayers : public EmbedderModule
 {
 public:
-	//constructor and destructor
-	EmbedderMaxFaceLayers() { }
-	~EmbedderMaxFaceLayers() { }
+    //constructor and destructor
+    EmbedderMaxFaceLayers() { }
+    ~EmbedderMaxFaceLayers() { }
 
-	/**
-	 * \brief Computes an embedding of \a G with maximum external face.
-	 * \param G is the original graph. Its adjacency list has to be  changed by the embedder.
-	 * \param adjExternal is assigned an adjacency entry on the external face and has to be set by the embedder.
-	 */
-	void call(Graph& G, adjEntry& adjExternal);
-
-private:
-	/**
-	 * \brief Computes recursively the block graph for every block.
-	 *
-	 * \param bT is a block node in the BC-tree.
-	 * \param cH is a node of bT in the block graph.
-	 */
-	void computeBlockGraphs(const node& bT, const node& cH);
-
-	/**
-	 * \brief Bottom up traversal of BC-tree.
-	 *
-	 * \param bT is the BC-tree node treated in this function call.
-	 * \param cH is the block node which is related to the cut vertex which is
-	 *   parent of bT in BC-tree.
-	 */
-	int constraintMaxFace(const node& bT, const node& cH);
-
-	/**
-	 * \brief Top down traversal of BC-tree.
-	 *
-	 * \param bT is the tree node treated in this function call.
-	 * \param bT_opt is assigned a block node in BC-tree which contains a face which
-	 *   can be expanded to a maximum face.
-	 * \param ell_opt is the size of a maximum face.
-	 */
-	void maximumFaceRec(const node& bT, node& bT_opt, int& ell_opt);
-
-	/**
-	 * \brief Computes the adjacency list for all nodes in a block and calls
-	 * recursively the function for all blocks incident to nodes in bT.
-	 *
-	 * \param bT is the tree node treated in this function call.
-	 */
-	void embedBlock(const node& bT);
-
-	/**
-	 * \brief Computes the adjacency list for all nodes in a block and calls
-	 * recursively the function for all blocks incident to nodes in bT.
-	 *
-	 * \param bT is the tree node treated in this function call.
-	 * \param cT is the parent cut vertex node of bT in the BC-tree. cT is 0 if bT
-	 *   is the root block.
-	 * \param after is the adjacency entry of the cut vertex, after which bT has to
-	 *   be inserted.
-	 */
-	void embedBlock(const node& bT, const node& cT, ListIterator<adjEntry>& after);
+    /**
+     * \brief Computes an embedding of \a G with maximum external face.
+     * \param G is the original graph. Its adjacency list has to be  changed by the embedder.
+     * \param adjExternal is assigned an adjacency entry on the external face and has to be set by the embedder.
+     */
+    void call(Graph& G, adjEntry& adjExternal);
 
 private:
-	/** BC-tree of the original graph */
-	BCTree* pBCTree;
+    /**
+     * \brief Computes recursively the block graph for every block.
+     *
+     * \param bT is a block node in the BC-tree.
+     * \param cH is a node of bT in the block graph.
+     */
+    void computeBlockGraphs(const node& bT, const node& cH);
 
-	/** an adjacency entry on the external face */
-	adjEntry* pAdjExternal;
+    /**
+     * \brief Bottom up traversal of BC-tree.
+     *
+     * \param bT is the BC-tree node treated in this function call.
+     * \param cH is the block node which is related to the cut vertex which is
+     *   parent of bT in BC-tree.
+     */
+    int constraintMaxFace(const node& bT, const node& cH);
 
-	/** all blocks */
-	NodeArray<Graph> blockG;
+    /**
+     * \brief Top down traversal of BC-tree.
+     *
+     * \param bT is the tree node treated in this function call.
+     * \param bT_opt is assigned a block node in BC-tree which contains a face which
+     *   can be expanded to a maximum face.
+     * \param ell_opt is the size of a maximum face.
+     */
+    void maximumFaceRec(const node& bT, node& bT_opt, int& ell_opt);
 
-	/** a mapping of nodes in the auxiliaryGraph of the BC-tree to blockG */
-	NodeArray< NodeArray<node> > nH_to_nBlockEmbedding;
+    /**
+     * \brief Computes the adjacency list for all nodes in a block and calls
+     * recursively the function for all blocks incident to nodes in bT.
+     *
+     * \param bT is the tree node treated in this function call.
+     */
+    void embedBlock(const node& bT);
 
-	/** a mapping of edges in the auxiliaryGraph of the BC-tree to blockG */
-	NodeArray< EdgeArray<edge> > eH_to_eBlockEmbedding;
+    /**
+     * \brief Computes the adjacency list for all nodes in a block and calls
+     * recursively the function for all blocks incident to nodes in bT.
+     *
+     * \param bT is the tree node treated in this function call.
+     * \param cT is the parent cut vertex node of bT in the BC-tree. cT is 0 if bT
+     *   is the root block.
+     * \param after is the adjacency entry of the cut vertex, after which bT has to
+     *   be inserted.
+     */
+    void embedBlock(const node& bT, const node& cT, ListIterator<adjEntry>& after);
 
-	/** a mapping of nodes in blockG to the auxiliaryGraph of the BC-tree */
-	NodeArray< NodeArray<node> > nBlockEmbedding_to_nH;
+private:
+    /** BC-tree of the original graph */
+    BCTree* pBCTree;
 
-	/** a mapping of edges in blockG to the auxiliaryGraph of the BC-tree */
-	NodeArray< EdgeArray<edge> > eBlockEmbedding_to_eH;
+    /** an adjacency entry on the external face */
+    adjEntry* pAdjExternal;
 
-	/** saving for each node in the block graphs its length */
-	NodeArray< NodeArray<int> > nodeLength;
+    /** all blocks */
+    NodeArray<Graph> blockG;
 
-	/** is saving for each node in the block graphs its cstrLength */
-	NodeArray< NodeArray<int> > cstrLength;
+    /** a mapping of nodes in the auxiliaryGraph of the BC-tree to blockG */
+    NodeArray< NodeArray<node> > nH_to_nBlockEmbedding;
 
-	/** saves for every node of G the new adjacency list */
-	NodeArray< List<adjEntry> > newOrder;
+    /** a mapping of edges in the auxiliaryGraph of the BC-tree to blockG */
+    NodeArray< EdgeArray<edge> > eH_to_eBlockEmbedding;
 
-	/** treeNodeTreated saves for all block nodes in the
-	 *  BC-tree if it has already been treated or not. */
-	NodeArray<bool> treeNodeTreated;
+    /** a mapping of nodes in blockG to the auxiliaryGraph of the BC-tree */
+    NodeArray< NodeArray<node> > nBlockEmbedding_to_nH;
 
-	/** The SPQR-trees of the blocks */
-	NodeArray<StaticSPQRTree*> spqrTrees;
+    /** a mapping of edges in blockG to the auxiliaryGraph of the BC-tree */
+    NodeArray< EdgeArray<edge> > eBlockEmbedding_to_eH;
+
+    /** saving for each node in the block graphs its length */
+    NodeArray< NodeArray<int> > nodeLength;
+
+    /** is saving for each node in the block graphs its cstrLength */
+    NodeArray< NodeArray<int> > cstrLength;
+
+    /** saves for every node of G the new adjacency list */
+    NodeArray< List<adjEntry> > newOrder;
+
+    /** treeNodeTreated saves for all block nodes in the
+     *  BC-tree if it has already been treated or not. */
+    NodeArray<bool> treeNodeTreated;
+
+    /** The SPQR-trees of the blocks */
+    NodeArray<StaticSPQRTree*> spqrTrees;
 };
 
 } // end namespace ogdf

@@ -42,139 +42,154 @@
 
 #include <ogdf/energybased/multilevelmixer/EdgeCoverMerger.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 EdgeCoverMerger::EdgeCoverMerger()
-:m_levelSizeFactor(2.0)
+    :m_levelSizeFactor(2.0)
 {
 }
 
 bool EdgeCoverMerger::buildOneLevel(MultilevelGraph &MLG)
 {
-	Graph &G = MLG.getGraph();
-	int level = MLG.getLevel() + 1;
-	m_substituteNodes.init(G, 0);
+    Graph &G = MLG.getGraph();
+    int level = MLG.getLevel() + 1;
+    m_substituteNodes.init(G, 0);
 
-	int numNodes = G.numberOfNodes();
+    int numNodes = G.numberOfNodes();
 
-	if (numNodes <= 3) {
-		return false;
-	}
+    if (numNodes <= 3)
+    {
+        return false;
+    }
 
-	NodeArray<bool> nodeMarks(G, false);
-	std::vector<edge> untouchedEdges;
-	std::vector<edge> matching;
-	std::vector<edge> edgeCover;
-	std::vector<edge> rest;
-	edge e;
-	forall_edges(e, G) {
-		untouchedEdges.push_back(e);
-	}
+    NodeArray<bool> nodeMarks(G, false);
+    std::vector<edge> untouchedEdges;
+    std::vector<edge> matching;
+    std::vector<edge> edgeCover;
+    std::vector<edge> rest;
+    edge e;
+    forall_edges(e, G)
+    {
+        untouchedEdges.push_back(e);
+    }
 
-	while (!untouchedEdges.empty())
-	{
-		int rndIndex = randomNumber(0, (int)untouchedEdges.size()-1);
-		edge randomEdge = untouchedEdges[rndIndex];
-		untouchedEdges[rndIndex] = untouchedEdges.back();
-		untouchedEdges.pop_back();
+    while (!untouchedEdges.empty())
+    {
+        int rndIndex = randomNumber(0, (int)untouchedEdges.size()-1);
+        edge randomEdge = untouchedEdges[rndIndex];
+        untouchedEdges[rndIndex] = untouchedEdges.back();
+        untouchedEdges.pop_back();
 
-		node one = randomEdge->source();
-		node two = randomEdge->target();
-		if (!nodeMarks[one] && !nodeMarks[two]) {
-			matching.push_back(randomEdge);
-			nodeMarks[one] = true;
-			nodeMarks[two] = true;
-		} else {
-			rest.push_back(randomEdge);
-		}
-	}
+        node one = randomEdge->source();
+        node two = randomEdge->target();
+        if (!nodeMarks[one] && !nodeMarks[two])
+        {
+            matching.push_back(randomEdge);
+            nodeMarks[one] = true;
+            nodeMarks[two] = true;
+        }
+        else
+        {
+            rest.push_back(randomEdge);
+        }
+    }
 
-	while (!rest.empty())
-	{
-		int rndIndex = randomNumber(0, (int)rest.size()-1);
-		edge randomEdge = rest[rndIndex];
-		rest[rndIndex] = rest.back();
-		rest.pop_back();
+    while (!rest.empty())
+    {
+        int rndIndex = randomNumber(0, (int)rest.size()-1);
+        edge randomEdge = rest[rndIndex];
+        rest[rndIndex] = rest.back();
+        rest.pop_back();
 
-		node one = randomEdge->source();
-		node two = randomEdge->target();
-		if (!nodeMarks[one] || !nodeMarks[two]) {
-			edgeCover.push_back(randomEdge);
-			nodeMarks[one] = true;
-			nodeMarks[two] = true;
-		}
-	}
+        node one = randomEdge->source();
+        node two = randomEdge->target();
+        if (!nodeMarks[one] || !nodeMarks[two])
+        {
+            edgeCover.push_back(randomEdge);
+            nodeMarks[one] = true;
+            nodeMarks[two] = true;
+        }
+    }
 
-	bool retVal = false;
+    bool retVal = false;
 
-	while ((!matching.empty() || !edgeCover.empty()) && G.numberOfNodes() > numNodes / m_levelSizeFactor) {
-		int rndIndex;
-		edge coveringEdge;
+    while ((!matching.empty() || !edgeCover.empty()) && G.numberOfNodes() > numNodes / m_levelSizeFactor)
+    {
+        int rndIndex;
+        edge coveringEdge;
 
-		if (!matching.empty()) {
-			rndIndex = randomNumber(0, (int)matching.size()-1);
-			coveringEdge = matching[rndIndex];
-			matching[rndIndex] = matching.back();
-			matching.pop_back();
-		} else {
-			rndIndex = randomNumber(0, (int)edgeCover.size()-1);
-			coveringEdge = edgeCover[rndIndex];
-			edgeCover[rndIndex] = edgeCover.back();
-			edgeCover.pop_back();
-		}
+        if (!matching.empty())
+        {
+            rndIndex = randomNumber(0, (int)matching.size()-1);
+            coveringEdge = matching[rndIndex];
+            matching[rndIndex] = matching.back();
+            matching.pop_back();
+        }
+        else
+        {
+            rndIndex = randomNumber(0, (int)edgeCover.size()-1);
+            coveringEdge = edgeCover[rndIndex];
+            edgeCover[rndIndex] = edgeCover.back();
+            edgeCover.pop_back();
+        }
 
-		node mergeNode;
-		node parent;
+        node mergeNode;
+        node parent;
 
-		// choose high degree node as parent!
-		mergeNode = coveringEdge->source();
-		parent = coveringEdge->target();
-		if (mergeNode->degree() > parent->degree()) {
-			mergeNode = coveringEdge->target();
-			parent = coveringEdge->source();
-		}
+        // choose high degree node as parent!
+        mergeNode = coveringEdge->source();
+        parent = coveringEdge->target();
+        if (mergeNode->degree() > parent->degree())
+        {
+            mergeNode = coveringEdge->target();
+            parent = coveringEdge->source();
+        }
 
-		while(m_substituteNodes[parent] != 0) {
-			parent = m_substituteNodes[parent];
-		}
-		while(m_substituteNodes[mergeNode] != 0) {
-			mergeNode = m_substituteNodes[mergeNode];
-		}
+        while(m_substituteNodes[parent] != 0)
+        {
+            parent = m_substituteNodes[parent];
+        }
+        while(m_substituteNodes[mergeNode] != 0)
+        {
+            mergeNode = m_substituteNodes[mergeNode];
+        }
 
-		if (MLG.getNode(parent->index()) != parent
-			|| MLG.getNode(mergeNode->index()) != mergeNode
-			|| parent == mergeNode)
-		{
-			continue;
-		}
+        if (MLG.getNode(parent->index()) != parent
+                || MLG.getNode(mergeNode->index()) != mergeNode
+                || parent == mergeNode)
+        {
+            continue;
+        }
 
-		retVal = doMerge(MLG, parent, mergeNode, level);
-	}
+        retVal = doMerge(MLG, parent, mergeNode, level);
+    }
 
-	return retVal;
+    return retVal;
 }
 
 
 void EdgeCoverMerger::setFactor(double factor)
 {
-	m_levelSizeFactor = factor;
+    m_levelSizeFactor = factor;
 }
 
 
 // tracks substitute Nodes
 bool EdgeCoverMerger::doMerge( MultilevelGraph &MLG, node parent, node mergePartner, int level )
 {
-	NodeMerge * NM = new NodeMerge(level);
-	bool ret = MLG.changeNode(NM, parent, MLG.radius(parent), mergePartner);
-	OGDF_ASSERT( ret );
-	MLG.moveEdgesToParent(NM, mergePartner, parent, true, m_adjustEdgeLengths);
-	ret = MLG.postMerge(NM, mergePartner);
-	if( !ret ) {
-		delete NM;
-		return false;
-	}
-	m_substituteNodes[mergePartner] = parent;
-	return true;
+    NodeMerge * NM = new NodeMerge(level);
+    bool ret = MLG.changeNode(NM, parent, MLG.radius(parent), mergePartner);
+    OGDF_ASSERT( ret );
+    MLG.moveEdgesToParent(NM, mergePartner, parent, true, m_adjustEdgeLengths);
+    ret = MLG.postMerge(NM, mergePartner);
+    if( !ret )
+    {
+        delete NM;
+        return false;
+    }
+    m_substituteNodes[mergePartner] = parent;
+    return true;
 }
 
 } // namespace ogdf

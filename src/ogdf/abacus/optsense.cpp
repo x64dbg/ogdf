@@ -36,22 +36,24 @@
 
 #include <ogdf/abacus/optsense.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 ostream &operator<<(ostream &out, const OptSense &rhs)
 {
-	switch (rhs.sense_) {
-	case OptSense::Min:
-		out << "minimize";
-		break;
-	case OptSense::Max:
-		out << "maximize";
-		break;
-	case OptSense::Unknown:
-		out << "unknown";
-		break;
-	}
-	return out;
+    switch (rhs.sense_)
+    {
+    case OptSense::Min:
+        out << "minimize";
+        break;
+    case OptSense::Max:
+        out << "maximize";
+        break;
+    case OptSense::Unknown:
+        out << "unknown";
+        break;
+    }
+    return out;
 }
 } //namespace abacus

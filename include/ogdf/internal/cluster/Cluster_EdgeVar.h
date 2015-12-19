@@ -50,41 +50,56 @@
 
 #include <ogdf/abacus/variable.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
-class EdgeVar : public abacus::Variable {
-	friend class MaxCPlanarSub;
+class EdgeVar : public abacus::Variable
+{
+    friend class MaxCPlanarSub;
 public:
-enum edgeType {ORIGINAL, CONNECT};
+    enum edgeType {ORIGINAL, CONNECT};
 
-	EdgeVar(abacus::Master *master, double obj, edgeType eType, node source, node target);
-	//! Simple version for cplanarity testing (only connect edges allowed)
-	EdgeVar(abacus::Master *master, double obj, node source, node target);
-	//! Simple version for cplanarity testing (only connect edges allowed, lower bound given)
-	EdgeVar(abacus::Master *master, double obj, double lbound, node source, node target);
+    EdgeVar(abacus::Master *master, double obj, edgeType eType, node source, node target);
+    //! Simple version for cplanarity testing (only connect edges allowed)
+    EdgeVar(abacus::Master *master, double obj, node source, node target);
+    //! Simple version for cplanarity testing (only connect edges allowed, lower bound given)
+    EdgeVar(abacus::Master *master, double obj, double lbound, node source, node target);
 
-	virtual ~EdgeVar();
+    virtual ~EdgeVar();
 
-	edge theEdge() const {return m_edge;}
-	node sourceNode() const {return m_source;}
-	node targetNode() const {return m_target;}
-	edgeType theEdgeType() const {return m_eType;}
-	//double objCoeff() const {return m_objCoeff;}
+    edge theEdge() const
+    {
+        return m_edge;
+    }
+    node sourceNode() const
+    {
+        return m_source;
+    }
+    node targetNode() const
+    {
+        return m_target;
+    }
+    edgeType theEdgeType() const
+    {
+        return m_eType;
+    }
+    //double objCoeff() const {return m_objCoeff;}
 
-	virtual void printMe(ostream& out) {
-		out << "[Var: " << sourceNode() << "->" << targetNode() << " (" << ((theEdgeType()==EdgeVar::ORIGINAL)?"original":"connect") << ") ZF=" << obj() << "]";
-	}
+    virtual void printMe(ostream& out)
+    {
+        out << "[Var: " << sourceNode() << "->" << targetNode() << " (" << ((theEdgeType()==EdgeVar::ORIGINAL)?"original":"connect") << ") ZF=" << obj() << "]";
+    }
 
 private:
 
-	// The edge type of the variable
-	edgeType m_eType;
+    // The edge type of the variable
+    edgeType m_eType;
 
-	// The corresponding nodes and edge
-	node m_source;
-	node m_target;
-	edge m_edge;
+    // The corresponding nodes and edge
+    node m_source;
+    node m_target;
+    edge m_edge;
 
 };
 

@@ -43,7 +43,8 @@
 #include <ogdf/basic/List.h>
 #include <ogdf/abacus/abacusroot.h>
 
-namespace abacus {
+namespace abacus
+{
 
 
 class Master;
@@ -57,78 +58,83 @@ class Sub;
  * becomes dormant. A subproblem is extracted from this list if it becomes the active
  * subproblem which is optimized.
  */
-class  OpenSub :  public AbacusRoot  {
+class  OpenSub :  public AbacusRoot
+{
 
-	friend class Sub;
-	friend class Master;
+    friend class Sub;
+    friend class Master;
 
 public:
 
-	//! Creates an empty list of open subproblems.
-	/**
-	 * Does not initialize the member \a dualBound_ since
-	 * this can only be done if we know the sense of the objective function
-	 * which is normally unknown when the constructor of the class Master
-	 * is called which again calls this constructor.
-	 *
-	 * \param master A pointer to the corresponding master of the optimization.
-	 */
-	OpenSub(Master *master) : master_(master) { }
+    //! Creates an empty list of open subproblems.
+    /**
+     * Does not initialize the member \a dualBound_ since
+     * this can only be done if we know the sense of the objective function
+     * which is normally unknown when the constructor of the class Master
+     * is called which again calls this constructor.
+     *
+     * \param master A pointer to the corresponding master of the optimization.
+     */
+    OpenSub(Master *master) : master_(master) { }
 
-	//! Returns the current number of open subproblems contained in this set.
-	int number() const {
-		return list_.size();
-	}
+    //! Returns the current number of open subproblems contained in this set.
+    int number() const
+    {
+        return list_.size();
+    }
 
-	//! Returns true if there is no subproblem in the set of open subproblems, false otherwise.
-	bool empty() const {
-		return list_.empty();
-	}
+    //! Returns true if there is no subproblem in the set of open subproblems, false otherwise.
+    bool empty() const
+    {
+        return list_.empty();
+    }
 
-	//! Returns the value of the dual bound for all subproblems in the list.
-	double dualBound() const;
+    //! Returns the value of the dual bound for all subproblems in the list.
+    double dualBound() const;
 
 private:
 
-	//! Selects a subproblem according to the master's strategy and removes it from the list of open subproblems.
-	/**
-	 * This function scans the list of open subproblems and selects the subproblem with highest priority.
-	 * Dormant subproblems are ignored if possible.
-	 *
-	 * \return The selected subproblem.
-	 *         If the set of open subproblems is empty, 0 is returned.
-	 */
-	Sub *select();
+    //! Selects a subproblem according to the master's strategy and removes it from the list of open subproblems.
+    /**
+     * This function scans the list of open subproblems and selects the subproblem with highest priority.
+     * Dormant subproblems are ignored if possible.
+     *
+     * \return The selected subproblem.
+     *         If the set of open subproblems is empty, 0 is returned.
+     */
+    Sub *select();
 
-	//! Adds a subproblem to the set of open subproblems.
-	/**
-	 * \param sub The subproblem that is inserted.
-	 */
-	void insert(Sub *sub);
+    //! Adds a subproblem to the set of open subproblems.
+    /**
+     * \param sub The subproblem that is inserted.
+     */
+    void insert(Sub *sub);
 
-	//! Removes subproblem from the set of open subproblems.
-	/**
-	 * \param sub The subproblem that is removed.
-	 */
-	void remove(Sub *sub) {
-		if(list_.removeFirst(sub))
-			updateDualBound();
-	}
+    //! Removes subproblem from the set of open subproblems.
+    /**
+     * \param sub The subproblem that is removed.
+     */
+    void remove(Sub *sub)
+    {
+        if(list_.removeFirst(sub))
+            updateDualBound();
+    }
 
-	//! Removes all elements from the set of opens subproblems.
-	void prune() {
-		list_.clear();
-	}
+    //! Removes all elements from the set of opens subproblems.
+    void prune()
+    {
+        list_.clear();
+    }
 
-	//! Updates \a dualBound_ according to the dual bounds of the subproblems contained in this set.
-	void updateDualBound();
+    //! Updates \a dualBound_ according to the dual bounds of the subproblems contained in this set.
+    void updateDualBound();
 
-	Master *master_;		//!< A pointer to corresponding master of the optimization.
-	ogdf::List<Sub*> list_;	//!< The list storing the open subproblems.
-	double dualBound_;			//!< The dual bound of all open subproblems.
+    Master *master_;        //!< A pointer to corresponding master of the optimization.
+    ogdf::List<Sub*> list_; //!< The list storing the open subproblems.
+    double dualBound_;          //!< The dual bound of all open subproblems.
 
-	OpenSub(const OpenSub &rhs);
-	const OpenSub &operator=(const OpenSub &rhs);
+    OpenSub(const OpenSub &rhs);
+    const OpenSub &operator=(const OpenSub &rhs);
 };
 
 } //namespace abacus

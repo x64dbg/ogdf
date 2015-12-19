@@ -205,11 +205,11 @@ public:
     }
     /** set level of log for cut generation procedure :
     <ol start=0 >
-    	<li> for none </li>
-    	<li> for log at begin and end of procedure + at some time interval </li>
-    	<li> for log at every cut generated </li>
-    	</ol>
-    	*/
+        <li> for none </li>
+        <li> for log at begin and end of procedure + at some time interval </li>
+        <li> for log at every cut generated </li>
+        </ol>
+        */
     void setLogLevel(int level)
     {
         handler_->setLogLevel(level);

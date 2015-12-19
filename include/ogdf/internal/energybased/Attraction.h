@@ -51,7 +51,8 @@
 
 #include <ogdf/internal/energybased/NodePairEnergy.h>
 
-namespace ogdf {
+namespace ogdf
+{
 
 
 //! Energy function for attraction between two adjacent vertices.
@@ -63,25 +64,29 @@ namespace ogdf {
  * distance between two adjacent vertices depends on the size of
  * the two vertices.
  */
-class Attraction: public NodePairEnergy {
+class Attraction: public NodePairEnergy
+{
 public:
-		//Initializes data structures to speed up later computations
-		Attraction(GraphAttributes &AG);
-		~Attraction() {}
-		//! set the preferred edge length to the absolute value l
-		void setPreferredEdgelength(double l) {m_preferredEdgeLength = l;}
-		//! set multiplier for the edge length with repspect to node size to multi
-		void reinitializeEdgeLength(double multi);
+    //Initializes data structures to speed up later computations
+    Attraction(GraphAttributes &AG);
+    ~Attraction() {}
+    //! set the preferred edge length to the absolute value l
+    void setPreferredEdgelength(double l)
+    {
+        m_preferredEdgeLength = l;
+    }
+    //! set multiplier for the edge length with repspect to node size to multi
+    void reinitializeEdgeLength(double multi);
 #ifdef OGDF_DEBUG
-		void printInternalData() const;
+    void printInternalData() const;
 #endif
 private:
-	//! Average length and height of nodes is multiplied by this factor to get preferred edge length
-	static const double MULTIPLIER;
-	//! the length that that all edges should ideally have
-	double m_preferredEdgeLength;
-	//! computes the energy contributed by the two nodes if they are placed at the two given positions
-	double computeCoordEnergy(node,node, const DPoint&, const DPoint &) const;
+    //! Average length and height of nodes is multiplied by this factor to get preferred edge length
+    static const double MULTIPLIER;
+    //! the length that that all edges should ideally have
+    double m_preferredEdgeLength;
+    //! computes the energy contributed by the two nodes if they are placed at the two given positions
+    double computeCoordEnergy(node,node, const DPoint&, const DPoint &) const;
 };
 
 }// namespace ogdf

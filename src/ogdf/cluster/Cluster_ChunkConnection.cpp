@@ -59,37 +59,46 @@ using namespace ogdf;
 using namespace abacus;
 
 ChunkConnection::ChunkConnection(Master *master, const ArrayBuffer<node>& chunk, const ArrayBuffer<node>& cochunk) :
-	BaseConstraint(master, 0, CSense::Greater, 1.0, false, false, true)
+    BaseConstraint(master, 0, CSense::Greater, 1.0, false, false, true)
 {
-	chunk.compactMemcpy(m_chunk);
-	cochunk.compactMemcpy(m_cochunk);
+    chunk.compactMemcpy(m_chunk);
+    cochunk.compactMemcpy(m_cochunk);
 }
 
 
 ChunkConnection::~ChunkConnection() {}
 
 
-int ChunkConnection::coeff(node n1, node n2) const {
-	//TODO: speedup
-	int i,j;
-	forall_arrayindices(i,m_chunk) {
-		if(m_chunk[i] == n1) {
-			forall_arrayindices(j,m_cochunk) {
-				if(m_cochunk[j] == n2) {
-					return 1;
-				}
-			}
-			return 0;
-		} else if(m_chunk[i] == n2) {
-			forall_arrayindices(j,m_cochunk) {
-				if(m_cochunk[j] == n1) {
-					return 1;
-				}
-			}
-			return 0;
-		}
-	}
-	return 0;
+int ChunkConnection::coeff(node n1, node n2) const
+{
+    //TODO: speedup
+    int i,j;
+    forall_arrayindices(i,m_chunk)
+    {
+        if(m_chunk[i] == n1)
+        {
+            forall_arrayindices(j,m_cochunk)
+            {
+                if(m_cochunk[j] == n2)
+                {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+        else if(m_chunk[i] == n2)
+        {
+            forall_arrayindices(j,m_cochunk)
+            {
+                if(m_cochunk[j] == n1)
+                {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+    }
+    return 0;
 }
 
 #endif // USE_ABACUS
