@@ -1,0 +1,1225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\coin\Cgl\CglAllDifferent.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglClique.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglCliqueHelper.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglCliqueTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglCutGenerator.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglDuplicateRow.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglFlowCover.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglFlowCoverTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglGomory.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglGomoryTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglKnapsackCover.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglKnapsackCoverTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglLandP.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglLandPMessages.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglLandPSimplex.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglLandPTabRow.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglLandPTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglLandPUtils.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglLandPValidator.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglLiftAndProject.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglMessage.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglMixedIntegerRounding.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglMixedIntegerRounding2.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglMixedIntegerRounding2Test.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglMixedIntegerRoundingTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglOddHole.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglOddHoleTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglParam.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglPreProcess.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglProbing.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglProbingTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglRedSplit.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglRedSplitParam.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglRedSplitTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglResidualCapacity.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglResidualCapacityTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglSimpleRounding.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglSimpleRoundingTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglStored.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglTreeInfo.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglTwomir.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Cgl\CglTwomirTest.cpp">
+      <Filter>Source Files\Cgl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpCholeskyBase.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpCholeskyDense.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpCholeskyTaucs.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpConstraint.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpConstraintLinear.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpConstraintQuadratic.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpDualRowDantzig.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpDualRowPivot.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpDualRowSteepest.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpDummyMatrix.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpDynamicExampleMatrix.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpDynamicMatrix.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpEventHandler.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpFactorization.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpGubDynamicMatrix.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpGubMatrix.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpHelperFunctions.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpInterior.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpLinearObjective.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpLsqr.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpMatrixBase.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpMessage.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpModel.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpNetworkBasis.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpNetworkMatrix.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpNode.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpNonLinearCost.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpObjective.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpPackedMatrix.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpPdco.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpPdcoBase.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpPlusMinusOneMatrix.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpPredictorCorrector.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpPresolve.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpPrimalColumnDantzig.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpPrimalColumnPivot.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpPrimalColumnSteepest.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpQuadraticObjective.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpSimplex.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpSimplexDual.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpSimplexNonlinear.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpSimplexOther.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpSimplexPrimal.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\ClpSolve.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\Clp_C_Interface.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\IdiSolve.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\Idiot.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\MyEventHandler.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\MyMessageHandler.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Clp\unitTest.cpp">
+      <Filter>Source Files\Clp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinAlloc.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinBuild.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinDenseFactorization.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinDenseVector.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinError.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinFactorization1.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinFactorization2.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinFactorization3.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinFactorization4.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinFileIO.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinFinite.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinIndexedVector.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinLpIO.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinMessage.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinMessageHandler.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinModel.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinModelUseful.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinModelUseful2.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinMpsIO.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinOslFactorization.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinOslFactorization2.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinOslFactorization3.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPackedMatrix.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPackedVector.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPackedVectorBase.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinParam.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinParamUtils.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPostsolveMatrix.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPrePostsolveMatrix.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveDoubleton.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveDual.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveDupcol.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveEmpty.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveFixed.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveForcing.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveHelperFunctions.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveImpliedFree.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveIsolated.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveMatrix.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolvePsdebug.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveSingleton.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveSubst.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveTighten.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveTripleton.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveUseless.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveZeros.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinSearchTree.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinShallowPackedVector.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinSimpFactorization.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinSnapshot.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinStructuredModel.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinWarmStartBasis.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinWarmStartDual.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinWarmStartPrimalDual.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\CoinUtils\CoinWarmStartVector.cpp">
+      <Filter>Source Files\CoinUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiAuxInfo.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiBranchingObject.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiChooseVariable.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiColCut.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiCut.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiCuts.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiNames.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiPresolve.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiRowCut.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiRowCutDebugger.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiSolverBranch.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Osi\OsiSolverInterface.cpp">
+      <Filter>Source Files\Osi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\OsiClp\OsiClpSolverInterface.cpp">
+      <Filter>Source Files\OsiClp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\OsiSymSolverInterface.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\SymWarmStart.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\cg_func.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\cg_proccomm.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\cg_wrapper.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\cp_func.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\cp_proccomm.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\cp_wrapper.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\cut_gen.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\cut_pool.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_branch.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_free.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_genfunc.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_heuristics.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_proccomm.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_rowfunc.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_solver.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_sp.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_varfunc.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\lp_wrapper.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\master.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\master_func.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\master_io.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\master_prep.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\master_prep_base.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\master_prep_sr.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\master_wrapper.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\pack_array.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\pack_cut.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\proccomm.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\sym_qsort.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\timemeas.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\tm_func.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coin\Symphony\tm_proccomm.cpp">
+      <Filter>Source Files\Symphony</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\coin\CglAllDifferent.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglClique.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglCutGenerator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglDuplicateRow.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglFlowCover.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglGomory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglKnapsackCover.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglLandP.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglLandPMessages.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglLandPSimplex.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglLandPTabRow.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglLandPUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglLandPValidator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglLiftAndProject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglMessage.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglMixedIntegerRounding.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglMixedIntegerRounding2.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglOddHole.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglParam.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglPreProcess.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglProbing.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglRedSplit.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglRedSplitParam.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglResidualCapacity.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglSimpleRounding.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglStored.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglTreeInfo.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CglTwomir.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpCholeskyBase.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpCholeskyDense.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpCholeskyMumps.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpCholeskyTaucs.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpCholeskyUfl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpCholeskyWssmp.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpCholeskyWssmpKKT.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpConstraint.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpConstraintLinear.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpConstraintQuadratic.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpDualRowDantzig.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpDualRowPivot.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpDualRowSteepest.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpDummyMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpDynamicExampleMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpDynamicMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpEventHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpFactorization.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpGubDynamicMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpGubMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpHelperFunctions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpInterior.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpLinearObjective.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpLsqr.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpMatrixBase.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpMessage.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpModel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpNetworkBasis.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpNetworkMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpNode.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpNonLinearCost.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpObjective.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPackedMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpParameters.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPdco.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPdcoBase.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPlusMinusOneMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPredictorCorrector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPresolve.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPrimalColumnDantzig.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPrimalColumnPivot.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPrimalColumnSteepest.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpPrimalQuadraticDantzig.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpQuadraticObjective.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpSimplex.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpSimplexDual.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpSimplexNonlinear.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpSimplexOther.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpSimplexPrimal.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\ClpSolve.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinAlloc.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinBuild.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinDenseFactorization.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinDenseVector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinDistance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinError.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinFactorization.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinFileIO.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinFinite.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinFloatEqual.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinHelperFunctions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinIndexedVector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinLpIO.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinMessage.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinMessageHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinModel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinModelUseful.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinMpsIO.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinOslC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinOslFactorization.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPackedMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPackedVector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPackedVectorBase.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinParam.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPragma.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveDoubleton.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveDual.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveDupcol.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveEmpty.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveFixed.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveForcing.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveImpliedFree.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveIsolated.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveMatrix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolvePsdebug.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveSingleton.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveSubst.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveTighten.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveTripleton.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveUseless.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinPresolveZeros.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinSearchTree.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinShallowPackedVector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinSignal.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinSimpFactorization.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinSmartPtr.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinSnapshot.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinSort.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinStructuredModel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinTime.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinTypes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinUtility.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinUtilsConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinWarmStart.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinWarmStartBasis.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinWarmStartDual.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinWarmStartPrimalDual.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\CoinWarmStartVector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\Coin_C_defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\Idiot.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\MyEventHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\MyMessageHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiAuxInfo.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiBranchingObject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiChooseVariable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiClpSolverInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiColCut.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiCollections.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiCpxSolverInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiCut.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiCuts.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiGrbSolverInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiPresolve.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiRowCut.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiRowCutDebugger.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiSolverBranch.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiSolverInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiSolverParameters.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiSymSolverInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\OsiSymSolverParameters.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\SymConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\SymWarmStart.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\config_cgl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\config_cgl_default.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\config_clp_default.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\config_coinutils_default.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\config_default.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\config_sym_default.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\configall_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\configall_system_msc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_cg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_cg_params.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_cg_u.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_cp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_cp_params.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_cp_u.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_dg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_dg_params.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_dg_u.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_lp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_lp_params.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_lp_solver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_lp_u.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_master.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_master_params.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_master_u.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_messages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_pack_array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_pack_cut.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_prep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_prep_params.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_primal_heuristics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_proccomm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_proto.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_qsort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_return_values.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_timemeas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_tm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_tm_params.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\sym_win32_time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\symphony.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\coin\symphony_api.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+    </Filter>
+    <Filter Include="Source Files">
+    </Filter>
+    <Filter Include="Source Files\Cgl">
+    </Filter>
+    <Filter Include="Source Files\Clp">
+    </Filter>
+    <Filter Include="Source Files\CoinUtils">
+    </Filter>
+    <Filter Include="Source Files\Osi">
+    </Filter>
+    <Filter Include="Source Files\OsiClp">
+    </Filter>
+    <Filter Include="Source Files\Symphony">
+    </Filter>
+  </ItemGroup>
+</Project>

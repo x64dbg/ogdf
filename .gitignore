@@ -1,0 +1,11 @@
+
+*.sdf
+*.opensdf
+*.suo
+*.user
+/*/Release/coin/
+/*/Release/ogdf/
+/*/Release/ogdf-test/
+/*/Release/coin.*
+/*/Release/ogdf-test.*
+Debug/

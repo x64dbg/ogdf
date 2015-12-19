@@ -1,0 +1,988 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7801D1BE-E2FE-476B-A4B4-5D27F387F479}</ProjectGuid>
+    <RootNamespace>ogdf</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./include/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OGDF_DEBUG;OGDF_INSTALL</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+	<AdditionalDependencies>coin.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+	<LinkTimeCodeGeneration>
+	</LinkTimeCodeGeneration>
+    <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./include/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OGDF_DEBUG;OGDF_INSTALL</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+	<AdditionalDependencies>coin.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+	<LinkTimeCodeGeneration>
+	</LinkTimeCodeGeneration>
+    <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>./include/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OGDF_INSTALL</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+	<AdditionalDependencies>coin.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+	<LinkTimeCodeGeneration>
+	</LinkTimeCodeGeneration>
+    <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>./include/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OGDF_INSTALL</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+	<AdditionalDependencies>coin.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+	<LinkTimeCodeGeneration>
+	</LinkTimeCodeGeneration>
+    <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\ogdf\abacus\aba_constraint.cpp" />
+    <ClCompile Include="src\ogdf\abacus\abacusroot.cpp" />
+    <ClCompile Include="src\ogdf\abacus\branchrule.cpp" />
+    <ClCompile Include="src\ogdf\abacus\column.cpp" />
+    <ClCompile Include="src\ogdf\abacus\conbranchrule.cpp" />
+    <ClCompile Include="src\ogdf\abacus\conclass.cpp" />
+    <ClCompile Include="src\ogdf\abacus\convar.cpp" />
+    <ClCompile Include="src\ogdf\abacus\csense.cpp" />
+    <ClCompile Include="src\ogdf\abacus\fixcand.cpp" />
+    <ClCompile Include="src\ogdf\abacus\fsvarstat.cpp" />
+    <ClCompile Include="src\ogdf\abacus\global.cpp" />
+    <ClCompile Include="src\ogdf\abacus\history.cpp" />
+    <ClCompile Include="src\ogdf\abacus\infeascon.cpp" />
+    <ClCompile Include="src\ogdf\abacus\lp.cpp" />
+    <ClCompile Include="src\ogdf\abacus\lpif.cpp" />
+    <ClCompile Include="src\ogdf\abacus\lpmasterosi.cpp" />
+    <ClCompile Include="src\ogdf\abacus\lpsub.cpp" />
+    <ClCompile Include="src\ogdf\abacus\lpvarstat.cpp" />
+    <ClCompile Include="src\ogdf\abacus\master.cpp" />
+    <ClCompile Include="src\ogdf\abacus\opensub.cpp" />
+    <ClCompile Include="src\ogdf\abacus\optsense.cpp" />
+    <ClCompile Include="src\ogdf\abacus\osiif.cpp" />
+    <ClCompile Include="src\ogdf\abacus\row.cpp" />
+    <ClCompile Include="src\ogdf\abacus\setbranchrule.cpp" />
+    <ClCompile Include="src\ogdf\abacus\slackstat.cpp" />
+    <ClCompile Include="src\ogdf\abacus\sparvec.cpp" />
+    <ClCompile Include="src\ogdf\abacus\srowcon.cpp" />
+    <ClCompile Include="src\ogdf\abacus\sub.cpp" />
+    <ClCompile Include="src\ogdf\abacus\tailoff.cpp" />
+    <ClCompile Include="src\ogdf\abacus\valbranchrule.cpp" />
+    <ClCompile Include="src\ogdf\abacus\variable.cpp" />
+    <ClCompile Include="src\ogdf\abacus\vartype.cpp" />
+    <ClCompile Include="src\ogdf\augmentation\DfsMakeBiconnected.cpp" />
+    <ClCompile Include="src\ogdf\augmentation\PlanarAugmentation.cpp" />
+    <ClCompile Include="src\ogdf\augmentation\PlanarAugmentationFix.cpp" />
+    <ClCompile Include="src\ogdf\basic\AdjacencyOracle.cpp" />
+    <ClCompile Include="src\ogdf\basic\CombinatorialEmbedding.cpp" />
+    <ClCompile Include="src\ogdf\basic\Constraint.cpp" />
+    <ClCompile Include="src\ogdf\basic\ConstraintManager.cpp" />
+    <ClCompile Include="src\ogdf\basic\DisjointSets.cpp" />
+    <ClCompile Include="src\ogdf\basic\DualGraph.cpp" />
+    <ClCompile Include="src\ogdf\basic\EdgeComparer.cpp" />
+    <ClCompile Include="src\ogdf\basic\EdgeComparerSimple.cpp" />
+    <ClCompile Include="src\ogdf\basic\Graph.cpp" />
+    <ClCompile Include="src\ogdf\basic\GraphAttributes.cpp" />
+    <ClCompile Include="src\ogdf\basic\GraphConstraints.cpp" />
+    <ClCompile Include="src\ogdf\basic\GraphCopy.cpp" />
+    <ClCompile Include="src\ogdf\basic\GridLayout.cpp" />
+    <ClCompile Include="src\ogdf\basic\GridLayoutModule.cpp" />
+    <ClCompile Include="src\ogdf\basic\Hashing.cpp" />
+    <ClCompile Include="src\ogdf\basic\LayoutStandards.cpp" />
+    <ClCompile Include="src\ogdf\basic\Logger.cpp" />
+    <ClCompile Include="src\ogdf\basic\Math.cpp" />
+    <ClCompile Include="src\ogdf\basic\NearestRectangleFinder.cpp" />
+    <ClCompile Include="src\ogdf\basic\PoolMemoryAllocator.cpp" />
+    <ClCompile Include="src\ogdf\basic\PreprocessorLayout.cpp" />
+    <ClCompile Include="src\ogdf\basic\Stopwatch.cpp" />
+    <ClCompile Include="src\ogdf\basic\System.cpp" />
+    <ClCompile Include="src\ogdf\basic\Thread.cpp" />
+    <ClCompile Include="src\ogdf\basic\basic.cpp" />
+    <ClCompile Include="src\ogdf\basic\config.cpp" />
+    <ClCompile Include="src\ogdf\basic\extended_graph_alg.cpp" />
+    <ClCompile Include="src\ogdf\basic\geometry.cpp" />
+    <ClCompile Include="src\ogdf\basic\graph_generators.cpp" />
+    <ClCompile Include="src\ogdf\basic\graphics.cpp" />
+    <ClCompile Include="src\ogdf\basic\modules.cpp" />
+    <ClCompile Include="src\ogdf\basic\random_hierarchy.cpp" />
+    <ClCompile Include="src\ogdf\basic\simple_graph_alg.cpp" />
+    <ClCompile Include="src\ogdf\basic\stNumber.cpp" />
+    <ClCompile Include="src\ogdf\cluster\CPlanarEdgeInserter.cpp" />
+    <ClCompile Include="src\ogdf\cluster\CPlanarSubCLusteredST.cpp" />
+    <ClCompile Include="src\ogdf\cluster\CPlanarSubClusteredGraph.cpp" />
+    <ClCompile Include="src\ogdf\cluster\CconnectClusterPlanar.cpp" />
+    <ClCompile Include="src\ogdf\cluster\CconnectClusterPlanarEmbed.cpp" />
+    <ClCompile Include="src\ogdf\cluster\ClusterAnalysis.cpp" />
+    <ClCompile Include="src\ogdf\cluster\ClusterGraph.cpp" />
+    <ClCompile Include="src\ogdf\cluster\ClusterGraphAttributes.cpp" />
+    <ClCompile Include="src\ogdf\cluster\ClusterPlanarizationLayout.cpp" />
+    <ClCompile Include="src\ogdf\cluster\Cluster_ChunkConnection.cpp" />
+    <ClCompile Include="src\ogdf\cluster\Cluster_CutConstraint.cpp" />
+    <ClCompile Include="src\ogdf\cluster\Cluster_EdgeVar.cpp" />
+    <ClCompile Include="src\ogdf\cluster\Cluster_MaxPlanarEdges.cpp" />
+    <ClCompile Include="src\ogdf\cluster\Clusterer.cpp" />
+    <ClCompile Include="src\ogdf\cluster\KuratowskiConstraint.cpp" />
+    <ClCompile Include="src\ogdf\cluster\MaxCPlanar_Master.cpp" />
+    <ClCompile Include="src\ogdf\cluster\MaxCPlanar_MinimalClusterConnection.cpp" />
+    <ClCompile Include="src\ogdf\cluster\MaxCPlanar_Sub.cpp" />
+    <ClCompile Include="src\ogdf\cluster\MaximumCPlanarSubgraph.cpp" />
+    <ClCompile Include="src\ogdf\decomposition\BCTree.cpp" />
+    <ClCompile Include="src\ogdf\decomposition\DynamicBCTree.cpp" />
+    <ClCompile Include="src\ogdf\decomposition\DynamicSPQRForest.cpp" />
+    <ClCompile Include="src\ogdf\decomposition\DynamicSPQRTree.cpp" />
+    <ClCompile Include="src\ogdf\decomposition\NonPlanarCore.cpp" />
+    <ClCompile Include="src\ogdf\decomposition\PlanarSPQRTree.cpp" />
+    <ClCompile Include="src\ogdf\decomposition\StaticSPQRTree.cpp" />
+    <ClCompile Include="src\ogdf\decomposition\TricComp.cpp" />
+    <ClCompile Include="src\ogdf\energybased\ArrayGraph.cpp" />
+    <ClCompile Include="src\ogdf\energybased\Attraction.cpp" />
+    <ClCompile Include="src\ogdf\energybased\DavidsonHarel.cpp" />
+    <ClCompile Include="src\ogdf\energybased\DavidsonHarelLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\EdgeAttributes.cpp" />
+    <ClCompile Include="src\ogdf\energybased\EnergyFunction.cpp" />
+    <ClCompile Include="src\ogdf\energybased\FMEKernel.cpp" />
+    <ClCompile Include="src\ogdf\energybased\FMEMultipoleKernel.cpp" />
+    <ClCompile Include="src\ogdf\energybased\FMEThread.cpp" />
+    <ClCompile Include="src\ogdf\energybased\FMMMLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\FastMultipoleEmbedder.cpp" />
+    <ClCompile Include="src\ogdf\energybased\FruchtermanReingold.cpp" />
+    <ClCompile Include="src\ogdf\energybased\GEMLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\GalaxyMultilevel.cpp" />
+    <ClCompile Include="src\ogdf\energybased\IntersectionRectangle.cpp" />
+    <ClCompile Include="src\ogdf\energybased\LinearQuadtree.cpp" />
+    <ClCompile Include="src\ogdf\energybased\LinearQuadtreeBuilder.cpp" />
+    <ClCompile Include="src\ogdf\energybased\LinearQuadtreeExpansion.cpp" />
+    <ClCompile Include="src\ogdf\energybased\MAARPacking.cpp" />
+    <ClCompile Include="src\ogdf\energybased\Multilevel.cpp" />
+    <ClCompile Include="src\ogdf\energybased\MultilevelGraph.cpp" />
+    <ClCompile Include="src\ogdf\energybased\MultilevelLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\NMM.cpp" />
+    <ClCompile Include="src\ogdf\energybased\NodeAttributes.cpp" />
+    <ClCompile Include="src\ogdf\energybased\NodePairEnergy.cpp" />
+    <ClCompile Include="src\ogdf\energybased\Overlap.cpp" />
+    <ClCompile Include="src\ogdf\energybased\PivotMDS.cpp" />
+    <ClCompile Include="src\ogdf\energybased\Planarity.cpp" />
+    <ClCompile Include="src\ogdf\energybased\PlanarityGrid.cpp" />
+    <ClCompile Include="src\ogdf\energybased\QuadTreeNM.cpp" />
+    <ClCompile Include="src\ogdf\energybased\QuadTreeNodeNM.cpp" />
+    <ClCompile Include="src\ogdf\energybased\Repulsion.cpp" />
+    <ClCompile Include="src\ogdf\energybased\Set.cpp" />
+    <ClCompile Include="src\ogdf\energybased\SpringEmbedderFR.cpp" />
+    <ClCompile Include="src\ogdf\energybased\SpringEmbedderFRExact.cpp" />
+    <ClCompile Include="src\ogdf\energybased\SpringEmbedderKK.cpp" />
+    <ClCompile Include="src\ogdf\energybased\StressMinimization.cpp" />
+    <ClCompile Include="src\ogdf\energybased\TutteLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\UniformGrid.cpp" />
+    <ClCompile Include="src\ogdf\energybased\WSPD.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\BarycenterPlacer.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\CirclePlacer.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\EdgeCoverMerger.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\IndependentSetMerger.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\LocalBiconnectedMerger.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\MMMExampleFastLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\MMMExampleNiceLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\MMMExampleNoTwistLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\MatchingMerger.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\MedianPlacer.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\MixedForceLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\ModularMultilevelMixer.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\RandomMerger.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\RandomPlacer.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\ScalingLayout.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\SolarMerger.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\SolarPlacer.cpp" />
+    <ClCompile Include="src\ogdf\energybased\multilevelmixer\ZeroPlacer.cpp" />
+    <ClCompile Include="src\ogdf\energybased\numexcept.cpp" />
+    <ClCompile Include="src\ogdf\external\coin.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\DLParser.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\DOT.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\DotLexer.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\DotParser.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GDF.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GEXF.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GdfParser.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GexfParser.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GmlParser.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_dl.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_dot.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_gdf.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_gexf.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_gml.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_graphml.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_hyper.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_leda.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_ogml.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_svg.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphIO_tlp.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphML.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\GraphMLParser.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\LineBuffer.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\Ogml.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\OgmlParser.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\Tlp.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\TlpLexer.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\TlpParser.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\UmlDiagramGraph.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\UmlModelGraph.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\UmlToGraphConverter.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\Utils.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\XmlParser.cpp" />
+    <ClCompile Include="src\ogdf\fileformats\XmlScanner.cpp" />
+    <ClCompile Include="src\ogdf\graphalg\CliqueFinder.cpp" />
+    <ClCompile Include="src\ogdf\graphalg\ConvexHull.cpp" />
+    <ClCompile Include="src\ogdf\graphalg\MinCostFlowModule.cpp" />
+    <ClCompile Include="src\ogdf\graphalg\MinCostFlowReinelt.cpp" />
+    <ClCompile Include="src\ogdf\graphalg\MinimumCut.cpp" />
+    <ClCompile Include="src\ogdf\graphalg\PageRank.cpp" />
+    <ClCompile Include="src\ogdf\graphalg\ShortestPathAlgorithms.cpp" />
+    <ClCompile Include="src\ogdf\graphalg\ShortestPathsWithBFM.cpp" />
+    <ClCompile Include="src\ogdf\graphalg\mcf_front_reinelt.cpp" />
+    <ClCompile Include="src\ogdf\hypergraph\EdgeStandardRep.cpp" />
+    <ClCompile Include="src\ogdf\hypergraph\Hypergraph.cpp" />
+    <ClCompile Include="src\ogdf\hypergraph\HypergraphLayout.cpp" />
+    <ClCompile Include="src\ogdf\incremental\SimpleIncNodeInserter.cpp" />
+    <ClCompile Include="src\ogdf\labeling\ELabelPosSimple.cpp" />
+    <ClCompile Include="src\ogdf\layered\BlockOrder.cpp" />
+    <ClCompile Include="src\ogdf\layered\CoffmanGrahamRanking.cpp" />
+    <ClCompile Include="src\ogdf\layered\CrossingsMatrix.cpp" />
+    <ClCompile Include="src\ogdf\layered\FastHierarchyLayout.cpp" />
+    <ClCompile Include="src\ogdf\layered\FastSimpleHierarchyLayout.cpp" />
+    <ClCompile Include="src\ogdf\layered\HierarchyLayoutModule.cpp" />
+    <ClCompile Include="src\ogdf\layered\OptimalHierarchyClusterLayout.cpp" />
+    <ClCompile Include="src\ogdf\layered\OptimalHierarchyLayout.cpp" />
+    <ClCompile Include="src\ogdf\layered\OptimalRanking.cpp" />
+    <ClCompile Include="src\ogdf\layered\SplitHeuristic.cpp" />
+    <ClCompile Include="src\ogdf\layered\acyclic_subgraph.cpp" />
+    <ClCompile Include="src\ogdf\layered\heuristics.cpp" />
+    <ClCompile Include="src\ogdf\layered\ranking.cpp" />
+    <ClCompile Include="src\ogdf\layered\sugiyama-cluster.cpp" />
+    <ClCompile Include="src\ogdf\layered\sugiyama.cpp" />
+    <ClCompile Include="src\ogdf\lpsolver\LPSolver_coin.cpp" />
+    <ClCompile Include="src\ogdf\misclayout\BalloonLayout.cpp" />
+    <ClCompile Include="src\ogdf\misclayout\BertaultLayout.cpp" />
+    <ClCompile Include="src\ogdf\misclayout\CircularLayout.cpp" />
+    <ClCompile Include="src\ogdf\misclayout\ProcrustesSubLayout.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\ClusterOrthoLayout.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\ClusterOrthoShaper.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\CompactionConstraintGraph.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\EdgeRouter.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\FlowCompaction.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\LongestPathCompaction.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\NodeInfo.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\OrthoLayout.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\OrthoRep.cpp" />
+    <ClCompile Include="src\ogdf\orthogonal\OrthoShaper.cpp" />
+    <ClCompile Include="src\ogdf\packing\CCLayoutPackModule.cpp" />
+    <ClCompile Include="src\ogdf\packing\ComponentSplitterLayout.cpp" />
+    <ClCompile Include="src\ogdf\packing\TileToRowsCCPacker.cpp" />
+    <ClCompile Include="src\ogdf\planarity\BoothLueker.cpp" />
+    <ClCompile Include="src\ogdf\planarity\BoyerMyrvold.cpp" />
+    <ClCompile Include="src\ogdf\planarity\BoyerMyrvoldInit.cpp" />
+    <ClCompile Include="src\ogdf\planarity\BoyerMyrvoldPlanar.cpp" />
+    <ClCompile Include="src\ogdf\planarity\CliqueReplacer.cpp" />
+    <ClCompile Include="src\ogdf\planarity\ClusterPlanRep.cpp" />
+    <ClCompile Include="src\ogdf\planarity\CrossingStructure.cpp" />
+    <ClCompile Include="src\ogdf\planarity\EmbedPQTree.cpp" />
+    <ClCompile Include="src\ogdf\planarity\EmbedderMaxFace.cpp" />
+    <ClCompile Include="src\ogdf\planarity\EmbedderMaxFaceLayers.cpp" />
+    <ClCompile Include="src\ogdf\planarity\EmbedderMinDepth.cpp" />
+    <ClCompile Include="src\ogdf\planarity\EmbedderMinDepthMaxFace.cpp" />
+    <ClCompile Include="src\ogdf\planarity\EmbedderMinDepthMaxFaceLayers.cpp" />
+    <ClCompile Include="src\ogdf\planarity\EmbedderMinDepthPiTa.cpp" />
+    <ClCompile Include="src\ogdf\planarity\EmbedderOptimalFlexDraw.cpp" />
+    <ClCompile Include="src\ogdf\planarity\ExtractKuratowskis.cpp" />
+    <ClCompile Include="src\ogdf\planarity\FastPlanarSubgraph.cpp" />
+    <ClCompile Include="src\ogdf\planarity\FindKuratowskis.cpp" />
+    <ClCompile Include="src\ogdf\planarity\FixEdgeInserterCore.cpp" />
+    <ClCompile Include="src\ogdf\planarity\FixedEmbeddingInserter.cpp" />
+    <ClCompile Include="src\ogdf\planarity\GraphReduction.cpp" />
+    <ClCompile Include="src\ogdf\planarity\Layout.cpp" />
+    <ClCompile Include="src\ogdf\planarity\MDMFLengthAttribute.cpp" />
+    <ClCompile Include="src\ogdf\planarity\MMCrossingMinimizationModule.cpp" />
+    <ClCompile Include="src\ogdf\planarity\MMFixedEmbeddingInserter.cpp" />
+    <ClCompile Include="src\ogdf\planarity\MMSubgraphPlanarizer.cpp" />
+    <ClCompile Include="src\ogdf\planarity\MMVariableEmbeddingInserter.cpp" />
+    <ClCompile Include="src\ogdf\planarity\MaximalPlanarSubgraphSimple.cpp" />
+    <ClCompile Include="src\ogdf\planarity\MaximumPlanarSubgraph.cpp" />
+    <ClCompile Include="src\ogdf\planarity\MultiEdgeApproxInserter.cpp" />
+    <ClCompile Include="src\ogdf\planarity\PlanRep.cpp" />
+    <ClCompile Include="src\ogdf\planarity\PlanRepExpansion.cpp" />
+    <ClCompile Include="src\ogdf\planarity\PlanRepInc.cpp" />
+    <ClCompile Include="src\ogdf\planarity\PlanRepLight.cpp" />
+    <ClCompile Include="src\ogdf\planarity\PlanarPQTree.cpp" />
+    <ClCompile Include="src\ogdf\planarity\PlanarSubgraphModule.cpp" />
+    <ClCompile Include="src\ogdf\planarity\PlanarSubgraphPQTree.cpp" />
+    <ClCompile Include="src\ogdf\planarity\PlanarizationGridLayout.cpp" />
+    <ClCompile Include="src\ogdf\planarity\PlanarizationLayout.cpp" />
+    <ClCompile Include="src\ogdf\planarity\SimpleEmbedder.cpp" />
+    <ClCompile Include="src\ogdf\planarity\SubgraphPlanarizer.cpp" />
+    <ClCompile Include="src\ogdf\planarity\TopologyModule.cpp" />
+    <ClCompile Include="src\ogdf\planarity\VarEdgeInserterCore.cpp" />
+    <ClCompile Include="src\ogdf\planarity\VarEdgeInserterDynCore.cpp" />
+    <ClCompile Include="src\ogdf\planarity\VariableEmbeddingInserter.cpp" />
+    <ClCompile Include="src\ogdf\planarity\VariableEmbeddingInserterDyn.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\BiconnectedShellingOrder.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\FPPLayout.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\IOPoints.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\MMCBBase.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\MixedModelBase.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\MixedModelCrossingsBeautifierModule.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\MixedModelLayout.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\PlanarDrawLayout.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\PlanarStraightLayout.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\SchnyderLayout.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\ShellingOrder.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\ShellingOrderModule.cpp" />
+    <ClCompile Include="src\ogdf\planarlayout\TriconnectedShellingOrder.cpp" />
+    <ClCompile Include="src\ogdf\simultaneous\SimDraw.cpp" />
+    <ClCompile Include="src\ogdf\simultaneous\SimDrawCaller.cpp" />
+    <ClCompile Include="src\ogdf\simultaneous\SimDrawColorizer.cpp" />
+    <ClCompile Include="src\ogdf\simultaneous\SimDrawCreator.cpp" />
+    <ClCompile Include="src\ogdf\simultaneous\SimDrawCreatorSimple.cpp" />
+    <ClCompile Include="src\ogdf\simultaneous\SimDrawManipulatorModule.cpp" />
+    <ClCompile Include="src\ogdf\tree\LCA.cpp" />
+    <ClCompile Include="src\ogdf\tree\RadialTreeLayout.cpp" />
+    <ClCompile Include="src\ogdf\tree\TreeLayout.cpp" />
+    <ClCompile Include="src\ogdf\uml\FixedEmbeddingInserterUML.cpp" />
+    <ClCompile Include="src\ogdf\uml\OrthoLayoutUML.cpp" />
+    <ClCompile Include="src\ogdf\uml\PlanRepUML.cpp" />
+    <ClCompile Include="src\ogdf\uml\PlanarizationLayoutUML.cpp" />
+    <ClCompile Include="src\ogdf\uml\PlanarizationLayoutUML_inc.cpp" />
+    <ClCompile Include="src\ogdf\uml\SubgraphPlanarizerUML.cpp" />
+    <ClCompile Include="src\ogdf\uml\UMLCrossingMinimizationModule.cpp" />
+    <ClCompile Include="src\ogdf\uml\UMLGraph.cpp" />
+    <ClCompile Include="src\ogdf\uml\VariableEmbeddingInserterDynUML.cpp" />
+    <ClCompile Include="src\ogdf\uml\VariableEmbeddingInserterUML.cpp" />
+    <ClCompile Include="src\ogdf\upward\DominanceLayout.cpp" />
+    <ClCompile Include="src\ogdf\upward\ExpansionGraph.cpp" />
+    <ClCompile Include="src\ogdf\upward\FUPSSimple.cpp" />
+    <ClCompile Include="src\ogdf\upward\FaceSinkGraph.cpp" />
+    <ClCompile Include="src\ogdf\upward\FeasibleUpwardPlanarSubgraph.cpp" />
+    <ClCompile Include="src\ogdf\upward\FixedEmbeddingUpwardEdgeInserter.cpp" />
+    <ClCompile Include="src\ogdf\upward\LayerBasedUPRLayout.cpp" />
+    <ClCompile Include="src\ogdf\upward\SubgraphUpwardPlanarizer.cpp" />
+    <ClCompile Include="src\ogdf\upward\UpwardPlanRep.cpp" />
+    <ClCompile Include="src\ogdf\upward\UpwardPlanarSubgraphModule.cpp" />
+    <ClCompile Include="src\ogdf\upward\UpwardPlanarSubgraphSimple.cpp" />
+    <ClCompile Include="src\ogdf\upward\UpwardPlanarity.cpp" />
+    <ClCompile Include="src\ogdf\upward\UpwardPlanarityEmbeddedDigraph.cpp" />
+    <ClCompile Include="src\ogdf\upward\UpwardPlanaritySingleSource.cpp" />
+    <ClCompile Include="src\ogdf\upward\VisibilityLayout.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ogdf\abacus\abacusroot.h" />
+    <ClInclude Include="include\ogdf\abacus\active.h" />
+    <ClInclude Include="include\ogdf\abacus\active.inc" />
+    <ClInclude Include="include\ogdf\abacus\bheap.h" />
+    <ClInclude Include="include\ogdf\abacus\bheap.inc" />
+    <ClInclude Include="include\ogdf\abacus\boundbranchrule.h" />
+    <ClInclude Include="include\ogdf\abacus\bprioqueue.h" />
+    <ClInclude Include="include\ogdf\abacus\bprioqueue.inc" />
+    <ClInclude Include="include\ogdf\abacus\branchrule.h" />
+    <ClInclude Include="include\ogdf\abacus\column.h" />
+    <ClInclude Include="include\ogdf\abacus\colvar.h" />
+    <ClInclude Include="include\ogdf\abacus\conbranchrule.h" />
+    <ClInclude Include="include\ogdf\abacus\conclass.h" />
+    <ClInclude Include="include\ogdf\abacus\constraint.h" />
+    <ClInclude Include="include\ogdf\abacus\convar.h" />
+    <ClInclude Include="include\ogdf\abacus\csense.h" />
+    <ClInclude Include="include\ogdf\abacus\cutbuffer.h" />
+    <ClInclude Include="include\ogdf\abacus\cutbuffer.inc" />
+    <ClInclude Include="include\ogdf\abacus\fixcand.h" />
+    <ClInclude Include="include\ogdf\abacus\fsvarstat.h" />
+    <ClInclude Include="include\ogdf\abacus\global.h" />
+    <ClInclude Include="include\ogdf\abacus\hash.h" />
+    <ClInclude Include="include\ogdf\abacus\hash.inc" />
+    <ClInclude Include="include\ogdf\abacus\history.h" />
+    <ClInclude Include="include\ogdf\abacus\infeascon.h" />
+    <ClInclude Include="include\ogdf\abacus\lp.h" />
+    <ClInclude Include="include\ogdf\abacus\lpmaster.h" />
+    <ClInclude Include="include\ogdf\abacus\lpmasterosi.h" />
+    <ClInclude Include="include\ogdf\abacus\lpsolution.h" />
+    <ClInclude Include="include\ogdf\abacus\lpsolution.inc" />
+    <ClInclude Include="include\ogdf\abacus\lpsub.h" />
+    <ClInclude Include="include\ogdf\abacus\lpsubosi.h" />
+    <ClInclude Include="include\ogdf\abacus\lpvarstat.h" />
+    <ClInclude Include="include\ogdf\abacus\master.h" />
+    <ClInclude Include="include\ogdf\abacus\nonduplpool.h" />
+    <ClInclude Include="include\ogdf\abacus\nonduplpool.inc" />
+    <ClInclude Include="include\ogdf\abacus\numcon.h" />
+    <ClInclude Include="include\ogdf\abacus\numvar.h" />
+    <ClInclude Include="include\ogdf\abacus\opensub.h" />
+    <ClInclude Include="include\ogdf\abacus\optsense.h" />
+    <ClInclude Include="include\ogdf\abacus\osiif.h" />
+    <ClInclude Include="include\ogdf\abacus\osiinclude.h" />
+    <ClInclude Include="include\ogdf\abacus\pool.h" />
+    <ClInclude Include="include\ogdf\abacus\poolslot.h" />
+    <ClInclude Include="include\ogdf\abacus\poolslot.inc" />
+    <ClInclude Include="include\ogdf\abacus\poolslotref.h" />
+    <ClInclude Include="include\ogdf\abacus\poolslotref.inc" />
+    <ClInclude Include="include\ogdf\abacus\ring.h" />
+    <ClInclude Include="include\ogdf\abacus\ring.inc" />
+    <ClInclude Include="include\ogdf\abacus\row.h" />
+    <ClInclude Include="include\ogdf\abacus\rowcon.h" />
+    <ClInclude Include="include\ogdf\abacus\separator.h" />
+    <ClInclude Include="include\ogdf\abacus\separator.inc" />
+    <ClInclude Include="include\ogdf\abacus\setbranchrule.h" />
+    <ClInclude Include="include\ogdf\abacus\slackstat.h" />
+    <ClInclude Include="include\ogdf\abacus\sparvec.h" />
+    <ClInclude Include="include\ogdf\abacus\srowcon.h" />
+    <ClInclude Include="include\ogdf\abacus\standardpool.h" />
+    <ClInclude Include="include\ogdf\abacus\standardpool.inc" />
+    <ClInclude Include="include\ogdf\abacus\sub.h" />
+    <ClInclude Include="include\ogdf\abacus\tailoff.h" />
+    <ClInclude Include="include\ogdf\abacus\valbranchrule.h" />
+    <ClInclude Include="include\ogdf\abacus\variable.h" />
+    <ClInclude Include="include\ogdf\abacus\vartype.h" />
+    <ClInclude Include="include\ogdf\augmentation\DfsMakeBiconnected.h" />
+    <ClInclude Include="include\ogdf\augmentation\PlanarAugmentation.h" />
+    <ClInclude Include="include\ogdf\augmentation\PlanarAugmentationFix.h" />
+    <ClInclude Include="include\ogdf\basic\AdjEntryArray.h" />
+    <ClInclude Include="include\ogdf\basic\AdjacencyOracle.h" />
+    <ClInclude Include="include\ogdf\basic\Array.h" />
+    <ClInclude Include="include\ogdf\basic\Array2D.h" />
+    <ClInclude Include="include\ogdf\basic\ArrayBuffer.h" />
+    <ClInclude Include="include\ogdf\basic\Barrier.h" />
+    <ClInclude Include="include\ogdf\basic\BinaryHeap.h" />
+    <ClInclude Include="include\ogdf\basic\BinaryHeap2.h" />
+    <ClInclude Include="include\ogdf\basic\BoundedQueue.h" />
+    <ClInclude Include="include\ogdf\basic\BoundedStack.h" />
+    <ClInclude Include="include\ogdf\basic\CombinatorialEmbedding.h" />
+    <ClInclude Include="include\ogdf\basic\Constraints.h" />
+    <ClInclude Include="include\ogdf\basic\CriticalSection.h" />
+    <ClInclude Include="include\ogdf\basic\DisjointSets.h" />
+    <ClInclude Include="include\ogdf\basic\DualGraph.h" />
+    <ClInclude Include="include\ogdf\basic\EFreeList.h" />
+    <ClInclude Include="include\ogdf\basic\EList.h" />
+    <ClInclude Include="include\ogdf\basic\EdgeArray.h" />
+    <ClInclude Include="include\ogdf\basic\EdgeComparer.h" />
+    <ClInclude Include="include\ogdf\basic\EdgeComparerSimple.h" />
+    <ClInclude Include="include\ogdf\basic\FaceArray.h" />
+    <ClInclude Include="include\ogdf\basic\FaceSet.h" />
+    <ClInclude Include="include\ogdf\basic\Graph.h" />
+    <ClInclude Include="include\ogdf\basic\GraphAttributes.h" />
+    <ClInclude Include="include\ogdf\basic\GraphCopy.h" />
+    <ClInclude Include="include\ogdf\basic\GraphCopyAttributes.h" />
+    <ClInclude Include="include\ogdf\basic\GraphList.h" />
+    <ClInclude Include="include\ogdf\basic\GraphObserver.h" />
+    <ClInclude Include="include\ogdf\basic\Graph_d.h" />
+    <ClInclude Include="include\ogdf\basic\GridLayout.h" />
+    <ClInclude Include="include\ogdf\basic\GridLayoutMapped.h" />
+    <ClInclude Include="include\ogdf\basic\HashArray.h" />
+    <ClInclude Include="include\ogdf\basic\HashArray2D.h" />
+    <ClInclude Include="include\ogdf\basic\HashIterator2D.h" />
+    <ClInclude Include="include\ogdf\basic\Hashing.h" />
+    <ClInclude Include="include\ogdf\basic\HeapBase.h" />
+    <ClInclude Include="include\ogdf\basic\HyperGraph.h" />
+    <ClInclude Include="include\ogdf\basic\IncNodeInserter.h" />
+    <ClInclude Include="include\ogdf\basic\Layout.h" />
+    <ClInclude Include="include\ogdf\basic\LayoutStandards.h" />
+    <ClInclude Include="include\ogdf\basic\List.h" />
+    <ClInclude Include="include\ogdf\basic\Logger.h" />
+    <ClInclude Include="include\ogdf\basic\Math.h" />
+    <ClInclude Include="include\ogdf\basic\MinHeap.h" />
+    <ClInclude Include="include\ogdf\basic\MinPriorityQueue.h" />
+    <ClInclude Include="include\ogdf\basic\Module.h" />
+    <ClInclude Include="include\ogdf\basic\ModuleOption.h" />
+    <ClInclude Include="include\ogdf\basic\NearestRectangleFinder.h" />
+    <ClInclude Include="include\ogdf\basic\NodeArray.h" />
+    <ClInclude Include="include\ogdf\basic\NodeComparer.h" />
+    <ClInclude Include="include\ogdf\basic\NodeSet.h" />
+    <ClInclude Include="include\ogdf\basic\PreprocessorLayout.h" />
+    <ClInclude Include="include\ogdf\basic\Queue.h" />
+    <ClInclude Include="include\ogdf\basic\SList.h" />
+    <ClInclude Include="include\ogdf\basic\Skiplist.h" />
+    <ClInclude Include="include\ogdf\basic\Stack.h" />
+    <ClInclude Include="include\ogdf\basic\Stopwatch.h" />
+    <ClInclude Include="include\ogdf\basic\SubsetEnumerator.h" />
+    <ClInclude Include="include\ogdf\basic\System.h" />
+    <ClInclude Include="include\ogdf\basic\Thread.h" />
+    <ClInclude Include="include\ogdf\basic\Timeouter.h" />
+    <ClInclude Include="include\ogdf\basic\TopologyModule.h" />
+    <ClInclude Include="include\ogdf\basic\basic.h" />
+    <ClInclude Include="include\ogdf\basic\comparer.h" />
+    <ClInclude Include="include\ogdf\basic\exceptions.h" />
+    <ClInclude Include="include\ogdf\basic\extended_graph_alg.h" />
+    <ClInclude Include="include\ogdf\basic\geometry.h" />
+    <ClInclude Include="include\ogdf\basic\graph_generators.h" />
+    <ClInclude Include="include\ogdf\basic\graphics.h" />
+    <ClInclude Include="include\ogdf\basic\memory.h" />
+    <ClInclude Include="include\ogdf\basic\precondition.h" />
+    <ClInclude Include="include\ogdf\basic\simple_graph_alg.h" />
+    <ClInclude Include="include\ogdf\basic\tuples.h" />
+    <ClInclude Include="include\ogdf\cluster\CPlanarEdgeInserter.h" />
+    <ClInclude Include="include\ogdf\cluster\CPlanarSubClusteredGraph.h" />
+    <ClInclude Include="include\ogdf\cluster\CconnectClusterPlanar.h" />
+    <ClInclude Include="include\ogdf\cluster\CconnectClusterPlanarEmbed.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterAnalysis.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterArray.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterGraph.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterGraphAttributes.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterGraphCopyAttributes.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterGraphObserver.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterOrthoLayout.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterOrthoShaper.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterPlanRep.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterPlanarizationLayout.h" />
+    <ClInclude Include="include\ogdf\cluster\ClusterSet.h" />
+    <ClInclude Include="include\ogdf\cluster\MaximumCPlanarSubgraph.h" />
+    <ClInclude Include="include\ogdf\decomposition\BCTree.h" />
+    <ClInclude Include="include\ogdf\decomposition\DynamicBCTree.h" />
+    <ClInclude Include="include\ogdf\decomposition\DynamicPlanarSPQRTree.h" />
+    <ClInclude Include="include\ogdf\decomposition\DynamicSPQRForest.h" />
+    <ClInclude Include="include\ogdf\decomposition\DynamicSPQRTree.h" />
+    <ClInclude Include="include\ogdf\decomposition\DynamicSkeleton.h" />
+    <ClInclude Include="include\ogdf\decomposition\PertinentGraph.h" />
+    <ClInclude Include="include\ogdf\decomposition\PlanarSPQRTree.h" />
+    <ClInclude Include="include\ogdf\decomposition\SPQRTree.h" />
+    <ClInclude Include="include\ogdf\decomposition\Skeleton.h" />
+    <ClInclude Include="include\ogdf\decomposition\StaticPlanarSPQRTree.h" />
+    <ClInclude Include="include\ogdf\decomposition\StaticSPQRTree.h" />
+    <ClInclude Include="include\ogdf\decomposition\StaticSkeleton.h" />
+    <ClInclude Include="include\ogdf\energybased\DavidsonHarel.h" />
+    <ClInclude Include="include\ogdf\energybased\DavidsonHarelLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\FMMMLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\FastMultipoleEmbedder.h" />
+    <ClInclude Include="include\ogdf\energybased\GEMLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\MultilevelLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\PivotMDS.h" />
+    <ClInclude Include="include\ogdf\energybased\SpringEmbedderFR.h" />
+    <ClInclude Include="include\ogdf\energybased\SpringEmbedderFRExact.h" />
+    <ClInclude Include="include\ogdf\energybased\SpringEmbedderKK.h" />
+    <ClInclude Include="include\ogdf\energybased\StressMinimization.h" />
+    <ClInclude Include="include\ogdf\energybased\TutteLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\BarycenterPlacer.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\CirclePlacer.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\EdgeCoverMerger.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\IndependentSetMerger.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\InitialPlacer.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\LocalBiconnectedMerger.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\MMMExampleFastLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\MMMExampleNiceLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\MMMExampleNoTwistLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\MatchingMerger.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\MedianPlacer.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\MixedForceLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\ModularMultilevelMixer.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\MultilevelBuilder.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\RandomMerger.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\RandomPlacer.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\ScalingLayout.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\SolarMerger.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\SolarPlacer.h" />
+    <ClInclude Include="include\ogdf\energybased\multilevelmixer\ZeroPlacer.h" />
+    <ClInclude Include="include\ogdf\external\abacus.h" />
+    <ClInclude Include="include\ogdf\external\coin.h" />
+    <ClInclude Include="include\ogdf\fileformats\DLParser.h" />
+    <ClInclude Include="include\ogdf\fileformats\DOT.h" />
+    <ClInclude Include="include\ogdf\fileformats\DotLexer.h" />
+    <ClInclude Include="include\ogdf\fileformats\DotParser.h" />
+    <ClInclude Include="include\ogdf\fileformats\GDF.h" />
+    <ClInclude Include="include\ogdf\fileformats\GEXF.h" />
+    <ClInclude Include="include\ogdf\fileformats\GdfParser.h" />
+    <ClInclude Include="include\ogdf\fileformats\GexfParser.h" />
+    <ClInclude Include="include\ogdf\fileformats\GmlParser.h" />
+    <ClInclude Include="include\ogdf\fileformats\GraphIO.h" />
+    <ClInclude Include="include\ogdf\fileformats\GraphML.h" />
+    <ClInclude Include="include\ogdf\fileformats\GraphMLParser.h" />
+    <ClInclude Include="include\ogdf\fileformats\LineBuffer.h" />
+    <ClInclude Include="include\ogdf\fileformats\Ogml.h" />
+    <ClInclude Include="include\ogdf\fileformats\OgmlParser.h" />
+    <ClInclude Include="include\ogdf\fileformats\Tlp.h" />
+    <ClInclude Include="include\ogdf\fileformats\TlpLexer.h" />
+    <ClInclude Include="include\ogdf\fileformats\TlpParser.h" />
+    <ClInclude Include="include\ogdf\fileformats\UmlDiagramGraph.h" />
+    <ClInclude Include="include\ogdf\fileformats\UmlModelGraph.h" />
+    <ClInclude Include="include\ogdf\fileformats\UmlToGraphConverter.h" />
+    <ClInclude Include="include\ogdf\fileformats\Utils.h" />
+    <ClInclude Include="include\ogdf\fileformats\XmlParser.h" />
+    <ClInclude Include="include\ogdf\fileformats\XmlScanner.h" />
+    <ClInclude Include="include\ogdf\graphalg\CliqueFinder.h" />
+    <ClInclude Include="include\ogdf\graphalg\Clusterer.h" />
+    <ClInclude Include="include\ogdf\graphalg\ConvexHull.h" />
+    <ClInclude Include="include\ogdf\graphalg\Dijkstra.h" />
+    <ClInclude Include="include\ogdf\graphalg\GraphReduction.h" />
+    <ClInclude Include="include\ogdf\graphalg\MinCostFlowReinelt.h" />
+    <ClInclude Include="include\ogdf\graphalg\MinimumCut.h" />
+    <ClInclude Include="include\ogdf\graphalg\PageRank.h" />
+    <ClInclude Include="include\ogdf\graphalg\ShortestPathAlgorithms.h" />
+    <ClInclude Include="include\ogdf\graphalg\ShortestPathWithBFM.h" />
+    <ClInclude Include="include\ogdf\graphalg\Voronoi.h" />
+    <ClInclude Include="include\ogdf\hypergraph\EdgeStandardRep.h" />
+    <ClInclude Include="include\ogdf\hypergraph\Hypergraph.h" />
+    <ClInclude Include="include\ogdf\hypergraph\HypergraphArray.h" />
+    <ClInclude Include="include\ogdf\hypergraph\HypergraphAttributes.h" />
+    <ClInclude Include="include\ogdf\hypergraph\HypergraphLayout.h" />
+    <ClInclude Include="include\ogdf\hypergraph\HypergraphLayoutModule.h" />
+    <ClInclude Include="include\ogdf\hypergraph\HypergraphObserver.h" />
+    <ClInclude Include="include\ogdf\internal\augmentation\PALabel.h" />
+    <ClInclude Include="include\ogdf\internal\basic\MallocMemoryAllocator.h" />
+    <ClInclude Include="include\ogdf\internal\basic\PoolMemoryAllocator.h" />
+    <ClInclude Include="include\ogdf\internal\basic\config.h" />
+    <ClInclude Include="include\ogdf\internal\basic\intrinsics.h" />
+    <ClInclude Include="include\ogdf\internal\basic\list_templates.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\CPlanarSubClusteredST.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\ClusterPQContainer.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\Cluster_ChunkConnection.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\Cluster_CutConstraint.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\Cluster_EdgeVar.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\Cluster_MaxPlanarEdges.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\KuratowskiConstraint.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\MaxCPlanar_Master.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\MaxCPlanar_MinimalClusterConnection.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\MaxCPlanar_Sub.h" />
+    <ClInclude Include="include\ogdf\internal\cluster\basics.h" />
+    <ClInclude Include="include\ogdf\internal\config_autogen.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\Attraction.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\EdgeAttributes.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\EnergyFunction.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\FruchtermanReingold.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\IntersectionRectangle.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\MultilevelGraph.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\NMM.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\NodeAttributes.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\NodePairEnergy.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\Overlap.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\ParticleInfo.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\Planarity.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\PlanarityGrid.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\QuadTreeNM.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\QuadTreeNodeNM.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\Repulsion.h" />
+    <ClInclude Include="include\ogdf\internal\energybased\UniformGrid.h" />
+    <ClInclude Include="include\ogdf\internal\lpsolver\LPSolver_coin.h" />
+    <ClInclude Include="include\ogdf\internal\orthogonal\NodeInfo.h" />
+    <ClInclude Include="include\ogdf\internal\orthogonal\RoutingChannel.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\BoyerMyrvoldInit.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\BoyerMyrvoldPlanar.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\CliqueReplacer.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\ConnectedSubgraph.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\CrossingStructure.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\EmbedIndicator.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\EmbedPQTree.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\EmbedderMaxFaceBiconnectedGraphs.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\EmbedderMaxFaceBiconnectedGraphsLayers.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\FindKuratowskis.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\FixEdgeInserterCore.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\IndInfo.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\MDMFLengthAttribute.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\MaxSequencePQTree.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQBasicKey.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQBasicKeyRoot.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQInternalKey.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQInternalNode.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQLeaf.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQLeafKey.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQNode.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQNodeKey.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQNodeRoot.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PQTree.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PlanarLeafKey.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PlanarPQTree.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\PlanarSubgraphPQTree.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\VarEdgeInserterCore.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\VarEdgeInserterDynCore.h" />
+    <ClInclude Include="include\ogdf\internal\planarity\whaInfo.h" />
+    <ClInclude Include="include\ogdf\internal\steinertree\EdgeWeightedGraph.h" />
+    <ClInclude Include="include\ogdf\internal\upward\UpwardPlanarityEmbeddedDigraph.h" />
+    <ClInclude Include="include\ogdf\internal\upward\UpwardPlanaritySingleSource.h" />
+    <ClInclude Include="include\ogdf\internal\version.h" />
+    <ClInclude Include="include\ogdf\labeling\ELabelInterface.h" />
+    <ClInclude Include="include\ogdf\labeling\ELabelPosSimple.h" />
+    <ClInclude Include="include\ogdf\layered\BarycenterHeuristic.h" />
+    <ClInclude Include="include\ogdf\layered\BlockOrder.h" />
+    <ClInclude Include="include\ogdf\layered\CoffmanGrahamRanking.h" />
+    <ClInclude Include="include\ogdf\layered\CrossingMinInterfaces.h" />
+    <ClInclude Include="include\ogdf\layered\CrossingsMatrix.h" />
+    <ClInclude Include="include\ogdf\layered\DfsAcyclicSubgraph.h" />
+    <ClInclude Include="include\ogdf\layered\ExtendedNestingGraph.h" />
+    <ClInclude Include="include\ogdf\layered\FastHierarchyLayout.h" />
+    <ClInclude Include="include\ogdf\layered\FastSimpleHierarchyLayout.h" />
+    <ClInclude Include="include\ogdf\layered\GreedyCycleRemoval.h" />
+    <ClInclude Include="include\ogdf\layered\GreedyInsertHeuristic.h" />
+    <ClInclude Include="include\ogdf\layered\GreedySwitchHeuristic.h" />
+    <ClInclude Include="include\ogdf\layered\GridSifting.h" />
+    <ClInclude Include="include\ogdf\layered\Hierarchy.h" />
+    <ClInclude Include="include\ogdf\layered\HierarchyLevels.h" />
+    <ClInclude Include="include\ogdf\layered\Level.h" />
+    <ClInclude Include="include\ogdf\layered\LongestPathRanking.h" />
+    <ClInclude Include="include\ogdf\layered\MedianHeuristic.h" />
+    <ClInclude Include="include\ogdf\layered\OptimalHierarchyClusterLayout.h" />
+    <ClInclude Include="include\ogdf\layered\OptimalHierarchyLayout.h" />
+    <ClInclude Include="include\ogdf\layered\OptimalRanking.h" />
+    <ClInclude Include="include\ogdf\layered\SiftingHeuristic.h" />
+    <ClInclude Include="include\ogdf\layered\SplitHeuristic.h" />
+    <ClInclude Include="include\ogdf\layered\SugiyamaLayout.h" />
+    <ClInclude Include="include\ogdf\lpsolver\LPSolver.h" />
+    <ClInclude Include="include\ogdf\misclayout\BalloonLayout.h" />
+    <ClInclude Include="include\ogdf\misclayout\BertaultLayout.h" />
+    <ClInclude Include="include\ogdf\misclayout\CircularLayout.h" />
+    <ClInclude Include="include\ogdf\misclayout\ProcrustesSubLayout.h" />
+    <ClInclude Include="include\ogdf\module\AcyclicSubgraphModule.h" />
+    <ClInclude Include="include\ogdf\module\AugmentationModule.h" />
+    <ClInclude Include="include\ogdf\module\CCLayoutPackModule.h" />
+    <ClInclude Include="include\ogdf\module\CPlanarSubgraphModule.h" />
+    <ClInclude Include="include\ogdf\module\ClustererModule.h" />
+    <ClInclude Include="include\ogdf\module\CrossingMinimizationModule.h" />
+    <ClInclude Include="include\ogdf\module\EdgeInsertionModule.h" />
+    <ClInclude Include="include\ogdf\module\EmbedderModule.h" />
+    <ClInclude Include="include\ogdf\module\FUPSModule.h" />
+    <ClInclude Include="include\ogdf\module\ForceLayoutModule.h" />
+    <ClInclude Include="include\ogdf\module\GridLayoutModule.h" />
+    <ClInclude Include="include\ogdf\module\HierarchyClusterLayoutModule.h" />
+    <ClInclude Include="include\ogdf\module\HierarchyLayoutModule.h" />
+    <ClInclude Include="include\ogdf\module\LayerByLayerSweep.h" />
+    <ClInclude Include="include\ogdf\module\LayeredCrossMinModule.h" />
+    <ClInclude Include="include\ogdf\module\LayoutClusterPlanRepModule.h" />
+    <ClInclude Include="include\ogdf\module\LayoutModule.h" />
+    <ClInclude Include="include\ogdf\module\LayoutPlanRepModule.h" />
+    <ClInclude Include="include\ogdf\module\LayoutPlanRepUMLModule.h" />
+    <ClInclude Include="include\ogdf\module\MMCrossingMinimizationModule.h" />
+    <ClInclude Include="include\ogdf\module\MMEdgeInsertionModule.h" />
+    <ClInclude Include="include\ogdf\module\MinCostFlowModule.h" />
+    <ClInclude Include="include\ogdf\module\MixedModelCrossingsBeautifierModule.h" />
+    <ClInclude Include="include\ogdf\module\MultilevelLayoutModule.h" />
+    <ClInclude Include="include\ogdf\module\PlanarSubgraphModule.h" />
+    <ClInclude Include="include\ogdf\module\PlanarityModule.h" />
+    <ClInclude Include="include\ogdf\module\RankingModule.h" />
+    <ClInclude Include="include\ogdf\module\ShellingOrderModule.h" />
+    <ClInclude Include="include\ogdf\module\ShortestPathModule.h" />
+    <ClInclude Include="include\ogdf\module\UMLCrossingMinimizationModule.h" />
+    <ClInclude Include="include\ogdf\module\UMLEdgeInsertionModule.h" />
+    <ClInclude Include="include\ogdf\module\UMLLayoutModule.h" />
+    <ClInclude Include="include\ogdf\module\UPRLayoutModule.h" />
+    <ClInclude Include="include\ogdf\module\UpwardEdgeInserterModule.h" />
+    <ClInclude Include="include\ogdf\module\UpwardPlanarSubgraphModule.h" />
+    <ClInclude Include="include\ogdf\module\UpwardPlanarizerModule.h" />
+    <ClInclude Include="include\ogdf\orthogonal\CompactionConstraintGraph.h" />
+    <ClInclude Include="include\ogdf\orthogonal\EdgeRouter.h" />
+    <ClInclude Include="include\ogdf\orthogonal\FlowCompaction.h" />
+    <ClInclude Include="include\ogdf\orthogonal\LongestPathCompaction.h" />
+    <ClInclude Include="include\ogdf\orthogonal\MinimumEdgeDistances.h" />
+    <ClInclude Include="include\ogdf\orthogonal\OrthoLayout.h" />
+    <ClInclude Include="include\ogdf\orthogonal\OrthoRep.h" />
+    <ClInclude Include="include\ogdf\orthogonal\OrthoShaper.h" />
+    <ClInclude Include="include\ogdf\packing\ComponentSplitterLayout.h" />
+    <ClInclude Include="include\ogdf\packing\TileToRowsCCPacker.h" />
+    <ClInclude Include="include\ogdf\planarity\BoothLueker.h" />
+    <ClInclude Include="include\ogdf\planarity\BoyerMyrvold.h" />
+    <ClInclude Include="include\ogdf\planarity\EdgeTypePatterns.h" />
+    <ClInclude Include="include\ogdf\planarity\EmbedderMaxFace.h" />
+    <ClInclude Include="include\ogdf\planarity\EmbedderMaxFaceLayers.h" />
+    <ClInclude Include="include\ogdf\planarity\EmbedderMinDepth.h" />
+    <ClInclude Include="include\ogdf\planarity\EmbedderMinDepthMaxFace.h" />
+    <ClInclude Include="include\ogdf\planarity\EmbedderMinDepthMaxFaceLayers.h" />
+    <ClInclude Include="include\ogdf\planarity\EmbedderMinDepthPiTa.h" />
+    <ClInclude Include="include\ogdf\planarity\EmbedderOptimalFlexDraw.h" />
+    <ClInclude Include="include\ogdf\planarity\ExtractKuratowskis.h" />
+    <ClInclude Include="include\ogdf\planarity\FastPlanarSubgraph.h" />
+    <ClInclude Include="include\ogdf\planarity\FixedEmbeddingInserter.h" />
+    <ClInclude Include="include\ogdf\planarity\KuratowskiSubdivision.h" />
+    <ClInclude Include="include\ogdf\planarity\MMFixedEmbeddingInserter.h" />
+    <ClInclude Include="include\ogdf\planarity\MMSubgraphPlanarizer.h" />
+    <ClInclude Include="include\ogdf\planarity\MMVariableEmbeddingInserter.h" />
+    <ClInclude Include="include\ogdf\planarity\MaximalPlanarSubgraphSimple.h" />
+    <ClInclude Include="include\ogdf\planarity\MaximumPlanarSubgraph.h" />
+    <ClInclude Include="include\ogdf\planarity\MultiEdgeApproxInserter.h" />
+    <ClInclude Include="include\ogdf\planarity\NodeTypePatterns.h" />
+    <ClInclude Include="include\ogdf\planarity\NonPlanarCore.h" />
+    <ClInclude Include="include\ogdf\planarity\PlanRep.h" />
+    <ClInclude Include="include\ogdf\planarity\PlanRepExpansion.h" />
+    <ClInclude Include="include\ogdf\planarity\PlanRepInc.h" />
+    <ClInclude Include="include\ogdf\planarity\PlanRepLight.h" />
+    <ClInclude Include="include\ogdf\planarity\PlanarizationGridLayout.h" />
+    <ClInclude Include="include\ogdf\planarity\PlanarizationLayout.h" />
+    <ClInclude Include="include\ogdf\planarity\RemoveReinsertType.h" />
+    <ClInclude Include="include\ogdf\planarity\SimpleEmbedder.h" />
+    <ClInclude Include="include\ogdf\planarity\SimpleIncNodeInserter.h" />
+    <ClInclude Include="include\ogdf\planarity\SubgraphPlanarizer.h" />
+    <ClInclude Include="include\ogdf\planarity\VariableEmbeddingInserter.h" />
+    <ClInclude Include="include\ogdf\planarity\VariableEmbeddingInserterDyn.h" />
+    <ClInclude Include="include\ogdf\planarlayout\BiconnectedShellingOrder.h" />
+    <ClInclude Include="include\ogdf\planarlayout\FPPLayout.h" />
+    <ClInclude Include="include\ogdf\planarlayout\MMCBBase.h" />
+    <ClInclude Include="include\ogdf\planarlayout\MMCBDoubleGrid.h" />
+    <ClInclude Include="include\ogdf\planarlayout\MMCBLocalStretch.h" />
+    <ClInclude Include="include\ogdf\planarlayout\MixedModelLayout.h" />
+    <ClInclude Include="include\ogdf\planarlayout\PlanarDrawLayout.h" />
+    <ClInclude Include="include\ogdf\planarlayout\PlanarStraightLayout.h" />
+    <ClInclude Include="include\ogdf\planarlayout\SchnyderLayout.h" />
+    <ClInclude Include="include\ogdf\planarlayout\ShellingOrder.h" />
+    <ClInclude Include="include\ogdf\planarlayout\TriconnectedShellingOrder.h" />
+    <ClInclude Include="include\ogdf\simultaneous\SimDraw.h" />
+    <ClInclude Include="include\ogdf\simultaneous\SimDrawCaller.h" />
+    <ClInclude Include="include\ogdf\simultaneous\SimDrawColorizer.h" />
+    <ClInclude Include="include\ogdf\simultaneous\SimDrawCreator.h" />
+    <ClInclude Include="include\ogdf\simultaneous\SimDrawCreatorSimple.h" />
+    <ClInclude Include="include\ogdf\simultaneous\SimDrawManipulatorModule.h" />
+    <ClInclude Include="include\ogdf\simultaneous\TwoLayerCrossMinSimDraw.h" />
+    <ClInclude Include="include\ogdf\tree\LCA.h" />
+    <ClInclude Include="include\ogdf\tree\RadialTreeLayout.h" />
+    <ClInclude Include="include\ogdf\tree\TreeLayout.h" />
+    <ClInclude Include="include\ogdf\uml\FixedEmbeddingInserterUML.h" />
+    <ClInclude Include="include\ogdf\uml\OrthoLayoutUML.h" />
+    <ClInclude Include="include\ogdf\uml\PlanRepUML.h" />
+    <ClInclude Include="include\ogdf\uml\PlanarizationLayoutUML.h" />
+    <ClInclude Include="include\ogdf\uml\SubgraphPlanarizerUML.h" />
+    <ClInclude Include="include\ogdf\uml\UMLGraph.h" />
+    <ClInclude Include="include\ogdf\uml\VariableEmbeddingInserterDynUML.h" />
+    <ClInclude Include="include\ogdf\uml\VariableEmbeddingInserterUML.h" />
+    <ClInclude Include="include\ogdf\upward\DominanceLayout.h" />
+    <ClInclude Include="include\ogdf\upward\ExpansionGraph.h" />
+    <ClInclude Include="include\ogdf\upward\FUPSSimple.h" />
+    <ClInclude Include="include\ogdf\upward\FaceSinkGraph.h" />
+    <ClInclude Include="include\ogdf\upward\FeasibleUpwardPlanarSubgraph.h" />
+    <ClInclude Include="include\ogdf\upward\FixedEmbeddingUpwardEdgeInserter.h" />
+    <ClInclude Include="include\ogdf\upward\FixedUpwardEmbeddingInserter.h" />
+    <ClInclude Include="include\ogdf\upward\LayerBasedUPRLayout.h" />
+    <ClInclude Include="include\ogdf\upward\SubgraphUpwardPlanarizer.h" />
+    <ClInclude Include="include\ogdf\upward\UpwardPlanRep.h" />
+    <ClInclude Include="include\ogdf\upward\UpwardPlanarSubgraphSimple.h" />
+    <ClInclude Include="include\ogdf\upward\UpwardPlanarity.h" />
+    <ClInclude Include="include\ogdf\upward\UpwardPlanarizationLayout.h" />
+    <ClInclude Include="include\ogdf\upward\VisibilityLayout.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FB212DCC-D374-430B-B594-5CEC25BC7A75}</ProjectGuid>
+    <RootNamespace>ogdf</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./include/coin/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CLP_BUILD;COINUTILS_BUILD;OSI_BUILD;SYMPHONY_BUILD;__OSI_CLP__;COMPILE_IN_CG;COMPILE_IN_CP;COMPILE_IN_LP;COMPILE_IN_TM;USE_CGL_CUTS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./include/coin/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CLP_BUILD;COINUTILS_BUILD;OSI_BUILD;SYMPHONY_BUILD;__OSI_CLP__;COMPILE_IN_CG;COMPILE_IN_CP;COMPILE_IN_LP;COMPILE_IN_TM;USE_CGL_CUTS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>./include/coin/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CLP_BUILD;COINUTILS_BUILD;OSI_BUILD;SYMPHONY_BUILD;__OSI_CLP__;COMPILE_IN_CG;COMPILE_IN_CP;COMPILE_IN_LP;COMPILE_IN_TM;USE_CGL_CUTS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>./include/coin/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CLP_BUILD;COINUTILS_BUILD;OSI_BUILD;SYMPHONY_BUILD;__OSI_CLP__;COMPILE_IN_CG;COMPILE_IN_CP;COMPILE_IN_LP;COMPILE_IN_TM;USE_CGL_CUTS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\coin\Cgl\CglAllDifferent.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglClique.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglCliqueHelper.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglCliqueTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglCutGenerator.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglDuplicateRow.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglFlowCover.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglFlowCoverTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglGomory.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglGomoryTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglKnapsackCover.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglKnapsackCoverTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglLandP.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglLandPMessages.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglLandPSimplex.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglLandPTabRow.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglLandPTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglLandPUtils.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglLandPValidator.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglLiftAndProject.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglMessage.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglMixedIntegerRounding.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglMixedIntegerRounding2.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglMixedIntegerRounding2Test.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglMixedIntegerRoundingTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglOddHole.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglOddHoleTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglParam.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglPreProcess.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglProbing.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglProbingTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglRedSplit.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglRedSplitParam.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglRedSplitTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglResidualCapacity.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglResidualCapacityTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglSimpleRounding.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglSimpleRoundingTest.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglStored.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglTreeInfo.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglTwomir.cpp" />
+    <ClCompile Include="src\coin\Cgl\CglTwomirTest.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpCholeskyBase.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpCholeskyDense.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpCholeskyTaucs.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpConstraint.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpConstraintLinear.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpConstraintQuadratic.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpDualRowDantzig.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpDualRowPivot.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpDualRowSteepest.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpDummyMatrix.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpDynamicExampleMatrix.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpDynamicMatrix.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpEventHandler.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpFactorization.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpGubDynamicMatrix.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpGubMatrix.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpHelperFunctions.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpInterior.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpLinearObjective.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpLsqr.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpMatrixBase.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpMessage.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpModel.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpNetworkBasis.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpNetworkMatrix.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpNode.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpNonLinearCost.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpObjective.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpPackedMatrix.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpPdco.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpPdcoBase.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpPlusMinusOneMatrix.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpPredictorCorrector.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpPresolve.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpPrimalColumnDantzig.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpPrimalColumnPivot.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpPrimalColumnSteepest.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpQuadraticObjective.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpSimplex.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpSimplexDual.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpSimplexNonlinear.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpSimplexOther.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpSimplexPrimal.cpp" />
+    <ClCompile Include="src\coin\Clp\ClpSolve.cpp" />
+    <ClCompile Include="src\coin\Clp\Clp_C_Interface.cpp" />
+    <ClCompile Include="src\coin\Clp\IdiSolve.cpp" />
+    <ClCompile Include="src\coin\Clp\Idiot.cpp" />
+    <ClCompile Include="src\coin\Clp\MyEventHandler.cpp" />
+    <ClCompile Include="src\coin\Clp\MyMessageHandler.cpp" />
+    <ClCompile Include="src\coin\Clp\unitTest.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinAlloc.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinBuild.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinDenseFactorization.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinDenseVector.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinError.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinFactorization1.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinFactorization2.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinFactorization3.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinFactorization4.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinFileIO.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinFinite.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinIndexedVector.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinLpIO.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinMessage.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinMessageHandler.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinModel.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinModelUseful.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinModelUseful2.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinMpsIO.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinOslFactorization.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinOslFactorization2.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinOslFactorization3.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPackedMatrix.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPackedVector.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPackedVectorBase.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinParam.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinParamUtils.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPostsolveMatrix.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPrePostsolveMatrix.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveDoubleton.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveDual.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveDupcol.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveEmpty.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveFixed.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveForcing.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveHelperFunctions.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveImpliedFree.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveIsolated.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveMatrix.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolvePsdebug.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveSingleton.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveSubst.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveTighten.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveTripleton.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveUseless.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinPresolveZeros.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinSearchTree.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinShallowPackedVector.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinSimpFactorization.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinSnapshot.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinStructuredModel.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinWarmStartBasis.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinWarmStartDual.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinWarmStartPrimalDual.cpp" />
+    <ClCompile Include="src\coin\CoinUtils\CoinWarmStartVector.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiAuxInfo.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiBranchingObject.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiChooseVariable.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiColCut.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiCut.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiCuts.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiNames.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiPresolve.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiRowCut.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiRowCutDebugger.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiSolverBranch.cpp" />
+    <ClCompile Include="src\coin\Osi\OsiSolverInterface.cpp" />
+    <ClCompile Include="src\coin\OsiClp\OsiClpSolverInterface.cpp" />
+    <ClCompile Include="src\coin\Symphony\OsiSymSolverInterface.cpp" />
+    <ClCompile Include="src\coin\Symphony\SymWarmStart.cpp" />
+    <ClCompile Include="src\coin\Symphony\cg_func.cpp" />
+    <ClCompile Include="src\coin\Symphony\cg_proccomm.cpp" />
+    <ClCompile Include="src\coin\Symphony\cg_wrapper.cpp" />
+    <ClCompile Include="src\coin\Symphony\cp_func.cpp" />
+    <ClCompile Include="src\coin\Symphony\cp_proccomm.cpp" />
+    <ClCompile Include="src\coin\Symphony\cp_wrapper.cpp" />
+    <ClCompile Include="src\coin\Symphony\cut_gen.cpp" />
+    <ClCompile Include="src\coin\Symphony\cut_pool.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_branch.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_free.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_genfunc.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_heuristics.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_proccomm.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_rowfunc.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_solver.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_sp.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_varfunc.cpp" />
+    <ClCompile Include="src\coin\Symphony\lp_wrapper.cpp" />
+    <ClCompile Include="src\coin\Symphony\master.cpp" />
+    <ClCompile Include="src\coin\Symphony\master_func.cpp" />
+    <ClCompile Include="src\coin\Symphony\master_io.cpp" />
+    <ClCompile Include="src\coin\Symphony\master_prep.cpp" />
+    <ClCompile Include="src\coin\Symphony\master_prep_base.cpp" />
+    <ClCompile Include="src\coin\Symphony\master_prep_sr.cpp" />
+    <ClCompile Include="src\coin\Symphony\master_wrapper.cpp" />
+    <ClCompile Include="src\coin\Symphony\pack_array.cpp" />
+    <ClCompile Include="src\coin\Symphony\pack_cut.cpp" />
+    <ClCompile Include="src\coin\Symphony\proccomm.cpp" />
+    <ClCompile Include="src\coin\Symphony\sym_qsort.cpp" />
+    <ClCompile Include="src\coin\Symphony\timemeas.cpp" />
+    <ClCompile Include="src\coin\Symphony\tm_func.cpp" />
+    <ClCompile Include="src\coin\Symphony\tm_proccomm.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\coin\CglAllDifferent.hpp" />
+    <ClInclude Include="include\coin\CglClique.hpp" />
+    <ClInclude Include="include\coin\CglConfig.h" />
+    <ClInclude Include="include\coin\CglCutGenerator.hpp" />
+    <ClInclude Include="include\coin\CglDuplicateRow.hpp" />
+    <ClInclude Include="include\coin\CglFlowCover.hpp" />
+    <ClInclude Include="include\coin\CglGomory.hpp" />
+    <ClInclude Include="include\coin\CglKnapsackCover.hpp" />
+    <ClInclude Include="include\coin\CglLandP.hpp" />
+    <ClInclude Include="include\coin\CglLandPMessages.hpp" />
+    <ClInclude Include="include\coin\CglLandPSimplex.hpp" />
+    <ClInclude Include="include\coin\CglLandPTabRow.hpp" />
+    <ClInclude Include="include\coin\CglLandPUtils.hpp" />
+    <ClInclude Include="include\coin\CglLandPValidator.hpp" />
+    <ClInclude Include="include\coin\CglLiftAndProject.hpp" />
+    <ClInclude Include="include\coin\CglMessage.hpp" />
+    <ClInclude Include="include\coin\CglMixedIntegerRounding.hpp" />
+    <ClInclude Include="include\coin\CglMixedIntegerRounding2.hpp" />
+    <ClInclude Include="include\coin\CglOddHole.hpp" />
+    <ClInclude Include="include\coin\CglParam.hpp" />
+    <ClInclude Include="include\coin\CglPreProcess.hpp" />
+    <ClInclude Include="include\coin\CglProbing.hpp" />
+    <ClInclude Include="include\coin\CglRedSplit.hpp" />
+    <ClInclude Include="include\coin\CglRedSplitParam.hpp" />
+    <ClInclude Include="include\coin\CglResidualCapacity.hpp" />
+    <ClInclude Include="include\coin\CglSimpleRounding.hpp" />
+    <ClInclude Include="include\coin\CglStored.hpp" />
+    <ClInclude Include="include\coin\CglTreeInfo.hpp" />
+    <ClInclude Include="include\coin\CglTwomir.hpp" />
+    <ClInclude Include="include\coin\ClpCholeskyBase.hpp" />
+    <ClInclude Include="include\coin\ClpCholeskyDense.hpp" />
+    <ClInclude Include="include\coin\ClpCholeskyMumps.hpp" />
+    <ClInclude Include="include\coin\ClpCholeskyTaucs.hpp" />
+    <ClInclude Include="include\coin\ClpCholeskyUfl.hpp" />
+    <ClInclude Include="include\coin\ClpCholeskyWssmp.hpp" />
+    <ClInclude Include="include\coin\ClpCholeskyWssmpKKT.hpp" />
+    <ClInclude Include="include\coin\ClpConfig.h" />
+    <ClInclude Include="include\coin\ClpConstraint.hpp" />
+    <ClInclude Include="include\coin\ClpConstraintLinear.hpp" />
+    <ClInclude Include="include\coin\ClpConstraintQuadratic.hpp" />
+    <ClInclude Include="include\coin\ClpDualRowDantzig.hpp" />
+    <ClInclude Include="include\coin\ClpDualRowPivot.hpp" />
+    <ClInclude Include="include\coin\ClpDualRowSteepest.hpp" />
+    <ClInclude Include="include\coin\ClpDummyMatrix.hpp" />
+    <ClInclude Include="include\coin\ClpDynamicExampleMatrix.hpp" />
+    <ClInclude Include="include\coin\ClpDynamicMatrix.hpp" />
+    <ClInclude Include="include\coin\ClpEventHandler.hpp" />
+    <ClInclude Include="include\coin\ClpFactorization.hpp" />
+    <ClInclude Include="include\coin\ClpGubDynamicMatrix.hpp" />
+    <ClInclude Include="include\coin\ClpGubMatrix.hpp" />
+    <ClInclude Include="include\coin\ClpHelperFunctions.hpp" />
+    <ClInclude Include="include\coin\ClpInterior.hpp" />
+    <ClInclude Include="include\coin\ClpLinearObjective.hpp" />
+    <ClInclude Include="include\coin\ClpLsqr.hpp" />
+    <ClInclude Include="include\coin\ClpMatrixBase.hpp" />
+    <ClInclude Include="include\coin\ClpMessage.hpp" />
+    <ClInclude Include="include\coin\ClpModel.hpp" />
+    <ClInclude Include="include\coin\ClpNetworkBasis.hpp" />
+    <ClInclude Include="include\coin\ClpNetworkMatrix.hpp" />
+    <ClInclude Include="include\coin\ClpNode.hpp" />
+    <ClInclude Include="include\coin\ClpNonLinearCost.hpp" />
+    <ClInclude Include="include\coin\ClpObjective.hpp" />
+    <ClInclude Include="include\coin\ClpPackedMatrix.hpp" />
+    <ClInclude Include="include\coin\ClpParameters.hpp" />
+    <ClInclude Include="include\coin\ClpPdco.hpp" />
+    <ClInclude Include="include\coin\ClpPdcoBase.hpp" />
+    <ClInclude Include="include\coin\ClpPlusMinusOneMatrix.hpp" />
+    <ClInclude Include="include\coin\ClpPredictorCorrector.hpp" />
+    <ClInclude Include="include\coin\ClpPresolve.hpp" />
+    <ClInclude Include="include\coin\ClpPrimalColumnDantzig.hpp" />
+    <ClInclude Include="include\coin\ClpPrimalColumnPivot.hpp" />
+    <ClInclude Include="include\coin\ClpPrimalColumnSteepest.hpp" />
+    <ClInclude Include="include\coin\ClpPrimalQuadraticDantzig.hpp" />
+    <ClInclude Include="include\coin\ClpQuadraticObjective.hpp" />
+    <ClInclude Include="include\coin\ClpSimplex.hpp" />
+    <ClInclude Include="include\coin\ClpSimplexDual.hpp" />
+    <ClInclude Include="include\coin\ClpSimplexNonlinear.hpp" />
+    <ClInclude Include="include\coin\ClpSimplexOther.hpp" />
+    <ClInclude Include="include\coin\ClpSimplexPrimal.hpp" />
+    <ClInclude Include="include\coin\ClpSolve.hpp" />
+    <ClInclude Include="include\coin\CoinAlloc.hpp" />
+    <ClInclude Include="include\coin\CoinBuild.hpp" />
+    <ClInclude Include="include\coin\CoinDenseFactorization.hpp" />
+    <ClInclude Include="include\coin\CoinDenseVector.hpp" />
+    <ClInclude Include="include\coin\CoinDistance.hpp" />
+    <ClInclude Include="include\coin\CoinError.hpp" />
+    <ClInclude Include="include\coin\CoinFactorization.hpp" />
+    <ClInclude Include="include\coin\CoinFileIO.hpp" />
+    <ClInclude Include="include\coin\CoinFinite.hpp" />
+    <ClInclude Include="include\coin\CoinFloatEqual.hpp" />
+    <ClInclude Include="include\coin\CoinHelperFunctions.hpp" />
+    <ClInclude Include="include\coin\CoinIndexedVector.hpp" />
+    <ClInclude Include="include\coin\CoinLpIO.hpp" />
+    <ClInclude Include="include\coin\CoinMessage.hpp" />
+    <ClInclude Include="include\coin\CoinMessageHandler.hpp" />
+    <ClInclude Include="include\coin\CoinModel.hpp" />
+    <ClInclude Include="include\coin\CoinModelUseful.hpp" />
+    <ClInclude Include="include\coin\CoinMpsIO.hpp" />
+    <ClInclude Include="include\coin\CoinOslC.h" />
+    <ClInclude Include="include\coin\CoinOslFactorization.hpp" />
+    <ClInclude Include="include\coin\CoinPackedMatrix.hpp" />
+    <ClInclude Include="include\coin\CoinPackedVector.hpp" />
+    <ClInclude Include="include\coin\CoinPackedVectorBase.hpp" />
+    <ClInclude Include="include\coin\CoinParam.hpp" />
+    <ClInclude Include="include\coin\CoinPragma.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveDoubleton.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveDual.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveDupcol.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveEmpty.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveFixed.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveForcing.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveImpliedFree.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveIsolated.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveMatrix.hpp" />
+    <ClInclude Include="include\coin\CoinPresolvePsdebug.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveSingleton.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveSubst.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveTighten.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveTripleton.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveUseless.hpp" />
+    <ClInclude Include="include\coin\CoinPresolveZeros.hpp" />
+    <ClInclude Include="include\coin\CoinSearchTree.hpp" />
+    <ClInclude Include="include\coin\CoinShallowPackedVector.hpp" />
+    <ClInclude Include="include\coin\CoinSignal.hpp" />
+    <ClInclude Include="include\coin\CoinSimpFactorization.hpp" />
+    <ClInclude Include="include\coin\CoinSmartPtr.hpp" />
+    <ClInclude Include="include\coin\CoinSnapshot.hpp" />
+    <ClInclude Include="include\coin\CoinSort.hpp" />
+    <ClInclude Include="include\coin\CoinStructuredModel.hpp" />
+    <ClInclude Include="include\coin\CoinTime.hpp" />
+    <ClInclude Include="include\coin\CoinTypes.hpp" />
+    <ClInclude Include="include\coin\CoinUtility.hpp" />
+    <ClInclude Include="include\coin\CoinUtilsConfig.h" />
+    <ClInclude Include="include\coin\CoinWarmStart.hpp" />
+    <ClInclude Include="include\coin\CoinWarmStartBasis.hpp" />
+    <ClInclude Include="include\coin\CoinWarmStartDual.hpp" />
+    <ClInclude Include="include\coin\CoinWarmStartPrimalDual.hpp" />
+    <ClInclude Include="include\coin\CoinWarmStartVector.hpp" />
+    <ClInclude Include="include\coin\Coin_C_defines.h" />
+    <ClInclude Include="include\coin\Idiot.hpp" />
+    <ClInclude Include="include\coin\MyEventHandler.hpp" />
+    <ClInclude Include="include\coin\MyMessageHandler.hpp" />
+    <ClInclude Include="include\coin\OsiAuxInfo.hpp" />
+    <ClInclude Include="include\coin\OsiBranchingObject.hpp" />
+    <ClInclude Include="include\coin\OsiChooseVariable.hpp" />
+    <ClInclude Include="include\coin\OsiClpSolverInterface.hpp" />
+    <ClInclude Include="include\coin\OsiColCut.hpp" />
+    <ClInclude Include="include\coin\OsiCollections.hpp" />
+    <ClInclude Include="include\coin\OsiCut.hpp" />
+    <ClInclude Include="include\coin\OsiCuts.hpp" />
+    <ClInclude Include="include\coin\OsiPresolve.hpp" />
+    <ClInclude Include="include\coin\OsiRowCut.hpp" />
+    <ClInclude Include="include\coin\OsiRowCutDebugger.hpp" />
+    <ClInclude Include="include\coin\OsiSolverBranch.hpp" />
+    <ClInclude Include="include\coin\OsiSolverInterface.hpp" />
+    <ClInclude Include="include\coin\OsiSolverParameters.hpp" />
+    <ClInclude Include="include\coin\OsiSymSolverInterface.hpp" />
+    <ClInclude Include="include\coin\OsiSymSolverParameters.hpp" />
+    <ClInclude Include="include\coin\SymConfig.h" />
+    <ClInclude Include="include\coin\SymWarmStart.hpp" />
+    <ClInclude Include="include\coin\config_cgl.h" />
+    <ClInclude Include="include\coin\config_cgl_default.h" />
+    <ClInclude Include="include\coin\config_clp_default.h" />
+    <ClInclude Include="include\coin\config_coinutils_default.h" />
+    <ClInclude Include="include\coin\config_default.h" />
+    <ClInclude Include="include\coin\config_sym_default.h" />
+    <ClInclude Include="include\coin\configall_system.h" />
+    <ClInclude Include="include\coin\configall_system_msc.h" />
+    <ClInclude Include="include\coin\sym_cg.h" />
+    <ClInclude Include="include\coin\sym_cg_params.h" />
+    <ClInclude Include="include\coin\sym_cg_u.h" />
+    <ClInclude Include="include\coin\sym_constants.h" />
+    <ClInclude Include="include\coin\sym_cp.h" />
+    <ClInclude Include="include\coin\sym_cp_params.h" />
+    <ClInclude Include="include\coin\sym_cp_u.h" />
+    <ClInclude Include="include\coin\sym_dg.h" />
+    <ClInclude Include="include\coin\sym_dg_params.h" />
+    <ClInclude Include="include\coin\sym_dg_u.h" />
+    <ClInclude Include="include\coin\sym_lp.h" />
+    <ClInclude Include="include\coin\sym_lp_params.h" />
+    <ClInclude Include="include\coin\sym_lp_solver.h" />
+    <ClInclude Include="include\coin\sym_lp_u.h" />
+    <ClInclude Include="include\coin\sym_macros.h" />
+    <ClInclude Include="include\coin\sym_master.h" />
+    <ClInclude Include="include\coin\sym_master_params.h" />
+    <ClInclude Include="include\coin\sym_master_u.h" />
+    <ClInclude Include="include\coin\sym_messages.h" />
+    <ClInclude Include="include\coin\sym_pack_array.h" />
+    <ClInclude Include="include\coin\sym_pack_cut.h" />
+    <ClInclude Include="include\coin\sym_prep.h" />
+    <ClInclude Include="include\coin\sym_prep_params.h" />
+    <ClInclude Include="include\coin\sym_primal_heuristics.h" />
+    <ClInclude Include="include\coin\sym_proccomm.h" />
+    <ClInclude Include="include\coin\sym_proto.h" />
+    <ClInclude Include="include\coin\sym_qsort.h" />
+    <ClInclude Include="include\coin\sym_return_values.h" />
+    <ClInclude Include="include\coin\sym_timemeas.h" />
+    <ClInclude Include="include\coin\sym_tm.h" />
+    <ClInclude Include="include\coin\sym_tm_params.h" />
+    <ClInclude Include="include\coin\sym_types.h" />
+    <ClInclude Include="include\coin\sym_win32_time.h" />
+    <ClInclude Include="include\coin\symphony.h" />
+    <ClInclude Include="include\coin\symphony_api.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
