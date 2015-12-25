@@ -68,50 +68,50 @@ using ogdf::ArrayBuffer;
 namespace abacus
 {
 
-//! Base class of all other classes of ABACUS.
-/**
- * This class is the base class of all other classes of ABACUS.
- * By embedding an enumeration and some useful functions in this class
- * we can avoid a global scope of these names.
- */
-class AbacusRoot
-{
-public:
-    //! The destructor
+    //! Base class of all other classes of ABACUS.
     /**
-     * Is only implemented since it should be virtual in derived classes.
+     * This class is the base class of all other classes of ABACUS.
+     * By embedding an enumeration and some useful functions in this class
+     * we can avoid a global scope of these names.
      */
-    virtual ~AbacusRoot() { }
-
-
-    //! Converts a boolean variable to the strings \a "on" and \a "off".
-    /**
-     * \param value The boolean variable being converted.
-     * \return \a "on" if \a value is \a true
-     * \return \a "off" otherwise
-     */
-    static const char *onOff(bool value);
-
-    //! Returns the absolute value of the fractional part of \a x.
-    /**
-     * E.g., it holds \a fracPart(2.33) == 0.33 and \a fracPart(-1.77) == 0.77.
-     *
-     * \param x The value of which the fractional part is computed.
-     */
-    static double fracPart(double x)
+    class AbacusRoot
     {
-        return (x >= 0.0) ? x-floor(x) : ceil(x)-x;
-    }
+    public:
+        //! The destructor
+        /**
+         * Is only implemented since it should be virtual in derived classes.
+         */
+        virtual ~AbacusRoot() { }
 
-    //! Converts the string \a str to a boolean value.
-    /**
-     * This is only possible for the strings <tt>"true"</tt> and <tt>"false"</tt>.
-     */
-    static bool ascii2bool(const string &str);
 
-    //! Returns true if \a str ends with \a end, false otherwise.
-    static bool endsWith(const string &str, const string &end);
-};
+        //! Converts a boolean variable to the strings \a "on" and \a "off".
+        /**
+         * \param value The boolean variable being converted.
+         * \return \a "on" if \a value is \a true
+         * \return \a "off" otherwise
+         */
+        static const char* onOff(bool value);
+
+        //! Returns the absolute value of the fractional part of \a x.
+        /**
+         * E.g., it holds \a fracPart(2.33) == 0.33 and \a fracPart(-1.77) == 0.77.
+         *
+         * \param x The value of which the fractional part is computed.
+         */
+        static double fracPart(double x)
+        {
+            return (x >= 0.0) ? x - floor(x) : ceil(x) - x;
+        }
+
+        //! Converts the string \a str to a boolean value.
+        /**
+         * This is only possible for the strings <tt>"true"</tt> and <tt>"false"</tt>.
+         */
+        static bool ascii2bool(const string & str);
+
+        //! Returns true if \a str ends with \a end, false otherwise.
+        static bool endsWith(const string & str, const string & end);
+    };
 
 } //namespace abacus
 

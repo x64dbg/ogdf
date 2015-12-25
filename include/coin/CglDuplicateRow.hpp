@@ -38,18 +38,18 @@ public:
 
         The generator marks identical rows so can be taken out in solve
     */
-    virtual void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
-                               const CglTreeInfo info = CglTreeInfo()) const;
+    virtual void generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
+                              const CglTreeInfo info = CglTreeInfo()) const;
 private:
     /// Does work for modes 1,2
-    void generateCuts12( const OsiSolverInterface & si, OsiCuts & cs,
-                         const CglTreeInfo info = CglTreeInfo()) const;
+    void generateCuts12(const OsiSolverInterface & si, OsiCuts & cs,
+                        const CglTreeInfo info = CglTreeInfo()) const;
     /// Does work for mode 4
-    void generateCuts4( const OsiSolverInterface & si, OsiCuts & cs,
-                        const CglTreeInfo info = CglTreeInfo()) const;
+    void generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
+                       const CglTreeInfo info = CglTreeInfo()) const;
     /// Does work for mode 8
-    void generateCuts8( const OsiSolverInterface & si, OsiCuts & cs,
-                        const CglTreeInfo info = CglTreeInfo()) const;
+    void generateCuts8(const OsiSolverInterface & si, OsiCuts & cs,
+                       const CglTreeInfo info = CglTreeInfo()) const;
 public:
     /** Fix variables and find duplicate/dominated rows for the model of the
         solver interface, si.
@@ -70,14 +70,14 @@ public:
         This version does deletions and fixings and may return stored cuts for
         dominated columns
     */
-    CglStored * outDuplicates( OsiSolverInterface * solver);
+    CglStored* outDuplicates(OsiSolverInterface* solver);
 
     //@}
 
     /**@name Get information on size of problem */
     //@{
     /// Get duplicate row list, -1 means still in, -2 means out (all fixed), k>= means same as row k
-    inline const int * duplicate() const
+    inline const int* duplicate() const
     {
         return duplicate_;
     }
@@ -117,7 +117,7 @@ public:
     /// Set
     inline void setMaximumRhs(int value)
     {
-        maximumRhs_=value;
+        maximumRhs_ = value;
     }
     //@}
 
@@ -131,7 +131,7 @@ public:
     /// Set
     inline void setMaximumDominated(int value)
     {
-        maximumDominated_=value;
+        maximumDominated_ = value;
     }
     //@}
     /**@name gets and sets */
@@ -144,38 +144,38 @@ public:
     /// Set mode
     inline void setMode(int value)
     {
-        mode_=value;
+        mode_ = value;
     }
     //@}
 
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglDuplicateRow ();
+    CglDuplicateRow();
 
     /// Useful constructor
-    CglDuplicateRow (OsiSolverInterface * solver);
+    CglDuplicateRow(OsiSolverInterface* solver);
 
     /// Copy constructor
-    CglDuplicateRow (
+    CglDuplicateRow(
         const CglDuplicateRow & rhs);
 
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
     CglDuplicateRow &
     operator=(
-        const CglDuplicateRow& rhs);
+        const CglDuplicateRow & rhs);
 
     /// Destructor
     virtual
-    ~CglDuplicateRow ();
+    ~CglDuplicateRow();
     /// Create C++ lines to get to current state
-    virtual std::string generateCpp( FILE * fp);
+    virtual std::string generateCpp(FILE* fp);
 
     /// This can be used to refresh any inforamtion
-    virtual void refreshSolver(OsiSolverInterface * solver);
+    virtual void refreshSolver(OsiSolverInterface* solver);
     //@}
 
 protected:
@@ -190,13 +190,13 @@ protected:
     /// Matrix by row
     CoinPackedMatrix matrixByRow_;
     /// Possible rhs (if 0 then not possible)
-    int * rhs_;
+    int* rhs_;
     /// Marks duplicate rows
-    mutable int * duplicate_;
+    mutable int* duplicate_;
     /// To allow for <= rows
-    int * lower_;
+    int* lower_;
     /// Stored cuts if we found dominance cuts
-    mutable CglStored * storedCuts_;
+    mutable CglStored* storedCuts_;
     /// Check dominated columns if less than this number of candidates
     int maximumDominated_;
     /// Check duplicates if effective rhs <= this

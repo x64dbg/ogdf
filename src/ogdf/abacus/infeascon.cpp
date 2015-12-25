@@ -41,30 +41,30 @@ namespace abacus
 {
 
 
-bool InfeasCon::goodVar(const Variable *v) const
-{
-    const double eps = master_->machineEps();
+    bool InfeasCon::goodVar(const Variable* v) const
+    {
+        const double eps = master_->machineEps();
 
-    const bool pos = v->uBound() > eps;
-    const bool neg = v->lBound() < -eps;
-    const double c = constraint_->coeff(v);
+        const bool pos = v->uBound() > eps;
+        const bool neg = v->lBound() < -eps;
+        const double c = constraint_->coeff(v);
 
-    if (infeas_ == TooSmall)
-    {
-        if (c > eps && pos)  return true;
-        if (c < -eps && neg) return true;
-        return false;
+        if(infeas_ == TooSmall)
+        {
+            if(c > eps && pos)  return true;
+            if(c < -eps && neg) return true;
+            return false;
+        }
+        else if(infeas_ == TooLarge)
+        {
+            if(c > eps && neg)  return true;
+            if(c < -eps && pos) return true;
+            return false;
+        }
+        else
+        {
+            Logger::ifout() << "InfeasCon::goodVar(): constraint is feasible\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcInfeasCon);
+        }
     }
-    else if (infeas_ == TooLarge)
-    {
-        if (c > eps && neg)  return true;
-        if (c < -eps && pos) return true;
-        return false;
-    }
-    else
-    {
-        Logger::ifout() << "InfeasCon::goodVar(): constraint is feasible\n";
-        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcInfeasCon);
-    }
-}
 } //namespace abacus

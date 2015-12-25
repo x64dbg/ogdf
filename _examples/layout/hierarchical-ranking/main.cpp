@@ -25,7 +25,7 @@ int main()
                        GraphAttributes::edgeStyle |
                        GraphAttributes::nodeStyle |
                        GraphAttributes::nodeTemplate);
-    if (!GraphIO::readGML(GA, G, "unix-history-time.gml") )
+    if(!GraphIO::readGML(GA, G, "unix-history-time.gml"))
     {
         cerr << "Could not load unix-history-time.gml" << endl;
         return 1;
@@ -34,14 +34,14 @@ int main()
     NodeArray<int> rank(G);
     int i = 0;
     node v;
-    forall_nodes(v,G)
+    forall_nodes(v, G)
     rank[v] = r[i++];
 
     SugiyamaLayout SL;
     SL.setCrossMin(new MedianHeuristic);
     SL.arrangeCCs(false);
 
-    OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
+    OptimalHierarchyLayout* ohl = new OptimalHierarchyLayout;
     ohl->layerDistance(30.0);
     ohl->nodeDistance(25.0);
     ohl->weightBalancing(0.7);

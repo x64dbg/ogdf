@@ -49,79 +49,79 @@
 namespace ogdf
 {
 
-//! Basic page rank calculation
-class BasicPageRank
-{
-public:
-    BasicPageRank()
+    //! Basic page rank calculation
+    class BasicPageRank
     {
-        initDefaultOptions();
-    }
+    public:
+        BasicPageRank()
+        {
+            initDefaultOptions();
+        }
 
-    //! main algorithm call
-    void call(
-        const Graph& graph,
-        const EdgeArray<double>& edgeWeight,
-        NodeArray<double>& pageRankResult);
+        //! main algorithm call
+        void call(
+            const Graph & graph,
+            const EdgeArray<double> & edgeWeight,
+            NodeArray<double> & pageRankResult);
 
-    //! sets the default options.
-    void initDefaultOptions()
-    {
-        m_dampingFactor     = 0.85;
-        m_maxNumIterations  = 1000;
-        m_threshold         = 0.0;
-    }
+        //! sets the default options.
+        void initDefaultOptions()
+        {
+            m_dampingFactor     = 0.85;
+            m_maxNumIterations  = 1000;
+            m_threshold         = 0.0;
+        }
 
-    //! returns the damping factor for each iteration (default is 0.85)
-    double dampingFactor() const
-    {
-        return m_dampingFactor;
-    }
+        //! returns the damping factor for each iteration (default is 0.85)
+        double dampingFactor() const
+        {
+            return m_dampingFactor;
+        }
 
-    //! sets the damping factor for each iteration (default is 0.85)
-    void setDampingFactor(double dampingFactor)
-    {
-        m_dampingFactor = dampingFactor;
-    }
+        //! sets the damping factor for each iteration (default is 0.85)
+        void setDampingFactor(double dampingFactor)
+        {
+            m_dampingFactor = dampingFactor;
+        }
 
-    //! the maximum number of iterations (default is 1000)
-    int maxNumIterations() const
-    {
-        return m_maxNumIterations;
-    }
+        //! the maximum number of iterations (default is 1000)
+        int maxNumIterations() const
+        {
+            return m_maxNumIterations;
+        }
 
-    //! sets the maximum number of iterations (default is 1000)
-    void setMaxNumIterations(int maxNumIterations)
-    {
-        m_maxNumIterations = maxNumIterations;
-    }
+        //! sets the maximum number of iterations (default is 1000)
+        void setMaxNumIterations(int maxNumIterations)
+        {
+            m_maxNumIterations = maxNumIterations;
+        }
 
-    /*! returns the threshold/epsilon. After each iteration the result is compared to
-     * to the old one and in case all changes are smaller than threshold the algorithm
-     * stops. Note that the default value is 0.0 resulting in maxNumIterations usually.
-     */
-    double threshold() const
-    {
-        return m_threshold;
-    }
+        /*! returns the threshold/epsilon. After each iteration the result is compared to
+         * to the old one and in case all changes are smaller than threshold the algorithm
+         * stops. Note that the default value is 0.0 resulting in maxNumIterations usually.
+         */
+        double threshold() const
+        {
+            return m_threshold;
+        }
 
 
-    //! sets the threshold to t. See threshold for more information
-    void setThreshold(double t)
-    {
-        m_threshold = t;
-    }
+        //! sets the threshold to t. See threshold for more information
+        void setThreshold(double t)
+        {
+            m_threshold = t;
+        }
 
-private:
-    //! the damping factor
-    double m_dampingFactor;
+    private:
+        //! the damping factor
+        double m_dampingFactor;
 
-    //! maximum number of iterations
-    int m_maxNumIterations;
+        //! maximum number of iterations
+        int m_maxNumIterations;
 
-    //! the threshold
-    double m_threshold;
-};
+        //! the threshold
+        double m_threshold;
+    };
 
 } // end of namespace ogdf
 

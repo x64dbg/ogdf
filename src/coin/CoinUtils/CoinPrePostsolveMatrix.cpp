@@ -87,7 +87,7 @@ CoinPrePostsolveMatrix::CoinPrePostsolveMatrix
 {
     handler_ = new CoinMessageHandler() ;
     defaultHandler_ = true ;
-    bulk0_ = static_cast<CoinBigIndex> (bulkRatio_*nelems_alloc);
+    bulk0_ = static_cast<CoinBigIndex>(bulkRatio_ * nelems_alloc);
 
     return ;
 }
@@ -124,7 +124,7 @@ CoinPrePostsolveMatrix::~CoinPrePostsolveMatrix()
     delete[] originalColumn_ ;
     delete[] originalRow_ ;
 
-    if (defaultHandler_ == true)
+    if(defaultHandler_ == true)
         delete handler_ ;
 }
 
@@ -135,25 +135,25 @@ CoinPrePostsolveMatrix::~CoinPrePostsolveMatrix()
   tolerances.
 */
 
-void CoinPrePostsolveMatrix::setObjOffset (double offset)
+void CoinPrePostsolveMatrix::setObjOffset(double offset)
 
 {
     originalOffset_ = offset ;
 }
 
-void CoinPrePostsolveMatrix::setObjSense (double objSense)
+void CoinPrePostsolveMatrix::setObjSense(double objSense)
 
 {
     maxmin_ = objSense ;
 }
 
-void CoinPrePostsolveMatrix::setPrimalTolerance (double primTol)
+void CoinPrePostsolveMatrix::setPrimalTolerance(double primTol)
 
 {
     ztolzb_ = primTol ;
 }
 
-void CoinPrePostsolveMatrix::setDualTolerance (double dualTol)
+void CoinPrePostsolveMatrix::setDualTolerance(double dualTol)
 
 {
     ztoldj_ = dualTol ;
@@ -175,230 +175,230 @@ void CoinPrePostsolveMatrix::setDualTolerance (double dualTol)
   or nrows0_, as appropriate.
 */
 
-void CoinPrePostsolveMatrix::setColLower (const double *colLower, int lenParam)
+void CoinPrePostsolveMatrix::setColLower(const double* colLower, int lenParam)
 
 {
     int len ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = ncols_ ;
     }
-    else if (lenParam > ncols0_)
+    else if(lenParam > ncols0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setColLower","CoinPrePostsolveMatrix") ;
+                        "setColLower", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (clo_ == 0) clo_ = new double[ncols0_] ;
-    CoinMemcpyN(colLower,len,clo_) ;
+    if(clo_ == 0) clo_ = new double[ncols0_] ;
+    CoinMemcpyN(colLower, len, clo_) ;
 
     return ;
 }
 
-void CoinPrePostsolveMatrix::setColUpper (const double *colUpper, int lenParam)
+void CoinPrePostsolveMatrix::setColUpper(const double* colUpper, int lenParam)
 
 {
     int len ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = ncols_ ;
     }
-    else if (lenParam > ncols0_)
+    else if(lenParam > ncols0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setColUpper","CoinPrePostsolveMatrix") ;
+                        "setColUpper", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (cup_ == 0) cup_ = new double[ncols0_] ;
-    CoinMemcpyN(colUpper,len,cup_) ;
+    if(cup_ == 0) cup_ = new double[ncols0_] ;
+    CoinMemcpyN(colUpper, len, cup_) ;
 
     return ;
 }
 
-void CoinPrePostsolveMatrix::setColSolution (const double *colSol,
+void CoinPrePostsolveMatrix::setColSolution(const double* colSol,
         int lenParam)
 
 {
     int len ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = ncols_ ;
     }
-    else if (lenParam > ncols0_)
+    else if(lenParam > ncols0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setColSolution","CoinPrePostsolveMatrix") ;
+                        "setColSolution", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (sol_ == 0) sol_ = new double[ncols0_] ;
-    CoinMemcpyN(colSol,len,sol_) ;
+    if(sol_ == 0) sol_ = new double[ncols0_] ;
+    CoinMemcpyN(colSol, len, sol_) ;
 
     return ;
 }
 
-void CoinPrePostsolveMatrix::setCost (const double *cost, int lenParam)
+void CoinPrePostsolveMatrix::setCost(const double* cost, int lenParam)
 
 {
     int len ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = ncols_ ;
     }
-    else if (lenParam > ncols0_)
+    else if(lenParam > ncols0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setCost","CoinPrePostsolveMatrix") ;
+                        "setCost", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (cost_ == 0) cost_ = new double[ncols0_] ;
-    CoinMemcpyN(cost,len,cost_) ;
+    if(cost_ == 0) cost_ = new double[ncols0_] ;
+    CoinMemcpyN(cost, len, cost_) ;
 
     return ;
 }
 
-void CoinPrePostsolveMatrix::setReducedCost (const double *redCost,
+void CoinPrePostsolveMatrix::setReducedCost(const double* redCost,
         int lenParam)
 
 {
     int len ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = ncols_ ;
     }
-    else if (lenParam > ncols0_)
+    else if(lenParam > ncols0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setReducedCost","CoinPrePostsolveMatrix") ;
+                        "setReducedCost", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (rcosts_ == 0) rcosts_ = new double[ncols0_] ;
-    CoinMemcpyN(redCost,len,rcosts_) ;
+    if(rcosts_ == 0) rcosts_ = new double[ncols0_] ;
+    CoinMemcpyN(redCost, len, rcosts_) ;
 
     return ;
 }
 
 
-void CoinPrePostsolveMatrix::setRowLower (const double *rowLower, int lenParam)
+void CoinPrePostsolveMatrix::setRowLower(const double* rowLower, int lenParam)
 
 {
     int len ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = nrows_ ;
     }
-    else if (lenParam > nrows0_)
+    else if(lenParam > nrows0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setRowLower","CoinPrePostsolveMatrix") ;
+                        "setRowLower", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (rlo_ == 0) rlo_ = new double[nrows0_] ;
-    CoinMemcpyN(rowLower,len,rlo_) ;
+    if(rlo_ == 0) rlo_ = new double[nrows0_] ;
+    CoinMemcpyN(rowLower, len, rlo_) ;
 
     return ;
 }
 
-void CoinPrePostsolveMatrix::setRowUpper (const double *rowUpper, int lenParam)
+void CoinPrePostsolveMatrix::setRowUpper(const double* rowUpper, int lenParam)
 
 {
     int len ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = nrows_ ;
     }
-    else if (lenParam > nrows0_)
+    else if(lenParam > nrows0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setRowUpper","CoinPrePostsolveMatrix") ;
+                        "setRowUpper", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (rup_ == 0) rup_ = new double[nrows0_] ;
-    CoinMemcpyN(rowUpper,len,rup_) ;
+    if(rup_ == 0) rup_ = new double[nrows0_] ;
+    CoinMemcpyN(rowUpper, len, rup_) ;
 
     return ;
 }
 
-void CoinPrePostsolveMatrix::setRowPrice (const double *rowSol, int lenParam)
+void CoinPrePostsolveMatrix::setRowPrice(const double* rowSol, int lenParam)
 
 {
     int len ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = nrows_ ;
     }
-    else if (lenParam > nrows0_)
+    else if(lenParam > nrows0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setRowPrice","CoinPrePostsolveMatrix") ;
+                        "setRowPrice", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (rowduals_ == 0) rowduals_ = new double[nrows0_] ;
-    CoinMemcpyN(rowSol,len,rowduals_) ;
+    if(rowduals_ == 0) rowduals_ = new double[nrows0_] ;
+    CoinMemcpyN(rowSol, len, rowduals_) ;
 
     return ;
 }
 
-void CoinPrePostsolveMatrix::setRowActivity (const double *rowAct, int lenParam)
+void CoinPrePostsolveMatrix::setRowActivity(const double* rowAct, int lenParam)
 
 {
     int len ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = nrows_ ;
     }
-    else if (lenParam > nrows0_)
+    else if(lenParam > nrows0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setRowActivity","CoinPrePostsolveMatrix") ;
+                        "setRowActivity", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (acts_ == 0) acts_ = new double[nrows0_] ;
-    CoinMemcpyN(rowAct,len,acts_) ;
+    if(acts_ == 0) acts_ = new double[nrows0_] ;
+    CoinMemcpyN(rowAct, len, acts_) ;
 
     return ;
 }
@@ -414,78 +414,78 @@ void CoinPrePostsolveMatrix::setRowActivity (const double *rowAct, int lenParam)
   consider the getStatus helper function defined in CoinWarmStartBasis.hpp.
 */
 
-void CoinPrePostsolveMatrix::setStructuralStatus (const char *strucStatus,
+void CoinPrePostsolveMatrix::setStructuralStatus(const char* strucStatus,
         int lenParam)
 
 {
     int len ;
     using ::getStatus ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = ncols_ ;
     }
-    else if (lenParam > ncols0_)
+    else if(lenParam > ncols0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setStructuralStatus","CoinPrePostsolveMatrix") ;
+                        "setStructuralStatus", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (colstat_ == 0)
+    if(colstat_ == 0)
     {
-        colstat_ = new unsigned char[ncols0_+nrows0_] ;
+        colstat_ = new unsigned char[ncols0_ + nrows0_] ;
 #   ifdef ZEROFAULT
-        CoinZeroN(colstat_,ncols0_+nrows0_) ;
+        CoinZeroN(colstat_, ncols0_ + nrows0_) ;
 #   endif
-        rowstat_ = colstat_+ncols0_ ;
+        rowstat_ = colstat_ + ncols0_ ;
     }
-    for (int j = 0 ; j < len ; j++)
+    for(int j = 0 ; j < len ; j++)
     {
-        Status statj = Status(getStatus(strucStatus,j)) ;
-        setColumnStatus(j,statj) ;
+        Status statj = Status(getStatus(strucStatus, j)) ;
+        setColumnStatus(j, statj) ;
     }
 
     return ;
 }
 
 
-void CoinPrePostsolveMatrix::setArtificialStatus (const char *artifStatus,
+void CoinPrePostsolveMatrix::setArtificialStatus(const char* artifStatus,
         int lenParam)
 
 {
     int len ;
     using ::getStatus ;
 
-    if (lenParam < 0)
+    if(lenParam < 0)
     {
         len = nrows_ ;
     }
-    else if (lenParam > nrows0_)
+    else if(lenParam > nrows0_)
     {
         throw CoinError("length exceeds allocated size",
-                        "setArtificialStatus","CoinPrePostsolveMatrix") ;
+                        "setArtificialStatus", "CoinPrePostsolveMatrix") ;
     }
     else
     {
         len = lenParam ;
     }
 
-    if (colstat_ == 0)
+    if(colstat_ == 0)
     {
-        colstat_ = new unsigned char[ncols0_+nrows0_] ;
+        colstat_ = new unsigned char[ncols0_ + nrows0_] ;
 #   ifdef ZEROFAULT
-        CoinZeroN(colstat_,ncols0_+nrows0_) ;
+        CoinZeroN(colstat_, ncols0_ + nrows0_) ;
 #   endif
-        rowstat_ = colstat_+ncols0_ ;
+        rowstat_ = colstat_ + ncols0_ ;
     }
-    for (int i = 0 ; i < len ; i++)
+    for(int i = 0 ; i < len ; i++)
     {
-        Status stati = Status(getStatus(artifStatus,i)) ;
-        setRowStatus(i,stati) ;
+        Status stati = Status(getStatus(artifStatus, i)) ;
+        setRowStatus(i, stati) ;
     }
 
     return ;
@@ -496,7 +496,7 @@ void CoinPrePostsolveMatrix::setArtificialStatus (const char *artifStatus,
   CoinWarmStartBasis as the parameter.
 */
 
-void CoinPrePostsolveMatrix::setStatus (const CoinWarmStartBasis *basis)
+void CoinPrePostsolveMatrix::setStatus(const CoinWarmStartBasis* basis)
 
 {
     setStructuralStatus(basis->getStructuralStatus(),
@@ -515,24 +515,24 @@ void CoinPrePostsolveMatrix::setStatus (const CoinWarmStartBasis *basis)
   no analog in CoinWarmStartBasis::Status.
 */
 
-CoinWarmStartBasis *CoinPrePostsolveMatrix::getStatus ()
+CoinWarmStartBasis* CoinPrePostsolveMatrix::getStatus()
 
 {
     int n = ncols_ ;
     int m = nrows_ ;
-    CoinWarmStartBasis *wsb = new CoinWarmStartBasis() ;
-    wsb->setSize(n,m) ;
-    for (int j = 0 ; j < n ; j++)
+    CoinWarmStartBasis* wsb = new CoinWarmStartBasis() ;
+    wsb->setSize(n, m) ;
+    for(int j = 0 ; j < n ; j++)
     {
         CoinWarmStartBasis::Status statj =
             CoinWarmStartBasis::Status(getColumnStatus(j)) ;
-        wsb->setStructStatus(j,statj) ;
+        wsb->setStructStatus(j, statj) ;
     }
-    for (int i = 0 ; i < m ; i++)
+    for(int i = 0 ; i < m ; i++)
     {
         CoinWarmStartBasis::Status stati =
             CoinWarmStartBasis::Status(getRowStatus(i)) ;
-        wsb->setArtifStatus(i,stati) ;
+        wsb->setArtifStatus(i, stati) ;
     }
 
     return (wsb) ;
@@ -543,27 +543,27 @@ CoinWarmStartBasis *CoinPrePostsolveMatrix::getStatus ()
   variable's value and bounds.
 */
 
-void CoinPrePostsolveMatrix::setRowStatusUsingValue (int iRow)
+void CoinPrePostsolveMatrix::setRowStatusUsingValue(int iRow)
 
 {
     double value = acts_[iRow];
     double lower = rlo_[iRow];
     double upper = rup_[iRow];
-    if (lower<-1.0e20&&upper>1.0e20)
+    if(lower < -1.0e20 && upper > 1.0e20)
     {
-        setRowStatus(iRow,isFree);
+        setRowStatus(iRow, isFree);
     }
-    else if (fabs(lower-value)<=ztolzb_)
+    else if(fabs(lower - value) <= ztolzb_)
     {
-        setRowStatus(iRow,atLowerBound);
+        setRowStatus(iRow, atLowerBound);
     }
-    else if (fabs(upper-value)<=ztolzb_)
+    else if(fabs(upper - value) <= ztolzb_)
     {
-        setRowStatus(iRow,atUpperBound);
+        setRowStatus(iRow, atUpperBound);
     }
     else
     {
-        setRowStatus(iRow,superBasic);
+        setRowStatus(iRow, superBasic);
     }
 }
 
@@ -577,21 +577,21 @@ void CoinPrePostsolveMatrix::setColumnStatusUsingValue(int iColumn)
     double value = sol_[iColumn];
     double lower = clo_[iColumn];
     double upper = cup_[iColumn];
-    if (lower<-1.0e20&&upper>1.0e20)
+    if(lower < -1.0e20 && upper > 1.0e20)
     {
-        setColumnStatus(iColumn,isFree);
+        setColumnStatus(iColumn, isFree);
     }
-    else if (fabs(lower-value)<=ztolzb_)
+    else if(fabs(lower - value) <= ztolzb_)
     {
-        setColumnStatus(iColumn,atLowerBound);
+        setColumnStatus(iColumn, atLowerBound);
     }
-    else if (fabs(upper-value)<=ztolzb_)
+    else if(fabs(upper - value) <= ztolzb_)
     {
-        setColumnStatus(iColumn,atUpperBound);
+        setColumnStatus(iColumn, atUpperBound);
     }
     else
     {
-        setColumnStatus(iColumn,superBasic);
+        setColumnStatus(iColumn, superBasic);
     }
 }
 #ifndef SLIM_CLP
@@ -602,12 +602,12 @@ void CoinPrePostsolveMatrix::setColumnStatusUsingValue(int iColumn)
   Separate row and column routines for convenience.
 */
 
-const char *CoinPrePostsolveMatrix::columnStatusString (int j) const
+const char* CoinPrePostsolveMatrix::columnStatusString(int j) const
 
 {
     Status statj = getColumnStatus(j) ;
 
-    switch (statj)
+    switch(statj)
     {
     case isFree:
     {
@@ -636,12 +636,12 @@ const char *CoinPrePostsolveMatrix::columnStatusString (int j) const
     }
 }
 
-const char *CoinPrePostsolveMatrix::rowStatusString (int j) const
+const char* CoinPrePostsolveMatrix::rowStatusString(int j) const
 
 {
     Status statj = getRowStatus(j) ;
 
-    switch (statj)
+    switch(statj)
     {
     case isFree:
     {

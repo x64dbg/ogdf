@@ -13,8 +13,8 @@ extern bool regLCA();
 
 struct regTest
 {
-    const char *what;
-    const char *list;
+    const char* what;
+    const char* list;
     bool(*call)();
 };
 
@@ -55,7 +55,7 @@ static struct regTest regTests[] =
     { NULL, NULL, NULL }
 };
 
-int regressionMain(int argc, char *const argv[])
+int regressionMain(int argc, char* const argv[])
 {
     cout << "**************************************************\n";
     cout << "*              OGDF Regression Test              *\n";
@@ -69,17 +69,17 @@ int regressionMain(int argc, char *const argv[])
     int successful = 0;
     int failed = 0;
 
-    for (int i = 0; regTests[i].what; ++i)
+    for(int i = 0; regTests[i].what; ++i)
     {
         // if one argument is given: this is the only regression test
         // that should be run (its index in the regTests array set above)
-        if (argc == 2 && atoi(argv[1]) != i)
+        if(argc == 2 && atoi(argv[1]) != i)
         {
             continue;
         }
         cout << "Regression test for " << regTests[i].what << ".\n";
         cout << "Tests: " << regTests[i].list << "\n\n";
-        if (regTests[i].call())
+        if(regTests[i].call())
         {
             ++successful;
             cout << "Regression test successful." << endl;

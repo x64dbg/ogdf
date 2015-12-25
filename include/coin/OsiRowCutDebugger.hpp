@@ -41,7 +41,7 @@
 */
 class OsiRowCutDebugger
 {
-    friend void OsiRowCutDebuggerUnitTest(const OsiSolverInterface * siP,
+    friend void OsiRowCutDebuggerUnitTest(const OsiSolverInterface* siP,
                                           const std::string & mpsDir);
 
 public:
@@ -72,7 +72,7 @@ public:
       More specifically, returns true if the known solution satisfies the column
       bounds held in the solver.
     */
-    bool onOptimalPath(const OsiSolverInterface &si) const;
+    bool onOptimalPath(const OsiSolverInterface & si) const;
     //@}
 
     /*! @name Activate the Debugger
@@ -86,7 +86,7 @@ public:
       source code for the full list.  Returns true if the debugger is
       successfully activated.
     */
-    bool activate(const OsiSolverInterface &si, const char *model) ;
+    bool activate(const OsiSolverInterface & si, const char* model) ;
 
     /*! \brief Activate a debugger using a full solution array.
 
@@ -99,7 +99,7 @@ public:
 
       Returns true if debugger activates successfully.
     */
-    bool activate(const OsiSolverInterface &si, const double* solution,
+    bool activate(const OsiSolverInterface & si, const double* solution,
                   bool keepContinuous = false) ;
 
     /// Returns true if the debugger is active
@@ -109,7 +109,7 @@ public:
     /*! @name Query or Manipulate the Known Solution */
     //@{
     /// Return the known solution
-    inline const double * optimalSolution() const
+    inline const double* optimalSolution() const
     {
         return knownSolution_;
     }
@@ -136,7 +136,7 @@ public:
       Useful when the original problem is preprocessed prior to cut generation.
       The debugger does keep a record of the changes.
     */
-    void redoSolution(int numberColumns, const int *originalColumns);
+    void redoSolution(int numberColumns, const int* originalColumns);
 
     /// Print optimal solution (returns -1 bad debug, 0 on optimal, 1 not)
     int printOptimalSolution(const OsiSolverInterface & si) const;
@@ -145,29 +145,29 @@ public:
     /**@name Constructors and Destructors */
     //@{
     /// Default constructor - no checking
-    OsiRowCutDebugger ();
+    OsiRowCutDebugger();
 
     /*! \brief Constructor with name of model.
 
       See #activate(const OsiSolverInterface&,const char*).
     */
-    OsiRowCutDebugger(const OsiSolverInterface &si, const char *model) ;
+    OsiRowCutDebugger(const OsiSolverInterface & si, const char* model) ;
 
     /*! \brief Constructor with full solution.
 
       See #activate(const OsiSolverInterface&,const double*,bool).
     */
-    OsiRowCutDebugger(const OsiSolverInterface &si, const double *solution,
+    OsiRowCutDebugger(const OsiSolverInterface & si, const double* solution,
                       bool enforceOptimality = false) ;
 
     /// Copy constructor
     OsiRowCutDebugger(const OsiRowCutDebugger &);
 
     /// Assignment operator
-    OsiRowCutDebugger& operator=(const OsiRowCutDebugger& rhs);
+    OsiRowCutDebugger & operator=(const OsiRowCutDebugger & rhs);
 
     /// Destructor
-    virtual ~OsiRowCutDebugger ();
+    virtual ~OsiRowCutDebugger();
     //@}
 
 private:
@@ -186,10 +186,10 @@ private:
     int numberColumns_;
 
     /// array specifying integer variables
-    bool * integerVariable_;
+    bool* integerVariable_;
 
     /// array specifying known solution
-    double * knownSolution_;
+    double* knownSolution_;
     //@}
 };
 

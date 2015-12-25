@@ -58,26 +58,26 @@ namespace ogdf
 {
 
 
-template<class X>
-class PlanarLeafKey : public PQLeafKey<edge,X,bool>
-{
-public:
-
-    PlanarLeafKey(edge e) : PQLeafKey<edge,X,bool>(e) { }
-
-    virtual ~PlanarLeafKey() { }
-
-    ostream &print(ostream &os)
+    template<class X>
+    class PlanarLeafKey : public PQLeafKey<edge, X, bool>
     {
-        int sId = this->m_userStructKey->source()->index();
-        int tId = this->m_userStructKey->target()->index();
+    public:
 
-        os << " (" << sId << "," << tId << ")";
+        PlanarLeafKey(edge e) : PQLeafKey<edge, X, bool>(e) { }
 
-        return os;
-    }
+        virtual ~PlanarLeafKey() { }
 
-};
+        ostream & print(ostream & os)
+        {
+            int sId = this->m_userStructKey->source()->index();
+            int tId = this->m_userStructKey->target()->index();
+
+            os << " (" << sId << "," << tId << ")";
+
+            return os;
+        }
+
+    };
 
 }
 

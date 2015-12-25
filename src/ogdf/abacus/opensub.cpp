@@ -43,91 +43,91 @@ namespace abacus
 {
 
 
-void OpenSub::insert(Sub *sub)
-{
-    // update the dual bound of all subproblems in the \a list_
-    if (empty())
-        dualBound_ = sub->dualBound();
-    else
+    void OpenSub::insert(Sub* sub)
     {
-        if (master_->optSense()->max())
+        // update the dual bound of all subproblems in the \a list_
+        if(empty())
+            dualBound_ = sub->dualBound();
+        else
         {
-            if (sub->dualBound() > dualBound_)
+            if(master_->optSense()->max())
+            {
+                if(sub->dualBound() > dualBound_)
+                    dualBound_ = sub->dualBound();
+            }
+            else if(sub->dualBound() < dualBound_)
                 dualBound_ = sub->dualBound();
         }
-        else if (sub->dualBound() < dualBound_)
-            dualBound_ = sub->dualBound();
+
+        list_.pushBack(sub);
     }
 
-    list_.pushBack(sub);
-}
 
-
-Sub* OpenSub::select()
-{
-    if(list_.empty())
-        return 0;
-
-    ogdf::ListIterator<Sub*> itMin = list_.begin();
-
-    for(ogdf::ListIterator<Sub*> it = list_.begin(); it.valid(); ++it)
+    Sub* OpenSub::select()
     {
-        Sub *s = *it;
-        if (s->status() == Sub::Dormant)
-        {
-            s->newDormantRound();
-            if (s->nDormantRounds() < master_->minDormantRounds())
-                continue;
-        }
-        if (master_->enumerationStrategy(s, *itMin) > 0)
-            itMin = it;
-    }
-    Sub* min = *itMin;
-    list_.del(itMin);
+        if(list_.empty())
+            return 0;
 
-    updateDualBound();
-
-    return min;
-}
-
-
-double OpenSub::dualBound() const
-{
-    double ret;
-    if (empty())
-    {
-        if (master_->optSense()->max()) ret = -master_->infinity();
-        else                            ret = master_->infinity();
-    }
-    else
-        ret = dualBound_;
-    return ret;
-}
-
-
-void OpenSub::updateDualBound()
-{
-    if (master_->optSense()->max())
-    {
-        dualBound_ = -master_->infinity();
+        ogdf::ListIterator<Sub*> itMin = list_.begin();
 
         for(ogdf::ListIterator<Sub*> it = list_.begin(); it.valid(); ++it)
         {
-            Sub *s = *it;
-            if (s->dualBound() > dualBound_)
-                dualBound_ = s->dualBound();
+            Sub* s = *it;
+            if(s->status() == Sub::Dormant)
+            {
+                s->newDormantRound();
+                if(s->nDormantRounds() < master_->minDormantRounds())
+                    continue;
+            }
+            if(master_->enumerationStrategy(s, *itMin) > 0)
+                itMin = it;
         }
-    }
-    else
-    {
-        dualBound_ = master_->infinity();
+        Sub* min = *itMin;
+        list_.del(itMin);
 
-        for(ogdf::ListIterator<Sub*> it = list_.begin(); it.valid(); ++it)
+        updateDualBound();
+
+        return min;
+    }
+
+
+    double OpenSub::dualBound() const
+    {
+        double ret;
+        if(empty())
         {
-            Sub *s = *it;
-            if (s->dualBound() < dualBound_)
-                dualBound_ = s->dualBound();
+            if(master_->optSense()->max()) ret = -master_->infinity();
+            else                            ret = master_->infinity();
+        }
+        else
+            ret = dualBound_;
+        return ret;
+    }
+
+
+    void OpenSub::updateDualBound()
+    {
+        if(master_->optSense()->max())
+        {
+            dualBound_ = -master_->infinity();
+
+            for(ogdf::ListIterator<Sub*> it = list_.begin(); it.valid(); ++it)
+            {
+                Sub* s = *it;
+                if(s->dualBound() > dualBound_)
+                    dualBound_ = s->dualBound();
+            }
+        }
+        else
+        {
+            dualBound_ = master_->infinity();
+
+            for(ogdf::ListIterator<Sub*> it = list_.begin(); it.valid(); ++it)
+            {
+                Sub* s = *it;
+                if(s->dualBound() < dualBound_)
+                    dualBound_ = s->dualBound();
+            }
         }
     }
-}
 } //namespace abacus

@@ -49,7 +49,7 @@
 
 
 // Function Prototypes. Function definitions is in this file.
-void testingMessage( const char * const msg );
+void testingMessage(const char* const msg);
 #if defined(COIN_HAS_AMD) || defined(COIN_HAS_CHOLMOD) || defined(COIN_HAS_GLPK)
 static int barrierAvailable = 1;
 static std::string nameBarrier = "barrier-UFL";
@@ -80,22 +80,22 @@ ClpSolve setupForSolve(int algorithm, std::string & nameAlgorithm,
        8,9 primal with idiot 1 and 5
        10,11 primal with 70, dual with volume
     */
-    switch (algorithm)
+    switch(algorithm)
     {
     case 0:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "ba";
         else
             nameAlgorithm = "nameBarrier";
         solveOptions.setSolveType(ClpSolve::useBarrier);
-        if (barrierAvailable == 1)
+        if(barrierAvailable == 1)
             solveOptions.setSpecialOption(4, 4);
-        else if (barrierAvailable == 2)
+        else if(barrierAvailable == 2)
             solveOptions.setSpecialOption(4, 2);
         break;
     case 1:
 #ifdef COIN_HAS_VOL
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "du-vol-50";
         else
             nameAlgorithm = "dual-volume-50";
@@ -106,7 +106,7 @@ ClpSolve setupForSolve(int algorithm, std::string & nameAlgorithm,
 #endif
         break;
     case 2:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "du-cr";
         else
             nameAlgorithm = "dual-crash";
@@ -114,14 +114,14 @@ ClpSolve setupForSolve(int algorithm, std::string & nameAlgorithm,
         solveOptions.setSpecialOption(0, 1);
         break;
     case 3:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "du";
         else
             nameAlgorithm = "dual";
         solveOptions.setSolveType(ClpSolve::useDual);
         break;
     case 4:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "pr-cr";
         else
             nameAlgorithm = "primal-crash";
@@ -129,14 +129,14 @@ ClpSolve setupForSolve(int algorithm, std::string & nameAlgorithm,
         solveOptions.setSpecialOption(1, 1);
         break;
     case 5:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "pr";
         else
             nameAlgorithm = "primal";
         solveOptions.setSolveType(ClpSolve::usePrimal);
         break;
     case 6:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "au-cr";
         else
             nameAlgorithm = "either-crash";
@@ -144,14 +144,14 @@ ClpSolve setupForSolve(int algorithm, std::string & nameAlgorithm,
         solveOptions.setSpecialOption(1, 1);
         break;
     case 7:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "au";
         else
             nameAlgorithm = "either";
         solveOptions.setSolveType(ClpSolve::automatic);
         break;
     case 8:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "pr-id-1";
         else
             nameAlgorithm = "primal-idiot-1";
@@ -159,7 +159,7 @@ ClpSolve setupForSolve(int algorithm, std::string & nameAlgorithm,
         solveOptions.setSpecialOption(1, 2, 1); // idiot
         break;
     case 9:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "pr-id-5";
         else
             nameAlgorithm = "primal-idiot-5";
@@ -167,7 +167,7 @@ ClpSolve setupForSolve(int algorithm, std::string & nameAlgorithm,
         solveOptions.setSpecialOption(1, 2, 5); // idiot
         break;
     case 10:
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "pr-id-70";
         else
             nameAlgorithm = "primal-idiot-70";
@@ -176,7 +176,7 @@ ClpSolve setupForSolve(int algorithm, std::string & nameAlgorithm,
         break;
     case 11:
 #ifdef COIN_HAS_VOL
-        if (shortName)
+        if(shortName)
             nameAlgorithm = "du-vol";
         else
             nameAlgorithm = "dual-volume";
@@ -189,10 +189,10 @@ ClpSolve setupForSolve(int algorithm, std::string & nameAlgorithm,
     default:
         abort();
     }
-    if (shortName)
+    if(shortName)
     {
         // can switch off
-        if (switchOff[algorithm])
+        if(switchOff[algorithm])
             solveOptions.setSolveType(ClpSolve::notImplemented);
     }
     return solveOptions;
@@ -202,45 +202,45 @@ static void printSol(ClpSimplex & model)
     int numberRows = model.numberRows();
     int numberColumns = model.numberColumns();
 
-    double * rowPrimal = model.primalRowSolution();
-    double * rowDual = model.dualRowSolution();
-    double * rowLower = model.rowLower();
-    double * rowUpper = model.rowUpper();
+    double* rowPrimal = model.primalRowSolution();
+    double* rowDual = model.dualRowSolution();
+    double* rowLower = model.rowLower();
+    double* rowUpper = model.rowUpper();
 
     int iRow;
     double objValue = model.getObjValue();
     printf("Objvalue %g Rows (%d)\n", objValue, numberRows);
-    for (iRow = 0; iRow < numberRows; iRow++)
+    for(iRow = 0; iRow < numberRows; iRow++)
     {
         printf("%d primal %g dual %g low %g up %g\n",
                iRow, rowPrimal[iRow], rowDual[iRow],
                rowLower[iRow], rowUpper[iRow]);
     }
-    double * columnPrimal = model.primalColumnSolution();
-    double * columnDual = model.dualColumnSolution();
-    double * columnLower = model.columnLower();
-    double * columnUpper = model.columnUpper();
+    double* columnPrimal = model.primalColumnSolution();
+    double* columnDual = model.dualColumnSolution();
+    double* columnLower = model.columnLower();
+    double* columnUpper = model.columnUpper();
     double offset;
     //const double * gradient = model.objectiveAsObject()->gradient(&model,
     //                                                       columnPrimal,offset,true,1);
-    const double * gradient = model.objective(columnPrimal, offset);
+    const double* gradient = model.objective(columnPrimal, offset);
     int iColumn;
     objValue = -offset - model.objectiveOffset();
     printf("offset %g (%g)\n", offset, model.objectiveOffset());
     printf("Columns (%d)\n", numberColumns);
-    for (iColumn = 0; iColumn < numberColumns; iColumn++)
+    for(iColumn = 0; iColumn < numberColumns; iColumn++)
     {
         printf("%d primal %g dual %g low %g up %g\n",
                iColumn, columnPrimal[iColumn], columnDual[iColumn],
                columnLower[iColumn], columnUpper[iColumn]);
         objValue += columnPrimal[iColumn] * gradient[iColumn];
-        if (fabs(columnPrimal[iColumn]*gradient[iColumn]) > 1.0e-8)
+        if(fabs(columnPrimal[iColumn]*gradient[iColumn]) > 1.0e-8)
             printf("obj -> %g gradient %g\n", objValue, gradient[iColumn]);
     }
     printf("Computed objective %g\n", objValue);
 }
 
-void usage(const std::string& key)
+void usage(const std::string & key)
 {
     std::cerr
             << "Undefined parameter \"" << key << "\".\n"
@@ -256,21 +256,21 @@ void usage(const std::string& key)
 }
 
 //----------------------------------------------------------------
-int mainTest (int argc, const char *argv[], int algorithm,
-              ClpSimplex empty, ClpSolve solveOptionsIn,
-              int switchOffValue, bool doVector)
+int mainTest(int argc, const char* argv[], int algorithm,
+             ClpSimplex empty, ClpSolve solveOptionsIn,
+             int switchOffValue, bool doVector)
 {
     int i;
 
-    if (switchOffValue > 0)
+    if(switchOffValue > 0)
     {
         // switch off some
         int iTest;
-        for (iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
+        for(iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
         {
 #ifndef NDEBUG
             int bottom = switchOffValue % 10;
-            assert (bottom == 0 || bottom == 1);
+            assert(bottom == 0 || bottom == 1);
 #endif
             switchOffValue /= 10;
             switchOff[iTest] = 0;
@@ -285,14 +285,14 @@ int mainTest (int argc, const char *argv[], int algorithm,
 
     // Create a map of parameter keys and associated data
     std::map<std::string, std::string> parms;
-    for ( i = 1; i < argc; i++ )
+    for(i = 1; i < argc; i++)
     {
         std::string parm(argv[i]);
         std::string key, value;
         std::string::size_type  eqPos = parm.find('=');
 
         // Does parm contain and '='
-        if ( eqPos == std::string::npos )
+        if(eqPos == std::string::npos)
         {
             //Parm does not contain '='
             key = parm;
@@ -304,7 +304,7 @@ int mainTest (int argc, const char *argv[], int algorithm,
         }
 
         // Is specifed key valid?
-        if ( definedKeyWords.find(key) == definedKeyWords.end() )
+        if(definedKeyWords.find(key) == definedKeyWords.end())
         {
             // invalid key word.
             // Write help text
@@ -317,23 +317,23 @@ int mainTest (int argc, const char *argv[], int algorithm,
     const char dirsep =  CoinFindDirSeparator();
     // Set directory containing mps data files.
     std::string dirSample;
-    if (parms.find("-dirSample") != parms.end())
+    if(parms.find("-dirSample") != parms.end())
         dirSample = parms["-dirSample"];
     else
         dirSample = dirsep == '/' ? "../../Data/Sample/" : "..\\..\\Data\\Sample\\";
 
     // Set directory containing netlib data files.
     std::string dirNetlib;
-    if (parms.find("-dirNetlib") != parms.end())
+    if(parms.find("-dirNetlib") != parms.end())
         dirNetlib = parms["-dirNetlib"];
     else
         dirNetlib = dirsep == '/' ? "../../Data/Netlib/" : "..\\..\\Data\\Netlib\\";
-    if (!empty.numberRows())
+    if(!empty.numberRows())
     {
-        testingMessage( "Testing ClpSimplex\n" );
+        testingMessage("Testing ClpSimplex\n");
         ClpSimplexUnitTest(dirSample);
     }
-    if (parms.find("-netlib") != parms.end() || empty.numberRows())
+    if(parms.find("-netlib") != parms.end() || empty.numberRows())
     {
         unsigned int m;
 
@@ -353,11 +353,11 @@ int mainTest (int argc, const char *argv[], int algorithm,
         if(empty.numberRows())
         {
             std::string alg;
-            for (int iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
+            for(int iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
             {
                 ClpSolve solveOptions = setupForSolve(iTest, alg, 0);
                 printf("%d %s ", iTest, alg.c_str());
-                if (switchOff[iTest])
+                if(switchOff[iTest])
                     printf("skipped by user\n");
                 else if(solveOptions.getSolveType() == ClpSolve::notImplemented)
                     printf("skipped as not available\n");
@@ -365,7 +365,7 @@ int mainTest (int argc, const char *argv[], int algorithm,
                     printf("will be tested\n");
             }
         }
-        if (!empty.numberRows())
+        if(!empty.numberRows())
         {
             mpsName.push_back("25fv47");
             min.push_back(true);
@@ -582,7 +582,7 @@ int mainTest (int argc, const char *argv[], int algorithm,
             nRows.push_back(401);
             nCols.push_back(688);
             objValueTol.push_back(1.e-6);
-            objValue.push_back(-7.5571521774e+02 );
+            objValue.push_back(-7.5571521774e+02);
             bestStrategy.push_back(3);
             mpsName.push_back("fffff800");
             min.push_back(true);
@@ -1015,11 +1015,11 @@ int mainTest (int argc, const char *argv[], int algorithm,
             bestStrategy.push_back(0);
             int iTest;
             std::string alg;
-            for (iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
+            for(iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
             {
                 ClpSolve solveOptions = setupForSolve(iTest, alg, 0);
                 printf("%d %s ", iTest, alg.c_str());
-                if (switchOff[iTest])
+                if(switchOff[iTest])
                     printf("skipped by user\n");
                 else if(solveOptions.getSolveType() == ClpSolve::notImplemented)
                     printf("skipped as not available\n");
@@ -1029,22 +1029,22 @@ int mainTest (int argc, const char *argv[], int algorithm,
         }
 
         double timeTaken = 0.0;
-        if( !barrierAvailable)
+        if(!barrierAvailable)
             switchOff[0] = 1;
         // Loop once for each Mps File
-        for (m = 0; m < mpsName.size(); m++ )
+        for(m = 0; m < mpsName.size(); m++)
         {
             std::cerr << "  processing mps file: " << mpsName[m]
                       << " (" << m + 1 << " out of " << mpsName.size() << ")" << std::endl;
 
             ClpSimplex solutionBase = empty;
             std::string fn = dirNetlib + mpsName[m];
-            if (!empty.numberRows() || algorithm < 6)
+            if(!empty.numberRows() || algorithm < 6)
             {
                 // Read data mps file,
                 CoinMpsIO mps;
                 int nerrors = mps.readMps(fn.c_str(), "mps");
-                if (nerrors)
+                if(nerrors)
                 {
                     std::cerr << "Error " << nerrors << " when reading model from "
                               << fn.c_str() << "! Aborting tests.\n";
@@ -1059,27 +1059,27 @@ int mainTest (int argc, const char *argv[], int algorithm,
             }
 
             // Runs through strategies
-            if (algorithm == 6 || algorithm == 7)
+            if(algorithm == 6 || algorithm == 7)
             {
                 // algorithms tested are at top of file
                 double testTime[NUMBER_ALGORITHMS];
                 std::string alg[NUMBER_ALGORITHMS];
                 int iTest;
-                for (iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
+                for(iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
                 {
                     ClpSolve solveOptions = setupForSolve(iTest, alg[iTest], 1);
-                    if (solveOptions.getSolveType() != ClpSolve::notImplemented)
+                    if(solveOptions.getSolveType() != ClpSolve::notImplemented)
                     {
                         double time1 = CoinCpuTime();
                         ClpSimplex solution = solutionBase;
-                        if (solution.maximumSeconds() < 0.0)
+                        if(solution.maximumSeconds() < 0.0)
                             solution.setMaximumSeconds(120.0);
-                        if (doVector)
+                        if(doVector)
                         {
-                            ClpMatrixBase * matrix = solution.clpMatrix();
-                            if (dynamic_cast< ClpPackedMatrix*>(matrix))
+                            ClpMatrixBase* matrix = solution.clpMatrix();
+                            if(dynamic_cast<ClpPackedMatrix*>(matrix))
                             {
-                                ClpPackedMatrix * clpMatrix = dynamic_cast< ClpPackedMatrix*>(matrix);
+                                ClpPackedMatrix* clpMatrix = dynamic_cast<ClpPackedMatrix*>(matrix);
                                 clpMatrix->makeSpecialColumnCopy();
                             }
                         }
@@ -1087,7 +1087,7 @@ int mainTest (int argc, const char *argv[], int algorithm,
                         double time2 = CoinCpuTime() - time1;
                         testTime[iTest] = time2;
                         printf("Took %g seconds - status %d\n", time2, solution.problemStatus());
-                        if (solution.problemStatus())
+                        if(solution.problemStatus())
                             testTime[iTest] = 1.0e20;
                     }
                     else
@@ -1098,13 +1098,13 @@ int mainTest (int argc, const char *argv[], int algorithm,
                 int iBest = -1;
                 double dBest = 1.0e10;
                 printf("%s", fn.c_str());
-                for (iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
+                for(iTest = 0; iTest < NUMBER_ALGORITHMS; iTest++)
                 {
-                    if (testTime[iTest] < 1.0e30)
+                    if(testTime[iTest] < 1.0e30)
                     {
                         printf(" %s %g",
                                alg[iTest].c_str(), testTime[iTest]);
-                        if (testTime[iTest] < dBest)
+                        if(testTime[iTest] < dBest)
                         {
                             dBest = testTime[iTest];
                             iBest = iTest;
@@ -1112,7 +1112,7 @@ int mainTest (int argc, const char *argv[], int algorithm,
                     }
                 }
                 printf("\n");
-                if (iBest >= 0)
+                if(iBest >= 0)
                     printf("Best strategy for %s is %s (%d) which takes %g seconds\n",
                            fn.c_str(), alg[iBest].c_str(), iBest, testTime[iBest]);
                 else
@@ -1125,28 +1125,28 @@ int mainTest (int argc, const char *argv[], int algorithm,
             solution.setOptimizationDirection(-1);
             {
                 int j;
-                double * obj = solution.objective();
+                double* obj = solution.objective();
                 int n = solution.numberColumns();
-                for (j = 0; j < n; j++)
+                for(j = 0; j < n; j++)
                     obj[j] *= -1.0;
             }
 #endif
             ClpSolve::SolveType method;
             ClpSolve solveOptions = solveOptionsIn;
             std::string nameAlgorithm;
-            if (algorithm != 5)
+            if(algorithm != 5)
             {
-                if (algorithm == 0)
+                if(algorithm == 0)
                 {
                     method = ClpSolve::useDual;
                     nameAlgorithm = "dual";
                 }
-                else if (algorithm == 1)
+                else if(algorithm == 1)
                 {
                     method = ClpSolve::usePrimalorSprint;
                     nameAlgorithm = "primal";
                 }
-                else if (algorithm == 3)
+                else if(algorithm == 3)
                 {
                     method = ClpSolve::automatic;
                     nameAlgorithm = "either";
@@ -1175,23 +1175,23 @@ int mainTest (int argc, const char *argv[], int algorithm,
                 int iAlg = bestStrategy[m];
                 int presolveOff = iAlg / 100;
                 iAlg = iAlg % 100;
-                if( !barrierAvailable && iAlg == 0)
+                if(!barrierAvailable && iAlg == 0)
                 {
-                    if (nRows[m] != 2172)
+                    if(nRows[m] != 2172)
                         iAlg = 5; // try primal
                     else
                         iAlg = 3; // d2q06c
                 }
                 solveOptions = setupForSolve(iAlg, nameAlgorithm, 0);
-                if (presolveOff)
+                if(presolveOff)
                     solveOptions.setPresolveType(ClpSolve::presolveOff);
             }
-            if (doVector)
+            if(doVector)
             {
-                ClpMatrixBase * matrix = solution.clpMatrix();
-                if (dynamic_cast< ClpPackedMatrix*>(matrix))
+                ClpMatrixBase* matrix = solution.clpMatrix();
+                if(dynamic_cast<ClpPackedMatrix*>(matrix))
                 {
-                    ClpPackedMatrix * clpMatrix = dynamic_cast< ClpPackedMatrix*>(matrix);
+                    ClpPackedMatrix* clpMatrix = dynamic_cast<ClpPackedMatrix*>(matrix);
                     clpMatrix->makeSpecialColumnCopy();
                 }
             }
@@ -1213,17 +1213,17 @@ int mainTest (int argc, const char *argv[], int algorithm,
     }
     else
     {
-        testingMessage( "***Skipped Testing on netlib    ***\n" );
-        testingMessage( "***use -netlib to test class***\n" );
+        testingMessage("***Skipped Testing on netlib    ***\n");
+        testingMessage("***use -netlib to test class***\n");
     }
 
-    testingMessage( "All tests completed successfully\n" );
+    testingMessage("All tests completed successfully\n");
     return 0;
 }
 
 
 // Display message on stdout and stderr
-void testingMessage( const char * const msg )
+void testingMessage(const char* const msg)
 {
     std::cerr << msg;
     //cout <<endl <<"*****************************************"
@@ -1263,9 +1263,9 @@ ClpSimplexUnitTest(const std::string & dirSample)
                              rowLower, rowUpper);
         int i;
         solution.createStatus();
-        for (i = 0; i < 3; i++)
+        for(i = 0; i < 3; i++)
         {
-            if (rowBasis1[i] < 0)
+            if(rowBasis1[i] < 0)
             {
                 solution.setRowStatus(i, ClpSimplex::atLowerBound);
             }
@@ -1274,9 +1274,9 @@ ClpSimplexUnitTest(const std::string & dirSample)
                 solution.setRowStatus(i, ClpSimplex::basic);
             }
         }
-        for (i = 0; i < 5; i++)
+        for(i = 0; i < 5; i++)
         {
-            if (colBasis1[i] < 0)
+            if(colBasis1[i] < 0)
             {
                 solution.setColumnStatus(i, ClpSimplex::atLowerBound);
             }
@@ -1287,9 +1287,9 @@ ClpSimplexUnitTest(const std::string & dirSample)
         }
         solution.setLogLevel(3 + 4 + 8 + 16 + 32);
         solution.primal();
-        for (i = 0; i < 3; i++)
+        for(i = 0; i < 3; i++)
         {
-            if (rowBasis1[i] < 0)
+            if(rowBasis1[i] < 0)
             {
                 solution.setRowStatus(i, ClpSimplex::atLowerBound);
             }
@@ -1298,9 +1298,9 @@ ClpSimplexUnitTest(const std::string & dirSample)
                 solution.setRowStatus(i, ClpSimplex::basic);
             }
         }
-        for (i = 0; i < 5; i++)
+        for(i = 0; i < 5; i++)
         {
-            if (colBasis1[i] < 0)
+            if(colBasis1[i] < 0)
             {
                 solution.setColumnStatus(i, ClpSimplex::atLowerBound);
             }
@@ -1312,17 +1312,17 @@ ClpSimplexUnitTest(const std::string & dirSample)
         // intricate stuff does not work with scaling
         solution.scaling(0);
 #ifndef NDEBUG
-        int returnCode = solution.factorize ( );
+        int returnCode = solution.factorize();
         assert(!returnCode);
 #else
-        solution.factorize ( );
+        solution.factorize();
 #endif
-        const double * colsol = solution.primalColumnSolution();
-        const double * rowsol = solution.primalRowSolution();
+        const double* colsol = solution.primalColumnSolution();
+        const double* rowsol = solution.primalRowSolution();
         solution.getSolution(rowsol, colsol);
 #ifndef NDEBUG
         double colsol1[5] = {20.0 / 7.0, 3.0, 0.0, 0.0, 23.0 / 7.0};
-        for (i = 0; i < 5; i++)
+        for(i = 0; i < 5; i++)
         {
             assert(eq(colsol[i], colsol1[i]));
         }
@@ -1332,9 +1332,9 @@ ClpSimplexUnitTest(const std::string & dirSample)
         ClpSimplex solution2 = solution;
         solution2.setFactorization(factorization2);
         solution2.createStatus();
-        for (i = 0; i < 3; i++)
+        for(i = 0; i < 3; i++)
         {
-            if (rowBasis1[i] < 0)
+            if(rowBasis1[i] < 0)
             {
                 solution2.setRowStatus(i, ClpSimplex::atLowerBound);
             }
@@ -1343,9 +1343,9 @@ ClpSimplexUnitTest(const std::string & dirSample)
                 solution2.setRowStatus(i, ClpSimplex::basic);
             }
         }
-        for (i = 0; i < 5; i++)
+        for(i = 0; i < 5; i++)
         {
-            if (colBasis1[i] < 0)
+            if(colBasis1[i] < 0)
             {
                 solution2.setColumnStatus(i, ClpSimplex::atLowerBound);
             }
@@ -1359,7 +1359,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
         solution2.getSolution(rowsol, colsol);
         colsol = solution2.primalColumnSolution();
         rowsol = solution2.primalRowSolution();
-        for (i = 0; i < 5; i++)
+        for(i = 0; i < 5; i++)
         {
             assert(eq(colsol[i], colsol1[i]));
         }
@@ -1369,10 +1369,10 @@ ClpSimplexUnitTest(const std::string & dirSample)
         objective[3] = -0.5;
         objective[4] = 10.0;
         solution.dual();
-        for (i = 0; i < 3; i++)
+        for(i = 0; i < 3; i++)
         {
             rowLower[i] = -1.0e20;
-            colUpper[i+2] = 0.0;
+            colUpper[i + 2] = 0.0;
         }
         solution.setLogLevel(3);
         solution.dual();
@@ -1388,7 +1388,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "exmip1";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex solution;
             solution.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
@@ -1400,10 +1400,10 @@ ClpSimplexUnitTest(const std::string & dirSample)
             solution.passInEventHandler(&handler);
             int numberRows = solution.numberRows();
             // make sure values pass has something to do
-            for (int i = 0; i < numberRows; i++)
+            for(int i = 0; i < numberRows; i++)
                 solution.setRowStatus(i, ClpSimplex::basic);
             solution.primal(1);
-            assert (solution.secondaryStatus() == 102); // Came out at end of pass
+            assert(solution.secondaryStatus() == 102);  // Came out at end of pass
         }
         else
         {
@@ -1415,7 +1415,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
         CoinMpsIO m;
         std::string fn = dirSample + "exmip1";
         //fn = "Test/subGams4";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex model;
             model.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
@@ -1436,12 +1436,12 @@ ClpSimplexUnitTest(const std::string & dirSample)
             size_t s;
             std::deque<StdVectorDouble> fep = messageHandler.getFeasibleExtremePoints();
             size_t numSavedSolutions = fep.size();
-            for ( s = 0; s < numSavedSolutions; ++s )
+            for(s = 0; s < numSavedSolutions; ++s)
             {
                 const StdVectorDouble & solnVec = fep[s];
-                for ( int c = 0; c < nc; ++c )
+                for(int c = 0; c < nc; ++c)
                 {
-                    if (fabs(solnVec[c]) > 1.0e-8)
+                    if(fabs(solnVec[c]) > 1.0e-8)
                         std::cout << "Saved Solution: " << s << " ColNum: " << c << " Value: " << solnVec[c] << std::endl;
                 }
             }
@@ -1455,12 +1455,12 @@ ClpSimplexUnitTest(const std::string & dirSample)
             model.primal();
             fep = messageHandler.getFeasibleExtremePoints();
             numSavedSolutions = fep.size();
-            for ( s = 0; s < numSavedSolutions; ++s )
+            for(s = 0; s < numSavedSolutions; ++s)
             {
                 const StdVectorDouble & solnVec = fep[s];
-                for ( int c = 0; c < nc; ++c )
+                for(int c = 0; c < nc; ++c)
                 {
-                    if (fabs(solnVec[c]) > 1.0e-8)
+                    if(fabs(solnVec[c]) > 1.0e-8)
                         std::cout << "Saved Solution: " << s << " ColNum: " << c << " Value: " << solnVec[c] << std::endl;
                 }
             }
@@ -1475,7 +1475,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "exmip1";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex model;
             model.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
@@ -1491,18 +1491,18 @@ ClpSimplexUnitTest(const std::string & dirSample)
             model.dualRanging(13, which, costIncrease, sequenceIncrease,
                               costDecrease, sequenceDecrease);
             int i;
-            for ( i = 0; i < 13; i++)
+            for(i = 0; i < 13; i++)
                 printf("%d increase %g %d, decrease %g %d\n",
                        i, costIncrease[i], sequenceIncrease[i],
                        costDecrease[i], sequenceDecrease[i]);
-            assert (fabs(costDecrease[3]) < 1.0e-4);
-            assert (fabs(costIncrease[7] - 1.0) < 1.0e-4);
+            assert(fabs(costDecrease[3]) < 1.0e-4);
+            assert(fabs(costIncrease[7] - 1.0) < 1.0e-4);
             model.setOptimizationDirection(-1);
             {
                 int j;
-                double * obj = model.objective();
+                double* obj = model.objective();
                 int n = model.numberColumns();
-                for (j = 0; j < n; j++)
+                for(j = 0; j < n; j++)
                     obj[j] *= -1.0;
             }
             double costIncrease2[13];
@@ -1512,21 +1512,21 @@ ClpSimplexUnitTest(const std::string & dirSample)
             // ranging
             model.dualRanging(13, which, costIncrease2, sequenceIncrease2,
                               costDecrease2, sequenceDecrease2);
-            for (i = 0; i < 13; i++)
+            for(i = 0; i < 13; i++)
             {
-                assert (fabs(costIncrease[i] - costDecrease2[i]) < 1.0e-6);
-                assert (fabs(costDecrease[i] - costIncrease2[i]) < 1.0e-6);
-                assert (sequenceIncrease[i] == sequenceDecrease2[i]);
-                assert (sequenceDecrease[i] == sequenceIncrease2[i]);
+                assert(fabs(costIncrease[i] - costDecrease2[i]) < 1.0e-6);
+                assert(fabs(costDecrease[i] - costIncrease2[i]) < 1.0e-6);
+                assert(sequenceIncrease[i] == sequenceDecrease2[i]);
+                assert(sequenceDecrease[i] == sequenceIncrease2[i]);
             }
             // Now delete all rows and see what happens
             model.deleteRows(model.numberRows(), which);
             model.primal();
             // ranging
-            if (!model.dualRanging(8, which, costIncrease, sequenceIncrease,
-                                   costDecrease, sequenceDecrease))
+            if(!model.dualRanging(8, which, costIncrease, sequenceIncrease,
+                                  costDecrease, sequenceDecrease))
             {
-                for (i = 0; i < 8; i++)
+                for(i = 0; i < 8; i++)
                 {
                     printf("%d increase %g %d, decrease %g %d\n",
                            i, costIncrease[i], sequenceIncrease[i],
@@ -1543,7 +1543,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "exmip1";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex model;
             model.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
@@ -1559,12 +1559,12 @@ ClpSimplexUnitTest(const std::string & dirSample)
             model.primalRanging(13, which, valueIncrease, sequenceIncrease,
                                 valueDecrease, sequenceDecrease);
             int i;
-            for ( i = 0; i < 13; i++)
+            for(i = 0; i < 13; i++)
                 printf("%d increase %g %d, decrease %g %d\n",
                        i, valueIncrease[i], sequenceIncrease[i],
                        valueDecrease[i], sequenceDecrease[i]);
-            assert (fabs(valueIncrease[3] - 0.642857) < 1.0e-4);
-            assert (fabs(valueIncrease[8] - 2.95113) < 1.0e-4);
+            assert(fabs(valueIncrease[3] - 0.642857) < 1.0e-4);
+            assert(fabs(valueIncrease[8] - 2.95113) < 1.0e-4);
         }
         else
         {
@@ -1573,7 +1573,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
 #if 0
         // out until I find optimization bug
         // Test parametrics
-        ClpSimplexOther * model2 = (ClpSimplexOther *) (&model);
+        ClpSimplexOther* model2 = (ClpSimplexOther*)(&model);
         double rhs[] = { 1.0, 2.0, 3.0, 4.0, 5.0};
         double endingTheta = 1.0;
         model2->scaling(0);
@@ -1615,11 +1615,11 @@ ClpSimplexUnitTest(const std::string & dirSample)
 
         //check that the tableau matches wolsey (B-1 A)
         // slacks in second part of binvA
-        double * binvA = reinterpret_cast<double*> (malloc((n_cols + n_rows) * sizeof(double)));
+        double* binvA = reinterpret_cast<double*>(malloc((n_cols + n_rows) * sizeof(double)));
 
         printf("B-1 A by row\n");
         int i;
-        for( i = 0; i < n_rows; i++)
+        for(i = 0; i < n_rows; i++)
         {
             model.getBInvARow(i, binvA, binvA + n_cols);
             printf("row: %d -> ", i);
@@ -1633,7 +1633,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
         model.primal(0, 3 + 4); // keep factorization
         // And do by column
         printf("B-1 A by column\n");
-        for( i = 0; i < n_rows + n_cols; i++)
+        for(i = 0; i < n_rows + n_cols; i++)
         {
             model.getBInvACol(i, binvA);
             printf("column: %d -> ", i);
@@ -1648,20 +1648,20 @@ ClpSimplexUnitTest(const std::string & dirSample)
         */
         // set scaling off
         model.scaling(0);
-        for (int iPass = 0; iPass < 2; iPass++)
+        for(int iPass = 0; iPass < 2; iPass++)
         {
             model.primal(0, 3 + 4); // keep factorization
-            const double * rowScale = model.rowScale();
-            const double * columnScale = model.columnScale();
-            if (!iPass)
-                assert (!rowScale);
+            const double* rowScale = model.rowScale();
+            const double* columnScale = model.columnScale();
+            if(!iPass)
+                assert(!rowScale);
             else
-                assert (rowScale); // only true for this example
+                assert(rowScale);  // only true for this example
             /* has to be exactly correct as in OsiClpsolverInterface.cpp
                (also redo each pass as may change
             */
             printf("B-1 A");
-            for( i = 0; i < n_rows; i++)
+            for(i = 0; i < n_rows; i++)
             {
                 model.getBInvARow(i, binvA, binvA + n_cols);
                 printf("\nrow: %d -> ", i);
@@ -1669,7 +1669,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
                 // First columns
                 for(j = 0; j < n_cols; j++)
                 {
-                    if (binvA[j])
+                    if(binvA[j])
                     {
                         printf("(%d %g), ", j, binvA[j]);
                     }
@@ -1677,29 +1677,29 @@ ClpSimplexUnitTest(const std::string & dirSample)
                 // now rows
                 for(j = 0; j < n_rows; j++)
                 {
-                    if (binvA[j+n_cols])
+                    if(binvA[j + n_cols])
                     {
-                        printf("(%d %g), ", j + n_cols, binvA[j+n_cols]);
+                        printf("(%d %g), ", j + n_cols, binvA[j + n_cols]);
                     }
                 }
             }
             printf("\n");
             printf("And by column (trickier)");
-            const int * pivotVariable = model.pivotVariable();
-            for( i = 0; i < n_cols + n_rows; i++)
+            const int* pivotVariable = model.pivotVariable();
+            for(i = 0; i < n_cols + n_rows; i++)
             {
                 model.getBInvACol(i, binvA);
                 printf("\ncolumn: %d -> ", i);
                 for(int j = 0; j < n_rows; j++)
                 {
-                    if (binvA[j])
+                    if(binvA[j])
                     {
                         // need to know pivot variable for +1/-1 (slack) and row/column scaling
                         int pivot = pivotVariable[j];
-                        if (pivot < n_cols)
+                        if(pivot < n_cols)
                         {
                             // scaled coding is in just in case
-                            if (!columnScale)
+                            if(!columnScale)
                             {
                                 printf("(%d %g), ", j, binvA[j]);
                             }
@@ -1710,13 +1710,13 @@ ClpSimplexUnitTest(const std::string & dirSample)
                         }
                         else
                         {
-                            if (!rowScale)
+                            if(!rowScale)
                             {
                                 printf("(%d %g), ", j, binvA[j]);
                             }
                             else
                             {
-                                printf("(%d %g), ", j, binvA[j] / rowScale[pivot-n_cols]);
+                                printf("(%d %g), ", j, binvA[j] / rowScale[pivot - n_cols]);
                             }
                         }
                     }
@@ -1724,33 +1724,33 @@ ClpSimplexUnitTest(const std::string & dirSample)
             }
             printf("\n");
             printf("binvrow");
-            for( i = 0; i < n_rows; i++)
+            for(i = 0; i < n_rows; i++)
             {
                 model.getBInvRow(i, binvA);
                 printf("\nrow: %d -> ", i);
                 int j;
-                for (j = 0; j < n_rows; j++)
+                for(j = 0; j < n_rows; j++)
                 {
-                    if (binvA[j])
+                    if(binvA[j])
                         printf("(%d %g), ", j, binvA[j]);
                 }
             }
             printf("\n");
             printf("And by column ");
-            for( i = 0; i < n_rows; i++)
+            for(i = 0; i < n_rows; i++)
             {
                 model.getBInvCol(i, binvA);
                 printf("\ncol: %d -> ", i);
                 int j;
-                for (j = 0; j < n_rows; j++)
+                for(j = 0; j < n_rows; j++)
                 {
-                    if (binvA[j])
+                    if(binvA[j])
                         printf("(%d %g), ", j, binvA[j]);
                 }
             }
             printf("\n");
             // now deal with next pass
-            if (!iPass)
+            if(!iPass)
             {
                 // get scaling for testing
                 model.scaling(1);
@@ -1762,7 +1762,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
         model.dual(0, 2); // hopefully will not use factorization
         model.primal(0, 3 + 4); // keep factorization
         // but say basis has changed
-        model.setWhatsChanged(model.whatsChanged()&(~512));
+        model.setWhatsChanged(model.whatsChanged() & (~512));
         model.dual(0, 2); // hopefully will not use factorization
     }
     // test steepest edge
@@ -1770,7 +1770,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
         CoinMpsIO m;
         std::string fn = dirSample + "finnis";
         int returnCode = m.readMps(fn.c_str(), "mps");
-        if (returnCode)
+        if(returnCode)
         {
             // probable cause is that gz not there
             fprintf(stderr, "Unable to open finnis.mps in %s\n", dirSample.c_str());
@@ -1802,35 +1802,35 @@ ClpSimplexUnitTest(const std::string & dirSample)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "afiro";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex solution;
             ClpModel model;
             // do twice - without and with scaling
             int iPass;
-            for (iPass = 0; iPass < 2; iPass++)
+            for(iPass = 0; iPass < 2; iPass++)
             {
                 // explicit row objective for testing
                 int nr = m.getNumRows();
-                double * rowObj = new double[nr];
+                double* rowObj = new double[nr];
                 CoinFillN(rowObj, nr, 0.0);
                 model.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
                                   m.getObjCoefficients(),
                                   m.getRowLower(), m.getRowUpper(), rowObj);
                 delete [] rowObj;
                 solution = ClpSimplex(model);
-                if (iPass)
+                if(iPass)
                 {
                     solution.scaling();
                 }
                 solution.dual();
                 solution.dual();
                 // test optimal
-                assert (solution.status() == 0);
+                assert(solution.status() == 0);
                 int numberColumns = solution.numberColumns();
                 int numberRows = solution.numberRows();
                 CoinPackedVector colsol(numberColumns, solution.primalColumnSolution());
-                double * objective = solution.objective();
+                double* objective = solution.objective();
 #ifndef NDEBUG
                 double objValue = colsol.dotProduct(objective);
 #endif
@@ -1838,33 +1838,33 @@ ClpSimplexUnitTest(const std::string & dirSample)
                 assert(eq(objValue, -4.6475314286e+02));
                 solution.dual();
                 assert(eq(solution.objectiveValue(), -4.6475314286e+02));
-                double * lower = solution.columnLower();
-                double * upper = solution.columnUpper();
-                double * sol = solution.primalColumnSolution();
-                double * result = new double[numberColumns];
-                CoinFillN ( result, numberColumns, 0.0);
+                double* lower = solution.columnLower();
+                double* upper = solution.columnUpper();
+                double* sol = solution.primalColumnSolution();
+                double* result = new double[numberColumns];
+                CoinFillN(result, numberColumns, 0.0);
                 solution.matrix()->transposeTimes(solution.dualRowSolution(), result);
                 int iRow , iColumn;
                 // see if feasible and dual feasible
-                for (iColumn = 0; iColumn < numberColumns; iColumn++)
+                for(iColumn = 0; iColumn < numberColumns; iColumn++)
                 {
                     double value = sol[iColumn];
                     assert(value < upper[iColumn] + 1.0e-8);
                     assert(value > lower[iColumn] - 1.0e-8);
                     value = objective[iColumn] - result[iColumn];
-                    assert (value > -1.0e-5);
-                    if (sol[iColumn] > 1.0e-5)
-                        assert (value < 1.0e-5);
+                    assert(value > -1.0e-5);
+                    if(sol[iColumn] > 1.0e-5)
+                        assert(value < 1.0e-5);
                 }
                 delete [] result;
                 result = new double[numberRows];
-                CoinFillN ( result, numberRows, 0.0);
+                CoinFillN(result, numberRows, 0.0);
                 solution.matrix()->times(colsol, result);
                 lower = solution.rowLower();
                 upper = solution.rowUpper();
                 sol = solution.primalRowSolution();
 #ifndef NDEBUG
-                for (iRow = 0; iRow < numberRows; iRow++)
+                for(iRow = 0; iRow < numberRows; iRow++)
                 {
                     double value = result[iRow];
                     assert(eq(value, sol[iRow]));
@@ -1874,7 +1874,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
 #endif
                 delete [] result;
                 // test row objective
-                double * rowObjective = solution.rowObjective();
+                double* rowObjective = solution.rowObjective();
                 CoinDisjointCopyN(solution.dualRowSolution(), numberRows, rowObjective);
                 CoinDisjointCopyN(solution.dualColumnSolution(), numberColumns, objective);
                 // this sets up all slack basis
@@ -1894,17 +1894,17 @@ ClpSimplexUnitTest(const std::string & dirSample)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "brandy";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex solution;
             // do twice - without and with scaling
             int iPass;
-            for (iPass = 0; iPass < 2; iPass++)
+            for(iPass = 0; iPass < 2; iPass++)
             {
                 solution.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
                                      m.getObjCoefficients(),
                                      m.getRowLower(), m.getRowUpper());
-                if (iPass)
+                if(iPass)
                     solution.scaling();
                 solution.setOptimizationDirection(-1);
                 // test unbounded and ray
@@ -1914,39 +1914,39 @@ ClpSimplexUnitTest(const std::string & dirSample)
 #else
                 solution.primal();
 #endif
-                assert (solution.status() == 2);
+                assert(solution.status() == 2);
                 int numberColumns = solution.numberColumns();
                 int numberRows = solution.numberRows();
-                double * lower = solution.columnLower();
-                double * upper = solution.columnUpper();
-                double * sol = solution.primalColumnSolution();
-                double * ray = solution.unboundedRay();
-                double * objective = solution.objective();
+                double* lower = solution.columnLower();
+                double* upper = solution.columnUpper();
+                double* sol = solution.primalColumnSolution();
+                double* ray = solution.unboundedRay();
+                double* objective = solution.objective();
                 double objChange = 0.0;
                 int iRow , iColumn;
                 // make sure feasible and columns form ray
-                for (iColumn = 0; iColumn < numberColumns; iColumn++)
+                for(iColumn = 0; iColumn < numberColumns; iColumn++)
                 {
                     double value = sol[iColumn];
                     assert(value < upper[iColumn] + 1.0e-8);
                     assert(value > lower[iColumn] - 1.0e-8);
                     value = ray[iColumn];
-                    if (value > 0.0)
+                    if(value > 0.0)
                         assert(upper[iColumn] > 1.0e30);
-                    else if (value < 0.0)
+                    else if(value < 0.0)
                         assert(lower[iColumn] < -1.0e30);
                     objChange += value * objective[iColumn];
                 }
                 // make sure increasing objective
                 assert(objChange > 0.0);
-                double * result = new double[numberRows];
-                CoinFillN ( result, numberRows, 0.0);
+                double* result = new double[numberRows];
+                CoinFillN(result, numberRows, 0.0);
                 solution.matrix()->times(sol, result);
                 lower = solution.rowLower();
                 upper = solution.rowUpper();
                 sol = solution.primalRowSolution();
 #ifndef NDEBUG
-                for (iRow = 0; iRow < numberRows; iRow++)
+                for(iRow = 0; iRow < numberRows; iRow++)
                 {
                     double value = result[iRow];
                     assert(eq(value, sol[iRow]));
@@ -1954,15 +1954,15 @@ ClpSimplexUnitTest(const std::string & dirSample)
                     assert(value > lower[iRow] - 2.0e-8);
                 }
 #endif
-                CoinFillN ( result, numberRows, 0.0);
+                CoinFillN(result, numberRows, 0.0);
                 solution.matrix()->times(ray, result);
                 // there may be small differences (especially if scaled)
-                for (iRow = 0; iRow < numberRows; iRow++)
+                for(iRow = 0; iRow < numberRows; iRow++)
                 {
                     double value = result[iRow];
-                    if (value > 1.0e-8)
+                    if(value > 1.0e-8)
                         assert(upper[iRow] > 1.0e30);
-                    else if (value < -1.0e-8)
+                    else if(value < -1.0e-8)
                         assert(lower[iRow] < -1.0e30);
                 }
                 delete [] result;
@@ -1978,17 +1978,17 @@ ClpSimplexUnitTest(const std::string & dirSample)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "brandy";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex solution;
             // do twice - without and with scaling
             int iPass;
-            for (iPass = 0; iPass < 2; iPass++)
+            for(iPass = 0; iPass < 2; iPass++)
             {
                 solution.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
                                      m.getObjCoefficients(),
                                      m.getRowLower(), m.getRowUpper());
-                if (iPass)
+                if(iPass)
                     solution.scaling();
                 // test infeasible and ray
                 solution.columnUpper()[0] = 0.0;
@@ -1998,77 +1998,77 @@ ClpSimplexUnitTest(const std::string & dirSample)
 #else
                 solution.primal();
 #endif
-                assert (solution.status() == 1);
+                assert(solution.status() == 1);
                 int numberColumns = solution.numberColumns();
                 int numberRows = solution.numberRows();
-                double * lower = solution.rowLower();
-                double * upper = solution.rowUpper();
-                double * ray = solution.infeasibilityRay();
+                double* lower = solution.rowLower();
+                double* upper = solution.rowUpper();
+                double* ray = solution.infeasibilityRay();
                 assert(ray);
                 // construct proof of infeasibility
                 int iRow , iColumn;
                 double lo = 0.0, up = 0.0;
                 int nl = 0, nu = 0;
-                for (iRow = 0; iRow < numberRows; iRow++)
+                for(iRow = 0; iRow < numberRows; iRow++)
                 {
-                    if (lower[iRow] > -1.0e20)
+                    if(lower[iRow] > -1.0e20)
                     {
                         lo += ray[iRow] * lower[iRow];
                     }
                     else
                     {
-                        if (ray[iRow] > 1.0e-8)
+                        if(ray[iRow] > 1.0e-8)
                             nl++;
                     }
-                    if (upper[iRow] < 1.0e20)
+                    if(upper[iRow] < 1.0e20)
                     {
                         up += ray[iRow] * upper[iRow];
                     }
                     else
                     {
-                        if (ray[iRow] > 1.0e-8)
+                        if(ray[iRow] > 1.0e-8)
                             nu++;
                     }
                 }
-                if (nl)
+                if(nl)
                     lo = -1.0e100;
-                if (nu)
+                if(nu)
                     up = 1.0e100;
-                double * result = new double[numberColumns];
+                double* result = new double[numberColumns];
                 double lo2 = 0.0, up2 = 0.0;
-                CoinFillN ( result, numberColumns, 0.0);
+                CoinFillN(result, numberColumns, 0.0);
                 solution.matrix()->transposeTimes(ray, result);
                 lower = solution.columnLower();
                 upper = solution.columnUpper();
                 nl = nu = 0;
-                for (iColumn = 0; iColumn < numberColumns; iColumn++)
+                for(iColumn = 0; iColumn < numberColumns; iColumn++)
                 {
-                    if (result[iColumn] > 1.0e-8)
+                    if(result[iColumn] > 1.0e-8)
                     {
-                        if (lower[iColumn] > -1.0e20)
+                        if(lower[iColumn] > -1.0e20)
                             lo2 += result[iColumn] * lower[iColumn];
                         else
                             nl++;
-                        if (upper[iColumn] < 1.0e20)
+                        if(upper[iColumn] < 1.0e20)
                             up2 += result[iColumn] * upper[iColumn];
                         else
                             nu++;
                     }
-                    else if (result[iColumn] < -1.0e-8)
+                    else if(result[iColumn] < -1.0e-8)
                     {
-                        if (lower[iColumn] > -1.0e20)
+                        if(lower[iColumn] > -1.0e20)
                             up2 += result[iColumn] * lower[iColumn];
                         else
                             nu++;
-                        if (upper[iColumn] < 1.0e20)
+                        if(upper[iColumn] < 1.0e20)
                             lo2 += result[iColumn] * upper[iColumn];
                         else
                             nl++;
                     }
                 }
-                if (nl)
+                if(nl)
                     lo2 = -1.0e100;
-                if (nu)
+                if(nu)
                     up2 = 1.0e100;
                 // make sure inconsistency
                 assert(lo2 > up || up2 < lo);
@@ -2085,7 +2085,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "brandy";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex solution;
             solution.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
@@ -2097,20 +2097,20 @@ ClpSimplexUnitTest(const std::string & dirSample)
 
             int numberColumns = solution.numberColumns();
             int numberRows = solution.numberRows();
-            double * saveObj = new double [numberColumns];
-            double * saveLower = new double[numberRows+numberColumns];
-            double * saveUpper = new double[numberRows+numberColumns];
-            int * which = new int [numberRows+numberColumns];
+            double* saveObj = new double [numberColumns];
+            double* saveLower = new double[numberRows + numberColumns];
+            double* saveUpper = new double[numberRows + numberColumns];
+            int* which = new int [numberRows + numberColumns];
 
             int numberElements = m.getMatrixByCol()->getNumElements();
-            int * starts = new int[numberRows+numberColumns];
-            int * index = new int[numberElements];
-            double * element = new double[numberElements];
+            int* starts = new int[numberRows + numberColumns];
+            int* index = new int[numberElements];
+            double* element = new double[numberElements];
 
-            const CoinBigIndex * startM;
-            const int * lengthM;
-            const int * indexM;
-            const double * elementM;
+            const CoinBigIndex* startM;
+            const int* lengthM;
+            const int* indexM;
+            const double* elementM;
 
             int n, nel;
 
@@ -2118,23 +2118,23 @@ ClpSimplexUnitTest(const std::string & dirSample)
             n = 0;
             nel = 0;
             int iRow , iColumn;
-            const double * lower = m.getColLower();
-            const double * upper = m.getColUpper();
-            const double * objective = m.getObjCoefficients();
+            const double* lower = m.getColLower();
+            const double* upper = m.getColUpper();
+            const double* objective = m.getObjCoefficients();
             startM = m.getMatrixByCol()->getVectorStarts();
             lengthM = m.getMatrixByCol()->getVectorLengths();
             indexM = m.getMatrixByCol()->getIndices();
             elementM = m.getMatrixByCol()->getElements();
             starts[0] = 0;
-            for (iColumn = 0; iColumn < numberColumns; iColumn++)
+            for(iColumn = 0; iColumn < numberColumns; iColumn++)
             {
-                if (solution.getColumnStatus(iColumn) != ClpSimplex::basic)
+                if(solution.getColumnStatus(iColumn) != ClpSimplex::basic)
                 {
                     saveObj[n] = objective[iColumn];
                     saveLower[n] = lower[iColumn];
                     saveUpper[n] = upper[iColumn];
                     int j;
-                    for (j = startM[iColumn]; j < startM[iColumn] + lengthM[iColumn]; j++)
+                    for(j = startM[iColumn]; j < startM[iColumn] + lengthM[iColumn]; j++)
                     {
                         index[nel] = indexM[j];
                         element[nel++] = elementM[j];
@@ -2157,13 +2157,13 @@ ClpSimplexUnitTest(const std::string & dirSample)
             lower = m.getColLower();
             upper = m.getColUpper();
             objective = m.getObjCoefficients();
-            for (iColumn = 0; iColumn < numberColumns; iColumn++)
+            for(iColumn = 0; iColumn < numberColumns; iColumn++)
             {
                 saveObj[n] = objective[iColumn];
                 saveLower[n] = lower[iColumn];
                 saveUpper[n] = upper[iColumn];
                 int j;
-                for (j = startM[iColumn]; j < startM[iColumn] + lengthM[iColumn]; j++)
+                for(j = startM[iColumn]; j < startM[iColumn] + lengthM[iColumn]; j++)
                 {
                     index[nel] = indexM[j];
                     element[nel++] = elementM[j];
@@ -2193,14 +2193,14 @@ ClpSimplexUnitTest(const std::string & dirSample)
             indexM = m.getMatrixByRow()->getIndices();
             elementM = m.getMatrixByRow()->getElements();
             starts[0] = 0;
-            for (iRow = 0; iRow < numberRows; iRow++)
+            for(iRow = 0; iRow < numberRows; iRow++)
             {
-                if ((iRow & 1) == 0)
+                if((iRow & 1) == 0)
                 {
                     saveLower[n] = lower[iRow];
                     saveUpper[n] = upper[iRow];
                     int j;
-                    for (j = startM[iRow]; j < startM[iRow] + lengthM[iRow]; j++)
+                    for(j = startM[iRow]; j < startM[iRow] + lengthM[iRow]; j++)
                     {
                         index[nel] = indexM[j];
                         element[nel++] = elementM[j];
@@ -2223,12 +2223,12 @@ ClpSimplexUnitTest(const std::string & dirSample)
             lower = m.getRowLower();
             upper = m.getRowUpper();
             starts[0] = 0;
-            for (iRow = 0; iRow < numberRows; iRow++)
+            for(iRow = 0; iRow < numberRows; iRow++)
             {
                 saveLower[n] = lower[iRow];
                 saveUpper[n] = upper[iRow];
                 int j;
-                for (j = startM[iRow]; j < startM[iRow] + lengthM[iRow]; j++)
+                for(j = startM[iRow]; j < startM[iRow] + lengthM[iRow]; j++)
                 {
                     index[nel] = indexM[j];
                     element[nel++] = elementM[j];
@@ -2250,14 +2250,14 @@ ClpSimplexUnitTest(const std::string & dirSample)
             assert(eq(solution.objectiveValue(), 1.5185098965e+03));
             // Delete all columns and rows
             n = 0;
-            for (iColumn = 0; iColumn < numberColumns; iColumn++)
+            for(iColumn = 0; iColumn < numberColumns; iColumn++)
             {
                 which[n++] = iColumn;
                 starts[n] = nel;
             }
             solution.deleteColumns(n, which);
             n = 0;
-            for (iRow = 0; iRow < numberRows; iRow++)
+            for(iRow = 0; iRow < numberRows; iRow++)
             {
                 which[n++] = iRow;
                 starts[n] = nel;
@@ -2282,7 +2282,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "exmip1";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpInterior solution;
             solution.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
@@ -2298,20 +2298,20 @@ ClpSimplexUnitTest(const std::string & dirSample)
 #endif
     // test network
 #define QUADRATIC
-    if (1)
+    if(1)
     {
         std::string fn = dirSample + "input.130";
         int numberColumns;
         int numberRows;
 
-        FILE * fp = fopen(fn.c_str(), "r");
-        if (!fp)
+        FILE* fp = fopen(fn.c_str(), "r");
+        if(!fp)
         {
             // Try in Data/Sample
             fn = "Data/Sample/input.130";
             fp = fopen(fn.c_str(), "r");
         }
-        if (!fp)
+        if(!fp)
         {
             fprintf(stderr, "Unable to open file input.130 in dirSample or Data/Sample directory\n");
         }
@@ -2321,63 +2321,63 @@ ClpSimplexUnitTest(const std::string & dirSample)
             char temp[100];
             // read and skip
             int x = fscanf(fp, "%s", temp);
-            if (x < 0)
+            if(x < 0)
                 throw("bad fscanf");
-            assert (!strcmp(temp, "BEGIN"));
+            assert(!strcmp(temp, "BEGIN"));
             x = fscanf(fp, "%*s %*s %d %d %*s %*s %d %*s", &problem, &numberRows,
                        &numberColumns);
-            if (x < 0)
+            if(x < 0)
                 throw("bad fscanf");
             // scan down to SUPPLY
-            while (fgets(temp, 100, fp))
+            while(fgets(temp, 100, fp))
             {
-                if (!strncmp(temp, "SUPPLY", 6))
+                if(!strncmp(temp, "SUPPLY", 6))
                     break;
             }
-            if (strncmp(temp, "SUPPLY", 6))
+            if(strncmp(temp, "SUPPLY", 6))
             {
                 fprintf(stderr, "Unable to find SUPPLY\n");
                 exit(2);
             }
             // get space for rhs
-            double * lower = new double[numberRows];
-            double * upper = new double[numberRows];
+            double* lower = new double[numberRows];
+            double* upper = new double[numberRows];
             int i;
-            for (i = 0; i < numberRows; i++)
+            for(i = 0; i < numberRows; i++)
             {
                 lower[i] = 0.0;
                 upper[i] = 0.0;
             }
             // ***** Remember to convert to C notation
-            while (fgets(temp, 100, fp))
+            while(fgets(temp, 100, fp))
             {
                 int row;
                 int value;
-                if (!strncmp(temp, "ARCS", 4))
+                if(!strncmp(temp, "ARCS", 4))
                     break;
                 sscanf(temp, "%d %d", &row, &value);
-                upper[row-1] = -value;
-                lower[row-1] = -value;
+                upper[row - 1] = -value;
+                lower[row - 1] = -value;
             }
-            if (strncmp(temp, "ARCS", 4))
+            if(strncmp(temp, "ARCS", 4))
             {
                 fprintf(stderr, "Unable to find ARCS\n");
                 exit(2);
             }
             // number of columns may be underestimate
-            int * head = new int[2*numberColumns];
-            int * tail = new int[2*numberColumns];
-            int * ub = new int[2*numberColumns];
-            int * cost = new int[2*numberColumns];
+            int* head = new int[2 * numberColumns];
+            int* tail = new int[2 * numberColumns];
+            int* ub = new int[2 * numberColumns];
+            int* cost = new int[2 * numberColumns];
             // ***** Remember to convert to C notation
             numberColumns = 0;
-            while (fgets(temp, 100, fp))
+            while(fgets(temp, 100, fp))
             {
                 int iHead;
                 int iTail;
                 int iUb;
                 int iCost;
-                if (!strncmp(temp, "DEMAND", 6))
+                if(!strncmp(temp, "DEMAND", 6))
                     break;
                 sscanf(temp, "%d %d %d %d", &iHead, &iTail, &iCost, &iUb);
                 iHead--;
@@ -2388,23 +2388,23 @@ ClpSimplexUnitTest(const std::string & dirSample)
                 cost[numberColumns] = iCost;
                 numberColumns++;
             }
-            if (strncmp(temp, "DEMAND", 6))
+            if(strncmp(temp, "DEMAND", 6))
             {
                 fprintf(stderr, "Unable to find DEMAND\n");
                 exit(2);
             }
             // ***** Remember to convert to C notation
-            while (fgets(temp, 100, fp))
+            while(fgets(temp, 100, fp))
             {
                 int row;
                 int value;
-                if (!strncmp(temp, "END", 3))
+                if(!strncmp(temp, "END", 3))
                     break;
                 sscanf(temp, "%d %d", &row, &value);
-                upper[row-1] = value;
-                lower[row-1] = value;
+                upper[row - 1] = value;
+                lower[row - 1] = value;
             }
-            if (strncmp(temp, "END", 3))
+            if(strncmp(temp, "END", 3))
             {
                 fprintf(stderr, "Unable to find END\n");
                 exit(2);
@@ -2415,28 +2415,28 @@ ClpSimplexUnitTest(const std::string & dirSample)
             ClpSimplex  model;
             // now build model
 
-            double * objective = new double[numberColumns];
-            double * lowerColumn = new double[numberColumns];
-            double * upperColumn = new double[numberColumns];
+            double* objective = new double[numberColumns];
+            double* lowerColumn = new double[numberColumns];
+            double* upperColumn = new double[numberColumns];
 
-            double * element = new double [2*numberColumns];
-            CoinBigIndex * start = new CoinBigIndex [numberColumns+1];
-            int * row = new int[2*numberColumns];
+            double* element = new double [2 * numberColumns];
+            CoinBigIndex* start = new CoinBigIndex [numberColumns + 1];
+            int* row = new int[2 * numberColumns];
             start[numberColumns] = 2 * numberColumns;
-            for (i = 0; i < numberColumns; i++)
+            for(i = 0; i < numberColumns; i++)
             {
                 start[i] = 2 * i;
-                element[2*i] = -1.0;
-                element[2*i+1] = 1.0;
-                row[2*i] = head[i];
-                row[2*i+1] = tail[i];
+                element[2 * i] = -1.0;
+                element[2 * i + 1] = 1.0;
+                row[2 * i] = head[i];
+                row[2 * i + 1] = tail[i];
                 lowerColumn[i] = 0.0;
                 upperColumn[i] = ub[i];
                 objective[i] = cost[i];
             }
             // Create Packed Matrix
             CoinPackedMatrix matrix;
-            int * lengths = NULL;
+            int* lengths = NULL;
             matrix.assignMatrix(true, numberRows, numberColumns,
                                 2 * numberColumns, element, row, start, lengths);
             // load model
@@ -2448,8 +2448,8 @@ ClpSimplexUnitTest(const std::string & dirSample)
             double time1 = CoinCpuTime();
             model.dual();
             std::cout << "Network problem, ClpPackedMatrix took " << CoinCpuTime() - time1 << " seconds" << std::endl;
-            ClpPlusMinusOneMatrix * plusMinus = new ClpPlusMinusOneMatrix(matrix);
-            assert (plusMinus->getIndices()); // would be zero if not +- one
+            ClpPlusMinusOneMatrix* plusMinus = new ClpPlusMinusOneMatrix(matrix);
+            assert(plusMinus->getIndices());  // would be zero if not +- one
             //ClpPlusMinusOneMatrix *plusminus_matrix;
 
             //plusminus_matrix = new ClpPlusMinusOneMatrix;
@@ -2493,11 +2493,11 @@ ClpSimplexUnitTest(const std::string & dirSample)
     }
 #ifdef QUADRATIC
     // Test quadratic to solve linear
-    if (1)
+    if(1)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "exmip1";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex solution;
             solution.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
@@ -2506,26 +2506,26 @@ ClpSimplexUnitTest(const std::string & dirSample)
             //solution.dual();
             // get quadratic part
             int numberColumns = solution.numberColumns();
-            int * start = new int [numberColumns+1];
-            int * column = new int[numberColumns];
-            double * element = new double[numberColumns];
+            int* start = new int [numberColumns + 1];
+            int* column = new int[numberColumns];
+            double* element = new double[numberColumns];
             int i;
             start[0] = 0;
             int n = 0;
             int kk = numberColumns - 1;
             int kk2 = numberColumns - 1;
-            for (i = 0; i < numberColumns; i++)
+            for(i = 0; i < numberColumns; i++)
             {
-                if (i >= kk)
+                if(i >= kk)
                 {
                     column[n] = i;
-                    if (i >= kk2)
+                    if(i >= kk2)
                         element[n] = 1.0e-1;
                     else
                         element[n] = 0.0;
                     n++;
                 }
-                start[i+1] = n;
+                start[i + 1] = n;
             }
             // Load up objective
             solution.loadQuadraticObjective(numberColumns, start, column, element);
@@ -2547,12 +2547,12 @@ ClpSimplexUnitTest(const std::string & dirSample)
         }
     }
     // Test quadratic
-    if (1)
+    if(1)
     {
         CoinMpsIO m;
         std::string fn = dirSample + "share2qp";
         //fn = "share2qpb";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex model;
             model.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
@@ -2560,9 +2560,9 @@ ClpSimplexUnitTest(const std::string & dirSample)
                               m.getRowLower(), m.getRowUpper());
             model.dual();
             // get quadratic part
-            int * start = NULL;
-            int * column = NULL;
-            double * element = NULL;
+            int* start = NULL;
+            int* column = NULL;
+            double* element = NULL;
             m.readQuadraticMps(NULL, start, column, element, 2);
             int column2[200];
             double element2[200];
@@ -2571,9 +2571,9 @@ ClpSimplexUnitTest(const std::string & dirSample)
             start2[0] = 0;
             int nel = 0;
             bool good = false;
-            for (j = 0; j < 79; j++)
+            for(j = 0; j < 79; j++)
             {
-                if (start[j] == start[j+1])
+                if(start[j] == start[j + 1])
                 {
                     column2[nel] = j;
                     element2[nel] = 0.0;
@@ -2582,16 +2582,16 @@ ClpSimplexUnitTest(const std::string & dirSample)
                 else
                 {
                     int i;
-                    for (i = start[j]; i < start[j+1]; i++)
+                    for(i = start[j]; i < start[j + 1]; i++)
                     {
                         column2[nel] = column[i];
                         element2[nel++] = element[i];
                     }
                 }
-                start2[j+1] = nel;
+                start2[j + 1] = nel;
             }
             // Load up objective
-            if (good)
+            if(good)
                 model.loadQuadraticObjective(model.numberColumns(), start2, column2, element2);
             else
                 model.loadQuadraticObjective(model.numberColumns(), start, column, element);
@@ -2604,7 +2604,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
             model.nonlinearSLP(50, 1.0e-4);
 #else
             // Get feasible
-            ClpObjective * saveObjective = model.objectiveAsObject()->clone();
+            ClpObjective* saveObjective = model.objectiveAsObject()->clone();
             ClpLinearObjective zeroObjective(NULL, numberColumns);
             model.setObjective(&zeroObjective);
             model.dual();
@@ -2633,12 +2633,12 @@ ClpSimplexUnitTest(const std::string & dirSample)
             std::cerr << "Error reading share2qp from sample data. Skipping test." << std::endl;
         }
     }
-    if (0)
+    if(0)
     {
         CoinMpsIO m;
         std::string fn = "./beale";
         //fn = "./jensen";
-        if (m.readMps(fn.c_str(), "mps") == 0)
+        if(m.readMps(fn.c_str(), "mps") == 0)
         {
             ClpSimplex solution;
             solution.loadProblem(*m.getMatrixByCol(), m.getColLower(), m.getColUpper(),
@@ -2647,9 +2647,9 @@ ClpSimplexUnitTest(const std::string & dirSample)
             solution.setDblParam(ClpObjOffset, m.objectiveOffset());
             solution.dual();
             // get quadratic part
-            int * start = NULL;
-            int * column = NULL;
-            double * element = NULL;
+            int* start = NULL;
+            int* column = NULL;
+            double* element = NULL;
             m.readQuadraticMps(NULL, start, column, element, 2);
             // Load up objective
             solution.loadQuadraticObjective(solution.numberColumns(), start, column, element);
@@ -2686,10 +2686,10 @@ ClpSimplexUnitTest(const std::string & dirSample)
             CoinPackedMatrix matrix(true, 3, 5, 8, elements, rows, start, length);
             // by row
             matrix.reverseOrdering();
-            const double * element = matrix.getElements();
-            const int * column = matrix.getIndices();
-            const CoinBigIndex * rowStart = matrix.getVectorStarts();
-            const int * rowLength = matrix.getVectorLengths();
+            const double* element = matrix.getElements();
+            const int* column = matrix.getIndices();
+            const CoinBigIndex* rowStart = matrix.getVectorStarts();
+            const int* rowLength = matrix.getVectorLengths();
 
             // rim data
             //double objective[5]={-4.0,1.0,0.0,0.0,0.0};
@@ -2698,7 +2698,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
             //double columnLower[5]={0.0,0.0,0.0,0.0,0.0};
             //double columnUpper[5]={100.0,100.0,100.0,100.0,100.0};
 
-            for (int i = 0; i < 3; i++)
+            for(int i = 0; i < 3; i++)
             {
                 sub.addRow(rowLength[i], column + rowStart[i],
                            element + rowStart[i], rowLower[i], rowUpper[i]);
@@ -2720,10 +2720,10 @@ ClpSimplexUnitTest(const std::string & dirSample)
             CoinPackedMatrix matrix(true, 2, 5, 8, elements, rows, start, length);
             // by row
             matrix.reverseOrdering();
-            const double * element = matrix.getElements();
-            const int * column = matrix.getIndices();
-            const CoinBigIndex * rowStart = matrix.getVectorStarts();
-            const int * rowLength = matrix.getVectorLengths();
+            const double* element = matrix.getElements();
+            const int* column = matrix.getIndices();
+            const CoinBigIndex* rowStart = matrix.getVectorStarts();
+            const int* rowLength = matrix.getVectorLengths();
 
             // rim data
             double objective[5] = { -4.0, 1.0, 0.0, 0.0, 0.0};
@@ -2732,13 +2732,13 @@ ClpSimplexUnitTest(const std::string & dirSample)
             double columnLower[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
             double columnUpper[5] = {100.0, 100.0, 100.0, 100.0, 100.0};
 
-            for (int i = 0; i < 2; i++)
+            for(int i = 0; i < 2; i++)
             {
                 top.addRow(rowLength[i], column + rowStart[i],
                            element + rowStart[i],
                            -COIN_DBL_MAX, COIN_DBL_MAX);
             }
-            for (int i = 0; i < 5; i++)
+            for(int i = 0; i < 5; i++)
             {
                 top.setColumnBounds(i, columnLower[i], columnUpper[i]);
                 top.setColumnObjective(i, objective[i]);
@@ -2748,7 +2748,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
         // Create a structured model
         CoinStructuredModel structured;
         int numberBlocks = 5;
-        for (int i = 0; i < numberBlocks; i++)
+        for(int i = 0; i < numberBlocks; i++)
         {
             std::string topName = "row_master";
             std::string blockName = "block_";
@@ -2758,8 +2758,8 @@ ClpSimplexUnitTest(const std::string & dirSample)
             structured.addBlock(blockName, blockName, sub);
         }
         // Set rhs on first block
-        CoinModel * first = structured.coinBlock(0);
-        for (int i = 0; i < 2; i++)
+        CoinModel* first = structured.coinBlock(0);
+        for(int i = 0; i < 2; i++)
         {
             first->setRowLower(i, 0.0);
             first->setRowUpper(i, 100.0);
@@ -2777,7 +2777,7 @@ ClpSimplexUnitTest(const std::string & dirSample)
         // Create a structured model
         CoinStructuredModel structured2;
         numberBlocks = 3;
-        for (int i = 0; i < numberBlocks; i++)
+        for(int i = 0; i < numberBlocks; i++)
         {
             std::string blockName = "block_";
             char bName = static_cast<char>('a' + static_cast<char>(i));

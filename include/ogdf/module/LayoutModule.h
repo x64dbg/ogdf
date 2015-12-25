@@ -59,48 +59,48 @@ namespace ogdf
 {
 
 
-/**
- * \brief Interface of general layout algorithms.
- *
- */
-class OGDF_EXPORT LayoutModule
-{
-public:
-    //! Initializes a layout module.
-    LayoutModule() { }
-
-    virtual ~LayoutModule() { }
-
     /**
-     * \brief Computes a layout of graph \a GA.
+     * \brief Interface of general layout algorithms.
      *
-     * This method is the actual algorithm call and must be implemented by
-     * derived classes.
-     * @param GA is the input graph and will also be assigned the layout information.
      */
-    virtual void call(GraphAttributes &GA) = 0;
-
-    /**
-     * \brief Computes a layout of graph \a GA wrt the constraints in \a GC
-     * (if applicable).
-     */
-    virtual void call(GraphAttributes &GA, GraphConstraints & GC)
+    class OGDF_EXPORT LayoutModule
     {
-        call(GA);
-    }
+    public:
+        //! Initializes a layout module.
+        LayoutModule() { }
 
-    /**
-     * \brief Computes a layout of graph \a GA.
-     *
-     * @param GA is the input graph and will also be assigned the layout information.
-     */
-    void operator()(GraphAttributes &GA)
-    {
-        call(GA);
-    }
+        virtual ~LayoutModule() { }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        /**
+         * \brief Computes a layout of graph \a GA.
+         *
+         * This method is the actual algorithm call and must be implemented by
+         * derived classes.
+         * @param GA is the input graph and will also be assigned the layout information.
+         */
+        virtual void call(GraphAttributes & GA) = 0;
+
+        /**
+         * \brief Computes a layout of graph \a GA wrt the constraints in \a GC
+         * (if applicable).
+         */
+        virtual void call(GraphAttributes & GA, GraphConstraints & GC)
+        {
+            call(GA);
+        }
+
+        /**
+         * \brief Computes a layout of graph \a GA.
+         *
+         * @param GA is the input graph and will also be assigned the layout information.
+         */
+        void operator()(GraphAttributes & GA)
+        {
+            call(GA);
+        }
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 
 } // end namespace ogdf

@@ -28,72 +28,72 @@ CglStored::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                         const CglTreeInfo /*info*/) const
 {
     // Get basic problem information
-    const double * solution = si.getColSolution();
+    const double* solution = si.getColSolution();
     int numberRowCuts = cuts_.sizeRowCuts();
-    for (int i=0; i<numberRowCuts; i++)
+    for(int i = 0; i < numberRowCuts; i++)
     {
-        const OsiRowCut * rowCutPointer = cuts_.rowCutPtr(i);
+        const OsiRowCut* rowCutPointer = cuts_.rowCutPtr(i);
         double violation = rowCutPointer->violated(solution);
-        if (violation>=requiredViolation_)
+        if(violation >= requiredViolation_)
             cs.insert(*rowCutPointer);
     }
-    if (probingInfo_)
+    if(probingInfo_)
     {
         int number01 = probingInfo_->numberIntegers();
-        const cliqueEntry * entry = probingInfo_->fixEntries();
-        const int * toZero = probingInfo_->toZero();
-        const int * toOne = probingInfo_->toOne();
-        const int * integerVariable = probingInfo_->integerVariable();
-        const double * lower = si.getColLower();
-        const double * upper = si.getColUpper();
+        const cliqueEntry* entry = probingInfo_->fixEntries();
+        const int* toZero = probingInfo_->toZero();
+        const int* toOne = probingInfo_->toOne();
+        const int* integerVariable = probingInfo_->integerVariable();
+        const double* lower = si.getColLower();
+        const double* upper = si.getColUpper();
         OsiRowCut cut;
         int column[2];
         double element[2];
-        for (int i=0; i<number01; i++)
+        for(int i = 0; i < number01; i++)
         {
-            int iColumn=integerVariable[i];
-            if (upper[iColumn]==lower[iColumn])
+            int iColumn = integerVariable[i];
+            if(upper[iColumn] == lower[iColumn])
                 continue;
             double value1 = solution[iColumn];
-            for (int j=toZero[i]; j<toOne[i]; j++)
+            for(int j = toZero[i]; j < toOne[i]; j++)
             {
-                int jColumn=sequenceInCliqueEntry(entry[j]);
-                if (jColumn<number01)
+                int jColumn = sequenceInCliqueEntry(entry[j]);
+                if(jColumn < number01)
                 {
-                    jColumn=integerVariable[jColumn];
-                    assert (jColumn>=0);
+                    jColumn = integerVariable[jColumn];
+                    assert(jColumn >= 0);
                     double value2 = solution[jColumn];
-                    if (oneFixesInCliqueEntry(entry[j]))
+                    if(oneFixesInCliqueEntry(entry[j]))
                     {
-                        double violation = 1.0-value1-value2;
-                        if (violation>requiredViolation_)
+                        double violation = 1.0 - value1 - value2;
+                        if(violation > requiredViolation_)
                         {
                             //printf("XXX can do %d + %d >=1\n",iColumn,jColumn);
                             cut.setLb(1.0);
                             cut.setUb(COIN_DBL_MAX);
-                            column[0]=iColumn;
-                            element[0]=1.0;
-                            column[1]=jColumn;
-                            element[1]= 1.0;
+                            column[0] = iColumn;
+                            element[0] = 1.0;
+                            column[1] = jColumn;
+                            element[1] = 1.0;
                             cut.setEffectiveness(violation);
-                            cut.setRow(2,column,element,false);
+                            cut.setRow(2, column, element, false);
                             cs.insert(cut);
                         }
                     }
                     else
                     {
-                        double violation = value2-value1;
-                        if (violation>requiredViolation_)
+                        double violation = value2 - value1;
+                        if(violation > requiredViolation_)
                         {
                             //printf("XXX can do %d >= %d\n",iColumn,jColumn);
                             cut.setLb(0.0);
                             cut.setUb(COIN_DBL_MAX);
-                            column[0]=iColumn;
-                            element[0]=1.0;
-                            column[1]=jColumn;
-                            element[1]= -1.0;
+                            column[0] = iColumn;
+                            element[0] = 1.0;
+                            column[1] = jColumn;
+                            element[1] = -1.0;
                             cut.setEffectiveness(violation);
-                            cut.setRow(2,column,element,false);
+                            cut.setRow(2, column, element, false);
                             cs.insert(cut);
                         }
                     }
@@ -104,81 +104,81 @@ CglStored::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                     double value2 = solution[jColumn];
                     double lowerValue = lower[jColumn];
                     double upperValue = upper[jColumn];
-                    if (oneFixesInCliqueEntry(entry[j]))
+                    if(oneFixesInCliqueEntry(entry[j]))
                     {
-                        double violation = upperValue-value1*(upperValue-lowerValue)-value2;
-                        if (violation>requiredViolation_)
+                        double violation = upperValue - value1 * (upperValue - lowerValue) - value2;
+                        if(violation > requiredViolation_)
                         {
                             //printf("XXX can do %g*%d + %d >=%g\n",(upperValue-lowerValue),iColumn,jColumn,upperValue);
                             cut.setLb(upperValue);
                             cut.setUb(COIN_DBL_MAX);
-                            column[0]=iColumn;
-                            element[0]=upperValue-lowerValue;
-                            column[1]=jColumn;
-                            element[1]= 1.0;
+                            column[0] = iColumn;
+                            element[0] = upperValue - lowerValue;
+                            column[1] = jColumn;
+                            element[1] = 1.0;
                             cut.setEffectiveness(violation);
-                            cut.setRow(2,column,element,false);
+                            cut.setRow(2, column, element, false);
                             cs.insert(cut);
                         }
                     }
                     else
                     {
-                        double violation = value2-value1*(upperValue-lowerValue)-lowerValue;
-                        if (violation>requiredViolation_)
+                        double violation = value2 - value1 * (upperValue - lowerValue) - lowerValue;
+                        if(violation > requiredViolation_)
                         {
                             //printf("XXX can do %g*%d >= %d -%g\n",(upperValue-lowerValue),iColumn,jColumn,lowerValue);
                             cut.setLb(-lowerValue);
                             cut.setUb(COIN_DBL_MAX);
-                            column[0]=iColumn;
-                            element[0]=upperValue-lowerValue;
-                            column[1]=jColumn;
-                            element[1]= -1.0;
+                            column[0] = iColumn;
+                            element[0] = upperValue - lowerValue;
+                            column[1] = jColumn;
+                            element[1] = -1.0;
                             cut.setEffectiveness(violation);
-                            cut.setRow(2,column,element,false);
+                            cut.setRow(2, column, element, false);
                             cs.insert(cut);
                         }
                     }
                 }
             }
-            for (int j=toOne[i]; j<toZero[i+1]; j++)
+            for(int j = toOne[i]; j < toZero[i + 1]; j++)
             {
-                int jColumn=sequenceInCliqueEntry(entry[j]);
-                if (jColumn<number01)
+                int jColumn = sequenceInCliqueEntry(entry[j]);
+                if(jColumn < number01)
                 {
-                    jColumn=integerVariable[jColumn];
-                    assert (jColumn>=0);
+                    jColumn = integerVariable[jColumn];
+                    assert(jColumn >= 0);
                     double value2 = solution[jColumn];
-                    if (oneFixesInCliqueEntry(entry[j]))
+                    if(oneFixesInCliqueEntry(entry[j]))
                     {
-                        double violation = value1-value2;
-                        if (violation>requiredViolation_)
+                        double violation = value1 - value2;
+                        if(violation > requiredViolation_)
                         {
                             //printf("XXX can do %d <= %d\n",iColumn,jColumn);
                             cut.setLb(-COIN_DBL_MAX);
                             cut.setUb(0.0);
-                            column[0]=iColumn;
-                            element[0]=1.0;
-                            column[1]=jColumn;
-                            element[1]= -1.0;
+                            column[0] = iColumn;
+                            element[0] = 1.0;
+                            column[1] = jColumn;
+                            element[1] = -1.0;
                             cut.setEffectiveness(violation);
-                            cut.setRow(2,column,element,false);
+                            cut.setRow(2, column, element, false);
                             cs.insert(cut);
                         }
                     }
                     else
                     {
-                        double violation = value1+value2-1.0;
-                        if (violation>requiredViolation_)
+                        double violation = value1 + value2 - 1.0;
+                        if(violation > requiredViolation_)
                         {
                             //printf("XXX can do %d + %d <=1\n",iColumn,jColumn);
                             cut.setLb(-COIN_DBL_MAX);
                             cut.setUb(1.0);
-                            column[0]=iColumn;
-                            element[0]=1.0;
-                            column[1]=jColumn;
-                            element[1]= 1.0;
+                            column[0] = iColumn;
+                            element[0] = 1.0;
+                            column[1] = jColumn;
+                            element[1] = 1.0;
                             cut.setEffectiveness(violation);
-                            cut.setRow(2,column,element,false);
+                            cut.setRow(2, column, element, false);
                             cs.insert(cut);
                         }
                     }
@@ -189,37 +189,37 @@ CglStored::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                     double value2 = solution[jColumn];
                     double lowerValue = lower[jColumn];
                     double upperValue = upper[jColumn];
-                    if (oneFixesInCliqueEntry(entry[j]))
+                    if(oneFixesInCliqueEntry(entry[j]))
                     {
-                        double violation = lowerValue +(upperValue-lowerValue)*value1-value2;
-                        if (violation>requiredViolation_)
+                        double violation = lowerValue + (upperValue - lowerValue) * value1 - value2;
+                        if(violation > requiredViolation_)
                         {
                             //printf("XXX can do %g*%d <= %d -%g\n",(upperValue-lowerValue),iColumn,jColumn,lowerValue);
                             cut.setLb(-COIN_DBL_MAX);
                             cut.setUb(-lowerValue);
-                            column[0]=iColumn;
-                            element[0]=upperValue-lowerValue;
-                            column[1]=jColumn;
-                            element[1]= -1.0;
+                            column[0] = iColumn;
+                            element[0] = upperValue - lowerValue;
+                            column[1] = jColumn;
+                            element[1] = -1.0;
                             cut.setEffectiveness(violation);
-                            cut.setRow(2,column,element,false);
+                            cut.setRow(2, column, element, false);
                             cs.insert(cut);
                         }
                     }
                     else
                     {
-                        double violation = (upperValue-lowerValue)*value1+value2-upperValue;
-                        if (violation>requiredViolation_)
+                        double violation = (upperValue - lowerValue) * value1 + value2 - upperValue;
+                        if(violation > requiredViolation_)
                         {
                             //printf("XXX can do %g*%d + %d <=%g\n",(upperValue-lowerValue),iColumn,jColumn,upperValue);
                             cut.setLb(-COIN_DBL_MAX);
                             cut.setUb(upperValue);
-                            column[0]=iColumn;
-                            element[0]=upperValue-lowerValue;
-                            column[1]=jColumn;
-                            element[1]= 1.0;
+                            column[0] = iColumn;
+                            element[0] = upperValue - lowerValue;
+                            column[1] = jColumn;
+                            element[1] = 1.0;
                             cut.setEffectiveness(violation);
-                            cut.setRow(2,column,element,false);
+                            cut.setRow(2, column, element, false);
                             cs.insert(cut);
                         }
                     }
@@ -233,7 +233,7 @@ void
 CglStored::addCut(const OsiCuts & cs)
 {
     int numberRowCuts = cs.sizeRowCuts();
-    for (int i=0; i<numberRowCuts; i++)
+    for(int i = 0; i < numberRowCuts; i++)
     {
         cuts_.insert(*cs.rowCutPtr(i));
     }
@@ -257,10 +257,10 @@ CglStored::addCut(double lb, double ub, const CoinPackedVector & vector)
 }
 // Add a row cut from elements
 void
-CglStored::addCut(double lb, double ub, int size, const int * colIndices, const double * elements)
+CglStored::addCut(double lb, double ub, int size, const int* colIndices, const double* elements)
 {
     OsiRowCut rc;
-    rc.setRow(size,colIndices,elements,false);
+    rc.setRow(size, colIndices, elements, false);
     rc.setLb(lb);
     rc.setUb(ub);
     cuts_.insert(rc);
@@ -269,7 +269,7 @@ CglStored::addCut(double lb, double ub, int size, const int * colIndices, const 
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-CglStored::CglStored (int numberColumns)
+CglStored::CglStored(int numberColumns)
     :
     CglCutGenerator(),
     requiredViolation_(1.0e-5),
@@ -283,7 +283,7 @@ CglStored::CglStored (int numberColumns)
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-CglStored::CglStored (const CglStored & source) :
+CglStored::CglStored(const CglStored & source) :
     CglCutGenerator(source),
     requiredViolation_(source.requiredViolation_),
     probingInfo_(NULL),
@@ -292,18 +292,18 @@ CglStored::CglStored (const CglStored & source) :
     bestSolution_(NULL),
     bounds_(NULL)
 {
-    if (source.probingInfo_)
+    if(source.probingInfo_)
         probingInfo_ = new CglTreeProbingInfo(*source.probingInfo_);
-    if (numberColumns_)
+    if(numberColumns_)
     {
-        bestSolution_ = CoinCopyOfArray(source.bestSolution_,numberColumns_+1);
-        bounds_ = CoinCopyOfArray(source.bounds_,2*numberColumns_);
+        bestSolution_ = CoinCopyOfArray(source.bestSolution_, numberColumns_ + 1);
+        bounds_ = CoinCopyOfArray(source.bounds_, 2 * numberColumns_);
     }
 }
 //-------------------------------------------------------------------
 // Constructor from file
 //-------------------------------------------------------------------
-CglStored::CglStored (const char * fileName) :
+CglStored::CglStored(const char* fileName) :
     CglCutGenerator(),
     requiredViolation_(1.0e-5),
     probingInfo_(NULL),
@@ -311,37 +311,37 @@ CglStored::CglStored (const char * fileName) :
     bestSolution_(NULL),
     bounds_(NULL)
 {
-    FILE * fp = fopen(fileName,"rb");
-    if (fp)
+    FILE* fp = fopen(fileName, "rb");
+    if(fp)
     {
         size_t numberRead;
-        int maxInCut=0;
-        int * index = NULL;
-        double * coefficient = NULL;
+        int maxInCut = 0;
+        int* index = NULL;
+        double* coefficient = NULL;
         double rhs[2];
-        int n=0;
-        while (n>=0)
+        int n = 0;
+        while(n >= 0)
         {
-            numberRead = fread(&n,sizeof(int),1,fp);
-            assert (numberRead==1);
-            if (n<0)
+            numberRead = fread(&n, sizeof(int), 1, fp);
+            assert(numberRead == 1);
+            if(n < 0)
                 break;
-            if (n>maxInCut)
+            if(n > maxInCut)
             {
-                maxInCut=n;
+                maxInCut = n;
                 delete [] index;
                 delete [] coefficient;
                 index = new int [maxInCut];
                 coefficient = new double [maxInCut];
             }
-            numberRead = fread(rhs,sizeof(double),2,fp);
-            assert (numberRead==2);
-            numberRead = fread(index,sizeof(int),n,fp);
+            numberRead = fread(rhs, sizeof(double), 2, fp);
+            assert(numberRead == 2);
+            numberRead = fread(index, sizeof(int), n, fp);
             //assert (numberRead==n);
-            numberRead = fread(coefficient,sizeof(double),n,fp);
+            numberRead = fread(coefficient, sizeof(double), n, fp);
             //assert (numberRead==n);
             OsiRowCut rc;
-            rc.setRow(n,index,coefficient,false);
+            rc.setRow(n, index, coefficient, false);
             rc.setLb(rhs[0]);
             rc.setUb(rhs[1]);
             cuts_.insert(rc);
@@ -355,7 +355,7 @@ CglStored::CglStored (const char * fileName) :
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CglCutGenerator *
+CglCutGenerator*
 CglStored::clone() const
 {
     return new CglStored(*this);
@@ -364,7 +364,7 @@ CglStored::clone() const
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-CglStored::~CglStored ()
+CglStored::~CglStored()
 {
     delete  probingInfo_;
     delete [] bestSolution_;
@@ -375,15 +375,15 @@ CglStored::~CglStored ()
 // Assignment operator
 //-------------------------------------------------------------------
 CglStored &
-CglStored::operator=(const CglStored& rhs)
+CglStored::operator=(const CglStored & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         CglCutGenerator::operator=(rhs);
-        requiredViolation_=rhs.requiredViolation_;
-        cuts_=rhs.cuts_;
+        requiredViolation_ = rhs.requiredViolation_;
+        cuts_ = rhs.cuts_;
         delete probingInfo_;
-        if (rhs.probingInfo_)
+        if(rhs.probingInfo_)
             probingInfo_ = new CglTreeProbingInfo(*rhs.probingInfo_);
         else
             probingInfo_ = NULL;
@@ -392,41 +392,41 @@ CglStored::operator=(const CglStored& rhs)
         bestSolution_ = NULL;
         bounds_ = NULL;
         numberColumns_ = rhs.numberColumns_;
-        if (numberColumns_)
+        if(numberColumns_)
         {
-            bestSolution_ = CoinCopyOfArray(rhs.bestSolution_,numberColumns_+1);
-            bounds_ = CoinCopyOfArray(rhs.bounds_,2*numberColumns_);
+            bestSolution_ = CoinCopyOfArray(rhs.bestSolution_, numberColumns_ + 1);
+            bounds_ = CoinCopyOfArray(rhs.bounds_, 2 * numberColumns_);
         }
     }
     return *this;
 }
 // Save stuff
 void
-CglStored::saveStuff(double bestObjective, const double * bestSolution,
-                     const double * lower, const double * upper)
+CglStored::saveStuff(double bestObjective, const double* bestSolution,
+                     const double* lower, const double* upper)
 {
-    assert (numberColumns_);
+    assert(numberColumns_);
     delete [] bestSolution_;
     delete [] bounds_;
-    if (bestSolution)
+    if(bestSolution)
     {
-        bestSolution_ = new double[numberColumns_+1];
-        memcpy(bestSolution_,bestSolution,numberColumns_*sizeof(double));
-        bestSolution_[numberColumns_]=bestObjective;
+        bestSolution_ = new double[numberColumns_ + 1];
+        memcpy(bestSolution_, bestSolution, numberColumns_ * sizeof(double));
+        bestSolution_[numberColumns_] = bestObjective;
     }
     else
     {
-        bestSolution_=NULL;
+        bestSolution_ = NULL;
     }
-    bounds_ = new double [2*numberColumns_];
-    memcpy(bounds_,lower,numberColumns_*sizeof(double));
-    memcpy(bounds_+numberColumns_,upper,numberColumns_*sizeof(double));
+    bounds_ = new double [2 * numberColumns_];
+    memcpy(bounds_, lower, numberColumns_ * sizeof(double));
+    memcpy(bounds_ + numberColumns_, upper, numberColumns_ * sizeof(double));
 }
 // Best objective
 double
 CglStored::bestObjective() const
 {
-    if (bestSolution_)
+    if(bestSolution_)
         return bestSolution_[numberColumns_];
     else
         return COIN_DBL_MAX;

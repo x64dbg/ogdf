@@ -30,13 +30,13 @@ public:
         Uses model for scaling
         includeLinear 0 - no, 1 as is, 2 as feasible
     */
-    virtual double * gradient(const ClpSimplex * model,
-                              const double * solution,
-                              double & offset, bool refresh,
-                              int includeLinear = 2) = 0;
+    virtual double* gradient(const ClpSimplex* model,
+                             const double* solution,
+                             double & offset, bool refresh,
+                             int includeLinear = 2) = 0;
     /** Returns reduced gradient.Returns an offset (to be added to current one).
     */
-    virtual double reducedGradient(ClpSimplex * model, double * region,
+    virtual double reducedGradient(ClpSimplex* model, double* region,
                                    bool useFeasibleCosts) = 0;
     /** Returns step length which gives minimum of objective for
         solution + theta * change vector up to maximum theta.
@@ -44,25 +44,25 @@ public:
         arrays are numberColumns+numberRows
         Also sets current objective, predicted  and at maximumTheta
     */
-    virtual double stepLength(ClpSimplex * model,
-                              const double * solution,
-                              const double * change,
+    virtual double stepLength(ClpSimplex* model,
+                              const double* solution,
+                              const double* change,
                               double maximumTheta,
                               double & currentObj,
                               double & predictedObj,
                               double & thetaObj) = 0;
     /// Return objective value (without any ClpModel offset) (model may be NULL)
-    virtual double objectiveValue(const ClpSimplex * model, const double * solution) const = 0;
+    virtual double objectiveValue(const ClpSimplex* model, const double* solution) const = 0;
     /// Resize objective
     virtual void resize(int newNumberColumns) = 0;
     /// Delete columns in  objective
-    virtual void deleteSome(int numberToDelete, const int * which) = 0;
+    virtual void deleteSome(int numberToDelete, const int* which) = 0;
     /// Scale objective
-    virtual void reallyScale(const double * columnScale) = 0;
+    virtual void reallyScale(const double* columnScale) = 0;
     /** Given a zeroed array sets nonlinear columns to 1.
         Returns number of nonlinear columns
      */
-    virtual int markNonlinear(char * which);
+    virtual int markNonlinear(char* which);
     /// Say we have new primal solution - so may need to recompute
     virtual void newXValues() {}
     //@}
@@ -77,19 +77,19 @@ public:
     ClpObjective(const ClpObjective &);
 
     /// Assignment operator
-    ClpObjective & operator=(const ClpObjective& rhs);
+    ClpObjective & operator=(const ClpObjective & rhs);
 
     /// Destructor
-    virtual ~ClpObjective ();
+    virtual ~ClpObjective();
 
     /// Clone
-    virtual ClpObjective * clone() const = 0;
+    virtual ClpObjective* clone() const = 0;
     /** Subset clone.  Duplicates are allowed
         and order is as given.
         Derived classes need not provide this as it may not always make
         sense */
-    virtual ClpObjective * subsetClone (int numberColumns,
-                                        const int * whichColumns) const;
+    virtual ClpObjective* subsetClone(int numberColumns,
+                                      const int* whichColumns) const;
 
     //@}
 
@@ -112,7 +112,7 @@ public:
     }
 
     /// Objective offset
-    inline double nonlinearOffset () const
+    inline double nonlinearOffset() const
     {
         return offset_;
     }

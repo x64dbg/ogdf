@@ -16,7 +16,7 @@ int main()
     SubgraphPlanarizer SP;
     SP.setSubgraph(new FastPlanarSubgraph);
     SP.setInserter(new VariableEmbeddingInserter);
-    SP.call(PR,0,crossNum);
+    SP.call(PR, 0, crossNum);
 
     cout << crossNum << " crossings" << endl;
     GraphIO::writeGML(PR, "plan.gml");

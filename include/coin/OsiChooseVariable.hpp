@@ -36,28 +36,28 @@ class OsiChooseVariable
 public:
 
     /// Default Constructor
-    OsiChooseVariable ();
+    OsiChooseVariable();
 
     /// Constructor from solver (so we can set up arrays etc)
-    OsiChooseVariable (const OsiSolverInterface * solver);
+    OsiChooseVariable(const OsiSolverInterface* solver);
 
     /// Copy constructor
-    OsiChooseVariable (const OsiChooseVariable &);
+    OsiChooseVariable(const OsiChooseVariable &);
 
     /// Assignment operator
-    OsiChooseVariable & operator= (const OsiChooseVariable& rhs);
+    OsiChooseVariable & operator= (const OsiChooseVariable & rhs);
 
     /// Clone
-    virtual OsiChooseVariable * clone() const;
+    virtual OsiChooseVariable* clone() const;
 
     /// Destructor
-    virtual ~OsiChooseVariable ();
+    virtual ~OsiChooseVariable();
 
     /** Sets up strong list and clears all if initialize is true.
         Returns number of infeasibilities.
         If returns -1 then has worked out node is infeasible!
     */
-    virtual int setupList ( OsiBranchingInformation *info, bool initialize);
+    virtual int setupList(OsiBranchingInformation* info, bool initialize);
     /** Choose a variable
         Returns -
        -1 Node is infeasible
@@ -71,24 +71,24 @@ public:
        If we have a solution then we can pick up from goodObjectiveValue() and goodSolution()
        If fixVariables is true then 2,3,4 are all really same as problem changed
     */
-    virtual int chooseVariable( OsiSolverInterface * solver, OsiBranchingInformation *info, bool fixVariables);
+    virtual int chooseVariable(OsiSolverInterface* solver, OsiBranchingInformation* info, bool fixVariables);
     /// Returns true if solution looks feasible against given objects
-    virtual bool feasibleSolution(const OsiBranchingInformation * info,
-                                  const double * solution,
+    virtual bool feasibleSolution(const OsiBranchingInformation* info,
+                                  const double* solution,
                                   int numberObjects,
-                                  const OsiObject ** objects);
+                                  const OsiObject** objects);
     /// Saves a good solution
-    void saveSolution(const OsiSolverInterface * solver);
+    void saveSolution(const OsiSolverInterface* solver);
     /// Clears out good solution after use
     void clearGoodSolution();
     /// Given a candidate fill in useful information e.g. estimates
-    virtual void updateInformation( const OsiBranchingInformation *info,
-                                    int branch, OsiHotInfo * hotInfo);
+    virtual void updateInformation(const OsiBranchingInformation* info,
+                                   int branch, OsiHotInfo* hotInfo);
 #if 1
     /// Given a branch fill in useful information e.g. estimates
-    virtual void updateInformation( int whichObject, int branch,
-                                    double changeInObjective, double changeInValue,
-                                    int status);
+    virtual void updateInformation(int whichObject, int branch,
+                                   double changeInObjective, double changeInValue,
+                                   int status);
 #endif
     /// Objective value for feasible solution
     inline double goodObjectiveValue() const
@@ -106,7 +106,7 @@ public:
         return downChange_;
     }
     /// Good solution - deleted by finalize
-    inline const double * goodSolution() const
+    inline const double* goodSolution() const
     {
         return goodSolution_;
     }
@@ -186,7 +186,7 @@ public:
         return numberStrongFixed_;
     }
     /// List of candidates
-    inline const int * candidates() const
+    inline const int* candidates() const
     {
         return list_;
     }
@@ -211,7 +211,7 @@ public:
         trustStrongForSolution_ = yesNo;
     }
     /// Set solver and redo arrays
-    void setSolver (const OsiSolverInterface * solver);
+    void setSolver(const OsiSolverInterface* solver);
     /** Return status -
        -1 Node is infeasible
        0  Normal termination - we have a candidate
@@ -242,13 +242,13 @@ protected:
     /// Estimate of down change or max change on other possibilities if n-way
     double downChange_;
     /// Good solution - deleted by finalize
-    double * goodSolution_;
+    double* goodSolution_;
     /// List of candidates
-    int * list_;
+    int* list_;
     /// Useful array (for sorting etc)
-    double * useful_;
+    double* useful_;
     /// Pointer to solver
-    const OsiSolverInterface * solver_;
+    const OsiSolverInterface* solver_;
     /* Status -
        -1 Node is infeasible
        0  Normal termination - we have a candidate
@@ -295,13 +295,13 @@ class OsiPseudoCosts
 protected:
     // Data
     /// Total of all changes up
-    double * upTotalChange_;
+    double* upTotalChange_;
     /// Total of all changes down
-    double * downTotalChange_;
+    double* downTotalChange_;
     /// Number of times up
-    int * upNumber_;
+    int* upNumber_;
     /// Number of times down
-    int * downNumber_;
+    int* downNumber_;
     /// Number of objects (could be found from solver)
     int numberObjects_;
     /// Number before we trust
@@ -309,13 +309,13 @@ protected:
 
 private:
     void gutsOfDelete();
-    void gutsOfCopy(const OsiPseudoCosts& rhs);
+    void gutsOfCopy(const OsiPseudoCosts & rhs);
 
 public:
     OsiPseudoCosts();
     virtual ~OsiPseudoCosts();
-    OsiPseudoCosts(const OsiPseudoCosts& rhs);
-    OsiPseudoCosts& operator=(const OsiPseudoCosts& rhs);
+    OsiPseudoCosts(const OsiPseudoCosts & rhs);
+    OsiPseudoCosts & operator=(const OsiPseudoCosts & rhs);
 
     /// Number of times before trusted
     inline int numberBeforeTrusted() const
@@ -375,13 +375,13 @@ public:
     //@}
 
     /// Given a candidate fill in useful information e.g. estimates
-    virtual void updateInformation(const OsiBranchingInformation *info,
-                                   int branch, OsiHotInfo * hotInfo);
+    virtual void updateInformation(const OsiBranchingInformation* info,
+                                   int branch, OsiHotInfo* hotInfo);
 #if 1
     /// Given a branch fill in useful information e.g. estimates
-    virtual void updateInformation( int whichObject, int branch,
-                                    double changeInObjective, double changeInValue,
-                                    int status);
+    virtual void updateInformation(int whichObject, int branch,
+                                   double changeInObjective, double changeInValue,
+                                   int status);
 #endif
 };
 
@@ -405,28 +405,28 @@ class OsiChooseStrong  : public OsiChooseVariable
 public:
 
     /// Default Constructor
-    OsiChooseStrong ();
+    OsiChooseStrong();
 
     /// Constructor from solver (so we can set up arrays etc)
-    OsiChooseStrong (const OsiSolverInterface * solver);
+    OsiChooseStrong(const OsiSolverInterface* solver);
 
     /// Copy constructor
-    OsiChooseStrong (const OsiChooseStrong &);
+    OsiChooseStrong(const OsiChooseStrong &);
 
     /// Assignment operator
-    OsiChooseStrong & operator= (const OsiChooseStrong& rhs);
+    OsiChooseStrong & operator= (const OsiChooseStrong & rhs);
 
     /// Clone
-    virtual OsiChooseVariable * clone() const;
+    virtual OsiChooseVariable* clone() const;
 
     /// Destructor
-    virtual ~OsiChooseStrong ();
+    virtual ~OsiChooseStrong();
 
     /** Sets up strong list and clears all if initialize is true.
         Returns number of infeasibilities.
         If returns -1 then has worked out node is infeasible!
     */
-    virtual int setupList ( OsiBranchingInformation *info, bool initialize);
+    virtual int setupList(OsiBranchingInformation* info, bool initialize);
     /** Choose a variable
         Returns -
        -1 Node is infeasible
@@ -440,7 +440,7 @@ public:
        If we have a solution then we can pick up from goodObjectiveValue() and goodSolution()
        If fixVariables is true then 2,3,4 are all really same as problem changed
     */
-    virtual int chooseVariable( OsiSolverInterface * solver, OsiBranchingInformation *info, bool fixVariables);
+    virtual int chooseVariable(OsiSolverInterface* solver, OsiBranchingInformation* info, bool fixVariables);
 
     /** Pseudo Shadow Price mode
         0 - off
@@ -459,13 +459,13 @@ public:
     }
 
     /** Accessor method to pseudo cost object*/
-    const OsiPseudoCosts& pseudoCosts() const
+    const OsiPseudoCosts & pseudoCosts() const
     {
         return pseudoCosts_;
     }
 
     /** Accessor method to pseudo cost object*/
-    OsiPseudoCosts& pseudoCosts()
+    OsiPseudoCosts & pseudoCosts()
     {
         return pseudoCosts_;
     }
@@ -499,9 +499,9 @@ protected:
          3 - returning because max time
 
     */
-    int doStrongBranching( OsiSolverInterface * solver,
-                           OsiBranchingInformation *info,
-                           int numberToDo, int returnCriterion);
+    int doStrongBranching(OsiSolverInterface* solver,
+                          OsiBranchingInformation* info,
+                          int numberToDo, int returnCriterion);
 
     /** Clear out the results array */
     void resetResults(int num);
@@ -534,31 +534,31 @@ class OsiHotInfo
 public:
 
     /// Default Constructor
-    OsiHotInfo ();
+    OsiHotInfo();
 
     /// Constructor from useful information
-    OsiHotInfo ( OsiSolverInterface * solver,
-                 const OsiBranchingInformation *info,
-                 const OsiObject * const * objects,
-                 int whichObject);
+    OsiHotInfo(OsiSolverInterface* solver,
+               const OsiBranchingInformation* info,
+               const OsiObject* const* objects,
+               int whichObject);
 
     /// Copy constructor
-    OsiHotInfo (const OsiHotInfo &);
+    OsiHotInfo(const OsiHotInfo &);
 
     /// Assignment operator
-    OsiHotInfo & operator= (const OsiHotInfo& rhs);
+    OsiHotInfo & operator= (const OsiHotInfo & rhs);
 
     /// Clone
-    virtual OsiHotInfo * clone() const;
+    virtual OsiHotInfo* clone() const;
 
     /// Destructor
-    virtual ~OsiHotInfo ();
+    virtual ~OsiHotInfo();
 
     /** Fill in useful information after strong branch.
         Return status
     */
-    int updateInformation( const OsiSolverInterface * solver, const OsiBranchingInformation * info,
-                           OsiChooseVariable * choose);
+    int updateInformation(const OsiSolverInterface* solver, const OsiBranchingInformation* info,
+                          OsiChooseVariable* choose);
     /// Original objective value
     inline double originalObjectiveValue() const
     {
@@ -567,25 +567,25 @@ public:
     /// Up change  - invalid if n-way
     inline double upChange() const
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         return changes_[1];
     }
     /// Down change  - invalid if n-way
     inline double downChange() const
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         return changes_[0];
     }
     /// Set up change  - invalid if n-way
     inline void setUpChange(double value)
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         changes_[1] = value;
     }
     /// Set down change  - invalid if n-way
     inline void setDownChange(double value)
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         changes_[0] = value;
     }
     /// Change on way k
@@ -597,13 +597,13 @@ public:
     /// Up iteration count  - invalid if n-way
     inline int upIterationCount() const
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         return iterationCounts_[1];
     }
     /// Down iteration count  - invalid if n-way
     inline int downIterationCount() const
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         return iterationCounts_[0];
     }
     /// Iteration count on way k
@@ -615,25 +615,25 @@ public:
     /// Up status  - invalid if n-way
     inline int upStatus() const
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         return statuses_[1];
     }
     /// Down status  - invalid if n-way
     inline int downStatus() const
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         return statuses_[0];
     }
     /// Set up status  - invalid if n-way
     inline void setUpStatus(int value)
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         statuses_[1] = value;
     }
     /// Set down status  - invalid if n-way
     inline void setDownStatus(int value)
     {
-        assert (branchingObject_->numberBranches()==2);
+        assert(branchingObject_->numberBranches() == 2);
         statuses_[0] = value;
     }
     /// Status on way k
@@ -642,7 +642,7 @@ public:
         return statuses_[k];
     }
     /// Branching object
-    inline OsiBranchingObject * branchingObject() const
+    inline OsiBranchingObject* branchingObject() const
     {
         return branchingObject_;
     }
@@ -656,18 +656,18 @@ protected:
     /// Original objective value
     double originalObjectiveValue_;
     /// Objective changes
-    double * changes_;
+    double* changes_;
     /// Iteration counts
-    int * iterationCounts_;
+    int* iterationCounts_;
     /** Status
         -1 - not done
         0 - feasible and finished
         1 -  infeasible
         2 - not finished
     */
-    int * statuses_;
+    int* statuses_;
     /// Branching object
-    OsiBranchingObject * branchingObject_;
+    OsiBranchingObject* branchingObject_;
     /// Which object on list
     int whichObject_;
 };

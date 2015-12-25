@@ -57,48 +57,48 @@ namespace ogdf
 {
 
 
-/**
- * \brief Interface of algorithms for computing a node ranking.
- *
- * \see SugiyamaLayout
- */
-class OGDF_EXPORT RankingModule
-{
-public:
-    //! Initializes a ranking module.
-    RankingModule() { }
-
-    virtual ~RankingModule() { }
-
     /**
-     * \brief Computes a node ranking of the digraph \a G in \a rank.
+     * \brief Interface of algorithms for computing a node ranking.
      *
-     * This method is the actual algorithm call and must be implemented by
-     * derived classes.
-     *
-     * @param G is the input digraph.
-     * @param rank is assigned the node ranking.
+     * \see SugiyamaLayout
      */
-    virtual void call(const Graph &G, NodeArray<int> &rank) = 0;
-
-    virtual void call(const Graph &G, const EdgeArray<int> & /* length */, const EdgeArray<int> & /* cost */, NodeArray<int> &rank)
+    class OGDF_EXPORT RankingModule
     {
-        call(G, rank);
-    }
+    public:
+        //! Initializes a ranking module.
+        RankingModule() { }
 
-    /**
-     * \brief Computes a node ranking of the digraph \a G in \a rank.
-     *
-     * @param G is the input digraph.
-     * @param rank is assigned the node ranking.
-     */
-    void operator()(const Graph &G, NodeArray<int> &rank)
-    {
-        call(G,rank);
-    }
+        virtual ~RankingModule() { }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        /**
+         * \brief Computes a node ranking of the digraph \a G in \a rank.
+         *
+         * This method is the actual algorithm call and must be implemented by
+         * derived classes.
+         *
+         * @param G is the input digraph.
+         * @param rank is assigned the node ranking.
+         */
+        virtual void call(const Graph & G, NodeArray<int> & rank) = 0;
+
+        virtual void call(const Graph & G, const EdgeArray<int> & /* length */, const EdgeArray<int> & /* cost */, NodeArray<int> & rank)
+        {
+            call(G, rank);
+        }
+
+        /**
+         * \brief Computes a node ranking of the digraph \a G in \a rank.
+         *
+         * @param G is the input digraph.
+         * @param rank is assigned the node ranking.
+         */
+        void operator()(const Graph & G, NodeArray<int> & rank)
+        {
+            call(G, rank);
+        }
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 
 } // end namespace ogdf

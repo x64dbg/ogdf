@@ -56,44 +56,44 @@ namespace ogdf
 {
 
 
-/**
- * \brief Interface of hierarchy layout algorithms.
- *
- * \see SugiyamaLayout
- */
-class OGDF_EXPORT UPRLayoutModule
-{
-public:
-    //! Initializes a upward planarized representation layout module.
-    UPRLayoutModule() { }
-
-    virtual ~UPRLayoutModule() { }
-
     /**
-     * \brief Computes a upward layout of \a UPR in \a AG.
-     * @param UPR is the upward planarized representation of the input graph. The original graph of UPR muss be the input graph.
-     * @param AG is assigned the hierarchy layout.
+     * \brief Interface of hierarchy layout algorithms.
+     *
+     * \see SugiyamaLayout
      */
-    void call(const UpwardPlanRep &UPR, GraphAttributes &AG)
+    class OGDF_EXPORT UPRLayoutModule
     {
-        doCall(UPR, AG);
-    }
+    public:
+        //! Initializes a upward planarized representation layout module.
+        UPRLayoutModule() { }
 
-    int numberOfLevels;
+        virtual ~UPRLayoutModule() { }
 
-protected:
-    /**
-     * \brief Implements the actual algorithm call.
-     *
-     * Must be implemented by derived classes.
-     *
-     * @param UPR is the upward planarized representation of the input graph. The original graph of UPR muss be the input graph.
-     * @param AG has to be assigned the hierarchy layout.
-     */
-    virtual void doCall(const UpwardPlanRep &UPR, GraphAttributes &AG) = 0;
+        /**
+         * \brief Computes a upward layout of \a UPR in \a AG.
+         * @param UPR is the upward planarized representation of the input graph. The original graph of UPR muss be the input graph.
+         * @param AG is assigned the hierarchy layout.
+         */
+        void call(const UpwardPlanRep & UPR, GraphAttributes & AG)
+        {
+            doCall(UPR, AG);
+        }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        int numberOfLevels;
+
+    protected:
+        /**
+         * \brief Implements the actual algorithm call.
+         *
+         * Must be implemented by derived classes.
+         *
+         * @param UPR is the upward planarized representation of the input graph. The original graph of UPR muss be the input graph.
+         * @param AG has to be assigned the hierarchy layout.
+         */
+        virtual void doCall(const UpwardPlanRep & UPR, GraphAttributes & AG) = 0;
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 
 } // end namespace ogdf

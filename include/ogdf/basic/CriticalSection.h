@@ -66,136 +66,136 @@ namespace ogdf
 
 #if defined(OGDF_SYSTEM_WINDOWS)
 
-//! Representation of a critical section.
-/**
- * Critical sections are used to synchronize access to resources shared by
- * several threads. It can be used to protect an object or a piece of code
- * allowing always one thread at a time access.
- */
-class OGDF_EXPORT CriticalSection
-{
-public:
-    //! Creates a critical section object.
-    CriticalSection()
-    {
-#if _WIN32_WINNT >= 0x0600
-        InitializeSRWLock(&m_srwLock);
-#else
-        InitializeCriticalSection(&m_cs);
-#endif
-    }
-
-    //! Creates a critical section object with spin count.
+    //! Representation of a critical section.
     /**
-     * The spin count determines how many times the calling thread spins
-     * when the critical section is unavailable, before it performs a wait.
-     * \remark The spin count is only used on multiprocessor systems;
-     *         otherwise it makes no sense.
+     * Critical sections are used to synchronize access to resources shared by
+     * several threads. It can be used to protect an object or a piece of code
+     * allowing always one thread at a time access.
      */
-    explicit CriticalSection(int spinCount)
+    class OGDF_EXPORT CriticalSection
     {
+    public:
+        //! Creates a critical section object.
+        CriticalSection()
+        {
+#if _WIN32_WINNT >= 0x0600
+            InitializeSRWLock(&m_srwLock);
+#else
+            InitializeCriticalSection(&m_cs);
+#endif
+        }
+
+        //! Creates a critical section object with spin count.
+        /**
+         * The spin count determines how many times the calling thread spins
+         * when the critical section is unavailable, before it performs a wait.
+         * \remark The spin count is only used on multiprocessor systems;
+         *         otherwise it makes no sense.
+         */
+        explicit CriticalSection(int spinCount)
+        {
 #if _WIN32_WINNT >= 0x0600
 #pragma warning( suppress : 4100 )
-        InitializeSRWLock(&m_srwLock);
+            InitializeSRWLock(&m_srwLock);
 #else
-        InitializeCriticalSectionAndSpinCount(&m_cs, spinCount);
+            InitializeCriticalSectionAndSpinCount(&m_cs, spinCount);
 #endif
-    }
-
-    ~CriticalSection()
-    {
-#if _WIN32_WINNT < 0x0600
-        DeleteCriticalSection(&m_cs);
-#endif
-    }
-
-    //! Enters the critical section.
-    void enter()
-    {
-#if _WIN32_WINNT >= 0x0600
-        AcquireSRWLockExclusive(&m_srwLock);
-#else
-        EnterCriticalSection(&m_cs);
-#endif
-    }
-
-    //! Tries to enter the critical section; returns true on success.
-    bool tryEnter()
-    {
-#if _WIN32_WINNT >= 0x0600
-        return (TryAcquireSRWLockExclusive(&m_srwLock) != 0);
-#else
-        return (TryEnterCriticalSection(&m_cs) != 0);
-#endif
-    }
-
-    //! Leaves the critical section.
-    void leave()
-    {
-#if _WIN32_WINNT >= 0x0600
-        ReleaseSRWLockExclusive(&m_srwLock);
-#else
-        LeaveCriticalSection(&m_cs);
-#endif
-    }
-
-private:
-#if _WIN32_WINNT >= 0x0600
-    SRWLOCK m_srwLock;
-#else
-    CRITICAL_SECTION m_cs; //!< The Windows critical section object.
-#endif
-};
-
-
-#else
-
-class OGDF_EXPORT CriticalSection
-{
-public:
-    CriticalSection() : m_spinCount(0)
-    {
-        pthread_mutex_init(&m_mutex, NULL);
-    }
-
-    explicit CriticalSection(int spinCount)
-    {
-        m_spinCount = (System::numberOfProcessors() >= 2) ? spinCount : 0;
-        int ret = pthread_mutex_init(&m_mutex, NULL);
-        if(ret != 0)
-            cout << "initialization of mutex failed: " << ret << endl;
-    }
-
-    ~CriticalSection()
-    {
-        pthread_mutex_destroy(&m_mutex);
-    }
-
-    void enter()
-    {
-        if(m_spinCount > 0)
-        {
-            for(int i = m_spinCount; i > 0; --i)
-                if(pthread_mutex_trylock(&m_mutex) != EBUSY)
-                    return;
         }
-        pthread_mutex_lock(&m_mutex);
-    }
 
-    bool tryEnter()
+        ~CriticalSection()
+        {
+#if _WIN32_WINNT < 0x0600
+            DeleteCriticalSection(&m_cs);
+#endif
+        }
+
+        //! Enters the critical section.
+        void enter()
+        {
+#if _WIN32_WINNT >= 0x0600
+            AcquireSRWLockExclusive(&m_srwLock);
+#else
+            EnterCriticalSection(&m_cs);
+#endif
+        }
+
+        //! Tries to enter the critical section; returns true on success.
+        bool tryEnter()
+        {
+#if _WIN32_WINNT >= 0x0600
+            return (TryAcquireSRWLockExclusive(&m_srwLock) != 0);
+#else
+            return (TryEnterCriticalSection(&m_cs) != 0);
+#endif
+        }
+
+        //! Leaves the critical section.
+        void leave()
+        {
+#if _WIN32_WINNT >= 0x0600
+            ReleaseSRWLockExclusive(&m_srwLock);
+#else
+            LeaveCriticalSection(&m_cs);
+#endif
+        }
+
+    private:
+#if _WIN32_WINNT >= 0x0600
+        SRWLOCK m_srwLock;
+#else
+        CRITICAL_SECTION m_cs; //!< The Windows critical section object.
+#endif
+    };
+
+
+#else
+
+    class OGDF_EXPORT CriticalSection
     {
-        return (pthread_mutex_trylock(&m_mutex) != EBUSY);
-    }
+    public:
+        CriticalSection() : m_spinCount(0)
+        {
+            pthread_mutex_init(&m_mutex, NULL);
+        }
 
-    void leave()
-    {
-        pthread_mutex_unlock(&m_mutex);
-    }
+        explicit CriticalSection(int spinCount)
+        {
+            m_spinCount = (System::numberOfProcessors() >= 2) ? spinCount : 0;
+            int ret = pthread_mutex_init(&m_mutex, NULL);
+            if(ret != 0)
+                cout << "initialization of mutex failed: " << ret << endl;
+        }
 
-private:
-    pthread_mutex_t m_mutex;
-    int             m_spinCount;
-};
+        ~CriticalSection()
+        {
+            pthread_mutex_destroy(&m_mutex);
+        }
+
+        void enter()
+        {
+            if(m_spinCount > 0)
+            {
+                for(int i = m_spinCount; i > 0; --i)
+                    if(pthread_mutex_trylock(&m_mutex) != EBUSY)
+                        return;
+            }
+            pthread_mutex_lock(&m_mutex);
+        }
+
+        bool tryEnter()
+        {
+            return (pthread_mutex_trylock(&m_mutex) != EBUSY);
+        }
+
+        void leave()
+        {
+            pthread_mutex_unlock(&m_mutex);
+        }
+
+    private:
+        pthread_mutex_t m_mutex;
+        int             m_spinCount;
+    };
 
 #endif
 

@@ -48,32 +48,32 @@
 namespace ogdf
 {
 
-void AcyclicSubgraphModule::callAndReverse(Graph &G, List<edge> &reversed)
-{
-    call(G,reversed);
+    void AcyclicSubgraphModule::callAndReverse(Graph & G, List<edge> & reversed)
+    {
+        call(G, reversed);
 
-    ListConstIterator<edge> it;
-    for(it = reversed.begin(); it.valid(); ++it)
-        G.reverseEdge(*it);
-}
-
-
-void AcyclicSubgraphModule::callAndReverse(Graph &G)
-{
-    List<edge> reversed;
-    callAndReverse(G,reversed);
-}
+        ListConstIterator<edge> it;
+        for(it = reversed.begin(); it.valid(); ++it)
+            G.reverseEdge(*it);
+    }
 
 
-void AcyclicSubgraphModule::callAndDelete(Graph &G)
-{
-    List<edge> arcSet;
-    call(G,arcSet);
+    void AcyclicSubgraphModule::callAndReverse(Graph & G)
+    {
+        List<edge> reversed;
+        callAndReverse(G, reversed);
+    }
 
-    ListConstIterator<edge> it;
-    for(it = arcSet.begin(); it.valid(); ++it)
-        G.delEdge(*it);
-}
+
+    void AcyclicSubgraphModule::callAndDelete(Graph & G)
+    {
+        List<edge> arcSet;
+        call(G, arcSet);
+
+        ListConstIterator<edge> it;
+        for(it = arcSet.begin(); it.valid(); ++it)
+            G.delEdge(*it);
+    }
 
 
 } // end namespace ogdf

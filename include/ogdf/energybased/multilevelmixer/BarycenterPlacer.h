@@ -52,18 +52,18 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT BarycenterPlacer : public InitialPlacer
-{
-private:
-    bool m_weightedPositions;
+    class OGDF_EXPORT BarycenterPlacer : public InitialPlacer
+    {
+    private:
+        bool m_weightedPositions;
 
-public:
-    BarycenterPlacer();
+    public:
+        BarycenterPlacer();
 
-    void placeOneLevel(MultilevelGraph &MLG);
-    void placeOneNode(MultilevelGraph &MLG);
-    void weightedPositionPriority(bool on);
-};
+        void placeOneLevel(MultilevelGraph & MLG);
+        void placeOneNode(MultilevelGraph & MLG);
+        void weightedPositionPriority(bool on);
+    };
 
 } // namespace ogdf
 

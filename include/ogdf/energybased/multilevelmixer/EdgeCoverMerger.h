@@ -52,19 +52,19 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT EdgeCoverMerger : public MultilevelBuilder
-{
-private:
-    double m_levelSizeFactor;
-    NodeArray<node> m_substituteNodes;
+    class OGDF_EXPORT EdgeCoverMerger : public MultilevelBuilder
+    {
+    private:
+        double m_levelSizeFactor;
+        NodeArray<node> m_substituteNodes;
 
-    bool doMerge(MultilevelGraph &MLG, node parent, node mergePartner, int level);
-    bool buildOneLevel(MultilevelGraph &MLG);
+        bool doMerge(MultilevelGraph & MLG, node parent, node mergePartner, int level);
+        bool buildOneLevel(MultilevelGraph & MLG);
 
-public:
-    EdgeCoverMerger();
-    void setFactor(double factor);
-};
+    public:
+        EdgeCoverMerger();
+        void setFactor(double factor);
+    };
 
 } // namespace ogdf
 

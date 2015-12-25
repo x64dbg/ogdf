@@ -18,7 +18,7 @@
 
 
 void
-CglMixedIntegerRounding2UnitTest(const OsiSolverInterface *baseSiP,
+CglMixedIntegerRounding2UnitTest(const OsiSolverInterface* baseSiP,
                                  const std::string mpsDir)
 {
     // Test default constructor
@@ -32,7 +32,7 @@ CglMixedIntegerRounding2UnitTest(const OsiSolverInterface *baseSiP,
         {
             CglMixedIntegerRounding2 bGenerator;
             CglMixedIntegerRounding2 cGenerator(bGenerator);
-            rhs=bGenerator;
+            rhs = bGenerator;
         }
     }
 
@@ -66,18 +66,18 @@ CglMixedIntegerRounding2UnitTest(const OsiSolverInterface *baseSiP,
     // Test generateCuts
     {
         CglMixedIntegerRounding2 gct;
-        OsiSolverInterface  *siP = baseSiP->clone();
-        std::string fn = mpsDir+"capPlan1";
-        std::string fn2 = mpsDir+"capPlan1.mps";
-        FILE *in_f = fopen(fn2.c_str(), "r");
+        OsiSolverInterface*  siP = baseSiP->clone();
+        std::string fn = mpsDir + "capPlan1";
+        std::string fn2 = mpsDir + "capPlan1.mps";
+        FILE* in_f = fopen(fn2.c_str(), "r");
         if(in_f == NULL)
         {
-            std::cout<<"Can not open file "<<fn2<<std::endl<<"Skip test of CglMixedIntegerRounding2::generateCuts()"<<std::endl;
+            std::cout << "Can not open file " << fn2 << std::endl << "Skip test of CglMixedIntegerRounding2::generateCuts()" << std::endl;
         }
         else
         {
             fclose(in_f);
-            siP->readMps(fn.c_str(),"mps");
+            siP->readMps(fn.c_str(), "mps");
 
             siP->initialSolve();
             double lpRelax = siP->getObjValue();
@@ -86,16 +86,16 @@ CglMixedIntegerRounding2UnitTest(const OsiSolverInterface *baseSiP,
             gct.setDoPreproc(1); // Needed for DyLP
             gct.generateCuts(*siP, cs);
             int nRowCuts = cs.sizeRowCuts();
-            std::cout<<"There are "<<nRowCuts<<" MIR2 cuts"<<std::endl;
+            std::cout << "There are " << nRowCuts << " MIR2 cuts" << std::endl;
             assert(cs.sizeRowCuts() > 0);
             OsiSolverInterface::ApplyCutsReturnCode rc = siP->applyCuts(cs);
 
             siP->resolve();
 
-            double lpRelaxAfter= siP->getObjValue();
+            double lpRelaxAfter = siP->getObjValue();
             printf("Initial LP value: %f\n", lpRelax);
             printf("LP value with cuts: %f\n", lpRelaxAfter);
-            assert( lpRelax < lpRelaxAfter );
+            assert(lpRelax < lpRelaxAfter);
             assert(lpRelaxAfter < 964);
         }
         delete siP;

@@ -42,9 +42,9 @@ typedef struct LP_SOL
     int            xindex;
     int            xiter_num;
     int            max_sol_length;
-    int           *xind;        /* the indices of the nonzeros in the current
+    int*           xind;        /* the indices of the nonzeros in the current
                   solution*/
-    double        *xval;        /* the values of the nonzeros in the current
+    double*        xval;        /* the values of the nonzeros in the current
                   solution*/
     double         objval;      /* the objective function value of the current
                   relaxation*/
@@ -54,10 +54,10 @@ typedef struct LP_SOL
 typedef struct BASE_DESC
 {
     int            varnum;
-    int           *userind;
+    int*           userind;
 #if 0
-    double        *lb;          /* even if there are global lb and ub, we */
-    double        *ub;          /* fill these arrays out */
+    double*        lb;          /* even if there are global lb and ub, we */
+    double*        ub;          /* fill these arrays out */
 #endif
     int            cutnum;
 } base_desc;
@@ -69,7 +69,7 @@ typedef struct BASE_DESC
 typedef struct CUT_DATA
 {
     int            size;        /* the size of the coef array */
-    char          *coef;        /* an array which contains the data necessary to
+    char*          coef;        /* an array which contains the data necessary to
                   construct the cut -- it is stored in a
                   packed form. The types of the cut tells how
                   to "unpack" it */
@@ -89,7 +89,7 @@ typedef struct CUT_DATA
 
 typedef struct ROW_DATA
 {
-    cut_data      *cut;
+    cut_data*      cut;
     int            ineff_cnt;
     int            eff_cnt;
     char           free;
@@ -99,9 +99,9 @@ typedef struct ROW_DATA
 typedef struct WAITING_ROW
 {
     int            source_pid;
-    cut_data      *cut;
-    int           *matind;
-    double        *matval;
+    cut_data*      cut;
+    int*           matind;
+    double*        matval;
     int            nzcnt;
     double         violation;
 } waiting_row;
@@ -131,9 +131,9 @@ typedef struct VAR_DESC
 typedef struct BOUNDS_CHANGE_DESC
 {
     int                 num_changes; /* how many bounds changed */
-    int                *index;       /* max size 2*n */
-    char               *lbub;        /* ub or lb? */
-    double             *value;       /* new bound value */
+    int*                index;       /* max size 2*n */
+    char*               lbub;        /* ub or lb? */
+    double*             value;       /* new bound value */
 } bounds_change_desc;
 
 
@@ -156,15 +156,15 @@ typedef struct ARRAY_DESC
     char           type;        /* NO_DATA_STORED, EXPLICIT_LIST, WRT_PARENT */
     int            size;
     int            added;
-    int           *list;
+    int*           list;
 } array_desc;
 
 typedef struct DOUBLE_ARRAY_DESC
 {
     char           type;        /* NO_DATA_STORED, EXPLICIT_LIST, WRT_PARENT */
     int            size;        /* the size of list, stat */
-    int           *list;
-    int           *stat;
+    int*           list;
+    int*           stat;
 } double_array_desc;
 
 typedef struct BASIS_DESC
@@ -202,15 +202,15 @@ typedef struct NODE_DESC
                   NF_CHECK_UNTIL_LAST, NF_CHECK_NOTHING */
     array_desc     cutind;
 #if defined(COMPILING_FOR_LP) || defined(COMPILING_FOR_MASTER) || defined(COMPILE_IN_LP)
-    cut_data     **cuts;        /* this is not used in TM anyway. */
+    cut_data**     cuts;        /* this is not used in TM anyway. */
 #endif
 
-    bounds_change_desc *bnd_change; /* changes in variable bounds that happen
+    bounds_change_desc* bnd_change; /* changes in variable bounds that happen
                                      during the processing of the node */
 
     /* Any additional info the user might want to pass */
     int           desc_size;
-    char         *desc;
+    char*         desc;
 } node_desc;
 
 typedef struct BRANCH_OBJ
@@ -218,7 +218,7 @@ typedef struct BRANCH_OBJ
     char          type;         /* Type of the candidate */
 #if defined(COMPILING_FOR_LP) || defined(COMPILE_IN_LP)
     int           position;     /* The position of the candidate */
-    waiting_row  *row;          /* Description of the left hand side; makes
+    waiting_row*  row;          /* Description of the left hand side; makes
                   sense only for branching cuts */
 #endif
     int           child_num;    /* Number of kids */
@@ -241,18 +241,18 @@ typedef struct BRANCH_OBJ
     int           branch[MAX_CHILDREN_NUM];
 #ifdef COMPILE_FRAC_BRANCHING
     int           frac_num[MAX_CHILDREN_NUM];
-    int          *frac_ind[MAX_CHILDREN_NUM];
-    double       *frac_val[MAX_CHILDREN_NUM];
+    int*          frac_ind[MAX_CHILDREN_NUM];
+    double*       frac_val[MAX_CHILDREN_NUM];
 #endif
 #else
-    char         *sense;
-    double       *rhs;
-    double       *range;
-    int          *branch;
+    char*         sense;
+    double*       rhs;
+    double*       range;
+    int*          branch;
 #ifdef COMPILE_FRAC_BRANCHING
-    int          *frac_num;
-    int         **frac_ind;
-    double      **frac_val;
+    int*          frac_num;
+    int**         frac_ind;
+    double**      frac_val;
 #endif
 #endif
 
@@ -267,19 +267,19 @@ typedef struct BRANCH_OBJ
     int           is_est[MAX_CHILDREN_NUM];
 
 #else
-    double       *objval;   /* arrays of size 'number' */
-    int          *termcode;
-    int          *iterd;
-    int          *feasible;
+    double*       objval;   /* arrays of size 'number' */
+    int*          termcode;
+    int*          iterd;
+    int*          feasible;
 
 #endif
 
 #endif
-    int          *sol_sizes;
-    int         **sol_inds;
-    double      **solutions;
+    int*          sol_sizes;
+    int**         sol_inds;
+    double**      solutions;
 #ifdef SENSITIVITY_ANALYSIS
-    double      **duals;
+    double**      duals;
 #endif
 
 } branch_obj;
@@ -289,9 +289,9 @@ typedef struct BRANCH_OBJ
 typedef struct STR_INT
 {
 #ifdef _OPENMP
-    char      *str;
+    char*      str;
 #else
-    char       str[MAX_LINE_LENGTH +1];
+    char       str[MAX_LINE_LENGTH + 1];
 #endif
     int        code;
 } str_int;
@@ -374,8 +374,8 @@ typedef struct BC_NODE
                                solving the LP */
     double     opt_estimate; /* an estimate of the value of the best feasible
                    solution that could be obtained in this node */
-    struct BC_NODE  *parent;
-    struct BC_NODE **children;
+    struct BC_NODE*  parent;
+    struct BC_NODE** children;
     branch_obj       bobj;
 
     node_desc  desc;          /* the description of the node,
@@ -384,10 +384,10 @@ typedef struct BC_NODE
 
     int        feasibility_status;
     int        sol_size;
-    int       *sol_ind;
-    double    *sol;
+    int*       sol_ind;
+    double*    sol;
 #ifdef SENSITIVITY_ANALYSIS
-    double    *duals;
+    double*    duals;
     double     C_LP;
     double     B_IP;
 #endif
@@ -535,12 +535,12 @@ typedef struct RC_DESC
 {
     int         size;
     int         num_rcs;
-    int       **indices;
-    double    **values;
-    double    **ub;
-    double    **lb;
-    double     *obj;
-    int        *cnt;
+    int**       indices;
+    double**    values;
+    double**    ub;
+    double**    lb;
+    double*     obj;
+    int*        cnt;
 } rc_desc;
 
 /*===========================================================================*/
@@ -551,7 +551,7 @@ typedef struct COL_IMP
 {
 
     int col_ind;
-    struct COL_IMP *c_next;
+    struct COL_IMP* c_next;
 
 } col_imp;
 
@@ -566,8 +566,8 @@ typedef struct IMPVAR
             'U or 'L' or the row is infea'S'ible
             however, right now it is same with fix_bounds */
     double val; /* if it is a column impl*/
-    struct IMPVAR *right;
-    struct IMPVAR *left;
+    struct IMPVAR* right;
+    struct IMPVAR* left;
 
 } IMPvar;
 
@@ -575,8 +575,8 @@ typedef struct IMPLIST
 {
 
     int size;
-    IMPvar * head;
-    IMPvar * tail;
+    IMPvar* head;
+    IMPvar* tail;
 } IMPlist;
 
 /*===========================================================================*/
@@ -609,10 +609,10 @@ typedef struct COLINFO
     int fix_row_ind; /* state which row caused to fix this variable during
                basic preprocessor */
 
-    IMPlist *ulist;  /* for binary variables: keeps the list of variables
+    IMPlist* ulist;  /* for binary variables: keeps the list of variables
                fixed or bounds improved if this variable is fixed to
                its upper bound */
-    IMPlist *llist;  /* same here - lower side */
+    IMPlist* llist;  /* same here - lower side */
 
 } COLinfo;
 
@@ -629,7 +629,7 @@ typedef struct ROWINFO
     int sign_type; /* all_pos, all_neg, mixed */
 
     char is_sos_row;
-    char * sos_rep;  /* compact representation of the sos row for bitwise
+    char* sos_rep;  /* compact representation of the sos row for bitwise
                operations */
 
     /* for preprocessor */
@@ -708,8 +708,8 @@ typedef struct MIPINFO
     double sos_bin_row_ratio;
     double bin_row_ratio;
 
-    ROWinfo *rows;
-    COLinfo *cols;
+    ROWinfo* rows;
+    COLinfo* cols;
 } MIPinfo;
 
 /*===========================================================================*/
@@ -724,12 +724,12 @@ typedef struct MIPDIFF
     int coef_changed_num;
     int bounds_tightened_num;
     int bounds_integerized_num;
-    int *rows_deleted_ind;
-    int *vars_fixed_ind;
-    int *bounds_tightened_ind;
-    int *bounds_integerized_ind;
-    int *coef_changed_col_ind;
-    int *coef_changed_row_ind;
+    int* rows_deleted_ind;
+    int* vars_fixed_ind;
+    int* bounds_tightened_ind;
+    int* bounds_integerized_ind;
+    int* coef_changed_col_ind;
+    int* coef_changed_row_ind;
 } MIPdiff;
 
 #endif
@@ -742,19 +742,19 @@ typedef struct MIPDESC
     int        n;           /* number of columns */
     int        m;           /* number of rows */
     int        nz;          /* number of nonzeros */
-    char      *is_int;      /* indicates whether a given variables is integer */
-    int       *matbeg;      /* n */
-    int       *matind;      /* nz */
-    double    *matval;      /* nz */
-    double    *obj;         /* n */
-    double    *obj1;        /* n */ /* for bicriteria problems */
-    double    *obj2;        /* n */ /* for bicriteria problems */
-    double    *rhs;         /* m */
-    double    *rngval;      /* m */
-    char      *sense;       /* m */
-    double    *lb;          /* n */
-    double    *ub;          /* n */
-    char     **colname;     /* column names */
+    char*      is_int;      /* indicates whether a given variables is integer */
+    int*       matbeg;      /* n */
+    int*       matind;      /* nz */
+    double*    matval;      /* nz */
+    double*    obj;         /* n */
+    double*    obj1;        /* n */ /* for bicriteria problems */
+    double*    obj2;        /* n */ /* for bicriteria problems */
+    double*    rhs;         /* m */
+    double*    rngval;      /* m */
+    char*      sense;       /* m */
+    double*    lb;          /* n */
+    double*    ub;          /* n */
+    char**     colname;     /* column names */
     double     obj_offset;  /* constant to be added to the objective function.*/
     char       obj_sense;   /* objective sense. */
 
@@ -763,19 +763,19 @@ typedef struct MIPDESC
     int        alloc_nz;
 
     int        fixed_n;      /* only used if preprocessor is used */
-    int       *fixed_ind;    /* fixed vars to nonzero vals */
-    double    *fixed_val;
+    int*       fixed_ind;    /* fixed vars to nonzero vals */
+    double*    fixed_val;
 
     /* Only to be allocated and used by SYMPHONY */
 
-    int       *col_lengths;
-    int       *row_matbeg;      /* m */  /* a row ordered desc for heuristics */
-    int       *row_matind;      /* nz */
-    double    *row_matval;      /* nz */
-    int       *row_lengths;
+    int*       col_lengths;
+    int*       row_matbeg;      /* m */  /* a row ordered desc for heuristics */
+    int*       row_matind;      /* nz */
+    double*    row_matval;      /* nz */
+    int*       row_lengths;
     /* will keep the orig sense - if prep is used */
-    char      *orig_sense;
-    int       *orig_ind; /*mapping of indices of presolved model into orig one
+    char*      orig_sense;
+    int*       orig_ind; /*mapping of indices of presolved model into orig one
              */
 
     int        var_type_modified;  /* number of updates on the mip desc */
@@ -783,13 +783,13 @@ typedef struct MIPDESC
     int        change_type[MAX_CHANGE_NUM];  /* type of the mip desc. changes */
     int        new_col_num; /* used only when new cols added */
     int        cru_vars_num;
-    int       *cru_vars;
+    int*       cru_vars;
     char       is_modified;
 
     /* will be evaluated only if preprocessor is used */
     /* it is here to be carried later for further use */
     /* mip info */
-    MIPinfo   *mip_inf;
+    MIPinfo*   mip_inf;
 
     //  MIPdiff *mip_diff;
 
@@ -802,10 +802,10 @@ typedef struct MIPDESC
 
 typedef struct WARM_START_DESC
 {
-    bc_node       *rootnode;
+    bc_node*       rootnode;
     int            cut_num;
     int            allocated_cut_num;
-    cut_data     **cuts;
+    cut_data**     cuts;
     problem_stat   stat;
     node_times     comp_times;
     int            phase;
@@ -825,8 +825,8 @@ typedef struct SP_SOLUTION_DESC
 {
     double         objval;
     int            xlength;
-    int           *xind;
-    double        *xval;
+    int*           xind;
+    double*        xval;
 
     /* The bnb node where this solution was discoverd*/
     int            node_index;
@@ -845,6 +845,6 @@ typedef struct SP_DESC
     int            num_solutions;
     int            total_num_sols_found;
     /* array of those solutions */
-    sp_solution    **solutions;
+    sp_solution**    solutions;
 } sp_desc;
 #endif

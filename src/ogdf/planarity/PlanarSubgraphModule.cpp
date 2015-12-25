@@ -48,30 +48,30 @@ namespace ogdf
 {
 
 
-Module::ReturnType PlanarSubgraphModule::callAndDelete(
-    GraphCopy &PG,
-    const List<edge> &preferedEdges,
-    List<edge> &delOrigEdges,
-    bool preferedImplyPlanar)
-{
-    List<edge> delEdges;
-
-    ReturnType retValue = call(PG, preferedEdges, delEdges, preferedImplyPlanar);
-
-    if(isSolution(retValue))
+    Module::ReturnType PlanarSubgraphModule::callAndDelete(
+        GraphCopy & PG,
+        const List<edge> & preferedEdges,
+        List<edge> & delOrigEdges,
+        bool preferedImplyPlanar)
     {
-        ListConstIterator<edge> it;
-        for(it = delEdges.begin(); it.valid(); ++it)
+        List<edge> delEdges;
+
+        ReturnType retValue = call(PG, preferedEdges, delEdges, preferedImplyPlanar);
+
+        if(isSolution(retValue))
         {
-            edge eCopy = *it;
+            ListConstIterator<edge> it;
+            for(it = delEdges.begin(); it.valid(); ++it)
+            {
+                edge eCopy = *it;
 
-            delOrigEdges.pushBack(PG.original(eCopy));
-            PG.delEdge(eCopy);
+                delOrigEdges.pushBack(PG.original(eCopy));
+                PG.delEdge(eCopy);
+            }
         }
-    }
 
-    return retValue;
-}
+        return retValue;
+    }
 
 
 } // end namespace ogdf

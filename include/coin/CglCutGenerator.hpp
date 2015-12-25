@@ -31,27 +31,27 @@ public:
     The generated cuts are inserted into and returned in the
     collection of cuts cs.
     */
-    virtual void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
-                               const CglTreeInfo info = CglTreeInfo()) const=0;
+    virtual void generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
+                              const CglTreeInfo info = CglTreeInfo()) const = 0;
     //@}
 
 
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglCutGenerator ();
+    CglCutGenerator();
 
     /// Copy constructor
-    CglCutGenerator ( const CglCutGenerator &);
+    CglCutGenerator(const CglCutGenerator &);
 
     /// Clone
-    virtual CglCutGenerator * clone() const = 0;
+    virtual CglCutGenerator* clone() const = 0;
 
     /// Assignment operator
-    CglCutGenerator & operator=(const CglCutGenerator& rhs);
+    CglCutGenerator & operator=(const CglCutGenerator & rhs);
 
     /// Destructor
-    virtual ~CglCutGenerator ();
+    virtual ~CglCutGenerator();
 
     /** Create C++ lines to set the generator in the current state.
         The output must be parsed by the calling code, as each line
@@ -63,13 +63,13 @@ public:
         Keys 1, 2, 5, 6, 7, 8 are defined, but not applicable to
         cut generators.
     */
-    virtual std::string generateCpp( FILE * )
+    virtual std::string generateCpp(FILE*)
     {
         return "";
     }
 
     /// This can be used to refresh any information
-    virtual void refreshSolver(OsiSolverInterface * ) {}
+    virtual void refreshSolver(OsiSolverInterface*) {}
     //@}
 
     /**@name Gets and Sets */
@@ -89,7 +89,7 @@ public:
     */
     inline void setAggressiveness(int value)
     {
-        aggressive_=value;
+        aggressive_ = value;
     }
 
     /**
@@ -112,7 +112,7 @@ public:
     // test this class
     //static void unitTest();
 
-// private:
+    // private:
 
     /**
        Aggressiveness - 0 = neutral, 100 is normal root node.

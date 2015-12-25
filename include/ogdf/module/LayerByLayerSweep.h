@@ -57,77 +57,77 @@
 namespace ogdf
 {
 
-class SugiyamaLayout;
+    class SugiyamaLayout;
 
-/**
- * \brief Interface of two-layer crossing minimization algorithms.
- *
- * The interface of a two-layer crossing minimization algorithm consists of
- * four methods:
- *   -# init(const Hierarchy & H) must be called first. This initializes the module
- *      for operating on hierarchy \a H.
- *   -# call(Level &L) (or operator()(Level &L)) performs two-layer crossing minimization,
- *      where \a L is the permutable level and the neighbor level of \a L (fixed
- *      level) is determined by the hierarchy (see documentation of class Hierarchy).
- *      Any number of call's may be performed once init() has been executed.
- *   -# cleanup() has to be called last and performs some final clean-up work.
- */
-class OGDF_EXPORT LayerByLayerSweep : public LayeredCrossMinModule
-{
-public:
-
-    virtual const HierarchyLevels *reduceCrossings(const SugiyamaLayout &sugi, const Hierarchy &H);
-
-    //! Template method implementation of reduceCrossings from LayeredCrossMinModule.
-    virtual const HierarchyLevels *reduceCrossings(const SugiyamaLayout &sugi, Hierarchy &H)
+    /**
+     * \brief Interface of two-layer crossing minimization algorithms.
+     *
+     * The interface of a two-layer crossing minimization algorithm consists of
+     * four methods:
+     *   -# init(const Hierarchy & H) must be called first. This initializes the module
+     *      for operating on hierarchy \a H.
+     *   -# call(Level &L) (or operator()(Level &L)) performs two-layer crossing minimization,
+     *      where \a L is the permutable level and the neighbor level of \a L (fixed
+     *      level) is determined by the hierarchy (see documentation of class Hierarchy).
+     *      Any number of call's may be performed once init() has been executed.
+     *   -# cleanup() has to be called last and performs some final clean-up work.
+     */
+    class OGDF_EXPORT LayerByLayerSweep : public LayeredCrossMinModule
     {
-        const Hierarchy &constH = H;
-        return reduceCrossings(sugi,constH);
-    }
+    public:
 
-    //! Initializes a two-layer crossing minimization module.
-    LayerByLayerSweep() { }
+        virtual const HierarchyLevels* reduceCrossings(const SugiyamaLayout & sugi, const Hierarchy & H);
 
-    virtual ~LayerByLayerSweep() { }
+        //! Template method implementation of reduceCrossings from LayeredCrossMinModule.
+        virtual const HierarchyLevels* reduceCrossings(const SugiyamaLayout & sugi, Hierarchy & H)
+        {
+            const Hierarchy & constH = H;
+            return reduceCrossings(sugi, constH);
+        }
 
-    //! Returns a new instance of the two-layer crossing minimization module with the same option settings.
-    virtual LayerByLayerSweep *clone() const = 0;
+        //! Initializes a two-layer crossing minimization module.
+        LayerByLayerSweep() { }
 
-    /**
-     * \brief Initializes the crossing minimization module for hierarchy levels \a levels.
-     *
-     * @param levels is the hierarchy on which the module shall operate.
-     */
-    virtual void init(const HierarchyLevels &levels) { }
+        virtual ~LayerByLayerSweep() { }
 
-    /**
-     * \brief Performs crossing minimization for level \a L.
-     *
-     * @param L is the level in the hierarchy on which nodes are permuted; the
-     *        neighbor level (fixed level) is determined by the hierarchy.
-     */
-    virtual void call(Level &L) = 0;
+        //! Returns a new instance of the two-layer crossing minimization module with the same option settings.
+        virtual LayerByLayerSweep* clone() const = 0;
 
-    /**
-     * \brief Performs crossing minimization for level \a L.
-     *
-     * @param L is the level in the hierarchy on which nodes are permuted; the
-     *        neighbor level (fixed level) is determined by the hierarchy.
-     */
-    void operator()(Level &L)
-    {
-        call(L);
-    }
+        /**
+         * \brief Initializes the crossing minimization module for hierarchy levels \a levels.
+         *
+         * @param levels is the hierarchy on which the module shall operate.
+         */
+        virtual void init(const HierarchyLevels & levels) { }
 
-    //! Performs clean-up.
-    virtual void cleanup() { }
+        /**
+         * \brief Performs crossing minimization for level \a L.
+         *
+         * @param L is the level in the hierarchy on which nodes are permuted; the
+         *        neighbor level (fixed level) is determined by the hierarchy.
+         */
+        virtual void call(Level & L) = 0;
+
+        /**
+         * \brief Performs crossing minimization for level \a L.
+         *
+         * @param L is the level in the hierarchy on which nodes are permuted; the
+         *        neighbor level (fixed level) is determined by the hierarchy.
+         */
+        void operator()(Level & L)
+        {
+            call(L);
+        }
+
+        //! Performs clean-up.
+        virtual void cleanup() { }
 
 
-    class CrossMinMaster;
-    class CrossMinWorker;
+        class CrossMinMaster;
+        class CrossMinWorker;
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 
 } // end namespace ogdf

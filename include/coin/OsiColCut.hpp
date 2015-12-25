@@ -22,7 +22,7 @@ Column Cut Class has:
 */
 class OsiColCut : public OsiCut
 {
-    friend void OsiColCutUnitTest(const OsiSolverInterface * baseSiP,
+    friend void OsiColCutUnitTest(const OsiSolverInterface* baseSiP,
                                   const std::string & mpsDir);
 
 public:
@@ -34,20 +34,20 @@ public:
     /// Set column lower bounds
     inline void setLbs(
         int nElements,
-        const int * colIndices,
-        const double * lbElements );
+        const int* colIndices,
+        const double* lbElements);
 
     /// Set column lower bounds from a packed vector
-    inline void setLbs( const CoinPackedVector & lbs );
+    inline void setLbs(const CoinPackedVector & lbs);
 
     /// Set column upper bounds
     inline void setUbs(
         int nElements,
-        const int * colIndices,
-        const double * ubElements );
+        const int* colIndices,
+        const double* ubElements);
 
     /// Set column upper bounds from a packed vector
-    inline void setUbs( const CoinPackedVector & ubs );
+    inline void setUbs(const CoinPackedVector & ubs);
     //@}
 
     //----------------------------------------------------------------
@@ -68,13 +68,13 @@ public:
     /** equal - true if lower bounds, upper bounds,
     and OsiCut are equal.
     */
-    inline virtual bool operator==(const OsiColCut& rhs) const;
+    inline virtual bool operator==(const OsiColCut & rhs) const;
 
 #if __GNUC__ != 2
     using OsiCut::operator!= ;
 #endif
     /// not equal
-    inline virtual bool operator!=(const OsiColCut& rhs) const;
+    inline virtual bool operator!=(const OsiColCut & rhs) const;
     //@}
 
 
@@ -98,7 +98,7 @@ public:
     <li>do not have an index >= the number of column is the model.
     </ul>
     */
-    inline virtual bool consistent(const OsiSolverInterface& im) const;
+    inline virtual bool consistent(const OsiSolverInterface & im) const;
 
     /** Returns true if the cut is infeasible with respect to its bounds and the
     column bounds in the solver interface's models.
@@ -108,12 +108,12 @@ public:
     greater than the minimum of the new and existing upper bounds.
     </ul>
     */
-    inline virtual bool infeasible(const OsiSolverInterface &im) const;
+    inline virtual bool infeasible(const OsiSolverInterface & im) const;
     /** Returns infeasibility of the cut with respect to solution
         passed in i.e. is positive if cuts off that solution.
         solution is getNumCols() long..
     */
-    virtual double violated(const double * solution) const;
+    virtual double violated(const double* solution) const;
     //@}
 
     //----------------------------------------------------------------
@@ -121,19 +121,19 @@ public:
     /**@name Constructors and destructors */
     //@{
     /// Assignment operator
-    OsiColCut & operator=( const OsiColCut& rhs);
+    OsiColCut & operator=(const OsiColCut & rhs);
 
     /// Copy constructor
-    OsiColCut ( const OsiColCut &);
+    OsiColCut(const OsiColCut &);
 
     /// Default Constructor
-    OsiColCut ();
+    OsiColCut();
 
     /// Clone
-    virtual OsiColCut * clone() const;
+    virtual OsiColCut* clone() const;
 
     /// Destructor
-    virtual ~OsiColCut ();
+    virtual ~OsiColCut();
     //@}
 
     /**@name Debug stuff */
@@ -161,26 +161,26 @@ private:
 //-------------------------------------------------------------------
 void OsiColCut::setLbs(
     int size,
-    const int * colIndices,
-    const double * lbElements )
+    const int* colIndices,
+    const double* lbElements)
 {
-    lbs_.setVector(size,colIndices,lbElements);
+    lbs_.setVector(size, colIndices, lbElements);
 }
 //
 void OsiColCut::setUbs(
     int size,
-    const int * colIndices,
-    const double * ubElements )
+    const int* colIndices,
+    const double* ubElements)
 {
-    ubs_.setVector(size,colIndices,ubElements);
+    ubs_.setVector(size, colIndices, ubElements);
 }
 //
-void OsiColCut::setLbs( const CoinPackedVector & lbs )
+void OsiColCut::setLbs(const CoinPackedVector & lbs)
 {
     lbs_ = lbs;
 }
 //
-void OsiColCut::setUbs( const CoinPackedVector & ubs )
+void OsiColCut::setUbs(const CoinPackedVector & ubs)
 {
     ubs_ = ubs;
 }
@@ -203,22 +203,22 @@ const CoinPackedVector & OsiColCut::ubs() const
 //-------------------------------------------------------------------
 bool
 OsiColCut::operator==(
-    const OsiColCut& rhs) const
+    const OsiColCut & rhs) const
 {
-    if ( this->OsiCut::operator!=(rhs) )
+    if(this->OsiCut::operator!=(rhs))
         return false;
-    if ( lbs() != rhs.lbs() )
+    if(lbs() != rhs.lbs())
         return false;
-    if ( ubs() != rhs.ubs() )
+    if(ubs() != rhs.ubs())
         return false;
     return true;
 }
 //
 bool
 OsiColCut::operator!=(
-    const OsiColCut& rhs) const
+    const OsiColCut & rhs) const
 {
-    return !( (*this)==rhs );
+    return !((*this) == rhs);
 }
 
 //----------------------------------------------------------------
@@ -232,56 +232,56 @@ bool OsiColCut::consistent() const
     // Are packed vectors consistent?
     lb.duplicateIndex("consistent", "OsiColCut");
     ub.duplicateIndex("consistent", "OsiColCut");
-    if ( lb.getMinIndex() < 0 ) return false;
-    if ( ub.getMinIndex() < 0 ) return false;
+    if(lb.getMinIndex() < 0) return false;
+    if(ub.getMinIndex() < 0) return false;
     return true;
 }
 //
-bool OsiColCut::consistent(const OsiSolverInterface& im) const
+bool OsiColCut::consistent(const OsiSolverInterface & im) const
 {
     const CoinPackedVector & lb = lbs();
     const CoinPackedVector & ub = ubs();
 
     // Test for consistent cut.
-    if ( lb.getMaxIndex() >= im.getNumCols() ) return false;
-    if ( ub.getMaxIndex() >= im.getNumCols() ) return false;
+    if(lb.getMaxIndex() >= im.getNumCols()) return false;
+    if(ub.getMaxIndex() >= im.getNumCols()) return false;
 
     return true;
 }
 
 #if 0
-bool OsiColCut::feasible(const OsiSolverInterface &im) const
+bool OsiColCut::feasible(const OsiSolverInterface & im) const
 {
-    const double * oldColLb = im.getColLower();
-    const double * oldColUb = im.getColUpper();
+    const double* oldColLb = im.getColLower();
+    const double* oldColUb = im.getColUpper();
     const CoinPackedVector & cutLbs = lbs();
     const CoinPackedVector & cutUbs = ubs();
     int i;
 
-    for ( i=0; i<cutLbs.size(); i++ )
+    for(i = 0; i < cutLbs.size(); i++)
     {
         int colIndx = cutLbs.indices()[i];
         double newLb;
-        if ( cutLbs.elements()[i] > oldColLb[colIndx] )
+        if(cutLbs.elements()[i] > oldColLb[colIndx])
             newLb = cutLbs.elements()[i];
         else
             newLb = oldColLb[colIndx];
 
         double newUb = oldColUb[colIndx];
-        if ( cutUbs.indexExists(colIndx) )
-            if ( cutUbs[colIndx] < newUb ) newUb = cutUbs[colIndx];
-        if ( newLb > newUb )
+        if(cutUbs.indexExists(colIndx))
+            if(cutUbs[colIndx] < newUb) newUb = cutUbs[colIndx];
+        if(newLb > newUb)
             return false;
     }
 
-    for ( i=0; i<cutUbs.size(); i++ )
+    for(i = 0; i < cutUbs.size(); i++)
     {
         int colIndx = cutUbs.indices()[i];
         double newUb = cutUbs.elements()[i] < oldColUb[colIndx] ? cutUbs.elements()[i] : oldColUb[colIndx];
         double newLb = oldColLb[colIndx];
-        if ( cutLbs.indexExists(colIndx) )
-            if ( cutLbs[colIndx] > newLb ) newLb = cutLbs[colIndx];
-        if ( newUb < newLb )
+        if(cutLbs.indexExists(colIndx))
+            if(cutLbs[colIndx] > newLb) newLb = cutLbs[colIndx];
+        if(newUb < newLb)
             return false;
     }
 
@@ -290,36 +290,36 @@ bool OsiColCut::feasible(const OsiSolverInterface &im) const
 #endif
 
 
-bool OsiColCut::infeasible(const OsiSolverInterface &im) const
+bool OsiColCut::infeasible(const OsiSolverInterface & im) const
 {
-    const double * oldColLb = im.getColLower();
-    const double * oldColUb = im.getColUpper();
+    const double* oldColLb = im.getColLower();
+    const double* oldColUb = im.getColUpper();
     const CoinPackedVector & cutLbs = lbs();
     const CoinPackedVector & cutUbs = ubs();
     int i;
 
-    for ( i=0; i<cutLbs.getNumElements(); i++ )
+    for(i = 0; i < cutLbs.getNumElements(); i++)
     {
         int colIndx = cutLbs.getIndices()[i];
-        double newLb= cutLbs.getElements()[i] > oldColLb[colIndx] ?
-                      cutLbs.getElements()[i] : oldColLb[colIndx];
+        double newLb = cutLbs.getElements()[i] > oldColLb[colIndx] ?
+                       cutLbs.getElements()[i] : oldColLb[colIndx];
 
         double newUb = oldColUb[colIndx];
-        if ( cutUbs.isExistingIndex(colIndx) )
-            if ( cutUbs[colIndx] < newUb ) newUb = cutUbs[colIndx];
-        if ( newLb > newUb )
+        if(cutUbs.isExistingIndex(colIndx))
+            if(cutUbs[colIndx] < newUb) newUb = cutUbs[colIndx];
+        if(newLb > newUb)
             return true;
     }
 
-    for ( i=0; i<cutUbs.getNumElements(); i++ )
+    for(i = 0; i < cutUbs.getNumElements(); i++)
     {
         int colIndx = cutUbs.getIndices()[i];
         double newUb = cutUbs.getElements()[i] < oldColUb[colIndx] ?
                        cutUbs.getElements()[i] : oldColUb[colIndx];
         double newLb = oldColLb[colIndx];
-        if ( cutLbs.isExistingIndex(colIndx) )
-            if ( cutLbs[colIndx] > newLb ) newLb = cutLbs[colIndx];
-        if ( newUb < newLb )
+        if(cutLbs.isExistingIndex(colIndx))
+            if(cutLbs[colIndx] > newLb) newLb = cutLbs[colIndx];
+        if(newUb < newLb)
             return true;
     }
 

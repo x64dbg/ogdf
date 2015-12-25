@@ -17,7 +17,7 @@
 using namespace ogdf;
 
 
-void removeEdges(Graph &G, const List<edge> &delEdges)
+void removeEdges(Graph & G, const List<edge> & delEdges)
 {
     ListConstIterator<edge> it;
     for(it = delEdges.begin(); it.valid(); ++it)
@@ -27,63 +27,63 @@ void removeEdges(Graph &G, const List<edge> &delEdges)
 void randomizeAdjLists(Graph G)
 {
     node v;
-    forall_nodes(v,G)
+    forall_nodes(v, G)
     {
         List<adjEntry> L;
-        G.adjEntries(v,L);
+        G.adjEntries(v, L);
         L.permute();
-        G.sort(v,L);
+        G.sort(v, L);
     }
 }
 
-void addRandomEdges(Graph &G, int m)
+void addRandomEdges(Graph & G, int m)
 {
     const int n = G.numberOfNodes();
 
     Array<node> nodes(n);
     node v;
     int i = 0;
-    forall_nodes(v,G)
+    forall_nodes(v, G)
     nodes[i++] = v;
 
     for(i = 0; i < m; ++i)
     {
-        int i = randomNumber(0,n-1);
-        int j = randomNumber(1,n-1);
-        G.newEdge(nodes[i],nodes[(i+j)%n]);
+        int i = randomNumber(0, n - 1);
+        int j = randomNumber(1, n - 1);
+        G.newEdge(nodes[i], nodes[(i + j) % n]);
     }
 }
 
-void addRandomLoops(Graph &G, int m)
+void addRandomLoops(Graph & G, int m)
 {
     const int n = G.numberOfNodes();
 
     Array<node> nodes(n);
     node v;
     int i = 0;
-    forall_nodes(v,G)
+    forall_nodes(v, G)
     nodes[i++] = v;
 
     for(i = 0; i < m; ++i)
     {
-        node v = nodes[randomNumber(0,n-1)];
-        G.newEdge(v,v);
+        node v = nodes[randomNumber(0, n - 1)];
+        G.newEdge(v, v);
     }
 }
 
-void addRandomMultiEdges(Graph &G, int add)
+void addRandomMultiEdges(Graph & G, int add)
 {
     const int m = G.numberOfEdges();
 
     Array<edge> edges(m);
     edge e;
     int i = 0;
-    forall_edges(e,G)
+    forall_edges(e, G)
     edges[i++] = e;
 
     for(i = 0; i < add; ++i)
     {
-        e = edges[randomNumber(0,m-1)];
+        e = edges[randomNumber(0, m - 1)];
         G.newEdge(e->source(), e->target());
     }
 }
@@ -118,9 +118,9 @@ bool regPlanarityTest()
             bool resPM, resBM;
             __int64 tBL, tBM;
 
-            int m = 3*n/2;
+            int m = 3 * n / 2;
             planarBiconnectedGraph(G1, n, m);
-            addRandomLoops(G1,10);
+            addRandomLoops(G1, 10);
             randomizeAdjLists(G1);
             G2 = G1;
 
@@ -148,9 +148,9 @@ bool regPlanarityTest()
             if(resPM == false) failsBL++;
             if(resBM == false) failsBM++;
 
-            m = 2*n;
+            m = 2 * n;
             planarBiconnectedGraph(G1, n, m);
-            addRandomLoops(G1,10);
+            addRandomLoops(G1, 10);
             randomizeAdjLists(G1);
             G2 = G1;
 
@@ -178,9 +178,9 @@ bool regPlanarityTest()
             if(resPM == false) failsBL++;
             if(resBM == false) failsBM++;
 
-            m = 5*n/2;
+            m = 5 * n / 2;
             planarBiconnectedGraph(G1, n, m);
-            addRandomLoops(G1,10);
+            addRandomLoops(G1, 10);
             randomizeAdjLists(G1);
             G2 = G1;
 
@@ -214,8 +214,8 @@ bool regPlanarityTest()
 
     cout.precision(3);
     cout << "\r" << std::fixed;
-    cout << "  BoothLueker:  " << 0.001*double(msecBL) << " seconds (" << failsBL << " errors)" << endl;
-    cout << "  BoyerMyrvold: " << 0.001*double(msecBM) << " seconds (" << failsBM << " errors)" << endl;
+    cout << "  BoothLueker:  " << 0.001 * double(msecBL) << " seconds (" << failsBL << " errors)" << endl;
+    cout << "  BoyerMyrvold: " << 0.001 * double(msecBM) << " seconds (" << failsBM << " errors)" << endl;
 
     cout << "-> Connected graphs, planarity test... " << endl;
     srand(4711);
@@ -231,10 +231,10 @@ bool regPlanarityTest()
         {
             bool resPM, resBM;
             __int64 tBL, tBM;
-            int nb = n/10;
+            int nb = n / 10;
 
-            planarCNBGraph(G1, nb, 3*nb/2, 10);
-            addRandomLoops(G1,10);
+            planarCNBGraph(G1, nb, 3 * nb / 2, 10);
+            addRandomLoops(G1, 10);
             randomizeAdjLists(G1);
             G2 = G1;
 
@@ -262,8 +262,8 @@ bool regPlanarityTest()
             if(resPM == false) failsBL++;
             if(resBM == false) failsBM++;
 
-            planarCNBGraph(G1, nb, 2*nb, 10);
-            addRandomLoops(G1,10);
+            planarCNBGraph(G1, nb, 2 * nb, 10);
+            addRandomLoops(G1, 10);
             randomizeAdjLists(G1);
             G2 = G1;
 
@@ -291,8 +291,8 @@ bool regPlanarityTest()
             if(resPM == false) failsBL++;
             if(resBM == false) failsBM++;
 
-            planarCNBGraph(G1, nb, 5*nb/2, 10);
-            addRandomLoops(G1,10);
+            planarCNBGraph(G1, nb, 5 * nb / 2, 10);
+            addRandomLoops(G1, 10);
             randomizeAdjLists(G1);
             G2 = G1;
 
@@ -326,8 +326,8 @@ bool regPlanarityTest()
 
     cout.precision(3);
     cout << "\r";
-    cout << "  BoothLueker:  " << 0.001*double(msecBL) << " seconds (" << failsBL << " errors)" << endl;
-    cout << "  BoyerMyrvold: " << 0.001*double(msecBM) << " seconds (" << failsBM << " errors)" << endl;
+    cout << "  BoothLueker:  " << 0.001 * double(msecBL) << " seconds (" << failsBL << " errors)" << endl;
+    cout << "  BoyerMyrvold: " << 0.001 * double(msecBM) << " seconds (" << failsBM << " errors)" << endl;
 
     cout << "-> Planar biconnected graphs, planar embedding... " << endl;
     srand(4711);
@@ -338,16 +338,16 @@ bool regPlanarityTest()
     firstBL = true;
     for(int n = min_n; n <= max_n; n += step_n)
     {
-        SList< KuratowskiWrapper > dummyList;
+        SList<KuratowskiWrapper> dummyList;
         cout << "\r" << n << flush;
         for(int i = 0; i < numGraphs; ++i)
         {
             //bool resPM, resBM;
             __int64 tBL, tBM;
 
-            int m = 3*n/2+1;
+            int m = 3 * n / 2 + 1;
             planarBiconnectedGraph(G1, n, m);
-            addRandomLoops(G1,10);
+            addRandomLoops(G1, 10);
             addRandomMultiEdges(G1, 50);
             randomizeAdjLists(G1);
             G2 = G1;
@@ -358,12 +358,12 @@ bool regPlanarityTest()
                 bl.planarEmbed(G1);
                 tBL = System::usedRealTime(T);
 
-                bm.planarEmbed(G2,dummyList);
+                bm.planarEmbed(G2, dummyList);
                 tBM = System::usedRealTime(T);
             }
             else
             {
-                bm.planarEmbed(G1,dummyList);
+                bm.planarEmbed(G1, dummyList);
                 tBM = System::usedRealTime(T);
 
                 bl.planarEmbed(G2);
@@ -385,9 +385,9 @@ bool regPlanarityTest()
             msecBM += tBM;
             firstBL = !firstBL;
 
-            m = 2*n+1;
+            m = 2 * n + 1;
             planarBiconnectedGraph(G1, n, m);
-            addRandomLoops(G1,10);
+            addRandomLoops(G1, 10);
             addRandomMultiEdges(G1, 50);
             randomizeAdjLists(G1);
             G2 = G1;
@@ -398,12 +398,12 @@ bool regPlanarityTest()
                 bl.planarEmbed(G1);
                 tBL = System::usedRealTime(T);
 
-                bm.planarEmbed(G2,dummyList);
+                bm.planarEmbed(G2, dummyList);
                 tBM = System::usedRealTime(T);
             }
             else
             {
-                bm.planarEmbed(G1,dummyList);
+                bm.planarEmbed(G1, dummyList);
                 tBM = System::usedRealTime(T);
 
                 bl.planarEmbed(G2);
@@ -425,9 +425,9 @@ bool regPlanarityTest()
             msecBM += tBM;
             firstBL = !firstBL;
 
-            m = 5*n/2+1;
+            m = 5 * n / 2 + 1;
             planarBiconnectedGraph(G1, n, m);
-            addRandomLoops(G1,10);
+            addRandomLoops(G1, 10);
             addRandomMultiEdges(G1, 50);
             randomizeAdjLists(G1);
             G2 = G1;
@@ -438,12 +438,12 @@ bool regPlanarityTest()
                 bl.planarEmbed(G1);
                 tBL = System::usedRealTime(T);
 
-                bm.planarEmbed(G2,dummyList);
+                bm.planarEmbed(G2, dummyList);
                 tBM = System::usedRealTime(T);
             }
             else
             {
-                bm.planarEmbed(G1,dummyList);
+                bm.planarEmbed(G1, dummyList);
                 tBM = System::usedRealTime(T);
 
                 bl.planarEmbed(G2);
@@ -471,8 +471,8 @@ bool regPlanarityTest()
 
     cout.precision(3);
     cout << "\r";
-    cout << "  BoothLueker:  " << 0.001*double(msecBL) << " seconds (" << failsBL << " errors)" << endl;
-    cout << "  BoyerMyrvold: " << 0.001*double(msecBM) << " seconds (" << failsBM << " errors)" << endl;
+    cout << "  BoothLueker:  " << 0.001 * double(msecBL) << " seconds (" << failsBL << " errors)" << endl;
+    cout << "  BoyerMyrvold: " << 0.001 * double(msecBM) << " seconds (" << failsBM << " errors)" << endl;
 
     cout << "-> Planar connected graphs + edges, planarity test... " << endl;
     srand(4711);
@@ -490,10 +490,10 @@ bool regPlanarityTest()
             bool resPM, resBM;
             __int64 tBL, tBM;
 
-            int nb = n/10;
-            int addEdges = randomNumber(0,4);
-            planarCNBGraph(G1, nb, 3*nb/2, 10);
-            addRandomEdges(G1,addEdges);
+            int nb = n / 10;
+            int addEdges = randomNumber(0, 4);
+            planarCNBGraph(G1, nb, 3 * nb / 2, 10);
+            addRandomEdges(G1, addEdges);
             addRandomMultiEdges(G1, 50);
             randomizeAdjLists(G1);
             G2 = G1;
@@ -526,10 +526,10 @@ bool regPlanarityTest()
             else
                 nNonPlanar++;
 
-            nb = n/10;
-            addEdges = randomNumber(0,3);
-            planarCNBGraph(G1, nb, 3*nb/2, 10);
-            addRandomEdges(G1,addEdges);
+            nb = n / 10;
+            addEdges = randomNumber(0, 3);
+            planarCNBGraph(G1, nb, 3 * nb / 2, 10);
+            addRandomEdges(G1, addEdges);
             addRandomMultiEdges(G1, 60);
             randomizeAdjLists(G1);
             G2 = G1;
@@ -571,8 +571,8 @@ bool regPlanarityTest()
     cout << "  planar:       " << nPlanar << endl;
     cout << "  non-planar:   " << nNonPlanar << endl;
     cout << "  fails:        " << fails << endl;
-    cout << "  BoothLueker:  " << 0.001*double(msecBL) << " seconds" << endl;
-    cout << "  BoyerMyrvold: " << 0.001*double(msecBM) << " seconds" << endl;
+    cout << "  BoothLueker:  " << 0.001 * double(msecBL) << " seconds" << endl;
+    cout << "  BoyerMyrvold: " << 0.001 * double(msecBM) << " seconds" << endl;
 
     cout << "-> Planar biconnected graphs + 5 edges, planar subgraph... " << endl;
     srand(4711);
@@ -591,49 +591,49 @@ bool regPlanarityTest()
         {
             List<edge> delEdges;
 
-            int m = 3*n/2;
+            int m = 3 * n / 2;
             planarBiconnectedGraph(G1, n , m);
             ++ng;
-            addRandomMultiEdges(G1,5);
-            addRandomEdges(G1,5);
+            addRandomMultiEdges(G1, 5);
+            addRandomEdges(G1, 5);
             randomizeAdjLists(G1);
 
             System::usedRealTime(T);
-            fps.call(G1,delEdges);
+            fps.call(G1, delEdges);
             msecBL += System::usedRealTime(T);
 
             sumDelEdges += delEdges.size();
-            removeEdges(G1,delEdges);
+            removeEdges(G1, delEdges);
             if(bm.isPlanar(G1) == false) fails++;
 
-            m = 2*n;
+            m = 2 * n;
             planarBiconnectedGraph(G1, n , m);
             ++ng;
-            addRandomMultiEdges(G1,5);
-            addRandomEdges(G1,5);
+            addRandomMultiEdges(G1, 5);
+            addRandomEdges(G1, 5);
             randomizeAdjLists(G1);
 
             System::usedRealTime(T);
-            fps.call(G1,delEdges);
+            fps.call(G1, delEdges);
             msecBL += System::usedRealTime(T);
 
             sumDelEdges += delEdges.size();
-            removeEdges(G1,delEdges);
+            removeEdges(G1, delEdges);
             if(bm.isPlanar(G1) == false) fails++;
 
-            m = 5*n/2;
+            m = 5 * n / 2;
             planarBiconnectedGraph(G1, n , m);
             ++ng;
-            addRandomMultiEdges(G1,5);
-            addRandomEdges(G1,5);
+            addRandomMultiEdges(G1, 5);
+            addRandomEdges(G1, 5);
             randomizeAdjLists(G1);
 
             System::usedRealTime(T);
-            fps.call(G1,delEdges);
+            fps.call(G1, delEdges);
             msecBL += System::usedRealTime(T);
 
             sumDelEdges += delEdges.size();
-            removeEdges(G1,delEdges);
+            removeEdges(G1, delEdges);
             if(bm.isPlanar(G1) == false) fails++;
         }
     }
@@ -642,8 +642,8 @@ bool regPlanarityTest()
 
     cout.precision(3);
     cout << "\r";
-    cout << "  time:    " << 0.001*double(msecBL) << " seconds (avg. " << double(msecBL)/ng << " msec)" << endl;
-    cout << "  removed: " << sumDelEdges << " (avg. " << double(sumDelEdges)/ng << ")" << endl;
+    cout << "  time:    " << 0.001 * double(msecBL) << " seconds (avg. " << double(msecBL) / ng << " msec)" << endl;
+    cout << "  removed: " << sumDelEdges << " (avg. " << double(sumDelEdges) / ng << ")" << endl;
     cout << "  fails:   " << fails << endl;
 
     cout << "-> Runtime test: Planar biconnected graphs, planar embedding... " << endl;
@@ -652,13 +652,13 @@ bool regPlanarityTest()
 
     firstBL = true;
 
-    const int nr_min = 1<<8;
-    const int nr_max = 1<<14;
+    const int nr_min = 1 << 8;
+    const int nr_max = 1 << 14;
 
     for(int n = nr_min; n <= nr_max; n *= 2)
     {
         cout << n << ":\t" << flush;
-        SList< KuratowskiWrapper > dummyList;
+        SList<KuratowskiWrapper> dummyList;
         msecBL  = msecBM  = 0;
         failsBL = failsBM = 0;
         for(int i = 0; i < numGraphs; ++i)
@@ -666,7 +666,7 @@ bool regPlanarityTest()
             bool resPM, resBM;
             __int64 tBL, tBM;
 
-            int m = 2*n;
+            int m = 2 * n;
             planarBiconnectedGraph(G1, n, m);
             randomizeAdjLists(G1);
             G2 = G1;
@@ -677,12 +677,12 @@ bool regPlanarityTest()
                 resPM = bl.planarEmbed(G1);
                 tBL = System::usedRealTime(T);
 
-                resBM = bm.planarEmbed(G2,dummyList);
+                resBM = bm.planarEmbed(G2, dummyList);
                 tBM = System::usedRealTime(T);
             }
             else
             {
-                resBM = bm.planarEmbed(G1,dummyList);
+                resBM = bm.planarEmbed(G1, dummyList);
                 tBM = System::usedRealTime(T);
 
                 resPM = bl.planarEmbed(G2);
@@ -707,8 +707,8 @@ bool regPlanarityTest()
             if(resBM == false) failsBM++;
         }
         if(failsBL + failsBM > 0) result = false;
-        cout << 0.001*double(msecBL) << " sec [" << failsBL << "] \t";
-        cout << 0.001*double(msecBM) << " sec [" << failsBM << "]" << endl;
+        cout << 0.001 * double(msecBL) << " sec [" << failsBL << "] \t";
+        cout << 0.001 * double(msecBM) << " sec [" << failsBM << "]" << endl;
     }
 
     return result;

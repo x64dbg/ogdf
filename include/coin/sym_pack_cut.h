@@ -18,7 +18,7 @@
 #include "sym_proto.h"
 #include "sym_types.h"
 
-void pack_cut PROTO((cut_data *cut));
-cut_data *unpack_cut PROTO((cut_data *cut));
+void pack_cut PROTO((cut_data* cut));
+cut_data* unpack_cut PROTO((cut_data* cut));
 
 #endif

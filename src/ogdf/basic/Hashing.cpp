@@ -46,181 +46,181 @@
 namespace ogdf
 {
 
-HashingBase::HashingBase(int minTableSize)
-{
-    m_count = 0;
-    init(m_minTableSize = minTableSize);
-}
-
-
-HashingBase::HashingBase(const HashingBase &H)
-{
-    copyAll(H);
-}
-
-
-HashingBase::~HashingBase()
-{
-    free(m_table);
-}
-
-
-void HashingBase::init(int tableSize)
-{
-    OGDF_ASSERT(tableSize >= m_minTableSize)
-
-    m_tableSize = tableSize;
-    m_hashMask = tableSize-1;
-    m_tableSizeHigh = tableSize << 1;
-    m_tableSizeLow  = (tableSize > m_minTableSize) ? (tableSize >> 1) : -1;
-
-    m_table = (HashElementBase **)calloc(tableSize,sizeof(HashElementBase *));
-}
-
-
-void HashingBase::destroyAll()
-{
-    HashElementBase **pList = m_table, **pListStop = m_table+m_tableSize;
-
-    for(; pList != pListStop; ++pList)
+    HashingBase::HashingBase(int minTableSize)
     {
-        HashElementBase *pElement = *pList, *pNext;
-        for (; pElement; pElement = pNext)
-        {
-            pNext = pElement->next();
-            destroy(pElement);
-        }
+        m_count = 0;
+        init(m_minTableSize = minTableSize);
     }
-}
 
 
-void HashingBase::copyAll(const HashingBase &H)
-{
-    m_count = 0;
-    m_minTableSize = H.m_minTableSize;
-    init(H.m_tableSize);
-
-    HashElementBase **pList = H.m_table;
-    HashElementBase **pListStop = H.m_table+m_tableSize;
-
-    for(; pList != pListStop; ++pList)
+    HashingBase::HashingBase(const HashingBase & H)
     {
-        HashElementBase *pElement = *pList;
-        for (; pElement; pElement = pElement->next())
-            insert(H.copy(pElement));
+        copyAll(H);
     }
-}
 
 
-void HashingBase::clear()
-{
-    destroyAll();
-    free(m_table);
-
-    m_count = 0;
-    init(m_minTableSize);
-}
-
-
-HashingBase &HashingBase::operator=(const HashingBase &H)
-{
-    destroyAll();
-    free(m_table);
-    copyAll(H);
-    return *this;
-}
-
-
-void HashingBase::resize(int newTableSize)
-{
-    HashElementBase **oldTable = m_table;
-    HashElementBase **oldTableStop = oldTable + m_tableSize;
-
-    init(newTableSize);
-
-    for(HashElementBase **pOldList = oldTable;
-            pOldList != oldTableStop; ++pOldList)
+    HashingBase::~HashingBase()
     {
-        HashElementBase *pElement = *pOldList, *pNext;
-        for(; pElement; pElement = pNext)
-        {
-            pNext = pElement->m_next;
+        free(m_table);
+    }
 
-            HashElementBase **pList = m_table +
-                                      (pElement->m_hashValue & m_hashMask);
-            pElement->m_next = *pList;
-            *pList = pElement;
+
+    void HashingBase::init(int tableSize)
+    {
+        OGDF_ASSERT(tableSize >= m_minTableSize)
+
+        m_tableSize = tableSize;
+        m_hashMask = tableSize - 1;
+        m_tableSizeHigh = tableSize << 1;
+        m_tableSizeLow  = (tableSize > m_minTableSize) ? (tableSize >> 1) : -1;
+
+        m_table = (HashElementBase**)calloc(tableSize, sizeof(HashElementBase*));
+    }
+
+
+    void HashingBase::destroyAll()
+    {
+        HashElementBase** pList = m_table, **pListStop = m_table + m_tableSize;
+
+        for(; pList != pListStop; ++pList)
+        {
+            HashElementBase* pElement = *pList, *pNext;
+            for(; pElement; pElement = pNext)
+            {
+                pNext = pElement->next();
+                destroy(pElement);
+            }
         }
     }
 
-    free(oldTable);
-}
 
-
-void HashingBase::insert(HashElementBase *pElement)
-{
-    if (++m_count == m_tableSizeHigh)
-        resize(m_tableSizeHigh);
-
-    HashElementBase **pList = m_table + (pElement->m_hashValue & m_hashMask);
-    pElement->m_next = *pList;
-    *pList = pElement;
-}
-
-
-void HashingBase::del(HashElementBase *pElement)
-{
-    HashElementBase **pList = m_table + (pElement->m_hashValue & m_hashMask);
-    HashElementBase *pPrev = *pList;
-
-    if (pPrev == pElement)
+    void HashingBase::copyAll(const HashingBase & H)
     {
-        *pList = pElement->m_next;
+        m_count = 0;
+        m_minTableSize = H.m_minTableSize;
+        init(H.m_tableSize);
 
-    }
-    else
-    {
-        while (pPrev->m_next != pElement) pPrev = pPrev->m_next;
-        pPrev->m_next = pElement->m_next;
+        HashElementBase** pList = H.m_table;
+        HashElementBase** pListStop = H.m_table + m_tableSize;
+
+        for(; pList != pListStop; ++pList)
+        {
+            HashElementBase* pElement = *pList;
+            for(; pElement; pElement = pElement->next())
+                insert(H.copy(pElement));
+        }
     }
 
-    if (--m_count == m_tableSizeLow)
-        resize(m_tableSizeLow);
-}
+
+    void HashingBase::clear()
+    {
+        destroyAll();
+        free(m_table);
+
+        m_count = 0;
+        init(m_minTableSize);
+    }
 
 
-HashElementBase *HashingBase::firstElement(HashElementBase ***pList) const
-{
-    HashElementBase **pStop = m_table + m_tableSize;
-    for(*pList = m_table; *pList != pStop; ++(*pList))
-        if (**pList) return **pList;
-
-    return 0;
-}
-
-
-HashElementBase *HashingBase::nextElement(HashElementBase ***pList,
-        HashElementBase *pElement) const
-{
-    if ((pElement = pElement->next()) != 0) return pElement;
-
-    HashElementBase **pStop = m_table + m_tableSize;
-    for(++(*pList); *pList != pStop; ++(*pList))
-        if (**pList) return **pList;
-
-    return 0;
-}
+    HashingBase & HashingBase::operator=(const HashingBase & H)
+    {
+        destroyAll();
+        free(m_table);
+        copyAll(H);
+        return *this;
+    }
 
 
-size_t DefHashFunc<string>::hash(const string &key) const
-{
-    size_t hashValue = 0;
+    void HashingBase::resize(int newTableSize)
+    {
+        HashElementBase** oldTable = m_table;
+        HashElementBase** oldTableStop = oldTable + m_tableSize;
 
-    for(string::size_type i = 0; i < key.size(); ++i)
-        hashValue += int(key[i]);
+        init(newTableSize);
 
-    return hashValue;
-}
+        for(HashElementBase** pOldList = oldTable;
+                pOldList != oldTableStop; ++pOldList)
+        {
+            HashElementBase* pElement = *pOldList, *pNext;
+            for(; pElement; pElement = pNext)
+            {
+                pNext = pElement->m_next;
+
+                HashElementBase** pList = m_table +
+                                          (pElement->m_hashValue & m_hashMask);
+                pElement->m_next = *pList;
+                *pList = pElement;
+            }
+        }
+
+        free(oldTable);
+    }
+
+
+    void HashingBase::insert(HashElementBase* pElement)
+    {
+        if(++m_count == m_tableSizeHigh)
+            resize(m_tableSizeHigh);
+
+        HashElementBase** pList = m_table + (pElement->m_hashValue & m_hashMask);
+        pElement->m_next = *pList;
+        *pList = pElement;
+    }
+
+
+    void HashingBase::del(HashElementBase* pElement)
+    {
+        HashElementBase** pList = m_table + (pElement->m_hashValue & m_hashMask);
+        HashElementBase* pPrev = *pList;
+
+        if(pPrev == pElement)
+        {
+            *pList = pElement->m_next;
+
+        }
+        else
+        {
+            while(pPrev->m_next != pElement) pPrev = pPrev->m_next;
+            pPrev->m_next = pElement->m_next;
+        }
+
+        if(--m_count == m_tableSizeLow)
+            resize(m_tableSizeLow);
+    }
+
+
+    HashElementBase* HashingBase::firstElement(HashElementBase** *pList) const
+    {
+        HashElementBase** pStop = m_table + m_tableSize;
+        for(*pList = m_table; *pList != pStop; ++(*pList))
+            if(**pList) return **pList;
+
+        return 0;
+    }
+
+
+    HashElementBase* HashingBase::nextElement(HashElementBase** *pList,
+            HashElementBase* pElement) const
+    {
+        if((pElement = pElement->next()) != 0) return pElement;
+
+        HashElementBase** pStop = m_table + m_tableSize;
+        for(++(*pList); *pList != pStop; ++(*pList))
+            if(**pList) return **pList;
+
+        return 0;
+    }
+
+
+    size_t DefHashFunc<string>::hash(const string & key) const
+    {
+        size_t hashValue = 0;
+
+        for(string::size_type i = 0; i < key.size(); ++i)
+            hashValue += int(key[i]);
+
+        return hashValue;
+    }
 
 
 } // end namespace ogdf

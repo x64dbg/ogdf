@@ -58,43 +58,43 @@
 namespace
 {
 
-/*
-  compact_rep
+    /*
+      compact_rep
 
-  This routine compacts the major vectors in the bulk storage area,
-  leaving a single block of free space at the end. The vectors are not
-  reordered, just shifted down to remove gaps.
-*/
+      This routine compacts the major vectors in the bulk storage area,
+      leaving a single block of free space at the end. The vectors are not
+      reordered, just shifted down to remove gaps.
+    */
 
-void compact_rep (double *elems, int *indices,
-                  CoinBigIndex *starts, const int *lengths, int n,
-                  const presolvehlink *link)
-{
+    void compact_rep(double* elems, int* indices,
+                     CoinBigIndex* starts, const int* lengths, int n,
+                     const presolvehlink* link)
+    {
 # if PRESOLVE_SUMMARY
-    printf("****COMPACTING****\n") ;
+        printf("****COMPACTING****\n") ;
 # endif
 
-    // for now, just look for the first element of the list
-    int i = n ;
-    while (link[i].pre != NO_LINK)
-        i = link[i].pre ;
+        // for now, just look for the first element of the list
+        int i = n ;
+        while(link[i].pre != NO_LINK)
+            i = link[i].pre ;
 
-    int j = 0 ;
-    for (; i != n; i = link[i].suc)
-    {
-        CoinBigIndex s = starts[i] ;
-        CoinBigIndex e = starts[i] + lengths[i] ;
-
-        // because of the way link is organized, j <= s
-        starts[i] = j ;
-        for (CoinBigIndex k = s; k < e; k++)
+        int j = 0 ;
+        for(; i != n; i = link[i].suc)
         {
-            elems[j] = elems[k] ;
-            indices[j] = indices[k] ;
-            j++ ;
+            CoinBigIndex s = starts[i] ;
+            CoinBigIndex e = starts[i] + lengths[i] ;
+
+            // because of the way link is organized, j <= s
+            starts[i] = j ;
+            for(CoinBigIndex k = s; k < e; k++)
+            {
+                elems[j] = elems[k] ;
+                indices[j] = indices[k] ;
+                j++ ;
+            }
         }
     }
-}
 
 
 } /* end unnamed namespace */
@@ -118,18 +118,18 @@ void compact_rep (double *elems, int *indices,
   starts[j] > starts[i] for j < i.)
 */
 
-void presolve_make_memlists (/*CoinBigIndex *starts,*/ int *lengths,
-        presolvehlink *link, int n)
+void presolve_make_memlists(/*CoinBigIndex *starts,*/ int* lengths,
+        presolvehlink* link, int n)
 {
     int i ;
     int pre = NO_LINK ;
 
-    for (i=0; i<n; i++)
+    for(i = 0; i < n; i++)
     {
-        if (lengths[i])
+        if(lengths[i])
         {
             link[i].pre = pre ;
-            if (pre != NO_LINK)
+            if(pre != NO_LINK)
                 link[pre].suc = i ;
             pre = i ;
         }
@@ -139,7 +139,7 @@ void presolve_make_memlists (/*CoinBigIndex *starts,*/ int *lengths,
             link[i].suc = NO_LINK ;
         }
     }
-    if (pre != NO_LINK)
+    if(pre != NO_LINK)
         link[pre].suc = n ;
 
     // (1) Arbitrarily place the last non-empty entry in link[n].pre
@@ -163,9 +163,9 @@ void presolve_make_memlists (/*CoinBigIndex *starts,*/ int *lengths,
   Returns true for failure, false for success.
 */
 
-bool presolve_expand_major (CoinBigIndex *majstrts, double *els,
-                            int *minndxs, int *majlens,
-                            presolvehlink *majlinks, int nmaj, int k)
+bool presolve_expand_major(CoinBigIndex* majstrts, double* els,
+                           int* minndxs, int* majlens,
+                           presolvehlink* majlinks, int nmaj, int k)
 
 {
     const CoinBigIndex bulkCap = majstrts[nmaj] ;
@@ -180,7 +180,7 @@ bool presolve_expand_major (CoinBigIndex *majstrts, double *els,
     /*
       Do we have room to add one coefficient in place?
     */
-    if (kcex+1 < majstrts[nextcol])
+    if(kcex + 1 < majstrts[nextcol])
     {
         /* no action required */
     }
@@ -189,12 +189,12 @@ bool presolve_expand_major (CoinBigIndex *majstrts, double *els,
       bulk storage. This will move k, so update the column start and end.
       If we still have no space, it's a fatal error.
     */
-    else if (nextcol == nmaj)
+    else if(nextcol == nmaj)
     {
-        compact_rep(els,minndxs,majstrts,majlens,nmaj,majlinks) ;
+        compact_rep(els, minndxs, majstrts, majlens, nmaj, majlinks) ;
         kcsx = majstrts[k] ;
         kcex = kcsx + majlens[k] ;
-        if (kcex+1 >= bulkCap)
+        if(kcex + 1 >= bulkCap)
         {
             return (true) ;
         }
@@ -207,17 +207,17 @@ bool presolve_expand_major (CoinBigIndex *majstrts, double *els,
     else
     {
         int lastcol = majlinks[nmaj].pre ;
-        int newkcsx = majstrts[lastcol]+majlens[lastcol] ;
-        int newkcex = newkcsx+majlens[k] ;
+        int newkcsx = majstrts[lastcol] + majlens[lastcol] ;
+        int newkcex = newkcsx + majlens[k] ;
 
-        if (newkcex+1 >= bulkCap)
+        if(newkcex + 1 >= bulkCap)
         {
-            compact_rep(els,minndxs,majstrts,majlens,nmaj,majlinks) ;
+            compact_rep(els, minndxs, majstrts, majlens, nmaj, majlinks) ;
             kcsx = majstrts[k] ;
             kcex = kcsx + majlens[k] ;
-            newkcsx = majstrts[lastcol]+majlens[lastcol] ;
-            newkcex = newkcsx+majlens[k] ;
-            if (newkcex+1 >= bulkCap)
+            newkcsx = majstrts[lastcol] + majlens[lastcol] ;
+            newkcex = newkcsx + majlens[k] ;
+            if(newkcex + 1 >= bulkCap)
             {
                 return (true) ;
             }
@@ -226,13 +226,13 @@ bool presolve_expand_major (CoinBigIndex *majstrts, double *els,
           Moving the vector requires three actions. First we move the data, then
           update the packed matrix vector start, then relink the storage order list,
         */
-        memcpy(reinterpret_cast<void *>(&minndxs[newkcsx]),
-               reinterpret_cast<void *>(&minndxs[kcsx]),majlens[k]*sizeof(int)) ;
-        memcpy(reinterpret_cast<void *>(&els[newkcsx]),
-               reinterpret_cast<void *>(&els[kcsx]),majlens[k]*sizeof(double)) ;
+        memcpy(reinterpret_cast<void*>(&minndxs[newkcsx]),
+               reinterpret_cast<void*>(&minndxs[kcsx]), majlens[k]*sizeof(int)) ;
+        memcpy(reinterpret_cast<void*>(&els[newkcsx]),
+               reinterpret_cast<void*>(&els[kcsx]), majlens[k]*sizeof(double)) ;
         majstrts[k] = newkcsx ;
-        PRESOLVE_REMOVE_LINK(majlinks,k) ;
-        PRESOLVE_INSERT_LINK(majlinks,k,lastcol) ;
+        PRESOLVE_REMOVE_LINK(majlinks, k) ;
+        PRESOLVE_INSERT_LINK(majlinks, k, lastcol) ;
     }
     /*
       Success --- the vector has room for one more coefficient.
@@ -261,26 +261,26 @@ bool presolve_expand_major (CoinBigIndex *majstrts, double *els,
   happens this code will fail.
 */
 
-double *presolve_dupmajor (const double *elems, const int *indices,
-                           int length, CoinBigIndex offset, int tgt)
+double* presolve_dupmajor(const double* elems, const int* indices,
+                          int length, CoinBigIndex offset, int tgt)
 
 {
     int n ;
 
-    if (tgt >= 0) length-- ;
+    if(tgt >= 0) length-- ;
 
-    if (2*sizeof(int) <= sizeof(double))
-        n = (3*length+1)>>1 ;
+    if(2 * sizeof(int) <= sizeof(double))
+        n = (3 * length + 1) >> 1 ;
     else
-        n = 2*length ;
+        n = 2 * length ;
 
-    double *dArray = new double [n] ;
-    int *iArray = reinterpret_cast<int *>(dArray+length) ;
+    double* dArray = new double [n] ;
+    int* iArray = reinterpret_cast<int*>(dArray + length) ;
 
-    if (tgt < 0)
+    if(tgt < 0)
     {
-        memcpy(dArray,elems+offset,length*sizeof(double)) ;
-        memcpy(iArray,indices+offset,length*sizeof(int)) ;
+        memcpy(dArray, elems + offset, length * sizeof(double)) ;
+        memcpy(iArray, indices + offset, length * sizeof(int)) ;
     }
     else
     {
@@ -288,10 +288,10 @@ double *presolve_dupmajor (const double *elems, const int *indices,
         int kcopy = 0 ;
         indices += offset ;
         elems += offset ;
-        for (korig = 0 ; korig <= length ; korig++)
+        for(korig = 0 ; korig <= length ; korig++)
         {
             int i = indices[korig] ;
-            if (i != tgt)
+            if(i != tgt)
             {
                 dArray[kcopy] = elems[korig] ;
                 iArray[kcopy++] = indices[korig] ;
@@ -321,19 +321,19 @@ double *presolve_dupmajor (const double *elems, const int *indices,
   Print a tag and abort (DIE) if there's no entry for tgt.
 */
 #if 0
-CoinBigIndex presolve_find_minor (int tgt, CoinBigIndex ks,
-                                  CoinBigIndex ke, const int *minndxs)
+CoinBigIndex presolve_find_minor(int tgt, CoinBigIndex ks,
+                                 CoinBigIndex ke, const int* minndxs)
 
 {
     CoinBigIndex k ;
-    for (k = ks ; k < ke ; k++)
+    for(k = ks ; k < ke ; k++)
     {
-        if (minndxs[k] == tgt)
+        if(minndxs[k] == tgt)
             return (k) ;
     }
     DIE("FIND_MINOR") ;
 
-    abort () ;
+    abort() ;
     return -1;
 }
 #endif
@@ -341,13 +341,13 @@ CoinBigIndex presolve_find_minor (int tgt, CoinBigIndex ks,
   As presolve_find_minor, but return a position one past the end of
   the major vector when the entry is not already present.
 */
-CoinBigIndex presolve_find_minor1 (int tgt, CoinBigIndex ks,
-                                   CoinBigIndex ke, const int *minndxs)
+CoinBigIndex presolve_find_minor1(int tgt, CoinBigIndex ks,
+                                  CoinBigIndex ke, const int* minndxs)
 {
     CoinBigIndex k ;
-    for (k = ks ; k < ke ; k++)
+    for(k = ks ; k < ke ; k++)
     {
-        if (minndxs[k] == tgt)
+        if(minndxs[k] == tgt)
             return (k) ;
     }
 
@@ -360,34 +360,34 @@ CoinBigIndex presolve_find_minor1 (int tgt, CoinBigIndex ks,
   if a<i,p> is in pos'n kp of hrow, the next coefficient a<i,q> will be
   in pos'n kq = link[kp]. Abort if we don't find it.
 */
-CoinBigIndex presolve_find_minor2 (int tgt, CoinBigIndex ks,
-                                   int majlen, const int *minndxs,
-                                   const CoinBigIndex *majlinks)
+CoinBigIndex presolve_find_minor2(int tgt, CoinBigIndex ks,
+                                  int majlen, const int* minndxs,
+                                  const CoinBigIndex* majlinks)
 
 {
-    for (int i = 0 ; i < majlen ; ++i)
+    for(int i = 0 ; i < majlen ; ++i)
     {
-        if (minndxs[ks] == tgt)
+        if(minndxs[ks] == tgt)
             return (ks) ;
         ks = majlinks[ks] ;
     }
     DIE("FIND_MINOR2") ;
 
-    abort () ;
+    abort() ;
     return -1;
 }
 
 /*
   As presolve_find_minor2, but return -1 if the entry is missing
 */
-CoinBigIndex presolve_find_minor3 (int tgt, CoinBigIndex ks,
-                                   int majlen, const int *minndxs,
-                                   const CoinBigIndex *majlinks)
+CoinBigIndex presolve_find_minor3(int tgt, CoinBigIndex ks,
+                                  int majlen, const int* minndxs,
+                                  const CoinBigIndex* majlinks)
 
 {
-    for (int i = 0 ; i < majlen ; ++i)
+    for(int i = 0 ; i < majlen ; ++i)
     {
-        if (minndxs[ks] == tgt)
+        if(minndxs[ks] == tgt)
             return (ks) ;
         ks = majlinks[ks] ;
     }
@@ -406,45 +406,45 @@ CoinBigIndex presolve_find_minor3 (int tgt, CoinBigIndex ks,
 */
 
 #if 0
-void presolve_delete_from_major (int majndx, int minndx,
-                                 const CoinBigIndex *majstrts,
-                                 int *majlens, int *minndxs, double *els)
+void presolve_delete_from_major(int majndx, int minndx,
+                                const CoinBigIndex* majstrts,
+                                int* majlens, int* minndxs, double* els)
 
 {
     CoinBigIndex ks = majstrts[majndx] ;
     CoinBigIndex ke = ks + majlens[majndx] ;
 
-    CoinBigIndex kmi = presolve_find_minor(minndx,ks,ke,minndxs) ;
+    CoinBigIndex kmi = presolve_find_minor(minndx, ks, ke, minndxs) ;
 
-    minndxs[kmi] = minndxs[ke-1] ;
-    els[kmi] = els[ke-1] ;
+    minndxs[kmi] = minndxs[ke - 1] ;
+    els[kmi] = els[ke - 1] ;
     majlens[majndx]-- ;
 
     return ;
 }
 // Delete all marked and zero marked
-void presolve_delete_many_from_major (int majndx, char * marked,
-                                      const CoinBigIndex *majstrts,
-                                      int *majlens, int *minndxs, double *els)
+void presolve_delete_many_from_major(int majndx, char* marked,
+                                     const CoinBigIndex* majstrts,
+                                     int* majlens, int* minndxs, double* els)
 
 {
     CoinBigIndex ks = majstrts[majndx] ;
     CoinBigIndex ke = ks + majlens[majndx] ;
-    CoinBigIndex put=ks;
-    for (CoinBigIndex k=ks; k<ke; k++)
+    CoinBigIndex put = ks;
+    for(CoinBigIndex k = ks; k < ke; k++)
     {
         int iMinor = minndxs[k];
-        if (!marked[iMinor])
+        if(!marked[iMinor])
         {
-            minndxs[put]=iMinor;
-            els[put++]=els[k];
+            minndxs[put] = iMinor;
+            els[put++] = els[k];
         }
         else
         {
-            marked[iMinor]=0;
+            marked[iMinor] = 0;
         }
     }
-    majlens[majndx] = put-ks ;
+    majlens[majndx] = put - ks ;
     return ;
 }
 #endif
@@ -454,10 +454,10 @@ void presolve_delete_many_from_major (int majndx, char * marked,
 
   This involves properly relinking the free list.
 */
-void presolve_delete_from_major2 (int majndx, int minndx,
-                                  CoinBigIndex *majstrts, int *majlens,
-                                  int *minndxs, /*double *els,*/ int *majlinks,
-                                  CoinBigIndex *free_listp)
+void presolve_delete_from_major2(int majndx, int minndx,
+                                 CoinBigIndex* majstrts, int* majlens,
+                                 int* minndxs, /*double *els,*/ int* majlinks,
+                                 CoinBigIndex* free_listp)
 
 {
     CoinBigIndex k = majstrts[majndx] ;
@@ -467,7 +467,7 @@ void presolve_delete_from_major2 (int majndx, int minndx,
       to point to the next entry and link the deleted entry to the front of the
       free list.
     */
-    if (minndxs[k] == minndx)
+    if(minndxs[k] == minndx)
     {
         majstrts[majndx] = majlinks[k] ;
         majlinks[k] = *free_listp ;
@@ -485,9 +485,9 @@ void presolve_delete_from_major2 (int majndx, int minndx,
         int len = majlens[majndx] ;
         CoinBigIndex kpre = k ;
         k = majlinks[k] ;
-        for (int i = 1 ; i < len ; ++i)
+        for(int i = 1 ; i < len ; ++i)
         {
-            if (minndxs[k] == minndx)
+            if(minndxs[k] == minndx)
             {
                 majlinks[kpre] = majlinks[k] ;
                 majlinks[k] = *free_listp ;

@@ -25,13 +25,13 @@
 
 void
 CglFlowCoverUnitTest(
-    const OsiSolverInterface * baseSiP,
-    const std::string mpsDir )
+    const OsiSolverInterface* baseSiP,
+    const std::string mpsDir)
 {
     // Test default constructor
     {
         CglFlowCover aGenerator;
-        assert (aGenerator.getMaxNumCuts() == 2000);
+        assert(aGenerator.getMaxNumCuts() == 2000);
     }
 
     // Test copy & assignment
@@ -41,7 +41,7 @@ CglFlowCoverUnitTest(
             CglFlowCover bGenerator;
             bGenerator.setMaxNumCuts(100);
             CglFlowCover cGenerator(bGenerator);
-            rhs=bGenerator;
+            rhs = bGenerator;
         }
     }
 
@@ -49,15 +49,15 @@ CglFlowCoverUnitTest(
         OsiCuts osicuts1;
         CglFlowCover test;
 
-        OsiSolverInterface  * siP = baseSiP->clone();
+        OsiSolverInterface*   siP = baseSiP->clone();
 
         int nRowCuts;
-        std::string fn(mpsDir+"egout");
-        std::string fn2 = mpsDir+"egout.mps";
-        FILE *in_f = fopen(fn2.c_str(), "r");
+        std::string fn(mpsDir + "egout");
+        std::string fn2 = mpsDir + "egout.mps";
+        FILE* in_f = fopen(fn2.c_str(), "r");
         if(in_f == NULL)
         {
-            std::cout<<"Can not open file "<<fn2<<std::endl<<"Skip test of CglFlowCover::generateCuts()"<<std::endl;
+            std::cout << "Can not open file " << fn2 << std::endl << "Skip test of CglFlowCover::generateCuts()" << std::endl;
         }
         else
         {
@@ -78,9 +78,9 @@ CglFlowCoverUnitTest(
             nRowCuts = osicuts1.sizeRowCuts();
 
 #ifdef CGL_DEBUG
-            std::cout<<"There are " << nRowCuts << " flow cuts" << std::endl;
+            std::cout << "There are " << nRowCuts << " flow cuts" << std::endl;
             int i;
-            for (i = 0; i < nRowCuts; i++)
+            for(i = 0; i < nRowCuts; i++)
             {
                 OsiRowCut rcut;
                 CoinPackedVector rpv;
@@ -94,22 +94,22 @@ CglFlowCoverUnitTest(
                 int k = 0;
                 double lb = rcut.lb();
                 double ub = rcut.ub();
-                for (k = 0; k < n; ++k)
+                for(k = 0; k < n; ++k)
                 {
                     int column = indices[k];
                     sum2 += colsol[column] * elements[k];
                 }
-                if (sum2 > ub + 1.0e-7 ||sum2 < lb - 1.0e-7)
+                if(sum2 > ub + 1.0e-7 || sum2 < lb - 1.0e-7)
                 {
-                    std::cout << "Cut " << i <<" lb " << lb << " solution " << sum2
-                              <<" ub " << ub << std::endl;
-                    for (k = 0; k < n; ++k)
+                    std::cout << "Cut " << i << " lb " << lb << " solution " << sum2
+                              << " ub " << ub << std::endl;
+                    for(k = 0; k < n; ++k)
                     {
                         int column = indices[k];
                         std::cout << "(col=" << column << ", el = " << elements[k]
                                   << ", sol = " << colsol[column] << ") ";
                     }
-                    std::cout <<std::endl;
+                    std::cout << std::endl;
                 }
             }
 #endif
@@ -120,10 +120,10 @@ CglFlowCoverUnitTest(
             OsiSolverInterface::ApplyCutsReturnCode rc = siP->applyCuts(osicuts2);
             siP->resolve();
             nRowCuts = osicuts2.sizeRowCuts();
-            std::cout<<"There are " << nRowCuts << " flow cuts" << std::endl;
+            std::cout << "There are " << nRowCuts << " flow cuts" << std::endl;
 
 #ifdef CGL_DEBUG
-            for (i = 0; i < nRowCuts; i++)
+            for(i = 0; i < nRowCuts; i++)
             {
                 OsiRowCut rcut;
                 CoinPackedVector rpv;
@@ -137,22 +137,22 @@ CglFlowCoverUnitTest(
                 int k = 0;
                 double lb = rcut.lb();
                 double ub = rcut.ub();
-                for (k = 0; k < n; ++k)
+                for(k = 0; k < n; ++k)
                 {
                     int column = indices[k];
                     sum2 += colsol[column] * elements[k];
                 }
-                if (sum2 > ub + 1.0e-7 ||sum2 < lb - 1.0e-7)
+                if(sum2 > ub + 1.0e-7 || sum2 < lb - 1.0e-7)
                 {
-                    std::cout << "Cut " << i <<" lb " << lb << " solution " << sum2
-                              <<" ub " << ub << std::endl;
-                    for (k = 0; k < n; ++k)
+                    std::cout << "Cut " << i << " lb " << lb << " solution " << sum2
+                              << " ub " << ub << std::endl;
+                    for(k = 0; k < n; ++k)
                     {
                         int column = indices[k];
                         std::cout << "(col=" << column << ", el = " << elements[k]
                                   << ", sol = " << colsol[column] << ") ";
                     }
-                    std::cout <<std::endl;
+                    std::cout << std::endl;
                 }
             }
 #endif
@@ -161,10 +161,10 @@ CglFlowCoverUnitTest(
 
             siP->resolve();
 
-            double lpRelaxAfter= siP->getObjValue();
-            std::cout<<"Initial LP value: "<<lpRelax<<std::endl;
-            std::cout<<"LP value with cuts: "<<lpRelaxAfter<<std::endl;
-            assert( lpRelax < lpRelaxAfter );
+            double lpRelaxAfter = siP->getObjValue();
+            std::cout << "Initial LP value: " << lpRelax << std::endl;
+            std::cout << "LP value with cuts: " << lpRelaxAfter << std::endl;
+            assert(lpRelax < lpRelaxAfter);
             assert(lpRelaxAfter < 569);
         }
         delete siP;

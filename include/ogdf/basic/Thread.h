@@ -68,94 +68,94 @@ namespace ogdf
 {
 
 
-//! Base class for threads.
-class Thread
-{
-    friend class Initialization;
+    //! Base class for threads.
+    class Thread
+    {
+        friend class Initialization;
 
 #ifdef OGDF_USE_THREAD_POOL
-    static void initPool();
-    static void cleanupPool();
+        static void initPool();
+        static void cleanupPool();
 #endif
 
-public:
+    public:
 
-    //! Initializes a thread, but does not create a system thread yet.
-    Thread();
+        //! Initializes a thread, but does not create a system thread yet.
+        Thread();
 
-    //! Destructor. Frees resources.
-    virtual ~Thread();
+        //! Destructor. Frees resources.
+        virtual ~Thread();
 
-    //! Returns the ID of the system thread associated with the thread object.
-    long threadID() const;
+        //! Returns the ID of the system thread associated with the thread object.
+        long threadID() const;
 
-    //! Returns whether the thread has been started (i.e. a system thread is currently associated with the thread object).
-    bool started() const;
+        //! Returns whether the thread has been started (i.e. a system thread is currently associated with the thread object).
+        bool started() const;
 
-    //! Sets the CPU affinity mask of the thread to \a mask.
-    __uint64 cpuAffinity(__uint64 mask);
+        //! Sets the CPU affinity mask of the thread to \a mask.
+        __uint64 cpuAffinity(__uint64 mask);
 
-    //! Starts execution of the thread.
-    void start();
+        //! Starts execution of the thread.
+        void start();
 
-    //! Waits until the thread has finished.
-    void join();
+        //! Waits until the thread has finished.
+        void join();
 
-    //! Waits until the thread has finished or the time-out interval of \a milliseconds elapses.
-    /**
-     * @param milliseconds is the time-out interval in milliseconds.
-     * @return true if the thread has finished or false if the time-out interval has elapsed.
-     */
-    bool join(unsigned long milliseconds);
+        //! Waits until the thread has finished or the time-out interval of \a milliseconds elapses.
+        /**
+         * @param milliseconds is the time-out interval in milliseconds.
+         * @return true if the thread has finished or false if the time-out interval has elapsed.
+         */
+        bool join(unsigned long milliseconds);
 
-protected:
-    //! The actual work perfomed by the thread. Must be defined by derived classes.
-    virtual void doWork() = 0;
+    protected:
+        //! The actual work perfomed by the thread. Must be defined by derived classes.
+        virtual void doWork() = 0;
 
-private:
+    private:
 
 #ifdef OGDF_SYSTEM_WINDOWS
 
 #ifdef OGDF_USE_THREAD_POOL
-    struct PoolThreadData;
+        struct PoolThreadData;
 
-    static SRWLOCK s_poolLock;
-    static int s_numPoolThreads;
-    static int s_numSleepingThreads;
-    static int s_maxNumPoolThreads;
+        static SRWLOCK s_poolLock;
+        static int s_numPoolThreads;
+        static int s_numSleepingThreads;
+        static int s_maxNumPoolThreads;
 
-    static PoolThreadData **s_poolThreads;
-    static PoolThreadData **s_sleepingThreads;
+        static PoolThreadData** s_poolThreads;
+        static PoolThreadData** s_sleepingThreads;
 
-    PoolThreadData *m_poolThread;   //!< associated pool thread (0 if no pool thread is used)
+        PoolThreadData* m_poolThread;   //!< associated pool thread (0 if no pool thread is used)
 #endif
 
-    HANDLE          m_handle;       //!< thread handle (0 if pool thread)
-    unsigned int    m_id;           //!< thread id (0 if pool thread)
-    HANDLE          m_evFinished;   //!< event which is signaled by thread when work is finished
+        HANDLE          m_handle;       //!< thread handle (0 if pool thread)
+        unsigned int    m_id;           //!< thread id (0 if pool thread)
+        HANDLE          m_evFinished;   //!< event which is signaled by thread when work is finished
 
-    HANDLE getThreadHandle();
+        HANDLE getThreadHandle();
 
-    //! Thread procedure for normal threads; \a pParam points to the Thread object.
-    static unsigned int __stdcall threadProc(void *pParam);
+        //! Thread procedure for normal threads; \a pParam points to the Thread object.
+        static unsigned int __stdcall threadProc(void* pParam);
 
 #ifdef OGDF_USE_THREAD_POOL
-    //! Thread procedure for pool threads; \a pParam points to the PoolThreadData object.
-    static unsigned int __stdcall poolThreadProc(void *pParam);
+        //! Thread procedure for pool threads; \a pParam points to the PoolThreadData object.
+        static unsigned int __stdcall poolThreadProc(void* pParam);
 #endif
 
 
 #else
 
-    static void *threadProc(void *pParam);
+        static void* threadProc(void* pParam);
 
-    pthread_t m_pt;
+        pthread_t m_pt;
 
 #endif
 
-    OGDF_NEW_DELETE
+        OGDF_NEW_DELETE
 
-};
+    };
 
 
 } // end namespace ogdf

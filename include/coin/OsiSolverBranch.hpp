@@ -25,28 +25,28 @@ public:
     void addBranch(int iColumn, double value);
 
     /// Add bounds - way =-1 is first , +1 is second
-    void addBranch(int way,int numberTighterLower, const int * whichLower, const double * newLower,
-                   int numberTighterUpper, const int * whichUpper, const double * newUpper);
+    void addBranch(int way, int numberTighterLower, const int* whichLower, const double* newLower,
+                   int numberTighterUpper, const int* whichUpper, const double* newUpper);
     /// Add bounds - way =-1 is first , +1 is second
-    void addBranch(int way,int numberColumns,const double * oldLower, const double * newLower,
-                   const double * oldUpper, const double * newUpper);
+    void addBranch(int way, int numberColumns, const double* oldLower, const double* newLower,
+                   const double* oldUpper, const double* newUpper);
 
     /// Apply bounds
-    void applyBounds(OsiSolverInterface & solver,int way) const;
+    void applyBounds(OsiSolverInterface & solver, int way) const;
     /// Returns true if current solution satsifies one side of branch
     bool feasibleOneWay(const OsiSolverInterface & solver) const;
     /// Starts
-    inline const int * starts() const
+    inline const int* starts() const
     {
         return start_;
     }
     /// Which variables
-    inline const int * which() const
+    inline const int* which() const
     {
         return indices_;
     }
     /// Bounds
-    inline const double * bounds() const
+    inline const double* bounds() const
     {
         return bound_;
     }
@@ -65,7 +65,7 @@ public:
     OsiSolverBranch & operator=(const OsiSolverBranch & rhs);
 
     /// Destructor
-    ~OsiSolverBranch ();
+    ~OsiSolverBranch();
 
     //@}
 
@@ -75,10 +75,10 @@ private:
     /// Start of lower first, upper first, lower second, upper second
     int start_[5];
     /// Column numbers (if >= numberColumns treat as rows)
-    int * indices_;
+    int* indices_;
     /// New bounds
-    double * bound_;
-//@}
+    double* bound_;
+    //@}
 };
 //#############################################################################
 
@@ -94,8 +94,8 @@ public:
     ///@name Add and Get methods
     //@{
     /// Create result
-    void createResult(const OsiSolverInterface & solver,const double * lowerBefore,
-                      const double * upperBefore);
+    void createResult(const OsiSolverInterface & solver, const double* lowerBefore,
+                      const double* upperBefore);
 
     /// Restore result
     void restoreResult(OsiSolverInterface & solver) const;
@@ -113,13 +113,13 @@ public:
     }
 
     /// Primal solution
-    inline const double * primalSolution() const
+    inline const double* primalSolution() const
     {
         return primalSolution_;
     }
 
     /// Dual solution
-    inline const double * dualSolution() const
+    inline const double* dualSolution() const
     {
         return dualSolution_;
     }
@@ -138,8 +138,8 @@ public:
     OsiSolverResult();
 
     /// Constructor from solver
-    OsiSolverResult(const OsiSolverInterface & solver,const double * lowerBefore,
-                    const double * upperBefore);
+    OsiSolverResult(const OsiSolverInterface & solver, const double* lowerBefore,
+                    const double* upperBefore);
 
     /// Copy constructor
     OsiSolverResult(const OsiSolverResult & rhs);
@@ -148,7 +148,7 @@ public:
     OsiSolverResult & operator=(const OsiSolverResult & rhs);
 
     /// Destructor
-    ~OsiSolverResult ();
+    ~OsiSolverResult();
 
     //@}
 
@@ -160,11 +160,11 @@ private:
     /// Warm start information
     CoinWarmStartBasis basis_;
     /// Primal solution (numberColumns)
-    double * primalSolution_;
+    double* primalSolution_;
     /// Dual solution (numberRows)
-    double * dualSolution_;
+    double* dualSolution_;
     /// Which extra variables have been fixed (only way==-1 counts)
     OsiSolverBranch fixed_;
-//@}
+    //@}
 };
 #endif

@@ -28,21 +28,21 @@ class ClpPdcoBase
 public:
     /**@name Virtual methods that the derived classes must provide */
     //@{
-    virtual void matVecMult(ClpInterior * model, int mode, double * x, double * y) const = 0;
+    virtual void matVecMult(ClpInterior* model, int mode, double* x, double* y) const = 0;
 
-    virtual void getGrad(ClpInterior * model, CoinDenseVector<double> &x, CoinDenseVector<double> &grad) const = 0;
+    virtual void getGrad(ClpInterior* model, CoinDenseVector<double> & x, CoinDenseVector<double> & grad) const = 0;
 
-    virtual void getHessian(ClpInterior * model, CoinDenseVector<double> &x, CoinDenseVector<double> &H) const = 0;
+    virtual void getHessian(ClpInterior* model, CoinDenseVector<double> & x, CoinDenseVector<double> & H) const = 0;
 
-    virtual double getObj(ClpInterior * model, CoinDenseVector<double> &x) const = 0;
+    virtual double getObj(ClpInterior* model, CoinDenseVector<double> & x) const = 0;
 
-    virtual void matPrecon(ClpInterior * model,  double delta, double * x, double * y) const = 0;
+    virtual void matPrecon(ClpInterior* model,  double delta, double* x, double* y) const = 0;
 
     //@}
     //@{
     ///@name Other
     /// Clone
-    virtual ClpPdcoBase * clone() const = 0;
+    virtual ClpPdcoBase* clone() const = 0;
     /// Returns type
     inline int type() const
     {
@@ -89,9 +89,9 @@ public:
     virtual ~ClpPdcoBase();
 protected:
     // Copy
-    ClpPdcoBase(const ClpPdcoBase&);
+    ClpPdcoBase(const ClpPdcoBase &);
     // Assignment
-    ClpPdcoBase& operator=(const ClpPdcoBase&);
+    ClpPdcoBase & operator=(const ClpPdcoBase &);
     //@}
 
 

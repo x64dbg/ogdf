@@ -61,62 +61,62 @@ namespace ogdf
 {
 
 
-template<class A, class B> class Tuple2;
+    template<class A, class B> class Tuple2;
 
 
-//---------------------------------------------------------
-// StaticPlanarSPQRTree
-// extension of class StaticSPQRTree for support of embedded graphs
-//---------------------------------------------------------
+    //---------------------------------------------------------
+    // StaticPlanarSPQRTree
+    // extension of class StaticSPQRTree for support of embedded graphs
+    //---------------------------------------------------------
 
-//! SPQR-trees of planar graphs.
-/**
- * The class StaticPlanarSPQRTree maintains the triconnected components of a
- * planar biconnected graph G and represents all possible embeddings
- * of G. Each skeleton graph is embedded.
- *
- * The current embeddings of the skeletons define an embedding of G.
- * There are two basic operations for obtaining another embedding
- * of G: reverse(v), which flips the skeleton of an R-node v
- * around its poles, and swap(v,e_1,e_2), which exchanges the
- * positions of the edges e_1 and e_2 in the skeleton of a P-node v.
- */
-
-class OGDF_EXPORT StaticPlanarSPQRTree : public StaticSPQRTree, public PlanarSPQRTree
-{
-public:
-
-    // constructors
-
-    //! Creates an SPQR tree \a T for planar graph \a G rooted at the first edge of \a G.
+    //! SPQR-trees of planar graphs.
     /**
-     * If \a isEmbedded is set to true, \a G must represent a combinatorial
-     * embedding, i.e., the counter-clockwise order of the adjacency entries
-     * around each vertex defines an embedding.
-     * \pre \a G is planar and biconnected and contains at least 3 nodes,
-     *      or \a G has exactly 2 nodes and at least 3  edges.
+     * The class StaticPlanarSPQRTree maintains the triconnected components of a
+     * planar biconnected graph G and represents all possible embeddings
+     * of G. Each skeleton graph is embedded.
+     *
+     * The current embeddings of the skeletons define an embedding of G.
+     * There are two basic operations for obtaining another embedding
+     * of G: reverse(v), which flips the skeleton of an R-node v
+     * around its poles, and swap(v,e_1,e_2), which exchanges the
+     * positions of the edges e_1 and e_2 in the skeleton of a P-node v.
      */
-    StaticPlanarSPQRTree(const Graph &G, bool isEmbedded = false) :
-        StaticSPQRTree(G)
-    {
-        PlanarSPQRTree::init(isEmbedded);
-    }
 
-    //! Creates an SPQR tree \a T for planar graph \a G rooted at edge \a e.
-    /**
-     * If \a isEmbedded is set to true, \a G must represent a combinatorial
-     * embedding, i.e., the counter-clockwise order of the adjacency entries
-     * around each vertex defines an embedding.
-     * \pre \a e is an edge in \a G, and \a G is planar and biconnected and
-     * contains at least 3 nodes, or \a G has exactly 2 nodes and at least 3
-     * edges.
-     */
-    StaticPlanarSPQRTree(const Graph &G, edge e, bool isEmbedded = false) :
-        StaticSPQRTree(G,e)
+    class OGDF_EXPORT StaticPlanarSPQRTree : public StaticSPQRTree, public PlanarSPQRTree
     {
-        PlanarSPQRTree::init(isEmbedded);
-    }
-};
+    public:
+
+        // constructors
+
+        //! Creates an SPQR tree \a T for planar graph \a G rooted at the first edge of \a G.
+        /**
+         * If \a isEmbedded is set to true, \a G must represent a combinatorial
+         * embedding, i.e., the counter-clockwise order of the adjacency entries
+         * around each vertex defines an embedding.
+         * \pre \a G is planar and biconnected and contains at least 3 nodes,
+         *      or \a G has exactly 2 nodes and at least 3  edges.
+         */
+        StaticPlanarSPQRTree(const Graph & G, bool isEmbedded = false) :
+            StaticSPQRTree(G)
+        {
+            PlanarSPQRTree::init(isEmbedded);
+        }
+
+        //! Creates an SPQR tree \a T for planar graph \a G rooted at edge \a e.
+        /**
+         * If \a isEmbedded is set to true, \a G must represent a combinatorial
+         * embedding, i.e., the counter-clockwise order of the adjacency entries
+         * around each vertex defines an embedding.
+         * \pre \a e is an edge in \a G, and \a G is planar and biconnected and
+         * contains at least 3 nodes, or \a G has exactly 2 nodes and at least 3
+         * edges.
+         */
+        StaticPlanarSPQRTree(const Graph & G, edge e, bool isEmbedded = false) :
+            StaticSPQRTree(G, e)
+        {
+            PlanarSPQRTree::init(isEmbedded);
+        }
+    };
 
 
 } // end namespace ogdf

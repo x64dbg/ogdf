@@ -59,184 +59,184 @@ namespace ogdf
 {
 
 
-typedef HashElement<string,int> *GmlKey;
-enum GmlObjectType { gmlIntValue, gmlDoubleValue, gmlStringValue, gmlListBegin,
-                     gmlListEnd, gmlKey, gmlEOF, gmlError
-                   };
-
-
-//---------------------------------------------------------
-// GmlObject
-// represents node in GML parse tree
-//---------------------------------------------------------
-struct OGDF_EXPORT GmlObject
-{
-    GmlObject *m_pBrother; // brother of node in tree
-    GmlKey m_key; // tag of node
-    GmlObjectType m_valueType; // type of node
-
-    // the entry in the union is selected according to m_valueType:
-    //   gmlIntValue -> m_intValue
-    //   gmlDoubleValue -> m_doubleValue
-    //   gmlStringValue -> m_stringValue
-    //   gmlListBegin -> m_pFirstSon (in case of a list, m_pFirstSon is pointer
-    //     to first son and the sons are chained by m_pBrother)
-    union
-    {
-        int m_intValue;
-        double m_doubleValue;
-        const char *m_stringValue;
-        GmlObject *m_pFirstSon;
-    };
-
-    // construction
-    GmlObject(GmlKey key, int intValue) : m_pBrother(0), m_key(key),
-        m_valueType(gmlIntValue), m_intValue(intValue)  { }
-
-    GmlObject(GmlKey key, double doubleValue) : m_pBrother(0), m_key(key),
-        m_valueType(gmlDoubleValue), m_doubleValue(doubleValue)  { }
-
-    GmlObject(GmlKey key, const char *stringValue) : m_pBrother(0), m_key(key),
-        m_valueType(gmlStringValue), m_stringValue(stringValue)  { }
-
-    GmlObject(GmlKey key) : m_pBrother(0), m_key(key),
-        m_valueType(gmlListBegin), m_pFirstSon(0)  { }
-
-    OGDF_NEW_DELETE
-};
-
-
-//---------------------------------------------------------
-// GmlParser
-// reads GML file and constructs GML parse tree
-//---------------------------------------------------------
-class OGDF_EXPORT GmlParser
-{
-    Hashing<string,int> m_hashTable; // hash table for tags
-    int m_num;
-
-    istream *m_is;
-    bool m_error;
-    string m_errorString;
-
-    char *m_rLineBuffer, *m_lineBuffer, *m_pCurrent, *m_pStore, m_cStore;
-
-    int m_intSymbol;
-    double m_doubleSymbol;
-    const char *m_stringSymbol;
-    GmlKey m_keySymbol;
-    string m_longString;
-
-    GmlObject *m_objectTree; // root node of GML parse tree
-
-    bool m_doCheck;
-    Array<node> m_mapToNode;
-    GmlObject  *m_graphObject;
-
-public:
-    // predefined id constants for all used keys
-    enum PredefinedKey { idPredefKey = 0, labelPredefKey, CreatorPredefKey,
-                         namePredefKey, graphPredefKey, versionPredefKey, directedPredefKey,
-                         nodePredefKey, edgePredefKey, graphicsPredefKey, xPredefKey,
-                         yPredefKey, wPredefKey, hPredefKey, typePredefKey, widthPredefKey,
-                         sourcePredefKey, targetPredefKey, arrowPredefKey, LinePredefKey,
-                         pointPredefKey, generalizationPredefKey, subGraphPredefKey, fillPredefKey, clusterPredefKey,
-                         rootClusterPredefKey, vertexPredefKey, colorPredefKey,
-                         heightPredefKey, stipplePredefKey, patternPredefKey,
-                         linePredefKey, lineWidthPredefKey, templatePredefKey,
-                         edgeWeightPredefKey, NEXTPREDEFKEY
+    typedef HashElement<string, int>* GmlKey;
+    enum GmlObjectType { gmlIntValue, gmlDoubleValue, gmlStringValue, gmlListBegin,
+                         gmlListEnd, gmlKey, gmlEOF, gmlError
                        };
 
-    // construction: creates object tree
-    // sets m_error flag if an error occured
-    GmlParser(const char *fileName, bool doCheck = false);
-    GmlParser(istream &is, bool doCheck = false);
 
-    // destruction: destroys object tree
-    ~GmlParser();
-
-    // returns id of object
-    int id(GmlObject *object) const
+    //---------------------------------------------------------
+    // GmlObject
+    // represents node in GML parse tree
+    //---------------------------------------------------------
+    struct OGDF_EXPORT GmlObject
     {
-        return object->m_key->info();
-    }
+        GmlObject* m_pBrother; // brother of node in tree
+        GmlKey m_key; // tag of node
+        GmlObjectType m_valueType; // type of node
 
-    // true <=> an error in GML files has been detected
-    bool error() const
+        // the entry in the union is selected according to m_valueType:
+        //   gmlIntValue -> m_intValue
+        //   gmlDoubleValue -> m_doubleValue
+        //   gmlStringValue -> m_stringValue
+        //   gmlListBegin -> m_pFirstSon (in case of a list, m_pFirstSon is pointer
+        //     to first son and the sons are chained by m_pBrother)
+        union
+        {
+            int m_intValue;
+            double m_doubleValue;
+            const char* m_stringValue;
+            GmlObject* m_pFirstSon;
+        };
+
+        // construction
+        GmlObject(GmlKey key, int intValue) : m_pBrother(0), m_key(key),
+            m_valueType(gmlIntValue), m_intValue(intValue)  { }
+
+        GmlObject(GmlKey key, double doubleValue) : m_pBrother(0), m_key(key),
+            m_valueType(gmlDoubleValue), m_doubleValue(doubleValue)  { }
+
+        GmlObject(GmlKey key, const char* stringValue) : m_pBrother(0), m_key(key),
+            m_valueType(gmlStringValue), m_stringValue(stringValue)  { }
+
+        GmlObject(GmlKey key) : m_pBrother(0), m_key(key),
+            m_valueType(gmlListBegin), m_pFirstSon(0)  { }
+
+        OGDF_NEW_DELETE
+    };
+
+
+    //---------------------------------------------------------
+    // GmlParser
+    // reads GML file and constructs GML parse tree
+    //---------------------------------------------------------
+    class OGDF_EXPORT GmlParser
     {
-        return m_error;
-    }
-    // returns error message
-    const string &errorString() const
-    {
-        return m_errorString;
-    }
+        Hashing<string, int> m_hashTable; // hash table for tags
+        int m_num;
 
-    // creates graph from GML parse tree
-    bool read(Graph &G);
-    // creates attributed graph from GML parse tree
-    bool read(Graph &G, GraphAttributes &AG);
-    //creates clustergraph from GML parse tree
-    //bool read(Graph &G, ClusterGraph & CG);
-    //read only cluster part of object tree and create cluster graph structure
-    bool readCluster(Graph &G, ClusterGraph& CG);
-    //the same with attributes
-    bool readAttributedCluster(
-        Graph &G,
-        ClusterGraph& CG,
-        ClusterGraphAttributes& ACG);
+        istream* m_is;
+        bool m_error;
+        string m_errorString;
 
-protected:
+        char* m_rLineBuffer, *m_lineBuffer, *m_pCurrent, *m_pStore, m_cStore;
 
-    //read all cluster tree information
-    bool clusterRead(
-        GmlObject* rootCluster,
-        ClusterGraph& CG);
+        int m_intSymbol;
+        double m_doubleSymbol;
+        const char* m_stringSymbol;
+        GmlKey m_keySymbol;
+        string m_longString;
 
-    //with attributes
-    bool attributedClusterRead(
-        GmlObject* rootCluster,
-        ClusterGraph& CG,
-        ClusterGraphAttributes& ACG);
+        GmlObject* m_objectTree; // root node of GML parse tree
 
-    //recursively read cluster subtree information
-    bool recursiveClusterRead(
-        GmlObject* clusterObject,
-        ClusterGraph& CG,
-        cluster c);
+        bool m_doCheck;
+        Array<node> m_mapToNode;
+        GmlObject*  m_graphObject;
 
-    bool recursiveAttributedClusterRead(
-        GmlObject* clusterObject,
-        ClusterGraph& CG,
-        ClusterGraphAttributes& ACG,
-        cluster c);
+    public:
+        // predefined id constants for all used keys
+        enum PredefinedKey { idPredefKey = 0, labelPredefKey, CreatorPredefKey,
+                             namePredefKey, graphPredefKey, versionPredefKey, directedPredefKey,
+                             nodePredefKey, edgePredefKey, graphicsPredefKey, xPredefKey,
+                             yPredefKey, wPredefKey, hPredefKey, typePredefKey, widthPredefKey,
+                             sourcePredefKey, targetPredefKey, arrowPredefKey, LinePredefKey,
+                             pointPredefKey, generalizationPredefKey, subGraphPredefKey, fillPredefKey, clusterPredefKey,
+                             rootClusterPredefKey, vertexPredefKey, colorPredefKey,
+                             heightPredefKey, stipplePredefKey, patternPredefKey,
+                             linePredefKey, lineWidthPredefKey, templatePredefKey,
+                             edgeWeightPredefKey, NEXTPREDEFKEY
+                           };
 
-    bool readClusterAttributes(
-        GmlObject* cGraphics,
-        cluster c,
-        ClusterGraphAttributes& ACG);
+        // construction: creates object tree
+        // sets m_error flag if an error occured
+        GmlParser(const char* fileName, bool doCheck = false);
+        GmlParser(istream & is, bool doCheck = false);
 
-private:
-    void doInit(istream &is, bool doCheck);
-    void createObjectTree(istream &is, bool doCheck);
-    void initPredefinedKeys();
-    void setError(const char *errorString);
+        // destruction: destroys object tree
+        ~GmlParser();
 
-    GmlObject *parseList(GmlObjectType closingKey, GmlObjectType errorKey);
-    GmlObjectType getNextSymbol();
-    bool getLine();
+        // returns id of object
+        int id(GmlObject* object) const
+        {
+            return object->m_key->info();
+        }
 
-    GmlKey hashString(const string &str);
+        // true <=> an error in GML files has been detected
+        bool error() const
+        {
+            return m_error;
+        }
+        // returns error message
+        const string & errorString() const
+        {
+            return m_errorString;
+        }
 
-    GmlObject *getNodeIdRange(int &minId,int &maxId);
-    void readLineAttribute(GmlObject *object, DPolyline &dpl);
+        // creates graph from GML parse tree
+        bool read(Graph & G);
+        // creates attributed graph from GML parse tree
+        bool read(Graph & G, GraphAttributes & AG);
+        //creates clustergraph from GML parse tree
+        //bool read(Graph &G, ClusterGraph & CG);
+        //read only cluster part of object tree and create cluster graph structure
+        bool readCluster(Graph & G, ClusterGraph & CG);
+        //the same with attributes
+        bool readAttributedCluster(
+            Graph & G,
+            ClusterGraph & CG,
+            ClusterGraphAttributes & ACG);
 
-    void destroyObjectList(GmlObject *object);
+    protected:
 
-    void indent(ostream &os, int d);
-    void output(ostream &os, GmlObject *object, int d);
+        //read all cluster tree information
+        bool clusterRead(
+            GmlObject* rootCluster,
+            ClusterGraph & CG);
 
-};
+        //with attributes
+        bool attributedClusterRead(
+            GmlObject* rootCluster,
+            ClusterGraph & CG,
+            ClusterGraphAttributes & ACG);
+
+        //recursively read cluster subtree information
+        bool recursiveClusterRead(
+            GmlObject* clusterObject,
+            ClusterGraph & CG,
+            cluster c);
+
+        bool recursiveAttributedClusterRead(
+            GmlObject* clusterObject,
+            ClusterGraph & CG,
+            ClusterGraphAttributes & ACG,
+            cluster c);
+
+        bool readClusterAttributes(
+            GmlObject* cGraphics,
+            cluster c,
+            ClusterGraphAttributes & ACG);
+
+    private:
+        void doInit(istream & is, bool doCheck);
+        void createObjectTree(istream & is, bool doCheck);
+        void initPredefinedKeys();
+        void setError(const char* errorString);
+
+        GmlObject* parseList(GmlObjectType closingKey, GmlObjectType errorKey);
+        GmlObjectType getNextSymbol();
+        bool getLine();
+
+        GmlKey hashString(const string & str);
+
+        GmlObject* getNodeIdRange(int & minId, int & maxId);
+        void readLineAttribute(GmlObject* object, DPolyline & dpl);
+
+        void destroyObjectList(GmlObject* object);
+
+        void indent(ostream & os, int d);
+        void output(ostream & os, GmlObject* object, int d);
+
+    };
 
 
 } // end namespace ogdf

@@ -28,8 +28,8 @@
 
 class CglSimpleRounding : public CglCutGenerator
 {
-    friend void CglSimpleRoundingUnitTest(const OsiSolverInterface * siP,
-                                          const std::string mpdDir );
+    friend void CglSimpleRoundingUnitTest(const OsiSolverInterface* siP,
+                                          const std::string mpdDir);
 
 public:
 
@@ -38,32 +38,32 @@ public:
     /** Generate simple rounding cuts for the model accessed through the solver interface.
     Insert generated cuts into the cut set cs.
     */
-    virtual void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
-                               const CglTreeInfo info = CglTreeInfo()) const;
+    virtual void generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
+                              const CglTreeInfo info = CglTreeInfo()) const;
     //@}
 
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglSimpleRounding ();
+    CglSimpleRounding();
 
     /// Copy constructor
-    CglSimpleRounding (
+    CglSimpleRounding(
         const CglSimpleRounding &);
 
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
     CglSimpleRounding &
     operator=(
-        const CglSimpleRounding& rhs);
+        const CglSimpleRounding & rhs);
 
     /// Destructor
     virtual
-    ~CglSimpleRounding ();
+    ~CglSimpleRounding();
     /// Create C++ lines to get to current state
-    virtual std::string generateCpp( FILE * fp);
+    virtual std::string generateCpp(FILE* fp);
     //@}
 
 private:
@@ -80,7 +80,7 @@ private:
         const CoinShallowPackedVector & matrixRow,
         CoinPackedVector & irow,
         double & b,
-        bool * negative) const;
+        bool* negative) const;
 
 
     /** Given a vector of doubles, x, with size elements and a positive tolerance,
@@ -100,8 +100,8 @@ private:
     */
     int power10ToMakeDoubleAnInt(
         int size,               // the length of the vector x
-        const double * x,
-        double dataTol ) const; // the precision of the data, i.e. the positive
+        const double* x,
+        double dataTol) const;  // the precision of the data, i.e. the positive
     // epsilon, which is equivalent to zero
 
     /**@name Greatest common denominators methods */
@@ -112,7 +112,7 @@ private:
     /** Returns the greatest common denominator of a vector of
         positive integers, vi, of length n.
     */
-    inline  int gcdv(int n, const int * const vi) const;
+    inline  int gcdv(int n, const int* const vi) const;
     //@}
 
     //@}
@@ -140,8 +140,8 @@ CglSimpleRounding::gcd(int a, int b) const
         b = temp;
     }
     int remainder = b % a;
-    if (remainder == 0) return a;
-    else return gcd(remainder,a);
+    if(remainder == 0) return a;
+    else return gcd(remainder, a);
 }
 
 //-------------------------------------------------------------------
@@ -151,16 +151,16 @@ CglSimpleRounding::gcd(int a, int b) const
 int
 CglSimpleRounding::gcdv(int n, const int* const vi) const
 {
-    if (n==0)
+    if(n == 0)
         abort();
 
-    if (n==1)
+    if(n == 1)
         return vi[0];
 
-    int retval=gcd(vi[0], vi[1]);
-    for (int i=2; i<n; i++)
+    int retval = gcd(vi[0], vi[1]);
+    for(int i = 2; i < n; i++)
     {
-        retval=gcd(retval,vi[i]);
+        retval = gcd(retval, vi[i]);
     }
     return retval;
 }
@@ -171,7 +171,7 @@ CglSimpleRounding::gcdv(int n, const int* const vi) const
     have to be compiled into the library. And that's a gain, because the
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
-void CglSimpleRoundingUnitTest(const OsiSolverInterface * siP,
-                               const std::string mpdDir );
+void CglSimpleRoundingUnitTest(const OsiSolverInterface* siP,
+                               const std::string mpdDir);
 
 #endif

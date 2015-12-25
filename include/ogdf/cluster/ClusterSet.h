@@ -58,232 +58,232 @@ namespace ogdf
 {
 
 
-//---------------------------------------------------------
-// ClusterSetSimple
-// maintains a subset S of the clusters contained in an associated
-// cluster graph G (only insertion of elements and clear operation)
-//---------------------------------------------------------
-class OGDF_EXPORT ClusterSetSimple
-{
-public:
-    // creates a new empty cluster set associated with cluster graph CG
-    ClusterSetSimple(const ClusterGraph &CG) : m_isContained(CG,false) { }
-
-    // destructor
-    ~ClusterSetSimple() { }
-
-    // inserts cluster c into set S
-    // running time: O(1)
-    // Precond.: c is a cluster in the associated graph
-    void insert(cluster c)
+    //---------------------------------------------------------
+    // ClusterSetSimple
+    // maintains a subset S of the clusters contained in an associated
+    // cluster graph G (only insertion of elements and clear operation)
+    //---------------------------------------------------------
+    class OGDF_EXPORT ClusterSetSimple
     {
-        OGDF_ASSERT(c->graphOf() == m_isContained.graphOf());
-        bool &isContained = m_isContained[c];
-        if (isContained == false)
+    public:
+        // creates a new empty cluster set associated with cluster graph CG
+        ClusterSetSimple(const ClusterGraph & CG) : m_isContained(CG, false) { }
+
+        // destructor
+        ~ClusterSetSimple() { }
+
+        // inserts cluster c into set S
+        // running time: O(1)
+        // Precond.: c is a cluster in the associated graph
+        void insert(cluster c)
         {
-            isContained = true;
-            m_clusters.pushFront(c);
+            OGDF_ASSERT(c->graphOf() == m_isContained.graphOf());
+            bool & isContained = m_isContained[c];
+            if(isContained == false)
+            {
+                isContained = true;
+                m_clusters.pushFront(c);
+            }
         }
-    }
 
 
-    // removes all clusters from set S
-    // running time: O(|S|)
-    void clear()
-    {
-        SListIterator<cluster> it;
-        for(it = m_clusters.begin(); it.valid(); ++it)
+        // removes all clusters from set S
+        // running time: O(|S|)
+        void clear()
         {
-            m_isContained[*it] = false;
+            SListIterator<cluster> it;
+            for(it = m_clusters.begin(); it.valid(); ++it)
+            {
+                m_isContained[*it] = false;
+            }
+            m_clusters.clear();
         }
-        m_clusters.clear();
-    }
 
 
-    // returns true iff cluster c is contained in S
-    // running time: O(1)
-    // Precond.: c is a cluster in the asociated graph
-    bool isMember(cluster c) const
-    {
-        OGDF_ASSERT(c->graphOf() == m_isContained.graphOf());
-        return m_isContained[c];
-    }
-
-    // returns the list of clusters contained in S
-    const SListPure<cluster> &clusters() const
-    {
-        return m_clusters;
-    }
-
-private:
-    // m_isContained[c] is true <=> c is contained in S
-    ClusterArray<bool> m_isContained;
-    // list of clusters contained in S
-    SListPure<cluster> m_clusters;
-};
-
-
-
-//---------------------------------------------------------
-// ClusterSetPure
-// maintains a subset S of the clusters contained in an associated
-// graph G (no efficient access to size of S)
-//---------------------------------------------------------
-class OGDF_EXPORT ClusterSetPure
-{
-public:
-    // creates a new empty cluster set associated with graph G
-    ClusterSetPure(const ClusterGraph &G) : m_it(G,ListIterator<cluster>()) { }
-
-    // destructor
-    ~ClusterSetPure() { }
-
-    // inserts cluster c into set S
-    // running time: O(1)
-    // Precond.: c is a cluster in the associated graph
-    void insert(cluster c)
-    {
-        OGDF_ASSERT(c->graphOf() == m_it.graphOf());
-        ListIterator<cluster> &itV = m_it[c];
-        if (!itV.valid())
-            itV = m_clusters.pushBack(c);
-    }
-
-    // removes cluster c from set S
-    // running time: O(1)
-    // Precond.: c is a cluster in the asociated graph
-    void remove(cluster c)
-    {
-        OGDF_ASSERT(c->graphOf() == m_it.graphOf());
-        ListIterator<cluster> &itV = m_it[c];
-        if (itV.valid())
+        // returns true iff cluster c is contained in S
+        // running time: O(1)
+        // Precond.: c is a cluster in the asociated graph
+        bool isMember(cluster c) const
         {
-            m_clusters.del(itV);
-            itV = ListIterator<cluster>();
+            OGDF_ASSERT(c->graphOf() == m_isContained.graphOf());
+            return m_isContained[c];
         }
-    }
 
-
-    // removes all clusters from set S
-    // running time: O(|S|)
-    void clear()
-    {
-        ListIterator<cluster> it;
-        for(it = m_clusters.begin(); it.valid(); ++it)
+        // returns the list of clusters contained in S
+        const SListPure<cluster> & clusters() const
         {
-            m_it[*it] = ListIterator<cluster>();
+            return m_clusters;
         }
-        m_clusters.clear();
-    }
+
+    private:
+        // m_isContained[c] is true <=> c is contained in S
+        ClusterArray<bool> m_isContained;
+        // list of clusters contained in S
+        SListPure<cluster> m_clusters;
+    };
 
 
-    // returns true iff cluster c is contained in S
-    // running time: O(1)
-    // Precond.: c is a cluster in the asociated graph
-    bool isMember(cluster c) const
+
+    //---------------------------------------------------------
+    // ClusterSetPure
+    // maintains a subset S of the clusters contained in an associated
+    // graph G (no efficient access to size of S)
+    //---------------------------------------------------------
+    class OGDF_EXPORT ClusterSetPure
     {
-        OGDF_ASSERT(c->graphOf() == m_it.graphOf());
-        return m_it[c].valid();
-    }
+    public:
+        // creates a new empty cluster set associated with graph G
+        ClusterSetPure(const ClusterGraph & G) : m_it(G, ListIterator<cluster>()) { }
 
-    // returns the list of clusters contained in S
-    const ListPure<cluster> &clusters() const
-    {
-        return m_clusters;
-    }
+        // destructor
+        ~ClusterSetPure() { }
 
-private:
-    // m_it[c] contains list iterator pointing to c if c is contained in S,
-    // an invalid list iterator otherwise
-    ClusterArray<ListIterator<cluster> > m_it;
-    // list of clusters contained in S
-    ListPure<cluster> m_clusters;
-};
-
-
-
-//---------------------------------------------------------
-// ClusterSet
-// maintains a subset S of the clusters contained in an associated
-// graph G
-//---------------------------------------------------------
-class OGDF_EXPORT ClusterSet
-{
-public:
-    // creates a new empty cluster set associated with graph G
-    ClusterSet(const ClusterGraph &G) : m_it(G,ListIterator<cluster>()) { }
-
-    // destructor
-    ~ClusterSet() { }
-
-    // inserts cluster c into set S
-    // running time: O(1)
-    // Precond.: c is a cluster in the associated graph
-    void insert(cluster c)
-    {
-        OGDF_ASSERT(c->graphOf() == m_it.graphOf());
-        ListIterator<cluster> &itV = m_it[c];
-        if (!itV.valid())
-            itV = m_clusters.pushBack(c);
-    }
-
-    // removes cluster c from set S
-    // running time: O(1)
-    // Precond.: c is a cluster in the asociated graph
-    void remove(cluster c)
-    {
-        OGDF_ASSERT(c->graphOf() == m_it.graphOf());
-        ListIterator<cluster> &itV = m_it[c];
-        if (itV.valid())
+        // inserts cluster c into set S
+        // running time: O(1)
+        // Precond.: c is a cluster in the associated graph
+        void insert(cluster c)
         {
-            m_clusters.del(itV);
-            itV = ListIterator<cluster>();
+            OGDF_ASSERT(c->graphOf() == m_it.graphOf());
+            ListIterator<cluster> & itV = m_it[c];
+            if(!itV.valid())
+                itV = m_clusters.pushBack(c);
         }
-    }
 
-
-    // removes all clusterss from set S
-    // running time: O(|S|)
-    void clear()
-    {
-        ListIterator<cluster> it;
-        for(it = m_clusters.begin(); it.valid(); ++it)
+        // removes cluster c from set S
+        // running time: O(1)
+        // Precond.: c is a cluster in the asociated graph
+        void remove(cluster c)
         {
-            m_it[*it] = ListIterator<cluster>();
+            OGDF_ASSERT(c->graphOf() == m_it.graphOf());
+            ListIterator<cluster> & itV = m_it[c];
+            if(itV.valid())
+            {
+                m_clusters.del(itV);
+                itV = ListIterator<cluster>();
+            }
         }
-        m_clusters.clear();
-    }
 
 
-    // returns true iff cluster c is contained in S
-    // running time: O(1)
-    // Precond.: c is a cluster in the asociated graph
-    bool isMember(cluster c) const
+        // removes all clusters from set S
+        // running time: O(|S|)
+        void clear()
+        {
+            ListIterator<cluster> it;
+            for(it = m_clusters.begin(); it.valid(); ++it)
+            {
+                m_it[*it] = ListIterator<cluster>();
+            }
+            m_clusters.clear();
+        }
+
+
+        // returns true iff cluster c is contained in S
+        // running time: O(1)
+        // Precond.: c is a cluster in the asociated graph
+        bool isMember(cluster c) const
+        {
+            OGDF_ASSERT(c->graphOf() == m_it.graphOf());
+            return m_it[c].valid();
+        }
+
+        // returns the list of clusters contained in S
+        const ListPure<cluster> & clusters() const
+        {
+            return m_clusters;
+        }
+
+    private:
+        // m_it[c] contains list iterator pointing to c if c is contained in S,
+        // an invalid list iterator otherwise
+        ClusterArray<ListIterator<cluster>> m_it;
+        // list of clusters contained in S
+        ListPure<cluster> m_clusters;
+    };
+
+
+
+    //---------------------------------------------------------
+    // ClusterSet
+    // maintains a subset S of the clusters contained in an associated
+    // graph G
+    //---------------------------------------------------------
+    class OGDF_EXPORT ClusterSet
     {
-        OGDF_ASSERT(c->graphOf() == m_it.graphOf());
-        return m_it[c].valid();
-    }
+    public:
+        // creates a new empty cluster set associated with graph G
+        ClusterSet(const ClusterGraph & G) : m_it(G, ListIterator<cluster>()) { }
 
-    // returns the size of set S
-    // running time: O(1)
-    int size() const
-    {
-        return m_clusters.size();
-    }
+        // destructor
+        ~ClusterSet() { }
 
-    // returns the list of clusters contained in S
-    const List<cluster> &clusters() const
-    {
-        return m_clusters;
-    }
+        // inserts cluster c into set S
+        // running time: O(1)
+        // Precond.: c is a cluster in the associated graph
+        void insert(cluster c)
+        {
+            OGDF_ASSERT(c->graphOf() == m_it.graphOf());
+            ListIterator<cluster> & itV = m_it[c];
+            if(!itV.valid())
+                itV = m_clusters.pushBack(c);
+        }
 
-private:
-    // m_it[c] contains list iterator pointing to c if c is contained in S,
-    // an invalid list iterator otherwise
-    ClusterArray<ListIterator<cluster> > m_it;
-    // list of clusters contained in S
-    List<cluster> m_clusters;
-};
+        // removes cluster c from set S
+        // running time: O(1)
+        // Precond.: c is a cluster in the asociated graph
+        void remove(cluster c)
+        {
+            OGDF_ASSERT(c->graphOf() == m_it.graphOf());
+            ListIterator<cluster> & itV = m_it[c];
+            if(itV.valid())
+            {
+                m_clusters.del(itV);
+                itV = ListIterator<cluster>();
+            }
+        }
+
+
+        // removes all clusterss from set S
+        // running time: O(|S|)
+        void clear()
+        {
+            ListIterator<cluster> it;
+            for(it = m_clusters.begin(); it.valid(); ++it)
+            {
+                m_it[*it] = ListIterator<cluster>();
+            }
+            m_clusters.clear();
+        }
+
+
+        // returns true iff cluster c is contained in S
+        // running time: O(1)
+        // Precond.: c is a cluster in the asociated graph
+        bool isMember(cluster c) const
+        {
+            OGDF_ASSERT(c->graphOf() == m_it.graphOf());
+            return m_it[c].valid();
+        }
+
+        // returns the size of set S
+        // running time: O(1)
+        int size() const
+        {
+            return m_clusters.size();
+        }
+
+        // returns the list of clusters contained in S
+        const List<cluster> & clusters() const
+        {
+            return m_clusters;
+        }
+
+    private:
+        // m_it[c] contains list iterator pointing to c if c is contained in S,
+        // an invalid list iterator otherwise
+        ClusterArray<ListIterator<cluster>> m_it;
+        // list of clusters contained in S
+        List<cluster> m_clusters;
+    };
 
 
 } // end namespace ogdf

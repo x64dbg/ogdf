@@ -63,19 +63,19 @@ namespace ogdf
 
 
 
-class OGDF_EXPORT EdgeComparerSimple : public VComparer<adjEntry>
-{
-public:
+    class OGDF_EXPORT EdgeComparerSimple : public VComparer<adjEntry>
+    {
+    public:
 
-    EdgeComparerSimple(const GraphAttributes& AG, const node v) : basis(v), m_AG(&AG) { }
+        EdgeComparerSimple(const GraphAttributes & AG, const node v) : basis(v), m_AG(&AG) { }
 
-    int compare(const adjEntry &e1, const adjEntry &e2) const;
+        int compare(const adjEntry & e1, const adjEntry & e2) const;
 
-private:
-    node basis;
-    const GraphAttributes *m_AG;
+    private:
+        node basis;
+        const GraphAttributes* m_AG;
 
-};//EdgeComparerSimple
+    };//EdgeComparerSimple
 
 
 }//namespace ogdf

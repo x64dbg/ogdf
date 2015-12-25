@@ -25,13 +25,13 @@ struct WINDOW;
 /*====================== User supplied functions ============================*/
 /*===========================================================================*/
 
-int user_dg_process_message PROTO((void *user, struct WINDOW *win,
-                                   FILE *write_to));
-int user_dg_init_window PROTO((void **user, struct WINDOW *win));
-int user_dg_free_window PROTO((void **user, struct WINDOW *win));
-int user_initialize_dg PROTO((void **user));
-int user_free_dg PROTO((void **user));
-int user_interpret_text PROTO((void *user, int text_length, char *text,
+int user_dg_process_message PROTO((void* user, struct WINDOW* win,
+                                   FILE* write_to));
+int user_dg_init_window PROTO((void** user, struct WINDOW* win));
+int user_dg_free_window PROTO((void** user, struct WINDOW* win));
+int user_initialize_dg PROTO((void** user));
+int user_free_dg PROTO((void** user));
+int user_interpret_text PROTO((void* user, int text_length, char* text,
                                int owner_tid));
 
 #endif

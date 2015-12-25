@@ -13,11 +13,11 @@
 using namespace ogdf;
 
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     Graph g;
     GraphAttributes ga(g);
-    if (!GraphIO::readGML(ga, g, "uk_Pack_Bary_EC_FRENC.gml"))
+    if(!GraphIO::readGML(ga, g, "uk_Pack_Bary_EC_FRENC.gml"))
     {
         cerr << "Could not load Graph" << endl;
         return 1;
@@ -31,29 +31,29 @@ int main(int argc, char **argv)
 
     MultilevelGraph mlg(ga);
 
-    FastMultipoleEmbedder *fme = new ogdf::FastMultipoleEmbedder();
+    FastMultipoleEmbedder* fme = new ogdf::FastMultipoleEmbedder();
     fme->setNumIterations(1000);
     fme->setRandomize(false);
 
-    SolarMerger *sm = new ogdf::SolarMerger(false, false);
+    SolarMerger* sm = new ogdf::SolarMerger(false, false);
 
-    SolarPlacer *sp = new ogdf::SolarPlacer();
+    SolarPlacer* sp = new ogdf::SolarPlacer();
 
-    ScalingLayout *sl = new ogdf::ScalingLayout();
+    ScalingLayout* sl = new ogdf::ScalingLayout();
     sl->setExtraScalingSteps(0);
     sl->setScaling(2.0, 2.0);
     sl->setScalingType(ogdf::ScalingLayout::st_relativeToDrawing);
     sl->setSecondaryLayout(fme);
     sl->setLayoutRepeats(1);
 
-    ModularMultilevelMixer *mmm = new ModularMultilevelMixer;
+    ModularMultilevelMixer* mmm = new ModularMultilevelMixer;
     mmm->setLayoutRepeats(1);
     mmm->setLevelLayoutModule(sl);
     mmm->setInitialPlacer(sp);
     mmm->setMultilevelBuilder(sm);
 
-    TileToRowsCCPacker *ttrccp = new TileToRowsCCPacker;
-    ComponentSplitterLayout *cd = new ComponentSplitterLayout;
+    TileToRowsCCPacker* ttrccp = new TileToRowsCCPacker;
+    ComponentSplitterLayout* cd = new ComponentSplitterLayout;
     cd->setPacker(ttrccp);
     cd->setLayoutModule(mmm);
     PreprocessorLayout ppl;

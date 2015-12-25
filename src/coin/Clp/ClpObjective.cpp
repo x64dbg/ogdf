@@ -14,7 +14,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpObjective::ClpObjective () :
+ClpObjective::ClpObjective() :
     offset_(0.0),
     type_(-1),
     activated_(1)
@@ -25,7 +25,7 @@ ClpObjective::ClpObjective () :
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpObjective::ClpObjective (const ClpObjective & source) :
+ClpObjective::ClpObjective(const ClpObjective & source) :
     offset_(source.offset_),
     type_(source.type_),
     activated_(source.activated_)
@@ -36,7 +36,7 @@ ClpObjective::ClpObjective (const ClpObjective & source) :
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpObjective::~ClpObjective ()
+ClpObjective::~ClpObjective()
 {
 
 }
@@ -45,9 +45,9 @@ ClpObjective::~ClpObjective ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpObjective &
-ClpObjective::operator=(const ClpObjective& rhs)
+ClpObjective::operator=(const ClpObjective & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         offset_ = rhs.offset_;
         type_ = rhs.type_;
@@ -58,9 +58,9 @@ ClpObjective::operator=(const ClpObjective& rhs)
 /* Subset clone.  Duplicates are allowed
    and order is as given.
 */
-ClpObjective *
-ClpObjective::subsetClone (int,
-                           const int * ) const
+ClpObjective*
+ClpObjective::subsetClone(int,
+                          const int*) const
 {
     std::cerr << "subsetClone not supported - ClpObjective" << std::endl;
     abort();
@@ -70,7 +70,7 @@ ClpObjective::subsetClone (int,
    Returns number of nonlinear columns
 */
 int
-ClpObjective::markNonlinear(char *)
+ClpObjective::markNonlinear(char*)
 {
     return 0;
 }

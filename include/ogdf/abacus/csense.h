@@ -44,92 +44,92 @@
 namespace abacus
 {
 
-class AbacusGlobal;
+    class AbacusGlobal;
 
 
-//! Sense of constraints.
-/**
- * The most important objects in a cutting plane algorithm are
- * constraints, which can be equations (\a Equal) or
- * inequalities with the sense \a Less or \a Greater.
- * We implement the sense of optimization as a class
- * since we require it both in the classes Constraint and Row.
- */
-class  CSense : public AbacusRoot
-{
-public:
-
-    enum SENSE { Less, Equal, Greater };
-
-    //! Default constructor, sense is undefined.
-    CSense() { }
-
-    //! Initializes the sense to \a s.
+    //! Sense of constraints.
     /**
-     * \param s  The sense.
+     * The most important objects in a cutting plane algorithm are
+     * constraints, which can be equations (\a Equal) or
+     * inequalities with the sense \a Less or \a Greater.
+     * We implement the sense of optimization as a class
+     * since we require it both in the classes Constraint and Row.
      */
-    CSense(const SENSE s) : sense_(s) { }
-
-    //! Initializes the sense of the constraint specified with a single letter.
-    /**
-     * \param s  A character representing the sense:
-     *           <tt>E</tt> or <tt>e</tt> stand for \a Equal,
-     *           <tt>G</tt> and <tt>g</tt> stand for \a Greater, and
-     *           <tt>L</tt> or <tt>l</tt> stand for \a Less.
-     */
-    CSense(char s);
-
-    //! Output operator for constraint senses.
-    /**
-     * The output operator writes the sense on an output stream in the form \a <=, \a =, or \a >=.
-     *
-     * \param out The output stream.
-     * \param rhs The sense being output.
-     *
-     * \return The output stream.
-     */
-    friend ostream& operator<<(ostream &out, const CSense &rhs);
-
-    //! Assignment operator.
-    /**
-     * The default assignment operator is overloaded such that also the
-     * enumeration \a SENSE can be used on the right hand side.
-     *
-     * \param rhs The new sense.
-     *
-     * \return A reference to the sense.
-     */
-    const CSense &operator=(SENSE rhs)
+    class  CSense : public AbacusRoot
     {
-        sense_ = rhs;
-        return *this;
-    }
+    public:
 
-    //! Returns the sense of the constraint.
-    SENSE sense() const
-    {
-        return sense_;
-    }
+        enum SENSE { Less, Equal, Greater };
 
-    //! Changes the sense of the constraint.
-    /**
-     * \param s The new sense.
-     */
-    void sense(SENSE s)
-    {
-        sense_ = s;
-    }
+        //! Default constructor, sense is undefined.
+        CSense() { }
 
-    //! Changes the sense of the constraint given a letter \a s.
-    /**
-     * \param s The new sense.
-     */
-    void sense(char s);
+        //! Initializes the sense to \a s.
+        /**
+         * \param s  The sense.
+         */
+        CSense(const SENSE s) : sense_(s) { }
 
-private:
+        //! Initializes the sense of the constraint specified with a single letter.
+        /**
+         * \param s  A character representing the sense:
+         *           <tt>E</tt> or <tt>e</tt> stand for \a Equal,
+         *           <tt>G</tt> and <tt>g</tt> stand for \a Greater, and
+         *           <tt>L</tt> or <tt>l</tt> stand for \a Less.
+         */
+        CSense(char s);
 
-    SENSE sense_; //!< Stores the sense of a constraint.
-};
+        //! Output operator for constraint senses.
+        /**
+         * The output operator writes the sense on an output stream in the form \a <=, \a =, or \a >=.
+         *
+         * \param out The output stream.
+         * \param rhs The sense being output.
+         *
+         * \return The output stream.
+         */
+        friend ostream & operator<<(ostream & out, const CSense & rhs);
+
+        //! Assignment operator.
+        /**
+         * The default assignment operator is overloaded such that also the
+         * enumeration \a SENSE can be used on the right hand side.
+         *
+         * \param rhs The new sense.
+         *
+         * \return A reference to the sense.
+         */
+        const CSense & operator=(SENSE rhs)
+        {
+            sense_ = rhs;
+            return *this;
+        }
+
+        //! Returns the sense of the constraint.
+        SENSE sense() const
+        {
+            return sense_;
+        }
+
+        //! Changes the sense of the constraint.
+        /**
+         * \param s The new sense.
+         */
+        void sense(SENSE s)
+        {
+            sense_ = s;
+        }
+
+        //! Changes the sense of the constraint given a letter \a s.
+        /**
+         * \param s The new sense.
+         */
+        void sense(char s);
+
+    private:
+
+        SENSE sense_; //!< Stores the sense of a constraint.
+    };
 
 } //namespace abacus
 

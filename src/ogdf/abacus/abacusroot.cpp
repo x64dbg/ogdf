@@ -40,32 +40,32 @@ namespace abacus
 {
 
 
-const char *AbacusRoot::onOff(bool value)
-{
-    return (value) ? "on" : "off";
-}
-
-
-bool AbacusRoot::ascii2bool(const string &str)
-{
-    if (str == "true") return true;
-    if (str == "false") return false;
-    else
+    const char* AbacusRoot::onOff(bool value)
     {
-        Logger::ifout() << "AbacusRoot::ascii2bool(): string neither true nor false\n";
-        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcString);
+        return (value) ? "on" : "off";
     }
-}
 
 
-bool AbacusRoot::endsWith(const string &str, const string &end)
-{
-    string::size_type l1 = str.size();
-    string::size_type l2 = end.size();
+    bool AbacusRoot::ascii2bool(const string & str)
+    {
+        if(str == "true") return true;
+        if(str == "false") return false;
+        else
+        {
+            Logger::ifout() << "AbacusRoot::ascii2bool(): string neither true nor false\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcString);
+        }
+    }
 
-    if (l1 < l2)
-        return false;
 
-    return std::equal(str.begin()+(l1-l2), str.end(), end.begin());
-}
+    bool AbacusRoot::endsWith(const string & str, const string & end)
+    {
+        string::size_type l1 = str.size();
+        string::size_type l2 = end.size();
+
+        if(l1 < l2)
+            return false;
+
+        return std::equal(str.begin() + (l1 - l2), str.end(), end.begin());
+    }
 } //namespace abacus

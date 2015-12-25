@@ -13,22 +13,22 @@ class subst_constraint_action : public CoinPresolveAction
 {
 private:
     subst_constraint_action();
-    subst_constraint_action(const subst_constraint_action& rhs);
-    subst_constraint_action& operator=(const subst_constraint_action& rhs);
+    subst_constraint_action(const subst_constraint_action & rhs);
+    subst_constraint_action & operator=(const subst_constraint_action & rhs);
 
     struct action
     {
-        double *rlos;
-        double *rups;
+        double* rlos;
+        double* rups;
 
-        double *coeffxs;
-        int *rows;
+        double* coeffxs;
+        int* rows;
 
-        int *ninrowxs;
-        /*const*/ int *rowcolsxs;
-        /*const*/ double *rowelsxs;
+        int* ninrowxs;
+        /*const*/ int* rowcolsxs;
+        /*const*/ double* rowelsxs;
 
-        const double *costsx;
+        const double* costsx;
         int col;
         int rowy;
 
@@ -37,28 +37,28 @@ private:
 
     const int nactions_;
     // actions_ is owned by the class and must be deleted at destruction
-    const action *const actions_;
+    const action* const actions_;
 
     subst_constraint_action(int nactions,
-                            action *actions,
-                            const CoinPresolveAction *next) :
+                            action* actions,
+                            const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions), actions_(actions) {}
 
 public:
-    const char *name() const;
+    const char* name() const;
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix * prob,
-            const int *implied_free,
-            const int * which,
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            const int* implied_free,
+            const int* which,
             int numberFree,
-            const CoinPresolveAction *next,
+            const CoinPresolveAction* next,
             int & fill_level);
-    static const CoinPresolveAction *presolveX(CoinPresolveMatrix * prob,
-            const CoinPresolveAction *next,
+    static const CoinPresolveAction* presolveX(CoinPresolveMatrix* prob,
+            const CoinPresolveAction* next,
             int fillLevel);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     ~subst_constraint_action();
 };
@@ -67,12 +67,12 @@ public:
 
 
 
-/*static*/ void implied_bounds(const double *els,
-                               const double *clo, const double *cup,
-                               const int *hcol,
+/*static*/ void implied_bounds(const double* els,
+                               const double* clo, const double* cup,
+                               const int* hcol,
                                CoinBigIndex krs, CoinBigIndex kre,
-                               double *maxupp, double *maxdownp,
+                               double* maxupp, double* maxdownp,
                                int jcol,
                                double rlo, double rup,
-                               double *iclb, double *icub);
+                               double* iclb, double* icub);
 #endif

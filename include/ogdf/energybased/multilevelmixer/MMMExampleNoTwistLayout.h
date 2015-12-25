@@ -53,36 +53,36 @@
 namespace ogdf
 {
 
-/** \brief An example Layout using the Modular Mutlievel Mixer
- *
- * This example is tuned to reduce twists in the final drawing. Use this layout
- * or a variation of it if many twists occur. LocalBiconnectedMerger and
- * BarycenterPlacer are used as merging and placement strategies. The
- * FastMultipoleEmbedder is for force calculation.
- *
- * For an easy variation of the Modular Multilevel Mixer copy the code in call.
- */
-class OGDF_EXPORT MMMExampleNoTwistLayout : public LayoutModule
-{
-public:
-
-    //! Constructor
-    MMMExampleNoTwistLayout();
-
-    //! calculates a drawing for the Graph GA
-    void call(GraphAttributes &GA);
-
-    void call(GraphAttributes &GA, GraphConstraints & GC)
+    /** \brief An example Layout using the Modular Mutlievel Mixer
+     *
+     * This example is tuned to reduce twists in the final drawing. Use this layout
+     * or a variation of it if many twists occur. LocalBiconnectedMerger and
+     * BarycenterPlacer are used as merging and placement strategies. The
+     * FastMultipoleEmbedder is for force calculation.
+     *
+     * For an easy variation of the Modular Multilevel Mixer copy the code in call.
+     */
+    class OGDF_EXPORT MMMExampleNoTwistLayout : public LayoutModule
     {
-        call(GA);
-    }
+    public:
 
-    //! calculates a drawing for the Graph MLG
-    void call(MultilevelGraph &MLG);
+        //! Constructor
+        MMMExampleNoTwistLayout();
 
-private:
+        //! calculates a drawing for the Graph GA
+        void call(GraphAttributes & GA);
 
-};
+        void call(GraphAttributes & GA, GraphConstraints & GC)
+        {
+            call(GA);
+        }
+
+        //! calculates a drawing for the Graph MLG
+        void call(MultilevelGraph & MLG);
+
+    private:
+
+    };
 
 } // namespace ogdf
 

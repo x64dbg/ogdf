@@ -28,7 +28,7 @@
   By default, scans both the column- and row-major matrices. Set doCol (doRow)
   to false to suppress one or the other.
 */
-void presolve_no_dups(const CoinPresolveMatrix *preObj,
+void presolve_no_dups(const CoinPresolveMatrix* preObj,
                       bool doCol = true, bool doRow = true) ;
 
 /*! \relates CoinPresolveMatrix
@@ -40,7 +40,7 @@ void presolve_no_dups(const CoinPresolveMatrix *preObj,
   warned, the row-major links are not maintained with the same zeal as the
   column-major links.
 */
-void presolve_links_ok(const CoinPresolveMatrix *preObj,
+void presolve_links_ok(const CoinPresolveMatrix* preObj,
                        bool doCol = true, bool doRow = false) ;
 
 /*! \relates CoinPresolveMatrix
@@ -49,7 +49,7 @@ void presolve_links_ok(const CoinPresolveMatrix *preObj,
   By default, scans both the column- and row-major matrices. Set doCol (doRow)
   to false to suppress one or the other.
 */
-void presolve_no_zeros(const CoinPresolveMatrix *preObj,
+void presolve_no_zeros(const CoinPresolveMatrix* preObj,
                        bool doCol = true, bool doRow = true) ;
 
 /*! \relates CoinPresolveMatrix
@@ -58,13 +58,13 @@ void presolve_no_zeros(const CoinPresolveMatrix *preObj,
   Normally the routine will test for coefficient presence and value. Set
   \p chkvals to false to suppress the check for equal value.
 */
-void presolve_consistent(const CoinPresolveMatrix *preObj,
+void presolve_consistent(const CoinPresolveMatrix* preObj,
                          bool chkvals = true) ;
 
 /*! \relates CoinPostsolveMatrix
     \brief Checks that column threads agree with column lengths
 */
-void presolve_check_threads(const CoinPostsolveMatrix *obj) ;
+void presolve_check_threads(const CoinPostsolveMatrix* obj) ;
 
 /*! \relates CoinPostsolveMatrix
     \brief Checks the free list
@@ -76,7 +76,7 @@ void presolve_check_threads(const CoinPostsolveMatrix *obj) ;
     routines do not maintain an accurate element count, but this is useful
     for checking a newly constructed postsolve matrix.
 */
-void presolve_check_free_list(const CoinPostsolveMatrix *obj,
+void presolve_check_free_list(const CoinPostsolveMatrix* obj,
                               bool chkElemCnt = false) ;
 
 /*! \relates CoinPostsolveMatrix
@@ -89,7 +89,7 @@ void presolve_check_free_list(const CoinPostsolveMatrix *obj,
   value for consistency with the status information in
   CoinPrePostsolveMatrix::colstat_.
 */
-void presolve_check_reduced_costs(const CoinPostsolveMatrix *obj) ;
+void presolve_check_reduced_costs(const CoinPostsolveMatrix* obj) ;
 
 /*! \relates CoinPostsolveMatrix
     \brief Check the dual variables for consistency with row activity.
@@ -98,7 +98,7 @@ void presolve_check_reduced_costs(const CoinPostsolveMatrix *obj) ;
   with the state of the constraint (loose, tight at lower bound, or tight at
   upper bound).
 */
-void presolve_check_duals(const CoinPostsolveMatrix *postObj) ;
+void presolve_check_duals(const CoinPostsolveMatrix* postObj) ;
 
 /*! \relates CoinPresolveMatrix
     \brief Check primal solution and architectural variable status.
@@ -109,7 +109,7 @@ void presolve_check_duals(const CoinPostsolveMatrix *postObj) ;
     sloppy about maintaining it). See the definitions in
     CoinPresolvePsdebug.cpp for more information.
 */
-void presolve_check_sol(const CoinPresolveMatrix *preObj,
+void presolve_check_sol(const CoinPresolveMatrix* preObj,
                         int chkColSol = 2, int chkRowAct = 1,
                         int chkStatus = 1) ;
 
@@ -121,19 +121,19 @@ void presolve_check_sol(const CoinPresolveMatrix *preObj,
     and feasibility. See the definitions in CoinPresolvePsdebug.cpp for more
     information.
 */
-void presolve_check_sol(const CoinPostsolveMatrix *postObj,
+void presolve_check_sol(const CoinPostsolveMatrix* postObj,
                         int chkColSol = 2, int chkRowAct = 2,
                         int chkStatus = 1) ;
 
 /*! \relates CoinPresolveMatrix
     \brief Check for the proper number of basic variables.
 */
-void presolve_check_nbasic(const CoinPresolveMatrix *preObj) ;
+void presolve_check_nbasic(const CoinPresolveMatrix* preObj) ;
 
 /*! \relates CoinPostsolveMatrix
     \brief Check for the proper number of basic variables.
 */
-void presolve_check_nbasic(const CoinPostsolveMatrix *postObj) ;
+void presolve_check_nbasic(const CoinPostsolveMatrix* postObj) ;
 
 //@}
 

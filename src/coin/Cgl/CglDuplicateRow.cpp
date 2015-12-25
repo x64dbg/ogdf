@@ -28,32 +28,32 @@ void CglDuplicateRow::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                                    const CglTreeInfo info) const
 {
 #ifdef CGL_DEBUG
-    const OsiRowCutDebugger * debugger = si.getRowCutDebugger();
-    if (debugger&&debugger->onOptimalPath(si))
+    const OsiRowCutDebugger* debugger = si.getRowCutDebugger();
+    if(debugger && debugger->onOptimalPath(si))
     {
         printf("On optimal path\n");
     }
 #endif
     // Don't do in tree ?
-    if (info.inTree)
+    if(info.inTree)
     {
         // but do any stored cuts
-        if (storedCuts_)
-            storedCuts_->generateCuts(si,cs,info);
+        if(storedCuts_)
+            storedCuts_->generateCuts(si, cs, info);
         return;
     }
-    if ((mode_&3)!=0)
+    if((mode_ & 3) != 0)
     {
-        generateCuts12(si,cs,info);
+        generateCuts12(si, cs, info);
     }
-    else if ((mode_&4)!=0)
+    else if((mode_ & 4) != 0)
     {
-        generateCuts4(si,cs,info);
+        generateCuts4(si, cs, info);
     }
     else
     {
-        assert ((mode_&8)!=0);
-        generateCuts8(si,cs,info);
+        assert((mode_ & 8) != 0);
+        generateCuts8(si, cs, info);
     }
 }
 void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs,
@@ -63,241 +63,241 @@ void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs
     CoinPackedVector ubs;
 
     // Column copy
-    const double * element = matrix_.getElements();
-    const int * row = matrix_.getIndices();
-    const CoinBigIndex * columnStart = matrix_.getVectorStarts();
-    const int * columnLength = matrix_.getVectorLengths();
+    const double* element = matrix_.getElements();
+    const int* row = matrix_.getIndices();
+    const CoinBigIndex* columnStart = matrix_.getVectorStarts();
+    const int* columnLength = matrix_.getVectorLengths();
     // Row copy
-    const double * elementByRow = matrixByRow_.getElements();
-    const int * column = matrixByRow_.getIndices();
-    const CoinBigIndex * rowStart = matrixByRow_.getVectorStarts();
-    const int * rowLength = matrixByRow_.getVectorLengths();
-    const double * columnLower = si.getColLower();
-    const double * columnUpper = si.getColUpper();
-    int nFree=0;
-    int nOut=0;
-    int nFixed=0;
+    const double* elementByRow = matrixByRow_.getElements();
+    const int* column = matrixByRow_.getIndices();
+    const CoinBigIndex* rowStart = matrixByRow_.getVectorStarts();
+    const int* rowLength = matrixByRow_.getVectorLengths();
+    const double* columnLower = si.getColLower();
+    const double* columnUpper = si.getColUpper();
+    int nFree = 0;
+    int nOut = 0;
+    int nFixed = 0;
     int i;
-    int numberRows=matrix_.getNumRows();
-    const double * rowLower = si.getRowLower();
-    const double * rowUpper = si.getRowUpper();
-    int * effectiveRhs = CoinCopyOfArray(rhs_,numberRows);
-    int * effectiveLower = CoinCopyOfArray(lower_,numberRows);
-    double * effectiveRhs2 = new double [numberRows];
+    int numberRows = matrix_.getNumRows();
+    const double* rowLower = si.getRowLower();
+    const double* rowUpper = si.getRowUpper();
+    int* effectiveRhs = CoinCopyOfArray(rhs_, numberRows);
+    int* effectiveLower = CoinCopyOfArray(lower_, numberRows);
+    double* effectiveRhs2 = new double [numberRows];
     /* For L or G rows - compute effective lower we have to raech */
     // mark bad rows - also used for domination
-    for (i=0; i<numberRows; i++)
+    for(i = 0; i < numberRows; i++)
     {
-        int duplicate=-1;
-        int LorG=0;
-        double rhs=0.0;
-        if (rowLower[i]<-1.0e20)
+        int duplicate = -1;
+        int LorG = 0;
+        double rhs = 0.0;
+        if(rowLower[i] < -1.0e20)
         {
-            LorG=1;
-            rhs=rowUpper[i];
+            LorG = 1;
+            rhs = rowUpper[i];
         }
-        else if (rowUpper[i]>1.0e20)
+        else if(rowUpper[i] > 1.0e20)
         {
-            LorG=2;
-            rhs=rowLower[i];
+            LorG = 2;
+            rhs = rowLower[i];
         }
         int j;
-        for (j=rowStart[i]; j<rowStart[i]+rowLength[i]; j++)
+        for(j = rowStart[i]; j < rowStart[i] + rowLength[i]; j++)
         {
             int iColumn = column[j];
-            double value=elementByRow[j];
-            if (LorG==1)
+            double value = elementByRow[j];
+            if(LorG == 1)
             {
                 // need lowest contribution
-                if (value>0.0)
+                if(value > 0.0)
                 {
-                    double bound=columnLower[iColumn];
-                    if (bound>-1.0e20)
-                        rhs -= bound*value;
+                    double bound = columnLower[iColumn];
+                    if(bound > -1.0e20)
+                        rhs -= bound * value;
                     else
-                        LorG=-1;
+                        LorG = -1;
                 }
                 else
                 {
-                    double bound=columnUpper[iColumn];
-                    if (bound<1.0e20)
-                        rhs -= bound*value;
+                    double bound = columnUpper[iColumn];
+                    if(bound < 1.0e20)
+                        rhs -= bound * value;
                     else
-                        LorG=-1;
+                        LorG = -1;
                 }
             }
-            else if (LorG==2)
+            else if(LorG == 2)
             {
                 // need highest contribution
-                if (value<0.0)
+                if(value < 0.0)
                 {
-                    double bound=columnLower[iColumn];
-                    if (bound>-1.0e20)
-                        rhs -= bound*value;
+                    double bound = columnLower[iColumn];
+                    if(bound > -1.0e20)
+                        rhs -= bound * value;
                     else
-                        LorG=-2;
+                        LorG = -2;
                 }
                 else
                 {
-                    double bound=columnUpper[iColumn];
-                    if (bound<1.0e20)
-                        rhs -= bound*value;
+                    double bound = columnUpper[iColumn];
+                    if(bound < 1.0e20)
+                        rhs -= bound * value;
                     else
-                        LorG=-2;
+                        LorG = -2;
                 }
             }
-            if (duplicate!=-3)
+            if(duplicate != -3)
             {
-                if (value!=1.0)
+                if(value != 1.0)
                 {
-                    duplicate=-3;
-                    rhs_[i]=-1000000;
+                    duplicate = -3;
+                    rhs_[i] = -1000000;
                     //break;
                 }
-                else if (!si.isInteger(iColumn))
+                else if(!si.isInteger(iColumn))
                 {
-                    duplicate=-5;
+                    duplicate = -5;
                 }
             }
         }
-        duplicate_[i]=duplicate;
-        if (!LorG)
+        duplicate_[i] = duplicate;
+        if(!LorG)
         {
-            effectiveRhs2[i]=0.0;
+            effectiveRhs2[i] = 0.0;
         }
-        else if (LorG<0)
+        else if(LorG < 0)
         {
             // weak
-            effectiveRhs2[i]=-COIN_DBL_MAX;
+            effectiveRhs2[i] = -COIN_DBL_MAX;
         }
-        else if (LorG==1)
+        else if(LorG == 1)
         {
-            effectiveRhs2[i]=rhs;
+            effectiveRhs2[i] = rhs;
         }
         else
         {
-            effectiveRhs2[i]=rhs;
+            effectiveRhs2[i] = rhs;
         }
     }
-    double * colUpper2 = CoinCopyOfArray(columnUpper,numberColumns);
-    if (!info.pass&&(mode_&2)!=0)
+    double* colUpper2 = CoinCopyOfArray(columnUpper, numberColumns);
+    if(!info.pass && (mode_ & 2) != 0)
     {
         // First look at duplicate or dominated columns
-        double * random = new double[numberRows];
-        double * sort = new double[numberColumns+1];
-        if (info.randomNumberGenerator)
+        double* random = new double[numberRows];
+        double* sort = new double[numberColumns + 1];
+        if(info.randomNumberGenerator)
         {
-            const CoinThreadRandom * randomGenerator = info.randomNumberGenerator;
-            for (i=0; i<numberRows; i++)
+            const CoinThreadRandom* randomGenerator = info.randomNumberGenerator;
+            for(i = 0; i < numberRows; i++)
             {
-                if (rowLower[i]<-1.0e20||rowUpper[i]>1.0e20)
-                    random[i]=0.0;
+                if(rowLower[i] < -1.0e20 || rowUpper[i] > 1.0e20)
+                    random[i] = 0.0;
                 else
                     random[i] = randomGenerator->randomDouble();
             }
         }
         else
         {
-            for (i=0; i<numberRows; i++)
+            for(i = 0; i < numberRows; i++)
             {
-                if (rowLower[i]<-1.0e20||rowUpper[i]>1.0e20)
-                    random[i]=0.0;
+                if(rowLower[i] < -1.0e20 || rowUpper[i] > 1.0e20)
+                    random[i] = 0.0;
                 else
                     random[i] = CoinDrand48();
             }
         }
-        int * which = new int[numberColumns];
-        int nPossible=0;
-        for ( i=0; i<numberColumns; i++)
+        int* which = new int[numberColumns];
+        int nPossible = 0;
+        for(i = 0; i < numberColumns; i++)
         {
-            if (si.isBinary(i))
+            if(si.isBinary(i))
             {
                 double value = 0.0;
-                for (int jj=columnStart[i]; jj<columnStart[i]+columnLength[i]; jj++)
+                for(int jj = columnStart[i]; jj < columnStart[i] + columnLength[i]; jj++)
                 {
                     int iRow = row[jj];
-                    value += element[jj]*random[iRow];
+                    value += element[jj] * random[iRow];
                 }
-                sort[nPossible]=value;
-                which[nPossible++]=i;
+                sort[nPossible] = value;
+                which[nPossible++] = i;
             }
         }
-        sort[nPossible]=COIN_DBL_MAX;
-        CoinSort_2(sort,sort+nPossible,which);
-        int last=maximumDominated_-1;
-        double lastValue=-1.0;
-        const double *objective = si.getObjCoefficients() ;
+        sort[nPossible] = COIN_DBL_MAX;
+        CoinSort_2(sort, sort + nPossible, which);
+        int last = maximumDominated_ - 1;
+        double lastValue = -1.0;
+        const double* objective = si.getObjCoefficients() ;
         double direction = si.getObjSense();
         // arrays for checking
-        double * elementEqualJ = new double [2*numberRows];
-        CoinZeroN(elementEqualJ,numberRows); // for memory checkers
-        double * elementGeJ = elementEqualJ + numberRows;
-        CoinZeroN(elementGeJ,numberRows);
-        int * rowEqualJ = new int[2*numberRows];
-        CoinZeroN(rowEqualJ,numberRows); // for memory checkers
-        int * rowGeJ = rowEqualJ + numberRows;
-        char * mark = new char[numberRows];
-        CoinZeroN(mark,numberRows);
+        double* elementEqualJ = new double [2 * numberRows];
+        CoinZeroN(elementEqualJ, numberRows); // for memory checkers
+        double* elementGeJ = elementEqualJ + numberRows;
+        CoinZeroN(elementGeJ, numberRows);
+        int* rowEqualJ = new int[2 * numberRows];
+        CoinZeroN(rowEqualJ, numberRows); // for memory checkers
+        int* rowGeJ = rowEqualJ + numberRows;
+        char* mark = new char[numberRows];
+        CoinZeroN(mark, numberRows);
 #if 1
-        for (i=0; i<nPossible+1; i++)
+        for(i = 0; i < nPossible + 1; i++)
         {
-            if (sort[i]>lastValue)
+            if(sort[i] > lastValue)
             {
-                if (i-last<=maximumDominated_&&i>last+1)
+                if(i - last <= maximumDominated_ && i > last + 1)
                 {
                     // look to see if dominated
-                    for (int j=last; j<i; j++)
+                    for(int j = last; j < i; j++)
                     {
                         int jColumn = which[j];
                         // skip if already fixed
-                        if (!colUpper2[jColumn])
+                        if(!colUpper2[jColumn])
                             continue;
-                        int nGeJ=0;
-                        int nEqualJ=0;
+                        int nGeJ = 0;
+                        int nEqualJ = 0;
                         int jj;
-                        int nJ=columnLength[jColumn];
-                        for (jj=columnStart[jColumn]; jj<columnStart[jColumn]+columnLength[jColumn]; jj++)
+                        int nJ = columnLength[jColumn];
+                        for(jj = columnStart[jColumn]; jj < columnStart[jColumn] + columnLength[jColumn]; jj++)
                         {
                             int iRow = row[jj];
-                            if (random[iRow])
+                            if(random[iRow])
                             {
-                                elementEqualJ[nEqualJ]=element[jj];
-                                rowEqualJ[nEqualJ++]=iRow;
+                                elementEqualJ[nEqualJ] = element[jj];
+                                rowEqualJ[nEqualJ++] = iRow;
                             }
                             else
                             {
                                 // swap sign so all rows look like G
-                                elementGeJ[iRow]=(rowUpper[iRow]>1.0e20) ? element[jj] : -element[jj];
-                                rowGeJ[nGeJ++]=iRow;
+                                elementGeJ[iRow] = (rowUpper[iRow] > 1.0e20) ? element[jj] : -element[jj];
+                                rowGeJ[nGeJ++] = iRow;
                             }
                         }
-                        double objValueJ = objective[jColumn]*direction;
-                        for (int k=j+1; k<i; k++)
+                        double objValueJ = objective[jColumn] * direction;
+                        for(int k = j + 1; k < i; k++)
                         {
                             int kColumn = which[k];
                             // skip if already fixed
-                            if (!colUpper2[kColumn])
+                            if(!colUpper2[kColumn])
                                 continue;
-                            int nK=columnLength[kColumn];
-                            double objValueK = objective[kColumn]*direction;
-                            if ((nJ-nK)*(objValueK-objValueJ)>0.0)
+                            int nK = columnLength[kColumn];
+                            double objValueK = objective[kColumn] * direction;
+                            if((nJ - nK) * (objValueK - objValueJ) > 0.0)
                                 continue;
-                            int nEqualK=0;
+                            int nEqualK = 0;
                             // -2 no good, -1 J dominates K, 0 unknown or equal, 1 K dominates J
-                            int dominate=0;
+                            int dominate = 0;
                             // mark
                             int kk;
-                            for (kk=0; kk<nGeJ; kk++)
-                                mark[rowGeJ[kk]]=1;
-                            for (kk=columnStart[kColumn]; kk<columnStart[kColumn]+columnLength[kColumn]; kk++)
+                            for(kk = 0; kk < nGeJ; kk++)
+                                mark[rowGeJ[kk]] = 1;
+                            for(kk = columnStart[kColumn]; kk < columnStart[kColumn] + columnLength[kColumn]; kk++)
                             {
                                 int iRow = row[kk];
-                                if (random[iRow])
+                                if(random[iRow])
                                 {
-                                    if (iRow!=rowEqualJ[nEqualK]||
-                                            element[kk]!=elementEqualJ[nEqualK])
+                                    if(iRow != rowEqualJ[nEqualK] ||
+                                            element[kk] != elementEqualJ[nEqualK])
                                     {
-                                        dominate=-2;
+                                        dominate = -2;
                                         break;
                                     }
                                     else
@@ -308,180 +308,180 @@ void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs
                                 else
                                 {
                                     // swap sign so all rows look like G
-                                    double valueK = (rowUpper[iRow]>1.0e20) ? element[kk] : -element[kk];
+                                    double valueK = (rowUpper[iRow] > 1.0e20) ? element[kk] : -element[kk];
                                     double valueJ = elementGeJ[iRow];
-                                    mark[iRow]=0;
-                                    if (valueJ==valueK)
+                                    mark[iRow] = 0;
+                                    if(valueJ == valueK)
                                     {
                                         // equal
                                     }
-                                    else if (valueJ>valueK)
+                                    else if(valueJ > valueK)
                                     {
                                         // J would dominate K
-                                        if (dominate==1)
+                                        if(dominate == 1)
                                         {
                                             // no good
-                                            dominate=-2;
+                                            dominate = -2;
                                             break;
                                         }
                                         else
                                         {
-                                            dominate=-1;
+                                            dominate = -1;
                                         }
                                     }
                                     else
                                     {
                                         // K would dominate J
-                                        if (dominate==-1)
+                                        if(dominate == -1)
                                         {
                                             // no good
-                                            dominate=-2;
+                                            dominate = -2;
                                             break;
                                         }
                                         else
                                         {
-                                            dominate=1;
+                                            dominate = 1;
                                         }
                                     }
                                 }
                             }
-                            kk=0;
-                            if (dominate!=-2)
+                            kk = 0;
+                            if(dominate != -2)
                             {
                                 // unmark and check
-                                for (; kk<nGeJ; kk++)
+                                for(; kk < nGeJ; kk++)
                                 {
                                     int iRow = rowGeJ[kk];
-                                    if (mark[iRow])
+                                    if(mark[iRow])
                                     {
                                         double valueK = 0.0;
                                         double valueJ = elementGeJ[iRow];
-                                        if (valueJ>valueK)
+                                        if(valueJ > valueK)
                                         {
                                             // J would dominate K
-                                            if (dominate==1)
+                                            if(dominate == 1)
                                             {
                                                 // no good
-                                                dominate=-2;
+                                                dominate = -2;
                                                 break;
                                             }
                                             else
                                             {
-                                                dominate=-1;
+                                                dominate = -1;
                                             }
                                         }
                                         else
                                         {
                                             // K would dominate J
-                                            if (dominate==-1)
+                                            if(dominate == -1)
                                             {
                                                 // no good
-                                                dominate=-2;
+                                                dominate = -2;
                                                 break;
                                             }
                                             else
                                             {
-                                                dominate=1;
+                                                dominate = 1;
                                             }
                                         }
                                     }
-                                    mark[iRow]=0;
+                                    mark[iRow] = 0;
                                 }
                             }
                             // just unmark rest
-                            for (; kk<nGeJ; kk++)
-                                mark[rowGeJ[kk]]=0;
-                            if (nEqualK==nEqualJ&&dominate!=-2)
+                            for(; kk < nGeJ; kk++)
+                                mark[rowGeJ[kk]] = 0;
+                            if(nEqualK == nEqualJ && dominate != -2)
                             {
-                                if (objValueJ==objValueK)
+                                if(objValueJ == objValueK)
                                 {
-                                    if (dominate<=0)
+                                    if(dominate <= 0)
                                     {
                                         // say J dominates
-                                        assert (colUpper2[kColumn]);
-                                        dominate=-1;
+                                        assert(colUpper2[kColumn]);
+                                        dominate = -1;
                                     }
                                     else
                                     {
                                         // say K dominates
-                                        assert (colUpper2[jColumn]);
-                                        dominate=1;
+                                        assert(colUpper2[jColumn]);
+                                        dominate = 1;
                                     }
                                 }
-                                else if (objValueJ<objValueK&&dominate<=0)
+                                else if(objValueJ < objValueK && dominate <= 0)
                                 {
                                     // say J dominates
-                                    assert (colUpper2[kColumn]);
-                                    dominate=-1;
+                                    assert(colUpper2[kColumn]);
+                                    dominate = -1;
                                 }
-                                else if (objValueJ>objValueK&&dominate==1)
+                                else if(objValueJ > objValueK && dominate == 1)
                                 {
                                     // say K dominates
-                                    assert (colUpper2[jColumn]);
-                                    dominate=1;
+                                    assert(colUpper2[jColumn]);
+                                    dominate = 1;
                                 }
                                 else
                                 {
-                                    dominate=0;
+                                    dominate = 0;
                                 }
-                                if (dominate)
+                                if(dominate)
                                 {
                                     // see if both can be 1
-                                    bool canFix=false;
-                                    for (int jj=0; jj<nEqualJ; jj++)
+                                    bool canFix = false;
+                                    for(int jj = 0; jj < nEqualJ; jj++)
                                     {
-                                        double value = 2.0*elementEqualJ[jj];
+                                        double value = 2.0 * elementEqualJ[jj];
                                         int iRow = rowEqualJ[jj];
-                                        if (duplicate_[iRow]==-1&&rowUpper[iRow]<1.999999)
+                                        if(duplicate_[iRow] == -1 && rowUpper[iRow] < 1.999999)
                                         {
-                                            canFix=true;
+                                            canFix = true;
                                         }
                                         else
                                         {
-                                            double minSum=0.0;
-                                            double maxSum=0.0;
-                                            for (int j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+                                            double minSum = 0.0;
+                                            double maxSum = 0.0;
+                                            for(int j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
                                             {
                                                 int iColumn = column[j];
-                                                if (iColumn!=jColumn&&iColumn!=kColumn)
+                                                if(iColumn != jColumn && iColumn != kColumn)
                                                 {
                                                     double elValue = elementByRow[j];
                                                     double lo = columnLower[iColumn];
                                                     double up = colUpper2[iColumn];
-                                                    if (elValue>0.0)
+                                                    if(elValue > 0.0)
                                                     {
-                                                        minSum += lo*elValue;
-                                                        maxSum += up*elValue;
+                                                        minSum += lo * elValue;
+                                                        maxSum += up * elValue;
                                                     }
                                                     else
                                                     {
-                                                        maxSum += lo*elValue;
-                                                        minSum += up*elValue;
+                                                        maxSum += lo * elValue;
+                                                        minSum += up * elValue;
                                                     }
                                                 }
                                             }
-                                            if (minSum+value>rowUpper[iRow]+1.0e-5)
-                                                canFix=true;
-                                            else if (maxSum+value<rowLower[iRow]-1.0e-5)
-                                                canFix=true;
+                                            if(minSum + value > rowUpper[iRow] + 1.0e-5)
+                                                canFix = true;
+                                            else if(maxSum + value < rowLower[iRow] - 1.0e-5)
+                                                canFix = true;
                                         }
-                                        if (canFix)
+                                        if(canFix)
                                             break;
                                     }
-                                    if (!canFix)
+                                    if(!canFix)
                                     {
-                                        for (kk=columnStart[kColumn]; kk<columnStart[kColumn]+columnLength[kColumn]; kk++)
+                                        for(kk = columnStart[kColumn]; kk < columnStart[kColumn] + columnLength[kColumn]; kk++)
                                         {
                                             int iRow = row[kk];
-                                            if (!random[iRow])
+                                            if(!random[iRow])
                                             {
-                                                if (rowUpper[iRow]<1.0e20)
+                                                if(rowUpper[iRow] < 1.0e20)
                                                 {
                                                     // just <= row
                                                     double valueK = element[kk] - elementGeJ[iRow];
-                                                    if (valueK>effectiveRhs2[iRow]+1.0e-4)
+                                                    if(valueK > effectiveRhs2[iRow] + 1.0e-4)
                                                     {
-                                                        canFix=true;
+                                                        canFix = true;
                                                         break;
                                                     }
                                                 }
@@ -489,48 +489,48 @@ void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs
                                                 {
                                                     // >= row
                                                     double valueK = element[kk] + elementGeJ[iRow];
-                                                    if (valueK<effectiveRhs2[iRow]-1.0e-4)
+                                                    if(valueK < effectiveRhs2[iRow] - 1.0e-4)
                                                     {
-                                                        canFix=true;
+                                                        canFix = true;
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                    if (canFix)
+                                    if(canFix)
                                     {
-                                        int iColumn = (dominate>0) ? jColumn : kColumn;
+                                        int iColumn = (dominate > 0) ? jColumn : kColumn;
                                         nFixed++;
-                                        assert (!columnLower[iColumn]);
-                                        colUpper2[iColumn]=0.0;
-                                        ubs.insert(iColumn,0.0);
-                                        if (iColumn==jColumn)
+                                        assert(!columnLower[iColumn]);
+                                        colUpper2[iColumn] = 0.0;
+                                        ubs.insert(iColumn, 0.0);
+                                        if(iColumn == jColumn)
                                             break; // no need to carry on on jColumn
                                     }
                                     else
                                     {
-                                        int iDominated = (dominate>0) ? jColumn : kColumn;
-                                        int iDominating = (dominate<0) ? jColumn : kColumn;
-                                        double els[]= {1.0,-1.0};
+                                        int iDominated = (dominate > 0) ? jColumn : kColumn;
+                                        int iDominating = (dominate < 0) ? jColumn : kColumn;
+                                        double els[] = {1.0, -1.0};
                                         int inds[2];
-                                        inds[0]=iDominating;
-                                        inds[1]=iDominated;
-                                        if (!storedCuts_)
+                                        inds[0] = iDominating;
+                                        inds[1] = iDominated;
+                                        if(!storedCuts_)
                                             storedCuts_ = new CglStored();
-                                        storedCuts_->addCut(0.0,COIN_DBL_MAX,2,inds,els);
+                                        storedCuts_->addCut(0.0, COIN_DBL_MAX, 2, inds, els);
                                     }
                                 }
                             }
                         }
-                        for (jj=0; jj<nGeJ; jj++)
+                        for(jj = 0; jj < nGeJ; jj++)
                         {
                             int iRow = rowGeJ[jj];
-                            elementGeJ[iRow]=0.0;
+                            elementGeJ[iRow] = 0.0;
                         }
                     }
                 }
-                last=i;
+                last = i;
                 lastValue = sort[i];
             }
         }
@@ -543,52 +543,52 @@ void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs
         delete [] which;
 #ifdef COIN_DEVELOP
         int numberCuts = storedCuts_ ? storedCuts_->sizeRowCuts() : 0;
-        if (nFixed||numberCuts)
-            printf("** %d fixed and %d cuts from domination\n",nFixed,numberCuts);
+        if(nFixed || numberCuts)
+            printf("** %d fixed and %d cuts from domination\n", nFixed, numberCuts);
 #endif
     }
     delete [] effectiveRhs2;
-    bool infeasible=false;
+    bool infeasible = false;
     // if we were just doing columns - mark all as bad
-    if ((mode_&1)==0)
+    if((mode_ & 1) == 0)
     {
-        for (i=0; i<numberRows; i++)
+        for(i = 0; i < numberRows; i++)
         {
-            duplicate_[i]=-3;
-            rhs_[i]=-1000000;
-            effectiveLower[i]=-1000000;
+            duplicate_[i] = -3;
+            rhs_[i] = -1000000;
+            effectiveLower[i] = -1000000;
         }
     }
-    for ( i=0; i<numberColumns; i++)
+    for(i = 0; i < numberColumns; i++)
     {
-        if (columnLower[i])
+        if(columnLower[i])
         {
             double value = columnLower[i];
-            for (int jj=columnStart[i]; jj<columnStart[i]+columnLength[i]; jj++)
+            for(int jj = columnStart[i]; jj < columnStart[i] + columnLength[i]; jj++)
             {
                 int iRow = row[jj];
-                nOut += static_cast<int> (element[jj]*value);
-                effectiveRhs[iRow] -= static_cast<int> (element[jj]*value);
-                effectiveLower[iRow] -= static_cast<int> (element[jj]*value);
+                nOut += static_cast<int>(element[jj] * value);
+                effectiveRhs[iRow] -= static_cast<int>(element[jj] * value);
+                effectiveLower[iRow] -= static_cast<int>(element[jj] * value);
             }
         }
     }
-    for ( i=0; i<numberColumns; i++)
+    for(i = 0; i < numberColumns; i++)
     {
-        if (columnLower[i]!=colUpper2[i])
+        if(columnLower[i] != colUpper2[i])
         {
-            bool fixed=false;
-            for (int jj=columnStart[i]; jj<columnStart[i]+columnLength[i]; jj++)
+            bool fixed = false;
+            for(int jj = columnStart[i]; jj < columnStart[i] + columnLength[i]; jj++)
             {
                 int iRow = row[jj];
-                if (rhs_[iRow]>=0&&element[jj]>effectiveRhs[iRow])
-                    fixed=true;
+                if(rhs_[iRow] >= 0 && element[jj] > effectiveRhs[iRow])
+                    fixed = true;
             }
-            if (fixed)
+            if(fixed)
             {
                 nFixed++;
-                colUpper2[i]=columnLower[i];
-                ubs.insert(i,columnLower[i]);
+                colUpper2[i] = columnLower[i];
+                ubs.insert(i, columnLower[i]);
             }
             else
             {
@@ -597,37 +597,37 @@ void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs
         }
     }
     // See if anything odd
-    char * check = new char[numberColumns];
-    memset(check,0,numberColumns);
-    int * which2 = new int[numberColumns];
-    for (i=0; i<numberRows; i++)
+    char* check = new char[numberColumns];
+    memset(check, 0, numberColumns);
+    int* which2 = new int[numberColumns];
+    for(i = 0; i < numberRows; i++)
     {
-        if (duplicate_[i]==-5)
+        if(duplicate_[i] == -5)
         {
-            if ((rowLower[i]<=0.0||rowLower[i]==rowUpper[i])&&
-                    rowUpper[i]==floor(rowUpper[i]))
+            if((rowLower[i] <= 0.0 || rowLower[i] == rowUpper[i]) &&
+                    rowUpper[i] == floor(rowUpper[i]))
             {
-                effectiveRhs[i]= static_cast<int> (rowUpper[i]);
-                effectiveLower[i] = static_cast<int> (CoinMax(0.0,rowLower[i]));
-                bool goodRow=true;
-                for (int j=rowStart[i]; j<rowStart[i]+rowLength[i]; j++)
+                effectiveRhs[i] = static_cast<int>(rowUpper[i]);
+                effectiveLower[i] = static_cast<int>(CoinMax(0.0, rowLower[i]));
+                bool goodRow = true;
+                for(int j = rowStart[i]; j < rowStart[i] + rowLength[i]; j++)
                 {
                     int iColumn = column[j];
-                    double value=columnLower[iColumn];
-                    if (value)
+                    double value = columnLower[iColumn];
+                    if(value)
                     {
-                        if (value==floor(value))
+                        if(value == floor(value))
                         {
-                            effectiveRhs[i] -= static_cast<int> (value);
-                            effectiveLower[i] -= static_cast<int> (value);
+                            effectiveRhs[i] -= static_cast<int>(value);
+                            effectiveLower[i] -= static_cast<int>(value);
                         }
                         else
                         {
-                            goodRow=false;
+                            goodRow = false;
                         }
                     }
                 }
-                if (goodRow)
+                if(goodRow)
                     duplicate_[i] = -1; // can have continuous variables now
                 else
                     duplicate_[i] = -3;
@@ -637,319 +637,319 @@ void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs
                 duplicate_[i] = -3;
             }
         }
-        if (duplicate_[i]==-1)
+        if(duplicate_[i] == -1)
         {
-            if (effectiveRhs[i]>0)
+            if(effectiveRhs[i] > 0)
             {
                 // leave
             }
-            else if (effectiveRhs[i]==0)
+            else if(effectiveRhs[i] == 0)
             {
-                duplicate_[i]=-2;
+                duplicate_[i] = -2;
             }
             else
             {
-                duplicate_[i]=-3;
+                duplicate_[i] = -3;
                 // leave unless >=1 row
-                if (effectiveLower[i]==1&&rhs_[i]<0.0)
-                    duplicate_[i]=-4;
+                if(effectiveLower[i] == 1 && rhs_[i] < 0.0)
+                    duplicate_[i] = -4;
             }
         }
         else
         {
-            effectiveRhs[i]=-1000;
+            effectiveRhs[i] = -1000;
         }
     }
     // Look at <= rows
-    for (i=0; i<numberRows; i++)
+    for(i = 0; i < numberRows; i++)
     {
         // initially just one
-        if (effectiveRhs[i]==1&&duplicate_[i]==-1)
+        if(effectiveRhs[i] == 1 && duplicate_[i] == -1)
         {
-            int nn=0;
-            int j,k;
-            for (j=rowStart[i]; j<rowStart[i]+rowLength[i]; j++)
+            int nn = 0;
+            int j, k;
+            for(j = rowStart[i]; j < rowStart[i] + rowLength[i]; j++)
             {
                 int iColumn = column[j];
-                if (columnLower[iColumn]!=colUpper2[iColumn])
+                if(columnLower[iColumn] != colUpper2[iColumn])
                 {
 #ifndef NDEBUG
-                    assert (elementByRow[j]==1.0);
+                    assert(elementByRow[j] == 1.0);
 #endif
-                    check[iColumn]=1;
-                    which2[nn++]=iColumn;
+                    check[iColumn] = 1;
+                    which2[nn++] = iColumn;
                 }
             }
-            for ( k=i+1; k<numberRows; k++)
+            for(k = i + 1; k < numberRows; k++)
             {
-                if (effectiveRhs[k]==1&&duplicate_[k]==-1)
+                if(effectiveRhs[k] == 1 && duplicate_[k] == -1)
                 {
-                    int nn2=0;
-                    int nnsame=0;
-                    for ( j=rowStart[k]; j<rowStart[k]+rowLength[k]; j++)
+                    int nn2 = 0;
+                    int nnsame = 0;
+                    for(j = rowStart[k]; j < rowStart[k] + rowLength[k]; j++)
                     {
                         int iColumn = column[j];
-                        if (columnLower[iColumn]!=colUpper2[iColumn])
+                        if(columnLower[iColumn] != colUpper2[iColumn])
                         {
 #ifndef NDEBUG
-                            assert (elementByRow[j]==1.0);
+                            assert(elementByRow[j] == 1.0);
 #endif
                             nn2++;
-                            if (check[iColumn])
+                            if(check[iColumn])
                                 nnsame++;
                         }
                     }
                     //if (nnsame)
                     //printf("rows %d and %d, %d same - %d %d\n",
                     //   i,k,nnsame,nn,nn2);
-                    bool checked=false;
-                    if (nnsame==nn2)
+                    bool checked = false;
+                    if(nnsame == nn2)
                     {
-                        if (nn2<nn&&effectiveLower[k]==rhs_[k]&&rhs_[i]==rhs_[k])
+                        if(nn2 < nn && effectiveLower[k] == rhs_[k] && rhs_[i] == rhs_[k])
                         {
-                            if (logLevel_)
+                            if(logLevel_)
                                 printf("row %d strict subset of row %d, fix some in row %d\n",
-                                       k,i,i);
+                                       k, i, i);
                             // treat i as duplicate
-                            duplicate_[i]=k;
+                            duplicate_[i] = k;
                             // zero out check so we can see what is extra
-                            for ( j=rowStart[k]; j<rowStart[k]+rowLength[k]; j++)
+                            for(j = rowStart[k]; j < rowStart[k] + rowLength[k]; j++)
                             {
                                 int iColumn = column[j];
-                                check[iColumn]=0;
+                                check[iColumn] = 0;
                             }
                             // now redo and fix
-                            nn=0;
-                            for (j=rowStart[i]; j<rowStart[i]+rowLength[i]; j++)
+                            nn = 0;
+                            for(j = rowStart[i]; j < rowStart[i] + rowLength[i]; j++)
                             {
                                 int iColumn = column[j];
-                                if (columnLower[iColumn]!=colUpper2[iColumn])
+                                if(columnLower[iColumn] != colUpper2[iColumn])
                                 {
-                                    if (check[iColumn])
+                                    if(check[iColumn])
                                     {
                                         // fix
-                                        colUpper2[iColumn]=columnLower[iColumn];
+                                        colUpper2[iColumn] = columnLower[iColumn];
                                         nFixed++;
-                                        ubs.insert(iColumn,columnLower[iColumn]);
-                                        check[iColumn]=0;
+                                        ubs.insert(iColumn, columnLower[iColumn]);
+                                        check[iColumn] = 0;
                                     }
                                     else
                                     {
-                                        check[iColumn]=1;
-                                        which2[nn++]=iColumn;
+                                        check[iColumn] = 1;
+                                        which2[nn++] = iColumn;
                                     }
                                 }
                             }
-                            checked=true;
+                            checked = true;
                         }
-                        else if (nn2==nn&&effectiveLower[i]==rhs_[i]&&effectiveLower[k]==rhs_[k])
+                        else if(nn2 == nn && effectiveLower[i] == rhs_[i] && effectiveLower[k] == rhs_[k])
                         {
-                            if (logLevel_)
+                            if(logLevel_)
                                 printf("row %d identical to row %d\n",
-                                       k,i);
-                            duplicate_[k]=i;
-                            checked=true;
+                                       k, i);
+                            duplicate_[k] = i;
+                            checked = true;
                         }
-                        else if (nn2>=nn&&effectiveLower[i]==rhs_[i]&&effectiveLower[k]==rhs_[k])
+                        else if(nn2 >= nn && effectiveLower[i] == rhs_[i] && effectiveLower[k] == rhs_[k])
                         {
                             abort();
                         }
                     }
-                    else if (nnsame==nn&&nn2>nn&&effectiveLower[i]==rhs_[i]&&rhs_[i]<=rhs_[k])
+                    else if(nnsame == nn && nn2 > nn && effectiveLower[i] == rhs_[i] && rhs_[i] <= rhs_[k])
                     {
-                        if (logLevel_)
+                        if(logLevel_)
                             printf("row %d strict superset of row %d, fix some in row %d\n",
-                                   k,i,k);
+                                   k, i, k);
                         // treat k as duplicate
-                        duplicate_[k]=i;
+                        duplicate_[k] = i;
                         // set check for k
-                        for ( j=rowStart[k]; j<rowStart[k]+rowLength[k]; j++)
+                        for(j = rowStart[k]; j < rowStart[k] + rowLength[k]; j++)
                         {
                             int iColumn = column[j];
-                            if (columnLower[iColumn]!=colUpper2[iColumn])
-                                check[iColumn]=1;
+                            if(columnLower[iColumn] != colUpper2[iColumn])
+                                check[iColumn] = 1;
                         }
                         // zero out check so we can see what is extra
-                        for ( j=rowStart[i]; j<rowStart[i]+rowLength[i]; j++)
+                        for(j = rowStart[i]; j < rowStart[i] + rowLength[i]; j++)
                         {
                             int iColumn = column[j];
-                            check[iColumn]=0;
+                            check[iColumn] = 0;
                         }
                         //  fix
-                        for (j=rowStart[k]; j<rowStart[k]+rowLength[k]; j++)
+                        for(j = rowStart[k]; j < rowStart[k] + rowLength[k]; j++)
                         {
                             int iColumn = column[j];
-                            if (check[iColumn])
+                            if(check[iColumn])
                             {
                                 // fix
-                                colUpper2[iColumn]=columnLower[iColumn];
+                                colUpper2[iColumn] = columnLower[iColumn];
                                 nFixed++;
-                                ubs.insert(iColumn,columnLower[iColumn]);
-                                check[iColumn]=0;
+                                ubs.insert(iColumn, columnLower[iColumn]);
+                                check[iColumn] = 0;
                             }
                         }
                         // redo
-                        nn=0;
-                        for (j=rowStart[i]; j<rowStart[i]+rowLength[i]; j++)
+                        nn = 0;
+                        for(j = rowStart[i]; j < rowStart[i] + rowLength[i]; j++)
                         {
                             int iColumn = column[j];
-                            if (columnLower[iColumn]!=colUpper2[iColumn])
+                            if(columnLower[iColumn] != colUpper2[iColumn])
                             {
-                                check[iColumn]=1;
-                                which2[nn++]=iColumn;
+                                check[iColumn] = 1;
+                                which2[nn++] = iColumn;
                             }
                         }
-                        checked=true;
+                        checked = true;
                     }
-                    if (!checked)
+                    if(!checked)
                     {
                         // may be redundant
-                        if (nnsame==nn2)
+                        if(nnsame == nn2)
                         {
                             // k redundant ?
-                            if (nn2<nn&&effectiveLower[k]<=0&&rhs_[i]<=rhs_[k])
+                            if(nn2 < nn && effectiveLower[k] <= 0 && rhs_[i] <= rhs_[k])
                             {
-                                if (logLevel_)
+                                if(logLevel_)
                                     printf("row %d slack subset of row %d, drop row %d\n",
-                                           k,i,k);
+                                           k, i, k);
                                 // treat k as duplicate
-                                duplicate_[k]=i;
+                                duplicate_[k] = i;
                             }
                         }
-                        else if (nnsame==nn)
+                        else if(nnsame == nn)
                         {
                             // i redundant ?
-                            if (nn2>nn&&effectiveLower[i]<=0&&rhs_[k]<=rhs_[i])
+                            if(nn2 > nn && effectiveLower[i] <= 0 && rhs_[k] <= rhs_[i])
                             {
-                                if (logLevel_)
+                                if(logLevel_)
                                     printf("row %d slack subset of row %d, drop row %d\n",
-                                           i,k,i);
+                                           i, k, i);
                                 // treat i as duplicate
-                                duplicate_[i]=k;
+                                duplicate_[i] = k;
                             }
                         }
                     }
                 }
             }
-            for (k=0; k<nn; k++)
-                check[which2[k]]=0;
+            for(k = 0; k < nn; k++)
+                check[which2[k]] = 0;
 
         }
     }
     // Look at >=1 rows
-    for (i=0; i<numberRows; i++)
+    for(i = 0; i < numberRows; i++)
     {
-        if (duplicate_[i]==-4)
+        if(duplicate_[i] == -4)
         {
-            int nn=0;
-            int j,k;
-            for (j=rowStart[i]; j<rowStart[i]+rowLength[i]; j++)
+            int nn = 0;
+            int j, k;
+            for(j = rowStart[i]; j < rowStart[i] + rowLength[i]; j++)
             {
                 int iColumn = column[j];
-                if (columnLower[iColumn]!=colUpper2[iColumn])
+                if(columnLower[iColumn] != colUpper2[iColumn])
                 {
 #ifndef NDEBUG
-                    assert (elementByRow[j]==1.0);
+                    assert(elementByRow[j] == 1.0);
 #endif
-                    check[iColumn]=1;
-                    which2[nn++]=iColumn;
+                    check[iColumn] = 1;
+                    which2[nn++] = iColumn;
                 }
             }
-            for ( k=i+1; k<numberRows; k++)
+            for(k = i + 1; k < numberRows; k++)
             {
-                if (duplicate_[k]==-4)
+                if(duplicate_[k] == -4)
                 {
-                    int nn2=0;
-                    int nnsame=0;
-                    for ( j=rowStart[k]; j<rowStart[k]+rowLength[k]; j++)
+                    int nn2 = 0;
+                    int nnsame = 0;
+                    for(j = rowStart[k]; j < rowStart[k] + rowLength[k]; j++)
                     {
                         int iColumn = column[j];
-                        if (columnLower[iColumn]!=colUpper2[iColumn])
+                        if(columnLower[iColumn] != colUpper2[iColumn])
                         {
 #ifndef NDEBUG
-                            assert (elementByRow[j]==1.0);
+                            assert(elementByRow[j] == 1.0);
 #endif
                             nn2++;
-                            if (check[iColumn])
+                            if(check[iColumn])
                                 nnsame++;
                         }
                     }
                     // may be redundant
-                    if (nnsame==nn||nnsame==nn2)
+                    if(nnsame == nn || nnsame == nn2)
                     {
-                        if (nn2>nn)
+                        if(nn2 > nn)
                         {
                             // k redundant
-                            if (logLevel_)
+                            if(logLevel_)
                                 printf("row %d slack superset of row %d, drop row %d\n",
-                                       k,i,k);
+                                       k, i, k);
                             // treat k as duplicate
-                            duplicate_[k]=i;
+                            duplicate_[k] = i;
                         }
-                        else if (nn2<nn)
+                        else if(nn2 < nn)
                         {
                             // i redundant ?
-                            if (logLevel_)
+                            if(logLevel_)
                                 printf("row %d slack superset of row %d, drop row %d\n",
-                                       i,k,i);
+                                       i, k, i);
                             // treat i as duplicate
-                            duplicate_[i]=k;
+                            duplicate_[i] = k;
                         }
                         else
                         {
-                            if (logLevel_)
+                            if(logLevel_)
                                 printf("row %d same as row %d, drop row %d\n",
-                                       k,i,k);
+                                       k, i, k);
                             // treat k as duplicate
-                            duplicate_[k]=i;
+                            duplicate_[k] = i;
                         }
                     }
                 }
             }
-            for (k=0; k<nn; k++)
-                check[which2[k]]=0;
+            for(k = 0; k < nn; k++)
+                check[which2[k]] = 0;
 
         }
     }
-    if ((mode_&1)!=0&&true)
+    if((mode_ & 1) != 0 && true)
     {
         // look at doubletons
-        const double * rowLower = si.getRowLower();
-        const double * rowUpper = si.getRowUpper();
+        const double* rowLower = si.getRowLower();
+        const double* rowUpper = si.getRowUpper();
         int i;
-        int nPossible=0;
-        for (i=0; i<numberRows; i++)
+        int nPossible = 0;
+        for(i = 0; i < numberRows; i++)
         {
-            if (rowLength[i]==2&&(duplicate_[i]<0&&duplicate_[i]!=-2))
+            if(rowLength[i] == 2 && (duplicate_[i] < 0 && duplicate_[i] != -2))
             {
-                bool possible=true;
+                bool possible = true;
                 int j;
-                for (j=rowStart[i]; j<rowStart[i]+2; j++)
+                for(j = rowStart[i]; j < rowStart[i] + 2; j++)
                 {
                     int iColumn = column[j];
-                    if (fabs(elementByRow[j])!=1.0||!si.isInteger(iColumn))
+                    if(fabs(elementByRow[j]) != 1.0 || !si.isInteger(iColumn))
                     {
-                        possible=false;
+                        possible = false;
                         break;
                     }
                 }
-                if (possible)
+                if(possible)
                 {
                     int j = rowStart[i];
                     int column0 = column[j];
                     double element0 = elementByRow[j];
-                    int column1 = column[j+1];
-                    double element1 = elementByRow[j+1];
-                    if (element0==1.0&&element1==1.0&&rowLower[i]==1.0&&
-                            rowUpper[i]>1.0e30)
+                    int column1 = column[j + 1];
+                    double element1 = elementByRow[j + 1];
+                    if(element0 == 1.0 && element1 == 1.0 && rowLower[i] == 1.0 &&
+                            rowUpper[i] > 1.0e30)
                     {
-                        if (logLevel_)
+                        if(logLevel_)
                         {
-                            printf("Cover row %d %g <= ",i,rowLower[i]);
-                            printf("(%d,%g) (%d,%g) ",column0,element0,column1,element1);
-                            printf(" <= %g\n",rowUpper[i]);
+                            printf("Cover row %d %g <= ", i, rowLower[i]);
+                            printf("(%d,%g) (%d,%g) ", column0, element0, column1, element1);
+                            printf(" <= %g\n", rowUpper[i]);
                         }
-                        effectiveRhs[nPossible++]=i;
+                        effectiveRhs[nPossible++] = i;
                     }
                     else
                     {
@@ -961,95 +961,95 @@ void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs
                 }
             }
         }
-        if (nPossible)
+        if(nPossible)
         {
-            int * check2 = new int [numberColumns];
-            CoinFillN(check2,numberColumns,-1);
-            for (int iPossible=0; iPossible<nPossible; iPossible++)
+            int* check2 = new int [numberColumns];
+            CoinFillN(check2, numberColumns, -1);
+            for(int iPossible = 0; iPossible < nPossible; iPossible++)
             {
 #ifndef NDEBUG
-                for (i=0; i<numberColumns; i++)
-                    assert (check2[i]==-1);
+                for(i = 0; i < numberColumns; i++)
+                    assert(check2[i] == -1);
 #endif
-                i=effectiveRhs[iPossible];
+                i = effectiveRhs[iPossible];
                 int j = rowStart[i];
                 int column0 = column[j];
-                int column1 = column[j+1];
+                int column1 = column[j + 1];
                 int k;
-                int nMarked=0;
-                for (int kPossible=iPossible+1; kPossible<nPossible; kPossible++)
+                int nMarked = 0;
+                for(int kPossible = iPossible + 1; kPossible < nPossible; kPossible++)
                 {
-                    k=effectiveRhs[kPossible];
+                    k = effectiveRhs[kPossible];
                     int j = rowStart[k];
                     int columnB0 = column[j];
-                    int columnB1 = column[j+1];
-                    if (column0==columnB1||column1==columnB1)
+                    int columnB1 = column[j + 1];
+                    if(column0 == columnB1 || column1 == columnB1)
                     {
-                        columnB1=columnB0;
-                        columnB0=column[j+1];
+                        columnB1 = columnB0;
+                        columnB0 = column[j + 1];
                     }
                     bool good = false;
-                    if (column0==columnB0)
+                    if(column0 == columnB0)
                     {
-                        if (column1==columnB1)
+                        if(column1 == columnB1)
                         {
                             // probably should have been picked up
                             // safest to ignore
                         }
                         else
                         {
-                            good=true;
+                            good = true;
                         }
                     }
-                    else if (column1==columnB0)
+                    else if(column1 == columnB0)
                     {
-                        if (column0==columnB1)
+                        if(column0 == columnB1)
                         {
                             // probably should have been picked up
                             // safest to ignore
                         }
                         else
                         {
-                            good=true;
+                            good = true;
                         }
                     }
-                    if (good)
+                    if(good)
                     {
-                        if (check2[columnB1]<0)
+                        if(check2[columnB1] < 0)
                         {
-                            check2[columnB1]=k;
-                            which2[nMarked++]=columnB1;
+                            check2[columnB1] = k;
+                            which2[nMarked++] = columnB1;
                         }
                         else
                         {
                             // found
 #ifndef COIN_DEVELOP
-                            if (logLevel_>1)
+                            if(logLevel_ > 1)
 #endif
                                 printf("***Make %d %d %d >=2 and take out rows %d %d %d\n",
-                                       columnB1,column0,column1,
-                                       i,k,check2[columnB1]);
+                                       columnB1, column0, column1,
+                                       i, k, check2[columnB1]);
                             OsiRowCut rc;
                             rc.setLb(2.0);
                             rc.setUb(COIN_DBL_MAX);
                             int index[3];
-                            double element[3]= {1.0,1.0,1.0};
-                            index[0]=column0;
-                            index[1]=column1;
-                            index[2]=columnB1;
-                            rc.setRow(3,index,element,false);
+                            double element[3] = {1.0, 1.0, 1.0};
+                            index[0] = column0;
+                            index[1] = column1;
+                            index[2] = columnB1;
+                            rc.setRow(3, index, element, false);
                             cs.insert(rc);
                             // drop rows
-                            duplicate_[i]=-2;
-                            duplicate_[k]=-2;
-                            duplicate_[check2[columnB1]]=-2;
+                            duplicate_[i] = -2;
+                            duplicate_[k] = -2;
+                            duplicate_[check2[columnB1]] = -2;
                         }
                     }
                 }
-                for (k=0; k<nMarked; k++)
+                for(k = 0; k < nMarked; k++)
                 {
                     int iColumn = which2[k];
-                    check2[iColumn]=-1;
+                    check2[iColumn] = -1;
                 }
             }
             delete [] check2;
@@ -1058,43 +1058,43 @@ void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs
     delete [] check;
     delete [] which2;
     delete [] colUpper2;
-    int nRow=0;
-    sizeDynamic_=1;
-    for (i=0; i<numberRows; i++)
+    int nRow = 0;
+    sizeDynamic_ = 1;
+    for(i = 0; i < numberRows; i++)
     {
-        if (duplicate_[i]!=-3)
+        if(duplicate_[i] != -3)
         {
-            if (duplicate_[i]==-1)
+            if(duplicate_[i] == -1)
             {
                 nRow++;
-                int k=effectiveRhs[i];
-                while (k)
+                int k = effectiveRhs[i];
+                while(k)
                 {
-                    if (sizeDynamic_<1000000000)
-                        sizeDynamic_ = sizeDynamic_<<1;
-                    k = k >>1;
+                    if(sizeDynamic_ < 1000000000)
+                        sizeDynamic_ = sizeDynamic_ << 1;
+                    k = k >> 1;
                 }
             }
         }
         else
         {
-            duplicate_[i]=-1;
+            duplicate_[i] = -1;
         }
     }
     delete [] effectiveRhs;
     delete [] effectiveLower;
 
-    if (logLevel_)
+    if(logLevel_)
         printf("%d free (but %d fixed this time), %d out of rhs, DP size %d, %d rows\n",
-               nFree,nFixed,nOut,sizeDynamic_,nRow);
-    if (nFixed)
+               nFree, nFixed, nOut, sizeDynamic_, nRow);
+    if(nFixed)
     {
         OsiColCut cc;
         cc.setUbs(ubs);
         cc.setEffectiveness(100.0);
         cs.insert(cc);
     }
-    if (infeasible)
+    if(infeasible)
     {
         // generate infeasible cut and return
         OsiRowCut rc;
@@ -1104,44 +1104,44 @@ void CglDuplicateRow::generateCuts12(const OsiSolverInterface & si, OsiCuts & cs
     }
 }
 void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
-                                    const CglTreeInfo ) const
+                                    const CglTreeInfo) const
 {
     int numberColumns = matrix_.getNumCols();
 
     // Column copy
-    const double * element = matrix_.getElements();
-    const int * row = matrix_.getIndices();
-    const CoinBigIndex * columnStart = matrix_.getVectorStarts();
-    const int * columnLength = matrix_.getVectorLengths();
-    const double * columnLower = si.getColLower();
-    const double * columnUpper = si.getColUpper();
-    int nFixed=0;
-    int numberRows=matrix_.getNumRows();
-    const double * rowLower = si.getRowLower();
-    const double * rowUpper = si.getRowUpper();
-    bool infeasible=false;
+    const double* element = matrix_.getElements();
+    const int* row = matrix_.getIndices();
+    const CoinBigIndex* columnStart = matrix_.getVectorStarts();
+    const int* columnLength = matrix_.getVectorLengths();
+    const double* columnLower = si.getColLower();
+    const double* columnUpper = si.getColUpper();
+    int nFixed = 0;
+    int numberRows = matrix_.getNumRows();
+    const double* rowLower = si.getRowLower();
+    const double* rowUpper = si.getRowUpper();
+    bool infeasible = false;
     // try more complicated domination
-    int * originalColumns = new int [numberColumns];
-    int * originalRows = new int [2*numberRows];
-    int * rowCount = originalRows+numberRows;
-    memset(rowCount,0,numberRows*sizeof(int));
-    memset(originalRows,0,numberRows*sizeof(int));
-    unsigned char * rowFlag = new unsigned char[numberRows];
-    unsigned char * columnFlag = new unsigned char[2*numberColumns];
-    double * newBound = new double[numberColumns];
-    double * trueLower = new double[numberColumns];
-    double * effectiveRhs = new double [2*numberRows];
-    double *rhs2 = effectiveRhs+numberRows;
+    int* originalColumns = new int [numberColumns];
+    int* originalRows = new int [2 * numberRows];
+    int* rowCount = originalRows + numberRows;
+    memset(rowCount, 0, numberRows * sizeof(int));
+    memset(originalRows, 0, numberRows * sizeof(int));
+    unsigned char* rowFlag = new unsigned char[numberRows];
+    unsigned char* columnFlag = new unsigned char[2 * numberColumns];
+    double* newBound = new double[numberColumns];
+    double* trueLower = new double[numberColumns];
+    double* effectiveRhs = new double [2 * numberRows];
+    double* rhs2 = effectiveRhs + numberRows;
     // first take out fixed stuff
-    memset(rhs2,0,numberRows*sizeof(double));
-    memset(rowFlag,0,numberRows);
-    memset(columnFlag,0,numberColumns);
-    int nCol2=0;
-    for (int i=0; i<numberColumns; i++)
+    memset(rhs2, 0, numberRows * sizeof(double));
+    memset(rowFlag, 0, numberRows);
+    memset(columnFlag, 0, numberColumns);
+    int nCol2 = 0;
+    for(int i = 0; i < numberColumns; i++)
     {
-        if (columnLower[i]<-1.0e20&&columnUpper[i]>-1.0e20)
+        if(columnLower[i] < -1.0e20 && columnUpper[i] > -1.0e20)
         {
-            for (int jj=columnStart[i]; jj<columnStart[i]+columnLength[i]; jj++)
+            for(int jj = columnStart[i]; jj < columnStart[i] + columnLength[i]; jj++)
             {
                 int iRow = row[jj];
                 rowFlag[iRow] |= 8; // say no good
@@ -1149,102 +1149,102 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
         }
         else
         {
-            double lo=columnLower[i];
-            double up=columnUpper[i];
-            double value=lo;
-            if (lo<-1.0e20)
+            double lo = columnLower[i];
+            double up = columnUpper[i];
+            double value = lo;
+            if(lo < -1.0e20)
             {
-                columnFlag[nCol2]=1; // say flipped
-                lo=-up;
-                up=-value;
-                value=-lo;
+                columnFlag[nCol2] = 1; // say flipped
+                lo = -up;
+                up = -value;
+                value = -lo;
                 abort(); // double check
             }
-            if (up>lo)
+            if(up > lo)
             {
-                int add=0;
-                if (si.isInteger(i))
+                int add = 0;
+                if(si.isInteger(i))
                 {
-                    columnFlag[nCol2]|=2;
-                    if (up>lo+1.5)
+                    columnFlag[nCol2] |= 2;
+                    if(up > lo + 1.5)
                     {
-                        add=1; // only allow one general
-                        columnFlag[nCol2]|=4;
+                        add = 1; // only allow one general
+                        columnFlag[nCol2] |= 4;
                     }
                 }
                 else
                 {
-                    add=1;
+                    add = 1;
                 }
-                newBound[nCol2]=up-lo;
-                trueLower[nCol2]=lo;
-                originalColumns[nCol2++]=i;
-                for (int jj=columnStart[i]; jj<columnStart[i]+columnLength[i]; jj++)
+                newBound[nCol2] = up - lo;
+                trueLower[nCol2] = lo;
+                originalColumns[nCol2++] = i;
+                for(int jj = columnStart[i]; jj < columnStart[i] + columnLength[i]; jj++)
                 {
                     int iRow = row[jj];
                     rowCount[iRow]++;
                     originalRows[iRow] += add;
                 }
             }
-            for (int jj=columnStart[i]; jj<columnStart[i]+columnLength[i]; jj++)
+            for(int jj = columnStart[i]; jj < columnStart[i] + columnLength[i]; jj++)
             {
                 int iRow = row[jj];
-                rhs2[iRow] += element[jj]*value;
+                rhs2[iRow] += element[jj] * value;
             }
         }
     }
-    int nRow2=0;
-    for (int i=0; i<numberRows; i++)
+    int nRow2 = 0;
+    for(int i = 0; i < numberRows; i++)
     {
-        int nCont=originalRows[i];
-        int nInt=rowCount[i]-nCont;
-        unsigned char flag=rowFlag[i];
-        if (nCont>1||!nInt)
-            flag=8; // don't look at for now
-        if (rowLower[i]==rowUpper[i])
+        int nCont = originalRows[i];
+        int nInt = rowCount[i] - nCont;
+        unsigned char flag = rowFlag[i];
+        if(nCont > 1 || !nInt)
+            flag = 8; // don't look at for now
+        if(rowLower[i] == rowUpper[i])
             flag |= 1;
-        else if (rowLower[i]>-1.0e20&&rowUpper[i]<1.0e20)
-            flag |=8;
-        else if (rowUpper[i]>1.0e20)
+        else if(rowLower[i] > -1.0e20 && rowUpper[i] < 1.0e20)
+            flag |= 8;
+        else if(rowUpper[i] > 1.0e20)
             flag |= 2;
-        if ((flag&8)==0)
+        if((flag & 8) == 0)
         {
-            rowCount[nRow2]=rowCount[i];
-            originalRows[nRow2++]=i;
+            rowCount[nRow2] = rowCount[i];
+            originalRows[nRow2++] = i;
         }
     }
-    CoinSort_2(rowCount,rowCount+nRow2,originalRows);
-    for (int i=0; i<nRow2; i++)
+    CoinSort_2(rowCount, rowCount + nRow2, originalRows);
+    for(int i = 0; i < nRow2; i++)
     {
-        int k=originalRows[i];
-        unsigned char flag=0;
-        if (rowLower[k]==rowUpper[k])
+        int k = originalRows[i];
+        unsigned char flag = 0;
+        if(rowLower[k] == rowUpper[k])
             flag |= 1;
-        else if (rowUpper[k]>1.0e20)
+        else if(rowUpper[k] > 1.0e20)
             flag |= 2;
-        rowFlag[i]=flag;
+        rowFlag[i] = flag;
     }
-    if (nRow2&&nCol2)
+    if(nRow2 && nCol2)
     {
-        CoinPackedMatrix small(matrix_,nRow2,originalRows,
-                               nCol2,originalColumns);
+        CoinPackedMatrix small(matrix_, nRow2, originalRows,
+                               nCol2, originalColumns);
         // Column copy
         small.removeGaps();
-        double * element = small.getMutableElements();
-        const int * row = small.getIndices();
-        const CoinBigIndex * columnStart = small.getVectorStarts();
+        double* element = small.getMutableElements();
+        const int* row = small.getIndices();
+        const CoinBigIndex* columnStart = small.getVectorStarts();
         //const int * columnLength = small.getVectorLengths();
-        for (int i=0; i<nCol2; i++)
+        for(int i = 0; i < nCol2; i++)
         {
-            for (int jj=columnStart[i]; jj<columnStart[i+1]; jj++)
+            for(int jj = columnStart[i]; jj < columnStart[i + 1]; jj++)
             {
-                int iRow=row[jj];
-                if ((rowFlag[iRow]&2)!=0)
+                int iRow = row[jj];
+                if((rowFlag[iRow] & 2) != 0)
                     element[jj] = -element[jj];
             }
-            if ((columnFlag[i]&1)!=0)
+            if((columnFlag[i] & 1) != 0)
             {
-                for (int jj=columnStart[i]; jj<columnStart[i+1]; jj++)
+                for(int jj = columnStart[i]; jj < columnStart[i + 1]; jj++)
                 {
                     element[jj] = -element[jj];
                 }
@@ -1256,49 +1256,49 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
         smallRow.setExtraMajor(0.0);
         smallRow.reverseOrderedCopyOf(small);
         // Row copy
-        double * elementByRow = smallRow.getMutableElements();
-        int * column = smallRow.getMutableIndices();
-        const CoinBigIndex * rowStart = smallRow.getVectorStarts();
+        double* elementByRow = smallRow.getMutableElements();
+        int* column = smallRow.getMutableIndices();
+        const CoinBigIndex* rowStart = smallRow.getVectorStarts();
         //const int * rowLength = smallRow.getVectorLengths();
-        for (int i=0; i<nRow2; i++)
+        for(int i = 0; i < nRow2; i++)
         {
-            int start=rowStart[i];
-            int end=rowStart[i+1];
-            CoinSort_2(column+start,column+end,elementByRow+start);
-            int k=originalRows[i];
+            int start = rowStart[i];
+            int end = rowStart[i + 1];
+            CoinSort_2(column + start, column + end, elementByRow + start);
+            int k = originalRows[i];
             double rhs;
-            if ((rowFlag[i]&2)==0)
-                rhs = rowUpper[k]-rhs2[k];
+            if((rowFlag[i] & 2) == 0)
+                rhs = rowUpper[k] - rhs2[k];
             else
-                rhs = - (rowLower[k]-rhs2[k]);
-            effectiveRhs[i]=rhs;
+                rhs = - (rowLower[k] - rhs2[k]);
+            effectiveRhs[i] = rhs;
         }
-        int nRowLook=0;
-        int nRowStart=-1;
+        int nRowLook = 0;
+        int nRowStart = -1;
 #define MAX_IN_BASE 3
 #define MAX_IN_COMP 3
-        for (nRowLook=0; nRowLook<nRow2; nRowLook++)
+        for(nRowLook = 0; nRowLook < nRow2; nRowLook++)
         {
             int start1 = rowStart[nRowLook];
-            int n=rowStart[nRowLook+1]-start1;
-            if (n>=2&&nRowStart<0)
-                nRowStart=nRowLook;
-            if (n>MAX_IN_BASE)
+            int n = rowStart[nRowLook + 1] - start1;
+            if(n >= 2 && nRowStart < 0)
+                nRowStart = nRowLook;
+            if(n > MAX_IN_BASE)
                 break;
         }
         // cut back nRow2
-        int nnRow2=nRowLook;
-        for (nnRow2=0; nnRow2<nRow2; nnRow2++)
+        int nnRow2 = nRowLook;
+        for(nnRow2 = 0; nnRow2 < nRow2; nnRow2++)
         {
             int start1 = rowStart[nnRow2];
-            int n=rowStart[nnRow2+1]-start1;
-            if (n>MAX_IN_COMP)
+            int n = rowStart[nnRow2 + 1] - start1;
+            if(n > MAX_IN_COMP)
                 break;
         }
-        nRow2=nnRow2;
-        nRowStart=CoinMax(0,nRowStart);
-        unsigned char * mark = columnFlag+nCol2;
-        memset(mark,0,nCol2);
+        nRow2 = nnRow2;
+        nRowStart = CoinMax(0, nRowStart);
+        unsigned char* mark = columnFlag + nCol2;
+        memset(mark, 0, nCol2);
         /* at most 3 0-1 integers -
            if all 0-1 then see if same allowed
            if one other then get bounds
@@ -1309,78 +1309,78 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
         double loC1[4];
         double upC1[4];
         int allowed1[8];
-        for (int i=nRowStart; i<nRowLook; i++)
+        for(int i = nRowStart; i < nRowLook; i++)
         {
             int start0 = rowStart[i];
-            int n=rowStart[i+1]-start0;
-            const int * column0 = column+start0;
-            const double * element0 = elementByRow+start0;
-            int nInt=0;
-            int nLook=nRow2;
-            for (int j=0; j<n; j++)
+            int n = rowStart[i + 1] - start0;
+            const int* column0 = column + start0;
+            const double* element0 = elementByRow + start0;
+            int nInt = 0;
+            int nLook = nRow2;
+            for(int j = 0; j < n; j++)
             {
                 int iColumn = column0[j];
-                if ((columnFlag[iColumn]&(2+4))==2)
+                if((columnFlag[iColumn] & (2 + 4)) == 2)
                     nInt++;
-                mark[iColumn] =1;
-                if (!newBound[iColumn])
-                    nLook=0; // Don't look
+                mark[iColumn] = 1;
+                if(!newBound[iColumn])
+                    nLook = 0; // Don't look
             }
-            for (int k=i+1; k<nRow2; k++)
+            for(int k = i + 1; k < nRow2; k++)
             {
-                if (duplicate_[k]==-2)
+                if(duplicate_[k] == -2)
                     continue;
-                if (duplicate_[i]==-2)
+                if(duplicate_[i] == -2)
                     break;
                 int start1 = rowStart[k];
-                int n1=rowStart[k+1]-start1;
-                const int * column1 = column+start1;
-                const double * element1 = elementByRow+start1;
-                int nMatch=0;
-                for (int j=0; j<n1; j++)
+                int n1 = rowStart[k + 1] - start1;
+                const int* column1 = column + start1;
+                const double* element1 = elementByRow + start1;
+                int nMatch = 0;
+                for(int j = 0; j < n1; j++)
                 {
-                    if (mark[column1[j]])
+                    if(mark[column1[j]])
                         nMatch++;
                 }
-                if (nMatch==n)
+                if(nMatch == n)
                 {
 #define CGL_INVESTIGATE
-                    if (n==n1)
+                    if(n == n1)
                     {
                         // same - look at all 0-1 integers
-                        if (nInt==n)
+                        if(nInt == n)
                         {
                             // crude - should go stack based
-                            if (nInt==2)
+                            if(nInt == 2)
                             {
                                 double upRhs = effectiveRhs[i];
-                                double loRhs = ((rowFlag[i]&1)!=0) ? effectiveRhs[i] : -1.0e30;
-                                double tolerance = CoinMax(1.0e-5,fabs(upRhs)*1.0e-10);
-                                for (int j0=0; j0<2; j0++)
+                                double loRhs = ((rowFlag[i] & 1) != 0) ? effectiveRhs[i] : -1.0e30;
+                                double tolerance = CoinMax(1.0e-5, fabs(upRhs) * 1.0e-10);
+                                for(int j0 = 0; j0 < 2; j0++)
                                 {
-                                    for (int j1=0; j1<2; j1++)
+                                    for(int j1 = 0; j1 < 2; j1++)
                                     {
-                                        double value = element0[0]*j0+element0[1]*j1;
-                                        int put = j0+2*j1;
-                                        if (value<upRhs+tolerance&&value>loRhs-tolerance)
-                                            allowed0[put]=1;
+                                        double value = element0[0] * j0 + element0[1] * j1;
+                                        int put = j0 + 2 * j1;
+                                        if(value < upRhs + tolerance && value > loRhs - tolerance)
+                                            allowed0[put] = 1;
                                         else
-                                            allowed0[put]=0;
+                                            allowed0[put] = 0;
                                     }
                                 }
                                 upRhs = effectiveRhs[k];
-                                loRhs = ((rowFlag[k]&1)!=0) ? effectiveRhs[k] : -1.0e30;
-                                tolerance = CoinMax(1.0e-5,fabs(upRhs)*1.0e-10);
-                                for (int j0=0; j0<2; j0++)
+                                loRhs = ((rowFlag[k] & 1) != 0) ? effectiveRhs[k] : -1.0e30;
+                                tolerance = CoinMax(1.0e-5, fabs(upRhs) * 1.0e-10);
+                                for(int j0 = 0; j0 < 2; j0++)
                                 {
-                                    for (int j1=0; j1<2; j1++)
+                                    for(int j1 = 0; j1 < 2; j1++)
                                     {
-                                        double value = element1[0]*j0+element1[1]*j1;
-                                        int put = j0+2*j1;
-                                        if (value<upRhs+tolerance&&value>loRhs-tolerance)
-                                            allowed1[put]=1;
+                                        double value = element1[0] * j0 + element1[1] * j1;
+                                        int put = j0 + 2 * j1;
+                                        if(value < upRhs + tolerance && value > loRhs - tolerance)
+                                            allowed1[put] = 1;
                                         else
-                                            allowed1[put]=0;
+                                            allowed1[put] = 0;
                                     }
                                 }
                                 /* interesting cases are when -
@@ -1390,107 +1390,107 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                    two same - this is probably only one
                                 */
                                 int intersect[4];
-                                bool same=true;
-                                bool tighter0=true;
-                                bool tighter1=true;
-                                bool feasible=false;
-                                bool redundant=true;
-                                for (int j=0; j<4; j++)
+                                bool same = true;
+                                bool tighter0 = true;
+                                bool tighter1 = true;
+                                bool feasible = false;
+                                bool redundant = true;
+                                for(int j = 0; j < 4; j++)
                                 {
-                                    intersect[j]=allowed0[j]&allowed1[j];
-                                    if (intersect[j]<allowed0[j])
-                                        tighter0=false;
-                                    if (intersect[j]<allowed1[j])
-                                        tighter1=false;
-                                    if (allowed0[j]!=allowed1[j])
-                                        same=false;
-                                    if (!intersect[j])
-                                        redundant=false;
-                                    if (intersect[j])
-                                        feasible=true;
+                                    intersect[j] = allowed0[j] & allowed1[j];
+                                    if(intersect[j] < allowed0[j])
+                                        tighter0 = false;
+                                    if(intersect[j] < allowed1[j])
+                                        tighter1 = false;
+                                    if(allowed0[j] != allowed1[j])
+                                        same = false;
+                                    if(!intersect[j])
+                                        redundant = false;
+                                    if(intersect[j])
+                                        feasible = true;
                                 }
-                                int fixed[2]= {0,0};
-                                if (feasible)
+                                int fixed[2] = {0, 0};
+                                if(feasible)
                                 {
-                                    int count=2;
-                                    for (int jj=0; jj<count; jj++)
+                                    int count = 2;
+                                    for(int jj = 0; jj < count; jj++)
                                     {
-                                        int multiplier=1<<jj;
-                                        int increment=1<<(count-1-jj);
-                                        bool zeroOk=false;
-                                        bool oneOk=false;
-                                        for (int j=0; j<(1<<(count-1)); j++)
+                                        int multiplier = 1 << jj;
+                                        int increment = 1 << (count - 1 - jj);
+                                        bool zeroOk = false;
+                                        bool oneOk = false;
+                                        for(int j = 0; j < (1 << (count - 1)); j++)
                                         {
-                                            if (intersect[0*multiplier+increment*j])
-                                                zeroOk=true;
-                                            if (intersect[1*multiplier+increment*j])
-                                                oneOk=true;
+                                            if(intersect[0 * multiplier + increment * j])
+                                                zeroOk = true;
+                                            if(intersect[1 * multiplier + increment * j])
+                                                oneOk = true;
                                         }
-                                        if (!zeroOk)
+                                        if(!zeroOk)
                                         {
-                                            fixed[jj]=1;
-                                            assert (oneOk);
+                                            fixed[jj] = 1;
+                                            assert(oneOk);
                                         }
-                                        else if (!oneOk)
+                                        else if(!oneOk)
                                         {
-                                            fixed[jj]=-1;
+                                            fixed[jj] = -1;
                                         }
                                     }
                                 }
-                                if (same||redundant||!feasible||fixed[0]||fixed[1]||
-                                        tighter0||tighter1)
+                                if(same || redundant || !feasible || fixed[0] || fixed[1] ||
+                                        tighter0 || tighter1)
                                 {
 #ifdef CGL_INVESTIGATE
                                     /* start debug print */
                                     {
-                                        printf("Base %d (orig %d) ",i,originalRows[i]);
-                                        for (int j=0; j<n; j++)
+                                        printf("Base %d (orig %d) ", i, originalRows[i]);
+                                        for(int j = 0; j < n; j++)
                                         {
                                             double value = element0[j];
-                                            if (j)
+                                            if(j)
                                             {
-                                                if(value>0.0)
+                                                if(value > 0.0)
                                                     printf(" +");
                                                 else
                                                     printf(" ");
                                             }
-                                            int iColumn=column0[j];
-                                            if ((columnFlag[iColumn]&2)==0)
-                                                printf("%g*X%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
-                                            else if ((columnFlag[iColumn]&(2+4))==2)
-                                                printf("%g*B%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                            int iColumn = column0[j];
+                                            if((columnFlag[iColumn] & 2) == 0)
+                                                printf("%g*X%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
+                                            else if((columnFlag[iColumn] & (2 + 4)) == 2)
+                                                printf("%g*B%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                             else
-                                                printf("%g*I%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                                printf("%g*I%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                         }
-                                        if ((rowFlag[i]&1)!=0)
+                                        if((rowFlag[i] & 1) != 0)
                                             printf(" == ");
                                         else
                                             printf(" <= ");
-                                        printf("%g\n",effectiveRhs[i]);
-                                        printf("Comp %d (orig %d) ",k,originalRows[k]);
-                                        for (int j=0; j<n1; j++)
+                                        printf("%g\n", effectiveRhs[i]);
+                                        printf("Comp %d (orig %d) ", k, originalRows[k]);
+                                        for(int j = 0; j < n1; j++)
                                         {
                                             double value = element1[j];
-                                            if (j)
+                                            if(j)
                                             {
-                                                if(value>0.0)
+                                                if(value > 0.0)
                                                     printf(" +");
                                                 else
                                                     printf(" ");
                                             }
-                                            int iColumn=column1[j];
-                                            if ((columnFlag[iColumn]&2)==0)
-                                                printf("%g*X%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
-                                            else if ((columnFlag[iColumn]&(2+4))==2)
-                                                printf("%g*B%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                            int iColumn = column1[j];
+                                            if((columnFlag[iColumn] & 2) == 0)
+                                                printf("%g*X%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
+                                            else if((columnFlag[iColumn] & (2 + 4)) == 2)
+                                                printf("%g*B%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                             else
-                                                printf("%g*I%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                                printf("%g*I%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                         }
-                                        if ((rowFlag[k]&1)!=0)
+                                        if((rowFlag[k] & 1) != 0)
                                             printf(" == ");
                                         else
                                             printf(" <= ");
-                                        printf("%g\n",effectiveRhs[k]);
+                                        printf("%g\n", effectiveRhs[k]);
                                     }
                                     /* end debug print */
 #endif
@@ -1501,51 +1501,51 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                            feasible ? 'Y' : 'N',
                                            tighter0 ? 'Y' : 'N',
                                            tighter1 ? 'Y' : 'N',
-                                           fixed[0],fixed[1]);
+                                           fixed[0], fixed[1]);
 #endif
-                                    if (!feasible)
+                                    if(!feasible)
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf("QQ infeasible\n");
 #endif
-                                        infeasible=true;
+                                        infeasible = true;
                                     }
-                                    else if (fixed[0]||fixed[1])
+                                    else if(fixed[0] || fixed[1])
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf("QQ fixed\n");
 #endif
-                                        for (int k=0; k<2; k++)
+                                        for(int k = 0; k < 2; k++)
                                         {
-                                            if (fixed[k])
+                                            if(fixed[k])
                                             {
-                                                int iColumn=column0[k];
-                                                int kColumn=originalColumns[iColumn];
+                                                int iColumn = column0[k];
+                                                int kColumn = originalColumns[iColumn];
 #ifdef CGL_INVESTIGATE
-                                                printf("true bounds %g %g\n",columnLower[kColumn],
+                                                printf("true bounds %g %g\n", columnLower[kColumn],
                                                        columnUpper[kColumn]);
 #endif
-                                                double lo,up;
-                                                if (fixed[k]>0)
+                                                double lo, up;
+                                                if(fixed[k] > 0)
                                                 {
-                                                    lo=1.0;
-                                                    up=1.0;
+                                                    lo = 1.0;
+                                                    up = 1.0;
                                                 }
                                                 else
                                                 {
-                                                    lo=0.0;
-                                                    up=0.0;
+                                                    lo = 0.0;
+                                                    up = 0.0;
                                                 }
-                                                if ((columnFlag[iColumn]&1)==0)
+                                                if((columnFlag[iColumn] & 1) == 0)
                                                 {
                                                     columnFlag[iColumn] |= 16;
                                                     trueLower[iColumn] += lo;
                                                     newBound[iColumn] = 0.0;
-                                                    for (int jj=columnStart[iColumn]; jj<columnStart[iColumn+1];
+                                                    for(int jj = columnStart[iColumn]; jj < columnStart[iColumn + 1];
                                                             jj++)
                                                     {
-                                                        int iRow=row[jj];
-                                                        effectiveRhs[iRow] -= lo*element[jj];
+                                                        int iRow = row[jj];
+                                                        effectiveRhs[iRow] -= lo * element[jj];
                                                     }
                                                 }
                                                 else
@@ -1555,43 +1555,43 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                             }
                                         }
                                     }
-                                    else if (!same&&(tighter0||tighter1))
+                                    else if(!same && (tighter0 || tighter1))
                                     {
-                                        assert (!tighter0||!tighter1);
-                                        if (tighter0)
+                                        assert(!tighter0 || !tighter1);
+                                        if(tighter0)
                                         {
 #ifdef CGL_INVESTIGATE
                                             printf("QQ discard oneT k\n");
 #endif
-                                            duplicate_[k]=-2;
+                                            duplicate_[k] = -2;
                                         }
                                         else
                                         {
 #ifdef CGL_INVESTIGATE
                                             printf("QQ discard oneT i\n");
 #endif
-                                            duplicate_[i]=-2;
+                                            duplicate_[i] = -2;
                                         }
                                     }
-                                    else if (redundant)
+                                    else if(redundant)
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf("QQ discard both\n");
 #endif
-                                        duplicate_[i]=-2;
-                                        duplicate_[k]=-2;
+                                        duplicate_[i] = -2;
+                                        duplicate_[k] = -2;
                                     }
                                     else
                                     {
-                                        assert (same);
-                                        if (fabs(effectiveRhs[i]-effectiveRhs[k])<1.0e-7&&
-                                                element0[1]==element1[1]&&
-                                                element0[0]==element1[0])
+                                        assert(same);
+                                        if(fabs(effectiveRhs[i] - effectiveRhs[k]) < 1.0e-7 &&
+                                                element0[1] == element1[1] &&
+                                                element0[0] == element1[0])
                                         {
 #ifdef CGL_INVESTIGATE
                                             printf("QQ discard identical k I2\n");
 #endif
-                                            duplicate_[k]=-2;
+                                            duplicate_[k] = -2;
                                         }
                                         else
                                         {
@@ -1604,42 +1604,42 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                             }
                             else
                             {
-                                assert (nInt==3);
+                                assert(nInt == 3);
                                 double upRhs = effectiveRhs[i];
-                                double loRhs = ((rowFlag[i]&1)!=0) ? effectiveRhs[i] : -1.0e30;
-                                double tolerance = CoinMax(1.0e-5,fabs(upRhs)*1.0e-10);
-                                for (int j0=0; j0<2; j0++)
+                                double loRhs = ((rowFlag[i] & 1) != 0) ? effectiveRhs[i] : -1.0e30;
+                                double tolerance = CoinMax(1.0e-5, fabs(upRhs) * 1.0e-10);
+                                for(int j0 = 0; j0 < 2; j0++)
                                 {
-                                    for (int j1=0; j1<2; j1++)
+                                    for(int j1 = 0; j1 < 2; j1++)
                                     {
-                                        for (int j2=0; j2<2; j2++)
+                                        for(int j2 = 0; j2 < 2; j2++)
                                         {
-                                            double value = element0[0]*j0+element0[1]*j1
-                                                           +element0[2]*j2;
-                                            int put = j0+2*j1+4*j2;
-                                            if (value<upRhs+tolerance&&value>loRhs-tolerance)
-                                                allowed0[put]=1;
+                                            double value = element0[0] * j0 + element0[1] * j1
+                                                           + element0[2] * j2;
+                                            int put = j0 + 2 * j1 + 4 * j2;
+                                            if(value < upRhs + tolerance && value > loRhs - tolerance)
+                                                allowed0[put] = 1;
                                             else
-                                                allowed0[put]=0;
+                                                allowed0[put] = 0;
                                         }
                                     }
                                 }
                                 upRhs = effectiveRhs[k];
-                                loRhs = ((rowFlag[k]&1)!=0) ? effectiveRhs[k] : -1.0e30;
-                                tolerance = CoinMax(1.0e-5,fabs(upRhs)*1.0e-10);
-                                for (int j0=0; j0<2; j0++)
+                                loRhs = ((rowFlag[k] & 1) != 0) ? effectiveRhs[k] : -1.0e30;
+                                tolerance = CoinMax(1.0e-5, fabs(upRhs) * 1.0e-10);
+                                for(int j0 = 0; j0 < 2; j0++)
                                 {
-                                    for (int j1=0; j1<2; j1++)
+                                    for(int j1 = 0; j1 < 2; j1++)
                                     {
-                                        for (int j2=0; j2<2; j2++)
+                                        for(int j2 = 0; j2 < 2; j2++)
                                         {
-                                            double value = element1[0]*j0+element1[1]*j1
-                                                           +element1[2]*j2;
-                                            int put = j0+2*j1+4*j2;
-                                            if (value<upRhs+tolerance&&value>loRhs-tolerance)
-                                                allowed1[put]=1;
+                                            double value = element1[0] * j0 + element1[1] * j1
+                                                           + element1[2] * j2;
+                                            int put = j0 + 2 * j1 + 4 * j2;
+                                            if(value < upRhs + tolerance && value > loRhs - tolerance)
+                                                allowed1[put] = 1;
                                             else
-                                                allowed1[put]=0;
+                                                allowed1[put] = 0;
                                         }
                                     }
                                 }
@@ -1650,122 +1650,122 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                    two same - this is probably only one
                                 */
                                 int intersect[8];
-                                bool same=true;
-                                bool tighter0=true;
-                                bool tighter1=true;
-                                bool feasible=false;
-                                bool redundant=true;
-                                for (int j=0; j<8; j++)
+                                bool same = true;
+                                bool tighter0 = true;
+                                bool tighter1 = true;
+                                bool feasible = false;
+                                bool redundant = true;
+                                for(int j = 0; j < 8; j++)
                                 {
-                                    intersect[j]=allowed0[j]&allowed1[j];
-                                    if (intersect[j]<allowed0[j])
-                                        tighter0=false;
-                                    if (intersect[j]<allowed1[j])
-                                        tighter1=false;
-                                    if (allowed0[j]!=allowed1[j])
-                                        same=false;
-                                    if (!intersect[j])
-                                        redundant=false;
-                                    if (intersect[j])
-                                        feasible=true;
+                                    intersect[j] = allowed0[j] & allowed1[j];
+                                    if(intersect[j] < allowed0[j])
+                                        tighter0 = false;
+                                    if(intersect[j] < allowed1[j])
+                                        tighter1 = false;
+                                    if(allowed0[j] != allowed1[j])
+                                        same = false;
+                                    if(!intersect[j])
+                                        redundant = false;
+                                    if(intersect[j])
+                                        feasible = true;
                                 }
-                                int fixed[3]= {0,0,0};
-                                if (feasible)
+                                int fixed[3] = {0, 0, 0};
+                                if(feasible)
                                 {
-                                    bool zeroOk[3]= {false,false,false};
-                                    bool oneOk[3]= {false,false,false};
-                                    for (int j0=0; j0<2; j0++)
+                                    bool zeroOk[3] = {false, false, false};
+                                    bool oneOk[3] = {false, false, false};
+                                    for(int j0 = 0; j0 < 2; j0++)
                                     {
-                                        for (int j1=0; j1<2; j1++)
+                                        for(int j1 = 0; j1 < 2; j1++)
                                         {
-                                            for (int j2=0; j2<2; j2++)
+                                            for(int j2 = 0; j2 < 2; j2++)
                                             {
-                                                int get = j0+2*j1+4*j2;
-                                                if (intersect[get])
+                                                int get = j0 + 2 * j1 + 4 * j2;
+                                                if(intersect[get])
                                                 {
-                                                    if (j0)
-                                                        oneOk[0]=true;
+                                                    if(j0)
+                                                        oneOk[0] = true;
                                                     else
-                                                        zeroOk[0]=true;
-                                                    if (j1)
-                                                        oneOk[1]=true;
+                                                        zeroOk[0] = true;
+                                                    if(j1)
+                                                        oneOk[1] = true;
                                                     else
-                                                        zeroOk[1]=true;
-                                                    if (j2)
-                                                        oneOk[2]=true;
+                                                        zeroOk[1] = true;
+                                                    if(j2)
+                                                        oneOk[2] = true;
                                                     else
-                                                        zeroOk[2]=true;
+                                                        zeroOk[2] = true;
                                                 }
                                             }
                                         }
                                     }
-                                    for (int jj=0; jj<3; jj++)
+                                    for(int jj = 0; jj < 3; jj++)
                                     {
-                                        if (!zeroOk[jj])
+                                        if(!zeroOk[jj])
                                         {
-                                            fixed[jj]=1;
-                                            assert (oneOk[jj]);
+                                            fixed[jj] = 1;
+                                            assert(oneOk[jj]);
                                         }
-                                        else if (!oneOk[jj])
+                                        else if(!oneOk[jj])
                                         {
-                                            fixed[jj]=-1;
+                                            fixed[jj] = -1;
                                         }
                                     }
                                 }
-                                if (same||redundant||!feasible||fixed[0]||fixed[1]||fixed[2]||
-                                        tighter0||tighter1)
+                                if(same || redundant || !feasible || fixed[0] || fixed[1] || fixed[2] ||
+                                        tighter0 || tighter1)
                                 {
 #ifdef CGL_INVESTIGATE
                                     /* start debug print */
                                     {
-                                        printf("Base %d (orig %d) ",i,originalRows[i]);
-                                        for (int j=0; j<n; j++)
+                                        printf("Base %d (orig %d) ", i, originalRows[i]);
+                                        for(int j = 0; j < n; j++)
                                         {
                                             double value = element0[j];
-                                            if (j)
+                                            if(j)
                                             {
-                                                if(value>0.0)
+                                                if(value > 0.0)
                                                     printf(" +");
                                                 else
                                                     printf(" ");
                                             }
-                                            int iColumn=column0[j];
-                                            if ((columnFlag[iColumn]&2)==0)
-                                                printf("%g*X%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
-                                            else if ((columnFlag[iColumn]&(2+4))==2)
-                                                printf("%g*B%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                            int iColumn = column0[j];
+                                            if((columnFlag[iColumn] & 2) == 0)
+                                                printf("%g*X%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
+                                            else if((columnFlag[iColumn] & (2 + 4)) == 2)
+                                                printf("%g*B%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                             else
-                                                printf("%g*I%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                                printf("%g*I%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                         }
-                                        if ((rowFlag[i]&1)!=0)
+                                        if((rowFlag[i] & 1) != 0)
                                             printf(" == ");
                                         else
                                             printf(" <= ");
-                                        printf("%g\n",effectiveRhs[i]);
-                                        printf("Comp %d (orig %d) ",k,originalRows[k]);
-                                        for (int j=0; j<n1; j++)
+                                        printf("%g\n", effectiveRhs[i]);
+                                        printf("Comp %d (orig %d) ", k, originalRows[k]);
+                                        for(int j = 0; j < n1; j++)
                                         {
                                             double value = element1[j];
-                                            if (j)
+                                            if(j)
                                             {
-                                                if(value>0.0)
+                                                if(value > 0.0)
                                                     printf(" +");
                                                 else
                                                     printf(" ");
                                             }
-                                            int iColumn=column1[j];
-                                            if ((columnFlag[iColumn]&2)==0)
-                                                printf("%g*X%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
-                                            else if ((columnFlag[iColumn]&(2+4))==2)
-                                                printf("%g*B%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                            int iColumn = column1[j];
+                                            if((columnFlag[iColumn] & 2) == 0)
+                                                printf("%g*X%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
+                                            else if((columnFlag[iColumn] & (2 + 4)) == 2)
+                                                printf("%g*B%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                             else
-                                                printf("%g*I%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                                printf("%g*I%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                         }
-                                        if ((rowFlag[k]&1)!=0)
+                                        if((rowFlag[k] & 1) != 0)
                                             printf(" == ");
                                         else
                                             printf(" <= ");
-                                        printf("%g\n",effectiveRhs[k]);
+                                        printf("%g\n", effectiveRhs[k]);
                                     }
                                     /* end debug print */
 #endif
@@ -1776,51 +1776,51 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                            feasible ? 'Y' : 'N',
                                            tighter0 ? 'Y' : 'N',
                                            tighter1 ? 'Y' : 'N',
-                                           fixed[0],fixed[1],fixed[2]);
+                                           fixed[0], fixed[1], fixed[2]);
 #endif
-                                    if (!feasible)
+                                    if(!feasible)
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf("QQ infeasible\n");
 #endif
-                                        infeasible=true;
+                                        infeasible = true;
                                     }
-                                    else if (fixed[0]||fixed[1]||fixed[2])
+                                    else if(fixed[0] || fixed[1] || fixed[2])
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf("QQ fixed\n");
 #endif
-                                        for (int k=0; k<3; k++)
+                                        for(int k = 0; k < 3; k++)
                                         {
-                                            if (fixed[k])
+                                            if(fixed[k])
                                             {
-                                                int iColumn=column0[k];
-                                                int kColumn=originalColumns[iColumn];
+                                                int iColumn = column0[k];
+                                                int kColumn = originalColumns[iColumn];
 #ifdef CGL_INVESTIGATE
-                                                printf("true bounds %g %g\n",columnLower[kColumn],
+                                                printf("true bounds %g %g\n", columnLower[kColumn],
                                                        columnUpper[kColumn]);
 #endif
-                                                double lo,up;
-                                                if (fixed[k]>0)
+                                                double lo, up;
+                                                if(fixed[k] > 0)
                                                 {
-                                                    lo=1.0;
-                                                    up=1.0;
+                                                    lo = 1.0;
+                                                    up = 1.0;
                                                 }
                                                 else
                                                 {
-                                                    lo=0.0;
-                                                    up=0.0;
+                                                    lo = 0.0;
+                                                    up = 0.0;
                                                 }
-                                                if ((columnFlag[iColumn]&1)==0)
+                                                if((columnFlag[iColumn] & 1) == 0)
                                                 {
                                                     columnFlag[iColumn] |= 16;
                                                     trueLower[iColumn] += lo;
                                                     newBound[iColumn] = 0.0;
-                                                    for (int jj=columnStart[iColumn]; jj<columnStart[iColumn+1];
+                                                    for(int jj = columnStart[iColumn]; jj < columnStart[iColumn + 1];
                                                             jj++)
                                                     {
-                                                        int iRow=row[jj];
-                                                        effectiveRhs[iRow] -= lo*element[jj];
+                                                        int iRow = row[jj];
+                                                        effectiveRhs[iRow] -= lo * element[jj];
                                                     }
                                                 }
                                                 else
@@ -1830,44 +1830,44 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                             }
                                         }
                                     }
-                                    else if (!same&&(tighter0||tighter1))
+                                    else if(!same && (tighter0 || tighter1))
                                     {
-                                        assert (!tighter0||!tighter1);
-                                        if (tighter0)
+                                        assert(!tighter0 || !tighter1);
+                                        if(tighter0)
                                         {
 #ifdef CGL_INVESTIGATE
                                             printf("QQ discard oneT k\n");
 #endif
-                                            duplicate_[k]=-2;
+                                            duplicate_[k] = -2;
                                         }
                                         else
                                         {
 #ifdef CGL_INVESTIGATE
                                             printf("QQ discard oneT i\n");
 #endif
-                                            duplicate_[i]=-2;
+                                            duplicate_[i] = -2;
                                         }
                                     }
-                                    else if (redundant)
+                                    else if(redundant)
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf("QQ discard both\n");
 #endif
-                                        duplicate_[i]=-2;
-                                        duplicate_[k]=-2;
+                                        duplicate_[i] = -2;
+                                        duplicate_[k] = -2;
                                     }
                                     else
                                     {
-                                        assert (same);
-                                        if (fabs(effectiveRhs[i]-effectiveRhs[k])<1.0e-7&&
-                                                element0[2]==element1[2]&&
-                                                element0[1]==element1[1]&&
-                                                element0[0]==element1[0])
+                                        assert(same);
+                                        if(fabs(effectiveRhs[i] - effectiveRhs[k]) < 1.0e-7 &&
+                                                element0[2] == element1[2] &&
+                                                element0[1] == element1[1] &&
+                                                element0[0] == element1[0])
                                         {
 #ifdef CGL_INVESTIGATE
                                             printf("QQ discard identical k I\n");
 #endif
-                                            duplicate_[k]=-2;
+                                            duplicate_[k] = -2;
                                         }
                                         else
                                         {
@@ -1885,140 +1885,140 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                             double el0[3];
                             double el1[3];
                             int col[3];
-                            double bound=0.0;
-                            int kk=0;
-                            el0[1]=0.0;
-                            el1[1]=0.0;
-                            for (int j=0; j<n; j++)
+                            double bound = 0.0;
+                            int kk = 0;
+                            el0[1] = 0.0;
+                            el1[1] = 0.0;
+                            for(int j = 0; j < n; j++)
                             {
-                                int iColumn=column0[j];
-                                if ((columnFlag[iColumn]&(2+4))==2)
+                                int iColumn = column0[j];
+                                if((columnFlag[iColumn] & (2 + 4)) == 2)
                                 {
-                                    el0[kk]=element0[j];
-                                    col[kk++]=iColumn;
+                                    el0[kk] = element0[j];
+                                    col[kk++] = iColumn;
                                 }
                                 else
                                 {
-                                    el0[2]=element0[j];
-                                    col[2]=iColumn;
-                                    bound=CoinMin(newBound[iColumn],1.0e30);
+                                    el0[2] = element0[j];
+                                    col[2] = iColumn;
+                                    bound = CoinMin(newBound[iColumn], 1.0e30);
                                 }
                             }
-                            kk=0;
-                            for (int j=0; j<n; j++)
+                            kk = 0;
+                            for(int j = 0; j < n; j++)
                             {
-                                int iColumn=column1[j];
-                                if ((columnFlag[iColumn]&(2+4))==2)
+                                int iColumn = column1[j];
+                                if((columnFlag[iColumn] & (2 + 4)) == 2)
                                 {
-                                    el1[kk++]=element1[j];
+                                    el1[kk++] = element1[j];
                                 }
                                 else
                                 {
-                                    el1[2]=element1[j];
+                                    el1[2] = element1[j];
                                 }
                             }
-                            double gap0=bound*el0[2];
-                            double gap1=bound*el1[2];
-                            for (kk=0; kk<4; kk++)
+                            double gap0 = bound * el0[2];
+                            double gap1 = bound * el1[2];
+                            for(kk = 0; kk < 4; kk++)
                             {
-                                loC0[kk]=0.0;
-                                loC1[kk]=0.0;
-                                upC0[kk]=bound;
-                                upC1[kk]=bound;
+                                loC0[kk] = 0.0;
+                                loC1[kk] = 0.0;
+                                upC0[kk] = bound;
+                                upC1[kk] = bound;
                             }
                             // crude - should go stack based
                             double upRhs = effectiveRhs[i];
-                            double loRhs = ((rowFlag[i]&1)!=0) ? effectiveRhs[i] : -1.0e30;
-                            double tolerance = CoinMax(1.0e-5,fabs(upRhs)*1.0e-10);
-                            for (int j0=0; j0<2; j0++)
+                            double loRhs = ((rowFlag[i] & 1) != 0) ? effectiveRhs[i] : -1.0e30;
+                            double tolerance = CoinMax(1.0e-5, fabs(upRhs) * 1.0e-10);
+                            for(int j0 = 0; j0 < 2; j0++)
                             {
-                                for (int j1=0; j1<2; j1++)
+                                for(int j1 = 0; j1 < 2; j1++)
                                 {
-                                    double value = el0[0]*j0+el0[1]*j1;
-                                    int put = j0+2*j1;
-                                    double valueLo,valueHi;
-                                    if (gap0>0.0)
+                                    double value = el0[0] * j0 + el0[1] * j1;
+                                    int put = j0 + 2 * j1;
+                                    double valueLo, valueHi;
+                                    if(gap0 > 0.0)
                                     {
-                                        valueLo=value;
-                                        valueHi=value+gap0;
+                                        valueLo = value;
+                                        valueHi = value + gap0;
                                     }
                                     else
                                     {
-                                        valueLo=value+gap0;
-                                        valueHi=value;
+                                        valueLo = value + gap0;
+                                        valueHi = value;
                                     }
-                                    if (valueLo<upRhs+tolerance&&valueHi>loRhs-tolerance)
-                                        allowed0[put]=1;
+                                    if(valueLo < upRhs + tolerance && valueHi > loRhs - tolerance)
+                                        allowed0[put] = 1;
                                     else
-                                        allowed0[put]=0;
-                                    if (valueLo<loRhs-tolerance)
+                                        allowed0[put] = 0;
+                                    if(valueLo < loRhs - tolerance)
                                     {
-                                        if (gap0>0.0)
+                                        if(gap0 > 0.0)
                                         {
-                                            loC0[put]=(loRhs-valueLo)/el0[2];
+                                            loC0[put] = (loRhs - valueLo) / el0[2];
                                         }
                                         else
                                         {
-                                            upC0[put]=bound-((valueLo-loRhs)/el0[2]);
+                                            upC0[put] = bound - ((valueLo - loRhs) / el0[2]);
                                         }
                                     }
-                                    if (valueHi>upRhs+tolerance)
+                                    if(valueHi > upRhs + tolerance)
                                     {
-                                        if (gap0>0.0)
+                                        if(gap0 > 0.0)
                                         {
-                                            upC0[put]=bound-((valueHi-upRhs)/el0[2]);
+                                            upC0[put] = bound - ((valueHi - upRhs) / el0[2]);
                                         }
                                         else
                                         {
-                                            loC0[put]=(upRhs-valueHi)/el0[2];
+                                            loC0[put] = (upRhs - valueHi) / el0[2];
                                         }
                                     }
                                 }
                             }
                             upRhs = effectiveRhs[k];
-                            loRhs = ((rowFlag[k]&1)!=0) ? effectiveRhs[k] : -1.0e30;
-                            tolerance = CoinMax(1.0e-5,fabs(upRhs)*1.0e-10);
-                            for (int j0=0; j0<2; j0++)
+                            loRhs = ((rowFlag[k] & 1) != 0) ? effectiveRhs[k] : -1.0e30;
+                            tolerance = CoinMax(1.0e-5, fabs(upRhs) * 1.0e-10);
+                            for(int j0 = 0; j0 < 2; j0++)
                             {
-                                for (int j1=0; j1<2; j1++)
+                                for(int j1 = 0; j1 < 2; j1++)
                                 {
-                                    double value = el1[0]*j0+el1[1]*j1;
-                                    int put = j0+2*j1;
-                                    double valueLo,valueHi;
-                                    if (gap1>0.0)
+                                    double value = el1[0] * j0 + el1[1] * j1;
+                                    int put = j0 + 2 * j1;
+                                    double valueLo, valueHi;
+                                    if(gap1 > 0.0)
                                     {
-                                        valueLo=value;
-                                        valueHi=value+gap1;
+                                        valueLo = value;
+                                        valueHi = value + gap1;
                                     }
                                     else
                                     {
-                                        valueLo=value+gap1;
-                                        valueHi=value;
+                                        valueLo = value + gap1;
+                                        valueHi = value;
                                     }
-                                    if (valueLo<upRhs+tolerance&&valueHi>loRhs-tolerance)
-                                        allowed1[put]=1;
+                                    if(valueLo < upRhs + tolerance && valueHi > loRhs - tolerance)
+                                        allowed1[put] = 1;
                                     else
-                                        allowed1[put]=0;
-                                    if (valueLo<loRhs-tolerance)
+                                        allowed1[put] = 0;
+                                    if(valueLo < loRhs - tolerance)
                                     {
-                                        if (gap1>0.0)
+                                        if(gap1 > 0.0)
                                         {
-                                            loC1[put]=(loRhs-valueLo)/el1[2];
+                                            loC1[put] = (loRhs - valueLo) / el1[2];
                                         }
                                         else
                                         {
-                                            upC1[put]=bound-((valueLo-loRhs)/el1[2]);
+                                            upC1[put] = bound - ((valueLo - loRhs) / el1[2]);
                                         }
                                     }
-                                    if (valueHi>upRhs+tolerance)
+                                    if(valueHi > upRhs + tolerance)
                                     {
-                                        if (gap1>0.0)
+                                        if(gap1 > 0.0)
                                         {
-                                            upC1[put]=bound-((valueHi-upRhs)/el1[2]);
+                                            upC1[put] = bound - ((valueHi - upRhs) / el1[2]);
                                         }
                                         else
                                         {
-                                            loC1[put]=(upRhs-valueHi)/el1[2];
+                                            loC1[put] = (upRhs - valueHi) / el1[2];
                                         }
                                     }
                                 }
@@ -2030,136 +2030,136 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                              two same - this is probably only one
                                 */
                             int intersect[4];
-                            bool same=true;
-                            bool tighter0=true;
-                            bool tighter1=true;
-                            bool feasible=false;
-                            bool redundant=true;
-                            int count=nInt;
-                            for (int j=0; j<(1<<count); j++)
+                            bool same = true;
+                            bool tighter0 = true;
+                            bool tighter1 = true;
+                            bool feasible = false;
+                            bool redundant = true;
+                            int count = nInt;
+                            for(int j = 0; j < (1 << count); j++)
                             {
-                                intersect[j]=allowed0[j]&allowed1[j];
-                                if (intersect[j]<allowed0[j])
-                                    tighter0=false;
-                                if (intersect[j]<allowed1[j])
-                                    tighter1=false;
-                                if (allowed0[j]!=allowed1[j])
-                                    same=false;
-                                if (!intersect[j])
-                                    redundant=false;
-                                if (intersect[j])
-                                    feasible=true;
+                                intersect[j] = allowed0[j] & allowed1[j];
+                                if(intersect[j] < allowed0[j])
+                                    tighter0 = false;
+                                if(intersect[j] < allowed1[j])
+                                    tighter1 = false;
+                                if(allowed0[j] != allowed1[j])
+                                    same = false;
+                                if(!intersect[j])
+                                    redundant = false;
+                                if(intersect[j])
+                                    feasible = true;
                             }
-                            int fixed[2]= {0,0};
-                            if (feasible)
+                            int fixed[2] = {0, 0};
+                            if(feasible)
                             {
-                                for (int jj=0; jj<count; jj++)
+                                for(int jj = 0; jj < count; jj++)
                                 {
-                                    int multiplier=1<<jj;
-                                    int increment=1<<(count-1-jj);
-                                    bool zeroOk=false;
-                                    bool oneOk=false;
-                                    for (int j=0; j<(1<<(count-1)); j++)
+                                    int multiplier = 1 << jj;
+                                    int increment = 1 << (count - 1 - jj);
+                                    bool zeroOk = false;
+                                    bool oneOk = false;
+                                    for(int j = 0; j < (1 << (count - 1)); j++)
                                     {
-                                        if (intersect[0*multiplier+increment*j])
-                                            zeroOk=true;
-                                        if (intersect[1*multiplier+increment*j])
-                                            oneOk=true;
+                                        if(intersect[0 * multiplier + increment * j])
+                                            zeroOk = true;
+                                        if(intersect[1 * multiplier + increment * j])
+                                            oneOk = true;
                                     }
-                                    if (!zeroOk)
+                                    if(!zeroOk)
                                     {
-                                        fixed[jj]=1;
-                                        assert (oneOk);
+                                        fixed[jj] = 1;
+                                        assert(oneOk);
                                     }
-                                    else if (!oneOk)
+                                    else if(!oneOk)
                                     {
-                                        fixed[jj]=-1;
+                                        fixed[jj] = -1;
                                     }
                                 }
                             }
-                            double newLo=bound;
-                            double newUp=0.0;
-                            if (nInt==1)
+                            double newLo = bound;
+                            double newUp = 0.0;
+                            if(nInt == 1)
                             {
-                                for (int jj=0; jj<2; jj++)
+                                for(int jj = 0; jj < 2; jj++)
                                 {
 #ifdef CGL_INVESTIGATE
                                     printf("int at %d -> lo0 %g lo1 %g up0 %g up1 %g",
-                                           jj,loC0[jj],loC1[jj],upC0[jj],upC1[jj]);
+                                           jj, loC0[jj], loC1[jj], upC0[jj], upC1[jj]);
 #endif
-                                    if (intersect[jj])
+                                    if(intersect[jj])
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf("\n");
 #endif
-                                        newLo=CoinMin(newLo,CoinMax(loC0[jj],loC1[jj]));
-                                        newUp=CoinMax(newUp,CoinMin(upC0[jj],upC1[jj]));
+                                        newLo = CoinMin(newLo, CoinMax(loC0[jj], loC1[jj]));
+                                        newUp = CoinMax(newUp, CoinMin(upC0[jj], upC1[jj]));
                                     }
                                     else
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf(" INF\n");
 #endif
-                                        loC0[jj]=0.0;
-                                        loC1[jj]=0.0;
-                                        upC0[jj]=bound;
-                                        upC1[jj]=bound;
+                                        loC0[jj] = 0.0;
+                                        loC1[jj] = 0.0;
+                                        upC0[jj] = bound;
+                                        upC1[jj] = bound;
                                     }
                                 }
                             }
                             else
                             {
-                                for (int jj=0; jj<2; jj++)
+                                for(int jj = 0; jj < 2; jj++)
                                 {
-                                    for (int jj1=0; jj1<2; jj1++)
+                                    for(int jj1 = 0; jj1 < 2; jj1++)
                                     {
-                                        int k=jj+2*jj1;
+                                        int k = jj + 2 * jj1;
 #ifdef CGL_INVESTIGATE
                                         printf("first int at %d, second at %d -> lo0 %g lo1 %g up0 %g up1 %g",
-                                               jj,jj1,loC0[k],loC1[k],upC0[k],upC1[k]);
+                                               jj, jj1, loC0[k], loC1[k], upC0[k], upC1[k]);
 #endif
-                                        if (intersect[k])
+                                        if(intersect[k])
                                         {
 #ifdef CGL_INVESTIGATE
                                             printf("\n");
 #endif
-                                            newLo=CoinMin(newLo,CoinMax(loC0[k],loC1[k]));
-                                            newUp=CoinMax(newUp,CoinMin(upC0[k],upC1[k]));
+                                            newLo = CoinMin(newLo, CoinMax(loC0[k], loC1[k]));
+                                            newUp = CoinMax(newUp, CoinMin(upC0[k], upC1[k]));
                                         }
                                         else
                                         {
 #ifdef CGL_INVESTIGATE
                                             printf(" INF\n");
 #endif
-                                            loC0[k]=0.0;
-                                            loC1[k]=0.0;
-                                            upC0[k]=bound;
-                                            upC1[k]=bound;
+                                            loC0[k] = 0.0;
+                                            loC1[k] = 0.0;
+                                            upC0[k] = bound;
+                                            upC1[k] = bound;
                                         }
                                     }
                                 }
                             }
-                            if (newLo>0.0||newUp<bound)
+                            if(newLo > 0.0 || newUp < bound)
                             {
 #ifdef CGL_INVESTIGATE
-                                printf("Can tighten bounds to %g,%g\n",newLo,newUp);
+                                printf("Can tighten bounds to %g,%g\n", newLo, newUp);
 #endif
-                                int iColumn=col[2];
-                                int kColumn=originalColumns[iColumn];
+                                int iColumn = col[2];
+                                int kColumn = originalColumns[iColumn];
 #ifdef CGL_INVESTIGATE
-                                printf("true bounds %g %g\n",columnLower[kColumn],
+                                printf("true bounds %g %g\n", columnLower[kColumn],
                                        columnUpper[kColumn]);
 #endif
-                                if ((columnFlag[iColumn]&1)==0)
+                                if((columnFlag[iColumn] & 1) == 0)
                                 {
                                     columnFlag[iColumn] |= 16;
                                     trueLower[iColumn] += newLo;
-                                    newBound[iColumn] = newUp-newLo;
-                                    for (int jj=columnStart[iColumn]; jj<columnStart[iColumn+1];
+                                    newBound[iColumn] = newUp - newLo;
+                                    for(int jj = columnStart[iColumn]; jj < columnStart[iColumn + 1];
                                             jj++)
                                     {
-                                        int iRow=row[jj];
-                                        effectiveRhs[iRow] -= newLo*element[jj];
+                                        int iRow = row[jj];
+                                        effectiveRhs[iRow] -= newLo * element[jj];
                                     }
                                 }
                                 else
@@ -2167,94 +2167,94 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                     abort();
                                 }
                             }
-                            for (int jj=0; jj<(1<<nInt); jj++)
+                            for(int jj = 0; jj < (1 << nInt); jj++)
                             {
-                                loC0[jj]=CoinMax(loC0[jj],newLo);
-                                loC1[jj]=CoinMax(loC1[jj],newLo);
-                                upC0[jj]=CoinMin(upC0[jj],newUp);
-                                upC1[jj]=CoinMin(upC1[jj],newUp);
+                                loC0[jj] = CoinMax(loC0[jj], newLo);
+                                loC1[jj] = CoinMax(loC1[jj], newLo);
+                                upC0[jj] = CoinMin(upC0[jj], newUp);
+                                upC1[jj] = CoinMin(upC1[jj], newUp);
                             }
-                            for (int jj=0; jj<(1<<nInt); jj++)
+                            for(int jj = 0; jj < (1 << nInt); jj++)
                             {
-                                if (fabs(loC0[jj]-loC1[jj])>1.0e-8)
-                                    same=false;
-                                if (fabs(upC0[jj]-upC1[jj])>1.0e-8)
-                                    same=false;
-                                if (loC0[jj]<loC1[jj]-1.0e-12||
-                                        upC0[jj]>upC1[jj]+1.0e-12)
+                                if(fabs(loC0[jj] - loC1[jj]) > 1.0e-8)
+                                    same = false;
+                                if(fabs(upC0[jj] - upC1[jj]) > 1.0e-8)
+                                    same = false;
+                                if(loC0[jj] < loC1[jj] - 1.0e-12 ||
+                                        upC0[jj] > upC1[jj] + 1.0e-12)
                                 {
-                                    tighter0=false;
-                                    redundant=false;
+                                    tighter0 = false;
+                                    redundant = false;
                                 }
-                                if (loC1[jj]<loC0[jj]-1.0e-12||
-                                        upC1[jj]>upC0[jj]+1.0e-12)
+                                if(loC1[jj] < loC0[jj] - 1.0e-12 ||
+                                        upC1[jj] > upC0[jj] + 1.0e-12)
                                 {
-                                    tighter1=false;
-                                    redundant=false;
+                                    tighter1 = false;
+                                    redundant = false;
                                 }
-                                if (fabs(newLo-loC0[jj])>1.0e-12)
-                                    redundant=false;
-                                if (fabs(newLo-loC1[jj])>1.0e-12)
-                                    redundant=false;
-                                if (fabs(newUp-upC0[jj])>1.0e-12)
-                                    redundant=false;
-                                if (fabs(newUp-upC1[jj])>1.0e-12)
-                                    redundant=false;
+                                if(fabs(newLo - loC0[jj]) > 1.0e-12)
+                                    redundant = false;
+                                if(fabs(newLo - loC1[jj]) > 1.0e-12)
+                                    redundant = false;
+                                if(fabs(newUp - upC0[jj]) > 1.0e-12)
+                                    redundant = false;
+                                if(fabs(newUp - upC1[jj]) > 1.0e-12)
+                                    redundant = false;
                             }
-                            if (same||redundant||!feasible||fixed[0]||fixed[1]||
-                                    tighter0||tighter1)
+                            if(same || redundant || !feasible || fixed[0] || fixed[1] ||
+                                    tighter0 || tighter1)
                             {
 #ifdef CGL_INVESTIGATE
                                 /* start debug print */
                                 {
-                                    printf("Base %d (orig %d) ",i,originalRows[i]);
-                                    for (int j=0; j<n; j++)
+                                    printf("Base %d (orig %d) ", i, originalRows[i]);
+                                    for(int j = 0; j < n; j++)
                                     {
                                         double value = element0[j];
-                                        if (j)
+                                        if(j)
                                         {
-                                            if(value>0.0)
+                                            if(value > 0.0)
                                                 printf(" +");
                                             else
                                                 printf(" ");
                                         }
-                                        int iColumn=column0[j];
-                                        if ((columnFlag[iColumn]&2)==0)
-                                            printf("%g*X%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
-                                        else if ((columnFlag[iColumn]&(2+4))==2)
-                                            printf("%g*B%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                        int iColumn = column0[j];
+                                        if((columnFlag[iColumn] & 2) == 0)
+                                            printf("%g*X%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
+                                        else if((columnFlag[iColumn] & (2 + 4)) == 2)
+                                            printf("%g*B%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                         else
-                                            printf("%g*I%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                            printf("%g*I%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                     }
-                                    if ((rowFlag[i]&1)!=0)
+                                    if((rowFlag[i] & 1) != 0)
                                         printf(" == ");
                                     else
                                         printf(" <= ");
-                                    printf("%g\n",effectiveRhs[i]);
-                                    printf("Comp %d (orig %d) ",k,originalRows[k]);
-                                    for (int j=0; j<n1; j++)
+                                    printf("%g\n", effectiveRhs[i]);
+                                    printf("Comp %d (orig %d) ", k, originalRows[k]);
+                                    for(int j = 0; j < n1; j++)
                                     {
                                         double value = element1[j];
-                                        if (j)
+                                        if(j)
                                         {
-                                            if(value>0.0)
+                                            if(value > 0.0)
                                                 printf(" +");
                                             else
                                                 printf(" ");
                                         }
-                                        int iColumn=column1[j];
-                                        if ((columnFlag[iColumn]&2)==0)
-                                            printf("%g*X%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
-                                        else if ((columnFlag[iColumn]&(2+4))==2)
-                                            printf("%g*B%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                        int iColumn = column1[j];
+                                        if((columnFlag[iColumn] & 2) == 0)
+                                            printf("%g*X%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
+                                        else if((columnFlag[iColumn] & (2 + 4)) == 2)
+                                            printf("%g*B%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                         else
-                                            printf("%g*I%d(%d) (<=%g)",value,iColumn,originalColumns[iColumn],newBound[iColumn]);
+                                            printf("%g*I%d(%d) (<=%g)", value, iColumn, originalColumns[iColumn], newBound[iColumn]);
                                     }
-                                    if ((rowFlag[k]&1)!=0)
+                                    if((rowFlag[k] & 1) != 0)
                                         printf(" == ");
                                     else
                                         printf(" <= ");
-                                    printf("%g\n",effectiveRhs[k]);
+                                    printf("%g\n", effectiveRhs[k]);
                                 }
                                 /* end debug print */
 #endif
@@ -2265,53 +2265,53 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                        feasible ? 'Y' : 'N',
                                        tighter0 ? 'Y' : 'N',
                                        tighter1 ? 'Y' : 'N',
-                                       fixed[0],fixed[1]);
+                                       fixed[0], fixed[1]);
 #endif
                                 //if (nInt>1)
                                 //continue;
-                                if (!feasible)
+                                if(!feasible)
                                 {
 #ifdef CGL_INVESTIGATE
                                     printf("QQ infeasible\n");
 #endif
-                                    infeasible=true;
+                                    infeasible = true;
                                 }
-                                else if (fixed[0]||fixed[1])
+                                else if(fixed[0] || fixed[1])
                                 {
 #ifdef CGL_INVESTIGATE
                                     printf("QQ fixed\n");
 #endif
-                                    for (int k=0; k<2; k++)
+                                    for(int k = 0; k < 2; k++)
                                     {
-                                        if (fixed[k])
+                                        if(fixed[k])
                                         {
-                                            int iColumn=col[k];
-                                            int kColumn=originalColumns[iColumn];
+                                            int iColumn = col[k];
+                                            int kColumn = originalColumns[iColumn];
 #ifdef CGL_INVESTIGATE
-                                            printf("true bounds %g %g\n",columnLower[kColumn],
+                                            printf("true bounds %g %g\n", columnLower[kColumn],
                                                    columnUpper[kColumn]);
 #endif
-                                            double lo,up;
-                                            if (fixed[k]>0)
+                                            double lo, up;
+                                            if(fixed[k] > 0)
                                             {
-                                                lo=1.0;
-                                                up=1.0;
+                                                lo = 1.0;
+                                                up = 1.0;
                                             }
                                             else
                                             {
-                                                lo=0.0;
-                                                up=0.0;
+                                                lo = 0.0;
+                                                up = 0.0;
                                             }
-                                            if ((columnFlag[iColumn]&1)==0)
+                                            if((columnFlag[iColumn] & 1) == 0)
                                             {
                                                 columnFlag[iColumn] |= 16;
                                                 trueLower[iColumn] += lo;
                                                 newBound[iColumn] = 0.0;
-                                                for (int jj=columnStart[iColumn]; jj<columnStart[iColumn+1];
+                                                for(int jj = columnStart[iColumn]; jj < columnStart[iColumn + 1];
                                                         jj++)
                                                 {
-                                                    int iRow=row[jj];
-                                                    effectiveRhs[iRow] -= lo*element[jj];
+                                                    int iRow = row[jj];
+                                                    effectiveRhs[iRow] -= lo * element[jj];
                                                 }
                                             }
                                             else
@@ -2321,192 +2321,192 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                         }
                                     }
                                 }
-                                else if (!same&&(tighter0||tighter1))
+                                else if(!same && (tighter0 || tighter1))
                                 {
-                                    assert (!tighter0||!tighter1);
-                                    if (tighter0)
+                                    assert(!tighter0 || !tighter1);
+                                    if(tighter0)
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf("QQ discard oneT k\n");
 #endif
-                                        duplicate_[k]=-2;
+                                        duplicate_[k] = -2;
                                     }
                                     else
                                     {
 #ifdef CGL_INVESTIGATE
                                         printf("QQ discard oneT i\n");
 #endif
-                                        duplicate_[i]=-2;
+                                        duplicate_[i] = -2;
                                     }
                                 }
-                                else if (redundant)
+                                else if(redundant)
                                 {
 #ifdef CGL_INVESTIGATE
                                     printf("QQ discard both\n");
 #endif
-                                    duplicate_[i]=-2;
-                                    duplicate_[k]=-2;
+                                    duplicate_[i] = -2;
+                                    duplicate_[k] = -2;
                                 }
                                 else
                                 {
-                                    assert (same);
-                                    if (fabs(effectiveRhs[i]-effectiveRhs[k])<1.0e-7&&
-                                            el0[2]==el1[2]&&
-                                            el0[0]==el1[0])
+                                    assert(same);
+                                    if(fabs(effectiveRhs[i] - effectiveRhs[k]) < 1.0e-7 &&
+                                            el0[2] == el1[2] &&
+                                            el0[0] == el1[0])
                                     {
-                                        if (nInt==1||el0[1]==el1[1])
+                                        if(nInt == 1 || el0[1] == el1[1])
                                         {
 #ifdef CGL_INVESTIGATE
                                             printf("QQ discard identical k\n");
 #endif
-                                            duplicate_[k]=-2;
+                                            duplicate_[k] = -2;
                                         }
                                     }
-                                    if (duplicate_[k]!=-2)
+                                    if(duplicate_[k] != -2)
                                     {
-                                        if (nInt==1)
+                                        if(nInt == 1)
                                         {
                                             // one may be stronger
-                                            if (el0[2]>0.0&&el1[2]>0.0&&
-                                                    el0[0]>0.0&&el1[0]>0.0&&
-                                                    (rowFlag[k]&1)==0&&
-                                                    (rowFlag[i]&1)==0)
+                                            if(el0[2] > 0.0 && el1[2] > 0.0 &&
+                                                    el0[0] > 0.0 && el1[0] > 0.0 &&
+                                                    (rowFlag[k] & 1) == 0 &&
+                                                    (rowFlag[i] & 1) == 0)
                                             {
                                                 // bounds same at 0 and 1
-                                                double up0 = (effectiveRhs[i]-el0[0])/el0[2];
-                                                double up1 = (effectiveRhs[k]-el1[0])/el1[2];
-                                                if (up0<up1)
+                                                double up0 = (effectiveRhs[i] - el0[0]) / el0[2];
+                                                double up1 = (effectiveRhs[k] - el1[0]) / el1[2];
+                                                if(up0 < up1)
                                                 {
 #ifdef CGL_INVESTIGATE
                                                     printf("QQ discard oneS k\n");
 #endif
-                                                    duplicate_[k]=-2;
+                                                    duplicate_[k] = -2;
                                                 }
                                                 else
                                                 {
 #ifdef CGL_INVESTIGATE
                                                     printf("QQ discard oneS i\n");
 #endif
-                                                    duplicate_[i]=-2;
+                                                    duplicate_[i] = -2;
                                                 }
                                             }
                                             else
                                             {
-                                                if ((rowFlag[k]&1)==0&&(rowFlag[i]&1)==0)
+                                                if((rowFlag[k] & 1) == 0 && (rowFlag[i] & 1) == 0)
                                                 {
-                                                    int which=0;
-                                                    for (int i0=0; i<=10; i++)
+                                                    int which = 0;
+                                                    for(int i0 = 0; i <= 10; i++)
                                                     {
-                                                        double value0=0.05*i0;
-                                                        double rhs0 =effectiveRhs[i]-el0[0]*value0;
-                                                        double lo0=0.0;
-                                                        double up0=1.0e30;
-                                                        double bound0=rhs0/el0[2];
-                                                        if (el0[2]>0.0)
-                                                            up0=bound0;
+                                                        double value0 = 0.05 * i0;
+                                                        double rhs0 = effectiveRhs[i] - el0[0] * value0;
+                                                        double lo0 = 0.0;
+                                                        double up0 = 1.0e30;
+                                                        double bound0 = rhs0 / el0[2];
+                                                        if(el0[2] > 0.0)
+                                                            up0 = bound0;
                                                         else
-                                                            lo0=CoinMax(0.0,bound0);
-                                                        double rhs1 =effectiveRhs[k]-el1[0]*value0;
-                                                        double lo1=0.0;
-                                                        double up1=1.0e30;
-                                                        double bound1=rhs1/el1[2];
-                                                        if (el1[2]>0.0)
-                                                            up1=bound1;
+                                                            lo0 = CoinMax(0.0, bound0);
+                                                        double rhs1 = effectiveRhs[k] - el1[0] * value0;
+                                                        double lo1 = 0.0;
+                                                        double up1 = 1.0e30;
+                                                        double bound1 = rhs1 / el1[2];
+                                                        if(el1[2] > 0.0)
+                                                            up1 = bound1;
                                                         else
-                                                            lo1=CoinMax(0.0,bound1);
-                                                        if (fabs(lo0-lo1)>1.0e-8||
-                                                                fabs(up0-up1)>1.0e-8*(1.0+fabs(up1)))
+                                                            lo1 = CoinMax(0.0, bound1);
+                                                        if(fabs(lo0 - lo1) > 1.0e-8 ||
+                                                                fabs(up0 - up1) > 1.0e-8 * (1.0 + fabs(up1)))
                                                         {
-                                                            if (lo0>lo1+1.0e-8)
+                                                            if(lo0 > lo1 + 1.0e-8)
                                                             {
-                                                                if (up0<up1-1.0e-8)
+                                                                if(up0 < up1 - 1.0e-8)
                                                                 {
                                                                     // 0 tighter
-                                                                    if (which==1)
+                                                                    if(which == 1)
                                                                     {
-                                                                        which=-2;
+                                                                        which = -2;
                                                                         break;
                                                                     }
                                                                     else
                                                                     {
-                                                                        which=-1;
+                                                                        which = -1;
                                                                     }
                                                                 }
-                                                                else if (up0>up1+1.0e-8)
+                                                                else if(up0 > up1 + 1.0e-8)
                                                                 {
-                                                                    which=-2;
+                                                                    which = -2;
                                                                     break;
                                                                 }
                                                             }
-                                                            else if (lo0<lo1-1.0e-8)
+                                                            else if(lo0 < lo1 - 1.0e-8)
                                                             {
-                                                                if (up1<up0-1.0e-8)
+                                                                if(up1 < up0 - 1.0e-8)
                                                                 {
                                                                     // 1 tighter
-                                                                    if (which==-1)
+                                                                    if(which == -1)
                                                                     {
-                                                                        which=-2;
+                                                                        which = -2;
                                                                         break;
                                                                     }
                                                                     else
                                                                     {
-                                                                        which=1;
+                                                                        which = 1;
                                                                     }
                                                                 }
-                                                                else if (up1>up0+1.0e-8)
+                                                                else if(up1 > up0 + 1.0e-8)
                                                                 {
-                                                                    which=-2;
+                                                                    which = -2;
                                                                     break;
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (up1<up0-1.0e-8)
+                                                                if(up1 < up0 - 1.0e-8)
                                                                 {
                                                                     // 1 tighter
-                                                                    if (which==-1)
+                                                                    if(which == -1)
                                                                     {
-                                                                        which=-2;
+                                                                        which = -2;
                                                                         break;
                                                                     }
                                                                     else
                                                                     {
-                                                                        which=1;
+                                                                        which = 1;
                                                                     }
                                                                 }
-                                                                else if (up1>up0+1.0e-8)
+                                                                else if(up1 > up0 + 1.0e-8)
                                                                 {
                                                                     // 0 tighter
-                                                                    if (which==1)
+                                                                    if(which == 1)
                                                                     {
-                                                                        which=-2;
+                                                                        which = -2;
                                                                         break;
                                                                     }
                                                                     else
                                                                     {
-                                                                        which=-1;
+                                                                        which = -1;
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                     }
-                                                    if (which==0)
+                                                    if(which == 0)
                                                     {
-                                                        duplicate_[k]=-2;
+                                                        duplicate_[k] = -2;
 #ifdef CGL_INVESTIGATE
                                                         printf("QQ discard one same same k\n");
 #endif
                                                     }
-                                                    else if (which==-1)
+                                                    else if(which == -1)
                                                     {
-                                                        duplicate_[k]=-2;
+                                                        duplicate_[k] = -2;
 #ifdef CGL_INVESTIGATE
                                                         printf("QQ discard one (i tighter) k\n");
 #endif
                                                     }
-                                                    else if (which==1)
+                                                    else if(which == 1)
                                                     {
-                                                        duplicate_[i]=-2;
+                                                        duplicate_[i] = -2;
 #ifdef CGL_INVESTIGATE
                                                         printf("QQ discard one (k tighter) i\n");
 #endif
@@ -2524,129 +2524,129 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                                         }
                                         else
                                         {
-                                            if ((rowFlag[k]&1)==0&&(rowFlag[i]&1)==0)
+                                            if((rowFlag[k] & 1) == 0 && (rowFlag[i] & 1) == 0)
                                             {
-                                                int which=0;
-                                                for (int i0=0; i0<=10; i0++)
+                                                int which = 0;
+                                                for(int i0 = 0; i0 <= 10; i0++)
                                                 {
-                                                    double value0=0.05*i0;
-                                                    for (int i1=0; i1<=10; i1++)
+                                                    double value0 = 0.05 * i0;
+                                                    for(int i1 = 0; i1 <= 10; i1++)
                                                     {
-                                                        double value1=0.05*i1;
-                                                        double rhs0 =effectiveRhs[i]-el0[0]*value0
-                                                                     -el0[1]*value1;
-                                                        double lo0=0.0;
-                                                        double up0=1.0e30;
-                                                        double bound0=rhs0/el0[2];
-                                                        if (el0[2]>0.0)
-                                                            up0=bound0;
+                                                        double value1 = 0.05 * i1;
+                                                        double rhs0 = effectiveRhs[i] - el0[0] * value0
+                                                                      - el0[1] * value1;
+                                                        double lo0 = 0.0;
+                                                        double up0 = 1.0e30;
+                                                        double bound0 = rhs0 / el0[2];
+                                                        if(el0[2] > 0.0)
+                                                            up0 = bound0;
                                                         else
-                                                            lo0=CoinMax(0.0,bound0);
-                                                        double rhs1 =effectiveRhs[k]-el1[0]*value0
-                                                                     -el1[1]*value1;
-                                                        double lo1=0.0;
-                                                        double up1=1.0e30;
-                                                        double bound1=rhs1/el1[2];
-                                                        if (el1[2]>0.0)
-                                                            up1=bound1;
+                                                            lo0 = CoinMax(0.0, bound0);
+                                                        double rhs1 = effectiveRhs[k] - el1[0] * value0
+                                                                      - el1[1] * value1;
+                                                        double lo1 = 0.0;
+                                                        double up1 = 1.0e30;
+                                                        double bound1 = rhs1 / el1[2];
+                                                        if(el1[2] > 0.0)
+                                                            up1 = bound1;
                                                         else
-                                                            lo1=CoinMax(0.0,bound1);
-                                                        if (fabs(lo0-lo1)>1.0e-8||
-                                                                fabs(up0-up1)>1.0e-8*(1.0+fabs(up1)))
+                                                            lo1 = CoinMax(0.0, bound1);
+                                                        if(fabs(lo0 - lo1) > 1.0e-8 ||
+                                                                fabs(up0 - up1) > 1.0e-8 * (1.0 + fabs(up1)))
                                                         {
-                                                            if (lo0>lo1+1.0e-8)
+                                                            if(lo0 > lo1 + 1.0e-8)
                                                             {
-                                                                if (up0<up1-1.0e-8)
+                                                                if(up0 < up1 - 1.0e-8)
                                                                 {
                                                                     // 0 tighter
-                                                                    if (which==1)
+                                                                    if(which == 1)
                                                                     {
-                                                                        which=-2;
+                                                                        which = -2;
                                                                         break;
                                                                     }
                                                                     else
                                                                     {
-                                                                        which=-1;
+                                                                        which = -1;
                                                                     }
                                                                 }
-                                                                else if (up0>up1+1.0e-8)
+                                                                else if(up0 > up1 + 1.0e-8)
                                                                 {
-                                                                    which=-2;
+                                                                    which = -2;
                                                                     break;
                                                                 }
                                                             }
-                                                            else if (lo0<lo1-1.0e-8)
+                                                            else if(lo0 < lo1 - 1.0e-8)
                                                             {
-                                                                if (up1<up0-1.0e-8)
+                                                                if(up1 < up0 - 1.0e-8)
                                                                 {
                                                                     // 1 tighter
-                                                                    if (which==-1)
+                                                                    if(which == -1)
                                                                     {
-                                                                        which=-2;
+                                                                        which = -2;
                                                                         break;
                                                                     }
                                                                     else
                                                                     {
-                                                                        which=1;
+                                                                        which = 1;
                                                                     }
                                                                 }
-                                                                else if (up1>up0+1.0e-8)
+                                                                else if(up1 > up0 + 1.0e-8)
                                                                 {
-                                                                    which=-2;
+                                                                    which = -2;
                                                                     break;
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (up1<up0-1.0e-8)
+                                                                if(up1 < up0 - 1.0e-8)
                                                                 {
                                                                     // 1 tighter
-                                                                    if (which==-1)
+                                                                    if(which == -1)
                                                                     {
-                                                                        which=-2;
+                                                                        which = -2;
                                                                         break;
                                                                     }
                                                                     else
                                                                     {
-                                                                        which=1;
+                                                                        which = 1;
                                                                     }
                                                                 }
-                                                                else if (up1>up0+1.0e-8)
+                                                                else if(up1 > up0 + 1.0e-8)
                                                                 {
                                                                     // 0 tighter
-                                                                    if (which==1)
+                                                                    if(which == 1)
                                                                     {
-                                                                        which=-2;
+                                                                        which = -2;
                                                                         break;
                                                                     }
                                                                     else
                                                                     {
-                                                                        which=-1;
+                                                                        which = -1;
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                     }
-                                                    if (which==-2)
+                                                    if(which == -2)
                                                         break;
                                                 }
-                                                if (which==0)
+                                                if(which == 0)
                                                 {
-                                                    duplicate_[k]=-2;
+                                                    duplicate_[k] = -2;
 #ifdef CGL_INVESTIGATE
                                                     printf("QQ discard one same same k\n");
 #endif
                                                 }
-                                                else if (which==-1)
+                                                else if(which == -1)
                                                 {
-                                                    duplicate_[k]=-2;
+                                                    duplicate_[k] = -2;
 #ifdef CGL_INVESTIGATE
                                                     printf("QQ discard one (i tighter) k\n");
 #endif
                                                 }
-                                                else if (which==1)
+                                                else if(which == 1)
                                                 {
-                                                    duplicate_[i]=-2;
+                                                    duplicate_[i] = -2;
 #ifdef CGL_INVESTIGATE
                                                     printf("QQ discard one (k tighter) i\n");
 #endif
@@ -2670,37 +2670,37 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
                     }
                 }
             }
-            for (int j=0; j<n; j++)
-                mark[column0[j]] =0;
+            for(int j = 0; j < n; j++)
+                mark[column0[j]] = 0;
         }
     }
-    if (0)
+    if(0)
     {
         // Column copy
-        const double * element = matrix_.getElements();
-        const int * row = matrix_.getIndices();
-        const CoinBigIndex * columnStart = matrix_.getVectorStarts();
+        const double* element = matrix_.getElements();
+        const int* row = matrix_.getIndices();
+        const CoinBigIndex* columnStart = matrix_.getVectorStarts();
         //const int * columnLength = matrix_.getVectorLengths();
         // Row copy
-        const double * elementByRow = matrixByRow_.getElements();
-        const int * column = matrixByRow_.getIndices();
-        const CoinBigIndex * rowStart = matrixByRow_.getVectorStarts();
+        const double* elementByRow = matrixByRow_.getElements();
+        const int* column = matrixByRow_.getIndices();
+        const CoinBigIndex* rowStart = matrixByRow_.getVectorStarts();
         //const int * rowLength = matrixByRow_.getVectorLengths();
-        for (int i=1231; i<1235; i++)
+        for(int i = 1231; i < 1235; i++)
         {
-            for (int jj=columnStart[i]; jj<columnStart[i+1];
+            for(int jj = columnStart[i]; jj < columnStart[i + 1];
                     jj++)
             {
-                int iRow=row[jj];
-                printf("row %d el %g\n",iRow,element[jj]);
+                int iRow = row[jj];
+                printf("row %d el %g\n", iRow, element[jj]);
             }
         }
-        for (int i=283; i<284; i++)
+        for(int i = 283; i < 284; i++)
         {
-            for (int jj=rowStart[i]; jj<rowStart[i+1];
+            for(int jj = rowStart[i]; jj < rowStart[i + 1];
                     jj++)
             {
-                printf("col %d el %g\n",column[jj],elementByRow[jj]);
+                printf("col %d el %g\n", column[jj], elementByRow[jj]);
             }
         }
         printf("OK?\n");
@@ -2709,54 +2709,54 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
     CoinPackedVector lbs;
     CoinPackedVector ubs;
     //OsiSolverInterface * xx = si.clone();
-    for (int i=0; i<nCol2; i++)
+    for(int i = 0; i < nCol2; i++)
     {
-        if ((columnFlag[i]&16)!=0)
+        if((columnFlag[i] & 16) != 0)
         {
-            assert ((columnFlag[i]&1)==0);
-            int kColumn=originalColumns[i];
-            double lower=trueLower[i];
-            double upper=lower+newBound[i];
-            if (fabs(lower-floor(lower+0.5))<1.0e-8)
-                lower=floor(lower+0.5);
-            if (fabs(upper-floor(upper+0.5))<1.0e-8)
-                upper=floor(upper+0.5);
-            if ((columnFlag[i]&2)==0)
+            assert((columnFlag[i] & 1) == 0);
+            int kColumn = originalColumns[i];
+            double lower = trueLower[i];
+            double upper = lower + newBound[i];
+            if(fabs(lower - floor(lower + 0.5)) < 1.0e-8)
+                lower = floor(lower + 0.5);
+            if(fabs(upper - floor(upper + 0.5)) < 1.0e-8)
+                upper = floor(upper + 0.5);
+            if((columnFlag[i] & 2) == 0)
             {
                 // continuous
-                if (lower>columnLower[kColumn]+1.0e-7)
+                if(lower > columnLower[kColumn] + 1.0e-7)
                 {
                     nFixed++;
-                    lbs.insert(kColumn,lower);
+                    lbs.insert(kColumn, lower);
                     //xx->setColLower(kColumn,lower);
                 }
-                if (upper<columnUpper[kColumn]-1.0e-7)
+                if(upper < columnUpper[kColumn] - 1.0e-7)
                 {
                     nFixed++;
-                    ubs.insert(kColumn,upper);
+                    ubs.insert(kColumn, upper);
                     //xx->setColUpper(kColumn,upper);
                 }
             }
             else
             {
                 // integer
-                if (lower>columnLower[kColumn]+1.0e-7)
+                if(lower > columnLower[kColumn] + 1.0e-7)
                 {
                     nFixed++;
                     lower = ceil(lower);
                     //xx->setColLower(kColumn,lower);
-                    lbs.insert(kColumn,lower);
+                    lbs.insert(kColumn, lower);
                 }
-                if (upper<columnUpper[kColumn]-1.0e-7)
+                if(upper < columnUpper[kColumn] - 1.0e-7)
                 {
-                    upper=floor(upper);
+                    upper = floor(upper);
                     nFixed++;
                     //xx->setColUpper(kColumn,upper);
-                    ubs.insert(kColumn,upper);
+                    ubs.insert(kColumn, upper);
                 }
             }
-            if (lower>upper+1.0e-7)
-                infeasible=true;
+            if(lower > upper + 1.0e-7)
+                infeasible = true;
             //printf("Bounds for %d are %g and %g, were %g %g\n",
             //     kColumn,
             //     xx->getColLower()[kColumn],
@@ -2774,12 +2774,12 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
     //}
     //delete xx;
     // Move duplicate flags
-    int * temp = reinterpret_cast<int *>(effectiveRhs);
-    for (int i=0; i<numberRows; i++)
-        temp[i]=-1;
-    for (int i=0; i<nRow2; i++)
-        temp[originalRows[i]]=duplicate_[i];
-    memcpy(duplicate_,temp,numberRows*sizeof(int));
+    int* temp = reinterpret_cast<int*>(effectiveRhs);
+    for(int i = 0; i < numberRows; i++)
+        temp[i] = -1;
+    for(int i = 0; i < nRow2; i++)
+        temp[originalRows[i]] = duplicate_[i];
+    memcpy(duplicate_, temp, numberRows * sizeof(int));
     delete [] effectiveRhs;
     delete [] newBound;
     delete [] trueLower;
@@ -2787,10 +2787,10 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
     delete [] columnFlag;
     delete [] originalColumns;
     delete [] originalRows;
-    if (nFixed)
+    if(nFixed)
     {
 #ifdef CGL_INVESTIGATE
-        printf("QQ - %d bounds changed\n",nFixed);
+        printf("QQ - %d bounds changed\n", nFixed);
 #endif
         OsiColCut cc;
         cc.setLbs(lbs);
@@ -2798,7 +2798,7 @@ void CglDuplicateRow::generateCuts4(const OsiSolverInterface & si, OsiCuts & cs,
         cc.setEffectiveness(100.0);
         cs.insert(cc);
     }
-    if (infeasible)
+    if(infeasible)
     {
         // generate infeasible cut and return
         printf("QQ**** infeasible cut\n");
@@ -2817,19 +2817,19 @@ public:
     /// Row number
     int row_;
     /// Start
-    const int * start_;
+    const int* start_;
     /// End
-    const int * end_;
+    const int* end_;
 
 public:
 
     // Default Constructor
-    inline CglOneRow () : row_(-1),start_(0), end_(0) {}
+    inline CglOneRow() : row_(-1), start_(0), end_(0) {}
 
     // Useful constructor
-    inline CglOneRow (int iRow,const int * start, const int * end) : row_(iRow),start_(start), end_(end) {}
+    inline CglOneRow(int iRow, const int* start, const int* end) : row_(iRow), start_(start), end_(end) {}
     // Destructor
-    inline ~CglOneRow () {}
+    inline ~CglOneRow() {}
 
 };
 class CglCompare
@@ -2839,17 +2839,17 @@ public:
     inline bool operator()(const CglOneRow & row1,
                            const CglOneRow & row2) const
     {
-        const int * where1 = row1.start_;
-        const int * where2 = row2.start_;
-        while (where1 != row1.end_ && where2 != row2.end_)
+        const int* where1 = row1.start_;
+        const int* where2 = row2.start_;
+        while(where1 != row1.end_ && where2 != row2.end_)
         {
             int iColumn1 = *where1;
             int iColumn2 = *where2;
-            if (iColumn1<iColumn2)
+            if(iColumn1 < iColumn2)
             {
                 return true;
             }
-            else if (iColumn1>iColumn2)
+            else if(iColumn1 > iColumn2)
             {
                 return false;
             }
@@ -2859,90 +2859,90 @@ public:
                 where2++;
             }
         }
-        if (where1==row1.end_)
+        if(where1 == row1.end_)
             return false;
         else
             return true;
     }
 };
-static int * lexSort(int numberCliques,
-                     int * cliqueStart, int * entry)
+static int* lexSort(int numberCliques,
+                    int* cliqueStart, int* entry)
 {
-    CglOneRow * rows = new CglOneRow [numberCliques];
-    for (int i=0; i<numberCliques; i++)
+    CglOneRow* rows = new CglOneRow [numberCliques];
+    for(int i = 0; i < numberCliques; i++)
     {
-        rows[i]=CglOneRow(i,entry+cliqueStart[i],entry+cliqueStart[i+1]);
+        rows[i] = CglOneRow(i, entry + cliqueStart[i], entry + cliqueStart[i + 1]);
     }
-    std::sort(rows,rows+numberCliques,CglCompare());
-    int * sorted = new int [numberCliques];
-    for (int i=0; i<numberCliques; i++)
+    std::sort(rows, rows + numberCliques, CglCompare());
+    int* sorted = new int [numberCliques];
+    for(int i = 0; i < numberCliques; i++)
     {
-        sorted[i]=rows[i].row_;
+        sorted[i] = rows[i].row_;
     }
     delete [] rows;
     return sorted;
 }
-static int outDupsEtc2(int numberIntegers, int numberCliques, int * statusClique,
-                       int * cliqueStart, char * cliqueType, int * entry,
+static int outDupsEtc2(int numberIntegers, int numberCliques, int* statusClique,
+                       int* cliqueStart, char* cliqueType, int* entry,
                        int printit)
 {
-    int * sorted = lexSort(numberCliques,cliqueStart,entry);
+    int* sorted = lexSort(numberCliques, cliqueStart, entry);
     delete [] sorted;
     return 0;
 }
 #endif
-static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
-                      int * cliqueStart, char * cliqueType, int * entry,
-                      int * fixed,
+static int outDupsEtc(int numberIntegers, int numberCliques, int* statusClique,
+                      int* cliqueStart, char* cliqueType, int* entry,
+                      int* fixed,
                       int printit)
 #if 0
 {
     //outDupsEtc2(numberIntegers,numberCliques,statusClique,
     //      cliqueStart,cliqueType,entry,printit);
-    int * whichP = new int [numberIntegers];
+    int* whichP = new int [numberIntegers];
     int iClique;
-    assert (sizeof(int)==4);
-    assert (sizeof(int)==4);
+    assert(sizeof(int) == 4);
+    assert(sizeof(int) == 4);
     // sort
-    for (iClique=0; iClique<numberCliques; iClique++)
+    for(iClique = 0; iClique < numberCliques; iClique++)
     {
         int j = cliqueStart[iClique];
-        int n = cliqueStart[iClique+1]-j;
-        for (int i=0; i<n; i++)
-            whichP[i]=entry[i+j];
-        CoinSort_2(whichP,whichP+n,entry+j);
+        int n = cliqueStart[iClique + 1] - j;
+        for(int i = 0; i < n; i++)
+            whichP[i] = entry[i + j];
+        CoinSort_2(whichP, whichP + n, entry + j);
     }
     // lexicographic sort
-    int * which = new int [numberCliques];
-    int * position = new int [numberCliques];
-    int * sort = new int [numberCliques];
-    for (iClique=0; iClique<numberCliques; iClique++)
+    int* which = new int [numberCliques];
+    int* position = new int [numberCliques];
+    int* sort = new int [numberCliques];
+    for(iClique = 0; iClique < numberCliques; iClique++)
     {
-        which[iClique]=iClique;
-        sort[iClique]=entry[cliqueStart[iClique]];
-        statusClique[iClique]=sort[iClique];
-        position[iClique]=0;
+        which[iClique] = iClique;
+        sort[iClique] = entry[cliqueStart[iClique]];
+        statusClique[iClique] = sort[iClique];
+        position[iClique] = 0;
     }
-    CoinSort_2(sort,sort+numberCliques,which);
-    int lastDone=-1;
-    int nDup=0;
-    int nSave=0;
-    while (lastDone<numberCliques-1)
+    CoinSort_2(sort, sort + numberCliques, which);
+    int lastDone = -1;
+    int nDup = 0;
+    int nSave = 0;
+    while(lastDone < numberCliques - 1)
     {
-        int jClique=lastDone+1;
+        int jClique = lastDone + 1;
         int jFirst = jClique;
         int iFirst = which[jFirst];
         int iValue = statusClique[iFirst];
         int iPos = position[iFirst];
         jClique++;
-        for (; jClique<numberCliques; jClique++)
+        for(; jClique < numberCliques; jClique++)
         {
             int kClique = which[jClique];
             int jValue = statusClique[kClique];
-            if (jValue>iValue||position[kClique]<iPos)
+            if(jValue > iValue || position[kClique] < iPos)
                 break;
         }
-        if (jClique==jFirst+1)
+        if(jClique == jFirst + 1)
         {
             // done that bit
             lastDone++;
@@ -2950,18 +2950,18 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
         else
         {
             // use next bit to sort and then repeat
-            int jLast=jClique;
-            for (jClique=jFirst; jClique<jLast; jClique++)
+            int jLast = jClique;
+            for(jClique = jFirst; jClique < jLast; jClique++)
             {
                 int kClique = which[jClique];
                 int iValue = statusClique[kClique];
                 // put at end if finished
-                if (iValue<numberIntegers)
+                if(iValue < numberIntegers)
                 {
-                    int kPos=position[kClique]+1;
-                    position[kClique]=kPos;
+                    int kPos = position[kClique] + 1;
+                    position[kClique] = kPos;
                     kPos += cliqueStart[kClique];
-                    if (kPos==cliqueStart[kClique+1])
+                    if(kPos == cliqueStart[kClique + 1])
                     {
                         iValue = numberIntegers;
                     }
@@ -2969,80 +2969,80 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
                     {
                         iValue = entry[kPos];
                     }
-                    statusClique[kClique]=iValue;
+                    statusClique[kClique] = iValue;
                 }
-                sort[jClique]=iValue;
+                sort[jClique] = iValue;
             }
-            CoinSort_2(sort+jFirst,sort+jLast,which+jFirst);
+            CoinSort_2(sort + jFirst, sort + jLast, which + jFirst);
             // if duplicate mark and move on
-            int iLowest=numberCliques;
-            char type='S';
-            for (jClique=jFirst; jClique<jLast; jClique++)
+            int iLowest = numberCliques;
+            char type = 'S';
+            for(jClique = jFirst; jClique < jLast; jClique++)
             {
                 int kClique = which [jClique];
                 int iValue = statusClique[kClique];
-                if (iValue<numberIntegers)
+                if(iValue < numberIntegers)
                     break;
-                if (cliqueType[kClique]=='E')
+                if(cliqueType[kClique] == 'E')
                 {
-                    iLowest = CoinMin(iLowest,kClique);
-                    type='E';
+                    iLowest = CoinMin(iLowest, kClique);
+                    type = 'E';
                 }
-                else if (type=='S')
+                else if(type == 'S')
                 {
-                    iLowest = CoinMin(iLowest,kClique);
+                    iLowest = CoinMin(iLowest, kClique);
                 }
             }
-            if (jClique>jFirst)
+            if(jClique > jFirst)
             {
                 // mark all apart from lowest number as duplicate and move on
                 // use cliqueType
-                lastDone =jClique-1;
-                for (jClique=jFirst; jClique<=lastDone; jClique++)
+                lastDone = jClique - 1;
+                for(jClique = jFirst; jClique <= lastDone; jClique++)
                 {
                     int kClique = which [jClique];
-                    if (kClique!=iLowest)
+                    if(kClique != iLowest)
                     {
-                        statusClique[kClique]=-2;
+                        statusClique[kClique] = -2;
                         nDup++;
-                        nSave += cliqueStart[kClique+1]-cliqueStart[kClique];
+                        nSave += cliqueStart[kClique + 1] - cliqueStart[kClique];
                     }
                 }
             }
         }
     }
 #if 1
-    for (int jClique=0; jClique<numberCliques; jClique++)
+    for(int jClique = 0; jClique < numberCliques; jClique++)
     {
-        int iClique=which[jClique];
-        printf("clique %d %d ",jClique,iClique);
-        for (int j=cliqueStart[iClique]; j<cliqueStart[iClique+1]; j++)
+        int iClique = which[jClique];
+        printf("clique %d %d ", jClique, iClique);
+        for(int j = cliqueStart[iClique]; j < cliqueStart[iClique + 1]; j++)
         {
             int iColumn = entry[j];
-            printf("%d ",iColumn);
+            printf("%d ", iColumn);
         }
         printf("\n");
     }
 #endif
-    if (printit)
-        printf("%d duplicates\n",nDup);
+    if(printit)
+        printf("%d duplicates\n", nDup);
     // For column version
-    int numberElements=cliqueStart[numberCliques];
-    int * start = new int [numberIntegers];
-    int * end = new int [numberIntegers];
-    int * clique = new int [numberElements];
-    int * marked = new int [numberCliques];
-    int * count = new int [numberCliques];
-    int * fixed = new int [numberIntegers];
-    memset(count,0,numberCliques*sizeof(int));
-    memset(end,0,numberIntegers*sizeof(int));
-    memset(fixed,0,numberIntegers*sizeof(int));
-    nSave=0;
-    for (int jClique=0; jClique<numberCliques; jClique++)
+    int numberElements = cliqueStart[numberCliques];
+    int* start = new int [numberIntegers];
+    int* end = new int [numberIntegers];
+    int* clique = new int [numberElements];
+    int* marked = new int [numberCliques];
+    int* count = new int [numberCliques];
+    int* fixed = new int [numberIntegers];
+    memset(count, 0, numberCliques * sizeof(int));
+    memset(end, 0, numberIntegers * sizeof(int));
+    memset(fixed, 0, numberIntegers * sizeof(int));
+    nSave = 0;
+    for(int jClique = 0; jClique < numberCliques; jClique++)
     {
-        if (statusClique[jClique]!=-2)
+        if(statusClique[jClique] != -2)
         {
-            for (int j=cliqueStart[jClique]; j<cliqueStart[jClique+1]; j++)
+            for(int j = cliqueStart[jClique]; j < cliqueStart[jClique + 1]; j++)
             {
                 int iColumn = entry[j];
                 end[iColumn]++;
@@ -3050,75 +3050,75 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
         }
         else
         {
-            nSave += cliqueStart[jClique+1]-cliqueStart[jClique];
+            nSave += cliqueStart[jClique + 1] - cliqueStart[jClique];
         }
     }
-    numberElements=0;
-    for (int i=0; i<numberIntegers; i++)
+    numberElements = 0;
+    for(int i = 0; i < numberIntegers; i++)
     {
-        start[i]=numberElements;
-        int n=end[i];
-        end[i]=numberElements;
+        start[i] = numberElements;
+        int n = end[i];
+        end[i] = numberElements;
         numberElements += n;
     }
-    for (int jClique=0; jClique<numberCliques; jClique++)
+    for(int jClique = 0; jClique < numberCliques; jClique++)
     {
-        int iClique=which[jClique];
-        if (statusClique[iClique]!=-2)
+        int iClique = which[jClique];
+        if(statusClique[iClique] != -2)
         {
-            for (int j=cliqueStart[iClique]; j<cliqueStart[iClique+1]; j++)
+            for(int j = cliqueStart[iClique]; j < cliqueStart[iClique + 1]; j++)
             {
                 int iColumn = entry[j];
-                int put=end[iColumn];
-                end[iColumn]=put+1;
-                clique[put]=iClique;
+                int put = end[iColumn];
+                end[iColumn] = put + 1;
+                clique[put] = iClique;
             }
         }
     }
 
     // Now see if any subset
-    int nOut=0;
-    int nFixed=0;
-    for (int jClique=0; jClique<numberCliques; jClique++)
+    int nOut = 0;
+    int nFixed = 0;
+    for(int jClique = 0; jClique < numberCliques; jClique++)
     {
         int kClique = which[jClique];
-        if (statusClique[kClique]==-2)
+        if(statusClique[kClique] == -2)
             continue;
         // do first
-        int nMarked=0;
-        int iEnd=cliqueStart[kClique+1];
+        int nMarked = 0;
+        int iEnd = cliqueStart[kClique + 1];
         int iEl = cliqueStart[kClique];
-        int iColumn=entry[iEl++];
-        while (fixed[iColumn])
+        int iColumn = entry[iEl++];
+        while(fixed[iColumn])
         {
-            iColumn=-1;
-            if(iEl<iEnd)
+            iColumn = -1;
+            if(iEl < iEnd)
             {
-                iColumn=entry[iEl++];
+                iColumn = entry[iEl++];
             }
             else
             {
                 break;
             }
         }
-        if (iColumn<0)
+        if(iColumn < 0)
         {
             // now empty
-            printf("now empty clique %d !\n",kClique);
-            statusClique[kClique]=-2;
+            printf("now empty clique %d !\n", kClique);
+            statusClique[kClique] = -2;
             continue;
         }
         int i;
-        for ( i=start[iColumn]; i<end[iColumn]; i++)
+        for(i = start[iColumn]; i < end[iColumn]; i++)
         {
-            int iClique=clique[i];
+            int iClique = clique[i];
             // faster to shuffle up -2's?
-            if (statusClique[iClique]!=-2)
+            if(statusClique[iClique] != -2)
             {
-                if (iClique!=kClique)
+                if(iClique != kClique)
                 {
-                    count[iClique]=1;
-                    marked[nMarked++]=iClique;
+                    count[iClique] = 1;
+                    marked[nMarked++] = iClique;
                 }
                 else
                 {
@@ -3126,31 +3126,31 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
                 }
             }
         }
-        assert (i<end[iColumn]);
-        if (nMarked)
+        assert(i < end[iColumn]);
+        if(nMarked)
         {
-            int n=nMarked;
-            int sizeClique=1;
-            for (; iEl<iEnd; iEl++)
+            int n = nMarked;
+            int sizeClique = 1;
+            for(; iEl < iEnd; iEl++)
             {
-                int iColumn=entry[iEl];
-                for ( i=start[iColumn]; i<end[iColumn]; i++)
+                int iColumn = entry[iEl];
+                for(i = start[iColumn]; i < end[iColumn]; i++)
                 {
-                    int iClique=clique[i];
+                    int iClique = clique[i];
                     // faster to shuffle up -2's?
-                    if (statusClique[iClique]!=-2)
+                    if(statusClique[iClique] != -2)
                     {
-                        if (iClique!=kClique)
+                        if(iClique != kClique)
                         {
-                            if (count[iClique])
+                            if(count[iClique])
                             {
-                                if (count[iClique]==sizeClique)
+                                if(count[iClique] == sizeClique)
                                 {
                                     count[iClique]++;
                                 }
                                 else
                                 {
-                                    count[iClique]=0;
+                                    count[iClique] = 0;
                                     n--;
                                 }
                             }
@@ -3162,45 +3162,45 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
                     }
                 }
                 sizeClique++;
-                assert (i<end[iColumn]);
-                if (!n)
+                assert(i < end[iColumn]);
+                if(!n)
                     break;
             }
-            if (n)
+            if(n)
             {
                 // still some left
                 // But need to look at type
                 // when might be able to fix variables
-                bool subset=false;
-                if (cliqueType[kClique]=='E')
+                bool subset = false;
+                if(cliqueType[kClique] == 'E')
                 {
-                    for (i=0; i<nMarked; i++)
+                    for(i = 0; i < nMarked; i++)
                     {
-                        int iClique=marked[i];
-                        if (count[iClique]==sizeClique)
+                        int iClique = marked[i];
+                        if(count[iClique] == sizeClique)
                         {
-                            subset=true;
+                            subset = true;
                             // can fix all in iClique not in kClique
-                            int iEl=cliqueStart[kClique];
-                            int jEl=cliqueStart[iClique];
-                            int jEnd=cliqueStart[iClique+1];
-                            int iColumn=entry[iEl];
-                            for (int j=jEl; j<jEnd; j++)
+                            int iEl = cliqueStart[kClique];
+                            int jEl = cliqueStart[iClique];
+                            int jEnd = cliqueStart[iClique + 1];
+                            int iColumn = entry[iEl];
+                            for(int j = jEl; j < jEnd; j++)
                             {
-                                int jColumn=entry[j];
-                                if (jColumn==iColumn)
+                                int jColumn = entry[j];
+                                if(jColumn == iColumn)
                                 {
                                     iEl++;
-                                    if (iEl<iEnd)
-                                        iColumn=entry[iEl];
+                                    if(iEl < iEnd)
+                                        iColumn = entry[iEl];
                                     else
-                                        iColumn=numberIntegers;
+                                        iColumn = numberIntegers;
                                 }
-                                else if (!fixed[jColumn])
+                                else if(!fixed[jColumn])
                                 {
                                     // fix
                                     nFixed++;
-                                    fixed[jColumn]=1;
+                                    fixed[jColumn] = 1;
                                 }
                             }
                         }
@@ -3209,27 +3209,27 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
                 else
                 {
                     // print first for now
-                    for (i=0; i<nMarked; i++)
+                    for(i = 0; i < nMarked; i++)
                     {
-                        int iClique=marked[i];
-                        if (count[iClique]==sizeClique)
+                        int iClique = marked[i];
+                        if(count[iClique] == sizeClique)
                         {
-                            subset=true;
+                            subset = true;
 #if 0
-                            if (printit>10
-                                    printf("clique %d is subset of %d\n",kClique,iClique);
-                                    printf("Kclique %d ",kClique);
-                                    for (int j=cliqueStart[kClique]; j<cliqueStart[kClique+1]; j++)
+                            if(printit > 10
+                                    printf("clique %d is subset of %d\n", kClique, iClique);
+                                    printf("Kclique %d ", kClique);
+                                    for(int j = cliqueStart[kClique]; j < cliqueStart[kClique + 1]; j++)
                             {
                                 int kColumn = entry[j];
-                                    printf("%d ",kColumn);
+                                    printf("%d ", kColumn);
                                 }
                             printf("\n");
-                            printf("Iclique %d ",iClique);
-                            for (int j=cliqueStart[iClique]; j<cliqueStart[iClique+1]; j++)
+                            printf("Iclique %d ", iClique);
+                            for(int j = cliqueStart[iClique]; j < cliqueStart[iClique + 1]; j++)
                         {
                             int iColumn = entry[j];
-                                printf("%d ",iColumn);
+                                printf("%d ", iColumn);
                             }
                             printf("\n");
 #endif
@@ -3237,29 +3237,29 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
                         }
                     }
                 }
-                if (subset)
+                if(subset)
                 {
                     nOut++;
-                    statusClique[kClique]=-2;
+                    statusClique[kClique] = -2;
                 }
             }
-            for (i=0; i<nMarked; i++)
-                count[marked[i]]=0;
+            for(i = 0; i < nMarked; i++)
+                count[marked[i]] = 0;
         }
     }
-    if (nOut)
+    if(nOut)
     {
         if(printit)
-            printf("Can get rid of %d cliques\n",nOut);
+            printf("Can get rid of %d cliques\n", nOut);
     }
-    if (nFixed)
+    if(nFixed)
     {
         printf("Can fix to zero ");
         // numbers are subset of column variables
-        for (int i=0; i<numberIntegers; i++)
+        for(int i = 0; i < numberIntegers; i++)
         {
-            if (fixed[i])
-                printf("%d ",i);
+            if(fixed[i])
+                printf("%d ", i);
         }
         printf("\n");
         abort();
@@ -3280,50 +3280,50 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
 {
     //outDupsEtc2(numberIntegers,numberCliques,statusClique,
     //      cliqueStart,cliqueType,entry,printit);
-    int * whichP = new int [numberIntegers];
+    int* whichP = new int [numberIntegers];
     int iClique;
-    assert (sizeof(int)==4);
-    assert (sizeof(int)==4);
+    assert(sizeof(int) == 4);
+    assert(sizeof(int) == 4);
     // sort
-    for (iClique=0; iClique<numberCliques; iClique++)
+    for(iClique = 0; iClique < numberCliques; iClique++)
     {
         int j = cliqueStart[iClique];
-        int n = cliqueStart[iClique+1]-j;
-        for (int i=0; i<n; i++)
-            whichP[i]=entry[i+j];
-        CoinSort_2(whichP,whichP+n,entry+j);
+        int n = cliqueStart[iClique + 1] - j;
+        for(int i = 0; i < n; i++)
+            whichP[i] = entry[i + j];
+        CoinSort_2(whichP, whichP + n, entry + j);
     }
     // lexicographic sort
-    int * which = new int [numberCliques];
-    int * position = new int [numberCliques];
-    int * sort = new int [numberCliques];
-    for (iClique=0; iClique<numberCliques; iClique++)
+    int* which = new int [numberCliques];
+    int* position = new int [numberCliques];
+    int* sort = new int [numberCliques];
+    for(iClique = 0; iClique < numberCliques; iClique++)
     {
-        which[iClique]=iClique;
-        sort[iClique]=entry[cliqueStart[iClique]];
-        statusClique[iClique]=sort[iClique];
-        position[iClique]=0;
+        which[iClique] = iClique;
+        sort[iClique] = entry[cliqueStart[iClique]];
+        statusClique[iClique] = sort[iClique];
+        position[iClique] = 0;
     }
-    CoinSort_2(sort,sort+numberCliques,which);
-    int lastDone=-1;
-    int nDup=0;
-    int nSave=0;
-    while (lastDone<numberCliques-1)
+    CoinSort_2(sort, sort + numberCliques, which);
+    int lastDone = -1;
+    int nDup = 0;
+    int nSave = 0;
+    while(lastDone < numberCliques - 1)
     {
-        int jClique=lastDone+1;
+        int jClique = lastDone + 1;
         int jFirst = jClique;
         int iFirst = which[jFirst];
         int iValue = statusClique[iFirst];
         int iPos = position[iFirst];
         jClique++;
-        for (; jClique<numberCliques; jClique++)
+        for(; jClique < numberCliques; jClique++)
         {
             int kClique = which[jClique];
             int jValue = statusClique[kClique];
-            if (jValue>iValue||position[kClique]<iPos)
+            if(jValue > iValue || position[kClique] < iPos)
                 break;
         }
-        if (jClique==jFirst+1)
+        if(jClique == jFirst + 1)
         {
             // done that bit
             lastDone++;
@@ -3331,18 +3331,18 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
         else
         {
             // use next bit to sort and then repeat
-            int jLast=jClique;
-            for (jClique=jFirst; jClique<jLast; jClique++)
+            int jLast = jClique;
+            for(jClique = jFirst; jClique < jLast; jClique++)
             {
                 int kClique = which[jClique];
                 int iValue = statusClique[kClique];
                 // put at end if finished
-                if (iValue<numberIntegers)
+                if(iValue < numberIntegers)
                 {
-                    int kPos=position[kClique]+1;
-                    position[kClique]=kPos;
+                    int kPos = position[kClique] + 1;
+                    position[kClique] = kPos;
                     kPos += cliqueStart[kClique];
-                    if (kPos==cliqueStart[kClique+1])
+                    if(kPos == cliqueStart[kClique + 1])
                     {
                         iValue = numberIntegers;
                     }
@@ -3350,117 +3350,117 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
                     {
                         iValue = entry[kPos];
                     }
-                    statusClique[kClique]=iValue;
+                    statusClique[kClique] = iValue;
                 }
-                sort[jClique]=iValue;
+                sort[jClique] = iValue;
             }
-            CoinSort_2(sort+jFirst,sort+jLast,which+jFirst);
+            CoinSort_2(sort + jFirst, sort + jLast, which + jFirst);
             // if duplicate mark and move on
-            int iLowest=numberCliques;
-            char type='S';
-            for (jClique=jFirst; jClique<jLast; jClique++)
+            int iLowest = numberCliques;
+            char type = 'S';
+            for(jClique = jFirst; jClique < jLast; jClique++)
             {
                 int kClique = which [jClique];
                 int iValue = statusClique[kClique];
-                if (iValue<numberIntegers)
+                if(iValue < numberIntegers)
                     break;
-                if (cliqueType[kClique]=='E')
+                if(cliqueType[kClique] == 'E')
                 {
-                    iLowest = CoinMin(iLowest,kClique);
-                    type='E';
+                    iLowest = CoinMin(iLowest, kClique);
+                    type = 'E';
                 }
-                else if (type=='S')
+                else if(type == 'S')
                 {
-                    iLowest = CoinMin(iLowest,kClique);
+                    iLowest = CoinMin(iLowest, kClique);
                 }
             }
-            if (jClique>jFirst)
+            if(jClique > jFirst)
             {
                 // mark all apart from lowest number as duplicate and move on
                 // use cliqueType
-                lastDone =jClique-1;
-                for (jClique=jFirst; jClique<=lastDone; jClique++)
+                lastDone = jClique - 1;
+                for(jClique = jFirst; jClique <= lastDone; jClique++)
                 {
                     int kClique = which [jClique];
-                    if (kClique!=iLowest)
+                    if(kClique != iLowest)
                     {
-                        statusClique[kClique]=-2;
+                        statusClique[kClique] = -2;
                         nDup++;
-                        nSave += cliqueStart[kClique+1]-cliqueStart[kClique];
+                        nSave += cliqueStart[kClique + 1] - cliqueStart[kClique];
                     }
                 }
             }
         }
     }
 #if 0
-    for (int jClique=0; jClique<numberCliques; jClique++)
+    for(int jClique = 0; jClique < numberCliques; jClique++)
     {
-        int iClique=which[jClique];
-        printf("clique %d %d ",jClique,iClique);
-        for (int j=cliqueStart[iClique]; j<cliqueStart[iClique+1]; j++)
+        int iClique = which[jClique];
+        printf("clique %d %d ", jClique, iClique);
+        for(int j = cliqueStart[iClique]; j < cliqueStart[iClique + 1]; j++)
         {
             int iColumn = entry[j];
-            printf("%d ",iColumn);
+            printf("%d ", iColumn);
         }
         printf("\n");
     }
 #endif
-    if (printit)
-        printf("%d duplicates\n",nDup);
-    int nOutMax=2000000;
+    if(printit)
+        printf("%d duplicates\n", nDup);
+    int nOutMax = 2000000;
     // mark cliques used to remove other cliques
-    int * used = statusClique+numberCliques;
+    int* used = statusClique + numberCliques;
     // Now see if any subset
-    int nOut=0;
-    for (int jClique=0; jClique<numberCliques; jClique++)
+    int nOut = 0;
+    for(int jClique = 0; jClique < numberCliques; jClique++)
     {
-        used[jClique]=numberCliques;
-        if (statusClique[jClique]!=-2)
+        used[jClique] = numberCliques;
+        if(statusClique[jClique] != -2)
         {
-            position[jClique]=cliqueStart[jClique];
-            statusClique[jClique]=entry[cliqueStart[jClique]];
+            position[jClique] = cliqueStart[jClique];
+            statusClique[jClique] = entry[cliqueStart[jClique]];
         }
     }
-    nSave=0;
-    int startLooking=0;
-    for (int jClique=0; jClique<numberCliques; jClique++)
+    nSave = 0;
+    int startLooking = 0;
+    for(int jClique = 0; jClique < numberCliques; jClique++)
     {
         int kClique = which[jClique];
-        if (statusClique[kClique]==-2)
+        if(statusClique[kClique] == -2)
         {
             nOut++;
-            nSave += cliqueStart[kClique+1]-cliqueStart[kClique];
-            if (jClique==startLooking)
+            nSave += cliqueStart[kClique + 1] - cliqueStart[kClique];
+            if(jClique == startLooking)
                 startLooking++;
             continue;
         }
-        int kValue =statusClique[kClique];
-        bool ppp=false;
-        for (int iiClique=startLooking; iiClique<jClique; iiClique++)
+        int kValue = statusClique[kClique];
+        bool ppp = false;
+        for(int iiClique = startLooking; iiClique < jClique; iiClique++)
         {
             int iClique = which[iiClique];
             int iValue = statusClique[iClique];
-            if (iValue==-2||iValue==numberIntegers)
+            if(iValue == -2 || iValue == numberIntegers)
             {
-                if (iiClique==startLooking)
+                if(iiClique == startLooking)
                     startLooking++;
                 continue;
             }
             else
             {
-                if (kValue>entry[cliqueStart[iClique+1]-1])
+                if(kValue > entry[cliqueStart[iClique + 1] - 1])
                 {
-                    statusClique[iClique]=numberIntegers;
+                    statusClique[iClique] = numberIntegers;
                     continue;
                 }
             }
-            if (iValue<kValue)
+            if(iValue < kValue)
             {
-                while (iValue<kValue)
+                while(iValue < kValue)
                 {
-                    int iPos=position[iClique]+1;
-                    position[iClique]=iPos;
-                    if (iPos==cliqueStart[iClique+1])
+                    int iPos = position[iClique] + 1;
+                    position[iClique] = iPos;
+                    if(iPos == cliqueStart[iClique + 1])
                     {
                         iValue = numberIntegers;
                     }
@@ -3468,115 +3468,115 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
                     {
                         iValue = entry[iPos];
                     }
-                    statusClique[iClique]=iValue;
+                    statusClique[iClique] = iValue;
                 }
             }
-            if (iValue>kValue)
+            if(iValue > kValue)
                 continue; // not a candidate
             // See if subset (remember duplicates have gone)
-            if (cliqueStart[iClique+1]-position[iClique]>
-                    cliqueStart[kClique+1]-cliqueStart[kClique])
+            if(cliqueStart[iClique + 1] - position[iClique] >
+                    cliqueStart[kClique + 1] - cliqueStart[kClique])
             {
                 // could be subset ?
-                int offset = cliqueStart[iClique]-position[kClique];
+                int offset = cliqueStart[iClique] - position[kClique];
                 int j;
-                bool subset=true;
+                bool subset = true;
                 // what about different fixes bool odd=false;
-                for (j=cliqueStart[kClique]; j<cliqueStart[kClique+1]; j++)
+                for(j = cliqueStart[kClique]; j < cliqueStart[kClique + 1]; j++)
                 {
                     int kColumn = entry[j];
-                    int iColumn = entry[j+offset];
-                    while (iColumn<kColumn)
+                    int iColumn = entry[j + offset];
+                    while(iColumn < kColumn)
                     {
                         offset++;
-                        if (j+offset<cliqueStart[iClique+1])
+                        if(j + offset < cliqueStart[iClique + 1])
                         {
-                            iColumn = entry[j+offset];
+                            iColumn = entry[j + offset];
                         }
                         else
                         {
-                            iColumn=numberIntegers;
+                            iColumn = numberIntegers;
                         }
                     }
-                    if (iColumn!=kColumn)
+                    if(iColumn != kColumn)
                     {
-                        subset=false;
+                        subset = false;
                         break;
                     }
                 }
-                if (subset&&nOut<=nOutMax)
+                if(subset && nOut <= nOutMax)
                 {
-                    int kSave=statusClique[kClique];
-                    statusClique[kClique]=-2;
-                    if (printit>1)
-                        printf("clique %d is subset of %d\n",kClique,iClique);
-                    if (!ppp&&false)
+                    int kSave = statusClique[kClique];
+                    statusClique[kClique] = -2;
+                    if(printit > 1)
+                        printf("clique %d is subset of %d\n", kClique, iClique);
+                    if(!ppp && false)
                     {
-                        ppp=true;
-                        printf("Kclique %d ",kClique);
-                        for (int j=cliqueStart[kClique]; j<cliqueStart[kClique+1]; j++)
+                        ppp = true;
+                        printf("Kclique %d ", kClique);
+                        for(int j = cliqueStart[kClique]; j < cliqueStart[kClique + 1]; j++)
                         {
                             int kColumn = entry[j];
-                            printf("%d ",kColumn);
+                            printf("%d ", kColumn);
                         }
                         printf("\n");
                     }
-                    if (false)
+                    if(false)
                     {
-                        printf("Iclique %d ",iClique);
-                        for (int j=cliqueStart[iClique]; j<cliqueStart[iClique+1]; j++)
+                        printf("Iclique %d ", iClique);
+                        for(int j = cliqueStart[iClique]; j < cliqueStart[iClique + 1]; j++)
                         {
                             int iColumn = entry[j];
-                            printf("%d ",iColumn);
+                            printf("%d ", iColumn);
                         }
                         printf("\n");
                     }
                     nOut++;
-                    used[iClique]=CoinMin(used[iClique],kClique);;
-                    used[kClique]=CoinMin(used[kClique],iClique);;
+                    used[iClique] = CoinMin(used[iClique], kClique);;
+                    used[kClique] = CoinMin(used[kClique], iClique);;
                     // But need to look at type
                     // when might be able to fix variables
-                    if (cliqueType[kClique]=='E')
+                    if(cliqueType[kClique] == 'E')
                     {
-                        statusClique[kClique]=kSave;
+                        statusClique[kClique] = kSave;
                         //statusClique[iClique]=-2;
                         nOut--;
                         // can fix all in iClique not in kClique
-                        printf("ZZ clique %d E, %d S\n",kClique,iClique);
-                        int offset = cliqueStart[iClique]-position[kClique];
+                        printf("ZZ clique %d E, %d S\n", kClique, iClique);
+                        int offset = cliqueStart[iClique] - position[kClique];
                         int j;
-                        for (j=cliqueStart[kClique]; j<cliqueStart[kClique+1]; j++)
+                        for(j = cliqueStart[kClique]; j < cliqueStart[kClique + 1]; j++)
                         {
                             int kColumn = entry[j];
-                            int iColumn = entry[j+offset];
-                            while (iColumn<kColumn)
+                            int iColumn = entry[j + offset];
+                            while(iColumn < kColumn)
                             {
-                                if (!fixed[iColumn])
+                                if(!fixed[iColumn])
                                 {
-                                    printf("ZZ fixing %d to zero\n",iColumn);
-                                    fixed[iColumn]=-1;
+                                    printf("ZZ fixing %d to zero\n", iColumn);
+                                    fixed[iColumn] = -1;
                                 }
                                 else
                                 {
-                                    assert (fixed[iColumn]==-1);
+                                    assert(fixed[iColumn] == -1);
                                 }
                                 offset++;
-                                if (j+offset<cliqueStart[iClique+1])
+                                if(j + offset < cliqueStart[iClique + 1])
                                 {
-                                    iColumn = entry[j+offset];
+                                    iColumn = entry[j + offset];
                                 }
                                 else
                                 {
-                                    iColumn=numberIntegers;
+                                    iColumn = numberIntegers;
                                 }
                             }
                         }
 #if 0
                     }
-                    else if (cliqueType[iClique]=='E')
+                    else if(cliqueType[iClique] == 'E')
                     {
-                        printf("ZZ clique %d S, %d E\n",kClique,iClique);
-                        statusClique[kClique]=-1;
+                        printf("ZZ clique %d S, %d E\n", kClique, iClique);
+                        statusClique[kClique] = -1;
                         nOut--;
 #endif
                     }
@@ -3585,16 +3585,16 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
             }
         }
     }
-    if (nOut)
+    if(nOut)
     {
         if(printit)
-            printf("Can get rid of %d cliques\n",nOut);
+            printf("Can get rid of %d cliques\n", nOut);
     }
-    for (int i=0; i<numberCliques; i++)
+    for(int i = 0; i < numberCliques; i++)
     {
-        if (statusClique[i]!=-2)
+        if(statusClique[i] != -2)
         {
-            statusClique[i]=-1;
+            statusClique[i] = -1;
         }
     }
     delete [] sort;
@@ -3605,77 +3605,77 @@ static int outDupsEtc(int numberIntegers, int numberCliques, int * statusClique,
 }
 #endif
 void CglDuplicateRow::generateCuts8(const OsiSolverInterface & si, OsiCuts & cs,
-                                    const CglTreeInfo ) const
+                                    const CglTreeInfo) const
 {
-    bool printit=false;
-    bool feasible=true;
-    int numberCliques=0;
-    int numberEntries=0;
-    int maximumCliques=0;
-    int maximumEntries=0;
-    int * cliqueStart = NULL;
-    int * entry = NULL;
-    char * cliqueType=NULL;
-    int *whichClique=NULL;
-    int numberRows=si.getNumRows();
-    const CoinPackedMatrix * rowCopy = si.getMatrixByRow();
-    assert(numberRows&&si.getNumCols());
+    bool printit = false;
+    bool feasible = true;
+    int numberCliques = 0;
+    int numberEntries = 0;
+    int maximumCliques = 0;
+    int maximumEntries = 0;
+    int* cliqueStart = NULL;
+    int* entry = NULL;
+    char* cliqueType = NULL;
+    int* whichClique = NULL;
+    int numberRows = si.getNumRows();
+    const CoinPackedMatrix* rowCopy = si.getMatrixByRow();
+    assert(numberRows && si.getNumCols());
     int iRow;
-    const int * column = rowCopy->getIndices();
-    const double * elementByRow = rowCopy->getElements();
-    const CoinBigIndex * rowStart = rowCopy->getVectorStarts();
-    const int * rowLength = rowCopy->getVectorLengths();
-    const double * lower = si.getColLower();
-    const double * upper = si.getColUpper();
-    const double * rowLower = si.getRowLower();
-    const double * rowUpper = si.getRowUpper();
+    const int* column = rowCopy->getIndices();
+    const double* elementByRow = rowCopy->getElements();
+    const CoinBigIndex* rowStart = rowCopy->getVectorStarts();
+    const int* rowLength = rowCopy->getVectorLengths();
+    const double* lower = si.getColLower();
+    const double* upper = si.getColUpper();
+    const double* rowLower = si.getRowLower();
+    const double* rowUpper = si.getRowUpper();
     // Find 0-1 variables
-    int numberIntegers=0;
-    int numberColumns=si.getNumCols();
-    int * backward = new int [numberColumns];
-    for (int i=0; i<numberColumns; i++)
+    int numberIntegers = 0;
+    int numberColumns = si.getNumCols();
+    int* backward = new int [numberColumns];
+    for(int i = 0; i < numberColumns; i++)
     {
-        if (lower[i]==0.0&&upper[i]==1.0)
-            backward[i]=numberIntegers++;
+        if(lower[i] == 0.0 && upper[i] == 1.0)
+            backward[i] = numberIntegers++;
         else
-            backward[i]=-1;
+            backward[i] = -1;
     }
-    int * whichP = new int [numberIntegers];
-    for (int iPass=0; iPass<2; iPass++)
+    int* whichP = new int [numberIntegers];
+    for(int iPass = 0; iPass < 2; iPass++)
     {
-        if (iPass)
+        if(iPass)
         {
-            maximumCliques=numberCliques;
-            maximumEntries=numberEntries;
-            cliqueStart = new int [numberCliques+1];
-            cliqueStart[0]=0;
+            maximumCliques = numberCliques;
+            maximumEntries = numberEntries;
+            cliqueStart = new int [numberCliques + 1];
+            cliqueStart[0] = 0;
             entry = new int [numberEntries];
             cliqueType = new char [numberCliques];
             whichClique = new int [numberEntries];
-            numberCliques=0;
-            numberEntries=0;
+            numberCliques = 0;
+            numberEntries = 0;
         }
-        for (iRow=0; iRow<numberRows; iRow++)
+        for(iRow = 0; iRow < numberRows; iRow++)
         {
-            duplicate_[iRow]=-1;
-            int numberP1=0;
-            int numberTotal=0;
+            duplicate_[iRow] = -1;
+            int numberP1 = 0;
+            int numberTotal = 0;
             CoinBigIndex j;
-            double upperValue=rowUpper[iRow];
-            double lowerValue=rowLower[iRow];
-            bool good=true;
-            for (j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+            double upperValue = rowUpper[iRow];
+            double lowerValue = rowLower[iRow];
+            bool good = true;
+            for(j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
             {
                 int iColumn = column[j];
                 double value = elementByRow[j];
-                if (upper[iColumn]-lower[iColumn]<1.0e-8)
+                if(upper[iColumn] - lower[iColumn] < 1.0e-8)
                 {
                     // fixed
-                    upperValue -= lower[iColumn]*value;
-                    lowerValue -= lower[iColumn]*value;
+                    upperValue -= lower[iColumn] * value;
+                    lowerValue -= lower[iColumn] * value;
                     continue;
                 }
-                else if (backward[iColumn]<0)
+                else if(backward[iColumn] < 0)
                 {
                     good = false;
                     break;
@@ -3685,143 +3685,143 @@ void CglDuplicateRow::generateCuts8(const OsiSolverInterface & si, OsiCuts & cs,
                     iColumn = backward[iColumn];
                     numberTotal++;
                 }
-                if (value!=1.0)
+                if(value != 1.0)
                 {
-                    good=false;
+                    good = false;
                 }
                 else
                 {
-                    assert (numberP1<numberIntegers);
-                    whichP[numberP1++]=iColumn;;
+                    assert(numberP1 < numberIntegers);
+                    whichP[numberP1++] = iColumn;;
                 }
             }
-            int iUpper = static_cast<int> (floor(upperValue+1.0e-5));
-            int iLower = static_cast<int> (ceil(lowerValue-1.0e-5));
-            int state=0;
-            if (upperValue<1.0e6)
+            int iUpper = static_cast<int>(floor(upperValue + 1.0e-5));
+            int iLower = static_cast<int>(ceil(lowerValue - 1.0e-5));
+            int state = 0;
+            if(upperValue < 1.0e6)
             {
-                if (iUpper==1)
-                    state=1;
-                else if (iUpper==0)
-                    state=2;
-                else if (iUpper<0)
-                    state=3;
-                if (fabs(static_cast<double> (iUpper)-upperValue)>1.0e-9)
-                    state =-1;
+                if(iUpper == 1)
+                    state = 1;
+                else if(iUpper == 0)
+                    state = 2;
+                else if(iUpper < 0)
+                    state = 3;
+                if(fabs(static_cast<double>(iUpper) - upperValue) > 1.0e-9)
+                    state = -1;
             }
-            if (!state&&lowerValue>-1.0e6)
+            if(!state && lowerValue > -1.0e6)
             {
-                if (-iLower==1-numberP1)
-                    state=-1;
-                else if (-iLower==-numberP1)
-                    state=-2;
-                else if (-iLower<-numberP1)
-                    state=-3;
-                if (fabs(static_cast<double> (iLower)-lowerValue)>1.0e-9)
-                    state =-1;
+                if(-iLower == 1 - numberP1)
+                    state = -1;
+                else if(-iLower == -numberP1)
+                    state = -2;
+                else if(-iLower < -numberP1)
+                    state = -3;
+                if(fabs(static_cast<double>(iLower) - lowerValue) > 1.0e-9)
+                    state = -1;
             }
-            if (numberP1<2)
-                state=-1;
-            if (good&&state>0)
+            if(numberP1 < 2)
+                state = -1;
+            if(good && state > 0)
             {
-                if (abs(state)==3)
+                if(abs(state) == 3)
                 {
                     // infeasible
                     printf("FFF Infeasible\n");;
-                    feasible=false;
+                    feasible = false;
                     break;
                 }
-                else if (abs(state)==2)
+                else if(abs(state) == 2)
                 {
                     // we can fix all
                     //numberFixed += numberP1+numberM1;
-                    printf("FFF can fix %d\n",numberP1);
+                    printf("FFF can fix %d\n", numberP1);
                 }
                 else
                 {
-                    for (j=0; j<numberP1; j++)
+                    for(j = 0; j < numberP1; j++)
                     {
                         int iColumn = whichP[j];
-                        if (iPass)
+                        if(iPass)
                         {
-                            entry[numberEntries]=iColumn;
+                            entry[numberEntries] = iColumn;
                         }
                         numberEntries++;
                     }
-                    if (iPass)
+                    if(iPass)
                     {
-                        if (iLower!=iUpper)
+                        if(iLower != iUpper)
                         {
                             // slack
-                            cliqueType[numberCliques]='S';
+                            cliqueType[numberCliques] = 'S';
                         }
                         else
                         {
-                            cliqueType[numberCliques]='E';
+                            cliqueType[numberCliques] = 'E';
                         }
-                        cliqueStart[numberCliques+1]=numberEntries;
-                        duplicate_[iRow]=numberCliques;
+                        cliqueStart[numberCliques + 1] = numberEntries;
+                        duplicate_[iRow] = numberCliques;
                     }
                     numberCliques++;
                 }
             }
         }
     }
-    int * dups = new int [2*numberCliques];
-    int * fixed = new int[CoinMax(numberIntegers,numberCliques)];
-    memset(fixed,0,numberIntegers*sizeof(int));
+    int* dups = new int [2 * numberCliques];
+    int* fixed = new int[CoinMax(numberIntegers, numberCliques)];
+    memset(fixed, 0, numberIntegers * sizeof(int));
     outDupsEtc(numberIntegers, numberCliques, dups,
                cliqueStart, cliqueType, entry, fixed, printit ? 2 : 1);
-    int nFixed=0;
+    int nFixed = 0;
     CoinPackedVector ubs;
-    for (int i=0; i<numberColumns; i++)
+    for(int i = 0; i < numberColumns; i++)
     {
-        int i01=backward[i];
-        if (i01>=0&&fixed[i01]==-1)
+        int i01 = backward[i];
+        if(i01 >= 0 && fixed[i01] == -1)
         {
-            ubs.insert(i,0.0);
+            ubs.insert(i, 0.0);
             nFixed++;
         }
     }
-    for (iRow=0; iRow<numberRows; iRow++)
+    for(iRow = 0; iRow < numberRows; iRow++)
     {
         int iClique = duplicate_[iRow];
-        if (iClique>=0)
-            fixed[iClique]=iRow;
+        if(iClique >= 0)
+            fixed[iClique] = iRow;
     }
-    int * dup2 = new int [2*numberRows];
-    int * used2 = dup2+numberRows;
-    int * used = dups+numberCliques;
-    for (iRow=0; iRow<numberRows; iRow++)
+    int* dup2 = new int [2 * numberRows];
+    int* used2 = dup2 + numberRows;
+    int* used = dups + numberCliques;
+    for(iRow = 0; iRow < numberRows; iRow++)
     {
-        dup2[iRow]=-3; // say not clique
-        used2[iRow]=-1; // say not used
+        dup2[iRow] = -3; // say not clique
+        used2[iRow] = -1; // say not used
     }
-    for (iRow=0; iRow<numberRows; iRow++)
+    for(iRow = 0; iRow < numberRows; iRow++)
     {
         int iClique = duplicate_[iRow];
-        if (iClique>=0)
+        if(iClique >= 0)
         {
             dup2[iRow] = dups[iClique];
             int which = used[iClique];
-            if (which>=0&&which<numberCliques)
+            if(which >= 0 && which < numberCliques)
                 which = fixed[which];
-            used2[iRow]=which;
+            used2[iRow] = which;
         }
     }
     delete [] duplicate_;
-    duplicate_=dup2;
+    duplicate_ = dup2;
     delete [] fixed;
     delete [] dups;
     delete [] backward;
-    if (nFixed)
+    if(nFixed)
     {
         OsiColCut cc;
         cc.setUbs(ubs);
         cc.setEffectiveness(100.0);
         cs.insert(cc);
     }
-    if (!feasible)
+    if(!feasible)
     {
         // generate infeasible cut and return
         printf("QQ**** infeasible cut\n");
@@ -3834,7 +3834,7 @@ void CglDuplicateRow::generateCuts8(const OsiSolverInterface & si, OsiCuts & cs,
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-CglDuplicateRow::CglDuplicateRow ()
+CglDuplicateRow::CglDuplicateRow()
     :
     CglCutGenerator(),
     rhs_(NULL),
@@ -3849,7 +3849,7 @@ CglDuplicateRow::CglDuplicateRow ()
 {
 }
 // Useful constructor
-CglDuplicateRow::CglDuplicateRow(OsiSolverInterface * solver)
+CglDuplicateRow::CglDuplicateRow(OsiSolverInterface* solver)
     : CglCutGenerator(),
       rhs_(NULL),
       duplicate_(NULL),
@@ -3867,7 +3867,7 @@ CglDuplicateRow::CglDuplicateRow(OsiSolverInterface * solver)
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-CglDuplicateRow::CglDuplicateRow (  const CglDuplicateRow & rhs)
+CglDuplicateRow::CglDuplicateRow(const CglDuplicateRow & rhs)
     :
     CglCutGenerator(rhs),
     matrix_(rhs.matrix_),
@@ -3879,18 +3879,18 @@ CglDuplicateRow::CglDuplicateRow (  const CglDuplicateRow & rhs)
     mode_(rhs.mode_),
     logLevel_(rhs.logLevel_)
 {
-    int numberRows=matrix_.getNumRows();
-    rhs_ = CoinCopyOfArray(rhs.rhs_,numberRows);
-    duplicate_ = CoinCopyOfArray(rhs.duplicate_,numberRows);
-    lower_ = CoinCopyOfArray(rhs.lower_,numberRows);
-    if (rhs.storedCuts_)
+    int numberRows = matrix_.getNumRows();
+    rhs_ = CoinCopyOfArray(rhs.rhs_, numberRows);
+    duplicate_ = CoinCopyOfArray(rhs.duplicate_, numberRows);
+    lower_ = CoinCopyOfArray(rhs.lower_, numberRows);
+    if(rhs.storedCuts_)
         storedCuts_ = new CglStored(*rhs.storedCuts_);
 }
 
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CglCutGenerator *
+CglCutGenerator*
 CglDuplicateRow::clone() const
 {
     return new CglDuplicateRow(*this);
@@ -3899,7 +3899,7 @@ CglDuplicateRow::clone() const
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-CglDuplicateRow::~CglDuplicateRow ()
+CglDuplicateRow::~CglDuplicateRow()
 {
     // free memory
     delete [] rhs_;
@@ -3913,9 +3913,9 @@ CglDuplicateRow::~CglDuplicateRow ()
 //-------------------------------------------------------------------
 CglDuplicateRow &
 CglDuplicateRow::operator=(
-    const CglDuplicateRow& rhs)
+    const CglDuplicateRow & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         CglCutGenerator::operator=(rhs);
         delete [] rhs_;
@@ -3923,18 +3923,18 @@ CglDuplicateRow::operator=(
         delete [] lower_;
         delete storedCuts_;
         storedCuts_ = NULL;
-        matrix_=rhs.matrix_;
-        matrixByRow_=rhs.matrixByRow_;
+        matrix_ = rhs.matrix_;
+        matrixByRow_ = rhs.matrixByRow_;
         maximumDominated_ = rhs.maximumDominated_;
-        maximumRhs_=rhs.maximumRhs_;
+        maximumRhs_ = rhs.maximumRhs_;
         sizeDynamic_ = rhs.sizeDynamic_;
         mode_ = rhs.mode_;
         logLevel_ = rhs.logLevel_;
-        int numberRows=matrix_.getNumRows();
-        rhs_ = CoinCopyOfArray(rhs.rhs_,numberRows);
-        duplicate_ = CoinCopyOfArray(rhs.duplicate_,numberRows);
-        lower_ = CoinCopyOfArray(rhs.lower_,numberRows);
-        if (rhs.storedCuts_)
+        int numberRows = matrix_.getNumRows();
+        rhs_ = CoinCopyOfArray(rhs.rhs_, numberRows);
+        duplicate_ = CoinCopyOfArray(rhs.duplicate_, numberRows);
+        lower_ = CoinCopyOfArray(rhs.lower_, numberRows);
+        if(rhs.storedCuts_)
             storedCuts_ = new CglStored(*rhs.storedCuts_);
     }
     return *this;
@@ -3942,7 +3942,7 @@ CglDuplicateRow::operator=(
 
 // This can be used to refresh any information
 void
-CglDuplicateRow::refreshSolver(OsiSolverInterface * solver)
+CglDuplicateRow::refreshSolver(OsiSolverInterface* solver)
 {
     delete [] rhs_;
     delete [] duplicate_;
@@ -3951,82 +3951,82 @@ CglDuplicateRow::refreshSolver(OsiSolverInterface * solver)
     matrix_.removeGaps();
     matrix_.orderMatrix();
     matrixByRow_ = *solver->getMatrixByRow();
-    int numberRows=matrix_.getNumRows();
+    int numberRows = matrix_.getNumRows();
     rhs_ = new int[numberRows];
     duplicate_ = new int[numberRows];
     lower_ = new int[numberRows];
-    const double * columnLower = solver->getColLower();
-    const double * rowLower = solver->getRowLower();
-    const double * rowUpper = solver->getRowUpper();
+    const double* columnLower = solver->getColLower();
+    const double* rowLower = solver->getRowLower();
+    const double* rowUpper = solver->getRowUpper();
     // Row copy
-    const double * elementByRow = matrixByRow_.getElements();
-    const int * column = matrixByRow_.getIndices();
-    const CoinBigIndex * rowStart = matrixByRow_.getVectorStarts();
-    const int * rowLength = matrixByRow_.getVectorLengths();
+    const double* elementByRow = matrixByRow_.getElements();
+    const int* column = matrixByRow_.getIndices();
+    const CoinBigIndex* rowStart = matrixByRow_.getVectorStarts();
+    const int* rowLength = matrixByRow_.getVectorLengths();
     int iRow;
-    int numberGood=0;
-    int markBad = -(solver->getNumCols()+1);
-    for (iRow=0; iRow<numberRows; iRow++)
+    int numberGood = 0;
+    int markBad = -(solver->getNumCols() + 1);
+    for(iRow = 0; iRow < numberRows; iRow++)
     {
-        rhs_[iRow]=markBad;
-        lower_[iRow]=markBad;
-        duplicate_[iRow]=-1;
-        if (rowUpper[iRow]<100)
+        rhs_[iRow] = markBad;
+        lower_[iRow] = markBad;
+        duplicate_[iRow] = -1;
+        if(rowUpper[iRow] < 100)
         {
-            int iRhs= static_cast<int> (floor(rowUpper[iRow]));
+            int iRhs = static_cast<int>(floor(rowUpper[iRow]));
             // check elements
-            bool good=true;
-            for (int j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+            bool good = true;
+            for(int j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
             {
                 int iColumn = column[j];
-                if (!solver->isInteger(iColumn))
-                    good=false;
+                if(!solver->isInteger(iColumn))
+                    good = false;
                 double value = elementByRow[j];
-                if (floor(value)!=value||value<1.0)
+                if(floor(value) != value || value < 1.0)
                 {
-                    good=false;
+                    good = false;
                 }
             }
-            if (good)
+            if(good)
             {
-                lower_[iRow] = static_cast<int> (CoinMax(0.0,ceil(rowLower[iRow])));
-                if (iRhs>=lower_[iRow])
+                lower_[iRow] = static_cast<int>(CoinMax(0.0, ceil(rowLower[iRow])));
+                if(iRhs >= lower_[iRow])
                 {
-                    rhs_[iRow]=iRhs;
+                    rhs_[iRow] = iRhs;
                     numberGood++;
                 }
                 else
                 {
                     // infeasible ?
-                    lower_[iRow]=markBad;
-                    rhs_[iRow]=markBad;
+                    lower_[iRow] = markBad;
+                    rhs_[iRow] = markBad;
                 }
             }
             else
             {
-                lower_[iRow]=markBad;
-                rhs_[iRow]=markBad;
+                lower_[iRow] = markBad;
+                rhs_[iRow] = markBad;
             }
         }
-        else if (rowUpper[iRow]>1.0e30&&rowLower[iRow]==1.0)
+        else if(rowUpper[iRow] > 1.0e30 && rowLower[iRow] == 1.0)
         {
             // may be OK to look for dominated in >=1 rows
             // check elements
-            bool good=true;
-            for (int j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+            bool good = true;
+            for(int j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
             {
                 int iColumn = column[j];
-                if (!solver->isInteger(iColumn))
-                    good=false;
+                if(!solver->isInteger(iColumn))
+                    good = false;
                 double value = elementByRow[j];
-                if (floor(value)!=value||value<1.0)
+                if(floor(value) != value || value < 1.0)
                 {
-                    good=false;
+                    good = false;
                 }
-                if (columnLower[iColumn]!=0.0)
-                    good=false;
+                if(columnLower[iColumn] != 0.0)
+                    good = false;
             }
-            if (good)
+            if(good)
             {
                 lower_[iRow] = 1;
             }
@@ -4052,8 +4052,8 @@ CglDuplicateRow::refreshSolver(OsiSolverInterface * solver)
     This version does deletions and fixings and may return stored cuts for
     dominated columns
 */
-CglStored *
-CglDuplicateRow::outDuplicates( OsiSolverInterface * solver)
+CglStored*
+CglDuplicateRow::outDuplicates(OsiSolverInterface* solver)
 {
 
     CglTreeInfo info;
@@ -4062,83 +4062,83 @@ CglDuplicateRow::outDuplicates( OsiSolverInterface * solver)
     int numberRows = solver->getNumRows();
     info.formulation_rows = numberRows;
     info.inTree = false;
-    info.strengthenRow= NULL;
+    info.strengthenRow = NULL;
     info.pass = 0;
     OsiCuts cs;
-    generateCuts(*solver,cs,info);
+    generateCuts(*solver, cs, info);
     // Get rid of duplicate rows
-    int * which = new int[numberRows];
-    int numberDrop=0;
-    for (int iRow=0; iRow<numberRows; iRow++)
+    int* which = new int[numberRows];
+    int numberDrop = 0;
+    for(int iRow = 0; iRow < numberRows; iRow++)
     {
-        if (duplicate_[iRow]==-2||duplicate_[iRow]>=0)
-            which[numberDrop++]=iRow;
+        if(duplicate_[iRow] == -2 || duplicate_[iRow] >= 0)
+            which[numberDrop++] = iRow;
     }
-    if (numberDrop)
+    if(numberDrop)
     {
-        solver->deleteRows(numberDrop,which);
+        solver->deleteRows(numberDrop, which);
     }
     delete [] which;
     // see if we have any column cuts
     int numberColumnCuts = cs.sizeColCuts() ;
-    const double * columnLower = solver->getColLower();
-    const double * columnUpper = solver->getColUpper();
-    for (int k = 0; k<numberColumnCuts; k++)
+    const double* columnLower = solver->getColLower();
+    const double* columnUpper = solver->getColUpper();
+    for(int k = 0; k < numberColumnCuts; k++)
     {
-        OsiColCut * thisCut = cs.colCutPtr(k) ;
+        OsiColCut* thisCut = cs.colCutPtr(k) ;
         const CoinPackedVector & lbs = thisCut->lbs() ;
         const CoinPackedVector & ubs = thisCut->ubs() ;
         int j ;
         int n ;
-        const int * which ;
-        const double * values ;
+        const int* which ;
+        const double* values ;
         n = lbs.getNumElements() ;
         which = lbs.getIndices() ;
         values = lbs.getElements() ;
-        for (j = 0; j<n; j++)
+        for(j = 0; j < n; j++)
         {
             int iColumn = which[j] ;
-            if (values[j]>columnLower[iColumn])
-                solver->setColLower(iColumn,values[j]) ;
+            if(values[j] > columnLower[iColumn])
+                solver->setColLower(iColumn, values[j]) ;
         }
         n = ubs.getNumElements() ;
         which = ubs.getIndices() ;
         values = ubs.getElements() ;
-        for (j = 0; j<n; j++)
+        for(j = 0; j < n; j++)
         {
             int iColumn = which[j] ;
-            if (values[j]<columnUpper[iColumn])
-                solver->setColUpper(iColumn,values[j]) ;
+            if(values[j] < columnUpper[iColumn])
+                solver->setColUpper(iColumn, values[j]) ;
         }
     }
     return storedCuts_;
 }
 // Create C++ lines to get to current state
 std::string
-CglDuplicateRow::generateCpp( FILE * fp)
+CglDuplicateRow::generateCpp(FILE* fp)
 {
     CglDuplicateRow other;
-    fprintf(fp,"0#include \"CglDuplicateRow.hpp\"\n");
-    fprintf(fp,"3  CglDuplicateRow duplicateRow;\n");
-    if (logLevel_!=other.logLevel_)
-        fprintf(fp,"3  duplicateRow.setLogLevel(%d);\n",logLevel_);
+    fprintf(fp, "0#include \"CglDuplicateRow.hpp\"\n");
+    fprintf(fp, "3  CglDuplicateRow duplicateRow;\n");
+    if(logLevel_ != other.logLevel_)
+        fprintf(fp, "3  duplicateRow.setLogLevel(%d);\n", logLevel_);
     else
-        fprintf(fp,"4  duplicateRow.setLogLevel(%d);\n",logLevel_);
-    if (maximumRhs_!=other.maximumRhs_)
-        fprintf(fp,"3  duplicateRow.setMaximumRhs(%d);\n",maximumRhs_);
+        fprintf(fp, "4  duplicateRow.setLogLevel(%d);\n", logLevel_);
+    if(maximumRhs_ != other.maximumRhs_)
+        fprintf(fp, "3  duplicateRow.setMaximumRhs(%d);\n", maximumRhs_);
     else
-        fprintf(fp,"4  duplicateRow.setMaximumRhs(%d);\n",maximumRhs_);
-    if (maximumDominated_!=other.maximumDominated_)
-        fprintf(fp,"3  duplicateRow.setMaximumDominated(%d);\n",maximumDominated_);
+        fprintf(fp, "4  duplicateRow.setMaximumRhs(%d);\n", maximumRhs_);
+    if(maximumDominated_ != other.maximumDominated_)
+        fprintf(fp, "3  duplicateRow.setMaximumDominated(%d);\n", maximumDominated_);
     else
-        fprintf(fp,"4  duplicateRow.setMaximumDominated(%d);\n",maximumDominated_);
-    if (mode_!=other.mode_)
-        fprintf(fp,"3  duplicateRow.setMode(%d);\n",mode_);
+        fprintf(fp, "4  duplicateRow.setMaximumDominated(%d);\n", maximumDominated_);
+    if(mode_ != other.mode_)
+        fprintf(fp, "3  duplicateRow.setMode(%d);\n", mode_);
     else
-        fprintf(fp,"4  duplicateRow.setMode(%d);\n",mode_);
-    if (getAggressiveness()!=other.getAggressiveness())
-        fprintf(fp,"3  duplicateRow.setAggressiveness(%d);\n",getAggressiveness());
+        fprintf(fp, "4  duplicateRow.setMode(%d);\n", mode_);
+    if(getAggressiveness() != other.getAggressiveness())
+        fprintf(fp, "3  duplicateRow.setAggressiveness(%d);\n", getAggressiveness());
     else
-        fprintf(fp,"4  duplicateRow.setAggressiveness(%d);\n",getAggressiveness());
+        fprintf(fp, "4  duplicateRow.setAggressiveness(%d);\n", getAggressiveness());
     return "duplicateRow";
 }

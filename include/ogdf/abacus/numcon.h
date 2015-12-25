@@ -48,87 +48,87 @@ namespace abacus
 {
 
 
-//! Constraints defined by a number.
-/**
- * Like the class NumVar for variables we provide the class NumCon
- * for constraints which are uniquely defined by an integer number.
- */
-class  NumCon :  public Constraint
-{
-public:
-
-    //! Creates a constraint defined by \a number.
+    //! Constraints defined by a number.
     /**
-     * \param master   A pointer to the corresponding master of the optimization.
-     * \param sub      A pointer to the subproblem associated with the constraint.
-     *                 This can be also the 0-pointer.
-     * \param sense    The sense of the constraint.
-     * \param dynamic  If this argument is \a true, then the constraint can be removed
-     *                 from the active constraint set during the cutting plane phase
-     *                 of the subproblem optimization.
-     * \param local    If this argument is \a true, then the constraint is considered
-     *                 to be only locally valid. As a local constraint is associated
-     *                 with a subproblem, \a sub must not be 0 if \a local is \a true.
-     * \param liftable If this argument is \a true, then a lifting procedure must be
-     *                 available, i.e., that the coefficients of variables which have
-     *                 not been active at generation time of the constraint can be computed.
-     * \param number   The identification number of the constraint.
-     * \param rhs      The right hand side of the constraint.
+     * Like the class NumVar for variables we provide the class NumCon
+     * for constraints which are uniquely defined by an integer number.
      */
-    NumCon(Master *master,
-           const Sub *sub,
-           CSense::SENSE sense,
-           bool dynamic,
-           bool local,
-           bool liftable,
-           int number,
-           double rhs)
-        : Constraint(master, sub,  sense, rhs, dynamic, local, liftable), number_(number)
-    { }
-
-    //! The destructor.
-    virtual ~NumCon() { }
-
-    //! The output operator writes the identification number and the right hand side to an output stream.
-    /**
-     * \param out The output stream.
-     * \param rhs The variable being output.
-     *
-     * \return A reference to the output stream.
-     */
-    friend ostream &operator<<(ostream &out, const NumCon &rhs)
+    class  NumCon :  public Constraint
     {
-        return out << "number = " << rhs.number_ << "  rhs = " << rhs.rhs_ << endl;
-    }
+    public:
 
-    //! Returns the coefficient of the variable \a v.
-    /**
-     * \param v The variable of which the coefficient is determined.
-     *          It must point to an object of the class ColVar.
-     */
-    virtual double coeff(const Variable *v) const;
+        //! Creates a constraint defined by \a number.
+        /**
+         * \param master   A pointer to the corresponding master of the optimization.
+         * \param sub      A pointer to the subproblem associated with the constraint.
+         *                 This can be also the 0-pointer.
+         * \param sense    The sense of the constraint.
+         * \param dynamic  If this argument is \a true, then the constraint can be removed
+         *                 from the active constraint set during the cutting plane phase
+         *                 of the subproblem optimization.
+         * \param local    If this argument is \a true, then the constraint is considered
+         *                 to be only locally valid. As a local constraint is associated
+         *                 with a subproblem, \a sub must not be 0 if \a local is \a true.
+         * \param liftable If this argument is \a true, then a lifting procedure must be
+         *                 available, i.e., that the coefficients of variables which have
+         *                 not been active at generation time of the constraint can be computed.
+         * \param number   The identification number of the constraint.
+         * \param rhs      The right hand side of the constraint.
+         */
+        NumCon(Master* master,
+               const Sub* sub,
+               CSense::SENSE sense,
+               bool dynamic,
+               bool local,
+               bool liftable,
+               int number,
+               double rhs)
+            : Constraint(master, sub,  sense, rhs, dynamic, local, liftable), number_(number)
+        { }
 
-    //! Writes the row format of the constraint on  an output stream.
-    /**
-     * It redefines the virtual function \a print() of the base class ConVar.
-     *
-     * \param out The output stream.
-     */
-    virtual void print(ostream &out) const
-    {
-        out << *this;
-    }
+        //! The destructor.
+        virtual ~NumCon() { }
 
-    //! Returns the identification number of the constraint.
-    int number() const
-    {
-        return number_;
-    }
+        //! The output operator writes the identification number and the right hand side to an output stream.
+        /**
+         * \param out The output stream.
+         * \param rhs The variable being output.
+         *
+         * \return A reference to the output stream.
+         */
+        friend ostream & operator<<(ostream & out, const NumCon & rhs)
+        {
+            return out << "number = " << rhs.number_ << "  rhs = " << rhs.rhs_ << endl;
+        }
+
+        //! Returns the coefficient of the variable \a v.
+        /**
+         * \param v The variable of which the coefficient is determined.
+         *          It must point to an object of the class ColVar.
+         */
+        virtual double coeff(const Variable* v) const;
+
+        //! Writes the row format of the constraint on  an output stream.
+        /**
+         * It redefines the virtual function \a print() of the base class ConVar.
+         *
+         * \param out The output stream.
+         */
+        virtual void print(ostream & out) const
+        {
+            out << *this;
+        }
+
+        //! Returns the identification number of the constraint.
+        int number() const
+        {
+            return number_;
+        }
 
 
-private:
-    int number_; //!< The identification number of the constraint.
-};
+    private:
+        int number_; //!< The identification number of the constraint.
+    };
 
 }
 
@@ -137,11 +137,11 @@ private:
 namespace abacus
 {
 
-inline double NumCon::coeff(const Variable *v) const
-{
-    const ColVar *colvar = (const ColVar *) v;
-    return colvar->coeff(number_);
-}
+    inline double NumCon::coeff(const Variable* v) const
+    {
+        const ColVar* colvar = (const ColVar*) v;
+        return colvar->coeff(number_);
+    }
 
 } //namespace abacus
 

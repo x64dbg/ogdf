@@ -49,89 +49,89 @@ namespace ogdf
 {
 
 
-MMSubgraphPlanarizer::MMSubgraphPlanarizer()
-{
-    FastPlanarSubgraph *s = new FastPlanarSubgraph();
-    s->runs(100);
-    m_subgraph.set(s);
-
-    MMFixedEmbeddingInserter *pInserter = new MMFixedEmbeddingInserter();
-    pInserter->removeReinsert(MMEdgeInsertionModule::rrAll);
-    m_inserter.set(pInserter);
-
-    m_permutations = 1;
-}
-
-
-Module::ReturnType MMSubgraphPlanarizer::doCall(PlanRepExpansion &PG,
-        int cc,
-        const EdgeArray<bool> *forbid,
-        int& crossingNumber,
-        int& numNS,
-        int& numSN)
-{
-    OGDF_ASSERT(m_permutations >= 1);
-
-    List<edge> deletedEdges;
-    PG.initCC(cc);
-
-    ReturnType retValue ;
-
-    if(forbid != 0)
+    MMSubgraphPlanarizer::MMSubgraphPlanarizer()
     {
-        List<edge> preferedEdges;
-        edge e;
-        forall_edges(e, PG)
-        {
-            edge eOrig = PG.originalEdge(e);
-            if(eOrig && (*forbid)[eOrig])
-                preferedEdges.pushBack(e);
-        }
+        FastPlanarSubgraph* s = new FastPlanarSubgraph();
+        s->runs(100);
+        m_subgraph.set(s);
 
-        retValue = m_subgraph.get().call(PG, preferedEdges, deletedEdges, true);
+        MMFixedEmbeddingInserter* pInserter = new MMFixedEmbeddingInserter();
+        pInserter->removeReinsert(MMEdgeInsertionModule::rrAll);
+        m_inserter.set(pInserter);
 
-    }
-    else
-    {
-        retValue = m_subgraph.get().call(PG, deletedEdges);
+        m_permutations = 1;
     }
 
-    if(isSolution(retValue) == false)
-        return retValue;
 
-    for(ListIterator<edge> it = deletedEdges.begin(); it.valid(); ++it)
-        *it = PG.originalEdge(*it);
-
-    int bestcr = -1;
-
-    for(int i = 1; i <= m_permutations; ++i)
+    Module::ReturnType MMSubgraphPlanarizer::doCall(PlanRepExpansion & PG,
+            int cc,
+            const EdgeArray<bool>* forbid,
+            int & crossingNumber,
+            int & numNS,
+            int & numSN)
     {
-        for(ListConstIterator<edge> it = deletedEdges.begin(); it.valid(); ++it)
-            PG.delEdge(PG.copy(*it));
+        OGDF_ASSERT(m_permutations >= 1);
 
-        deletedEdges.permute();
+        List<edge> deletedEdges;
+        PG.initCC(cc);
+
+        ReturnType retValue ;
 
         if(forbid != 0)
-            m_inserter.get().call(PG, deletedEdges, *forbid);
-        else
-            m_inserter.get().call(PG, deletedEdges);
-
-        crossingNumber = PG.computeNumberOfCrossings();
-
-        if(i == 1 || crossingNumber < bestcr)
         {
-            bestcr = crossingNumber;
-            numNS = PG.numberOfNodeSplits();
-            numSN = PG.numberOfSplittedNodes();
+            List<edge> preferedEdges;
+            edge e;
+            forall_edges(e, PG)
+            {
+                edge eOrig = PG.originalEdge(e);
+                if(eOrig && (*forbid)[eOrig])
+                    preferedEdges.pushBack(e);
+            }
+
+            retValue = m_subgraph.get().call(PG, preferedEdges, deletedEdges, true);
+
+        }
+        else
+        {
+            retValue = m_subgraph.get().call(PG, deletedEdges);
         }
 
-        PG.initCC(cc);
+        if(isSolution(retValue) == false)
+            return retValue;
+
+        for(ListIterator<edge> it = deletedEdges.begin(); it.valid(); ++it)
+            *it = PG.originalEdge(*it);
+
+        int bestcr = -1;
+
+        for(int i = 1; i <= m_permutations; ++i)
+        {
+            for(ListConstIterator<edge> it = deletedEdges.begin(); it.valid(); ++it)
+                PG.delEdge(PG.copy(*it));
+
+            deletedEdges.permute();
+
+            if(forbid != 0)
+                m_inserter.get().call(PG, deletedEdges, *forbid);
+            else
+                m_inserter.get().call(PG, deletedEdges);
+
+            crossingNumber = PG.computeNumberOfCrossings();
+
+            if(i == 1 || crossingNumber < bestcr)
+            {
+                bestcr = crossingNumber;
+                numNS = PG.numberOfNodeSplits();
+                numSN = PG.numberOfSplittedNodes();
+            }
+
+            PG.initCC(cc);
+        }
+
+        crossingNumber = bestcr;
+
+        return retFeasible;
     }
-
-    crossingNumber = bestcr;
-
-    return retFeasible;
-}
 
 
 } // namspace ogdf

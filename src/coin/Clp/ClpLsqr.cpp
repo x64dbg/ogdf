@@ -9,10 +9,10 @@
 #include "ClpPdco.hpp"
 
 
-void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
-                       double damp, double atol, double btol, double conlim, int itnlim,
-                       bool show, Info info, CoinDenseVector<double> &x , int *istop,
-                       int *itn, Outfo *outfo, bool precon, CoinDenseVector<double> &Pr)
+void ClpLsqr::do_lsqr(CoinDenseVector<double> & b,
+                      double damp, double atol, double btol, double conlim, int itnlim,
+                      bool show, Info info, CoinDenseVector<double> & x , int* istop,
+                      int* itn, Outfo* outfo, bool precon, CoinDenseVector<double> & Pr)
 {
 
     /**
@@ -21,7 +21,7 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
     satisfied with the input atol.
     */
 
-//     Initialize.
+    //     Initialize.
     static char term_msg[8][80] =
     {
         "The exact solution is x = 0",
@@ -35,7 +35,7 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
     };
 
     //  printf("***************** Entering LSQR *************\n");
-    assert (model_);
+    assert(model_);
 
     char str1[100], str2[100], str3[100], str4[100], head1[100], head2[100];
 
@@ -46,7 +46,7 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
     *istop   = 0;
     int nstop  = 0;
     double ctol   = 0;
-    if (conlim > 0) ctol = 1 / conlim;
+    if(conlim > 0) ctol = 1 / conlim;
 
     double anorm  = 0;
     double acond  = 0;
@@ -67,22 +67,22 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
     x.clear();
     double alfa   = 0;
     double beta = u.twoNorm();
-    if (beta > 0)
+    if(beta > 0)
     {
         u = (1 / beta) * u;
-        matVecMult( 2, v, u );
-        if (precon)
+        matVecMult(2, v, u);
+        if(precon)
             v = v * Pr;
         alfa = v.twoNorm();
     }
-    if (alfa > 0)
+    if(alfa > 0)
     {
         v.scale(1 / alfa);
     }
     CoinDenseVector<double> w(v);
 
     double arnorm = alfa * beta;
-    if (arnorm == 0)
+    if(arnorm == 0)
     {
         printf("  %s\n\n", term_msg[0]);
         return;
@@ -95,20 +95,20 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
     sprintf(head1, "   Itn      x(1)      Function");
     sprintf(head2, " Compatible   LS      Norm A   Cond A");
 
-    if (show)
+    if(show)
     {
         printf(" %s%s\n", head1, head2);
         double test1  = 1;
         double test2  = alfa / beta;
-        sprintf(str1, "%6d %12.5e %10.3e",   *itn, x[0], rnorm );
-        sprintf(str2, "  %8.1e  %8.1e",       test1, test2 );
+        sprintf(str1, "%6d %12.5e %10.3e",   *itn, x[0], rnorm);
+        sprintf(str2, "  %8.1e  %8.1e",       test1, test2);
         printf("%s%s\n", str1, str2);
     }
 
     //----------------------------------------------------------------
     // Main iteration loop.
     //----------------------------------------------------------------
-    while (*itn < itnlim)
+    while(*itn < itnlim)
     {
         *itn += 1;
         // Perform the next step of the bidiagonalization to obtain the
@@ -117,29 +117,29 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
         // alfa*v  =  A'*u  -  beta*v.
 
         u.scale((-alfa));
-        if (precon)
+        if(precon)
         {
             CoinDenseVector<double> pv(v * Pr);
-            matVecMult( 1, u, pv);
+            matVecMult(1, u, pv);
         }
         else
         {
-            matVecMult( 1, u, v);
+            matVecMult(1, u, v);
         }
         beta = u.twoNorm();
-        if (beta > 0)
+        if(beta > 0)
         {
             u.scale((1 / beta));
             anorm = sqrt(anorm * anorm + alfa * alfa + beta * beta +  damp * damp);
             v.scale((-beta));
             CoinDenseVector<double> vv(n);
             vv.clear();
-            matVecMult( 2, vv, u );
-            if (precon)
+            matVecMult(2, vv, u);
+            if(precon)
                 vv = vv * Pr;
             v = v + vv;
             alfa  = v.twoNorm();
-            if (alfa > 0)
+            if(alfa > 0)
                 v.scale((1 / alfa));
         }
 
@@ -173,7 +173,7 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
         double w_norm = w.twoNorm();
         x       = x      +  t1 * w;
         w       = v      +  t2 * w;
-        ddnorm  = ddnorm +  (w_norm / rho) * (w_norm / rho);
+        ddnorm  = ddnorm + (w_norm / rho) * (w_norm / rho);
         // if wantvar, var = var  +  dk.*dk; end
 
         // Use a plane rotation on the right to eliminate the
@@ -195,17 +195,17 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
         // First, estimate the condition of the matrix  Abar,
         // and the norms of  rbar  and  Abar'rbar.
 
-        acond   =   anorm * sqrt( ddnorm );
+        acond   =   anorm * sqrt(ddnorm);
         double res1    =   phibar * phibar;
         double res2    =   res1  +  psi * psi;
-        rnorm   =   sqrt( res1 + res2 );
-        arnorm  =   alfa * fabs( tau );
+        rnorm   =   sqrt(res1 + res2);
+        arnorm  =   alfa * fabs(tau);
 
         // Now use these norms to estimate certain other quantities,
         // some of which will be small near a solution.
 
         double test1   =   rnorm / bnorm;
-        double test2   =   arnorm / ( anorm * rnorm );
+        double test2   =   arnorm / (anorm * rnorm);
         double test3   =       1 / acond;
         t1      =   test1 / (1    +  anorm * xnorm / bnorm);
         double rtol    =   btol  +  atol *  anorm * xnorm / bnorm;
@@ -216,22 +216,22 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
         // The effect is equivalent to the normal tests using
         // atol = eps,  btol = eps,  conlim = 1/eps.
 
-        if (*itn >= itnlim)
+        if(*itn >= itnlim)
             *istop = 7;
-        if (1 + test3  <= 1)
+        if(1 + test3  <= 1)
             *istop = 6;
-        if (1 + test2  <= 1)
+        if(1 + test2  <= 1)
             *istop = 5;
-        if (1 + t1     <= 1)
+        if(1 + t1     <= 1)
             *istop = 4;
 
         // Allow for tolerances set by the user.
 
-        if  (test3 <= ctol)
+        if(test3 <= ctol)
             *istop = 3;
-        if  (test2 <= atol)
+        if(test2 <= atol)
             *istop = 2;
-        if  (test1 <= rtol)
+        if(test1 <= rtol)
             *istop = 1;
 
         //-------------------------------------------------------------------
@@ -242,26 +242,26 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
 
         // We allow for diagonal preconditioning in pdDDD3.
         //-------------------------------------------------------------------
-        if (*istop > 0)
+        if(*istop > 0)
         {
             double r3new     = arnorm;
             double r3ratio   = r3new / info.r3norm;
             double atolold   = atol;
             double atolnew   = atol;
 
-            if (atol > info.atolmin)
+            if(atol > info.atolmin)
             {
-                if     (r3ratio <= 0.1)    // dy seems good
+                if(r3ratio <= 0.1)         // dy seems good
                 {
                     // Relax
                 }
-                else if (r3ratio <= 0.5)     // Accept dy but make next one more accurate.
+                else if(r3ratio <= 0.5)      // Accept dy but make next one more accurate.
                 {
                     atolnew = atolnew * 0.1;
                 }
                 else                        // Recompute dy more accurately
                 {
-                    if (show)
+                    if(show)
                     {
                         printf("\n                                ");
                         printf("                                \n");
@@ -281,42 +281,42 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
             // See if it is time to print something.
             //-------------------------------------------------------------------
             int prnt = 0;
-            if (n     <= 40       ) prnt = 1;
-            if (*itn   <= 10       ) prnt = 1;
-            if (*itn   >= itnlim - 10) prnt = 1;
-            if (fmod(*itn, 10) == 0  ) prnt = 1;
-            if (test3 <=  2 * ctol  ) prnt = 1;
-            if (test2 <= 10 * atol  ) prnt = 1;
-            if (test1 <= 10 * rtol  ) prnt = 1;
-            if (*istop !=  0       ) prnt = 1;
+            if(n     <= 40) prnt = 1;
+            if(*itn   <= 10) prnt = 1;
+            if(*itn   >= itnlim - 10) prnt = 1;
+            if(fmod(*itn, 10) == 0) prnt = 1;
+            if(test3 <=  2 * ctol) prnt = 1;
+            if(test2 <= 10 * atol) prnt = 1;
+            if(test1 <= 10 * rtol) prnt = 1;
+            if(*istop !=  0) prnt = 1;
 
-            if (prnt == 1)
+            if(prnt == 1)
             {
-                if (show)
+                if(show)
                 {
-                    sprintf(str1, "   %6d %12.5e %10.3e",   *itn, x[0], rnorm );
-                    sprintf(str2, "  %8.1e %8.1e",       test1, test2 );
-                    sprintf(str3, " %8.1e %8.1e",        anorm, acond );
+                    sprintf(str1, "   %6d %12.5e %10.3e",   *itn, x[0], rnorm);
+                    sprintf(str2, "  %8.1e %8.1e",       test1, test2);
+                    sprintf(str3, " %8.1e %8.1e",        anorm, acond);
                     printf("%s%s%s\n", str1, str2, str3);
                 }
             }
-            if (*istop > 0)
+            if(*istop > 0)
                 break;
         }
     }
     // End of iteration loop.
     // Print the stopping condition.
 
-    if (show)
+    if(show)
     {
         printf("\n LSQR finished\n");
         //    disp(msg(istop+1,:))
         //    disp(' ')
         printf("%s\n", term_msg[*istop]);
-        sprintf(str1, "istop  =%8d     itn    =%8d",      *istop, *itn    );
-        sprintf(str2, "anorm  =%8.1e   acond  =%8.1e",  anorm, acond  );
-        sprintf(str3, "rnorm  =%8.1e   arnorm =%8.1e",  rnorm, arnorm );
-        sprintf(str4, "bnorm  =%8.1e   xnorm  =%8.1e",  bnorm, xnorm  );
+        sprintf(str1, "istop  =%8d     itn    =%8d",      *istop, *itn);
+        sprintf(str2, "anorm  =%8.1e   acond  =%8.1e",  anorm, acond);
+        sprintf(str3, "rnorm  =%8.1e   arnorm =%8.1e",  rnorm, arnorm);
+        sprintf(str4, "bnorm  =%8.1e   xnorm  =%8.1e",  bnorm, xnorm);
         printf("%s %s\n", str1, str2);
         printf("%s %s\n", str3, str4);
     }
@@ -325,38 +325,38 @@ void ClpLsqr::do_lsqr( CoinDenseVector<double> &b,
 
 
 
-void ClpLsqr::matVecMult( int mode, CoinDenseVector<double> *x, CoinDenseVector<double> *y)
+void ClpLsqr::matVecMult(int mode, CoinDenseVector<double>* x, CoinDenseVector<double>* y)
 {
     int n = model_->numberColumns();
     int m = model_->numberRows();
-    CoinDenseVector<double> *temp = new CoinDenseVector<double>(n, 0.0);
-    double *t_elts = temp->getElements();
-    double *x_elts = x->getElements();
-    double *y_elts = y->getElements();
-    ClpPdco * pdcoModel = (ClpPdco *) model_;
-    if (mode == 1)
+    CoinDenseVector<double>* temp = new CoinDenseVector<double>(n, 0.0);
+    double* t_elts = temp->getElements();
+    double* x_elts = x->getElements();
+    double* y_elts = y->getElements();
+    ClpPdco* pdcoModel = (ClpPdco*) model_;
+    if(mode == 1)
     {
-        pdcoModel->matVecMult( 2, temp, y);
-        for (int k = 0; k < n; k++)
+        pdcoModel->matVecMult(2, temp, y);
+        for(int k = 0; k < n; k++)
             x_elts[k] += (diag1_[k] * t_elts[k]);
-        for (int k = 0; k < m; k++)
-            x_elts[n+k] += (diag2_ * y_elts[k]);
+        for(int k = 0; k < m; k++)
+            x_elts[n + k] += (diag2_ * y_elts[k]);
     }
     else
     {
-        for (int k = 0; k < n; k++)
+        for(int k = 0; k < n; k++)
             t_elts[k] = diag1_[k] * y_elts[k];
-        pdcoModel->matVecMult( 1, x, temp);
-        for (int k = 0; k < m; k++)
-            x_elts[k] += diag2_ * y_elts[n+k];
+        pdcoModel->matVecMult(1, x, temp);
+        for(int k = 0; k < m; k++)
+            x_elts[k] += diag2_ * y_elts[n + k];
     }
     delete temp;
     return;
 }
 
-void ClpLsqr::matVecMult( int mode, CoinDenseVector<double> &x, CoinDenseVector<double> &y)
+void ClpLsqr::matVecMult(int mode, CoinDenseVector<double> & x, CoinDenseVector<double> & y)
 {
-    matVecMult( mode, &x, &y);
+    matVecMult(mode, &x, &y);
     return;
 }
 /* Default constructor */
@@ -369,7 +369,7 @@ ClpLsqr::ClpLsqr() :
 {}
 
 /* Constructor for use with Pdco model (note modified for pdco!!!!) */
-ClpLsqr::ClpLsqr(ClpInterior *model) :
+ClpLsqr::ClpLsqr(ClpInterior* model) :
     diag1_(NULL),
     diag2_(0.0)
 {
@@ -383,16 +383,16 @@ ClpLsqr::~ClpLsqr()
     // delete [] diag1_; no as we just borrowed it
 }
 bool
-ClpLsqr::setParam(char *parmName, int parmValue)
+ClpLsqr::setParam(char* parmName, int parmValue)
 {
     std::cout << "Set lsqr integer parameter " << parmName << "to " << parmValue
               << std::endl;
-    if ( strcmp(parmName, "nrows") == 0)
+    if(strcmp(parmName, "nrows") == 0)
     {
         nrows_ = parmValue;
         return 1;
     }
-    else if ( strcmp(parmName, "ncols") == 0)
+    else if(strcmp(parmName, "ncols") == 0)
     {
         ncols_ = parmValue;
         return 1;
@@ -400,7 +400,7 @@ ClpLsqr::setParam(char *parmName, int parmValue)
     std::cout << "Attempt to set unknown integer parameter name " << parmName << std::endl;
     return 0;
 }
-ClpLsqr::ClpLsqr(const ClpLsqr &rhs) :
+ClpLsqr::ClpLsqr(const ClpLsqr & rhs) :
     nrows_(rhs.nrows_),
     ncols_(rhs.ncols_),
     model_(rhs.model_),
@@ -412,7 +412,7 @@ ClpLsqr::ClpLsqr(const ClpLsqr &rhs) :
 ClpLsqr &
 ClpLsqr::operator=(const ClpLsqr & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         delete [] diag1_;
         diag1_ = ClpCopyOfArray(rhs.diag1_, nrows_);

@@ -55,75 +55,75 @@ namespace ogdf
 {
 
 
-//! Light-weight version of a planarized representation, associated with a PlanRep.
-class PlanRepLight : public GraphCopy
-{
-    const CCsInfo &m_ccInfo;
-    const PlanRep &m_pr;
-
-    int m_currentCC;
-    EdgeArray<edge> m_eAuxCopy;
-
-public:
-    //! Creates a light-weight planarized representation.
-    PlanRepLight(const PlanRep &pr);
-
-    //! Returns the number of connected components in the original graph.
-    int numberOfCCs() const
+    //! Light-weight version of a planarized representation, associated with a PlanRep.
+    class PlanRepLight : public GraphCopy
     {
-        return m_ccInfo.numberOfCCs();
-    }
+        const CCsInfo & m_ccInfo;
+        const PlanRep & m_pr;
 
-    //! Returns the index of the current connected component.
-    int currentCC() const
-    {
-        return m_currentCC;
-    }
+        int m_currentCC;
+        EdgeArray<edge> m_eAuxCopy;
 
-    //! Returns the connected component info structure.
-    const CCsInfo &ccInfo() const
-    {
-        return m_ccInfo;
-    }
+    public:
+        //! Creates a light-weight planarized representation.
+        PlanRepLight(const PlanRep & pr);
 
-    //! Returns the original edge with index \a i.
-    edge e(int i) const
-    {
-        return m_ccInfo.e(i);
-    }
+        //! Returns the number of connected components in the original graph.
+        int numberOfCCs() const
+        {
+            return m_ccInfo.numberOfCCs();
+        }
 
-    //! Returns the original node with index \a i.
-    node v(int i) const
-    {
-        return m_ccInfo.v(i);
-    }
+        //! Returns the index of the current connected component.
+        int currentCC() const
+        {
+            return m_currentCC;
+        }
 
-    //! Returns the index of the first edge in this connected component.
-    int startEdge() const
-    {
-        return m_ccInfo.startEdge(m_currentCC);
-    }
+        //! Returns the connected component info structure.
+        const CCsInfo & ccInfo() const
+        {
+            return m_ccInfo;
+        }
 
-    //! Returns the index of (one past) the last edge in this connected component.
-    int stopEdge() const
-    {
-        return m_ccInfo.stopEdge(m_currentCC);
-    }
+        //! Returns the original edge with index \a i.
+        edge e(int i) const
+        {
+            return m_ccInfo.e(i);
+        }
 
-    EdgeType typeOf(edge e) const
-    {
-        edge eOrig = m_eOrig[e];
-        return (eOrig != 0) ? typeOrig(eOrig) : Graph::association;
-    }
+        //! Returns the original node with index \a i.
+        node v(int i) const
+        {
+            return m_ccInfo.v(i);
+        }
 
-    EdgeType typeOrig(edge eOrig) const
-    {
-        return m_pr.typeOrig(eOrig);
-    }
+        //! Returns the index of the first edge in this connected component.
+        int startEdge() const
+        {
+            return m_ccInfo.startEdge(m_currentCC);
+        }
 
-    //! Initializes the planarized representation for connected component \a cc.
-    void initCC(int cc);
-};
+        //! Returns the index of (one past) the last edge in this connected component.
+        int stopEdge() const
+        {
+            return m_ccInfo.stopEdge(m_currentCC);
+        }
+
+        EdgeType typeOf(edge e) const
+        {
+            edge eOrig = m_eOrig[e];
+            return (eOrig != 0) ? typeOrig(eOrig) : Graph::association;
+        }
+
+        EdgeType typeOrig(edge eOrig) const
+        {
+            return m_pr.typeOrig(eOrig);
+        }
+
+        //! Initializes the planarized representation for connected component \a cc.
+        void initCC(int cc);
+    };
 
 } // end namespace ogdf
 

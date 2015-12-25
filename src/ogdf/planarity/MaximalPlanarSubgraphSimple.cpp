@@ -49,84 +49,84 @@ namespace ogdf
 {
 
 
-// default constructor
-MaximalPlanarSubgraphSimple::MaximalPlanarSubgraphSimple()
-{
-}
-
-
-// copy constructor
-MaximalPlanarSubgraphSimple::MaximalPlanarSubgraphSimple(const MaximalPlanarSubgraphSimple &mps)
-    : PlanarSubgraphModule(mps)
-{
-}
-
-
-// clone method
-PlanarSubgraphModule *MaximalPlanarSubgraphSimple::clone() const
-{
-    return new MaximalPlanarSubgraphSimple(*this);
-}
-
-
-// assignment operator
-MaximalPlanarSubgraphSimple &MaximalPlanarSubgraphSimple::operator=(const MaximalPlanarSubgraphSimple &mps)
-{
-    m_timeLimit = mps.m_timeLimit;
-    return *this;
-}
-
-
-Module::ReturnType MaximalPlanarSubgraphSimple::doCall(
-    const Graph &G,
-    const List<edge> &preferedEdges,
-    List<edge> &delEdges,
-    const EdgeArray<int>  * /* pCost */,
-    bool preferedImplyPlanar)
-{
-    delEdges.clear();
-
-    Graph H;
-    NodeArray<node> mapToH(G);
-
-    node v;
-    forall_nodes(v,G)
-    mapToH[v] = H.newNode();
-
-    EdgeArray<bool> visited(G,false);
-
-    ListConstIterator<edge> it;
-    for(it = preferedEdges.begin(); it.valid(); ++it)
+    // default constructor
+    MaximalPlanarSubgraphSimple::MaximalPlanarSubgraphSimple()
     {
-        edge eG = *it;
-        visited[eG] = true;
-
-        edge eH = H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
-
-        if (preferedImplyPlanar == false && isPlanar(H) == false)
-        {
-            H.delEdge(eH);
-            delEdges.pushBack(eG);
-        }
     }
 
-    edge eG;
-    forall_edges(eG,G)
+
+    // copy constructor
+    MaximalPlanarSubgraphSimple::MaximalPlanarSubgraphSimple(const MaximalPlanarSubgraphSimple & mps)
+        : PlanarSubgraphModule(mps)
     {
-        if(visited[eG] == true)
-            continue;
-
-        edge eH = H.newEdge(mapToH[eG->source()],mapToH[eG->target()]);
-
-        if (isPlanar(H) == false)
-        {
-            H.delEdge(eH);
-            delEdges.pushBack(eG);
-        }
     }
 
-    return retFeasible;
-}
+
+    // clone method
+    PlanarSubgraphModule* MaximalPlanarSubgraphSimple::clone() const
+    {
+        return new MaximalPlanarSubgraphSimple(*this);
+    }
+
+
+    // assignment operator
+    MaximalPlanarSubgraphSimple & MaximalPlanarSubgraphSimple::operator=(const MaximalPlanarSubgraphSimple & mps)
+    {
+        m_timeLimit = mps.m_timeLimit;
+        return *this;
+    }
+
+
+    Module::ReturnType MaximalPlanarSubgraphSimple::doCall(
+        const Graph & G,
+        const List<edge> & preferedEdges,
+        List<edge> & delEdges,
+        const EdgeArray<int>*   /* pCost */,
+        bool preferedImplyPlanar)
+    {
+        delEdges.clear();
+
+        Graph H;
+        NodeArray<node> mapToH(G);
+
+        node v;
+        forall_nodes(v, G)
+        mapToH[v] = H.newNode();
+
+        EdgeArray<bool> visited(G, false);
+
+        ListConstIterator<edge> it;
+        for(it = preferedEdges.begin(); it.valid(); ++it)
+        {
+            edge eG = *it;
+            visited[eG] = true;
+
+            edge eH = H.newEdge(mapToH[eG->source()], mapToH[eG->target()]);
+
+            if(preferedImplyPlanar == false && isPlanar(H) == false)
+            {
+                H.delEdge(eH);
+                delEdges.pushBack(eG);
+            }
+        }
+
+        edge eG;
+        forall_edges(eG, G)
+        {
+            if(visited[eG] == true)
+                continue;
+
+            edge eH = H.newEdge(mapToH[eG->source()], mapToH[eG->target()]);
+
+            if(isPlanar(H) == false)
+            {
+                H.delEdge(eH);
+                delEdges.pushBack(eG);
+            }
+        }
+
+        return retFeasible;
+    }
 
 
 } // end namespace ogdf

@@ -55,153 +55,153 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT GraphCopyAttributes;
-struct ClusterStructure;
+    class OGDF_EXPORT GraphCopyAttributes;
+    struct ClusterStructure;
 
-//! The circular layout algorithm.
-/**
- * The implementation used in CircularLayout is based on
- * the following publication:
- *
- * Ugur Dogrus&ouml;z, Brendan Madden, Patrick Madden: <i>Circular %Layout in the
- * %Graph %Layout Toolkit</i>. Proc. %Graph Drawing 1996, LNCS 1190, pp. 92-100, 1997.
- *
- * <H3>Optional parameters</H3>
- * Circular layout provides the following optional parameters.
- *
- * <table>
- *   <tr>
- *     <th><i>Option</i><th><i>Type</i><th><i>Default</i><th><i>Description</i>
- *   </tr><tr>
- *     <td><i>minDistCircle</i><td>double<td>20.0
- *     <td>The minimal distance between nodes on a circle.
- *   </tr><tr>
- *     <td><i>minDistLevel</i><td>double<td>20.0
- *     <td>The minimal distance between father and child circle.
- *   </tr><tr>
- *     <td><i>minDistSibling</i><td>double<td>10.0
- *     <td>The minimal distance between circles on same level.
- *   </tr><tr>
- *     <td><i>minDistCC</i><td>double<td>20.0
- *     <td>The minimal distance between connected components.
- *   </tr><tr>
- *     <td><i>pageRatio</i><td>double<td>1.0
- *     <td>The page ratio used for packing connected components.
- *   </tr>
- * </table>
- */
-class OGDF_EXPORT CircularLayout : public LayoutModule
-{
-public:
-    //! Creates an instance of circular layout.
-    CircularLayout();
-
-    // destructor
-    ~CircularLayout() { }
-
-
+    //! The circular layout algorithm.
     /**
-     *  @name The algorithm call
-     *  @{
+     * The implementation used in CircularLayout is based on
+     * the following publication:
+     *
+     * Ugur Dogrus&ouml;z, Brendan Madden, Patrick Madden: <i>Circular %Layout in the
+     * %Graph %Layout Toolkit</i>. Proc. %Graph Drawing 1996, LNCS 1190, pp. 92-100, 1997.
+     *
+     * <H3>Optional parameters</H3>
+     * Circular layout provides the following optional parameters.
+     *
+     * <table>
+     *   <tr>
+     *     <th><i>Option</i><th><i>Type</i><th><i>Default</i><th><i>Description</i>
+     *   </tr><tr>
+     *     <td><i>minDistCircle</i><td>double<td>20.0
+     *     <td>The minimal distance between nodes on a circle.
+     *   </tr><tr>
+     *     <td><i>minDistLevel</i><td>double<td>20.0
+     *     <td>The minimal distance between father and child circle.
+     *   </tr><tr>
+     *     <td><i>minDistSibling</i><td>double<td>10.0
+     *     <td>The minimal distance between circles on same level.
+     *   </tr><tr>
+     *     <td><i>minDistCC</i><td>double<td>20.0
+     *     <td>The minimal distance between connected components.
+     *   </tr><tr>
+     *     <td><i>pageRatio</i><td>double<td>1.0
+     *     <td>The page ratio used for packing connected components.
+     *   </tr>
+     * </table>
      */
-
-    //! Computes a circular layout for graph attributes \a GA.
-    void call(GraphAttributes &GA);
-
-
-    /** @}
-     *  @name Optional parameters
-     *  @{
-     */
-
-    //! Returns the option <i>minDistCircle</i>.
-    double minDistCircle() const
+    class OGDF_EXPORT CircularLayout : public LayoutModule
     {
-        return m_minDistCircle;
-    }
+    public:
+        //! Creates an instance of circular layout.
+        CircularLayout();
 
-    //! Sets the option <i>minDistCircle</i> to \a x.
-    void minDistCircle(double x)
-    {
-        m_minDistCircle = x;
-    }
+        // destructor
+        ~CircularLayout() { }
 
-    //! Returns the option <i>minDistLevel</i>.
-    double minDistLevel() const
-    {
-        return m_minDistLevel;
-    }
 
-    //! Sets the option <i>minDistLevel</i> to \a x.
-    void minDistLevel(double x)
-    {
-        m_minDistLevel = x;
-    }
+        /**
+         *  @name The algorithm call
+         *  @{
+         */
 
-    //! Returns the option <i>minDistSibling</i>.
-    double minDistSibling() const
-    {
-        return m_minDistSibling;
-    }
+        //! Computes a circular layout for graph attributes \a GA.
+        void call(GraphAttributes & GA);
 
-    //! Sets the option <i>minDistSibling</i> to \a x.
-    void minDistSibling(double x)
-    {
-        m_minDistSibling = x;
-    }
 
-    //! Returns the option <i>minDistCC</i>.
-    double minDistCC() const
-    {
-        return m_minDistCC;
-    }
+        /** @}
+         *  @name Optional parameters
+         *  @{
+         */
 
-    //! Sets the option <i>minDistCC</i> to \a x.
-    void minDistCC(double x)
-    {
-        m_minDistCC = x;
-    }
+        //! Returns the option <i>minDistCircle</i>.
+        double minDistCircle() const
+        {
+            return m_minDistCircle;
+        }
 
-    //! Returns the option <i>pageRatio</i>.
-    double pageRatio() const
-    {
-        return m_pageRatio;
-    }
+        //! Sets the option <i>minDistCircle</i> to \a x.
+        void minDistCircle(double x)
+        {
+            m_minDistCircle = x;
+        }
 
-    //! Sets the option <i>pageRatio</i> to \a x.
-    void pageRatio(double x)
-    {
-        m_pageRatio = x;
-    }
+        //! Returns the option <i>minDistLevel</i>.
+        double minDistLevel() const
+        {
+            return m_minDistLevel;
+        }
 
-    //! @}
+        //! Sets the option <i>minDistLevel</i> to \a x.
+        void minDistLevel(double x)
+        {
+            m_minDistLevel = x;
+        }
 
-private:
-    double m_minDistCircle;  //!< The minimal distance between nodes on a circle.
-    double m_minDistLevel;   //!< The minimal distance between father and child circle.
-    double m_minDistSibling; //!< The minimal distance between circles on same level.
-    double m_minDistCC;      //!< The minimal distance between connected components.
-    double m_pageRatio;      //!< The page ratio used for packing connected components.
+        //! Returns the option <i>minDistSibling</i>.
+        double minDistSibling() const
+        {
+            return m_minDistSibling;
+        }
 
-    void doCall(GraphCopyAttributes &AG, ClusterStructure &C);
+        //! Sets the option <i>minDistSibling</i> to \a x.
+        void minDistSibling(double x)
+        {
+            m_minDistSibling = x;
+        }
 
-    void assignClustersByBiconnectedComponents(ClusterStructure &C);
+        //! Returns the option <i>minDistCC</i>.
+        double minDistCC() const
+        {
+            return m_minDistCC;
+        }
 
-    int sizeBC(node vB);
+        //! Sets the option <i>minDistCC</i> to \a x.
+        void minDistCC(double x)
+        {
+            m_minDistCC = x;
+        }
 
-    void computePreferedAngles(
-        ClusterStructure &C,
-        const Array<double> &outerRadius,
-        Array<double> &preferedAngle);
+        //! Returns the option <i>pageRatio</i>.
+        double pageRatio() const
+        {
+            return m_pageRatio;
+        }
 
-    void assignPrefAngle(ClusterStructure &C,
-                         const Array<double> &outerRadius,
-                         Array<double> &preferedAngle,
-                         int c,
-                         int l,
-                         double r1);
+        //! Sets the option <i>pageRatio</i> to \a x.
+        void pageRatio(double x)
+        {
+            m_pageRatio = x;
+        }
 
-};
+        //! @}
+
+    private:
+        double m_minDistCircle;  //!< The minimal distance between nodes on a circle.
+        double m_minDistLevel;   //!< The minimal distance between father and child circle.
+        double m_minDistSibling; //!< The minimal distance between circles on same level.
+        double m_minDistCC;      //!< The minimal distance between connected components.
+        double m_pageRatio;      //!< The page ratio used for packing connected components.
+
+        void doCall(GraphCopyAttributes & AG, ClusterStructure & C);
+
+        void assignClustersByBiconnectedComponents(ClusterStructure & C);
+
+        int sizeBC(node vB);
+
+        void computePreferedAngles(
+            ClusterStructure & C,
+            const Array<double> & outerRadius,
+            Array<double> & preferedAngle);
+
+        void assignPrefAngle(ClusterStructure & C,
+                             const Array<double> & outerRadius,
+                             Array<double> & preferedAngle,
+                             int c,
+                             int l,
+                             double r1);
+
+    };
 
 
 } // end namespace ogdf

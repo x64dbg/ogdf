@@ -51,155 +51,155 @@ namespace ogdf
 {
 
 
-class OGDF_EXPORT Math
-{
-
-public:
-    //! The constant \f$\pi\f$.
-    static const double pi;
-
-    //! The constant \f$\frac{\pi}{2}\f$.
-    static const double pi_2;
-
-    //! The constant \f$\frac{\pi}{4}\f$.
-    static const double pi_4;
-
-    //! The constant \f$2\pi\f$.
-    static const double two_pi;
-
-    //! Euler's number.
-    static const double e;
-
-    //! The constant log(2.0).
-    static const double log_of_2;
-
-    //! The constant log(4.0).
-    static const double log_of_4;
-
-    //! Returns the logarithm of \a x to the base 2.
-    static double log2(double x)
+    class OGDF_EXPORT Math
     {
-        OGDF_ASSERT(x >= 0)
-        return log(x) / log_of_2;
-    }
 
-    //! Returns the logarithm of \a x to the base 4.
-    static double log4(double x)
-    {
-        OGDF_ASSERT(x >= 0)
-        return log(x) / log_of_4;
-    }
+    public:
+        //! The constant \f$\pi\f$.
+        static const double pi;
 
-    //! Returns \f$n \choose k\f$.
-    static int binomial(int n, int k);
+        //! The constant \f$\frac{\pi}{2}\f$.
+        static const double pi_2;
 
-    //! Returns \f$n \choose k\f$.
-    static double binomial_d(int n, int k);
+        //! The constant \f$\frac{\pi}{4}\f$.
+        static const double pi_4;
 
-    //! Returns \a n!.
-    static int factorial(int n);
+        //! The constant \f$2\pi\f$.
+        static const double two_pi;
 
-    //! Returns \a n!.
-    static double factorial_d(int n);
+        //! Euler's number.
+        static const double e;
 
-    //static bool equald(double a, double b) {
-    //  double d = a-b;
-    //  return d < DOUBLE_EPS && d > -DOUBLE_EPS;
-    //}
+        //! The constant log(2.0).
+        static const double log_of_2;
 
-    /*!
-     * \brief A fast method to obtain the rounded down binary logarithm of an 32-bit integer
-     *
-     * This is based on http://en.wikipedia.org/wiki/Binary_logarithm
-     * @param v The number of which the binary logarithm is to be determined
-     * @return The rounded down logarithm base 2 if v is positive, -1 otherwise
-     */
-    static int floorLog2(int v)
-    {
-        if (v <= 0)
+        //! The constant log(4.0).
+        static const double log_of_4;
+
+        //! Returns the logarithm of \a x to the base 2.
+        static double log2(double x)
         {
-            return -1;
+            OGDF_ASSERT(x >= 0)
+            return log(x) / log_of_2;
         }
-        else
+
+        //! Returns the logarithm of \a x to the base 4.
+        static double log4(double x)
         {
-            int result = 0;
-            if (v >= (1 << 16))
-            {
-                v >>= 16;
-                result += 16;
-            }
-            if (v >= (1 << 8))
-            {
-                v >>= 8;
-                result += 8;
-            }
-            if (v >= (1 << 4))
-            {
-                v >>= 4;
-                result += 4;
-            }
-            if (v >= (1 << 2))
-            {
-                v >>= 2;
-                result += 2;
-            }
-            if (v >= (1 << 1))
-            {
-                result += 1;
-            }
-            return result;
+            OGDF_ASSERT(x >= 0)
+            return log(x) / log_of_4;
         }
-    }
 
-    //! Returns the greatest common divisor of two numbers.
-    static int gcd(int a, int b)
-    {
-        // If b > a, they will be swapped in the first iteration.
-        do
+        //! Returns \f$n \choose k\f$.
+        static int binomial(int n, int k);
+
+        //! Returns \f$n \choose k\f$.
+        static double binomial_d(int n, int k);
+
+        //! Returns \a n!.
+        static int factorial(int n);
+
+        //! Returns \a n!.
+        static double factorial_d(int n);
+
+        //static bool equald(double a, double b) {
+        //  double d = a-b;
+        //  return d < DOUBLE_EPS && d > -DOUBLE_EPS;
+        //}
+
+        /*!
+         * \brief A fast method to obtain the rounded down binary logarithm of an 32-bit integer
+         *
+         * This is based on http://en.wikipedia.org/wiki/Binary_logarithm
+         * @param v The number of which the binary logarithm is to be determined
+         * @return The rounded down logarithm base 2 if v is positive, -1 otherwise
+         */
+        static int floorLog2(int v)
         {
-            int c = a % b;
-            a = b;
-            b = c;
+            if(v <= 0)
+            {
+                return -1;
+            }
+            else
+            {
+                int result = 0;
+                if(v >= (1 << 16))
+                {
+                    v >>= 16;
+                    result += 16;
+                }
+                if(v >= (1 << 8))
+                {
+                    v >>= 8;
+                    result += 8;
+                }
+                if(v >= (1 << 4))
+                {
+                    v >>= 4;
+                    result += 4;
+                }
+                if(v >= (1 << 2))
+                {
+                    v >>= 2;
+                    result += 2;
+                }
+                if(v >= (1 << 1))
+                {
+                    result += 1;
+                }
+                return result;
+            }
         }
-        while (b > 0);
-        return a;
-    }
 
-    //! Returns the least common multipler of two numbers.
-    static int lcm(int a, int b)
-    {
-        return a*b / gcd(a,b);
-    }
-
-    //! Converts a double to a fraction.
-    static void getFraction(double d, int &num, int &denom, const double epsilon = 5e-10, const int count = 10)
-    {
-        Stack<int> continuedFrac;
-
-        // build continued fraction
-        int z((int)d);
-        continuedFrac.push(z);
-        d = d - z;
-        int i = 0;
-        while (d > epsilon && i++ < count)
+        //! Returns the greatest common divisor of two numbers.
+        static int gcd(int a, int b)
         {
-            d = 1 / d;
-            z = (int)d;
+            // If b > a, they will be swapped in the first iteration.
+            do
+            {
+                int c = a % b;
+                a = b;
+                b = c;
+            }
+            while(b > 0);
+            return a;
+        }
+
+        //! Returns the least common multipler of two numbers.
+        static int lcm(int a, int b)
+        {
+            return a * b / gcd(a, b);
+        }
+
+        //! Converts a double to a fraction.
+        static void getFraction(double d, int & num, int & denom, const double epsilon = 5e-10, const int count = 10)
+        {
+            Stack<int> continuedFrac;
+
+            // build continued fraction
+            int z((int)d);
             continuedFrac.push(z);
             d = d - z;
-        }
+            int i = 0;
+            while(d > epsilon && i++ < count)
+            {
+                d = 1 / d;
+                z = (int)d;
+                continuedFrac.push(z);
+                d = d - z;
+            }
 
-        // simplify continued fraction to simple fraction
-        num = 1;
-        denom = 0;
-        while (!continuedFrac.empty())
-        {
-            int last = continuedFrac.pop();
-            swap(num, denom);
-            num += last * denom;
+            // simplify continued fraction to simple fraction
+            num = 1;
+            denom = 0;
+            while(!continuedFrac.empty())
+            {
+                int last = continuedFrac.pop();
+                swap(num, denom);
+                num += last * denom;
+            }
         }
-    }
-};
+    };
 
 
 }

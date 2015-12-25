@@ -14,8 +14,8 @@
 /** Knapsack Cover Cut Generator Class */
 class CglKnapsackCover : public CglCutGenerator
 {
-    friend void CglKnapsackCoverUnitTest(const OsiSolverInterface * siP,
-                                         const std::string mpdDir );
+    friend void CglKnapsackCoverUnitTest(const OsiSolverInterface* siP,
+                                         const std::string mpdDir);
 
 public:
     /** A method to set which rows should be tested for knapsack covers */
@@ -33,27 +33,27 @@ public:
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglKnapsackCover ();
+    CglKnapsackCover();
 
     /// Copy constructor
-    CglKnapsackCover (
+    CglKnapsackCover(
         const CglKnapsackCover &);
 
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
     CglKnapsackCover &
     operator=(
-        const CglKnapsackCover& rhs);
+        const CglKnapsackCover & rhs);
 
     /// Destructor
     virtual
-    ~CglKnapsackCover ();
+    ~CglKnapsackCover();
     /// Create C++ lines to get to current state
-    virtual std::string generateCpp( FILE * fp);
+    virtual std::string generateCpp(FILE* fp);
     /// This can be used to refresh any information
-    virtual void refreshSolver(OsiSolverInterface * solver);
+    virtual void refreshSolver(OsiSolverInterface* solver);
     //@}
 
 
@@ -62,7 +62,7 @@ public:
     /// Set limit on number in knapsack
     inline void setMaxInKnapsack(int value)
     {
-        if (value>0) maxInKnapsack_ = value;
+        if(value > 0) maxInKnapsack_ = value;
     }
     /// get limit on number in knapsack
     inline int getMaxInKnapsack() const
@@ -72,16 +72,16 @@ public:
     /// Switch off expensive cuts
     inline void switchOffExpensive()
     {
-        expensiveCuts_=false;
+        expensiveCuts_ = false;
     }
     /// Switch on expensive cuts
     inline void switchOnExpensive()
     {
-        expensiveCuts_=true;
+        expensiveCuts_ = true;
     }
 private:
 
-// Private member methods
+    // Private member methods
 
 
     /**@name Private methods */
@@ -100,20 +100,20 @@ private:
         CoinPackedVector & krow,
         bool treatAsLRow,
         double & b,
-        int *  complement,
-        double *  xstar,
+        int*   complement,
+        double*   xstar,
         int rowIndex,
         int numberElements,
-        const int * index,
-        const double * element) const;
+        const int* index,
+        const double* element) const;
 
     int deriveAKnapsack(
         const OsiSolverInterface & si,
         OsiCuts & cs,
         CoinPackedVector & krow,
         double & b,
-        int *  complement,
-        double *  xstar,
+        int*   complement,
+        double*   xstar,
         int rowIndex,
         const CoinPackedVectorBase & matrixRow) const;
 
@@ -127,7 +127,7 @@ private:
         int row,
         CoinPackedVector & krow,
         double b,
-        double *  xstar,
+        double*   xstar,
         CoinPackedVector & cover,
         CoinPackedVector & remainder) const ;
 
@@ -139,16 +139,16 @@ private:
         int row,
         CoinPackedVector & krow,
         double & b,
-        double * xstar,
+        double* xstar,
         CoinPackedVector & cover,
         CoinPackedVector & remainder) const;
 
-/// find a minimum cover by a simple greedy approach
+    /// find a minimum cover by a simple greedy approach
     int findGreedyCover(
         int row,
         CoinPackedVector & krow,
         double & b,
-        double * xstar,
+        double* xstar,
         CoinPackedVector & cover,
         CoinPackedVector & remainder
     ) const;
@@ -159,36 +159,36 @@ private:
         int nRowElem,
         CoinPackedVector & cover,
         CoinPackedVector & remainder,
-        CoinPackedVector & cut ) const;
+        CoinPackedVector & cut) const;
 
     /// sequence-independent lift and uncomplement and add the resulting cut to the cut set
     int liftAndUncomplementAndAdd(
         double rowub,
         CoinPackedVector & krow,
         double & b,
-        int * complement,
+        int* complement,
         int row,
         CoinPackedVector & cover,
         CoinPackedVector & remainder,
-        OsiCuts & cs ) const;
+        OsiCuts & cs) const;
 
     /// sequence-dependent lift, uncomplement and add the resulting cut to the cut set
     void seqLiftAndUncomplementAndAdd(
         int nCols,
-        double * xstar,
-        int * complement,
+        double* xstar,
+        int* complement,
         int row,
         int nRowElem,
         double & b,
         CoinPackedVector & cover,      // need not be violated
         CoinPackedVector & remainder,
-        OsiCuts & cs ) const;
+        OsiCuts & cs) const;
 
     /// sequence-dependent lift binary variables either up or down, uncomplement and add to the cut set
     void liftUpDownAndUncomplementAndAdd(
         int nCols,
-        double * xstar,
-        int * complement,
+        double* xstar,
+        int* complement,
         int row,
         int nRowElem,
         double & b,
@@ -199,23 +199,23 @@ private:
         CoinPackedVector & atOne,     // vars have soln value of 1 in lp relaxation
         // and together with fracCover form minimal (?) cover.
         CoinPackedVector & remainder,
-        OsiCuts & cs ) const;
+        OsiCuts & cs) const;
 
     /// find a cover using a variation of the logic found in OSL (w/o SOS)
-    int findPseudoJohnAndEllisCover (
+    int findPseudoJohnAndEllisCover(
         int row,
         CoinPackedVector & krow,
         double & b,
-        double * xstar,
+        double* xstar,
         CoinPackedVector & cover,
         CoinPackedVector & remainder) const;
 
     /// find a cover using the basic logic found in OSL (w/o SOS)
-    int findJohnAndEllisCover (
+    int findJohnAndEllisCover(
         int row,
         CoinPackedVector & krow,
         double & b,
-        double * xstar,
+        double* xstar,
         CoinPackedVector & fracCover,
         CoinPackedVector & atOnes,
         CoinPackedVector & remainder) const;
@@ -231,18 +231,18 @@ private:
     int exactSolveKnapsack(
         int n,
         double c,
-        double const *pp,
-        double const *ww,
+        double const* pp,
+        double const* ww,
         double & z,
-        int * x) const;
+        int* x) const;
 
     /** Creates cliques for use by probing.
         Only cliques >= minimumSize and < maximumSize created
         Can also try and extend cliques as a result of probing (root node).
         Returns number of cliques found.
     */
-    int createCliques( OsiSolverInterface & si,
-                       int minimumSize=2, int maximumSize=100, bool extendCliques=false);
+    int createCliques(OsiSolverInterface & si,
+                      int minimumSize = 2, int maximumSize = 100, bool extendCliques = false);
     /// Delete all clique information
     void deleteCliques();
     //@}
@@ -267,32 +267,32 @@ private:
     bool expensiveCuts_;
     /// Cliques
     /// **** TEMP so can reference from listing
-    mutable const OsiSolverInterface * solver_;
+    mutable const OsiSolverInterface* solver_;
     mutable int whichRow_;
-    mutable int * complement_;
-    mutable double * elements_;
+    mutable int* complement_;
+    mutable double* elements_;
     /// Number of cliques
     int numberCliques_;
     /// Clique type
     typedef struct
     {
-        unsigned int equality:1; //  nonzero if clique is ==
+        unsigned int equality: 1; //  nonzero if clique is ==
     } cliqueType;
-    cliqueType * cliqueType_;
+    cliqueType* cliqueType_;
     /// Start of each clique
-    int * cliqueStart_;
+    int* cliqueStart_;
     /// Entries for clique
-    cliqueEntry * cliqueEntry_;
+    cliqueEntry* cliqueEntry_;
     /** Start of oneFixes cliques for a column in matrix or -1 if not
         in any clique */
-    int * oneFixStart_;
+    int* oneFixStart_;
     /** Start of zeroFixes cliques for a column in matrix or -1 if not
         in any clique */
-    int * zeroFixStart_;
+    int* zeroFixStart_;
     /// End of fixes for a column
-    int * endFixStart_;
+    int* endFixStart_;
     /// Clique numbers for one or zero fixes
-    int * whichClique_;
+    int* whichClique_;
     /// Number of columns
     int numberColumns_;
     /** For each column with nonzero in row copy this gives a clique "number".
@@ -311,7 +311,7 @@ private:
     have to be compiled into the library. And that's a gain, because the
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
-void CglKnapsackCoverUnitTest(const OsiSolverInterface * siP,
-                              const std::string mpdDir );
+void CglKnapsackCoverUnitTest(const OsiSolverInterface* siP,
+                              const std::string mpdDir);
 
 #endif

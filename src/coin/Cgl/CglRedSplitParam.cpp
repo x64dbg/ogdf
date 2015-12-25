@@ -25,14 +25,14 @@
 /***********************************************************************/
 void CglRedSplitParam::setAway(const double value)
 {
-    if (value > 0.0 && value <= 0.5)
+    if(value > 0.0 && value <= 0.5)
         away_ = value;
 }
 
 /***********************************************************************/
 void CglRedSplitParam::setMaxTab(const double value)
 {
-    if (value > 10)
+    if(value > 10)
     {
         maxTab_ = value;
     }
@@ -46,7 +46,7 @@ void CglRedSplitParam::setMaxTab(const double value)
 /***********************************************************************/
 void CglRedSplitParam::setLUB(const double value)
 {
-    if (value > 0.0)
+    if(value > 0.0)
     {
         LUB = value;
     }
@@ -80,7 +80,7 @@ void CglRedSplitParam::setEPS_RELAX_REL(const double eps_rr)
 /***********************************************************************/
 void CglRedSplitParam::setMAXDYN(double value)
 {
-    if (value > 1.0)
+    if(value > 1.0)
     {
         MAXDYN = value;
     }
@@ -94,7 +94,7 @@ void CglRedSplitParam::setMAXDYN(double value)
 /***********************************************************************/
 void CglRedSplitParam::setMAXDYN_LUB(double value)
 {
-    if (value > 1.0)
+    if(value > 1.0)
     {
         MAXDYN_LUB = value;
     }
@@ -108,7 +108,7 @@ void CglRedSplitParam::setMAXDYN_LUB(double value)
 /***********************************************************************/
 void CglRedSplitParam::setEPS_COEFF_LUB(const double value)
 {
-    if (value > 0.0 && value <= 0.1)
+    if(value > 0.0 && value <= 0.1)
     {
         EPS_COEFF_LUB = value;
     }
@@ -122,7 +122,7 @@ void CglRedSplitParam::setEPS_COEFF_LUB(const double value)
 /***********************************************************************/
 void CglRedSplitParam::setMINVIOL(double value)
 {
-    if (value > 0.0 && value <= 0.1)
+    if(value > 0.0 && value <= 0.1)
     {
         MINVIOL = value;
     }
@@ -148,7 +148,7 @@ void CglRedSplitParam::setUSE_CG2(int value)
 /***********************************************************************/
 void CglRedSplitParam::setNormIsZero(const double value)
 {
-    if (value > 0.0 && value <= 1)
+    if(value > 0.0 && value <= 1)
     {
         normIsZero = value;
     }
@@ -162,7 +162,7 @@ void CglRedSplitParam::setNormIsZero(const double value)
 /***********************************************************************/
 void CglRedSplitParam::setMinReduc(const double value)
 {
-    if (value > 0.0 && value <= 1)
+    if(value > 0.0 && value <= 1)
     {
         minReduc = value;
     }
@@ -206,7 +206,7 @@ CglRedSplitParam::CglRedSplitParam(const double lub,
 {}
 
 /***********************************************************************/
-CglRedSplitParam::CglRedSplitParam(const CglParam &source,
+CglRedSplitParam::CglRedSplitParam(const CglParam & source,
                                    const double lub,
                                    const double eps_el,
                                    const double eps_ra,
@@ -240,7 +240,7 @@ CglRedSplitParam::CglRedSplitParam(const CglParam &source,
 {}
 
 /***********************************************************************/
-CglRedSplitParam::CglRedSplitParam(const CglRedSplitParam &source) :
+CglRedSplitParam::CglRedSplitParam(const CglRedSplitParam & source) :
     CglParam(source),
     LUB(source.LUB),
     EPS_ELIM(source.EPS_ELIM),
@@ -265,7 +265,7 @@ CglRedSplitParam* CglRedSplitParam::clone() const
 }
 
 /***********************************************************************/
-CglRedSplitParam& CglRedSplitParam::operator=(const CglRedSplitParam &rhs)
+CglRedSplitParam & CglRedSplitParam::operator=(const CglRedSplitParam & rhs)
 {
     if(this != &rhs)
     {

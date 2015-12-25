@@ -56,27 +56,27 @@
 namespace ogdf
 {
 
-/**
- * \brief Computation of the shelling order for biconnected graphs.
- *
- * \pre The input graph has to be simple (no multi-edges, no self-loops),
- * planar and biconnected.
- */
-class OGDF_EXPORT BiconnectedShellingOrder : public ShellingOrderModule
-{
-public:
-    //! Creates a biconnected shelling order module.
-    BiconnectedShellingOrder()
+    /**
+     * \brief Computation of the shelling order for biconnected graphs.
+     *
+     * \pre The input graph has to be simple (no multi-edges, no self-loops),
+     * planar and biconnected.
+     */
+    class OGDF_EXPORT BiconnectedShellingOrder : public ShellingOrderModule
     {
-        m_baseRatio = 0.33;
-    }
+    public:
+        //! Creates a biconnected shelling order module.
+        BiconnectedShellingOrder()
+        {
+            m_baseRatio = 0.33;
+        }
 
-protected:
-    //! The actual implementation of the module call.
-    virtual void doCall(const Graph &G,
-                        adjEntry adj,
-                        List<ShellingOrderSet> &partition);
-};
+    protected:
+        //! The actual implementation of the module call.
+        virtual void doCall(const Graph & G,
+                            adjEntry adj,
+                            List<ShellingOrderSet> & partition);
+    };
 
 
 } // end namespace ogdf

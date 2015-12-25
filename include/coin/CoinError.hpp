@@ -90,18 +90,18 @@ public:
     /// Just print (for asserts)
     inline void print(bool doPrint = true) const
     {
-        if (! doPrint)
+        if(! doPrint)
             return;
-        if (lineNumber_<0)
+        if(lineNumber_ < 0)
         {
-            std::cout<<message_<<" in "<<class_<<"::"<<method_<<std::endl;
+            std::cout << message_ << " in " << class_ << "::" << method_ << std::endl;
         }
         else
         {
-            std::cout<<file_<<":"<<lineNumber_<<" method "<<method_
-                     <<" : assertion \'"<<message_<<"\' failed."<<std::endl;
-            if(class_!="")
-                std::cout<<"Possible reason: "<<class_<<std::endl;
+            std::cout << file_ << ":" << lineNumber_ << " method " << method_
+                      << " : assertion \'" << message_ << "\' failed." << std::endl;
+            if(class_ != "")
+                std::cout << "Possible reason: " << class_ << std::endl;
         }
     }
     //@}
@@ -110,7 +110,7 @@ public:
     /**@name Constructors and destructors */
     //@{
     /// Alternate Constructor
-    CoinError (
+    CoinError(
         std::string message__,
         std::string methodName__,
         std::string className__,
@@ -127,7 +127,7 @@ public:
     }
 
     /// Copy constructor
-    CoinError (const CoinError & source)
+    CoinError(const CoinError & source)
         :
         message_(source.message_),
         method_(source.method_),
@@ -139,21 +139,21 @@ public:
     }
 
     /// Assignment operator
-    CoinError & operator=(const CoinError& rhs)
+    CoinError & operator=(const CoinError & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
-            message_=rhs.message_;
-            method_=rhs.method_;
-            class_=rhs.class_;
-            file_=rhs.file_;
+            message_ = rhs.message_;
+            method_ = rhs.method_;
+            class_ = rhs.class_;
+            file_ = rhs.file_;
             lineNumber_ = rhs.lineNumber_;
         }
         return *this;
     }
 
     /// Destructor
-    virtual ~CoinError ()
+    virtual ~CoinError()
     {
         // nothing to do here
     }

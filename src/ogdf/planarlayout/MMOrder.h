@@ -57,44 +57,44 @@ namespace ogdf
 {
 
 
-class MMOrder
-{
-public:
-    MMOrder() { }
-
-    void init(PlanRep &PG, ShellingOrderModule &compOrder, adjEntry adjExternal);
-
-    int rank(node v) const
+    class MMOrder
     {
-        return m_lmc.rank(v);
-    }
+    public:
+        MMOrder() { }
 
-    int length() const
-    {
-        return m_lmc.length();
-    }
+        void init(PlanRep & PG, ShellingOrderModule & compOrder, adjEntry adjExternal);
 
-    const ShellingOrderSet &operator[](int k) const
-    {
-        return m_lmc[k];
-    }
+        int rank(node v) const
+        {
+            return m_lmc.rank(v);
+        }
 
-    node operator()(int k, int i) const
-    {
-        return m_lmc(k,i);
-    }
+        int length() const
+        {
+            return m_lmc.length();
+        }
 
-    int len(int k) const
-    {
-        return m_lmc.len(k);
-    }
+        const ShellingOrderSet & operator[](int k) const
+        {
+            return m_lmc[k];
+        }
 
-    Array<node> m_left, m_right;
+        node operator()(int k, int i) const
+        {
+            return m_lmc(k, i);
+        }
+
+        int len(int k) const
+        {
+            return m_lmc.len(k);
+        }
+
+        Array<node> m_left, m_right;
 
 
-private:
-    ShellingOrder m_lmc;
-};
+    private:
+        ShellingOrder m_lmc;
+    };
 
 
 } // end namespace ogdf

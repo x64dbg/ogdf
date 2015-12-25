@@ -47,8 +47,8 @@
 class CglResidualCapacity : public CglCutGenerator
 {
 
-    friend void CglResidualCapacityUnitTest(const OsiSolverInterface * siP,
-                                            const std::string mpdDir );
+    friend void CglResidualCapacityUnitTest(const OsiSolverInterface* siP,
+                                            const std::string mpdDir);
 
 
 private:
@@ -104,26 +104,26 @@ public:
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglResidualCapacity ();
+    CglResidualCapacity();
 
     /// Alternate Constructor
-    CglResidualCapacity ( const double tolerance );
+    CglResidualCapacity(const double tolerance);
 
     /// Copy constructor
-    CglResidualCapacity (
+    CglResidualCapacity(
         const CglResidualCapacity &);
 
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
     CglResidualCapacity &
     operator=(
-        const CglResidualCapacity& rhs);
+        const CglResidualCapacity & rhs);
 
     /// Destructor
     virtual
-    ~CglResidualCapacity ();
+    ~CglResidualCapacity();
     /// This is to refresh preprocessing
     virtual void refreshPrep();
     //@}
@@ -135,28 +135,28 @@ private:
     // Private member methods
 
     // Construct
-    void gutsOfConstruct ( const double tolerance);
+    void gutsOfConstruct(const double tolerance);
 
     // Delete
     void gutsOfDelete();
 
     // Copy
-    void gutsOfCopy (const CglResidualCapacity& rhs);
+    void gutsOfCopy(const CglResidualCapacity & rhs);
 
     // Do preprocessing.
     // It determines the type of each row.
     // It may change sense and RHS for ranged rows
-    void resCapPreprocess(const OsiSolverInterface& si) const;
+    void resCapPreprocess(const OsiSolverInterface & si) const;
 
     // Determine the type of a given row.
-    RowType determineRowType(const OsiSolverInterface& si,
+    RowType determineRowType(const OsiSolverInterface & si,
                              const int rowLen, const int* ind,
                              const double* coef, const char sense,
                              const double rhs,
                              const double* colLowerBound,
                              const double* colUpperBound) const;
     // helps the function above
-    bool treatAsLessThan(const OsiSolverInterface& si,
+    bool treatAsLessThan(const OsiSolverInterface & si,
                          const int rowLen, const int* ind,
                          const double* coef,
                          const double rhs,
@@ -164,28 +164,28 @@ private:
                          const double* colUpperBound) const;
 
     // Generate Residual Capacity cuts
-    void generateResCapCuts( const OsiSolverInterface& si,
-                             const double* xlp,
-                             const double* colUpperBound,
-                             const double* colLowerBound,
-                             const CoinPackedMatrix& matrixByRow,
-                             const double* LHS,
-                             const double* coefByRow,
-                             const int* colInds,
-                             const int* rowStarts,
-                             const int* rowLengths,
-                             OsiCuts& cs ) const;
+    void generateResCapCuts(const OsiSolverInterface & si,
+                            const double* xlp,
+                            const double* colUpperBound,
+                            const double* colLowerBound,
+                            const CoinPackedMatrix & matrixByRow,
+                            const double* LHS,
+                            const double* coefByRow,
+                            const int* colInds,
+                            const int* rowStarts,
+                            const int* rowLengths,
+                            OsiCuts & cs) const;
 
 
     // Residual Capacity separation
-    bool resCapSeparation(const OsiSolverInterface& si,
+    bool resCapSeparation(const OsiSolverInterface & si,
                           const int rowLen, const int* ind,
                           const double* coef,
                           const double rhs,
-                          const double *xlp,
+                          const double* xlp,
                           const double* colUpperBound,
                           const double* colLowerBound,
-                          OsiRowCut& resCapCut) const;
+                          OsiRowCut & resCapCut) const;
 
 
 
@@ -216,9 +216,9 @@ private:
     // The indices of the rows of the initial matrix
     mutable int* indRows_;
     // Sense of rows (modified if ranges)
-    mutable char * sense_;
+    mutable char* sense_;
     // RHS of rows (modified if ranges)
-    mutable double * RHS_;
+    mutable double* RHS_;
     // The number of rows of type ROW_L
     mutable int numRowL_;
     // The indices of the rows of type ROW_L
@@ -235,7 +235,7 @@ private:
     have to be compiled into the library. And that's a gain, because the
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
-void CglResidualCapacityUnitTest(const OsiSolverInterface * siP,
+void CglResidualCapacityUnitTest(const OsiSolverInterface* siP,
                                  const std::string mpdDir);
 
 

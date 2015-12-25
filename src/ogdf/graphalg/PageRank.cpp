@@ -47,90 +47,90 @@ namespace ogdf
 {
 
 
-void BasicPageRank::call(
-    const Graph& graph,
-    const EdgeArray<double>& edgeWeight,
-    NodeArray<double>& pageRankResult)
-{
-    const double initialPageRank = 1.0 / (double)graph.numberOfNodes();
-    const double maxPageRankDeltaBound = initialPageRank * m_threshold;
-
-    // the two ping pong buffer
-    NodeArray<double> pageRankPing(graph, 0.0);
-    NodeArray<double> pageRankPong(graph, 0.0);
-
-    NodeArray<double>* pCurrPageRank = &pageRankPing;
-    NodeArray<double>* pNextPageRank = &pageRankPong;
-
-    NodeArray<double> nodeNorm(graph);
-
-    for (node v = graph.firstNode(); v; v = v->succ())
+    void BasicPageRank::call(
+        const Graph & graph,
+        const EdgeArray<double> & edgeWeight,
+        NodeArray<double> & pageRankResult)
     {
-        double sum = 0.0;
-        for (adjEntry adj = v->firstAdj(); adj; adj = adj->succ())
+        const double initialPageRank = 1.0 / (double)graph.numberOfNodes();
+        const double maxPageRankDeltaBound = initialPageRank * m_threshold;
+
+        // the two ping pong buffer
+        NodeArray<double> pageRankPing(graph, 0.0);
+        NodeArray<double> pageRankPong(graph, 0.0);
+
+        NodeArray<double>* pCurrPageRank = &pageRankPing;
+        NodeArray<double>* pNextPageRank = &pageRankPong;
+
+        NodeArray<double> nodeNorm(graph);
+
+        for(node v = graph.firstNode(); v; v = v->succ())
         {
-            edge e = adj->theEdge();
-            sum += edgeWeight[e];
-        }
-        nodeNorm[v] = 1.0 / sum;
-    }
-
-    pCurrPageRank->init(graph, initialPageRank);
-
-    // main iteration loop
-    int numIterations = 0;
-    bool converged = false;
-    // check conditions
-    while ( !converged && (numIterations < m_maxNumIterations) )
-    {
-        // init the result of this iteration
-        pNextPageRank->init(graph, (1.0 - m_dampingFactor) / (double)graph.numberOfNodes());
-        // calculate the transfer between each node
-        for (edge e = graph.firstEdge(); e; e = e->succ())
-        {
-            node v = e->source();
-            node w = e->target();
-
-            double vwTransfer = (edgeWeight[e] * nodeNorm[v] * (*pCurrPageRank)[v]);
-            double wvTransfer = (edgeWeight[e] * nodeNorm[w] * (*pCurrPageRank)[w]);
-            (*pNextPageRank)[w] += vwTransfer;
-            (*pNextPageRank)[v] += wvTransfer;
+            double sum = 0.0;
+            for(adjEntry adj = v->firstAdj(); adj; adj = adj->succ())
+            {
+                edge e = adj->theEdge();
+                sum += edgeWeight[e];
+            }
+            nodeNorm[v] = 1.0 / sum;
         }
 
-        // damping and calculating change
-        double maxPageRankDelta = 0.0;
-        for (node v = graph.firstNode(); v; v = v->succ())
+        pCurrPageRank->init(graph, initialPageRank);
+
+        // main iteration loop
+        int numIterations = 0;
+        bool converged = false;
+        // check conditions
+        while(!converged && (numIterations < m_maxNumIterations))
         {
-            (*pNextPageRank)[v] *= m_dampingFactor;
-            double pageRankDelta = fabs((*pNextPageRank)[v] - (*pCurrPageRank)[v]);
-            maxPageRankDelta = std::max(maxPageRankDelta, pageRankDelta);
+            // init the result of this iteration
+            pNextPageRank->init(graph, (1.0 - m_dampingFactor) / (double)graph.numberOfNodes());
+            // calculate the transfer between each node
+            for(edge e = graph.firstEdge(); e; e = e->succ())
+            {
+                node v = e->source();
+                node w = e->target();
+
+                double vwTransfer = (edgeWeight[e] * nodeNorm[v] * (*pCurrPageRank)[v]);
+                double wvTransfer = (edgeWeight[e] * nodeNorm[w] * (*pCurrPageRank)[w]);
+                (*pNextPageRank)[w] += vwTransfer;
+                (*pNextPageRank)[v] += wvTransfer;
+            }
+
+            // damping and calculating change
+            double maxPageRankDelta = 0.0;
+            for(node v = graph.firstNode(); v; v = v->succ())
+            {
+                (*pNextPageRank)[v] *= m_dampingFactor;
+                double pageRankDelta = fabs((*pNextPageRank)[v] - (*pCurrPageRank)[v]);
+                maxPageRankDelta = std::max(maxPageRankDelta, pageRankDelta);
+            }
+
+            // swap ping and pong, pong ping, ping pong, lalalala
+            std::swap(pNextPageRank, pCurrPageRank);
+            numIterations++;
+
+            // check if the change is small enough
+            converged = (maxPageRankDelta < maxPageRankDeltaBound);
         }
 
-        // swap ping and pong, pong ping, ping pong, lalalala
-        std::swap(pNextPageRank, pCurrPageRank);
-        numIterations++;
+        // normalization
+        double maxPageRank = (*pCurrPageRank)[graph.firstNode()];
+        double minPageRank = (*pCurrPageRank)[graph.firstNode()];
+        for(node v = graph.firstNode(); v; v = v->succ())
+        {
+            maxPageRank = std::max(maxPageRank, (*pCurrPageRank)[v]);
+            minPageRank = std::min(minPageRank, (*pCurrPageRank)[v]);
+        }
 
-        // check if the change is small enough
-        converged = (maxPageRankDelta < maxPageRankDeltaBound);
+        // init result
+        pageRankResult.init(graph);
+        for(node v = graph.firstNode(); v; v = v->succ())
+        {
+            double r = ((*pCurrPageRank)[v] - minPageRank) / (maxPageRank - minPageRank);
+            pageRankResult[v] = r;
+        }
+        // result is now between 0 and 1
     }
-
-    // normalization
-    double maxPageRank = (*pCurrPageRank)[graph.firstNode()];
-    double minPageRank = (*pCurrPageRank)[graph.firstNode()];
-    for (node v = graph.firstNode(); v; v = v->succ())
-    {
-        maxPageRank = std::max(maxPageRank, (*pCurrPageRank)[v]);
-        minPageRank = std::min(minPageRank, (*pCurrPageRank)[v]);
-    }
-
-    // init result
-    pageRankResult.init(graph);
-    for (node v = graph.firstNode(); v; v = v->succ())
-    {
-        double r = ((*pCurrPageRank)[v] - minPageRank) / (maxPageRank - minPageRank);
-        pageRankResult[v] = r;
-    }
-    // result is now between 0 and 1
-}
 
 } // end of namespace ogdf

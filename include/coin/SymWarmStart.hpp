@@ -37,10 +37,10 @@ public:
        WarmStart is set, then, SymWarmStart will take the control of the
        given description, otherwise, will copy everything.
     */
-    SymWarmStart(warm_start_desc * ws);
+    SymWarmStart(warm_start_desc* ws);
 
     /*Get the warmStart info from a file*/
-    SymWarmStart(char *f);
+    SymWarmStart(char* f);
 
     /* Copy constructor */
     SymWarmStart(const SymWarmStart & symWS);
@@ -49,10 +49,10 @@ public:
     virtual ~SymWarmStart();
 
     /* Clone the warmstart */
-    virtual CoinWarmStart * clone() const;
+    virtual CoinWarmStart* clone() const;
 
     /* Get the pointer to the loaded warmStart_ */
-    virtual warm_start_desc * getCopyOfWarmStartDesc();
+    virtual warm_start_desc* getCopyOfWarmStartDesc();
 
     /* Move the pointer to the rootnode of the warmStart to another
        node which will change the underlying tree
@@ -60,12 +60,12 @@ public:
     // virtual void setRoot(bc_node *root) {} //FIX_ME! Ask Prof. Ralphs.
 
     /* Write the current warm start info to a file */
-    virtual int writeToFile(char * f);
+    virtual int writeToFile(char* f);
 
 private:
 
     /* Private warm start desc. to keep everything */
-    warm_start_desc *warmStart_;
+    warm_start_desc* warmStart_;
 
 };
 

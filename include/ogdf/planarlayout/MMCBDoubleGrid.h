@@ -57,21 +57,21 @@ namespace ogdf
 {
 
 
-/**
- * \brief Crossings beautifier using grid doubling.
- */
-class OGDF_EXPORT MMCBDoubleGrid : public MMCBBase
-{
-public:
-    //! Creates an instance of the crossings beautifier module.
-    MMCBDoubleGrid() { }
+    /**
+     * \brief Crossings beautifier using grid doubling.
+     */
+    class OGDF_EXPORT MMCBDoubleGrid : public MMCBBase
+    {
+    public:
+        //! Creates an instance of the crossings beautifier module.
+        MMCBDoubleGrid() { }
 
-    ~MMCBDoubleGrid() { }
+        ~MMCBDoubleGrid() { }
 
-protected:
-    //! Implements the module call.
-    void doCall(const PlanRep &PG, GridLayout &gl, const List<node> &L);
-};
+    protected:
+        //! Implements the module call.
+        void doCall(const PlanRep & PG, GridLayout & gl, const List<node> & L);
+    };
 
 
 } // end namespace ogdf

@@ -217,98 +217,98 @@ using std::string;
 namespace ogdf
 {
 
-class OGDF_EXPORT Configuration
-{
-public:
-    //! Specifies the operating system for which OGDF has been configured/built.
-    enum System
+    class OGDF_EXPORT Configuration
     {
-        sysUnknown, //!< not known (inproper configuration)
-        sysWindows, //!< Windows
-        sysUnix,    //!< Unix/Linux
-        sysOSX,     //!< Apple OSX
-        sysSTOP
+    public:
+        //! Specifies the operating system for which OGDF has been configured/built.
+        enum System
+        {
+            sysUnknown, //!< not known (inproper configuration)
+            sysWindows, //!< Windows
+            sysUnix,    //!< Unix/Linux
+            sysOSX,     //!< Apple OSX
+            sysSTOP
+        };
+
+        //! Specifies the LP-solver used by OGDF.
+        enum LPSolver
+        {
+            lpsNone,        //!< no LP-solver available
+            lpsClp,         //!< COIN-OR LP-solver (Clp)
+            lpsSymphony,    //!< Symphony
+            lpsCPLEX,       //!< CPLEX (commercial)
+            lpsGurobi,      //!< Gurobi (commercial)
+            lpsSTOP
+        };
+
+        //! Specifies the memory-manager used by OGDF.
+        enum MemoryManager
+        {
+            mmPoolTS,   //!< thread-safe pool allocator
+            mmPoolNTS,  //!< non-thread-safe pool allocator
+            mmMalloc,   //!< malloc/free allocator
+            mmSTOP
+        };
+
+        //! Returns the operating system for which OGDF has been configured.
+        static System whichSystem();
+
+        //! Returns whether OGDF has been configured with LP-solver support.
+        static bool haveLPSolver();
+
+        //! Returns the LP-solver used by OGDF.
+        static LPSolver whichLPSolver();
+
+
+        //! Returns whether OGDF has been configured with COIN support.
+        /**
+         * COIN is used as LP-solver by some OGDF algorithms. If OGDF is configured
+         * without COIN support, this functionality is not available.
+         */
+        static bool haveCoin();
+
+        //! Returns whether OGDF has been configured with ABACUS support.
+        /**
+         * ABACUS is used as branch-and-cut-solver by some OGDF algorithms.
+         * If OGDF is configured without ABACUS support, this functionality is not available.
+         */
+        static bool haveAbacus();
+
+        //! Returns the memory-manager used by OGDF.
+        static MemoryManager whichMemoryManager();
+
+
+        //! Converts \a sys to a (readable) string.
+        static const string & toString(System sys);
+
+        //! Converts \a lps to a (readable) string.
+        static const string & toString(LPSolver lps);
+
+        //! Converts \a mm to a (readable) string.
+        static const string & toString(MemoryManager mm);
     };
 
-    //! Specifies the LP-solver used by OGDF.
-    enum LPSolver
+
+    //! Output operator for Configuration::System (uses Configuration::toString(Configuration::System)).
+    inline ostream & operator<<(ostream & os, Configuration::System sys)
     {
-        lpsNone,        //!< no LP-solver available
-        lpsClp,         //!< COIN-OR LP-solver (Clp)
-        lpsSymphony,    //!< Symphony
-        lpsCPLEX,       //!< CPLEX (commercial)
-        lpsGurobi,      //!< Gurobi (commercial)
-        lpsSTOP
-    };
+        os << Configuration::toString(sys);
+        return os;
+    }
 
-    //! Specifies the memory-manager used by OGDF.
-    enum MemoryManager
+    //! Output operator for Configuration::LPSolver (uses Configuration::toString(Configuration::LPSolver)).
+    inline ostream & operator<<(ostream & os, Configuration::LPSolver lps)
     {
-        mmPoolTS,   //!< thread-safe pool allocator
-        mmPoolNTS,  //!< non-thread-safe pool allocator
-        mmMalloc,   //!< malloc/free allocator
-        mmSTOP
-    };
+        os << Configuration::toString(lps);
+        return os;
+    }
 
-    //! Returns the operating system for which OGDF has been configured.
-    static System whichSystem();
-
-    //! Returns whether OGDF has been configured with LP-solver support.
-    static bool haveLPSolver();
-
-    //! Returns the LP-solver used by OGDF.
-    static LPSolver whichLPSolver();
-
-
-    //! Returns whether OGDF has been configured with COIN support.
-    /**
-     * COIN is used as LP-solver by some OGDF algorithms. If OGDF is configured
-     * without COIN support, this functionality is not available.
-     */
-    static bool haveCoin();
-
-    //! Returns whether OGDF has been configured with ABACUS support.
-    /**
-     * ABACUS is used as branch-and-cut-solver by some OGDF algorithms.
-     * If OGDF is configured without ABACUS support, this functionality is not available.
-     */
-    static bool haveAbacus();
-
-    //! Returns the memory-manager used by OGDF.
-    static MemoryManager whichMemoryManager();
-
-
-    //! Converts \a sys to a (readable) string.
-    static const string &toString(System sys);
-
-    //! Converts \a lps to a (readable) string.
-    static const string &toString(LPSolver lps);
-
-    //! Converts \a mm to a (readable) string.
-    static const string &toString(MemoryManager mm);
-};
-
-
-//! Output operator for Configuration::System (uses Configuration::toString(Configuration::System)).
-inline ostream &operator<<(ostream &os, Configuration::System sys)
-{
-    os << Configuration::toString(sys);
-    return os;
-}
-
-//! Output operator for Configuration::LPSolver (uses Configuration::toString(Configuration::LPSolver)).
-inline ostream &operator<<(ostream &os, Configuration::LPSolver lps)
-{
-    os << Configuration::toString(lps);
-    return os;
-}
-
-//! Output operator for Configuration::MemoryManager (uses Configuration::toString(Configuration::MemoryManager)).
-inline ostream &operator<<(ostream &os, Configuration::MemoryManager mm)
-{
-    os << Configuration::toString(mm);
-    return os;
-}
+    //! Output operator for Configuration::MemoryManager (uses Configuration::toString(Configuration::MemoryManager)).
+    inline ostream & operator<<(ostream & os, Configuration::MemoryManager mm)
+    {
+        os << Configuration::toString(mm);
+        return os;
+    }
 }
 
 

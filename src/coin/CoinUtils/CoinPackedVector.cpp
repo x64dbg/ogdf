@@ -27,7 +27,7 @@ CoinPackedVector::clear()
 CoinPackedVector &
 CoinPackedVector::operator=(const CoinPackedVector & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         clear();
         gutsOfSetVector(rhs.getNumElements(), rhs.getIndices(), rhs.getElements(),
@@ -42,7 +42,7 @@ CoinPackedVector::operator=(const CoinPackedVector & rhs)
 CoinPackedVector &
 CoinPackedVector::operator=(const CoinPackedVectorBase & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         clear();
         gutsOfSetVector(rhs.getNumElements(), rhs.getIndices(), rhs.getElements(),
@@ -55,12 +55,12 @@ CoinPackedVector::operator=(const CoinPackedVectorBase & rhs)
 //#############################################################################
 #if 0
 void
-CoinPackedVector::assignVector(int size, int*& inds, double*& elems,
+CoinPackedVector::assignVector(int size, int* & inds, double* & elems,
                                bool testForDuplicateIndex)
 {
     clear();
     // Allocate storage
-    if ( size != 0 )
+    if(size != 0)
     {
         reserve(size);
         nElements_ = size;
@@ -74,40 +74,40 @@ CoinPackedVector::assignVector(int size, int*& inds, double*& elems,
     {
         CoinPackedVectorBase::setTestForDuplicateIndex(testForDuplicateIndex);
     }
-    catch (CoinError e)
+    catch(CoinError e)
     {
         throw CoinError("duplicate index", "assignVector", "CoinPackedVector");
     }
 }
 #else
 void
-CoinPackedVector::assignVector(int size, int*& inds, double*& elems,
+CoinPackedVector::assignVector(int size, int* & inds, double* & elems,
                                bool testForDuplicateIndex)
 {
     clear();
     // Allocate storage
-    if ( size != 0 )
+    if(size != 0)
     {
         //reserve(size); //This is a BUG!!!
         nElements_ = size;
-        if (indices_ != NULL) delete[] indices_;
+        if(indices_ != NULL) delete[] indices_;
         indices_ = inds;
         inds = NULL;
-        if (elements_ != NULL) delete[] elements_;
+        if(elements_ != NULL) delete[] elements_;
         elements_ = elems;
         elems = NULL;
-        if (origIndices_ != NULL) delete[] origIndices_;
+        if(origIndices_ != NULL) delete[] origIndices_;
         origIndices_ = new int[size];
         CoinIotaN(origIndices_, size, 0);
         capacity_ = size;
     }
-    if (testForDuplicateIndex)
+    if(testForDuplicateIndex)
     {
         try
         {
             CoinPackedVectorBase::setTestForDuplicateIndex(testForDuplicateIndex);
         }
-        catch (CoinError e)
+        catch(CoinError e)
         {
             throw CoinError("duplicate index", "assignVector",
                             "CoinPackedVector");
@@ -123,7 +123,7 @@ CoinPackedVector::assignVector(int size, int*& inds, double*& elems,
 //#############################################################################
 
 void
-CoinPackedVector::setVector(int size, const int * inds, const double * elems,
+CoinPackedVector::setVector(int size, const int* inds, const double* elems,
                             bool testForDuplicateIndex)
 {
     clear();
@@ -133,7 +133,7 @@ CoinPackedVector::setVector(int size, const int * inds, const double * elems,
 //#############################################################################
 
 void
-CoinPackedVector::setConstant(int size, const int * inds, double value,
+CoinPackedVector::setConstant(int size, const int* inds, double value,
                               bool testForDuplicateIndex)
 {
     clear();
@@ -143,14 +143,14 @@ CoinPackedVector::setConstant(int size, const int * inds, double value,
 //#############################################################################
 
 void
-CoinPackedVector::setFull(int size, const double * elems,
+CoinPackedVector::setFull(int size, const double* elems,
                           bool testForDuplicateIndex)
 {
     // Clear out any values presently stored
     clear();
 
     // Allocate storage
-    if ( size!=0 )
+    if(size != 0)
     {
         reserve(size);
         nElements_ = size;
@@ -168,7 +168,7 @@ CoinPackedVector::setFull(int size, const double * elems,
     but only where non zero*/
 
 void
-CoinPackedVector::setFullNonZero(int size, const double * elems,
+CoinPackedVector::setFullNonZero(int size, const double* elems,
                                  bool testForDuplicateIndex)
 {
     // Clear out any values presently stored
@@ -176,17 +176,17 @@ CoinPackedVector::setFullNonZero(int size, const double * elems,
 
     // For now waste space
     // Allocate storage
-    if ( size!=0 )
+    if(size != 0)
     {
         reserve(size);
         nElements_ = 0;
         int i;
-        for (i=0; i<size; i++)
+        for(i = 0; i < size; i++)
         {
-            if (elems[i])
+            if(elems[i])
             {
-                origIndices_[nElements_]= i;
-                indices_[nElements_]= i;
+                origIndices_[nElements_] = i;
+                indices_[nElements_] = i;
                 elements_[nElements_++] = elems[i];
             }
         }
@@ -202,9 +202,9 @@ void
 CoinPackedVector::setElement(int index, double element)
 {
 #ifndef COIN_FAST_CODE
-    if ( index >= nElements_ )
+    if(index >= nElements_)
         throw CoinError("index >= size()", "setElement", "CoinPackedVector");
-    if ( index < 0 )
+    if(index < 0)
         throw CoinError("index < 0" , "setElement", "CoinPackedVector");
 #endif
     elements_[index] = element;
@@ -213,20 +213,20 @@ CoinPackedVector::setElement(int index, double element)
 //#############################################################################
 
 void
-CoinPackedVector::insert( int index, double element )
+CoinPackedVector::insert(int index, double element)
 {
     const int s = nElements_;
-    if (testForDuplicateIndex())
+    if(testForDuplicateIndex())
     {
-        std::set<int>& is = *indexSet("insert", "CoinPackedVector");
-        if (! is.insert(index).second)
+        std::set<int> & is = *indexSet("insert", "CoinPackedVector");
+        if(! is.insert(index).second)
             throw CoinError("Index already exists", "insert", "CoinPackedVector");
     }
 
-    if( capacity_ <= s )
+    if(capacity_ <= s)
     {
-        reserve( CoinMax(5, 2*capacity_) );
-        assert( capacity_ > s );
+        reserve(CoinMax(5, 2 * capacity_));
+        assert(capacity_ > s);
     }
     indices_[s] = index;
     elements_[s] = element;
@@ -240,32 +240,32 @@ void
 CoinPackedVector::append(const CoinPackedVectorBase & caboose)
 {
     const int cs = caboose.getNumElements();
-    if (cs == 0)
+    if(cs == 0)
     {
         return;
     }
-    if (testForDuplicateIndex())
+    if(testForDuplicateIndex())
     {
         // Just to initialize the index heap
         indexSet("append (1st call)", "CoinPackedVector");
     }
     const int s = nElements_;
     // Make sure there is enough room for the caboose
-    if ( capacity_ < s + cs)
+    if(capacity_ < s + cs)
         reserve(CoinMax(s + cs, 2 * capacity_));
 
-    const int * cind = caboose.getIndices();
-    const double * celem = caboose.getElements();
+    const int* cind = caboose.getIndices();
+    const double* celem = caboose.getElements();
     CoinDisjointCopyN(cind, cs, indices_ + s);
     CoinDisjointCopyN(celem, cs, elements_ + s);
     CoinIotaN(origIndices_ + s, cs, s);
     nElements_ += cs;
-    if (testForDuplicateIndex())
+    if(testForDuplicateIndex())
     {
-        std::set<int>& is = *indexSet("append (2nd call)", "CoinPackedVector");
-        for (int i = 0; i < cs; ++i)
+        std::set<int> & is = *indexSet("append (2nd call)", "CoinPackedVector");
+        for(int i = 0; i < cs; ++i)
         {
-            if (!is.insert(cind[i]).second)
+            if(!is.insert(cind[i]).second)
                 throw CoinError("duplicate index", "append", "CoinPackedVector");
         }
     }
@@ -276,14 +276,14 @@ CoinPackedVector::append(const CoinPackedVectorBase & caboose)
 void
 CoinPackedVector::swap(int i, int j)
 {
-    if ( i >= nElements_ )
-        throw CoinError("index i >= size()","swap","CoinPackedVector");
-    if ( i < 0 )
-        throw CoinError("index i < 0" ,"swap","CoinPackedVector");
-    if ( i >= nElements_ )
-        throw CoinError("index j >= size()","swap","CoinPackedVector");
-    if ( i < 0 )
-        throw CoinError("index j < 0" ,"swap","CoinPackedVector");
+    if(i >= nElements_)
+        throw CoinError("index i >= size()", "swap", "CoinPackedVector");
+    if(i < 0)
+        throw CoinError("index i < 0" , "swap", "CoinPackedVector");
+    if(i >= nElements_)
+        throw CoinError("index j >= size()", "swap", "CoinPackedVector");
+    if(i < 0)
+        throw CoinError("index j < 0" , "swap", "CoinPackedVector");
 
     // Swap positions i and j of the
     // indices and elements arrays
@@ -294,12 +294,12 @@ CoinPackedVector::swap(int i, int j)
 //#############################################################################
 
 void
-CoinPackedVector::truncate( int n )
+CoinPackedVector::truncate(int n)
 {
-    if ( n > nElements_ )
-        throw CoinError("n > size()","truncate","CoinPackedVector");
-    if ( n < 0 )
-        throw CoinError("n < 0","truncate","CoinPackedVector");
+    if(n > nElements_)
+        throw CoinError("n > size()", "truncate", "CoinPackedVector");
+    if(n < 0)
+        throw CoinError("n < 0", "truncate", "CoinPackedVector");
     nElements_ = n;
     clearBase();
 }
@@ -310,7 +310,7 @@ void
 CoinPackedVector::operator+=(double value)
 {
     std::transform(elements_, elements_ + nElements_, elements_,
-                   std::bind2nd(std::plus<double>(), value) );
+                   std::bind2nd(std::plus<double>(), value));
 }
 
 //-----------------------------------------------------------------------------
@@ -319,7 +319,7 @@ void
 CoinPackedVector::operator-=(double value)
 {
     std::transform(elements_, elements_ + nElements_, elements_,
-                   std::bind2nd(std::minus<double>(), value) );
+                   std::bind2nd(std::minus<double>(), value));
 }
 
 //-----------------------------------------------------------------------------
@@ -328,7 +328,7 @@ void
 CoinPackedVector::operator*=(double value)
 {
     std::transform(elements_, elements_ + nElements_, elements_,
-                   std::bind2nd(std::multiplies<double>(), value) );
+                   std::bind2nd(std::multiplies<double>(), value));
 }
 
 //-----------------------------------------------------------------------------
@@ -337,7 +337,7 @@ void
 CoinPackedVector::operator/=(double value)
 {
     std::transform(elements_, elements_ + nElements_, elements_,
-                   std::bind2nd(std::divides<double>(), value) );
+                   std::bind2nd(std::divides<double>(), value));
 }
 
 //#############################################################################
@@ -354,14 +354,14 @@ void
 CoinPackedVector::reserve(int n)
 {
     // don't make allocated space smaller
-    if ( n <= capacity_ )
+    if(n <= capacity_)
         return;
     capacity_ = n;
 
     // save pointers to existing data
-    int * tempIndices = indices_;
-    int * tempOrigIndices = origIndices_;
-    double * tempElements = elements_;
+    int* tempIndices = indices_;
+    int* tempOrigIndices = origIndices_;
+    double* tempElements = elements_;
 
     // allocate new space
     indices_ = new int [capacity_];
@@ -369,7 +369,7 @@ CoinPackedVector::reserve(int n)
     elements_ = new double [capacity_];
 
     // copy data to new space
-    if (nElements_ > 0)
+    if(nElements_ > 0)
     {
         CoinDisjointCopyN(tempIndices, nElements_, indices_);
         CoinDisjointCopyN(tempOrigIndices, nElements_, origIndices_);
@@ -384,7 +384,7 @@ CoinPackedVector::reserve(int n)
 
 //#############################################################################
 
-CoinPackedVector::CoinPackedVector (bool testForDuplicateIndex) :
+CoinPackedVector::CoinPackedVector(bool testForDuplicateIndex) :
     CoinPackedVectorBase(),
     indices_(NULL),
     elements_(NULL),
@@ -400,7 +400,7 @@ CoinPackedVector::CoinPackedVector (bool testForDuplicateIndex) :
 //-----------------------------------------------------------------------------
 
 CoinPackedVector::CoinPackedVector(int size,
-                                   const int * inds, const double * elems,
+                                   const int* inds, const double* elems,
                                    bool testForDuplicateIndex) :
     CoinPackedVectorBase(),
     indices_(NULL),
@@ -416,7 +416,7 @@ CoinPackedVector::CoinPackedVector(int size,
 //-----------------------------------------------------------------------------
 
 CoinPackedVector::CoinPackedVector(int size,
-                                   const int * inds, double value,
+                                   const int* inds, double value,
                                    bool testForDuplicateIndex) :
     CoinPackedVectorBase(),
     indices_(NULL),
@@ -432,7 +432,7 @@ CoinPackedVector::CoinPackedVector(int size,
 //-----------------------------------------------------------------------------
 
 CoinPackedVector::CoinPackedVector(int capacity, int size,
-                                   int *&inds, double *&elems,
+                                   int* & inds, double* & elems,
                                    bool /*testForDuplicateIndex*/) :
     CoinPackedVectorBase(),
     indices_(inds),
@@ -441,7 +441,7 @@ CoinPackedVector::CoinPackedVector(int capacity, int size,
     origIndices_(NULL),
     capacity_(capacity)
 {
-    assert( size <= capacity );
+    assert(size <= capacity);
     inds = NULL;
     elems = NULL;
     origIndices_ = new int[capacity_];
@@ -450,7 +450,7 @@ CoinPackedVector::CoinPackedVector(int capacity, int size,
 
 //-----------------------------------------------------------------------------
 
-CoinPackedVector::CoinPackedVector(int size, const double * element,
+CoinPackedVector::CoinPackedVector(int size, const double* element,
                                    bool testForDuplicateIndex) :
     CoinPackedVectorBase(),
     indices_(NULL),
@@ -492,7 +492,7 @@ CoinPackedVector::CoinPackedVector(const CoinPackedVector & rhs) :
 
 //-----------------------------------------------------------------------------
 
-CoinPackedVector::~CoinPackedVector ()
+CoinPackedVector::~CoinPackedVector()
 {
     delete [] indices_;
     delete [] origIndices_;
@@ -503,11 +503,11 @@ CoinPackedVector::~CoinPackedVector ()
 
 void
 CoinPackedVector::gutsOfSetVector(int size,
-                                  const int * inds, const double * elems,
+                                  const int* inds, const double* elems,
                                   bool testForDuplicateIndex,
-                                  const char * method)
+                                  const char* method)
 {
-    if ( size != 0 )
+    if(size != 0)
     {
         reserve(size);
         nElements_ = size;
@@ -515,13 +515,13 @@ CoinPackedVector::gutsOfSetVector(int size,
         CoinDisjointCopyN(elems, size, elements_);
         CoinIotaN(origIndices_, size, 0);
     }
-    if (testForDuplicateIndex)
+    if(testForDuplicateIndex)
     {
         try
         {
             CoinPackedVectorBase::setTestForDuplicateIndex(testForDuplicateIndex);
         }
-        catch (CoinError e)
+        catch(CoinError e)
         {
             throw CoinError("duplicate index", method, "CoinPackedVector");
         }
@@ -536,11 +536,11 @@ CoinPackedVector::gutsOfSetVector(int size,
 
 void
 CoinPackedVector::gutsOfSetConstant(int size,
-                                    const int * inds, double value,
+                                    const int* inds, double value,
                                     bool testForDuplicateIndex,
-                                    const char * method)
+                                    const char* method)
 {
-    if ( size != 0 )
+    if(size != 0)
     {
         reserve(size);
         nElements_ = size;
@@ -552,7 +552,7 @@ CoinPackedVector::gutsOfSetConstant(int size,
     {
         CoinPackedVectorBase::setTestForDuplicateIndex(testForDuplicateIndex);
     }
-    catch (CoinError e)
+    catch(CoinError e)
     {
         throw CoinError("duplicate index", method, "CoinPackedVector");
     }

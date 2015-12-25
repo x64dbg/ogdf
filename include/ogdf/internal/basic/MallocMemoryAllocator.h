@@ -54,82 +54,82 @@
 namespace ogdf
 {
 
-//! Implements a simple memory manager using \c malloc() and \c free().
-class OGDF_EXPORT MallocMemoryAllocator
-{
-    struct MemElem
+    //! Implements a simple memory manager using \c malloc() and \c free().
+    class OGDF_EXPORT MallocMemoryAllocator
     {
-        MemElem *m_next;
-    };
-    typedef MemElem *MemElemPtr;
-
-public:
-
-    MallocMemoryAllocator() { }
-    ~MallocMemoryAllocator() { }
-
-
-    static void init() { }
-    static void initThread() { }
-    static void cleanup() { }
-
-    static bool checkSize(size_t /* nBytes */)
-    {
-        return true;
-    }
-
-    //! Allocates memory of size \a nBytes.
-    static void *allocate(size_t nBytes, const char *, int)
-    {
-        return allocate(nBytes);
-    }
-
-    //! Allocates memory of size \a nBytes.
-    static void *allocate(size_t nBytes)
-    {
-        void *p = malloc(nBytes);
-        if (OGDF_UNLIKELY(p == 0)) OGDF_THROW(ogdf::InsufficientMemoryException);
-        return p;
-    }
-
-
-    //! Deallocates memory at address \a p which is of size \a nBytes.
-    static void deallocate(size_t /* nBytes */, void *p)
-    {
-        free(p);
-    }
-
-    //! Deallocate a complete list starting at \a pHead and ending at \a pTail.
-    /**
-     * The elements are assumed to be chained using the first word of each element and
-     * elements are of size \a nBytes.
-     */
-    static void deallocateList(size_t /* nBytes */, void *pHead, void *pTail)
-    {
-        MemElemPtr q, pStop = MemElemPtr(pTail)->m_next;
-        while (pHead != pStop)
+        struct MemElem
         {
-            q = MemElemPtr(pHead)->m_next;
-            free(pHead);
-            pHead = q;
+            MemElem* m_next;
+        };
+        typedef MemElem* MemElemPtr;
+
+    public:
+
+        MallocMemoryAllocator() { }
+        ~MallocMemoryAllocator() { }
+
+
+        static void init() { }
+        static void initThread() { }
+        static void cleanup() { }
+
+        static bool checkSize(size_t /* nBytes */)
+        {
+            return true;
         }
-    }
 
-    static void flushPool() { }
-    static void flushPool(__uint16 /* nBytes */) { }
+        //! Allocates memory of size \a nBytes.
+        static void* allocate(size_t nBytes, const char*, int)
+        {
+            return allocate(nBytes);
+        }
 
-    //! Always returns 0, since no blocks are allocated.
-    static size_t memoryAllocatedInBlocks()
-    {
-        return 0;
-    }
+        //! Allocates memory of size \a nBytes.
+        static void* allocate(size_t nBytes)
+        {
+            void* p = malloc(nBytes);
+            if(OGDF_UNLIKELY(p == 0)) OGDF_THROW(ogdf::InsufficientMemoryException);
+            return p;
+        }
 
-    //! Always returns 0, since no blocks are allocated.
-    static size_t memoryInFreelist()
-    {
-        return 0;
-    }
-};
+
+        //! Deallocates memory at address \a p which is of size \a nBytes.
+        static void deallocate(size_t /* nBytes */, void* p)
+        {
+            free(p);
+        }
+
+        //! Deallocate a complete list starting at \a pHead and ending at \a pTail.
+        /**
+         * The elements are assumed to be chained using the first word of each element and
+         * elements are of size \a nBytes.
+         */
+        static void deallocateList(size_t /* nBytes */, void* pHead, void* pTail)
+        {
+            MemElemPtr q, pStop = MemElemPtr(pTail)->m_next;
+            while(pHead != pStop)
+            {
+                q = MemElemPtr(pHead)->m_next;
+                free(pHead);
+                pHead = q;
+            }
+        }
+
+        static void flushPool() { }
+        static void flushPool(__uint16 /* nBytes */) { }
+
+        //! Always returns 0, since no blocks are allocated.
+        static size_t memoryAllocatedInBlocks()
+        {
+            return 0;
+        }
+
+        //! Always returns 0, since no blocks are allocated.
+        static size_t memoryInFreelist()
+        {
+            return 0;
+        }
+    };
 
 } // namespace ogdf
 

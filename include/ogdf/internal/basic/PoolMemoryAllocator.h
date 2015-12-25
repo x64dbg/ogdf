@@ -60,135 +60,135 @@ namespace ogdf
 {
 
 
-//! The class \a PoolAllocator represents ogdf's pool memory allocator.
-/**
- * <H3>Usage:</H3>
- *
- * Adding the macro \c #OGDF_NEW_DELETE in a class declaration overloads
- * new and delete operators of that class such that they use this
- * memory allocator. This is useful if the size of a class is less than
- * \c PoolAllocator::eTableSize bytes.
- *
- * Another benefit from the OGDF memory-manager is that it throws an
- * InsufficientMemoryException if no more memory is available. Hence
- * it is legal to omit checking if new returned 0 as long as stack-
- * unwinding frees all memory allocated so far.
- * It is also possible to make the usual \c new operator behave the same
- * way (throwing an InsufficientMemoryException) by defining the
- * macro \c #OGDF_MALLOC_NEW_DELETE in a class declaration.
- */
-
-class PoolMemoryAllocator
-{
-    struct MemElem
-    {
-        MemElem *m_next;
-    };
-    struct MemElemEx
-    {
-        MemElemEx *m_next;
-        MemElemEx *m_down;
-    };
-
-    typedef MemElem   *MemElemPtr;
-    typedef MemElemEx *MemElemExPtr;
-
-    struct PoolVector;
-    struct PoolElement;
-    struct BlockChain;
-    typedef BlockChain *BlockChainPtr;
-
-public:
-    enum
-    {
-        eMinBytes = sizeof(MemElemPtr),
-        eTableSize = 256,
-        eBlockSize = 8192,
-        ePoolVectorLength = 15
-    };
-
-    PoolMemoryAllocator() { }
-    ~PoolMemoryAllocator() { }
-
-    //! Initializes the memory manager.
-    static OGDF_EXPORT void init();
-
-    static OGDF_EXPORT void initThread();
-
-    //! Frees all memory blocks allocated by the memory manager.
-    static OGDF_EXPORT void cleanup();
-
-    static OGDF_EXPORT bool checkSize(size_t nBytes);
-
-    //! Allocates memory of size \a nBytes.
-    static OGDF_EXPORT void *allocate(size_t nBytes);
-
-    //! Deallocates memory at address \a p which is of size \a nBytes.
-    static OGDF_EXPORT void deallocate(size_t nBytes, void *p);
-
-    //! Deallocate a complete list starting at \a pHead and ending at \a pTail.
+    //! The class \a PoolAllocator represents ogdf's pool memory allocator.
     /**
-     * The elements are assumed to be chained using the first word of each element and
-     * elements are of size \a nBytes. This is much more efficient the deallocating
-     * each element separately, since the whole chain can be concatenated with the
-     * free list, requiring only constant effort.
+     * <H3>Usage:</H3>
+     *
+     * Adding the macro \c #OGDF_NEW_DELETE in a class declaration overloads
+     * new and delete operators of that class such that they use this
+     * memory allocator. This is useful if the size of a class is less than
+     * \c PoolAllocator::eTableSize bytes.
+     *
+     * Another benefit from the OGDF memory-manager is that it throws an
+     * InsufficientMemoryException if no more memory is available. Hence
+     * it is legal to omit checking if new returned 0 as long as stack-
+     * unwinding frees all memory allocated so far.
+     * It is also possible to make the usual \c new operator behave the same
+     * way (throwing an InsufficientMemoryException) by defining the
+     * macro \c #OGDF_MALLOC_NEW_DELETE in a class declaration.
      */
-    static OGDF_EXPORT void deallocateList(size_t nBytes, void *pHead, void *pTail);
 
-    static OGDF_EXPORT void flushPool();
-    //static OGDF_EXPORT void flushPool(__uint16 nBytes);
-
-    //! Returns the total amount of memory (in bytes) allocated from the system.
-    static OGDF_EXPORT size_t memoryAllocatedInBlocks();
-
-    //! Returns the total amount of memory (in bytes) available in the global free lists.
-    static OGDF_EXPORT size_t memoryInGlobalFreeList();
-
-    //! Returns the total amount of memory (in bytes) available in the thread's free lists.
-    static OGDF_EXPORT size_t memoryInThreadFreeList();
-
-    //! Defragments the global free lists.
-    /**
-     * This methods sorts the global free lists, so that successive elements come after each
-     * other. This can improve perfomance for data structure that allocate many elements from
-     * the pool like lists and graphs.
-     */
-    static OGDF_EXPORT void defrag();
-
-private:
-    static inline void enterCS();
-    static inline void leaveCS();
-
-    static int slicesPerBlock(__uint16 nBytes)
+    class PoolMemoryAllocator
     {
-        int nWords;
-        return slicesPerBlock(nBytes,nWords);
-    }
+        struct MemElem
+        {
+            MemElem* m_next;
+        };
+        struct MemElemEx
+        {
+            MemElemEx* m_next;
+            MemElemEx* m_down;
+        };
 
-    static int slicesPerBlock(__uint16 nBytes, int &nWords)
-    {
-        nWords = (nBytes + __SIZEOF_POINTER__ - 1) / __SIZEOF_POINTER__;
-        return (eBlockSize - __SIZEOF_POINTER__) / (nWords * __SIZEOF_POINTER__);
-    }
+        typedef MemElem*   MemElemPtr;
+        typedef MemElemEx* MemElemExPtr;
 
-    static void *fillPool(MemElemPtr &pFreeBytes, __uint16 nBytes);
+        struct PoolVector;
+        struct PoolElement;
+        struct BlockChain;
+        typedef BlockChain* BlockChainPtr;
 
-    static MemElemPtr allocateBlock();
-    static void makeSlices(MemElemPtr p, int nWords, int nSlices);
+    public:
+        enum
+        {
+            eMinBytes = sizeof(MemElemPtr),
+            eTableSize = 256,
+            eBlockSize = 8192,
+            ePoolVectorLength = 15
+        };
 
-    static PoolElement s_pool[eTableSize];
-    static BlockChainPtr s_blocks;
+        PoolMemoryAllocator() { }
+        ~PoolMemoryAllocator() { }
+
+        //! Initializes the memory manager.
+        static OGDF_EXPORT void init();
+
+        static OGDF_EXPORT void initThread();
+
+        //! Frees all memory blocks allocated by the memory manager.
+        static OGDF_EXPORT void cleanup();
+
+        static OGDF_EXPORT bool checkSize(size_t nBytes);
+
+        //! Allocates memory of size \a nBytes.
+        static OGDF_EXPORT void* allocate(size_t nBytes);
+
+        //! Deallocates memory at address \a p which is of size \a nBytes.
+        static OGDF_EXPORT void deallocate(size_t nBytes, void* p);
+
+        //! Deallocate a complete list starting at \a pHead and ending at \a pTail.
+        /**
+         * The elements are assumed to be chained using the first word of each element and
+         * elements are of size \a nBytes. This is much more efficient the deallocating
+         * each element separately, since the whole chain can be concatenated with the
+         * free list, requiring only constant effort.
+         */
+        static OGDF_EXPORT void deallocateList(size_t nBytes, void* pHead, void* pTail);
+
+        static OGDF_EXPORT void flushPool();
+        //static OGDF_EXPORT void flushPool(__uint16 nBytes);
+
+        //! Returns the total amount of memory (in bytes) allocated from the system.
+        static OGDF_EXPORT size_t memoryAllocatedInBlocks();
+
+        //! Returns the total amount of memory (in bytes) available in the global free lists.
+        static OGDF_EXPORT size_t memoryInGlobalFreeList();
+
+        //! Returns the total amount of memory (in bytes) available in the thread's free lists.
+        static OGDF_EXPORT size_t memoryInThreadFreeList();
+
+        //! Defragments the global free lists.
+        /**
+         * This methods sorts the global free lists, so that successive elements come after each
+         * other. This can improve perfomance for data structure that allocate many elements from
+         * the pool like lists and graphs.
+         */
+        static OGDF_EXPORT void defrag();
+
+    private:
+        static inline void enterCS();
+        static inline void leaveCS();
+
+        static int slicesPerBlock(__uint16 nBytes)
+        {
+            int nWords;
+            return slicesPerBlock(nBytes, nWords);
+        }
+
+        static int slicesPerBlock(__uint16 nBytes, int & nWords)
+        {
+            nWords = (nBytes + __SIZEOF_POINTER__ - 1) / __SIZEOF_POINTER__;
+            return (eBlockSize - __SIZEOF_POINTER__) / (nWords * __SIZEOF_POINTER__);
+        }
+
+        static void* fillPool(MemElemPtr & pFreeBytes, __uint16 nBytes);
+
+        static MemElemPtr allocateBlock();
+        static void makeSlices(MemElemPtr p, int nWords, int nSlices);
+
+        static PoolElement s_pool[eTableSize];
+        static BlockChainPtr s_blocks;
 
 #ifdef OGDF_MEMORY_POOL_NTS
-    static MemElemPtr s_tp[eTableSize];
+        static MemElemPtr s_tp[eTableSize];
 #elif defined(OGDF_NO_COMPILER_TLS)
-    static CriticalSection *s_criticalSection;
-    static pthread_key_t s_tpKey;
+        static CriticalSection* s_criticalSection;
+        static pthread_key_t s_tpKey;
 #else
-    static CriticalSection *s_criticalSection;
-    static OGDF_DECL_THREAD MemElemPtr s_tp[eTableSize];
+        static CriticalSection* s_criticalSection;
+        static OGDF_DECL_THREAD MemElemPtr s_tp[eTableSize];
 #endif
-};
+    };
 
 
 }

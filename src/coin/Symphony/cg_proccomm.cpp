@@ -33,7 +33,7 @@
  * cut generator is run as a separate process.
 \*===========================================================================*/
 
-int cg_process_message(cg_prob *p, int r_bufid)
+int cg_process_message(cg_prob* p, int r_bufid)
 {
     int bytes;
 
@@ -57,7 +57,7 @@ int cg_process_message(cg_prob *p, int r_bufid)
         receive_dbl_array(&p->cur_sol.lpetol, 1);
         receive_dbl_array(&p->cur_sol.objval, 1);
         receive_char_array(&p->has_ub, 1);
-        if (p->has_ub)
+        if(p->has_ub)
             receive_dbl_array(&p->ub, 1);
         receive_int_array(&p->cur_sol.xlength, 1);
         REMALLOC(p->cur_sol.xind, int,
@@ -76,9 +76,9 @@ int cg_process_message(cg_prob *p, int r_bufid)
         receive_dbl_array(&p->cur_sol.lpetol, 1);
         receive_dbl_array(&p->cur_sol.objval, 1);
         receive_char_array(&p->has_ub, 1);
-        if (p->has_ub)
+        if(p->has_ub)
             receive_dbl_array(&p->ub, 1);
-        if (receive_lp_solution_cg_u(p) == USER_ERROR)
+        if(receive_lp_solution_cg_u(p) == USER_ERROR)
             return(USER_ERROR);
         break;
 

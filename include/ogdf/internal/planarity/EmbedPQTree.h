@@ -58,133 +58,133 @@
 namespace ogdf
 {
 
-typedef PQBasicKey<edge,IndInfo*,bool> *PtrPQBasicKeyEIB;
+    typedef PQBasicKey<edge, IndInfo*, bool>* PtrPQBasicKeyEIB;
 
-template<>
-inline bool doDestruction<PtrPQBasicKeyEIB>(const PtrPQBasicKeyEIB*)
-{
-    return false;
-}
-
-
-typedef PlanarLeafKey<IndInfo*> *PtrPlanarLeafKeyI;
-
-template<>
-inline bool doDestruction<PtrPlanarLeafKeyI>(const PtrPlanarLeafKeyI*)
-{
-    return false;
-}
-
-
-class EmbedPQTree: public PQTree<edge,IndInfo*,bool>
-{
-public:
-
-    EmbedPQTree() : PQTree<edge,IndInfo*,bool>() { }
-
-    virtual ~EmbedPQTree() { }
-
-    virtual void emptyAllPertinentNodes();
-
-    virtual void clientDefinedEmptyNode(PQNode<edge,IndInfo*,bool>* nodePtr);
-
-    virtual int Initialize(SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys);
-
-    int Initialize(SListPure<PQLeafKey<edge,IndInfo*,bool>*> &leafKeys)
+    template<>
+    inline bool doDestruction<PtrPQBasicKeyEIB>(const PtrPQBasicKeyEIB*)
     {
-        return PQTree<edge,IndInfo*,bool>::Initialize(leafKeys);
+        return false;
     }
 
-    void ReplaceRoot(
-        SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys,
-        SListPure<edge> &frontier,
-        SListPure<node> &opposed,
-        SListPure<node> &nonOpposed,
-        node v);
 
-    virtual bool Reduction(SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys);
+    typedef PlanarLeafKey<IndInfo*>* PtrPlanarLeafKeyI;
 
-    bool Reduction(SListPure<PQLeafKey<edge,IndInfo*,bool>*> &leafKeys)
+    template<>
+    inline bool doDestruction<PtrPlanarLeafKeyI>(const PtrPlanarLeafKeyI*)
     {
-        return PQTree<edge,IndInfo*,bool>::Reduction(leafKeys);
+        return false;
     }
 
-    PQNode<edge,IndInfo*,bool>* scanSibLeft(PQNode<edge,IndInfo*,bool> *nodePtr) const
+
+    class EmbedPQTree: public PQTree<edge, IndInfo*, bool>
     {
-        return clientSibLeft(nodePtr);
-    }
+    public:
 
-    PQNode<edge,IndInfo*,bool>* scanSibRight(PQNode<edge,IndInfo*,bool> *nodePtr) const
-    {
-        return clientSibRight(nodePtr);
-    }
+        EmbedPQTree() : PQTree<edge, IndInfo*, bool>() { }
 
-    PQNode<edge,IndInfo*,bool>* scanLeftEndmost(PQNode<edge,IndInfo*,bool> *nodePtr) const
-    {
-        return clientLeftEndmost(nodePtr);
-    }
+        virtual ~EmbedPQTree() { }
 
-    PQNode<edge,IndInfo*,bool>* scanRightEndmost(PQNode<edge,IndInfo*,bool> *nodePtr) const
-    {
-        return clientRightEndmost(nodePtr);
-    }
+        virtual void emptyAllPertinentNodes();
 
-    PQNode<edge,IndInfo*,bool>* scanNextSib(
-        PQNode<edge,IndInfo*,bool> *nodePtr,
-        PQNode<edge,IndInfo*,bool> *other)
-    {
-        return clientNextSib(nodePtr,other);
-    }
+        virtual void clientDefinedEmptyNode(PQNode<edge, IndInfo*, bool>* nodePtr);
 
-    virtual void getFront(
-        PQNode<edge,IndInfo*,bool>* nodePtr,
-        SListPure<PQBasicKey<edge,IndInfo*,bool>*> &leafKeys);
+        virtual int Initialize(SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys);
 
-protected:
+        int Initialize(SListPure<PQLeafKey<edge, IndInfo*, bool>*> & leafKeys)
+        {
+            return PQTree<edge, IndInfo*, bool>::Initialize(leafKeys);
+        }
 
-    virtual PQNode<edge,IndInfo*,bool>*
-    clientSibLeft(PQNode<edge,IndInfo*,bool> *nodePtr) const;
+        void ReplaceRoot(
+            SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys,
+            SListPure<edge> & frontier,
+            SListPure<node> & opposed,
+            SListPure<node> & nonOpposed,
+            node v);
 
-    virtual PQNode<edge,IndInfo*,bool>*
-    clientSibRight(PQNode<edge,IndInfo*,bool> *nodePtr) const;
+        virtual bool Reduction(SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys);
 
-    virtual PQNode<edge,IndInfo*,bool>*
-    clientLeftEndmost(PQNode<edge,IndInfo*,bool> *nodePtr) const;
+        bool Reduction(SListPure<PQLeafKey<edge, IndInfo*, bool>*> & leafKeys)
+        {
+            return PQTree<edge, IndInfo*, bool>::Reduction(leafKeys);
+        }
 
-    virtual PQNode<edge,IndInfo*,bool>*
-    clientRightEndmost(PQNode<edge,IndInfo*,bool> *nodePtr) const;
+        PQNode<edge, IndInfo*, bool>* scanSibLeft(PQNode<edge, IndInfo*, bool>* nodePtr) const
+        {
+            return clientSibLeft(nodePtr);
+        }
 
-    virtual PQNode<edge,IndInfo*,bool>*
-    clientNextSib(PQNode<edge,IndInfo*,bool> *nodePtr,
-                  PQNode<edge,IndInfo*,bool> *other) const;
-    virtual const char*
-    clientPrintStatus(PQNode<edge,IndInfo*,bool> *nodePtr);
+        PQNode<edge, IndInfo*, bool>* scanSibRight(PQNode<edge, IndInfo*, bool>* nodePtr) const
+        {
+            return clientSibRight(nodePtr);
+        }
 
-    virtual void front(
-        PQNode<edge,IndInfo*,bool>* nodePtr,
-        SListPure<PQBasicKey<edge,IndInfo*,bool>*> &leafKeys);
+        PQNode<edge, IndInfo*, bool>* scanLeftEndmost(PQNode<edge, IndInfo*, bool>* nodePtr) const
+        {
+            return clientLeftEndmost(nodePtr);
+        }
 
-    void front(
-        PQNode<edge,IndInfo*,bool>* nodePtr,
-        SListPure<PQLeafKey<edge,IndInfo*,bool>*> &leafKeys)
-    {
-        PQTree<edge,IndInfo*,bool>::front(nodePtr, leafKeys);
-    }
+        PQNode<edge, IndInfo*, bool>* scanRightEndmost(PQNode<edge, IndInfo*, bool>* nodePtr) const
+        {
+            return clientRightEndmost(nodePtr);
+        }
 
-private:
+        PQNode<edge, IndInfo*, bool>* scanNextSib(
+            PQNode<edge, IndInfo*, bool>* nodePtr,
+            PQNode<edge, IndInfo*, bool>* other)
+        {
+            return clientNextSib(nodePtr, other);
+        }
 
-    void ReplaceFullRoot(
-        SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys,
-        SListPure<PQBasicKey<edge,IndInfo*,bool>*> &frontier,
-        node v,
-        bool addIndicator = false,
-        PQNode<edge,IndInfo*,bool> *opposite = 0);
+        virtual void getFront(
+            PQNode<edge, IndInfo*, bool>* nodePtr,
+            SListPure<PQBasicKey<edge, IndInfo*, bool>*> & leafKeys);
 
-    void ReplacePartialRoot(
-        SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys,
-        SListPure<PQBasicKey<edge,IndInfo*,bool>*> &frontier,
-        node v);
-};
+    protected:
+
+        virtual PQNode<edge, IndInfo*, bool>*
+        clientSibLeft(PQNode<edge, IndInfo*, bool>* nodePtr) const;
+
+        virtual PQNode<edge, IndInfo*, bool>*
+        clientSibRight(PQNode<edge, IndInfo*, bool>* nodePtr) const;
+
+        virtual PQNode<edge, IndInfo*, bool>*
+        clientLeftEndmost(PQNode<edge, IndInfo*, bool>* nodePtr) const;
+
+        virtual PQNode<edge, IndInfo*, bool>*
+        clientRightEndmost(PQNode<edge, IndInfo*, bool>* nodePtr) const;
+
+        virtual PQNode<edge, IndInfo*, bool>*
+        clientNextSib(PQNode<edge, IndInfo*, bool>* nodePtr,
+                      PQNode<edge, IndInfo*, bool>* other) const;
+        virtual const char*
+        clientPrintStatus(PQNode<edge, IndInfo*, bool>* nodePtr);
+
+        virtual void front(
+            PQNode<edge, IndInfo*, bool>* nodePtr,
+            SListPure<PQBasicKey<edge, IndInfo*, bool>*> & leafKeys);
+
+        void front(
+            PQNode<edge, IndInfo*, bool>* nodePtr,
+            SListPure<PQLeafKey<edge, IndInfo*, bool>*> & leafKeys)
+        {
+            PQTree<edge, IndInfo*, bool>::front(nodePtr, leafKeys);
+        }
+
+    private:
+
+        void ReplaceFullRoot(
+            SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys,
+            SListPure<PQBasicKey<edge, IndInfo*, bool>*> & frontier,
+            node v,
+            bool addIndicator = false,
+            PQNode<edge, IndInfo*, bool>* opposite = 0);
+
+        void ReplacePartialRoot(
+            SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys,
+            SListPure<PQBasicKey<edge, IndInfo*, bool>*> & frontier,
+            node v);
+    };
 
 }
 

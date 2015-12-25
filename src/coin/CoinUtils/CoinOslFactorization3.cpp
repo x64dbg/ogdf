@@ -10,120 +10,120 @@
 #include "CoinFinite.hpp"
 #define GO_DENSE 70
 #define GO_DENSE_RATIO 1.8
-int c_ekkclco(const EKKfactinfo *fact,int *hcoli,
-              int *mrstrt, int *hinrow, int xnewro);
+int c_ekkclco(const EKKfactinfo* fact, int* hcoli,
+              int* mrstrt, int* hinrow, int xnewro);
 
-void c_ekkclcp(const int *hcol, const double *dels, const int * mrstrt,
-               int *hrow, double *dels2, int *mcstrt,
-               int *hincol, int itype, int nnrow, int nncol,
+void c_ekkclcp(const int* hcol, const double* dels, const int* mrstrt,
+               int* hrow, double* dels2, int* mcstrt,
+               int* hincol, int itype, int nnrow, int nncol,
                int ninbas);
 
-int c_ekkcmfc(EKKfactinfo *fact,
-              EKKHlink *rlink, EKKHlink *clink,
-              EKKHlink *mwork, void *maction_void,
+int c_ekkcmfc(EKKfactinfo* fact,
+              EKKHlink* rlink, EKKHlink* clink,
+              EKKHlink* mwork, void* maction_void,
               int nnetas,
-              int *nsingp, int *xrejctp,
-              int *xnewrop, int xnewco,
-              int *ncompactionsp);
+              int* nsingp, int* xrejctp,
+              int* xnewrop, int xnewco,
+              int* ncompactionsp);
 
-int c_ekkcmfy(EKKfactinfo *fact,
-              EKKHlink *rlink, EKKHlink *clink,
-              EKKHlink *mwork, void *maction_void,
+int c_ekkcmfy(EKKfactinfo* fact,
+              EKKHlink* rlink, EKKHlink* clink,
+              EKKHlink* mwork, void* maction_void,
               int nnetas,
-              int *nsingp, int *xrejctp,
-              int *xnewrop, int xnewco,
-              int *ncompactionsp);
+              int* nsingp, int* xrejctp,
+              int* xnewrop, int xnewco,
+              int* ncompactionsp);
 
-int c_ekkcmfd(EKKfactinfo *fact,
-              int *mcol,
-              EKKHlink *rlink, EKKHlink *clink,
-              int *maction,
+int c_ekkcmfd(EKKfactinfo* fact,
+              int* mcol,
+              EKKHlink* rlink, EKKHlink* clink,
+              int* maction,
               int nnetas,
-              int *nnentlp, int *nnentup,
-              int *nsingp);
-int c_ekkford(const EKKfactinfo *fact,const int *hinrow, const int *hincol,
-              int *hpivro, int *hpivco,
-              EKKHlink *rlink, EKKHlink *clink);
-void c_ekkrowq(int *hrow, int *hcol, double *dels,
-               int *mrstrt,
-               const int *hinrow, int nnrow, int ninbas);
-int c_ekkrwco(const EKKfactinfo *fact,double *dluval, int *hcoli, int *
-              mrstrt, int *hinrow, int xnewro);
+              int* nnentlp, int* nnentup,
+              int* nsingp);
+int c_ekkford(const EKKfactinfo* fact, const int* hinrow, const int* hincol,
+              int* hpivro, int* hpivco,
+              EKKHlink* rlink, EKKHlink* clink);
+void c_ekkrowq(int* hrow, int* hcol, double* dels,
+               int* mrstrt,
+               const int* hinrow, int nnrow, int ninbas);
+int c_ekkrwco(const EKKfactinfo* fact, double* dluval, int* hcoli, int*
+              mrstrt, int* hinrow, int xnewro);
 
-int c_ekkrwcs(const EKKfactinfo *fact,double *dluval, int *hcoli, int *mrstrt,
-              const int *hinrow, const EKKHlink *mwork,
+int c_ekkrwcs(const EKKfactinfo* fact, double* dluval, int* hcoli, int* mrstrt,
+              const int* hinrow, const EKKHlink* mwork,
               int nfirst);
 
-void c_ekkrwct(const EKKfactinfo *fact,double *dluval, int *hcoli, int *mrstrt,
-               const int *hinrow, const EKKHlink *mwork,
-               const EKKHlink *rlink,
-               const short *msort, double *dsort,
+void c_ekkrwct(const EKKfactinfo* fact, double* dluval, int* hcoli, int* mrstrt,
+               const int* hinrow, const EKKHlink* mwork,
+               const EKKHlink* rlink,
+               const short* msort, double* dsort,
                int nlast, int xnewro);
 
-int c_ekkshff(EKKfactinfo *fact,
-              EKKHlink *clink, EKKHlink *rlink,
+int c_ekkshff(EKKfactinfo* fact,
+              EKKHlink* clink, EKKHlink* rlink,
               int xnewro);
 
-void c_ekkshfv(EKKfactinfo *fact, EKKHlink *rlink, EKKHlink *clink,
+void c_ekkshfv(EKKfactinfo* fact, EKKHlink* rlink, EKKHlink* clink,
                int xnewro);
-int c_ekktria(EKKfactinfo *fact,
-              EKKHlink * rlink,
-              EKKHlink * clink,
-              int *nsingp,
-              int *xnewcop, int *xnewrop,
-              int *nlrowtp,
+int c_ekktria(EKKfactinfo* fact,
+              EKKHlink* rlink,
+              EKKHlink* clink,
+              int* nsingp,
+              int* xnewcop, int* xnewrop,
+              int* nlrowtp,
               const int ninbas);
 #if 0
-static void c_ekkafpv(int *hentry, int *hcoli,
-                      double *dluval, int *mrstrt,
-                      int *hinrow, int nentry)
+static void c_ekkafpv(int* hentry, int* hcoli,
+                      double* dluval, int* mrstrt,
+                      int* hinrow, int nentry)
 {
     int j;
     int nel, krs;
     int koff;
     int irow;
     int ientry;
-    int * index;
+    int* index;
 
-    for (ientry = 0; ientry < nentry; ++ientry)
+    for(ientry = 0; ientry < nentry; ++ientry)
     {
 #ifdef INTEL
-        int * els_long,maxaij_long;
+        int* els_long, maxaij_long;
 #endif
-        double * els;
+        double* els;
         irow = UNSHIFT_INDEX(hentry[ientry]);
         nel = hinrow[irow];
         krs = mrstrt[irow];
-        index=&hcoli[krs];
-        els=&dluval[krs];
+        index = &hcoli[krs];
+        els = &dluval[krs];
 #ifdef INTEL
-        els_long=reinterpret_cast<int *> (els);
-        maxaij_long=0;
+        els_long = reinterpret_cast<int*>(els);
+        maxaij_long = 0;
 #else
         double maxaij = 0.f;
 #endif
         koff = 0;
-        j=0;
-        if ((nel&1)!=0)
+        j = 0;
+        if((nel & 1) != 0)
         {
 #ifdef INTEL
             maxaij_long = els_long[1] & 0x7fffffff;
 #else
-            maxaij=fabs(els[0]);
+            maxaij = fabs(els[0]);
 #endif
-            j=1;
+            j = 1;
         }
 
-        while (j<nel)
+        while(j < nel)
         {
 #ifdef INTEL
             UNROLL_LOOP_BODY2(
             {
-                int d_long = els_long[1+(j<<1)] & 0x7fffffff;
-                if (maxaij_long < d_long)
+                int d_long = els_long[1 + (j << 1)] & 0x7fffffff;
+                if(maxaij_long < d_long)
                 {
                     maxaij_long = d_long;
-                    koff=j;
+                    koff = j;
                 }
                 j++;
             });
@@ -131,10 +131,10 @@ static void c_ekkafpv(int *hentry, int *hcoli,
             UNROLL_LOOP_BODY2(
             {
                 double d = fabs(els[j]);
-                if (maxaij < d)
+                if(maxaij < d)
                 {
                     maxaij = d;
-                    koff=j;
+                    koff = j;
                 }
                 j++;
             });
@@ -171,22 +171,22 @@ static void c_ekkafpv(int *hentry, int *hcoli,
  * so we maintain it as we shorten rows and removing columns altogether.
  *
  */
-int c_ekkcsin(EKKfactinfo *fact,
-              EKKHlink *rlink, EKKHlink *clink,
+int c_ekkcsin(EKKfactinfo* fact,
+              EKKHlink* rlink, EKKHlink* clink,
 
-              int *nsingp)
+              int* nsingp)
 {
 #if 1
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
     //double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 #endif
     const int nrow    = fact->nrow;
     const double drtpiv   = fact->drtpiv;
@@ -197,9 +197,9 @@ int c_ekkcsin(EKKfactinfo *fact,
     int kipis, kipie;
     int jpivot;
 #ifndef NDEBUG
-    int kpivot=-1;
+    int kpivot = -1;
 #else
-    int kpivot=-1;
+    int kpivot = -1;
 #endif
 
     bool small_pivot = false;
@@ -212,7 +212,7 @@ int c_ekkcsin(EKKfactinfo *fact,
      * Also, if any column from the pivot row was reduced to length 1,
      * then it will have been added to the list and now be in front.
      */
-    for (jpivot = hpivco[1]; jpivot > 0; jpivot = hpivco[1])
+    for(jpivot = hpivco[1]; jpivot > 0; jpivot = hpivco[1])
     {
         const int ipivot = hrowi[mcstrt[jpivot]]; /* (2) */
         assert(ipivot);
@@ -222,7 +222,7 @@ int c_ekkcsin(EKKfactinfo *fact,
         /* Loop over nonzeros in pivot row: */
         kipis = mrstrt[ipivot];
         kipie = kipis + hinrow[ipivot] - 1;
-        for (k = kipis; k <= kipie; ++k)
+        for(k = kipis; k <= kipie; ++k)
         {
             j = hcoli[k];
 
@@ -237,7 +237,7 @@ int c_ekkcsin(EKKfactinfo *fact,
              * and this test wouldn't have to be made.
              * However, that means this whole loop would have to be copied.
              */
-            if (! (clink[j].pre > nrow))
+            if(!(clink[j].pre > nrow))
             {
                 C_EKK_REMOVE_LINK(hpivco, hincol, clink, j); /* (3) */
             }
@@ -245,9 +245,9 @@ int c_ekkcsin(EKKfactinfo *fact,
 
             kcs = mcstrt[j];
             kce = kcs + hincol[j];
-            for (kc = kcs; kc <= kce; ++kc)
+            for(kc = kcs; kc <= kce; ++kc)
             {
-                if (ipivot == hrowi[kc])
+                if(ipivot == hrowi[kc])
                 {
                     break;
                 }
@@ -258,7 +258,7 @@ int c_ekkcsin(EKKfactinfo *fact,
             hrowi[kc] = hrowi[kce];
             hrowi[kce] = 0;
 
-            if (j == jpivot)
+            if(j == jpivot)
             {
                 /* remember the slot corresponding to the pivot column */
                 kpivot = k;
@@ -275,14 +275,14 @@ int c_ekkcsin(EKKfactinfo *fact,
                  * because it would just be rejected again.
                  */
                 nzj = hincol[j];
-                if (! (nzj <= 0) &&
-                        ! (clink[j].pre > nrow && nzj != 1))
+                if(!(nzj <= 0) &&
+                        !(clink[j].pre > nrow && nzj != 1))
                 {
                     C_EKK_ADD_LINK(hpivco, nzj, clink, j); /* (3) */
                 }
             }
         }
-        assert (kpivot>0);
+        assert(kpivot > 0);
 
         /* store pivot sequence number */
         ++fact->npivots;
@@ -294,7 +294,7 @@ int c_ekkcsin(EKKfactinfo *fact,
 
         /* check the pivot */
         pivot = dluval[kpivot];
-        if (fabs(pivot) < drtpiv)
+        if(fabs(pivot) < drtpiv)
         {
             /* pivot element too small */
             small_pivot = true;
@@ -323,27 +323,27 @@ int c_ekkcsin(EKKfactinfo *fact,
 /*      7: pivot element too small */
 /*     -52: system error at label 220 (ipivot not found) */
 /*     -53: system error at label 400 (jpivot not found) */
-int c_ekkrsin(EKKfactinfo *fact,
-              EKKHlink *rlink, EKKHlink *clink,
-              EKKHlink *mwork, int nfirst,
-              int *nsingp,
-              int *xnewcop, int *xnewrop,
-              int *nnentup,
-              int *kmxetap, int *ncompactionsp,
-              int *nnentlp)
+int c_ekkrsin(EKKfactinfo* fact,
+              EKKHlink* rlink, EKKHlink* clink,
+              EKKHlink* mwork, int nfirst,
+              int* nsingp,
+              int* xnewcop, int* xnewrop,
+              int* nnentup,
+              int* kmxetap, int* ncompactionsp,
+              int* nnentlp)
 
 {
 #if 1
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
     //double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 #endif
     const int nrow    = fact->nrow;
     const double drtpiv   = fact->drtpiv;
@@ -361,9 +361,9 @@ int c_ekkrsin(EKKfactinfo *fact,
     double elemnt, maxaij;
     int ipivot, epivco, lstart;
 #ifndef NDEBUG
-    int kpivot=-1;
+    int kpivot = -1;
 #else
-    int kpivot=-1;
+    int kpivot = -1;
 #endif
     int irtcod = 0;
     const int nnetas  = fact->nnetas;
@@ -371,13 +371,13 @@ int c_ekkrsin(EKKfactinfo *fact,
     lstart = nnetas - nnentl + 1;
 
 
-    for (ipivot = hpivro[1]; ipivot > 0; ipivot = hpivro[1])
+    for(ipivot = hpivro[1]; ipivot > 0; ipivot = hpivro[1])
     {
         const int jpivot = hcoli[mrstrt[ipivot]];
 
         kjpis = mcstrt[jpivot];
         kjpie = kjpis + hincol[jpivot] ;
-        for (k = kjpis; k < kjpie; ++k)
+        for(k = kjpis; k < kjpie; ++k)
         {
             i = hrowi[k];
 
@@ -393,16 +393,16 @@ int c_ekkrsin(EKKfactinfo *fact,
 
         /* The pivot column is being eliminated */
         /* I don't know why there is an exception for rejected columns */
-        if (! (clink[jpivot].pre > nrow))
+        if(!(clink[jpivot].pre > nrow))
         {
             C_EKK_REMOVE_LINK(hpivco, hincol, clink, jpivot);
         }
 
         epivco = hincol[jpivot] - 1;
         kjpie = kjpis + epivco;
-        for (kc = kjpis; kc <= kjpie; ++kc)
+        for(kc = kjpis; kc <= kjpie; ++kc)
         {
-            if (ipivot == hrowi[kc])
+            if(ipivot == hrowi[kc])
             {
                 break;
             }
@@ -421,26 +421,26 @@ int c_ekkrsin(EKKfactinfo *fact,
         clink[jpivot].pre = -fact->npivots;
 
         /* Check if row or column files have to be compressed */
-        if (! (xnewro + epivco < lstart))
+        if(!(xnewro + epivco < lstart))
         {
-            if (! (nnentu + epivco < lstart))
+            if(!(nnentu + epivco < lstart))
             {
                 return (-5);
             }
             {
-                int iput = c_ekkrwcs(fact,dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
+                int iput = c_ekkrwcs(fact, dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
                 kmxeta += xnewro - iput ;
                 xnewro = iput - 1;
                 ++ncompactions;
             }
         }
-        if (! (xnewco + epivco < lstart))
+        if(!(xnewco + epivco < lstart))
         {
-            if (! (nnentu + epivco < lstart))
+            if(!(nnentu + epivco < lstart))
             {
                 return (-5);
             }
-            xnewco = c_ekkclco(fact,hrowi, mcstrt, hincol, xnewco);
+            xnewco = c_ekkclco(fact, hrowi, mcstrt, hincol, xnewco);
             ++ncompactions;
         }
 
@@ -449,7 +449,7 @@ int c_ekkrsin(EKKfactinfo *fact,
 
         /* Perform numerical part of elimination. */
         pivot = dluval[mrstrt[ipivot]];
-        if (fabs(pivot) < drtpiv)
+        if(fabs(pivot) < drtpiv)
         {
             irtcod = 7;
             rlink[ipivot].pre = -nrow - 1;
@@ -458,7 +458,7 @@ int c_ekkrsin(EKKfactinfo *fact,
         }
 
         /* If epivco is 0, then we can treat this like a singleton column (?)*/
-        if (! (epivco <= 0))
+        if(!(epivco <= 0))
         {
             ++fact->xnetal;
             mcstrt[fact->xnetal] = lstart - 1;
@@ -467,9 +467,9 @@ int c_ekkrsin(EKKfactinfo *fact,
             /* Loop over nonzeros in pivot column. */
             kjpis = mcstrt[jpivot];
             kjpie = kjpis + epivco ;
-            nnentl+=epivco;
-            nnentu-=epivco;
-            for (kc = kjpis; kc < kjpie; ++kc)
+            nnentl += epivco;
+            nnentu -= epivco;
+            for(kc = kjpis; kc < kjpie; ++kc)
             {
                 npr = hrowi[kc];
                 /* zero out the row entries as we go along */
@@ -481,9 +481,9 @@ int c_ekkrsin(EKKfactinfo *fact,
                 /* find the entry in this row for the pivot column */
                 knprs = mrstrt[npr];
                 knpre = knprs + hinrow[npr];
-                for (kr = knprs; kr <= knpre; ++kr)
+                for(kr = knprs; kr <= knpre; ++kr)
                 {
-                    if (jpivot == hcoli[kr])
+                    if(jpivot == hcoli[kr])
                         break;
                 }
                 /* ASSERT !(kr>knpre) */
@@ -500,18 +500,18 @@ int c_ekkrsin(EKKfactinfo *fact,
                  * There is only a problem if we just pivoted out the first
                  * entry, and there is more than one entry in the list.
                  */
-                if (! (kr != knprs || hinrow[npr] <= 1))
+                if(!(kr != knprs || hinrow[npr] <= 1))
                 {
                     maxaij = 0.f;
-                    for (k = knprs; k <= knpre; ++k)
+                    for(k = knprs; k <= knpre; ++k)
                     {
-                        if (! (fabs(dluval[k]) <= maxaij))
+                        if(!(fabs(dluval[k]) <= maxaij))
                         {
                             maxaij = fabs(dluval[k]);
                             kpivot = k;
                         }
                     }
-                    assert (kpivot>0);
+                    assert(kpivot > 0);
                     maxaij = dluval[kpivot];
                     dluval[kpivot] = dluval[knprs];
                     dluval[knprs] = maxaij;
@@ -528,7 +528,7 @@ int c_ekkrsin(EKKfactinfo *fact,
 
                 /* Only add the row back in a length list if it isn't empty */
                 nzi = hinrow[npr];
-                if (! (nzi <= 0))
+                if(!(nzi <= 0))
                 {
                     C_EKK_ADD_LINK(hpivro, nzi, rlink, npr);
                 }
@@ -548,28 +548,28 @@ int c_ekkrsin(EKKfactinfo *fact,
 } /* c_ekkrsin */
 
 
-int c_ekkfpvt(const EKKfactinfo *fact,
-              EKKHlink *rlink, EKKHlink *clink,
-              int *nsingp, int *xrejctp,
-              int *xipivtp, int *xjpivtp)
+int c_ekkfpvt(const EKKfactinfo* fact,
+              EKKHlink* rlink, EKKHlink* clink,
+              int* nsingp, int* xrejctp,
+              int* xipivtp, int* xjpivtp)
 {
     double zpivlu = fact->zpivlu;
 #if 1
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
     //double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 #endif
     int i, j, k, ke, kk, ks, nz, nz1, kce, kcs, kre, krs;
     double minsze;
     int marcst, mincst, mincnt, trials, nentri;
-    int jpivot=-1;
+    int jpivot = -1;
     bool rjectd;
     int ipivot;
     const int nrow    = fact->nrow;
@@ -582,36 +582,36 @@ int c_ekkfpvt(const EKKfactinfo *fact,
     ipivot = 0;
     mincst = COIN_INT_MAX;
     mincnt = COIN_INT_MAX;
-    for (nz = 2; nz <= nrow; ++nz)
+    for(nz = 2; nz <= nrow; ++nz)
     {
         nz1 = nz - 1;
-        if (mincnt <= nz)
+        if(mincnt <= nz)
         {
             goto L900;
         }
 
         /* Search rows for a pivot */
-        for (i = hpivro[nz]; ! (i <= 0); i = rlink[i].suc)
+        for(i = hpivro[nz]; !(i <= 0); i = rlink[i].suc)
         {
 
             ks = mrstrt[i];
             ke = ks + nz - 1;
             /* Determine magnitude of minimal acceptable element */
             minsze = fabs(dluval[ks]) * zpivlu;
-            for (k = ks; k <= ke; ++k)
+            for(k = ks; k <= ke; ++k)
             {
                 /* Consider a column only if it passes the stability test */
-                if (! (fabs(dluval[k]) < minsze))
+                if(!(fabs(dluval[k]) < minsze))
                 {
                     j = hcoli[k];
                     marcst = nz1 * hincol[j];
-                    if (! (marcst >= mincst))
+                    if(!(marcst >= mincst))
                     {
                         mincst = marcst;
                         mincnt = hincol[j];
                         ipivot = i;
                         jpivot = j;
-                        if (mincnt <= nz + 1)
+                        if(mincnt <= nz + 1)
                         {
                             goto L900;
                         }
@@ -620,7 +620,7 @@ int c_ekkfpvt(const EKKfactinfo *fact,
             }
             ++trials;
 
-            if (trials >= xtrial)
+            if(trials >= xtrial)
             {
                 goto L900;
             }
@@ -628,46 +628,46 @@ int c_ekkfpvt(const EKKfactinfo *fact,
 
         /* Search columns for a pivot */
         j = hpivco[nz];
-        while (! (j <= 0))
+        while(!(j <= 0))
         {
             /* XSEARD = XSEARD + 1 */
             rjectd = false;
             kcs = mcstrt[j];
             kce = kcs + nz - 1;
-            for (k = kcs; k <= kce; ++k)
+            for(k = kcs; k <= kce; ++k)
             {
                 i = hrowi[k];
                 nentri = hinrow[i];
                 marcst = nz1 * nentri;
-                if (! (marcst >= mincst))
+                if(!(marcst >= mincst))
                 {
                     /* Determine magnitude of minimal acceptable element */
                     minsze = fabs(dluval[mrstrt[i]]) * zpivlu;
                     krs = mrstrt[i];
                     kre = krs + nentri - 1;
-                    for (kk = krs; kk <= kre; ++kk)
+                    for(kk = krs; kk <= kre; ++kk)
                     {
-                        if (hcoli[kk] == j)
+                        if(hcoli[kk] == j)
                             break;
                     }
                     /* ASSERT (kk <= kre) */
 
                     /* perform stability test */
-                    if (! (fabs(dluval[kk]) < minsze))
+                    if(!(fabs(dluval[kk]) < minsze))
                     {
                         mincst = marcst;
                         mincnt = nentri;
                         ipivot = i;
                         jpivot = j;
                         rjectd = false;
-                        if (mincnt <= nz)
+                        if(mincnt <= nz)
                         {
                             goto L900;
                         }
                     }
                     else
                     {
-                        if (ipivot == 0)
+                        if(ipivot == 0)
                         {
                             rjectd = true;
                         }
@@ -675,11 +675,11 @@ int c_ekkfpvt(const EKKfactinfo *fact,
                 }
             }
             ++trials;
-            if (trials >= xtrial && ipivot > 0)
+            if(trials >= xtrial && ipivot > 0)
             {
                 goto L900;
             }
-            if (rjectd)
+            if(rjectd)
             {
                 int jsuc = clink[j].suc;
                 ++(*xrejctp);
@@ -695,9 +695,9 @@ int c_ekkfpvt(const EKKfactinfo *fact,
     }
 
     /* FLAG REJECTED ROWS (should this be columns ?) */
-    for (j = 1; j <= nrow; ++j)
+    for(j = 1; j <= nrow; ++j)
     {
-        if (hinrow[j] == 0)
+        if(hinrow[j] == 0)
         {
             rlink[j].pre = -nrow - 1;
             ++(*nsingp);
@@ -710,23 +710,23 @@ L900:
     *xjpivtp = jpivot;
     return (irtcod);
 } /* c_ekkfpvt */
-void c_ekkprpv(EKKfactinfo *fact,
-               EKKHlink *rlink, EKKHlink *clink,
+void c_ekkprpv(EKKfactinfo* fact,
+               EKKHlink* rlink, EKKHlink* clink,
 
                int xrejct,
                int ipivot, int jpivot)
 {
 #if 1
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
     //double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 #endif
     int i, k;
     int kc;
@@ -735,9 +735,9 @@ void c_ekkprpv(EKKfactinfo *fact,
     int kipie = kipis + hinrow[ipivot] - 1;
 
 #ifndef NDEBUG
-    int kpivot=-1;
+    int kpivot = -1;
 #else
-    int kpivot=-1;
+    int kpivot = -1;
 #endif
     const int nrow    = fact->nrow;
 
@@ -745,19 +745,19 @@ void c_ekkprpv(EKKfactinfo *fact,
     {
         int kjpis = mcstrt[jpivot];
         int kjpie = kjpis + hincol[jpivot] ;
-        for (k = kjpis; k < kjpie; ++k)
+        for(k = kjpis; k < kjpie; ++k)
         {
             i = hrowi[k];
             C_EKK_REMOVE_LINK(hpivro, hinrow, rlink, i);
         }
     }
 
-    for (k = kipis; k <= kipie; ++k)
+    for(k = kipis; k <= kipie; ++k)
     {
         int j = hcoli[k];
 
-        if ((xrejct == 0) ||
-                ! (clink[j].pre > nrow))
+        if((xrejct == 0) ||
+                !(clink[j].pre > nrow))
         {
             C_EKK_REMOVE_LINK(hpivco, hincol, clink, j);
         }
@@ -766,20 +766,20 @@ void c_ekkprpv(EKKfactinfo *fact,
         int kcs = mcstrt[j];
         int kce = kcs + hincol[j];
 
-        for (kc = kcs; kc < kce ; kc ++)
+        for(kc = kcs; kc < kce ; kc ++)
         {
-            if (hrowi[kc] == ipivot)
+            if(hrowi[kc] == ipivot)
                 break;
         }
-        assert (kc<kce||hrowi[kce]==ipivot);
+        assert(kc < kce || hrowi[kce] == ipivot);
         hrowi[kc] = hrowi[kce];
         hrowi[kce] = 0;
-        if (j == jpivot)
+        if(j == jpivot)
         {
             kpivot = k;
         }
     }
-    assert (kpivot>0);
+    assert(kpivot > 0);
 
     /* Store the pivot sequence number */
     ++fact->npivots;
@@ -797,28 +797,28 @@ void c_ekkprpv(EKKfactinfo *fact,
 /*
  * c_ekkclco is almost exactly like c_ekkrwco.
  */
-int c_ekkclco(const EKKfactinfo *fact,int *hcoli, int *mrstrt, int *hinrow, int xnewro)
+int c_ekkclco(const EKKfactinfo* fact, int* hcoli, int* mrstrt, int* hinrow, int xnewro)
 {
 #if 0
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
-    double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
+    double* dvalpv = fact->kw3adr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 #endif
     int i, k, nz, kold;
     int kstart;
     const int nrow    = fact->nrow;
 
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         nz = hinrow[i];
-        if (0 < nz)
+        if(0 < nz)
         {
             /* save the last column entry of row i in hinrow */
             /* and replace that entry with -i */
@@ -830,14 +830,14 @@ int c_ekkclco(const EKKfactinfo *fact,int *hcoli, int *mrstrt, int *hinrow, int 
 
     kstart = 0;
     kold = 0;
-    for (k = 1; k <= xnewro; ++k)
+    for(k = 1; k <= xnewro; ++k)
     {
-        if (hcoli[k] != 0)
+        if(hcoli[k] != 0)
         {
             ++kstart;
 
             /* if this is the last entry for the row... */
-            if (hcoli[k] < 0)
+            if(hcoli[k] < 0)
             {
                 /* restore the entry */
                 i = -hcoli[k];
@@ -864,18 +864,18 @@ int c_ekkclco(const EKKfactinfo *fact,int *hcoli, int *mrstrt, int *hinrow, int 
 #undef MACTION_T
 #define COIN_OSL_CMFC
 #define MACTION_T short int
-int c_ekkcmfc(EKKfactinfo *fact,
-              EKKHlink *rlink, EKKHlink *clink,
-              EKKHlink *mwork, void *maction_void,
+int c_ekkcmfc(EKKfactinfo* fact,
+              EKKHlink* rlink, EKKHlink* clink,
+              EKKHlink* mwork, void* maction_void,
               int nnetas,
-              int *nsingp, int *xrejctp,
-              int *xnewrop, int xnewco,
-              int *ncompactionsp)
+              int* nsingp, int* xrejctp,
+              int* xnewrop, int xnewco,
+              int* ncompactionsp)
 
 #include "CoinOslC.h"
 #undef COIN_OSL_CMFC
 #undef MACTION_T
-static int c_ekkidmx(int n, const double *dx)
+static int c_ekkidmx(int n, const double* dx)
 {
     int ret_val;
     int i;
@@ -884,21 +884,21 @@ static int c_ekkidmx(int n, const double *dx)
 
     /* Function Body */
 
-    if (n < 1)
+    if(n < 1)
     {
         return (0);
     }
 
-    if (n == 1)
+    if(n == 1)
     {
         return (1);
     }
 
     ret_val = 1;
     dmax = fabs(dx[1]);
-    for (i = 2; i <= n; ++i)
+    for(i = 2; i <= n; ++i)
     {
-        if (fabs(dx[i]) > dmax)
+        if(fabs(dx[i]) > dmax)
         {
             ret_val = i;
             dmax = fabs(dx[i]);
@@ -911,23 +911,23 @@ static int c_ekkidmx(int n, const double *dx)
 /*     4: numerical problems */
 /*     5: not enough space in row file */
 /*     6: not enough space in column file */
-int c_ekkcmfd(EKKfactinfo *fact,
-              int *mcol,
-              EKKHlink *rlink, EKKHlink *clink,
-              int *maction,
+int c_ekkcmfd(EKKfactinfo* fact,
+              int* mcol,
+              EKKHlink* rlink, EKKHlink* clink,
+              int* maction,
               int nnetas,
-              int *nnentlp, int *nnentup,
-              int *nsingp)
+              int* nnentlp, int* nnentup,
+              int* nsingp)
 {
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
     int nnentl    = *nnentlp;
     int nnentu    = *nnentup;
     int storeZero = fact->ndenuc;
@@ -961,24 +961,24 @@ int c_ekkcmfd(EKKfactinfo *fact,
     /* fix row order once for all */
     ndense = nrow - fact->npivots;
     iput = ndense + 1;
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
-        if (hpivro[i] > 0)
+        if(hpivro[i] > 0)
         {
             irow = hpivro[i];
-            for (j = 1; j <= nrow; ++j)
+            for(j = 1; j <= nrow; ++j)
             {
                 --iput;
                 maction[iput] = irow;
                 irow = rlink[irow].suc;
-                if (irow == 0)
+                if(irow == 0)
                 {
                     break;
                 }
             }
         }
     }
-    if (iput != 1)
+    if(iput != 1)
     {
         ++(*nsingp);
     }
@@ -991,15 +991,15 @@ int c_ekkcmfd(EKKfactinfo *fact,
         krfirst = mrstrt[ifirst];
         /*     put list of columns in last HCOLI */
         iput = 0;
-        for (i = 1; i <= nrow; ++i)
+        for(i = 1; i <= nrow; ++i)
         {
-            if (clink[i].pre >= 0)
+            if(clink[i].pre >= 0)
             {
                 hcoli[krlast + iput] = i;
                 ++iput;
             }
         }
-        if (iput != ndense)
+        if(iput != ndense)
         {
             ++(*nsingp);
         }
@@ -1007,11 +1007,11 @@ int c_ekkcmfd(EKKfactinfo *fact,
         {
             ndo = ndense / 8;
             /*     do most */
-            for (kcount = 1; kcount <= ndo; ++kcount)
+            for(kcount = 1; kcount <= ndo; ++kcount)
             {
                 idense = ndense;
                 isort = 8;
-                for (count = ndense; count >= ndense - 7; --count)
+                for(count = ndense; count >= ndense - 7; --count)
                 {
                     ipivot = maction[count];
                     krs = mrstrt[ipivot];
@@ -1019,7 +1019,7 @@ int c_ekkcmfd(EKKfactinfo *fact,
                     mkrs[isort] = krs;
                 }
                 isort = 8;
-                for (count = ndense; count >= ndense - 7; --count)
+                for(count = ndense; count >= ndense - 7; --count)
                 {
                     /* Find a pivot element */
                     --isort;
@@ -1031,7 +1031,7 @@ int c_ekkcmfd(EKKfactinfo *fact,
                     mcol[count] = jcol;
                     mjcol[isort] = mcol[count];
                     dluval[krs + jcol] = dluval[krs + idense];
-                    if (fabs(pivot) < fact->zeroTolerance)
+                    if(fabs(pivot) < fact->zeroTolerance)
                     {
                         pivot = 0.;
                         dpivx = 0.;
@@ -1042,15 +1042,15 @@ int c_ekkcmfd(EKKfactinfo *fact,
                     }
                     dluval[krs + idense] = pivot;
                     dpivxx[isort] = dpivx;
-                    for (j = isort - 1; j >= 0; --j)
+                    for(j = isort - 1; j >= 0; --j)
                     {
                         krxs = mkrs[j];
                         multip = -dluval[krxs + jcol] * dpivx;
                         dluval[krxs + jcol] = dluval[krxs + idense];
                         /*           for moment skip if zero */
-                        if (fabs(multip) > fact->zeroTolerance)
+                        if(fabs(multip) > fact->zeroTolerance)
                         {
-                            for (i = 0; i < idense; ++i)
+                            for(i = 0; i < idense; ++i)
                             {
                                 dluval[krxs + i] += multip * dluval[krs + i];
                             }
@@ -1063,11 +1063,11 @@ int c_ekkcmfd(EKKfactinfo *fact,
                     }
                 }
                 /*       sort all U in rows already done */
-                for (i = 7; i >= 0; --i)
+                for(i = 7; i >= 0; --i)
                 {
                     /* ****     this is important bit */
                     krs = mkrs[i];
-                    for (j = i - 1; j >= 0; --j)
+                    for(j = i - 1; j >= 0; --j)
                     {
                         jcol = mjcol[j];
                         dsave = dluval[krs + jcol];
@@ -1076,37 +1076,37 @@ int c_ekkcmfd(EKKfactinfo *fact,
                     }
                 }
                 /*       leave IDENSE as it is */
-                if (ndense <= 400)
+                if(ndense <= 400)
                 {
-                    for (jrow = ndense - 8; jrow >= 1; --jrow)
+                    for(jrow = ndense - 8; jrow >= 1; --jrow)
                     {
                         irow = maction[jrow];
                         krxs = mrstrt[irow];
-                        for (j = 7; j >= 0; --j)
+                        for(j = 7; j >= 0; --j)
                         {
                             jcol = mjcol[j];
                             dsave = dluval[krxs + jcol];
                             dluval[krxs + jcol] = dluval[krxs + idense + j];
                             dluval[krxs + idense + j] = dsave;
                         }
-                        for (j = 7; j >= 0; --j)
+                        for(j = 7; j >= 0; --j)
                         {
                             krs = mkrs[j];
                             jdense = idense + j;
                             dpivx = dpivxx[j];
                             multip = -dluval[krxs + jdense] * dpivx;
-                            if (fabs(multip) <= fact->zeroTolerance)
+                            if(fabs(multip) <= fact->zeroTolerance)
                             {
                                 multip = 0.;
                             }
                             dpivyy[j] = multip;
                             dluval[krxs + jdense] = multip;
-                            for (i = idense; i < jdense; ++i)
+                            for(i = idense; i < jdense; ++i)
                             {
                                 dluval[krxs + i] += multip * dluval[krs + i];
                             }
                         }
-                        for (i = 0; i < idense; ++i)
+                        for(i = 0; i < idense; ++i)
                         {
                             dx = dluval[krxs + i];
                             d0 = dpivyy[0] * dluval[mkrs[0] + i];
@@ -1123,46 +1123,46 @@ int c_ekkcmfd(EKKfactinfo *fact,
                 }
                 else
                 {
-                    for (jrow = ndense - 8; jrow >= 1; --jrow)
+                    for(jrow = ndense - 8; jrow >= 1; --jrow)
                     {
                         irow = maction[jrow];
                         krxs = mrstrt[irow];
-                        for (j = 7; j >= 0; --j)
+                        for(j = 7; j >= 0; --j)
                         {
                             jcol = mjcol[j];
                             dsave = dluval[krxs + jcol];
                             dluval[krxs + jcol] = dluval[krxs + idense + j];
                             dluval[krxs + idense + j] = dsave;
                         }
-                        for (j = 7; j >= 0; --j)
+                        for(j = 7; j >= 0; --j)
                         {
                             krs = mkrs[j];
                             jdense = idense + j;
                             dpivx = dpivxx[j];
                             multip = -dluval[krxs + jdense] * dpivx;
-                            if (fabs(multip) <= fact->zeroTolerance)
+                            if(fabs(multip) <= fact->zeroTolerance)
                             {
                                 multip = 0.;
                             }
                             dluval[krxs + jdense] = multip;
-                            for (i = idense; i < jdense; ++i)
+                            for(i = idense; i < jdense; ++i)
                             {
                                 dluval[krxs + i] += multip * dluval[krs + i];
                             }
                         }
                     }
-                    for (kchunk = 0; kchunk < idense; kchunk += 400)
+                    for(kchunk = 0; kchunk < idense; kchunk += 400)
                     {
                         kend = CoinMin(idense - 1, kchunk + 399);
-                        for (jrow = ndense - 8; jrow >= 1; --jrow)
+                        for(jrow = ndense - 8; jrow >= 1; --jrow)
                         {
                             irow = maction[jrow];
                             krxs = mrstrt[irow];
-                            for (j = 7; j >= 0; --j)
+                            for(j = 7; j >= 0; --j)
                             {
                                 dpivyy[j] = dluval[krxs + idense + j];
                             }
-                            for (i = kchunk; i <= kend; ++i)
+                            for(i = kchunk; i <= kend; ++i)
                             {
                                 dx = dluval[krxs + i];
                                 d0 = dpivyy[0] * dluval[mkrs[0] + i];
@@ -1179,10 +1179,10 @@ int c_ekkcmfd(EKKfactinfo *fact,
                     }
                 }
                 /*       resort all U in rows already done */
-                for (i = 7; i >= 0; --i)
+                for(i = 7; i >= 0; --i)
                 {
                     krs = mkrs[i];
-                    for (j = 0; j < i; ++j)
+                    for(j = 0; j < i; ++j)
                     {
                         jcol = mjcol[j];
                         dsave = dluval[krs + jcol];
@@ -1194,7 +1194,7 @@ int c_ekkcmfd(EKKfactinfo *fact,
             }
             idense = ndense;
             /*     do remainder */
-            for (count = ndense; count >= 1; --count)
+            for(count = ndense; count >= 1; --count)
             {
                 /*        Find a pivot element */
                 ipivot = maction[count];
@@ -1204,7 +1204,7 @@ int c_ekkcmfd(EKKfactinfo *fact,
                 --idense;
                 mcol[count] = jcol;
                 dluval[krs + jcol] = dluval[krs + idense];
-                if (fabs(pivot) < fact->zeroTolerance)
+                if(fabs(pivot) < fact->zeroTolerance)
                 {
                     dluval[krs + idense] = 0.;
                 }
@@ -1212,17 +1212,17 @@ int c_ekkcmfd(EKKfactinfo *fact,
                 {
                     dpivx = 1. / pivot;
                     dluval[krs + idense] = pivot;
-                    for (jrow = idense; jrow >= 1; --jrow)
+                    for(jrow = idense; jrow >= 1; --jrow)
                     {
                         irow = maction[jrow];
                         krxs = mrstrt[irow];
                         multip = -dluval[krxs + jcol] * dpivx;
                         dluval[krxs + jcol] = dluval[krxs + idense];
                         /*           for moment skip if zero */
-                        if (fabs(multip) > fact->zeroTolerance)
+                        if(fabs(multip) > fact->zeroTolerance)
                         {
                             dluval[krxs + idense] = multip;
-                            for (i = 0; i < idense; ++i)
+                            for(i = 0; i < idense; ++i)
                             {
                                 dluval[krxs + i] += multip * dluval[krs + i];
                             }
@@ -1237,7 +1237,7 @@ int c_ekkcmfd(EKKfactinfo *fact,
             /*     now create in form for OSL */
             ndense = nrow - fact->npivots;
             idense = ndense;
-            for (count = ndense; count >= 1; --count)
+            for(count = ndense; count >= 1; --count)
             {
                 /*        Find a pivot element */
                 ipivot = maction[count];
@@ -1247,7 +1247,7 @@ int c_ekkcmfd(EKKfactinfo *fact,
                 jpivot = hcoli[krlast + jcol];
                 ++fact->npivots;
                 pivot = dluval[krs + idense];
-                if (pivot == 0.)
+                if(pivot == 0.)
                 {
                     hinrow[ipivot] = 0;
                     rlink[ipivot].pre = -nrow - 1;
@@ -1262,13 +1262,13 @@ int c_ekkcmfd(EKKfactinfo *fact,
                     ++fact->xnetal;
                     mcstrt[fact->xnetal] = lstart - 1;
                     hpivco[fact->xnetal] = ipivot;
-                    for (jrow = idense; jrow >= 1; --jrow)
+                    for(jrow = idense; jrow >= 1; --jrow)
                     {
                         irow = maction[jrow];
                         krxs = mrstrt[irow];
                         multip = dluval[krxs + idense];
                         /*           for moment skip if zero */
-                        if (multip != 0.||storeZero)
+                        if(multip != 0. || storeZero)
                         {
                             /* Store elementary row transformation */
                             ++nnentl;
@@ -1285,11 +1285,11 @@ int c_ekkcmfd(EKKfactinfo *fact,
                     nz = 1;
                     dluval[krs] = pivot;
                     hcoli[krs] = jpivot;
-                    if (!storeZero)
+                    if(!storeZero)
                     {
-                        for (i = 1; i <= idense; ++i)
+                        for(i = 1; i <= idense; ++i)
                         {
-                            if (fabs(dluval[krs + i]) > fact->zeroTolerance)
+                            if(fabs(dluval[krs + i]) > fact->zeroTolerance)
                             {
                                 ++nz;
                                 hcoli[krs + nz - 1] = hcoli[krlast + i];
@@ -1300,7 +1300,7 @@ int c_ekkcmfd(EKKfactinfo *fact,
                     }
                     else
                     {
-                        for (i = 1; i <= idense; ++i)
+                        for(i = 1; i <= idense; ++i)
                         {
                             ++nz;
                             hcoli[krs + nz - 1] = hcoli[krlast + i];
@@ -1328,21 +1328,21 @@ int c_ekkcmfd(EKKfactinfo *fact,
 #define C_EKKCMFY
 #define COIN_OSL_CMFC
 #define MACTION_T int
-int c_ekkcmfy(EKKfactinfo *fact,
-              EKKHlink *rlink, EKKHlink *clink,
-              EKKHlink *mwork, void *maction_void,
+int c_ekkcmfy(EKKfactinfo* fact,
+              EKKHlink* rlink, EKKHlink* clink,
+              EKKHlink* mwork, void* maction_void,
               int nnetas,
-              int *nsingp, int *xrejctp,
-              int *xnewrop, int xnewco,
-              int *ncompactionsp)
+              int* nsingp, int* xrejctp,
+              int* xnewrop, int xnewco,
+              int* ncompactionsp)
 
 #include "CoinOslC.h"
 #undef COIN_OSL_CMFC
 #undef C_EKKCMFY
 #undef MACTION_T
-int c_ekkford(const EKKfactinfo *fact,const int *hinrow, const int *hincol,
-              int *hpivro, int *hpivco,
-              EKKHlink *rlink, EKKHlink *clink)
+int c_ekkford(const EKKfactinfo* fact, const int* hinrow, const int* hincol,
+              int* hpivro, int* hpivco,
+              EKKHlink* rlink, EKKHlink* clink)
 {
     int i, iri, nzi;
     const int nrow    = fact->nrow;
@@ -1352,9 +1352,9 @@ int c_ekkford(const EKKfactinfo *fact,const int *hinrow, const int *hincol,
     /*     Builds linked lists of rows and cols of nucleus for efficient */
     /*     pivot searching. */
 
-    memset(hpivro+1,0,nrow*sizeof(int));
-    memset(hpivco+1,0,nrow*sizeof(int));
-    for (i = 1; i <= nrow; ++i)
+    memset(hpivro + 1, 0, nrow * sizeof(int));
+    memset(hpivco + 1, 0, nrow * sizeof(int));
+    for(i = 1; i <= nrow; ++i)
     {
         //hpivro[i] = 0;
         //hpivco[i] = 0;
@@ -1364,12 +1364,12 @@ int c_ekkford(const EKKfactinfo *fact,const int *hinrow, const int *hincol,
 
     /*     Generate double linked list of rows having equal numbers of */
     /*     nonzeros in each row. Skip pivotal rows. */
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
-        if (! (rlink[i].pre < 0))
+        if(!(rlink[i].pre < 0))
         {
             nzi = hinrow[i];
-            if (nzi <= 0)
+            if(nzi <= 0)
             {
                 ++nsing;
                 rlink[i].pre = -nrow - 1;
@@ -1380,7 +1380,7 @@ int c_ekkford(const EKKfactinfo *fact,const int *hinrow, const int *hincol,
                 hpivro[nzi] = i;
                 rlink[i].suc = iri;
                 rlink[i].pre = 0;
-                if (iri != 0)
+                if(iri != 0)
                 {
                     rlink[iri].pre = i;
                 }
@@ -1390,12 +1390,12 @@ int c_ekkford(const EKKfactinfo *fact,const int *hinrow, const int *hincol,
 
     /*     Generate double linked list of cols having equal numbers of */
     /*     nonzeros in each col. Skip pivotal cols. */
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
-        if (! (clink[i].pre < 0))
+        if(!(clink[i].pre < 0))
         {
             nzi = hincol[i];
-            if (nzi <= 0)
+            if(nzi <= 0)
             {
                 ++nsing;
                 clink[i].pre = -nrow - 1;
@@ -1406,7 +1406,7 @@ int c_ekkford(const EKKfactinfo *fact,const int *hinrow, const int *hincol,
                 hpivco[nzi] = i;
                 clink[i].suc = iri;
                 clink[i].pre = 0;
-                if (iri != 0)
+                if(iri != 0)
                 {
                     clink[iri].pre = i;
                 }
@@ -1474,36 +1474,36 @@ int c_ekkford(const EKKfactinfo *fact,const int *hinrow, const int *hincol,
  * what the largest element is, we ensure that it is always in front.
  * This establishes this property; later on we take steps to preserve it.
  */
-static void c_ekkmltf(const EKKfactinfo *fact,double *dluval, int *hcoli,
-                      const int *mrstrt, const int *hinrow,
-                      const EKKHlink *rlink)
+static void c_ekkmltf(const EKKfactinfo* fact, double* dluval, int* hcoli,
+                      const int* mrstrt, const int* hinrow,
+                      const EKKHlink* rlink)
 {
 #if 0
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
-    double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
+    double* dvalpv = fact->kw3adr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 #endif
     int i, j, k;
 #ifndef NDEBUG
-    int koff=-1;
+    int koff = -1;
 #else
     int koff;
 #endif
     const int nrow    = fact->nrow;
 
 
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         /* ignore rows that have already been pivoted */
         /* if it is a singleton row, the property trivially holds */
-        if (! (rlink[i].pre < 0 || hinrow[i] <= 1))
+        if(!(rlink[i].pre < 0 || hinrow[i] <= 1))
         {
             const int krs = mrstrt[i];
             const int kre = krs + hinrow[i] - 1;
@@ -1511,15 +1511,15 @@ static void c_ekkmltf(const EKKfactinfo *fact,double *dluval, int *hcoli,
             double maxaij = 0.f;
 
             /* this assumes that at least one of the dluvals is non-zero. */
-            for (k = krs; k <= kre; ++k)
+            for(k = krs; k <= kre; ++k)
             {
-                if (! (fabs(dluval[k]) <= maxaij))
+                if(!(fabs(dluval[k]) <= maxaij))
                 {
                     maxaij = fabs(dluval[k]);
                     koff = k;
                 }
             }
-            assert (koff>0);
+            assert(koff > 0);
             maxaij = dluval[koff];
             j = hcoli[koff];
 
@@ -1531,25 +1531,25 @@ static void c_ekkmltf(const EKKfactinfo *fact,double *dluval, int *hcoli,
         }
     }
 } /* c_ekkmltf */
-int c_ekklfct( register EKKfactinfo *fact)
+int c_ekklfct(register EKKfactinfo* fact)
 {
     const int nrow    = fact->nrow;
-    int ninbas = fact->xcsadr[nrow+1]-1;
+    int ninbas = fact->xcsadr[nrow + 1] - 1;
     int ifvsol = fact->ifvsol;
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 
 
-    EKKHlink *rlink   = fact->kp1adr;
-    EKKHlink *clink   = fact->kp2adr;
-    EKKHlink *mwork   = (reinterpret_cast<EKKHlink*>(fact->kw1adr))-1;
+    EKKHlink* rlink   = fact->kp1adr;
+    EKKHlink* clink   = fact->kp2adr;
+    EKKHlink* mwork   = (reinterpret_cast<EKKHlink*>(fact->kw1adr)) - 1;
 
     int nsing, kdnspt, xnewro, xnewco;
     int i;
@@ -1560,10 +1560,10 @@ int c_ekklfct( register EKKfactinfo *fact)
     int ncompactions;
     double save_drtpiv = fact->drtpiv;
     double save_zpivlu = fact->zpivlu;
-    if (ifvsol > 0 && fact->invok < 0)
+    if(ifvsol > 0 && fact->invok < 0)
     {
         fact->zpivlu =  CoinMin(0.9, fact->zpivlu * 10.);
-        fact->drtpiv=1.0e-8;
+        fact->drtpiv = 1.0e-8;
     }
 
     rlink --;
@@ -1579,58 +1579,58 @@ int c_ekklfct( register EKKfactinfo *fact)
     kdnspt = nnetas + 1;
     fact->ndenuc = 0;
     /*     Triangularize */
-    irtcod = c_ekktria(fact,rlink,clink,
+    irtcod = c_ekktria(fact, rlink, clink,
                        &nsing,
                        &xnewco, &xnewro,
                        &ncompactions, ninbas);
     fact->nnentl = ninbas - fact->nnentu;
 
-    if (irtcod < 0)
+    if(irtcod < 0)
     {
         /* no space or system error */
         goto L8000;
     }
 
-    if (irtcod != 0 && fact->invok >= 0)
+    if(irtcod != 0 && fact->invok >= 0)
     {
         goto L8500; /* 7 or 8 - pivot too small */
     }
 #if 0
     /* is this necessary ? */
     lstart = nnetas - fact->nnentl + 1;
-    for (i = lstart; i <= nnetas; ++i)
+    for(i = lstart; i <= nnetas; ++i)
     {
         hrowi[i] = (hcoli[i] << 3);
     }
 #endif
 
     /* See if finished */
-    if (! (fact->npivots >= nrow))
+    if(!(fact->npivots >= nrow))
     {
         int nsing1;
 
         /*     No - do nucleus */
 
-        nsing1 = c_ekkford(fact,hinrow, hincol, hpivro, hpivco, rlink, clink);
-        nsing+= nsing1;
-        if (nsing1 != 0 && fact->invok >= 0)
+        nsing1 = c_ekkford(fact, hinrow, hincol, hpivro, hpivco, rlink, clink);
+        nsing += nsing1;
+        if(nsing1 != 0 && fact->invok >= 0)
         {
-            irtcod=7;
+            irtcod = 7;
             goto L8500;
         }
-        c_ekkmltf(fact,dluval, hcoli, mrstrt, hinrow, rlink);
+        c_ekkmltf(fact, dluval, hcoli, mrstrt, hinrow, rlink);
 
         {
             bool callcmfy = false;
 
-            if (nrow > 32767)
+            if(nrow > 32767)
             {
                 int count = 0;
-                for (i = 1; i <= nrow; ++i)
+                for(i = 1; i <= nrow; ++i)
                 {
-                    count = CoinMax(count,hinrow[i]);
+                    count = CoinMax(count, hinrow[i]);
                 }
-                if (count + nrow - fact->npivots > 32767)
+                if(count + nrow - fact->npivots > 32767)
                 {
                     /* will have to use I*4 version of CMFC */
                     /* no changes to pointer params */
@@ -1650,7 +1650,7 @@ int c_ekklfct( register EKKfactinfo *fact)
             /* irtcod one of 0,-5,7,10 */
         }
 
-        if (irtcod < 0)
+        if(irtcod < 0)
         {
             goto L8000;
         }
@@ -1658,13 +1658,13 @@ int c_ekklfct( register EKKfactinfo *fact)
     }
 
     /*     return if error */
-    if (nsing > 0 || irtcod == 10)
+    if(nsing > 0 || irtcod == 10)
     {
         irtcod = 99;
     }
     /* irtcod one of 0,7,99 */
 
-    if (irtcod != 0)
+    if(irtcod != 0)
     {
         goto L8500;
     }
@@ -1672,16 +1672,16 @@ int c_ekklfct( register EKKfactinfo *fact)
     mcstrt[fact->xnetal] = nnetas - fact->nnentl;
 
     /* give message if tight on memory */
-    if (ncompactions > 2 )
+    if(ncompactions > 2)
     {
-        if (1)
+        if(1)
         {
-            int etasize =CoinMax(4*fact->nnentu+(nnetas-fact->nnentl)+1000,fact->eta_size);
-            fact->eta_size=CoinMin(static_cast<int>(1.2*fact->eta_size),etasize);
-            if (fact->maxNNetas>0&&fact->eta_size>
+            int etasize = CoinMax(4 * fact->nnentu + (nnetas - fact->nnentl) + 1000, fact->eta_size);
+            fact->eta_size = CoinMin(static_cast<int>(1.2 * fact->eta_size), etasize);
+            if(fact->maxNNetas > 0 && fact->eta_size >
                     fact->maxNNetas)
             {
-                fact->eta_size=fact->maxNNetas;
+                fact->eta_size = fact->maxNNetas;
             }
         } /* endif */
     }
@@ -1701,7 +1701,7 @@ int c_ekklfct( register EKKfactinfo *fact)
 
 
 
-        if (jrtcod != 0)
+        if(jrtcod != 0)
         {
             irtcod = jrtcod;
             /* irtcod == 2 */
@@ -1712,16 +1712,16 @@ int c_ekklfct( register EKKfactinfo *fact)
     /* Fatal error */
 L8000:
 
-    if (1)
+    if(1)
     {
-        if (fact->maxNNetas != fact->eta_size &&
+        if(fact->maxNNetas != fact->eta_size &&
                 nnetas)
         {
             /* return and get more space */
 
             /* double eta_size, unless that exceeds max (if there is one) */
-            fact->eta_size = fact->eta_size<<1;
-            if (fact->maxNNetas > 0 &&
+            fact->eta_size = fact->eta_size << 1;
+            if(fact->maxNNetas > 0 &&
                     fact->eta_size > fact->maxNNetas)
             {
                 fact->eta_size = fact->maxNNetas;
@@ -1734,17 +1734,17 @@ L8000:
 
 L8500:
     /* restore pivot tolerance */
-    fact->drtpiv=save_drtpiv;
-    fact->zpivlu=save_zpivlu;
+    fact->drtpiv = save_drtpiv;
+    fact->zpivlu = save_zpivlu;
 #ifndef NDEBUG
-    if (fact->rows_ok)
+    if(fact->rows_ok)
     {
-        int * hinrow=fact->xrnadr;
-        if (!fact->xe2adr)
+        int* hinrow = fact->xrnadr;
+        if(!fact->xe2adr)
         {
-            for (int i=1; i<=fact->nrow; i++)
+            for(int i = 1; i <= fact->nrow; i++)
             {
-                assert (hinrow[i]>=0&&hinrow[i]<=fact->nrow);
+                assert(hinrow[i] >= 0 && hinrow[i] <= fact->nrow);
             }
         }
     }
@@ -1794,9 +1794,9 @@ L8500:
   any return code from c_ekklfct, except 2 and 5
 */
 
-void c_ekkrowq(int *hrow, int *hcol, double *dels,
-               int *mrstrt,
-               const int *hinrow, int nnrow, int ninbas)
+void c_ekkrowq(int* hrow, int* hcol, double* dels,
+               int* mrstrt,
+               const int* hinrow, int nnrow, int ninbas)
 {
     int i, k, iak, jak;
     double daik;
@@ -1808,21 +1808,21 @@ void c_ekkrowq(int *hrow, int *hcol, double *dels,
 
     k = 1;
     /* POSITION AFTER END OF ROW */
-    for (i = 1; i <= nnrow; ++i)
+    for(i = 1; i <= nnrow; ++i)
     {
         k += hinrow[i];
         mrstrt[i] = k;
     }
 
-    for (k = ninbas; k >= 1; --k)
+    for(k = ninbas; k >= 1; --k)
     {
         iak = hrow[k];
-        if (iak != 0)
+        if(iak != 0)
         {
             daik = dels[k];
             jak = hcol[k];
             hrow[k] = 0;
-            while (1)
+            while(1)
             {
                 --mrstrt[iak];
 
@@ -1835,7 +1835,7 @@ void c_ekkrowq(int *hrow, int *hcol, double *dels,
                 hrow[iloc] = 0;
                 hcol[iloc] = jak;
 
-                if (isave == 0)
+                if(isave == 0)
                     break;
                 daik = dsave;
                 iak = isave;
@@ -1848,17 +1848,17 @@ void c_ekkrowq(int *hrow, int *hcol, double *dels,
 
 
 
-int c_ekkrwco(const EKKfactinfo *fact,double *dluval,
-              int *hcoli, int *mrstrt, int *hinrow, int xnewro)
+int c_ekkrwco(const EKKfactinfo* fact, double* dluval,
+              int* hcoli, int* mrstrt, int* hinrow, int xnewro)
 {
     int i, k, nz, kold;
     int kstart;
     const int nrow    = fact->nrow;
 
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         nz = hinrow[i];
-        if (0 < nz)
+        if(0 < nz)
         {
             /* save the last column entry of row i in hinrow */
             /* and replace that entry with -i */
@@ -1870,14 +1870,14 @@ int c_ekkrwco(const EKKfactinfo *fact,double *dluval,
 
     kstart = 0;
     kold = 0;
-    for (k = 1; k <= xnewro; ++k)
+    for(k = 1; k <= xnewro; ++k)
     {
-        if (hcoli[k] != 0)
+        if(hcoli[k] != 0)
         {
             ++kstart;
 
             /* if this is the last entry for the row... */
-            if (hcoli[k] < 0)
+            if(hcoli[k] < 0)
             {
                 /* restore the entry */
                 i = -hcoli[k];
@@ -1901,21 +1901,21 @@ int c_ekkrwco(const EKKfactinfo *fact,double *dluval,
 
 
 
-int c_ekkrwcs(const EKKfactinfo *fact,double *dluval, int *hcoli, int *mrstrt,
-              const int *hinrow, const EKKHlink *mwork,
+int c_ekkrwcs(const EKKfactinfo* fact, double* dluval, int* hcoli, int* mrstrt,
+              const int* hinrow, const EKKHlink* mwork,
               int nfirst)
 {
 #if 0
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
-    double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
+    double* dvalpv = fact->kw3adr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 #endif
     int i, k, k1, k2, nz;
     int irow, iput;
@@ -1925,15 +1925,15 @@ int c_ekkrwcs(const EKKfactinfo *fact,double *dluval, int *hcoli, int *mrstrt,
 
     iput = 1;
     irow = nfirst;
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         nz = hinrow[irow];
         k1 = mrstrt[irow];
-        if (k1 != iput)
+        if(k1 != iput)
         {
             mrstrt[irow] = iput;
             k2 = k1 + nz - 1;
-            for (k = k1; k <= k2; ++k)
+            for(k = k1; k <= k2; ++k)
             {
                 dluval[iput] = dluval[k];
                 hcoli[iput] = hcoli[k];
@@ -1949,23 +1949,23 @@ int c_ekkrwcs(const EKKfactinfo *fact,double *dluval, int *hcoli, int *mrstrt,
 
     return (iput);
 } /* c_ekkrwcs */
-void c_ekkrwct(const EKKfactinfo *fact,double *dluval, int *hcoli, int *mrstrt,
-               const int *hinrow, const EKKHlink *mwork,
-               const EKKHlink *rlink,
-               const short *msort, double *dsort,
+void c_ekkrwct(const EKKfactinfo* fact, double* dluval, int* hcoli, int* mrstrt,
+               const int* hinrow, const EKKHlink* mwork,
+               const EKKHlink* rlink,
+               const short* msort, double* dsort,
                int nlast, int xnewro)
 {
 #if 0
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
-    double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
+    double* dvalpv = fact->kw3adr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 #endif
     int i, k, k1, nz, icol;
     int kmax;
@@ -1976,18 +1976,18 @@ void c_ekkrwct(const EKKfactinfo *fact,double *dluval, int *hcoli, int *mrstrt,
     iput = xnewro;
     irow = nlast;
     kmax = nrow - fact->npivots;
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         nz = hinrow[irow];
         k1 = mrstrt[irow] - 1;
-        if (rlink[irow].pre < 0)
+        if(rlink[irow].pre < 0)
         {
             /* pivoted on already */
             iput -= nz;
-            if (k1 != iput)
+            if(k1 != iput)
             {
                 mrstrt[irow] = iput + 1;
-                for (k = nz; k >= 1; --k)
+                for(k = nz; k >= 1; --k)
                 {
                     dluval[iput + k] = dluval[k1 + k];
                     hcoli[iput + k] = hcoli[k1 + k];
@@ -1999,25 +1999,25 @@ void c_ekkrwct(const EKKfactinfo *fact,double *dluval, int *hcoli, int *mrstrt,
             /* not pivoted - going dense */
             iput -= kmax;
             mrstrt[irow] = iput + 1;
-            c_ekkdzero( kmax, &dsort[1]);
-            for (k = 1; k <= nz; ++k)
+            c_ekkdzero(kmax, &dsort[1]);
+            for(k = 1; k <= nz; ++k)
             {
                 icol = hcoli[k1 + k];
                 ilook = msort[icol];
                 dsort[ilook] = dluval[k1 + k];
             }
             c_ekkdcpy(kmax,
-                      (dsort+1), (dluval+iput + 1));
+                      (dsort + 1), (dluval + iput + 1));
         }
         irow = mwork[irow].pre;
     }
 } /* c_ekkrwct */
 /*     takes Uwe's modern structures and puts them back 20 years */
-int c_ekkshff(EKKfactinfo *fact,
-              EKKHlink *clink, EKKHlink *rlink,
+int c_ekkshff(EKKfactinfo* fact,
+              EKKHlink* clink, EKKHlink* rlink,
               int xnewro)
 {
-    int *hpivro   = fact->krpadr;
+    int* hpivro   = fact->krpadr;
 
     int i, j;
     int nbas, icol;
@@ -2025,11 +2025,11 @@ int c_ekkshff(EKKfactinfo *fact,
     const int nrow    = fact->nrow;
     int nsing;
 
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         j = -rlink[i].pre;
         rlink[i].pre = j;
-        if (j > 0 && j <= nrow)
+        if(j > 0 && j <= nrow)
         {
             hpivro[j] = i;
         }
@@ -2042,8 +2042,8 @@ int c_ekkshff(EKKfactinfo *fact,
     nbas = 0;
     nsing = 0;
     /* Decide if permutation wanted */
-    fact->first_dense=nrow-fact->ndenuc+1+1;
-    fact->last_dense=nrow;
+    fact->first_dense = nrow - fact->ndenuc + 1 + 1;
+    fact->last_dense = nrow;
 
     /* rlink[].suc is dead at this point */
 
@@ -2052,12 +2052,12 @@ int c_ekkshff(EKKfactinfo *fact,
      * with the pivot (or permuted) index generated by factorization.
      * This eventually goes into mpermu.
      */
-    for (icol = 1; icol <= nrow; ++icol)
+    for(icol = 1; icol <= nrow; ++icol)
     {
         int ibasis = icol;
         ipiv = clink[ibasis].pre;
 
-        if (0 < ipiv && ipiv <= nrow)
+        if(0 < ipiv && ipiv <= nrow)
         {
             rlink[ibasis].suc = ipiv;
             ++nbas;
@@ -2065,7 +2065,7 @@ int c_ekkshff(EKKfactinfo *fact,
     }
 
     nsing = nrow - nbas;
-    if (nsing > 0)
+    if(nsing > 0)
     {
         abort();
     }
@@ -2077,15 +2077,15 @@ int c_ekkshff(EKKfactinfo *fact,
         const int notMuchRoom = (fact->nnentu + xnewro + 10 > fact->nnetas - fact->nnentl);
 
         /* must be same as in c_ekkshfv */
-        if (fact->ndenuc || notMuchRoom||nrow<C_EKK_GO_SPARSE)
+        if(fact->ndenuc || notMuchRoom || nrow < C_EKK_GO_SPARSE)
         {
 #if PRINT_DEBUG
-            if (fact->if_sparse_update)
+            if(fact->if_sparse_update)
             {
                 printf("**** Switching off sparse update - dense - c_ekkshff\n");
             }
 #endif
-            fact->if_sparse_update=0;
+            fact->if_sparse_update = 0;
         }
     }
 
@@ -2097,116 +2097,116 @@ int c_ekkshff(EKKfactinfo *fact,
     return (0);
 } /* c_ekkshff */
 /* sorts on indices dragging elements with */
-static void c_ekk_sort2(int * key , double * array2,int number)
+static void c_ekk_sort2(int* key , double* array2, int number)
 {
-    int minsize=10;
+    int minsize = 10;
     int n = number;
     int sp;
-    int *v = key;
-    int *m, t;
-    int * ls[32] , * rs[32];
-    int *l , *r , c;
+    int* v = key;
+    int* m, t;
+    int* ls[32] , * rs[32];
+    int* l , *r , c;
     double it;
     int j;
     /*check already sorted  */
 #ifndef LONG_MAX
 #define LONG_MAX 0x7fffffff;
 #endif
-    int last=-LONG_MAX;
-    for (j=0; j<number; j++)
+    int last = -LONG_MAX;
+    for(j = 0; j < number; j++)
     {
-        if (key[j]>=last)
+        if(key[j] >= last)
         {
-            last=key[j];
+            last = key[j];
         }
         else
         {
             break;
         } /* endif */
     } /* endfor */
-    if (j==number)
+    if(j == number)
     {
         return;
     } /* endif */
     sp = 0 ;
     ls[sp] = v ;
-    rs[sp] = v + (n-1) ;
-    while( sp >= 0 )
+    rs[sp] = v + (n - 1) ;
+    while(sp >= 0)
     {
-        if ( rs[sp] - ls[sp] > minsize )
+        if(rs[sp] - ls[sp] > minsize)
         {
             l = ls[sp] ;
             r = rs[sp] ;
-            m = l + (r-l)/2 ;
-            if ( *l > *m )
+            m = l + (r - l) / 2 ;
+            if(*l > *m)
             {
                 t = *l ;
                 *l = *m ;
                 *m = t ;
-                it = array2[l-v] ;
-                array2[l-v] = array2[m-v] ;
-                array2[m-v] = it ;
+                it = array2[l - v] ;
+                array2[l - v] = array2[m - v] ;
+                array2[m - v] = it ;
             }
-            if ( *m > *r )
+            if(*m > *r)
             {
                 t = *m ;
                 *m = *r ;
                 *r = t ;
-                it = array2[m-v] ;
-                array2[m-v] = array2[r-v] ;
-                array2[r-v] = it ;
-                if ( *l > *m )
+                it = array2[m - v] ;
+                array2[m - v] = array2[r - v] ;
+                array2[r - v] = it ;
+                if(*l > *m)
                 {
                     t = *l ;
                     *l = *m ;
                     *m = t ;
-                    it = array2[l-v] ;
-                    array2[l-v] = array2[m-v] ;
-                    array2[m-v] = it ;
+                    it = array2[l - v] ;
+                    array2[l - v] = array2[m - v] ;
+                    array2[m - v] = it ;
                 }
             }
             c = *m ;
-            while ( r - l > 1 )
+            while(r - l > 1)
             {
-                while ( *(++l) < c ) ;
-                while ( *(--r) > c ) ;
+                while(*(++l) < c) ;
+                while(*(--r) > c) ;
                 t = *l ;
                 *l = *r ;
                 *r = t ;
-                it = array2[l-v] ;
-                array2[l-v] = array2[r-v] ;
-                array2[r-v] = it ;
+                it = array2[l - v] ;
+                array2[l - v] = array2[r - v] ;
+                array2[r - v] = it ;
             }
             l = r - 1 ;
-            if ( l < m )
+            if(l < m)
             {
-                ls[sp+1] = ls[sp] ;
-                rs[sp+1] = l      ;
+                ls[sp + 1] = ls[sp] ;
+                rs[sp + 1] = l      ;
                 ls[sp  ] = r      ;
             }
             else
             {
-                ls[sp+1] = r      ;
-                rs[sp+1] = rs[sp] ;
+                ls[sp + 1] = r      ;
+                rs[sp + 1] = rs[sp] ;
                 rs[sp  ] = l      ;
             }
             sp++ ;
         }
         else sp-- ;
     }
-    for ( l = v , m = v + (n-1) ; l < m ; l++ )
+    for(l = v , m = v + (n - 1) ; l < m ; l++)
     {
-        if ( *l > *(l+1) )
+        if(*l > *(l + 1))
         {
-            c = *(l+1) ;
-            it = array2[(l-v)+1] ;
-            for ( r = l ; r >= v && *r > c ; r-- )
+            c = *(l + 1) ;
+            it = array2[(l - v) + 1] ;
+            for(r = l ; r >= v && *r > c ; r--)
             {
-                *(r+1) = *r ;
-                array2[(r-v)+1] = array2[(r-v)] ;
+                *(r + 1) = *r ;
+                array2[(r - v) + 1] = array2[(r - v)] ;
             }
-            *(r+1) = c ;
-            array2[(r-v)+1] = it ;
+            *(r + 1) = c ;
+            array2[(r - v) + 1] = it ;
         }
     }
 }
@@ -2218,22 +2218,22 @@ static void c_ekk_sort2(int * key , double * array2,int number)
 /*     Put column numbers in U for L-U update */
 /*     and multiply U elements by - reciprocal of pivot element */
 /*     and set up backward pointers for pivot rows */
-void c_ekkshfv(EKKfactinfo *fact,
-               EKKHlink *rlink, EKKHlink *clink,
+void c_ekkshfv(EKKfactinfo* fact,
+               EKKHlink* rlink, EKKHlink* clink,
                int xnewro)
 {
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
-    double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
-    double *dpermu = fact->kadrpm;
-    double * de2val = fact->xe2adr ? fact->xe2adr-1: 0;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
+    double* dvalpv = fact->kw3adr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
+    double* dpermu = fact->kadrpm;
+    double* de2val = fact->xe2adr ? fact->xe2adr - 1 : 0;
     int nnentu    = fact->nnentu;
     int xnetal    = fact->xnetal;
 
@@ -2242,25 +2242,25 @@ void c_ekkshfv(EKKfactinfo *fact,
     int i, j, k, kk, nel;
     int nroom;
     bool need_more_space;
-    int ndenuc=fact->ndenuc;
-    int if_sparse_update=fact->if_sparse_update;
+    int ndenuc = fact->ndenuc;
+    int if_sparse_update = fact->if_sparse_update;
     int nnentl = fact->nnentl;
     int nnetas = fact->nnetas;
 
-    int *ihlink   = (reinterpret_cast<int*> (clink))+1;   /* can't use rlink for simple loop below */
+    int* ihlink   = (reinterpret_cast<int*>(clink)) + 1;  /* can't use rlink for simple loop below */
 
     const int nrow        = fact->nrow;
     const int maxinv  = fact->maxinv;
 
     /* this is not just a temporary - c_ekkbtrn etc use this */
-    int *mpermu   = (reinterpret_cast<int*> (dpermu+nrow))+1;
+    int* mpermu   = (reinterpret_cast<int*>(dpermu + nrow)) + 1;
 
-    int * temp = ihlink+nrow;
-    int * temp2 = temp+nrow;
+    int* temp = ihlink + nrow;
+    int* temp2 = temp + nrow;
     const int notMuchRoom = (nnentu + xnewro + 10 > nnetas - nnentl);
 
     /* compress hlink and make simpler */
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         mpermu[i] = rlink[i].pre;
         ihlink[i] = rlink[i].suc;
@@ -2269,7 +2269,7 @@ void c_ekkshfv(EKKfactinfo *fact,
     /* ihlink[i] == the step in which col i was pivoted */
 
     /* must be same as in c_ekkshff */
-    if (fact->ndenuc||notMuchRoom||nrow<C_EKK_GO_SPARSE)
+    if(fact->ndenuc || notMuchRoom || nrow < C_EKK_GO_SPARSE)
     {
         int ninbas;
 
@@ -2278,15 +2278,15 @@ void c_ekkshfv(EKKfactinfo *fact,
         /* initialize with a fake pivot in each column */
         c_ekkscpy_0_1(nrow, 1, &hincol[1]);
 
-        if (notMuchRoom)
+        if(notMuchRoom)
         {
-            fact->eta_size=static_cast<int>(1.05*fact->eta_size);
+            fact->eta_size = static_cast<int>(1.05 * fact->eta_size);
 
             /* eta_size can be no larger than maxNNetas */
-            if (fact->maxNNetas > 0 &&
+            if(fact->maxNNetas > 0 &&
                     fact->eta_size > fact->maxNNetas)
             {
-                fact->eta_size=fact->maxNNetas;
+                fact->eta_size = fact->maxNNetas;
             }
         } /* endif */
 
@@ -2294,16 +2294,16 @@ void c_ekkshfv(EKKfactinfo *fact,
         /* Also use ihlink to permute column numbers */
         /* the rows are not stored compactly or in order,
          * so we have to find out where the last one is stored */
-        ninbas=0;
-        for (i = 1; i <= nrow; ++i)
+        ninbas = 0;
+        for(i = 1; i <= nrow; ++i)
         {
-            int jpiv=mpermu[i];
-            int nin=hinrow[i];
+            int jpiv = mpermu[i];
+            int nin = hinrow[i];
             int krs = mrstrt[i];
             int kre = krs + nin;
 
-            temp[jpiv]=krs;
-            temp2[jpiv]=nin;
+            temp[jpiv] = krs;
+            temp2[jpiv] = nin;
 
             ninbas = CoinMax(kre, ninbas);
 
@@ -2312,7 +2312,7 @@ void c_ekkshfv(EKKfactinfo *fact,
             hcoli[krs] = 0;   /* probably needed for c_ekkrowq */
             /* room for the pivot has already been allocated, so hincol ok */
 
-            for (kk = krs + 1; kk < kre; ++kk)
+            for(kk = krs + 1; kk < kre; ++kk)
             {
                 int j = ihlink[hcoli[kk]];
                 hcoli[kk] = j;      /* permute the col index */
@@ -2340,24 +2340,24 @@ void c_ekkshfv(EKKfactinfo *fact,
         /* Put them back for L-U update */
         /* Also multiply U elements by - reciprocal of pivot element */
         /* Also decrement mcstrt/hincol to give "real" sizes */
-        for (i = 1; i <= nrow; ++i)
+        for(i = 1; i <= nrow; ++i)
         {
             int kx = --mcstrt[i];
             nel = --hincol[i];
             hrowi[kx] = nel;
             dluval[kx] = dvalpv[i];
 #ifndef NO_SHIFT
-            for (int j=kx+1; j<=kx+nel; j++)
+            for(int j = kx + 1; j <= kx + nel; j++)
                 hrowi[j] = SHIFT_INDEX(hrowi[j]);
 #endif
         }
 
         /* sort dense part */
-        for (i=nrow-ndenuc+1; i<=nrow; i++)
+        for(i = nrow - ndenuc + 1; i <= nrow; i++)
         {
-            int kx = mcstrt[i]+1; /* "real" entries start after pivot */
+            int kx = mcstrt[i] + 1; /* "real" entries start after pivot */
             int nel = hincol[i];
-            c_ekk_sort2(&hrowi[kx],&dluval[kx],nel);
+            c_ekk_sort2(&hrowi[kx], &dluval[kx], nel);
         }
 
         /* Recompute number in U */
@@ -2376,209 +2376,209 @@ void c_ekkshfv(EKKfactinfo *fact,
         /*       For each row compute reciprocal of pivot element and */
         /*       take out of U */
         /*       Also use HLINK(1 to permute column numbers */
-        int ninbas=0;
+        int ninbas = 0;
         int ilast; /* last available entry */
         int spareSpace;
-        int * hcoli2;
-        double * dluval2;
+        int* hcoli2;
+        double* dluval2;
         /*int * hlink2 = ihlink+nrow;
           int * mrstrt2 = hlink2+nrow;*/
-        int extraSpace=10000;
+        int extraSpace = 10000;
         /* mwork has order of row copy */
-        EKKHlink *mwork = (reinterpret_cast<EKKHlink*>(fact->kw1adr))-1;
+        EKKHlink* mwork = (reinterpret_cast<EKKHlink*>(fact->kw1adr)) - 1;
         fact->rows_ok = true;
 
-        if (if_sparse_update)
+        if(if_sparse_update)
         {
-            ilast=nnetas-nnentl;
+            ilast = nnetas - nnentl;
         }
         else
         {
             /* missing out nnentl stuff */
-            ilast=nnetas;
+            ilast = nnetas;
         }
-        spareSpace=ilast-nnentu;
-        need_more_space=false;
-        hcoli2 = hcoli+spareSpace;
+        spareSpace = ilast - nnentu;
+        need_more_space = false;
+        hcoli2 = hcoli + spareSpace;
         /*     save clean row copy if enough room */
         nroom = (spareSpace) / nrow;
-        if ((nnentu<<3)>150*maxinv)
+        if((nnentu << 3) > 150 * maxinv)
         {
-            extraSpace=150*maxinv;
+            extraSpace = 150 * maxinv;
         }
         else
         {
-            extraSpace=nnentu<<3;
+            extraSpace = nnentu << 3;
         }
-        if (nrow<10000)
+        if(nrow < 10000)
         {
-            if (nroom < 10)
+            if(nroom < 10)
             {
-                need_more_space=true;
+                need_more_space = true;
             }
         }
         else
         {
-            if (nroom < 5&&!if_sparse_update)
+            if(nroom < 5 && !if_sparse_update)
             {
-                need_more_space=true;
+                need_more_space = true;
             }
         }
-        if (nroom > CoinMin(50,maxinv))
+        if(nroom > CoinMin(50, maxinv))
         {
-            need_more_space=false;
+            need_more_space = false;
         }
-        if (need_more_space)
+        if(need_more_space)
         {
-            if (if_sparse_update)
+            if(if_sparse_update)
             {
-                int i1=fact->eta_size+10*nrow;
-                fact->eta_size=static_cast<int>(1.2*fact->eta_size);
-                if (i1>fact->eta_size)
+                int i1 = fact->eta_size + 10 * nrow;
+                fact->eta_size = static_cast<int>(1.2 * fact->eta_size);
+                if(i1 > fact->eta_size)
                 {
-                    fact->eta_size=i1;
+                    fact->eta_size = i1;
                 }
             }
             else
             {
-                fact->eta_size=static_cast<int>(1.05*fact->eta_size);
+                fact->eta_size = static_cast<int>(1.05 * fact->eta_size);
             }
         }
         else
         {
-            if (nroom<11)
+            if(nroom < 11)
             {
-                if (if_sparse_update)
+                if(if_sparse_update)
                 {
-                    int i1=fact->eta_size+(11-nroom)*nrow;
-                    fact->eta_size=static_cast<int>(1.2*fact->eta_size);
-                    if (i1>fact->eta_size)
+                    int i1 = fact->eta_size + (11 - nroom) * nrow;
+                    fact->eta_size = static_cast<int>(1.2 * fact->eta_size);
+                    if(i1 > fact->eta_size)
                     {
-                        fact->eta_size=i1;
+                        fact->eta_size = i1;
                     }
                 }
             }
         }
-        if (fact->maxNNetas>0&&fact->eta_size>
+        if(fact->maxNNetas > 0 && fact->eta_size >
                 fact->maxNNetas)
         {
-            fact->eta_size=fact->maxNNetas;
+            fact->eta_size = fact->maxNNetas;
         }
         {
             /* we can swap de2val and dluval to save copying */
-            int * eta_last=mpermu+nrow*2+3;
-            int * eta_next=eta_last+nrow+2;
-            int last=0;
-            eta_last[0]=-1;
-            if (nnentl)
+            int* eta_last = mpermu + nrow * 2 + 3;
+            int* eta_next = eta_last + nrow + 2;
+            int last = 0;
+            eta_last[0] = -1;
+            if(nnentl)
             {
                 /* went into c_ekkcmfc - if not then in order */
                 int next;
                 /*next=mwork[((nrow+1)<<1)+1];*/
-                next=mwork[nrow+1].pre;
+                next = mwork[nrow + 1].pre;
 #ifdef DEBUG
-                j=mrstrt[next];
+                j = mrstrt[next];
 #endif
-                for (i = 1; i <= nrow; ++i)
+                for(i = 1; i <= nrow; ++i)
                 {
-                    int iperm=mpermu[next];
-                    eta_next[last]=iperm;
-                    eta_last[iperm]=last;
+                    int iperm = mpermu[next];
+                    eta_next[last] = iperm;
+                    eta_last[iperm] = last;
                     temp[iperm] = mrstrt[next];
                     temp2[iperm] = hinrow[next];
 #ifdef DEBUG
-                    if (mrstrt[next]!=j) abort();
-                    j=mrstrt[next]+hinrow[next];
+                    if(mrstrt[next] != j) abort();
+                    j = mrstrt[next] + hinrow[next];
 #endif
                     /*next= mwork[(next<<1)+2];*/
-                    next= mwork[next].suc;
-                    last=iperm;
+                    next = mwork[next].suc;
+                    last = iperm;
                 }
             }
             else
             {
 #ifdef DEBUG
-                j=0;
+                j = 0;
 #endif
-                for (i = 1; i <= nrow; ++i)
+                for(i = 1; i <= nrow; ++i)
                 {
-                    int iperm=mpermu[i];
-                    eta_next[last]=iperm;
-                    eta_last[iperm]=last;
+                    int iperm = mpermu[i];
+                    eta_next[last] = iperm;
+                    eta_last[iperm] = last;
                     temp[iperm] = mrstrt[i];
                     temp2[iperm] = hinrow[i];
-                    last=iperm;
+                    last = iperm;
 #ifdef DEBUG
-                    if (mrstrt[i]<=j) abort();
-                    if (i>1&&mrstrt[i]!=j+hinrow[i-1]) abort();
-                    j=mrstrt[i];
+                    if(mrstrt[i] <= j) abort();
+                    if(i > 1 && mrstrt[i] != j + hinrow[i - 1]) abort();
+                    j = mrstrt[i];
 #endif
                 }
             }
-            eta_next[last]=nrow+1;
-            eta_last[nrow+1]=last;
-            eta_next[nrow+1]=nrow+2;
+            eta_next[last] = nrow + 1;
+            eta_last[nrow + 1] = last;
+            eta_next[nrow + 1] = nrow + 2;
             c_ekkscpy(nrow, &temp[1], &mrstrt[1]);
             c_ekkscpy(nrow, &temp2[1], &hinrow[1]);
-            i=eta_last[nrow+1];
-            ninbas=mrstrt[i]+hinrow[i]-1;
+            i = eta_last[nrow + 1];
+            ninbas = mrstrt[i] + hinrow[i] - 1;
 #ifdef DEBUG
-            if (spareSpace<ninbas)
+            if(spareSpace < ninbas)
             {
                 abort();
             }
 #endif
-            c_ekkizero( nrow, &hincol[1]);
+            c_ekkizero(nrow, &hincol[1]);
 #ifdef DEBUG
-            for (i=nrow; i>0; i--)
+            for(i = nrow; i > 0; i--)
             {
                 int krs = mrstrt[i];
                 int jpiv = hcoli[krs];
-                if (ihlink[jpiv]!=i) abort();
+                if(ihlink[jpiv] != i) abort();
             }
 #endif
-            for (i = 1; i <= ninbas; ++i)
+            for(i = 1; i <= ninbas; ++i)
             {
                 k = hcoli[i];
                 k = ihlink[k];
 #ifdef DEBUG
-                if (k<=0||k>nrow) abort();
+                if(k <= 0 || k > nrow) abort();
 #endif
-                hcoli[i]=k;
+                hcoli[i] = k;
                 hincol[k]++;
             }
 #ifdef DEBUG
-            for (i=nrow; i>0; i--)
+            for(i = nrow; i > 0; i--)
             {
                 int krs = mrstrt[i];
                 int jpiv = hcoli[krs];
-                if (jpiv!=i) abort();
-                if (krs>ninbas) abort();
+                if(jpiv != i) abort();
+                if(krs > ninbas) abort();
             }
 #endif
             /*       Sort into column order as was stored by row */
             k = 1;
             /*        Position */
-            for (kk = 1; kk <= nrow; ++kk)
+            for(kk = 1; kk <= nrow; ++kk)
             {
-                nel=hincol[kk];
+                nel = hincol[kk];
                 mcstrt[kk] = k;
-                hrowi[k]=nel-1;
+                hrowi[k] = nel - 1;
                 k += hincol[kk];
-                hincol[kk]=0;
+                hincol[kk] = 0;
             }
-            if (de2val)
+            if(de2val)
             {
-                dluval2=de2val;
+                dluval2 = de2val;
             }
             else
             {
-                dluval2=dluval+ninbas;
+                dluval2 = dluval + ninbas;
             }
-            nnentu = k-1;
+            nnentu = k - 1;
             mcstrt[nrow + 4] = nnentu + 1;
             /* create column copy */
-            for (i=nrow; i>0; i--)
+            for(i = nrow; i > 0; i--)
             {
                 int krs = mrstrt[i];
                 int kre = krs + hinrow[i];
@@ -2589,53 +2589,53 @@ void c_ekkshfv(EKKfactinfo *fact,
                     /*nel = hincol[i];
                       if (hrowi[kx]!=nel) abort();
                       hrowi[kx] = nel-1;*/
-                    dluval2[kx] = 1.0 /dluval[krs];
+                    dluval2[kx] = 1.0 / dluval[krs];
                     /*hincol[i]=0;*/
-                    for (kk = krs + 1; kk < kre; ++kk)
+                    for(kk = krs + 1; kk < kre; ++kk)
                     {
                         int j = hcoli[kk];
-                        int iput = hincol[j]+1;
-                        hincol[j]=iput;
-                        iput+= mcstrt[j];
+                        int iput = hincol[j] + 1;
+                        hincol[j] = iput;
+                        iput += mcstrt[j];
                         hrowi[iput] = SHIFT_INDEX(i);
                         dluval2[iput] = dluval[kk];
                     }
                 }
             }
-            if (de2val)
+            if(de2val)
             {
-                double * a=dluval;
-                double * address;
+                double* a = dluval;
+                double* address;
                 /* move first down */
-                i=eta_next[0];
+                i = eta_next[0];
                 {
-                    int krs=mrstrt[i];
-                    nel=hinrow[i];
-                    for (j=1; j<=nel; j++)
+                    int krs = mrstrt[i];
+                    nel = hinrow[i];
+                    for(j = 1; j <= nel; j++)
                     {
-                        hcoli[j]=hcoli[j+krs-1];
-                        dluval[j]=dluval[j+krs-1];
+                        hcoli[j] = hcoli[j + krs - 1];
+                        dluval[j] = dluval[j + krs - 1];
                     }
                 }
-                mrstrt[i]=1;
+                mrstrt[i] = 1;
                 /****** swap dluval and de2val !!!! ******/
                 /* should work even for dspace */
                 /* move L part across */
-                address=fact->xeeadr+1;
-                fact->xeeadr=fact->xe2adr-1;
-                fact->xe2adr=address;
-                if (nnentl)
+                address = fact->xeeadr + 1;
+                fact->xeeadr = fact->xe2adr - 1;
+                fact->xe2adr = address;
+                if(nnentl)
                 {
-                    int n=xnetal-nrow-maxinv-5;
-                    int j1,j2;
-                    int * mcstrt2=mcstrt+nrow+maxinv+4;
+                    int n = xnetal - nrow - maxinv - 5;
+                    int j1, j2;
+                    int* mcstrt2 = mcstrt + nrow + maxinv + 4;
                     j2 = mcstrt2[1];
-                    j1 = mcstrt2[n+1]+1;
+                    j1 = mcstrt2[n + 1] + 1;
 #if 0
-                    memcpy(de2val+j1,dluval+j1,(j2-j1+1)*sizeof(double));
+                    memcpy(de2val + j1, dluval + j1, (j2 - j1 + 1)*sizeof(double));
 #else
-                    c_ekkdcpy(j2-j1+1,
-                              (dluval+j1),(de2val+j1));
+                    c_ekkdcpy(j2 - j1 + 1,
+                              (dluval + j1), (de2val + j1));
 #endif
                 }
                 dluval = de2val;
@@ -2645,27 +2645,27 @@ void c_ekkshfv(EKKfactinfo *fact,
             {
                 /* copy down dluval */
 #if 0
-                memcpy(&dluval[1],&dluval2[1],ninbas*sizeof(double));
+                memcpy(&dluval[1], &dluval2[1], ninbas * sizeof(double));
 #else
                 c_ekkdcpy(ninbas,
-                          (dluval2+1),(dluval+1));
+                          (dluval2 + 1), (dluval + 1));
 #endif
             }
             /* sort dense part */
-            for (i=nrow-ndenuc+1; i<=nrow; i++)
+            for(i = nrow - ndenuc + 1; i <= nrow; i++)
             {
-                int kx = mcstrt[i]+1;
+                int kx = mcstrt[i] + 1;
                 int nel = hincol[i];
-                c_ekk_sort2(&hrowi[kx],&dluval[kx],nel);
+                c_ekk_sort2(&hrowi[kx], &dluval[kx], nel);
             }
         }
         mrstrt[nrow + 1] = ilast + 1;
     }
     /* Find first non slack */
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         int kcs = mcstrt[i];
-        if (hincol[i] != 0 || dluval[kcs] != SLACK_VALUE)
+        if(hincol[i] != 0 || dluval[kcs] != SLACK_VALUE)
         {
             break;
         }
@@ -2673,137 +2673,137 @@ void c_ekkshfv(EKKfactinfo *fact,
     numberSlacks = i - 1;
     {
         /* set slacks to 1 */
-        int * array = fact->krpadr + ( fact->nrowmx+2);
-        int nSet = (numberSlacks)>>5;
-        int n2 = (fact->nrowmx+32)>>5;
+        int* array = fact->krpadr + (fact->nrowmx + 2);
+        int nSet = (numberSlacks) >> 5;
+        int n2 = (fact->nrowmx + 32) >> 5;
         int i;
-        memset(array,0xff,nSet*sizeof(int));
-        memset(array+nSet,0,(n2-nSet)*sizeof(int));
-        for (i=nSet<<5; i<=numberSlacks; i++)
-            c_ekk_Set(array,i);
-        c_ekk_Unset(array,fact->nrow+1); /* make sure off end not slack */
+        memset(array, 0xff, nSet * sizeof(int));
+        memset(array + nSet, 0, (n2 - nSet)*sizeof(int));
+        for(i = nSet << 5; i <= numberSlacks; i++)
+            c_ekk_Set(array, i);
+        c_ekk_Unset(array, fact->nrow + 1); /* make sure off end not slack */
 #ifndef NDEBUG
-        for (i=1; i<=numberSlacks; i++)
-            assert (c_ekk_IsSet(array,i));
-        for (; i<=fact->nrow; i++)
-            assert (!c_ekk_IsSet(array,i));
+        for(i = 1; i <= numberSlacks; i++)
+            assert(c_ekk_IsSet(array, i));
+        for(; i <= fact->nrow; i++)
+            assert(!c_ekk_IsSet(array, i));
 #endif
     }
 
     /* and set up backward pointers */
     /* clean up HPIVCO for fancy assembler stuff */
     /* xnetal was initialized to nrow + maxinv + 4 in c_ekktria, and grows */
-    c_ekkscpy_0_1(maxinv + 1, 1, &hpivco[nrow+4]);    /* magic */
+    c_ekkscpy_0_1(maxinv + 1, 1, &hpivco[nrow + 4]);  /* magic */
 
     hpivco[xnetal] = 1;
     /* shuffle down for gaps so can get rid of hpivco for L */
     {
         const int lstart    = nrow + maxinv + 5;
-        int n=xnetal-lstart ;   /* number of L entries */
-        int add,iel;
-        int * hpivco_L = &hpivco[lstart];
-        int * mcstrt_L = &mcstrt[lstart];
-        if (nnentl)
+        int n = xnetal - lstart ; /* number of L entries */
+        int add, iel;
+        int* hpivco_L = &hpivco[lstart];
+        int* mcstrt_L = &mcstrt[lstart];
+        if(nnentl)
         {
             /* elements of L were stored in descending order in dluval/hcoli */
             int kle = mcstrt_L[0];
-            int kls = mcstrt_L[n]+1;
+            int kls = mcstrt_L[n] + 1;
 
             if(if_sparse_update)
             {
-                int i2,iel;
-                int * mrstrt2 = &mrstrt[nrow];
+                int i2, iel;
+                int* mrstrt2 = &mrstrt[nrow];
 
                 /* need row copy of L */
                 /* hpivro is spare for counts; just used as a temp buffer */
-                c_ekkizero( nrow, &hpivro[1]);
+                c_ekkizero(nrow, &hpivro[1]);
 
                 /* permute L indices; count L row lengths */
-                for (iel = kls; iel <= kle; ++iel)
+                for(iel = kls; iel <= kle; ++iel)
                 {
                     int jrow = mpermu[UNSHIFT_INDEX(hrowi[iel])];
                     hpivro[jrow]++;
                     hrowi[iel] = SHIFT_INDEX(jrow);
                 }
                 {
-                    int ibase=nnetas-nnentl+1;
-                    int firstDoRow=0;
-                    for (i=1; i<=nrow; i++)
+                    int ibase = nnetas - nnentl + 1;
+                    int firstDoRow = 0;
+                    for(i = 1; i <= nrow; i++)
                     {
-                        mrstrt2[i]=ibase;
-                        if (hpivro[i]&&!firstDoRow)
+                        mrstrt2[i] = ibase;
+                        if(hpivro[i] && !firstDoRow)
                         {
-                            firstDoRow=i;
+                            firstDoRow = i;
                         }
-                        ibase+=hpivro[i];
-                        hpivro[i]=mrstrt2[i];
+                        ibase += hpivro[i];
+                        hpivro[i] = mrstrt2[i];
                     }
-                    if (!firstDoRow)
+                    if(!firstDoRow)
                     {
-                        firstDoRow=nrow+1;
+                        firstDoRow = nrow + 1;
                     }
-                    mrstrt2[i]=ibase;
+                    mrstrt2[i] = ibase;
                     fact->firstDoRow = firstDoRow;
                 }
-                i2=mcstrt_L[n];
-                for (i = n-1; i >= 0; --i)
+                i2 = mcstrt_L[n];
+                for(i = n - 1; i >= 0; --i)
                 {
                     int i1 = mcstrt_L[i];
-                    int ipiv=hpivco_L[i];
-                    ipiv=mpermu[ipiv];
-                    hpivco_L[i]=ipiv;
-                    for (iel=i2 ; iel < i1; iel++)
+                    int ipiv = hpivco_L[i];
+                    ipiv = mpermu[ipiv];
+                    hpivco_L[i] = ipiv;
+                    for(iel = i2 ; iel < i1; iel++)
                     {
-                        int irow = UNSHIFT_INDEX(hrowi[iel+1]);
-                        int iput=hpivro[irow];
-                        hpivro[irow]=iput+1;
-                        hcoli[iput]=ipiv;
-                        de2val[iput]=dluval[iel+1];
+                        int irow = UNSHIFT_INDEX(hrowi[iel + 1]);
+                        int iput = hpivro[irow];
+                        hpivro[irow] = iput + 1;
+                        hcoli[iput] = ipiv;
+                        de2val[iput] = dluval[iel + 1];
                     }
-                    i2=i1;
+                    i2 = i1;
                 }
             }
             else
             {
                 /* just permute row numbers */
 
-                for (j = 0; j < n; ++j)
+                for(j = 0; j < n; ++j)
                 {
                     hpivco_L[j] = mpermu[hpivco_L[j]];
                 }
-                for (iel = kls; iel <= kle; ++iel)
+                for(iel = kls; iel <= kle; ++iel)
                 {
                     int jrow = mpermu[UNSHIFT_INDEX(hrowi[iel])];
                     hrowi[iel] = SHIFT_INDEX(jrow);
                 }
             }
 
-            add=hpivco_L[n-1]-hpivco_L[0]-n+1;
-            if (add)
+            add = hpivco_L[n - 1] - hpivco_L[0] - n + 1;
+            if(add)
             {
                 int i;
-                int last = hpivco_L[n-1];
+                int last = hpivco_L[n - 1];
                 int laststart = mcstrt_L[n];
-                int base=hpivco_L[0]-1;
+                int base = hpivco_L[0] - 1;
                 /* adjust so numbers match */
-                mcstrt_L-=base;
-                hpivco_L-=base;
-                mcstrt_L[last]=laststart;
-                for (i=n-1; i>=0; i--)
+                mcstrt_L -= base;
+                hpivco_L -= base;
+                mcstrt_L[last] = laststart;
+                for(i = n - 1; i >= 0; i--)
                 {
-                    int ipiv=hpivco_L[i+base];
-                    while (ipiv<last)
+                    int ipiv = hpivco_L[i + base];
+                    while(ipiv < last)
                     {
-                        mcstrt_L[last-1]=laststart;
-                        hpivco_L[last-1]=last;
+                        mcstrt_L[last - 1] = laststart;
+                        hpivco_L[last - 1] = last;
                         last--;
                     }
-                    laststart=mcstrt_L[i+base];
-                    mcstrt_L[last-1]=laststart;
-                    hpivco_L[last-1]=last;
+                    laststart = mcstrt_L[i + base];
+                    mcstrt_L[last - 1] = laststart;
+                    hpivco_L[last - 1] = last;
                     last--;
                 }
-                xnetal+=add;
+                xnetal += add;
             }
         }
         //int lstart=fact->lstart;
@@ -2820,38 +2820,38 @@ void c_ekkshfv(EKKfactinfo *fact,
      */
     {
         /* do new hpivco */
-        int * hpivco_new = fact->kcpadr+1;
-        int * back = &fact->kcpadr[2*nrow+maxinv+4];
+        int* hpivco_new = fact->kcpadr + 1;
+        int* back = &fact->kcpadr[2 * nrow + maxinv + 4];
         /* set zeroth to stop illegal read */
-        back[0]=1;
+        back[0] = 1;
 
-        hpivco_new[nrow+1]=nrow+1; /* deliberate loop for dense tests */
-        hpivco_new[0]=1;
+        hpivco_new[nrow + 1] = nrow + 1; /* deliberate loop for dense tests */
+        hpivco_new[0] = 1;
 
-        for (i=1; i<=nrow; i++)
+        for(i = 1; i <= nrow; i++)
         {
-            hpivco_new[i]=i+1;
-            back[i+1]=i;
+            hpivco_new[i] = i + 1;
+            back[i + 1] = i;
         }
-        back[1]=0;
+        back[1] = 0;
 
-        fact->first_dense = CoinMax(fact->first_dense,4);
-        fact->numberSlacks=numberSlacks;
-        fact->lastSlack=numberSlacks;
-        fact->firstNonSlack=hpivco_new[numberSlacks];
+        fact->first_dense = CoinMax(fact->first_dense, 4);
+        fact->numberSlacks = numberSlacks;
+        fact->lastSlack = numberSlacks;
+        fact->firstNonSlack = hpivco_new[numberSlacks];
     }
 
     /* also zero out permute region and nonzero */
-    c_ekkdzero( nrow, (dpermu+1));
+    c_ekkdzero(nrow, (dpermu + 1));
 
-    if (if_sparse_update)
+    if(if_sparse_update)
     {
-        char * nonzero = reinterpret_cast<char *> (&mpermu[nrow+1]);    /* used in c_ekkbtrn */
+        char* nonzero = reinterpret_cast<char*>(&mpermu[nrow + 1]);     /* used in c_ekkbtrn */
         /*c_ekkizero(nrow,(int *)nonzero);*/
-        c_ekkczero(nrow,nonzero);
+        c_ekkczero(nrow, nonzero);
         /*memset(nonzero,0,nrow*sizeof(int));*/ /* for faster method */
     }
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         hpivro[mpermu[i]] = i;
     }
@@ -2859,9 +2859,9 @@ void c_ekkshfv(EKKfactinfo *fact,
 } /* c_ekkshfv */
 
 
-static void c_ekkclcp1(const int *hcol, const int * mrstrt,
-                       int *hrow, int *mcstrt,
-                       int *hincol, int nnrow, int nncol,
+static void c_ekkclcp1(const int* hcol, const int* mrstrt,
+                       int* hrow, int* mcstrt,
+                       int* hincol, int nnrow, int nncol,
                        int ninbas)
 {
     int i, j, kc, kr, kre, krs, icol;
@@ -2870,7 +2870,7 @@ static void c_ekkclcp1(const int *hcol, const int * mrstrt,
     /* Create columnwise storage of row indices */
 
     kc = 1;
-    for (j = 1; j <= nncol; ++j)
+    for(j = 1; j <= nncol; ++j)
     {
         mcstrt[j] = kc;
         kc += hincol[j];
@@ -2878,11 +2878,11 @@ static void c_ekkclcp1(const int *hcol, const int * mrstrt,
     }
     mcstrt[nncol + 1] = ninbas + 1;
 
-    for (i = 1; i <= nnrow; ++i)
+    for(i = 1; i <= nnrow; ++i)
     {
         krs = mrstrt[i];
         kre = mrstrt[i + 1] - 1;
-        for (kr = krs; kr <= kre; ++kr)
+        for(kr = krs; kr <= kre; ++kr)
         {
             icol = hcol[kr];
             iput = hincol[icol];
@@ -2892,9 +2892,9 @@ static void c_ekkclcp1(const int *hcol, const int * mrstrt,
         }
     }
 } /* c_ekkclcp */
-inline void c_ekkclcp2(const int *hcol, const double *dels, const int * mrstrt,
-                       int *hrow, double *dels2, int *mcstrt,
-                       int *hincol, int nnrow, int nncol,
+inline void c_ekkclcp2(const int* hcol, const double* dels, const int* mrstrt,
+                       int* hrow, double* dels2, int* mcstrt,
+                       int* hincol, int nnrow, int nncol,
                        int ninbas)
 {
     int i, j, kc, kr, kre, krs, icol;
@@ -2903,7 +2903,7 @@ inline void c_ekkclcp2(const int *hcol, const double *dels, const int * mrstrt,
     /* Create columnwise storage of row indices */
 
     kc = 1;
-    for (j = 1; j <= nncol; ++j)
+    for(j = 1; j <= nncol; ++j)
     {
         mcstrt[j] = kc;
         kc += hincol[j];
@@ -2911,11 +2911,11 @@ inline void c_ekkclcp2(const int *hcol, const double *dels, const int * mrstrt,
     }
     mcstrt[nncol + 1] = ninbas + 1;
 
-    for (i = 1; i <= nnrow; ++i)
+    for(i = 1; i <= nnrow; ++i)
     {
         krs = mrstrt[i];
         kre = mrstrt[i + 1] - 1;
-        for (kr = krs; kr <= kre; ++kr)
+        for(kr = krs; kr <= kre; ++kr)
         {
             icol = hcol[kr];
             iput = hincol[icol];
@@ -2926,29 +2926,29 @@ inline void c_ekkclcp2(const int *hcol, const double *dels, const int * mrstrt,
         }
     }
 } /* c_ekkclcp */
-int c_ekkslcf( register const EKKfactinfo *fact)
+int c_ekkslcf(register const EKKfactinfo* fact)
 {
-    int * hrow = fact->xeradr;
-    int * hcol = fact->xecadr;
-    double * dels = fact->xeeadr;
-    int * hinrow = fact->xrnadr;
-    int * hincol = fact->xcnadr;
-    int * mrstrt = fact->xrsadr;
-    int * mcstrt = fact->xcsadr;
+    int* hrow = fact->xeradr;
+    int* hcol = fact->xecadr;
+    double* dels = fact->xeeadr;
+    int* hinrow = fact->xrnadr;
+    int* hincol = fact->xcnadr;
+    int* mrstrt = fact->xrsadr;
+    int* mcstrt = fact->xcsadr;
     const int nrow = fact->nrow;
     int ninbas;
     /* space for etas */
     const int nnetas  = fact->nnetas;
-    ninbas=mcstrt[nrow+1]-1;
+    ninbas = mcstrt[nrow + 1] - 1;
 
     /* Now sort */
-    if (ninbas << 1 > nnetas)
+    if(ninbas << 1 > nnetas)
     {
         /* Put it in row order */
-        int i,k;
+        int i, k;
         c_ekkrowq(hrow, hcol, dels, mrstrt, hinrow, nrow, ninbas);
         k = 1;
-        for (i = 1; i <= nrow; ++i)
+        for(i = 1; i <= nrow; ++i)
         {
             mrstrt[i] = k;
             k += hinrow[i];
@@ -2962,7 +2962,7 @@ int c_ekkslcf( register const EKKfactinfo *fact)
     {
         /* Move elements up memory */
         c_ekkdcpy(ninbas,
-                  (dels+1), (dels+ninbas + 1));
+                  (dels + 1), (dels + ninbas + 1));
 
         /* make a row copy with the extra values */
         c_ekkclcp2(hrow, &dels[ninbas], mcstrt, hcol, dels, mrstrt, hinrow, nrow, nrow, ninbas);
@@ -3093,28 +3093,28 @@ int c_ekkslcf( register const EKKfactinfo *fact)
  * when pivoting singleton columns; this is also necessary for reasons
  * I don't understand.
  */
-int c_ekktria(EKKfactinfo *fact,
-              EKKHlink * rlink,
-              EKKHlink * clink,
-              int *nsingp,
-              int *xnewcop, int *xnewrop,
-              int *ncompactionsp,
+int c_ekktria(EKKfactinfo* fact,
+              EKKHlink* rlink,
+              EKKHlink* clink,
+              int* nsingp,
+              int* xnewcop, int* xnewrop,
+              int* ncompactionsp,
               const int ninbas)
 {
     const int nrow    = fact->nrow;
     const int maxinv  = fact->maxinv;
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *stack    = fact->krpadr; /* normally hpivro */
-    int *hpivco   = fact->kcpadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* stack    = fact->krpadr; /* normally hpivro */
+    int* hpivco   = fact->kcpadr;
     const double drtpiv   = fact->drtpiv;
-    CoinZeroN(reinterpret_cast<int *>(rlink+1),static_cast<int>(nrow*(sizeof(EKKHlink)/sizeof(int))));
-    CoinZeroN(reinterpret_cast<int *>(clink+1),static_cast<int>(nrow*(sizeof(EKKHlink)/sizeof(int))));
+    CoinZeroN(reinterpret_cast<int*>(rlink + 1), static_cast<int>(nrow * (sizeof(EKKHlink) / sizeof(int))));
+    CoinZeroN(reinterpret_cast<int*>(clink + 1), static_cast<int>(nrow * (sizeof(EKKHlink) / sizeof(int))));
 
     fact->npivots = 0;
     /*      Use NUSPIK to keep sum of deactivated row counts */
@@ -3130,26 +3130,26 @@ int c_ekktria(EKKfactinfo *fact,
     int kipis, kipie, kjpis, kjpie, knprs, knpre;
     int ipivot, jpivot, stackc, stackr;
 #ifndef NDEBUG
-    int kpivot=-1;
+    int kpivot = -1;
 #else
-    int kpivot=-1;
+    int kpivot = -1;
 #endif
     int epivco, kstart, maxstk;
     int irtcod = 0;
-    int lastSlack=0;
+    int lastSlack = 0;
 
     int lstart = fact->nnetas + 1;
     /*int nnentu  = ninbas; */
-    int lstart_minus_nnentu=lstart-ninbas;
+    int lstart_minus_nnentu = lstart - ninbas;
     /* do initial column singletons - as can do faster */
-    for (jpivot = 1; jpivot <= nrow; ++jpivot)
+    for(jpivot = 1; jpivot <= nrow; ++jpivot)
     {
-        if (hincol[jpivot] == 1)
+        if(hincol[jpivot] == 1)
         {
             ipivot = hrowi[mcstrt[jpivot]];
-            if (ipivot>lastSlack)
+            if(ipivot > lastSlack)
             {
-                lastSlack=ipivot;
+                lastSlack = ipivot;
             }
             else
             {
@@ -3158,33 +3158,33 @@ int c_ekktria(EKKfactinfo *fact,
             }
             kipis = mrstrt[ipivot];
 #if 1
-            assert (hcoli[kipis]==jpivot);
+            assert(hcoli[kipis] == jpivot);
 #else
-            if (hcoli[kipis]!=jpivot)
+            if(hcoli[kipis] != jpivot)
             {
-                kpivot=kipis+1;
-                while(hcoli[kpivot]!=jpivot) kpivot++;
+                kpivot = kipis + 1;
+                while(hcoli[kpivot] != jpivot) kpivot++;
 #ifdef DEBUG
                 kipie = kipis + hinrow[ipivot] ;
-                if (kpivot>=kipie)
+                if(kpivot >= kipie)
                 {
                     abort();
                 }
 #endif
-                pivot=dluval[kpivot];
+                pivot = dluval[kpivot];
                 dluval[kpivot] = dluval[kipis];
                 dluval[kipis] = pivot;
                 hcoli[kpivot] = hcoli[kipis];
                 hcoli[kipis] = jpivot;
             }
 #endif
-            if (dluval[kipis]==SLACK_VALUE)
+            if(dluval[kipis] == SLACK_VALUE)
             {
                 /* record the new pivot row and column */
                 ++fact->npivots;
                 rlink[ipivot].pre = -fact->npivots;
                 clink[jpivot].pre = -fact->npivots;
-                hincol[jpivot]=0;
+                hincol[jpivot] = 0;
                 fact->nuspike += hinrow[ipivot];
             }
             else
@@ -3199,22 +3199,22 @@ int c_ekktria(EKKfactinfo *fact,
     }
     /* Fill queue with other column singletons and clean up */
     maxstk = 0;
-    for (j = 1; j <= nrow; ++j)
+    for(j = 1; j <= nrow; ++j)
     {
-        if (hincol[j])
+        if(hincol[j])
         {
-            int n=0;
+            int n = 0;
             kcs = mcstrt[j];
             kce = mcstrt[j + 1];
-            for (k = kcs; k < kce; ++k)
+            for(k = kcs; k < kce; ++k)
             {
-                if (! (rlink[hrowi[k]].pre < 0))
+                if(!(rlink[hrowi[k]].pre < 0))
                 {
                     n++;
                 }
             }
             hincol[j] = n;
-            if (n == 1)
+            if(n == 1)
             {
                 /* we just created a new singleton column - enqueue it */
                 ++maxstk;
@@ -3224,17 +3224,17 @@ int c_ekktria(EKKfactinfo *fact,
     }
     stackc = 0; /* (1) */
 
-    while (! (stackc >= maxstk))      /* (1) */
+    while(!(stackc >= maxstk))        /* (1) */
     {
         /* dequeue the next entry */
         ++stackc;
         jpivot = stack[stackc];
 
         /* (15) */
-        if (hincol[jpivot] != 0)
+        if(hincol[jpivot] != 0)
         {
 
-            for (k = mcstrt[jpivot]; rlink[hrowi[k]].pre < 0; k++)
+            for(k = mcstrt[jpivot]; rlink[hrowi[k]].pre < 0; k++)
             {
                 /* (4) */
             }
@@ -3243,16 +3243,16 @@ int c_ekktria(EKKfactinfo *fact,
             /* All the columns in this row are being shortened. */
             kipis = mrstrt[ipivot];
             kipie = kipis + hinrow[ipivot] ;
-            for (k = kipis; k < kipie; ++k)
+            for(k = kipis; k < kipie; ++k)
             {
                 j = hcoli[k];
                 --hincol[j];    /* (3) (6) */
 
-                if (j == jpivot)
+                if(j == jpivot)
                 {
                     kpivot = k;       /* (11) */
                 }
-                else if (hincol[j] == 1)
+                else if(hincol[j] == 1)
                 {
                     /* we just created a new singleton column - enqueue it */
                     ++maxstk;
@@ -3268,9 +3268,9 @@ int c_ekktria(EKKfactinfo *fact,
             fact->nuspike += hinrow[ipivot];
 
             /* check the pivot */
-            assert (kpivot>0);
+            assert(kpivot > 0);
             pivot = dluval[kpivot];
-            if (fabs(pivot) < drtpiv)
+            if(fabs(pivot) < drtpiv)
             {
                 irtcod = 7;
                 ++(*nsingp);
@@ -3289,23 +3289,23 @@ int c_ekktria(EKKfactinfo *fact,
     /* (8) */
 
     /* The entire basis may already be triangular */
-    if (fact->npivots < nrow)
+    if(fact->npivots < nrow)
     {
 
         /* (9) */
         kstart = 0;
-        for (j = 1; j <= nrow; ++j)
+        for(j = 1; j <= nrow; ++j)
         {
-            if (! (clink[j].pre < 0))
+            if(!(clink[j].pre < 0))
             {
                 kcs = mcstrt[j];
                 kce = mcstrt[j + 1];
 
                 mcstrt[j] = kstart + 1;
 
-                for (k = kcs; k < kce; ++k)
+                for(k = kcs; k < kce; ++k)
                 {
-                    if (! (rlink[hrowi[k]].pre < 0))
+                    if(!(rlink[hrowi[k]].pre < 0))
                     {
                         ++kstart;
                         hrowi[kstart] = hrowi[k];
@@ -3319,9 +3319,9 @@ int c_ekktria(EKKfactinfo *fact,
 
         /* Fill stack with initial row singletons that haven't been pivoted away */
         stackr = 0;
-        for (i = 1; i <= nrow; ++i)
+        for(i = 1; i <= nrow; ++i)
         {
-            if (! (rlink[i].pre < 0) &&
+            if(!(rlink[i].pre < 0) &&
                     (hinrow[i] == 1))
             {
                 ++stackr;
@@ -3329,24 +3329,24 @@ int c_ekktria(EKKfactinfo *fact,
             }
         }
 
-        while (! (stackr <= 0))
+        while(!(stackr <= 0))
         {
             ipivot = stack[stackr];
-            assert (ipivot);
+            assert(ipivot);
             --stackr;
 
 #if 1
-            assert (rlink[ipivot].pre>=0);
+            assert(rlink[ipivot].pre >= 0);
 #else
             /* This test is probably unnecessary:  rlink[i].pre < 0 ==> hinrow[i]==0 */
-            if (rlink[ipivot].pre < 0)
+            if(rlink[ipivot].pre < 0)
             {
                 continue;
             }
 #endif
 
             /* (15) */
-            if (hinrow[ipivot] != 0)
+            if(hinrow[ipivot] != 0)
             {
 
                 /* This is a singleton row, which means it has exactly one column */
@@ -3358,9 +3358,9 @@ int c_ekktria(EKKfactinfo *fact,
 
                 /* (11) */
                 kjpie = kjpis + epivco;
-                for (k = kjpis; k <= kjpie; ++k)
+                for(k = kjpis; k <= kjpie; ++k)
                 {
-                    if (ipivot == hrowi[k])
+                    if(ipivot == hrowi[k])
                         break;
                 }
                 /* ASSERT (k <= kjpie) */
@@ -3374,28 +3374,28 @@ int c_ekktria(EKKfactinfo *fact,
                 hrowi[kjpie] = 0;
 
                 /* (12) */
-                if (! (xnewro + epivco < lstart))
+                if(!(xnewro + epivco < lstart))
                 {
                     int kstart;
 
-                    if (! (epivco < lstart_minus_nnentu))
+                    if(!(epivco < lstart_minus_nnentu))
                     {
                         irtcod = -5;
                         break;
                     }
-                    kstart = c_ekkrwco(fact,dluval, hcoli, mrstrt, hinrow, xnewro);
+                    kstart = c_ekkrwco(fact, dluval, hcoli, mrstrt, hinrow, xnewro);
                     ++ncompactions;
                     kmxeta += (xnewro - kstart) << 1;
                     xnewro = kstart;
                 }
-                if (! (xnewco + epivco < lstart))
+                if(!(xnewco + epivco < lstart))
                 {
-                    if (! (epivco < lstart_minus_nnentu))
+                    if(!(epivco < lstart_minus_nnentu))
                     {
                         irtcod = -5;
                         break;
                     }
-                    xnewco = c_ekkclco(fact,hrowi, mcstrt, hincol, xnewco);
+                    xnewco = c_ekkclco(fact, hrowi, mcstrt, hincol, xnewco);
                     ++ncompactions;
 
                     /*     HINCOL MAY HAVE CHANGED ??? (JJHF) */
@@ -3411,7 +3411,7 @@ int c_ekktria(EKKfactinfo *fact,
 
                 /* check the pivot */
                 pivot = dluval[mrstrt[ipivot]];
-                if (fabs(pivot) < drtpiv)
+                if(fabs(pivot) < drtpiv)
                 {
                     /* If the pivot is too small, reject it, but keep going */
                     irtcod = 7;
@@ -3420,7 +3420,7 @@ int c_ekktria(EKKfactinfo *fact,
                 }
 
                 /* Perform numerical part of elimination. */
-                if (! (epivco <= 0))
+                if(!(epivco <= 0))
                 {
                     ++xnetal;
                     mcstrt[xnetal] = lstart - 1;
@@ -3431,7 +3431,7 @@ int c_ekktria(EKKfactinfo *fact,
                     kce = kcs + epivco - 1;
                     hincol[jpivot] = 0;
 
-                    for (kc = kcs; kc <= kce; ++kc)
+                    for(kc = kcs; kc <= kce; ++kc)
                     {
                         npr = hrowi[kc];
 
@@ -3439,7 +3439,7 @@ int c_ekktria(EKKfactinfo *fact,
                         hrowi[kc] = 0;
 
                         --hinrow[npr];  /* (3) */
-                        if (hinrow[npr] == 1)
+                        if(hinrow[npr] == 1)
                         {
                             /* this may create new singleton rows */
                             ++stackr;
@@ -3449,9 +3449,9 @@ int c_ekktria(EKKfactinfo *fact,
                         /* (11) */
                         knprs = mrstrt[npr];
                         knpre = knprs + hinrow[npr];
-                        for (k = knprs; k <= knpre; ++k)
+                        for(k = knprs; k <= knpre; ++k)
                         {
-                            if (jpivot == hcoli[k])
+                            if(jpivot == hcoli[k])
                             {
                                 kpivot = k;
                                 break;

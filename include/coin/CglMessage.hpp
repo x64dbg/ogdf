@@ -42,7 +42,7 @@ public:
     /**@name Constructors etc */
     //@{
     /** Constructor */
-    CglMessage(Language language=us_en);
+    CglMessage(Language language = us_en);
     //@}
 
 };

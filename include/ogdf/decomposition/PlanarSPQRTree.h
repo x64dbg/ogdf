@@ -56,146 +56,146 @@
 namespace ogdf
 {
 
-//---------------------------------------------------------
-// PlanarSPQRTree
-// extension of class SPQRTree for support of embedded graphs
-//---------------------------------------------------------
+    //---------------------------------------------------------
+    // PlanarSPQRTree
+    // extension of class SPQRTree for support of embedded graphs
+    //---------------------------------------------------------
 
-//! SPQR-trees of planar graphs.
-/**
- * The class PlanarSPQRTree maintains the triconnected components of a
- * planar biconnected graph G and represents all possible embeddings
- * of G. Each skeleton graph is embedded.
- *
- * The current embeddings of the skeletons define an embedding of G.
- * There are two basic operations for obtaining another embedding
- * of G: reverse(v), which flips the skeleton of an R-node v
- * around its poles, and swap(v,e_1,e_2), which exchanges the
- * positions of the edges e_1 and e_2 in the skeleton of a P-node v.
- */
+    //! SPQR-trees of planar graphs.
+    /**
+     * The class PlanarSPQRTree maintains the triconnected components of a
+     * planar biconnected graph G and represents all possible embeddings
+     * of G. Each skeleton graph is embedded.
+     *
+     * The current embeddings of the skeletons define an embedding of G.
+     * There are two basic operations for obtaining another embedding
+     * of G: reverse(v), which flips the skeleton of an R-node v
+     * around its poles, and swap(v,e_1,e_2), which exchanges the
+     * positions of the edges e_1 and e_2 in the skeleton of a P-node v.
+     */
 
-class OGDF_EXPORT PlanarSPQRTree : public virtual SPQRTree
-{
-public:
-
-    //
-    // a) Access operations
-    //
-
-    //! Returns the number of possible embeddings of G.
-    double numberOfEmbeddings() const
+    class OGDF_EXPORT PlanarSPQRTree : public virtual SPQRTree
     {
-        return numberOfEmbeddings(rootNode());
-    }
+    public:
 
-    //! Returns the number of possible embeddings of the pertinent graph of node \a v.
-    /**
-     * \pre \a v is a node in \a T
-     */
-    double numberOfEmbeddings(node v) const;
+        //
+        // a) Access operations
+        //
 
-    //! Returns the number of possible embeddings of the skeleton of node \a vT.
-    /**
-     * \pre \a vT is a node in \a T
-     * Returns 1 if vT is a S-node, 2 if vT is a R-node, and (number of edges in the sekeleton - 1)! if vT is a P-node.
-     */
-    long long numberOfNodeEmbeddings(node vT);
+        //! Returns the number of possible embeddings of G.
+        double numberOfEmbeddings() const
+        {
+            return numberOfEmbeddings(rootNode());
+        }
 
-    //
-    // b) Update operations
-    //
+        //! Returns the number of possible embeddings of the pertinent graph of node \a v.
+        /**
+         * \pre \a v is a node in \a T
+         */
+        double numberOfEmbeddings(node v) const;
 
-    //! Flips the skeleton \a S of \a vT around its poles.
-    /**
-     * Reverses the order of adjacency entries of each vertex in \a S.
-     * \pre \a vT is an R- or P-node in \a T
-     */
-    void reverse(node vT);
+        //! Returns the number of possible embeddings of the skeleton of node \a vT.
+        /**
+         * \pre \a vT is a node in \a T
+         * Returns 1 if vT is a S-node, 2 if vT is a R-node, and (number of edges in the sekeleton - 1)! if vT is a P-node.
+         */
+        long long numberOfNodeEmbeddings(node vT);
 
-    //! Exchanges the positions of edges \a e1 and \a e2 in skeleton of \a vT.
-    /**
-     * \pre \a vT is a P-node in \a T and \a e1 and \a e2 are in edges in
-     *      skeleton(\a vT)
-     */
-    void swap(node vT, edge e1, edge e2);
+        //
+        // b) Update operations
+        //
 
-    //! Exchanges the positions of the two edges corresponding to \a adj1 and \a adj2 in skeleton of \a vT.
-    /**
-     * \pre \a vT is a P-node in \a T and \a adj1 and \a adj2 are in adjacency entries
-     *      in skeleton(\a vT) at the same owner node.
-     */
-    void swap(node vT, adjEntry adj1, adjEntry adj2);
+        //! Flips the skeleton \a S of \a vT around its poles.
+        /**
+         * Reverses the order of adjacency entries of each vertex in \a S.
+         * \pre \a vT is an R- or P-node in \a T
+         */
+        void reverse(node vT);
 
-    //! Embeds \a G according to the current embeddings of the skeletons of \a T.
-    /**
-     * \pre \a G is the graph passed to the constructor of \a T
-     */
-    void embed(Graph &G);
+        //! Exchanges the positions of edges \a e1 and \a e2 in skeleton of \a vT.
+        /**
+         * \pre \a vT is a P-node in \a T and \a e1 and \a e2 are in edges in
+         *      skeleton(\a vT)
+         */
+        void swap(node vT, edge e1, edge e2);
 
-    //! Embeds all skeleton graphs randomly.
-    void randomEmbed();
+        //! Exchanges the positions of the two edges corresponding to \a adj1 and \a adj2 in skeleton of \a vT.
+        /**
+         * \pre \a vT is a P-node in \a T and \a adj1 and \a adj2 are in adjacency entries
+         *      in skeleton(\a vT) at the same owner node.
+         */
+        void swap(node vT, adjEntry adj1, adjEntry adj2);
 
-    //! Embeds all skeleton graphs randomly and embeds \a G according to the embeddings of the skeletons.
-    /**
-     * \pre \a G is the graph passed to the constructor of \a T
-     */
-    void randomEmbed(Graph &G)
-    {
-        randomEmbed();
-        embed(G);
-    }
+        //! Embeds \a G according to the current embeddings of the skeletons of \a T.
+        /**
+         * \pre \a G is the graph passed to the constructor of \a T
+         */
+        void embed(Graph & G);
 
-    //! Embeds the original graph \a G canonically by the indices of their adjEntries.
-    /**
-     * \pre \a G is the graph passed to the constructor of \a T
-     */
-    void firstEmbedding(Graph &G);
+        //! Embeds all skeleton graphs randomly.
+        void randomEmbed();
 
-    //! Embeds the original graph \a G with the next embedding.
-    /**
-     * It returns \a false iff there is no feasible (planar) embedding left
-     * \pre To work correctly it has to start with firstEmbedding(G)
-     * \pre \a G is the graph passed to the constructor of \a T
-     */
-    bool nextEmbedding(Graph &G);
+        //! Embeds all skeleton graphs randomly and embeds \a G according to the embeddings of the skeletons.
+        /**
+         * \pre \a G is the graph passed to the constructor of \a T
+         */
+        void randomEmbed(Graph & G)
+        {
+            randomEmbed();
+            embed(G);
+        }
 
-    //! Embeds the skeleton of the node vT with the specific embedding numbered by x.
-    /**
-     * \pre To work correctly vT has to be a node of the SPQR-tree and 0 &le; x &le; number of embeddings of vT's skeleton
-     * \pre It does not work at the same time with firstEmbedding and nextEmbedding
-     */
-    void embed(node &vT, long long x);
+        //! Embeds the original graph \a G canonically by the indices of their adjEntries.
+        /**
+         * \pre \a G is the graph passed to the constructor of \a T
+         */
+        void firstEmbedding(Graph & G);
+
+        //! Embeds the original graph \a G with the next embedding.
+        /**
+         * It returns \a false iff there is no feasible (planar) embedding left
+         * \pre To work correctly it has to start with firstEmbedding(G)
+         * \pre \a G is the graph passed to the constructor of \a T
+         */
+        bool nextEmbedding(Graph & G);
+
+        //! Embeds the skeleton of the node vT with the specific embedding numbered by x.
+        /**
+         * \pre To work correctly vT has to be a node of the SPQR-tree and 0 &le; x &le; number of embeddings of vT's skeleton
+         * \pre It does not work at the same time with firstEmbedding and nextEmbedding
+         */
+        void embed(node & vT, long long x);
 
 
-protected:
-    //! Initialization (adaption of embeding).
-    void init(bool isEmbedded);
-    void adoptEmbedding();
-    void setPosInEmbedding(
-        NodeArray<SListPure<adjEntry> > &adjEdges,
-        NodeArray<node> &currentCopy,
-        NodeArray<adjEntry> &lastAdj,
-        SListPure<node> &current,
-        const Skeleton &S,
-        adjEntry adj);
+    protected:
+        //! Initialization (adaption of embeding).
+        void init(bool isEmbedded);
+        void adoptEmbedding();
+        void setPosInEmbedding(
+            NodeArray<SListPure<adjEntry>> & adjEdges,
+            NodeArray<node> & currentCopy,
+            NodeArray<adjEntry> & lastAdj,
+            SListPure<node> & current,
+            const Skeleton & S,
+            adjEntry adj);
 
-    // Embeda original graph according to embeddings of skeletons.
-    void expandVirtualEmbed(node vT,
-                            adjEntry adjVirt,
-                            SListPure<adjEntry> &adjEdges);
-    void createInnerVerticesEmbed(Graph &G, node vT);
+        // Embeda original graph according to embeddings of skeletons.
+        void expandVirtualEmbed(node vT,
+                                adjEntry adjVirt,
+                                SListPure<adjEntry> & adjEdges);
+        void createInnerVerticesEmbed(Graph & G, node vT);
 
-    // Enumeration of all embeddings
-    void firstEmbedding(node &vT);
-    void reverse(node &nP,
-                 adjEntry &first,
-                 adjEntry &last);
-    bool nextEmbedding(node &vT);
-    bool nextEmbedding(ListIterator<node> it);
+        // Enumeration of all embeddings
+        void firstEmbedding(node & vT);
+        void reverse(node & nP,
+                     adjEntry & first,
+                     adjEntry & last);
+        bool nextEmbedding(node & vT);
+        bool nextEmbedding(ListIterator<node> it);
 
-    bool m_finished;
+        bool m_finished;
 
-}; // class PlanarSPQRTree
+    }; // class PlanarSPQRTree
 
 
 } // end namespace ogdf

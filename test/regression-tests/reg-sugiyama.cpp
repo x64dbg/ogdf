@@ -23,39 +23,39 @@
 
 using namespace ogdf;
 
-void insertGraph(Graph &g, const Graph &g2)
+void insertGraph(Graph & g, const Graph & g2)
 {
     NodeArray<node> map(g2);
 
     node v;
-    forall_nodes(v,g2)
+    forall_nodes(v, g2)
     map[v] = g.newNode();
 
     edge e;
-    forall_edges(e,g2)
+    forall_edges(e, g2)
     g.newEdge(map[e->source()], map[e->target()]);
 }
 
 void createDisconnectedGraph(
-    Graph &G,
+    Graph & G,
     int n_max,
     double density_min,
     double density_max,
     int cc)
 {
-    int n = randomNumber(3,n_max);
-    int m = randomNumber((int)(density_min*n),(int)(density_max*n));
-    int b = n/25+1;
-    planarCNBGraph(G, n/b+1, m/b+1, b);
+    int n = randomNumber(3, n_max);
+    int m = randomNumber((int)(density_min * n), (int)(density_max * n));
+    int b = n / 25 + 1;
+    planarCNBGraph(G, n / b + 1, m / b + 1, b);
 
-    for(int i = cc-1; i > 0; --i)
+    for(int i = cc - 1; i > 0; --i)
     {
         Graph g2;
-        n = randomNumber(3,n);
-        m = randomNumber((int)(density_min*n),(int)(density_max*n));
-        b = n/25+1;
-        planarCNBGraph(g2, n/b+1, m/b+1, b);
-        insertGraph(G,g2);
+        n = randomNumber(3, n);
+        m = randomNumber((int)(density_min * n), (int)(density_max * n));
+        b = n / 25 + 1;
+        planarCNBGraph(g2, n / b + 1, m / b + 1, b);
+        insertGraph(G, g2);
     }
 }
 
@@ -67,7 +67,7 @@ bool regSugiyama()
     const int max_n = 250;
     const int step_n = 50;
 
-    int totalGraphs = numGraphs * (1+(max_n-min_n)/step_n) * 3;
+    int totalGraphs = numGraphs * (1 + (max_n - min_n) / step_n) * 3;
 
     Graph G;
     GraphAttributes GA(G);
@@ -87,7 +87,7 @@ bool regSugiyama()
         cout << "\r" << n << flush;
         for(int i = 0; i < numGraphs; ++i)
         {
-            int m = 3*n/2;
+            int m = 3 * n / 2;
             randomHierarchy(G, n, m, false, true, false);
 
             System::usedRealTime(T);
@@ -95,7 +95,7 @@ bool regSugiyama()
             msec += System::usedRealTime(T);
             cr += sugi.numberOfCrossings();
 
-            m = 2*n;
+            m = 2 * n;
             randomHierarchy(G, n, m, false, true, false);
 
             System::usedRealTime(T);
@@ -103,7 +103,7 @@ bool regSugiyama()
             msec += System::usedRealTime(T);
             cr += sugi.numberOfCrossings();
 
-            m = 5*n/2;
+            m = 5 * n / 2;
             randomHierarchy(G, n, m, false, true, false);
 
             System::usedRealTime(T);
@@ -114,17 +114,17 @@ bool regSugiyama()
     }
 
     cout.precision(3);
-    cout << "\r    " << std::fixed << 0.001*double(msec) << " s, " <<
+    cout << "\r    " << std::fixed << 0.001 * double(msec) << " s, " <<
          cr << " crossings (avg. " <<
          double(msec) / totalGraphs <<   " ms, " <<
-         double(cr)/totalGraphs << " crossings per graph)" << endl;
+         double(cr) / totalGraphs << " crossings per graph)" << endl;
 
 
 #ifdef OGDF_LP_SOLVER
     sugi.setLayout(new OptimalHierarchyLayout);
 #endif
 
-    OptimalRanking *optr = new OptimalRanking;
+    OptimalRanking* optr = new OptimalRanking;
     optr->setSubgraph(new GreedyCycleRemoval);
 
     sugi.setRanking(optr);
@@ -142,7 +142,7 @@ bool regSugiyama()
     cr = 0;
     for(int n = min_n; n <= max_n; n += step_n)
     {
-        int b = n/25;
+        int b = n / 25;
 
         cout << "\r" << n << flush;
         for(int i = 0; i < numGraphs; ++i)
@@ -171,10 +171,10 @@ bool regSugiyama()
     }
 
     cout.precision(3);
-    cout << "\r    " << std::fixed << 0.001*double(msec) << " s, " <<
+    cout << "\r    " << std::fixed << 0.001 * double(msec) << " s, " <<
          cr << " crossings (avg. " <<
          double(msec) / totalGraphs <<   " ms, " <<
-         double(cr)/totalGraphs << " crossings per graph)" << endl;
+         double(cr) / totalGraphs << " crossings per graph)" << endl;
 
 
 #ifdef OGDF_LP_SOLVER
@@ -194,7 +194,7 @@ bool regSugiyama()
         cout << "\r" << n << flush;
         for(int i = 0; i < numGraphs; ++i)
         {
-            createDisconnectedGraph(G, n/7, 1.4, 2.6, 7);
+            createDisconnectedGraph(G, n / 7, 1.4, 2.6, 7);
 
             System::usedRealTime(T);
             sugi.call(GA);
@@ -204,10 +204,10 @@ bool regSugiyama()
     }
 
     cout.precision(3);
-    cout << "\r    " << std::fixed << 0.001*double(msec) << " s, " <<
+    cout << "\r    " << std::fixed << 0.001 * double(msec) << " s, " <<
          cr << " crossings (avg. " <<
          double(msec) / totalGraphs <<   " ms, " <<
-         double(cr)/totalGraphs << " crossings per graph)" << endl;
+         double(cr) / totalGraphs << " crossings per graph)" << endl;
 
 
     cout << "\n-> Runtime test planar biconnected graphs... " << endl;
@@ -218,7 +218,7 @@ bool regSugiyama()
     sugi.setCrossMin(new BarycenterHeuristic);
     sugi.setLayout(new FastHierarchyLayout);
 
-    LongestPathRanking *lpr = new LongestPathRanking;
+    LongestPathRanking* lpr = new LongestPathRanking;
     lpr->setSubgraph(new DfsAcyclicSubgraph);
     sugi.setRanking(lpr);
 
@@ -231,7 +231,7 @@ bool regSugiyama()
         cr = 0;
         for(int i = 0; i < numGraphs; ++i)
         {
-            planarBiconnectedGraph(G, n, 3*n/2);
+            planarBiconnectedGraph(G, n, 3 * n / 2);
 
             System::usedRealTime(T);
             sugi.call(GA);
@@ -240,8 +240,8 @@ bool regSugiyama()
         }
         cout.precision(3);
         cout << n << ": \t" << std::fixed <<
-             0.001*double(msec)/numGraphs << " s  \t" <<
-             double(cr)/numGraphs << " crossings" << endl;
+             0.001 * double(msec) / numGraphs << " s  \t" <<
+             double(cr) / numGraphs << " crossings" << endl;
     }
 
     return true;

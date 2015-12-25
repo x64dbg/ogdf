@@ -26,9 +26,9 @@ typedef struct TM_PARAMS
 {
     int         verbosity;
     double      granularity;
-    char        lp_exe[MAX_FILE_NAME_LENGTH +1];
-    char        cg_exe[MAX_FILE_NAME_LENGTH +1];
-    char        cp_exe[MAX_FILE_NAME_LENGTH +1];
+    char        lp_exe[MAX_FILE_NAME_LENGTH + 1];
+    char        cg_exe[MAX_FILE_NAME_LENGTH + 1];
+    char        cp_exe[MAX_FILE_NAME_LENGTH + 1];
     int         lp_debug;
     int         cg_debug;
     int         cp_debug;
@@ -38,11 +38,11 @@ typedef struct TM_PARAMS
     /* if a ..._machine_num is not 0 and there MUST be that many machine
        names listed in ..._machines (one name can be listed more than once) */
     int         lp_mach_num;
-    char      **lp_machs;
+    char**      lp_machs;
     int         cg_mach_num;
-    char      **cg_machs;
+    char**      cg_machs;
     int         cp_mach_num;
-    char      **cp_machs;
+    char**      cp_machs;
 
     int         use_cg;
 
@@ -55,7 +55,7 @@ typedef struct TM_PARAMS
 
     int         keep_description_of_pruned;
     int         vbc_emulation;
-    char        vbc_emulation_file_name[MAX_FILE_NAME_LENGTH +1];
+    char        vbc_emulation_file_name[MAX_FILE_NAME_LENGTH + 1];
     int         warm_start;
     int         warm_start_node_limit;
     int         warm_start_node_level;
@@ -64,11 +64,11 @@ typedef struct TM_PARAMS
     int         logging;
     int         logging_interval;
     int         cp_logging;
-    char        pruned_node_file_name[MAX_FILE_NAME_LENGTH +1];
-    char        warm_start_tree_file_name[MAX_FILE_NAME_LENGTH +1];
-    char        warm_start_cut_file_name[MAX_FILE_NAME_LENGTH +1];
-    char        tree_log_file_name[MAX_FILE_NAME_LENGTH +1];
-    char        cut_log_file_name[MAX_FILE_NAME_LENGTH +1];
+    char        pruned_node_file_name[MAX_FILE_NAME_LENGTH + 1];
+    char        warm_start_tree_file_name[MAX_FILE_NAME_LENGTH + 1];
+    char        warm_start_cut_file_name[MAX_FILE_NAME_LENGTH + 1];
+    char        tree_log_file_name[MAX_FILE_NAME_LENGTH + 1];
+    char        cut_log_file_name[MAX_FILE_NAME_LENGTH + 1];
     int         price_in_root;
     int         trim_search_tree;
 

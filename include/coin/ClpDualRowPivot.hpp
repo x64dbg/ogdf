@@ -32,10 +32,10 @@ public:
 
     /** Updates weights and returns pivot alpha.
         Also does FT update */
-    virtual double updateWeights(CoinIndexedVector * input,
-                                 CoinIndexedVector * spare,
-                                 CoinIndexedVector * spare2,
-                                 CoinIndexedVector * updatedColumn) = 0;
+    virtual double updateWeights(CoinIndexedVector* input,
+                                 CoinIndexedVector* spare,
+                                 CoinIndexedVector* spare2,
+                                 CoinIndexedVector* updatedColumn) = 0;
 
     /** Updates primal solution (and maybe list of candidates)
         Uses input vector which it deletes
@@ -44,7 +44,7 @@ public:
         means everything is always in sync
     */
     /* FIXME: this was pure virtul (=0). Why? */
-    virtual void updatePrimalSolution(CoinIndexedVector * input,
+    virtual void updatePrimalSolution(CoinIndexedVector* input,
                                       double theta,
                                       double & changeInObjective) = 0;
     /** Saves any weights round factorization as pivot rows may change
@@ -57,7 +57,7 @@ public:
         4) as 2 but restore weights from previous snapshot
         5) for strong branching - initialize  , infeasibilities
     */
-    virtual void saveWeights(ClpSimplex * model, int mode);
+    virtual void saveWeights(ClpSimplex* model, int mode);
     /// checks accuracy and may re-initialize (may be empty)
     virtual void checkAccuracy();
     /// Gets rid of last update (may be empty)
@@ -83,26 +83,26 @@ public:
     ClpDualRowPivot(const ClpDualRowPivot &);
 
     /// Assignment operator
-    ClpDualRowPivot & operator=(const ClpDualRowPivot& rhs);
+    ClpDualRowPivot & operator=(const ClpDualRowPivot & rhs);
 
     /// Destructor
-    virtual ~ClpDualRowPivot ();
+    virtual ~ClpDualRowPivot();
 
     /// Clone
-    virtual ClpDualRowPivot * clone(bool copyData = true) const = 0;
+    virtual ClpDualRowPivot* clone(bool copyData = true) const = 0;
 
     //@}
 
     ///@name Other
     //@{
     /// Returns model
-    inline ClpSimplex * model()
+    inline ClpSimplex* model()
     {
         return model_;
     }
 
     /// Sets model (normally to NULL)
-    inline void setModel(ClpSimplex * newmodel)
+    inline void setModel(ClpSimplex* newmodel)
     {
         model_ = newmodel;
     }
@@ -121,7 +121,7 @@ protected:
     ///@name Protected member data
     //@{
     /// Pointer to model
-    ClpSimplex * model_;
+    ClpSimplex* model_;
     /// Type of row pivot algorithm
     int type_;
     //@}

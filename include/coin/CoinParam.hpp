@@ -78,7 +78,7 @@ class CoinParam
 public:
 
     /*! \name Subtypes */
-//@{
+    //@{
 
     /*! \brief Enumeration for the types of parameters supported by CoinParam
 
@@ -104,16 +104,16 @@ public:
       convention, however; the base class makes no use of the push and pull
       functions and has no hardcoded interpretation of the return code.
     */
-    typedef int (*CoinParamFunc)(CoinParam *param) ;
+    typedef int (*CoinParamFunc)(CoinParam* param) ;
 
-//@}
+    //@}
 
     /*! \name Constructors and Destructors
 
       Be careful how you specify parameters for the constructors! Some compilers
       are entirely too willing to convert almost anything to bool.
     */
-//@{
+    //@{
 
     /*! \brief Default constructor */
 
@@ -172,24 +172,24 @@ public:
 
     /*! \brief Copy constructor */
 
-    CoinParam(const CoinParam &orig) ;
+    CoinParam(const CoinParam & orig) ;
 
     /*! \brief Clone */
 
-    virtual CoinParam *clone() ;
+    virtual CoinParam* clone() ;
 
     /*! \brief Assignment */
 
-    CoinParam &operator=(const CoinParam &rhs) ;
+    CoinParam & operator=(const CoinParam & rhs) ;
 
     /*! \brief  Destructor */
 
     virtual ~CoinParam() ;
 
-//@}
+    //@}
 
     /*! \name Methods to query and manipulate the value(s) of a parameter */
-//@{
+    //@{
 
     /*! \brief Add an additional value-keyword to a keyword parameter */
 
@@ -220,7 +220,7 @@ public:
       The given string will be tested against the set of value-keywords for
       the parameter using the shortest match rules.
     */
-    void setKwdVal(const std::string value ) ;
+    void setKwdVal(const std::string value) ;
 
     /*! \brief Prints the set of value-keywords defined for this keyword
          parameter
@@ -296,10 +296,10 @@ public:
     */
     void printLongHelp() const ;
 
-//@}
+    //@}
 
     /*! \name Methods to query and manipulate a parameter object */
-//@{
+    //@{
 
     /*! \brief Return the type of the parameter */
 
@@ -337,7 +337,7 @@ public:
       2 if the string matches but doesn't meet the minimum match length,
       and 0 if the string doesn't match. Matches are \e not case-sensitive.
     */
-    int matches (std::string input) const ;
+    int matches(std::string input) const ;
 
     /*! \brief Return the parameter keyword (name) string formatted to show
          the minimum match length
@@ -393,20 +393,20 @@ public:
         pullFunc_ = func ;
     }
 
-//@}
+    //@}
 
 private:
 
     /*! \name Private methods */
-//@{
+    //@{
 
     /*! Process a name for efficient matching */
     void processName() ;
 
-//@}
+    //@}
 
     /*! \name Private parameter data */
-//@{
+    //@{
     /// Parameter type (see #CoinParamType)
     CoinParamType type_ ;
 
@@ -463,7 +463,7 @@ private:
 
     /// Display when processing lists of parameters?
     bool display_ ;
-//@}
+    //@}
 
 } ;
 
@@ -475,7 +475,7 @@ typedef std::vector<CoinParam*> CoinParamVec ;
 /*! \relatesalso CoinParam
     \brief A stream output function for a CoinParam object.
 */
-std::ostream &operator<< (std::ostream &s, const CoinParam &param) ;
+std::ostream & operator<< (std::ostream & s, const CoinParam & param) ;
 
 /*
   Bring in the utility functions for parameter handling (CbcParamUtils).
@@ -490,198 +490,198 @@ std::ostream &operator<< (std::ostream &s, const CoinParam &param) ;
 */
 namespace CoinParamUtils
 {
-/*! \relatesalso CoinParam
-    \brief Take command input from the file specified by src.
+    /*! \relatesalso CoinParam
+        \brief Take command input from the file specified by src.
 
-    Use stdin for \p src to specify interactive prompting for commands.
-*/
-void setInputSrc(FILE *src) ;
+        Use stdin for \p src to specify interactive prompting for commands.
+    */
+    void setInputSrc(FILE* src) ;
 
-/*! \relatesalso CoinParam
-    \brief Returns true if command line parameters are being processed.
-*/
-bool isCommandLine() ;
+    /*! \relatesalso CoinParam
+        \brief Returns true if command line parameters are being processed.
+    */
+    bool isCommandLine() ;
 
-/*! \relatesalso CoinParam
-    \brief Returns true if parameters are being obtained from stdin.
-*/
-bool isInteractive() ;
+    /*! \relatesalso CoinParam
+        \brief Returns true if parameters are being obtained from stdin.
+    */
+    bool isInteractive() ;
 
-/*! \relatesalso CoinParam
-    \brief Attempt to read a string from the input.
+    /*! \relatesalso CoinParam
+        \brief Attempt to read a string from the input.
 
-    \p argc and \p argv are used only if isCommandLine() would return true.
-    If \p valid is supplied, it will be set to 0 if a string is parsed
-    without error, 2 if no field is present.
-*/
-std::string getStringField(int argc, const char *argv[], int *valid) ;
+        \p argc and \p argv are used only if isCommandLine() would return true.
+        If \p valid is supplied, it will be set to 0 if a string is parsed
+        without error, 2 if no field is present.
+    */
+    std::string getStringField(int argc, const char* argv[], int* valid) ;
 
-/*! \relatesalso CoinParam
-    \brief Attempt to read an integer from the input.
+    /*! \relatesalso CoinParam
+        \brief Attempt to read an integer from the input.
 
-    \p argc and \p argv are used only if isCommandLine() would return true.
-    If \p valid is supplied, it will be set to 0 if an integer is parsed
-    without error, 1 if there's a parse error, and 2 if no field is present.
-*/
-int getIntField(int argc, const char *argv[], int *valid) ;
+        \p argc and \p argv are used only if isCommandLine() would return true.
+        If \p valid is supplied, it will be set to 0 if an integer is parsed
+        without error, 1 if there's a parse error, and 2 if no field is present.
+    */
+    int getIntField(int argc, const char* argv[], int* valid) ;
 
-/*! \relatesalso CoinParam
-    \brief Attempt to read a real (double) from the input.
+    /*! \relatesalso CoinParam
+        \brief Attempt to read a real (double) from the input.
 
-    \p argc and \p argv are used only if isCommandLine() would return true.
-    If \p valid is supplied, it will be set to 0 if a real number is parsed
-    without error, 1 if there's a parse error, and 2 if no field is present.
-*/
-double getDoubleField(int argc, const char *argv[], int *valid) ;
+        \p argc and \p argv are used only if isCommandLine() would return true.
+        If \p valid is supplied, it will be set to 0 if a real number is parsed
+        without error, 1 if there's a parse error, and 2 if no field is present.
+    */
+    double getDoubleField(int argc, const char* argv[], int* valid) ;
 
-/*! \relatesalso CoinParam
-    \brief Scan a parameter vector for parameters whose keyword (name) string
-     matches \p name using minimal match rules.
+    /*! \relatesalso CoinParam
+        \brief Scan a parameter vector for parameters whose keyword (name) string
+         matches \p name using minimal match rules.
 
-     \p matchNdx is set to the index of the last parameter that meets the
-     minimal match criteria (but note there should be at most one matching
-     parameter if the parameter vector is properly configured). \p shortCnt
-     is set to the number of short matches (should be zero for a properly
-     configured parameter vector if a minimal match is found). The return
-     value is the number of matches satisfying the minimal match requirement
-     (should be 0 or 1 in a properly configured vector).
-*/
-int matchParam(const CoinParamVec &paramVec, std::string name,
-               int &matchNdx, int &shortCnt) ;
+         \p matchNdx is set to the index of the last parameter that meets the
+         minimal match criteria (but note there should be at most one matching
+         parameter if the parameter vector is properly configured). \p shortCnt
+         is set to the number of short matches (should be zero for a properly
+         configured parameter vector if a minimal match is found). The return
+         value is the number of matches satisfying the minimal match requirement
+         (should be 0 or 1 in a properly configured vector).
+    */
+    int matchParam(const CoinParamVec & paramVec, std::string name,
+                   int & matchNdx, int & shortCnt) ;
 
-/*! \relatesalso CoinParam
-    \brief Get the next command keyword (name)
+    /*! \relatesalso CoinParam
+        \brief Get the next command keyword (name)
 
-  To be precise, return the next field from the current command input
-  source, after a bit of processing. In command line mode (isCommandLine()
-  returns true) the next field will normally be of the form `-keyword' or
-  `--keyword' (\e i.e., a parameter keyword), and the string returned would
-  be `keyword'. In interactive mode (isInteractive() returns true), the
-  user will be prompted if necessary.  It is assumed that the user knows
-  not to use the `-' or `--' prefixes unless specifying parameters on the
-  command line.
+      To be precise, return the next field from the current command input
+      source, after a bit of processing. In command line mode (isCommandLine()
+      returns true) the next field will normally be of the form `-keyword' or
+      `--keyword' (\e i.e., a parameter keyword), and the string returned would
+      be `keyword'. In interactive mode (isInteractive() returns true), the
+      user will be prompted if necessary.  It is assumed that the user knows
+      not to use the `-' or `--' prefixes unless specifying parameters on the
+      command line.
 
-  There are a number of special cases if we're in command line mode. The
-  order of processing of the raw string goes like this:
-  <ul>
-    <li> A stand-alone `-' is forced to `stdin'.
-    <li> A stand-alone '--' is returned as a word; interpretation is up to
-   the client.
-    <li> A prefix of '-' or '--' is stripped from the string.
-  </ul>
-  If the result is the string `stdin', command processing shifts to
-  interactive mode and the user is immediately prompted for a new command.
+      There are a number of special cases if we're in command line mode. The
+      order of processing of the raw string goes like this:
+      <ul>
+        <li> A stand-alone `-' is forced to `stdin'.
+        <li> A stand-alone '--' is returned as a word; interpretation is up to
+       the client.
+        <li> A prefix of '-' or '--' is stripped from the string.
+      </ul>
+      If the result is the string `stdin', command processing shifts to
+      interactive mode and the user is immediately prompted for a new command.
 
-  Whatever results from the above sequence is returned to the user as the
-  return value of the function. An empty string indicates end of input.
+      Whatever results from the above sequence is returned to the user as the
+      return value of the function. An empty string indicates end of input.
 
-  \p prompt will be used only if it's necessary to prompt the user in
-  interactive mode.
-*/
+      \p prompt will be used only if it's necessary to prompt the user in
+      interactive mode.
+    */
 
-std::string getCommand(int argc, const char *argv[],
-                       const std::string prompt, std::string *pfx = 0) ;
+    std::string getCommand(int argc, const char* argv[],
+                           const std::string prompt, std::string* pfx = 0) ;
 
-/*! \relatesalso CoinParam
-    \brief Look up the command keyword (name) in the parameter vector.
-           Print help if requested.
+    /*! \relatesalso CoinParam
+        \brief Look up the command keyword (name) in the parameter vector.
+               Print help if requested.
 
-  In the most straightforward use, \p name is a string without `?', and the
-  value returned is the index in \p paramVec of the single parameter that
-  matched \p name. One or more '?' characters at the end of \p name is a
-  query for information. The routine prints short (one '?') or long (more
-  than one '?') help messages for a query.  Help is also printed in the case
-  where the name is ambiguous (some of the matches did not meet the minimal
-  match length requirement).
+      In the most straightforward use, \p name is a string without `?', and the
+      value returned is the index in \p paramVec of the single parameter that
+      matched \p name. One or more '?' characters at the end of \p name is a
+      query for information. The routine prints short (one '?') or long (more
+      than one '?') help messages for a query.  Help is also printed in the case
+      where the name is ambiguous (some of the matches did not meet the minimal
+      match length requirement).
 
-  Note that multiple matches meeting the minimal match requirement is a
-  configuration error. The mimimal match length for the parameters
-  involved is too short.
+      Note that multiple matches meeting the minimal match requirement is a
+      configuration error. The mimimal match length for the parameters
+      involved is too short.
 
-  If provided as parameters, on return
-  <ul>
-    <li> \p matchCnt will be set to the number of matches meeting the
-   minimal match requirement
-    <li> \p shortCnt will be set to the number of matches that did not
-   meet the miminal match requirement
-    <li> \p queryCnt will be set to the number of '?' characters at the
-   end of the name
-  </ul>
+      If provided as parameters, on return
+      <ul>
+        <li> \p matchCnt will be set to the number of matches meeting the
+       minimal match requirement
+        <li> \p shortCnt will be set to the number of matches that did not
+       meet the miminal match requirement
+        <li> \p queryCnt will be set to the number of '?' characters at the
+       end of the name
+      </ul>
 
-  The return values are:
-  <ul>
-    <li> >0: index in \p paramVec of the single unique match for \p name
-    <li> -1: a query was detected (one or more '?' characters at the end
-       of \p name
-    <li> -2: one or more short matches, not a query
-    <li> -3: no matches, not a query
-    <li> -4: multiple matches meeting the minimal match requirement
-       (configuration error)
-  </ul>
-*/
-int lookupParam(std::string name, CoinParamVec &paramVec,
-                int *matchCnt = 0, int *shortCnt = 0, int *queryCnt = 0) ;
+      The return values are:
+      <ul>
+        <li> >0: index in \p paramVec of the single unique match for \p name
+        <li> -1: a query was detected (one or more '?' characters at the end
+           of \p name
+        <li> -2: one or more short matches, not a query
+        <li> -3: no matches, not a query
+        <li> -4: multiple matches meeting the minimal match requirement
+           (configuration error)
+      </ul>
+    */
+    int lookupParam(std::string name, CoinParamVec & paramVec,
+                    int* matchCnt = 0, int* shortCnt = 0, int* queryCnt = 0) ;
 
-/*! \relatesalso CoinParam
-    \brief Utility to print a long message as filled lines of text
+    /*! \relatesalso CoinParam
+        \brief Utility to print a long message as filled lines of text
 
-    The routine makes a best effort to break lines without exceeding the
-    standard 80 character line length. Explicit newlines in \p msg will
-    be obeyed.
-*/
-void printIt(const char *msg) ;
+        The routine makes a best effort to break lines without exceeding the
+        standard 80 character line length. Explicit newlines in \p msg will
+        be obeyed.
+    */
+    void printIt(const char* msg) ;
 
-/*! \relatesalso CoinParam
-    \brief Utility routine to print help given a short match or explicit
-     request for help.
+    /*! \relatesalso CoinParam
+        \brief Utility routine to print help given a short match or explicit
+         request for help.
 
-    The two really are related, in that a query (a string that ends with
-    one or more `?' characters) will often result in a short match. The
-    routine expects that \p name matches a single parameter, and does not
-    look for multiple matches.
+        The two really are related, in that a query (a string that ends with
+        one or more `?' characters) will often result in a short match. The
+        routine expects that \p name matches a single parameter, and does not
+        look for multiple matches.
 
-    If called with \p matchNdx < 0, the routine will look up \p name in \p
-    paramVec and print the full name from the parameter. If called with \p
-    matchNdx > 0, it just prints the name from the specified parameter.  If
-    the name is a query, short (one '?') or long (more than one '?') help
-    is printed.
+        If called with \p matchNdx < 0, the routine will look up \p name in \p
+        paramVec and print the full name from the parameter. If called with \p
+        matchNdx > 0, it just prints the name from the specified parameter.  If
+        the name is a query, short (one '?') or long (more than one '?') help
+        is printed.
 
-*/ void shortOrHelpOne(CoinParamVec &paramVec,int matchNdx, std::string
-                       name, int numQuery) ;
+    */ void shortOrHelpOne(CoinParamVec & paramVec, int matchNdx, std::string
+                           name, int numQuery) ;
 
-/*! \relatesalso CoinParam
-    \brief Utility routine to print help given multiple matches.
+    /*! \relatesalso CoinParam
+        \brief Utility routine to print help given multiple matches.
 
-    If the name is not a query, or asks for short help (\e i.e., contains
-    zero or one '?' characters), the list of matching names is printed. If
-    the name asks for long help (contains two or more '?' characters),
-    short help is printed for each matching name.
-*/
-void shortOrHelpMany(CoinParamVec &paramVec,
-                     std::string name, int numQuery) ;
+        If the name is not a query, or asks for short help (\e i.e., contains
+        zero or one '?' characters), the list of matching names is printed. If
+        the name asks for long help (contains two or more '?' characters),
+        short help is printed for each matching name.
+    */
+    void shortOrHelpMany(CoinParamVec & paramVec,
+                         std::string name, int numQuery) ;
 
-/*! \relatesalso CoinParam
-    \brief Print a generic `how to use the command interface' help message.
+    /*! \relatesalso CoinParam
+        \brief Print a generic `how to use the command interface' help message.
 
-  The message is hard coded to match the behaviour of the parsing utilities.
-*/
-void printGenericHelp() ;
+      The message is hard coded to match the behaviour of the parsing utilities.
+    */
+    void printGenericHelp() ;
 
-/*! \relatesalso CoinParam
-    \brief Utility routine to print help messages for one or more
-     parameters.
+    /*! \relatesalso CoinParam
+        \brief Utility routine to print help messages for one or more
+         parameters.
 
-  Intended as a utility to implement explicit `help' commands. Help will be
-  printed for all parameters in \p paramVec from \p firstParam to \p
-  lastParam, inclusive. If \p shortHelp is true, short help messages will
-  be printed. If \p longHelp is true, long help messages are printed. \p
-  shortHelp overrules \p longHelp. If neither is true, only command
-  keywords are printed. \p prefix is printed before each line; it's an
-  imperfect attempt at indentation.
-*/
-void printHelp(CoinParamVec &paramVec, int firstParam, int lastParam,
-               std::string prefix,
-               bool shortHelp, bool longHelp, bool hidden) ;
+      Intended as a utility to implement explicit `help' commands. Help will be
+      printed for all parameters in \p paramVec from \p firstParam to \p
+      lastParam, inclusive. If \p shortHelp is true, short help messages will
+      be printed. If \p longHelp is true, long help messages are printed. \p
+      shortHelp overrules \p longHelp. If neither is true, only command
+      keywords are printed. \p prefix is printed before each line; it's an
+      imperfect attempt at indentation.
+    */
+    void printHelp(CoinParamVec & paramVec, int firstParam, int lastParam,
+                   std::string prefix,
+                   bool shortHelp, bool longHelp, bool hidden) ;
 }
 
 

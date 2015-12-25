@@ -54,30 +54,30 @@
 namespace ogdf
 {
 
-/**
- * \brief Implementation of a DFS-based algorithm for biconnectivity augmentation.
- *
- * The class \a DfsMakeBiconnected implements an augmentation algorithms
- * that augments a graph to a biconnected graph. In addition, if the graph was
- * planar before augmentation, the resulting graph will be biconnected and
- * planar.
- * The algorithm simply uses DFS and, whenever a cut vertex is discovered,
- * a new edge is added.
- */
+    /**
+     * \brief Implementation of a DFS-based algorithm for biconnectivity augmentation.
+     *
+     * The class \a DfsMakeBiconnected implements an augmentation algorithms
+     * that augments a graph to a biconnected graph. In addition, if the graph was
+     * planar before augmentation, the resulting graph will be biconnected and
+     * planar.
+     * The algorithm simply uses DFS and, whenever a cut vertex is discovered,
+     * a new edge is added.
+     */
 
-class OGDF_EXPORT DfsMakeBiconnected : public AugmentationModule
-{
-public:
-    //! Creates an instance of DFS-based biconnectivity augmentation.
-    DfsMakeBiconnected() { }
+    class OGDF_EXPORT DfsMakeBiconnected : public AugmentationModule
+    {
+    public:
+        //! Creates an instance of DFS-based biconnectivity augmentation.
+        DfsMakeBiconnected() { }
 
-    // destruction
-    ~DfsMakeBiconnected() { }
+        // destruction
+        ~DfsMakeBiconnected() { }
 
-protected:
-    //! Implements the algorithm call.
-    void doCall(Graph& G, List<edge> &L);
-};
+    protected:
+        //! Implements the algorithm call.
+        void doCall(Graph & G, List<edge> & L);
+    };
 
 } // end namespace ogdf
 

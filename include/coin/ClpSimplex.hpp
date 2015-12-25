@@ -76,7 +76,7 @@ public:
     /**@name Constructors and destructor and copy */
     //@{
     /// Default constructor
-    ClpSimplex (bool emptyMessages = false  );
+    ClpSimplex(bool emptyMessages = false);
 
     /** Copy constructor. May scale depending on mode
         -1 leave mode as is
@@ -94,30 +94,30 @@ public:
         Can optionally modify rhs to take into account variables NOT in list
         in this case duplicates are not allowed (also see getbackSolution)
     */
-    ClpSimplex (const ClpModel * wholeModel,
-                int numberRows, const int * whichRows,
-                int numberColumns, const int * whichColumns,
-                bool dropNames = true, bool dropIntegers = true,
-                bool fixOthers = false);
+    ClpSimplex(const ClpModel* wholeModel,
+               int numberRows, const int* whichRows,
+               int numberColumns, const int* whichColumns,
+               bool dropNames = true, bool dropIntegers = true,
+               bool fixOthers = false);
     /** Subproblem constructor.  A subset of whole model is created from the
         row and column lists given.  The new order is given by list order and
         duplicates are allowed.  Name and integer information can be dropped
         Can optionally modify rhs to take into account variables NOT in list
         in this case duplicates are not allowed (also see getbackSolution)
     */
-    ClpSimplex (const ClpSimplex * wholeModel,
-                int numberRows, const int * whichRows,
-                int numberColumns, const int * whichColumns,
-                bool dropNames = true, bool dropIntegers = true,
-                bool fixOthers = false);
+    ClpSimplex(const ClpSimplex* wholeModel,
+               int numberRows, const int* whichRows,
+               int numberColumns, const int* whichColumns,
+               bool dropNames = true, bool dropIntegers = true,
+               bool fixOthers = false);
     /** This constructor modifies original ClpSimplex and stores
         original stuff in created ClpSimplex.  It is only to be used in
         conjunction with originalModel */
-    ClpSimplex (ClpSimplex * wholeModel,
-                int numberColumns, const int * whichColumns);
+    ClpSimplex(ClpSimplex* wholeModel,
+               int numberColumns, const int* whichColumns);
     /** This copies back stuff from miniModel and then deletes miniModel.
         Only to be used with mini constructor */
-    void originalModel(ClpSimplex * miniModel);
+    void originalModel(ClpSimplex* miniModel);
     /** Array persistence flag
         If 0 then as now (delete/new)
         1 then only do arrays if bigger needed
@@ -129,18 +129,18 @@ public:
     /// Switch off base model
     void deleteBaseModel();
     /// See if we have base model
-    inline ClpSimplex *  baseModel() const
+    inline ClpSimplex*   baseModel() const
     {
         return baseModel_;
     }
     /** Reset to base model (just size and arrays needed)
         If model NULL use internal copy
     */
-    void setToBaseModel(ClpSimplex * model = NULL);
+    void setToBaseModel(ClpSimplex* model = NULL);
     /// Assignment operator. This copies the data
     ClpSimplex & operator=(const ClpSimplex & rhs);
     /// Destructor
-    ~ClpSimplex (  );
+    ~ClpSimplex();
     // Ones below are just ClpModel with some changes
     /** Loads a problem (the constraints on the
           rows are given by lower and upper bounds). If a pointer is 0 then the
@@ -153,49 +153,49 @@ public:
         <li> <code>obj</code>: all variables have 0 objective coefficient
           </ul>
       */
-    void loadProblem (  const ClpMatrixBase& matrix,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
-    void loadProblem (  const CoinPackedMatrix& matrix,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
+    void loadProblem(const ClpMatrixBase & matrix,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
+    void loadProblem(const CoinPackedMatrix & matrix,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
 
     /** Just like the other loadProblem() method except that the matrix is
       given in a standard column major ordered format (without gaps). */
-    void loadProblem (  const int numcols, const int numrows,
-                        const CoinBigIndex* start, const int* index,
-                        const double* value,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
+    void loadProblem(const int numcols, const int numrows,
+                     const CoinBigIndex* start, const int* index,
+                     const double* value,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
     /// This one is for after presolve to save memory
-    void loadProblem (  const int numcols, const int numrows,
-                        const CoinBigIndex* start, const int* index,
-                        const double* value, const int * length,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
+    void loadProblem(const int numcols, const int numrows,
+                     const CoinBigIndex* start, const int* index,
+                     const double* value, const int* length,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
     /** This loads a model from a coinModel object - returns number of errors.
         If keepSolution true and size is same as current then
         keeps current status and solution
     */
-    int loadProblem (  CoinModel & modelObject, bool keepSolution = false);
+    int loadProblem(CoinModel & modelObject, bool keepSolution = false);
     /// Read an mps file from the given filename
-    int readMps(const char *filename,
+    int readMps(const char* filename,
                 bool keepNames = false,
                 bool ignoreErrors = false);
     /// Read GMPL files from the given filenames
-    int readGMPL(const char *filename, const char * dataName,
+    int readGMPL(const char* filename, const char* dataName,
                  bool keepNames = false);
     /// Read file in LP format from file with name filename.
     /// See class CoinLpIO for description of this format.
-    int readLp(const char *filename, const double epsilon = 1e-5);
+    int readLp(const char* filename, const double epsilon = 1e-5);
     /** Borrow model.  This is so we dont have to copy large amounts
         of data around.  It assumes a derived class wants to overwrite
         an empty model with a real one - while it does an algorithm.
@@ -203,9 +203,9 @@ public:
     void borrowModel(ClpModel & otherModel);
     void borrowModel(ClpSimplex & otherModel);
     /// Pass in Event handler (cloned and deleted at end)
-    void passInEventHandler(const ClpEventHandler * eventHandler);
+    void passInEventHandler(const ClpEventHandler* eventHandler);
     /// Puts solution back into small model
-    void getbackSolution(const ClpSimplex & smallModel, const int * whichRow, const int * whichColumn);
+    void getbackSolution(const ClpSimplex & smallModel, const int* whichRow, const int* whichColumn);
     /** Load nonlinear part of problem from AMPL info
         Returns 0 if linear
         1 if quadratic objective
@@ -214,8 +214,8 @@ public:
         4 if nonlinear constraints
         -1 on failure
     */
-    int loadNonLinear(void * info, int & numberConstraints,
-                      ClpConstraint ** & constraints);
+    int loadNonLinear(void* info, int & numberConstraints,
+                      ClpConstraint** & constraints);
     //@}
 
     /**@name Functions most useful to user */
@@ -230,7 +230,7 @@ public:
     int initialDualSolve();
     /// Primal initial solve
     int initialPrimalSolve();
-/// Barrier initial solve
+    /// Barrier initial solve
     int initialBarrierSolve();
     /// Barrier initial solve, not to be followed by crossover
     int initialBarrierNoCrossSolve();
@@ -269,7 +269,7 @@ public:
         Also exits if all problematical variables are changing
         less than deltaTolerance
     */
-    int nonlinearSLP(int numberConstraints, ClpConstraint ** constraints,
+    int nonlinearSLP(int numberConstraints, ClpConstraint** constraints,
                      int numberPasses, double deltaTolerance);
     /** Solves using barrier (assumes you have good cholesky factor code).
         Does crossover to simplex if asked*/
@@ -278,15 +278,15 @@ public:
         =1 use solution */
     int reducedGradient(int phase = 0);
     /// Solve using structure of model and maybe in parallel
-    int solve(CoinStructuredModel * model);
+    int solve(CoinStructuredModel* model);
     /** This loads a model from a CoinStructuredModel object - returns number of errors.
         If originalOrder then keep to order stored in blocks,
         otherwise first column/rows correspond to first block - etc.
         If keepSolution true and size is same as current then
         keeps current status and solution
     */
-    int loadProblem (  CoinStructuredModel & modelObject,
-                       bool originalOrder = true, bool keepSolution = false);
+    int loadProblem(CoinStructuredModel & modelObject,
+                    bool originalOrder = true, bool keepSolution = false);
     /**
        When scaling is on it is possible that the scaled problem
        is feasible but the unscaled is not.  Clp returns a secondary
@@ -322,10 +322,10 @@ public:
 
         Returns non-zero if infeasible unbounded etc
     */
-    int dualRanging(int numberCheck, const int * which,
-                    double * costIncrease, int * sequenceIncrease,
-                    double * costDecrease, int * sequenceDecrease,
-                    double * valueIncrease = NULL, double * valueDecrease = NULL);
+    int dualRanging(int numberCheck, const int* which,
+                    double* costIncrease, int* sequenceIncrease,
+                    double* costDecrease, int* sequenceDecrease,
+                    double* valueIncrease = NULL, double* valueDecrease = NULL);
     /** Primal ranging.
         This computes increase/decrease in value for each given variable and corresponding
         sequence numbers which would change basis.  Sequence numbers are 0..numberColumns
@@ -340,9 +340,9 @@ public:
 
         Returns non-zero if infeasible unbounded etc
     */
-    int primalRanging(int numberCheck, const int * which,
-                      double * valueIncrease, int * sequenceIncrease,
-                      double * valueDecrease, int * sequenceDecrease);
+    int primalRanging(int numberCheck, const int* which,
+                      double* valueIncrease, int* sequenceIncrease,
+                      double* valueDecrease, int* sequenceDecrease);
     /** Write the basis in MPS format to the specified file.
         If writeValues true writes values of structurals
         (and adds VALUES to end of NAME card)
@@ -357,20 +357,20 @@ public:
 
         Returns non-zero on I/O error
     */
-    int writeBasis(const char *filename,
+    int writeBasis(const char* filename,
                    bool writeValues = false,
                    int formatType = 0) const;
     /** Read a basis from the given filename,
         returns -1 on file error, 0 if no values, 1 if values */
-    int readBasis(const char *filename);
+    int readBasis(const char* filename);
     /// Returns a basis (to be deleted by user)
-    CoinWarmStartBasis * getBasis() const;
+    CoinWarmStartBasis* getBasis() const;
     /// Passes in factorization
-    void setFactorization( ClpFactorization & factorization);
+    void setFactorization(ClpFactorization & factorization);
     // Swaps factorization
-    ClpFactorization * swapFactorization( ClpFactorization * factorization);
+    ClpFactorization* swapFactorization(ClpFactorization* factorization);
     /// Copies in factorization to existing one
-    void copyFactorization( ClpFactorization & factorization);
+    void copyFactorization(ClpFactorization & factorization);
     /** Tightens primal bounds to make dual faster.  Unless
         fixed or doTight>10, bounds are slightly looser than they could be.
         This is to make dual go faster and is probably not needed
@@ -410,36 +410,36 @@ public:
         Solutions are filled in as well - even down, odd up - also
         status and number of iterations
     */
-    int strongBranching(int numberVariables, const int * variables,
-                        double * newLower, double * newUpper,
-                        double ** outputSolution,
-                        int * outputStatus, int * outputIterations,
+    int strongBranching(int numberVariables, const int* variables,
+                        double* newLower, double* newUpper,
+                        double** outputSolution,
+                        int* outputStatus, int* outputIterations,
                         bool stopOnFirstInfeasible = true,
                         bool alwaysFinish = false,
                         int startFinishOptions = 0);
     /// Fathom - 1 if solution
-    int fathom(void * stuff);
+    int fathom(void* stuff);
     /** Do up to N deep - returns
         -1 - no solution nNodes_ valid nodes
         >= if solution and that node gives solution
         ClpNode array is 2**N long.  Values for N and
         array are in stuff (nNodes_ also in stuff) */
-    int fathomMany(void * stuff);
+    int fathomMany(void* stuff);
     /// Double checks OK
     double doubleCheck();
     /// Starts Fast dual2
-    int startFastDual2(ClpNodeStuff * stuff);
+    int startFastDual2(ClpNodeStuff* stuff);
     /// Like Fast dual
-    int fastDual2(ClpNodeStuff * stuff);
+    int fastDual2(ClpNodeStuff* stuff);
     /// Stops Fast dual2
-    void stopFastDual2(ClpNodeStuff * stuff);
+    void stopFastDual2(ClpNodeStuff* stuff);
     /** Deals with crunch aspects
         mode 0 - in
              1 - out with solution
          2 - out without solution
         returns small model or NULL
     */
-    ClpSimplex * fastCrunch(ClpNodeStuff * stuff, int mode);
+    ClpSimplex* fastCrunch(ClpNodeStuff* stuff, int mode);
     //@}
 
     /**@name Needed for functionality of OsiSimplexInterface */
@@ -499,7 +499,7 @@ public:
         return (numberDualInfeasibilities_ == 0);
     }
     /// factorization
-    inline ClpFactorization * factorization() const
+    inline ClpFactorization* factorization() const
     {
         return factorization_;
     }
@@ -619,10 +619,10 @@ public:
     Does not save scaling values.
     It does not know about all types of virtual functions.
     */
-    int saveModel(const char * fileName);
+    int saveModel(const char* fileName);
     /** Restore model from file, returns 0 if success,
         deletes current model */
-    int restoreModel(const char * fileName);
+    int restoreModel(const char* fileName);
 
     /** Just check solution (for external use) - sets sum of
         infeasibilities etc.
@@ -638,12 +638,12 @@ public:
     /// Check unscaled primal solution but allow for rounding error
     void checkUnscaledSolution();
     /// Useful row length arrays (0,1,2,3,4,5)
-    inline CoinIndexedVector * rowArray(int index) const
+    inline CoinIndexedVector* rowArray(int index) const
     {
         return rowArray_[index];
     }
     /// Useful column length arrays (0,1,2,3,4,5)
-    inline CoinIndexedVector * columnArray(int index) const
+    inline CoinIndexedVector* columnArray(int index) const
     {
         return columnArray_[index];
     }
@@ -655,27 +655,27 @@ public:
     /** Given an existing factorization computes and checks
         primal and dual solutions.  Uses input arrays for variables at
         bounds.  Returns feasibility states */
-    int getSolution (  const double * rowActivities,
-                       const double * columnActivities);
+    int getSolution(const double* rowActivities,
+                    const double* columnActivities);
     /** Given an existing factorization computes and checks
         primal and dual solutions.  Uses current problem arrays for
         bounds.  Returns feasibility states */
-    int getSolution ();
+    int getSolution();
     /** Constructs a non linear cost from list of non-linearities (columns only)
         First lower of each column is taken as real lower
         Last lower is taken as real upper and cost ignored
 
         Returns nonzero if bad data e.g. lowers not monotonic
     */
-    int createPiecewiseLinearCosts(const int * starts,
-                                   const double * lower, const double * gradient);
+    int createPiecewiseLinearCosts(const int* starts,
+                                   const double* lower, const double* gradient);
     /// dual row pivot choice
-    inline ClpDualRowPivot * dualRowPivot() const
+    inline ClpDualRowPivot* dualRowPivot() const
     {
         return dualRowPivot_;
     }
     /// primal column pivot choice
-    inline ClpPrimalColumnPivot * primalColumnPivot() const
+    inline ClpPrimalColumnPivot* primalColumnPivot() const
     {
         return primalColumnPivot_;
     }
@@ -704,39 +704,39 @@ public:
     int factorize();
     /** Computes duals from scratch. If givenDjs then
         allows for nonzero basic djs */
-    void computeDuals(double * givenDjs);
+    void computeDuals(double* givenDjs);
     /// Computes primals from scratch
-    void computePrimals (  const double * rowActivities,
-                           const double * columnActivities);
+    void computePrimals(const double* rowActivities,
+                        const double* columnActivities);
     /** Adds multiple of a column into an array */
-    void add(double * array,
+    void add(double* array,
              int column, double multiplier) const;
     /**
        Unpacks one column of the matrix into indexed array
        Uses sequenceIn_
        Also applies scaling if needed
     */
-    void unpack(CoinIndexedVector * rowArray) const ;
+    void unpack(CoinIndexedVector* rowArray) const ;
     /**
        Unpacks one column of the matrix into indexed array
        Slack if sequence>= numberColumns
        Also applies scaling if needed
     */
-    void unpack(CoinIndexedVector * rowArray, int sequence) const;
+    void unpack(CoinIndexedVector* rowArray, int sequence) const;
     /**
        Unpacks one column of the matrix into indexed array
        ** as packed vector
        Uses sequenceIn_
        Also applies scaling if needed
     */
-    void unpackPacked(CoinIndexedVector * rowArray) ;
+    void unpackPacked(CoinIndexedVector* rowArray) ;
     /**
        Unpacks one column of the matrix into indexed array
        ** as packed vector
        Slack if sequence>= numberColumns
        Also applies scaling if needed
     */
-    void unpackPacked(CoinIndexedVector * rowArray, int sequence);
+    void unpackPacked(CoinIndexedVector* rowArray, int sequence);
 protected:
     /**
         This does basis housekeeping and does values for in/out variables.
@@ -745,8 +745,8 @@ protected:
     int housekeeping(double objectiveChange);
     /** This sets largest infeasibility and most infeasible and sum
         and number of infeasibilities (Primal) */
-    void checkPrimalSolution(const double * rowActivities = NULL,
-                             const double * columnActivies = NULL);
+    void checkPrimalSolution(const double* rowActivities = NULL,
+                             const double* columnActivies = NULL);
     /** This sets largest infeasibility and most infeasible and sum
         and number of infeasibilities (Dual) */
     void checkDualSolution();
@@ -758,9 +758,9 @@ protected:
     */
     double scaleObjective(double value);
     /// Solve using Dantzig-Wolfe decomposition and maybe in parallel
-    int solveDW(CoinStructuredModel * model);
+    int solveDW(CoinStructuredModel* model);
     /// Solve using Benders decomposition and maybe in parallel
-    int solveBenders(CoinStructuredModel * model);
+    int solveBenders(CoinStructuredModel* model);
 public:
     /** For advanced use.  When doing iterative solves things can get
         nasty so on values pass if incoming solution has largest
@@ -793,12 +793,12 @@ public:
     //return (objectiveValue_-bestPossibleImprovement_)*optimizationDirection_ - dblParam_[ClpObjOffset];
     //}
     /// Set disaster handler
-    inline void setDisasterHandler(ClpDisasterHandler * handler)
+    inline void setDisasterHandler(ClpDisasterHandler* handler)
     {
         disasterArea_ = handler;
     }
     /// Get disaster handler
-    inline ClpDisasterHandler * disasterHandler() const
+    inline ClpDisasterHandler* disasterHandler() const
     {
         return disasterArea_;
     }
@@ -807,7 +807,7 @@ public:
     {
         return largeValue_;
     }
-    void setLargeValue( double value) ;
+    void setLargeValue(double value) ;
     /// Largest error on Ax-b
     inline double largestPrimalError() const
     {
@@ -834,12 +834,12 @@ public:
         return zeroTolerance_;/*factorization_->zeroTolerance();*/
     }
     /// Set zero tolerance
-    inline void setZeroTolerance( double value)
+    inline void setZeroTolerance(double value)
     {
         zeroTolerance_ = value;
     }
     /// Basic variables pivoting on which rows
-    inline int * pivotVariable() const
+    inline int* pivotVariable() const
     {
         return pivotVariable_;
     }
@@ -875,7 +875,7 @@ public:
     {
         return numberRefinements_;
     }
-    void setNumberRefinements( int value) ;
+    void setNumberRefinements(int value) ;
     /// Alpha (pivot element) for use by classes e.g. steepestedge
     inline double alpha() const
     {
@@ -909,9 +909,9 @@ protected:
     /** May change basis and then returns number changed.
         Computation of solutions may be overriden by given pi and solution
     */
-    int gutsOfSolution ( double * givenDuals,
-                         const double * givenPrimals,
-                         bool valuesPass = false);
+    int gutsOfSolution(double* givenDuals,
+                       const double* givenPrimals,
+                       bool valuesPass = false);
     /// Does most of deletion (0 = all, 1 = most, 2 most + factorization)
     void gutsOfDelete(int type);
     /// Does most of copying
@@ -947,55 +947,55 @@ public:
     //@{
     /** Return row or column sections - not as much needed as it
         once was.  These just map into single arrays */
-    inline double * solutionRegion(int section) const
+    inline double* solutionRegion(int section) const
     {
-        if (!section) return rowActivityWork_;
+        if(!section) return rowActivityWork_;
         else return columnActivityWork_;
     }
-    inline double * djRegion(int section) const
+    inline double* djRegion(int section) const
     {
-        if (!section) return rowReducedCost_;
+        if(!section) return rowReducedCost_;
         else return reducedCostWork_;
     }
-    inline double * lowerRegion(int section) const
+    inline double* lowerRegion(int section) const
     {
-        if (!section) return rowLowerWork_;
+        if(!section) return rowLowerWork_;
         else return columnLowerWork_;
     }
-    inline double * upperRegion(int section) const
+    inline double* upperRegion(int section) const
     {
-        if (!section) return rowUpperWork_;
+        if(!section) return rowUpperWork_;
         else return columnUpperWork_;
     }
-    inline double * costRegion(int section) const
+    inline double* costRegion(int section) const
     {
-        if (!section) return rowObjectiveWork_;
+        if(!section) return rowObjectiveWork_;
         else return objectiveWork_;
     }
     /// Return region as single array
-    inline double * solutionRegion() const
+    inline double* solutionRegion() const
     {
         return solution_;
     }
-    inline double * djRegion() const
+    inline double* djRegion() const
     {
         return dj_;
     }
-    inline double * lowerRegion() const
+    inline double* lowerRegion() const
     {
         return lower_;
     }
-    inline double * upperRegion() const
+    inline double* upperRegion() const
     {
         return upper_;
     }
-    inline double * costRegion() const
+    inline double* costRegion() const
     {
         return cost_;
     }
     inline Status getStatus(int sequence) const
     {
-        return static_cast<Status> (status_[sequence] & 7);
+        return static_cast<Status>(status_[sequence] & 7);
     }
     inline void setStatus(int sequence, Status newstatus)
     {
@@ -1130,16 +1130,16 @@ public:
     /// Return original lower bound
     inline double originalLower(int iSequence) const
     {
-        if (iSequence < numberColumns_) return columnLower_[iSequence];
+        if(iSequence < numberColumns_) return columnLower_[iSequence];
         else
-            return rowLower_[iSequence-numberColumns_];
+            return rowLower_[iSequence - numberColumns_];
     }
     /// Return original lower bound
     inline double originalUpper(int iSequence) const
     {
-        if (iSequence < numberColumns_) return columnUpper_[iSequence];
+        if(iSequence < numberColumns_) return columnUpper_[iSequence];
         else
-            return rowUpper_[iSequence-numberColumns_];
+            return rowUpper_[iSequence - numberColumns_];
     }
     /// Theta (pivot change)
     inline double theta() const
@@ -1153,7 +1153,7 @@ public:
         return bestPossibleImprovement_;
     }
     /// Return pointer to details of costs
-    inline ClpNonLinearCost * nonLinearCost() const
+    inline ClpNonLinearCost* nonLinearCost() const
     {
         return nonLinearCost_;
     }
@@ -1208,17 +1208,17 @@ public:
     }
     inline FakeBound getFakeBound(int sequence) const
     {
-        return static_cast<FakeBound> ((status_[sequence] >> 3) & 3);
+        return static_cast<FakeBound>((status_[sequence] >> 3) & 3);
     }
     inline void setRowStatus(int sequence, Status newstatus)
     {
-        unsigned char & st_byte = status_[sequence+numberColumns_];
+        unsigned char & st_byte = status_[sequence + numberColumns_];
         st_byte = static_cast<unsigned char>(st_byte & ~7);
         st_byte = static_cast<unsigned char>(st_byte | newstatus);
     }
     inline Status getRowStatus(int sequence) const
     {
-        return static_cast<Status> (status_[sequence+numberColumns_] & 7);
+        return static_cast<Status>(status_[sequence + numberColumns_] & 7);
     }
     inline void setColumnStatus(int sequence, Status newstatus)
     {
@@ -1228,13 +1228,13 @@ public:
     }
     inline Status getColumnStatus(int sequence) const
     {
-        return static_cast<Status> (status_[sequence] & 7);
+        return static_cast<Status>(status_[sequence] & 7);
     }
-    inline void setPivoted( int sequence)
+    inline void setPivoted(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] | 32);
     }
-    inline void clearPivoted( int sequence)
+    inline void clearPivoted(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] & ~32);
     }
@@ -1243,8 +1243,8 @@ public:
         return (((status_[sequence] >> 5) & 1) != 0);
     }
     /// To flag a variable (not inline to allow for column generation)
-    void setFlagged( int sequence);
-    inline void clearFlagged( int sequence)
+    void setFlagged(int sequence);
+    inline void clearFlagged(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] & ~64);
     }
@@ -1253,11 +1253,11 @@ public:
         return ((status_[sequence] & 64) != 0);
     }
     /// To say row active in primal pivot row choice
-    inline void setActive( int iRow)
+    inline void setActive(int iRow)
     {
         status_[iRow] = static_cast<unsigned char>(status_[iRow] | 128);
     }
-    inline void clearActive( int iRow)
+    inline void clearActive(int iRow)
     {
         status_[iRow] = static_cast<unsigned char>(status_[iRow] & ~128);
     }
@@ -1315,9 +1315,9 @@ public:
         return baseIteration_;
     }
     /// Create C++ lines to get to current state
-    void generateCpp( FILE * fp, bool defaultFactor = false);
+    void generateCpp(FILE* fp, bool defaultFactor = false);
     /// Gets clean and emptyish factorization
-    ClpFactorization * getEmptyFactorization();
+    ClpFactorization* getEmptyFactorization();
     /// May delete or may make clean and emptyish factorization
     void setEmptyFactorization();
     /// Move status and solution across
@@ -1329,7 +1329,7 @@ public:
     // *** At present only without scaling
     // *** Slacks havve -1.0 element (so == row activity) - take care
     ///Get a row of the tableau (slack part in slack if not NULL)
-    void getBInvARow(int row, double* z, double * slack = NULL);
+    void getBInvARow(int row, double* z, double* slack = NULL);
 
     ///Get a row of the basis inverse
     void getBInvRow(int row, double* z);
@@ -1351,24 +1351,24 @@ public:
     /**@name Changing bounds on variables and constraints */
     //@{
     /** Set an objective function coefficient */
-    void setObjectiveCoefficient( int elementIndex, double elementValue );
+    void setObjectiveCoefficient(int elementIndex, double elementValue);
     /** Set an objective function coefficient */
-    inline void setObjCoeff( int elementIndex, double elementValue )
+    inline void setObjCoeff(int elementIndex, double elementValue)
     {
-        setObjectiveCoefficient( elementIndex, elementValue);
+        setObjectiveCoefficient(elementIndex, elementValue);
     }
 
     /** Set a single column lower bound<br>
         Use -DBL_MAX for -infinity. */
-    void setColumnLower( int elementIndex, double elementValue );
+    void setColumnLower(int elementIndex, double elementValue);
 
     /** Set a single column upper bound<br>
         Use DBL_MAX for infinity. */
-    void setColumnUpper( int elementIndex, double elementValue );
+    void setColumnUpper(int elementIndex, double elementValue);
 
     /** Set a single column lower and upper bound */
-    void setColumnBounds( int elementIndex,
-                          double lower, double upper );
+    void setColumnBounds(int elementIndex,
+                         double lower, double upper);
 
     /** Set the bounds on a number of columns simultaneously<br>
         The default implementation just invokes setColLower() and
@@ -1384,20 +1384,20 @@ public:
 
     /** Set a single column lower bound<br>
         Use -DBL_MAX for -infinity. */
-    inline void setColLower( int elementIndex, double elementValue )
+    inline void setColLower(int elementIndex, double elementValue)
     {
         setColumnLower(elementIndex, elementValue);
     }
     /** Set a single column upper bound<br>
         Use DBL_MAX for infinity. */
-    inline void setColUpper( int elementIndex, double elementValue )
+    inline void setColUpper(int elementIndex, double elementValue)
     {
         setColumnUpper(elementIndex, elementValue);
     }
 
     /** Set a single column lower and upper bound */
-    inline void setColBounds( int elementIndex,
-                              double newlower, double newupper )
+    inline void setColBounds(int elementIndex,
+                             double newlower, double newupper)
     {
         setColumnBounds(elementIndex, newlower, newupper);
     }
@@ -1417,15 +1417,15 @@ public:
 
     /** Set a single row lower bound<br>
         Use -DBL_MAX for -infinity. */
-    void setRowLower( int elementIndex, double elementValue );
+    void setRowLower(int elementIndex, double elementValue);
 
     /** Set a single row upper bound<br>
         Use DBL_MAX for infinity. */
-    void setRowUpper( int elementIndex, double elementValue ) ;
+    void setRowUpper(int elementIndex, double elementValue) ;
 
     /** Set a single row lower and upper bound */
-    void setRowBounds( int elementIndex,
-                       double lower, double upper ) ;
+    void setRowBounds(int elementIndex,
+                      double lower, double upper) ;
 
     /** Set the bounds on a number of rows simultaneously<br>
         @param indexFirst,indexLast pointers to the beginning and after the
@@ -1437,11 +1437,11 @@ public:
                          const int* indexLast,
                          const double* boundList);
     /// Resizes rim part of model
-    void resize (int newNumberRows, int newNumberColumns);
+    void resize(int newNumberRows, int newNumberColumns);
 
     //@}
 
-////////////////// data //////////////////
+    ////////////////// data //////////////////
 protected:
 
     /**@name data.  Many arrays have a row part and a column part.
@@ -1514,27 +1514,27 @@ protected:
     /// Acceptable pivot value just after factorization
     double acceptablePivot_;
     /// Working copy of lower bounds (Owner of arrays below)
-    double * lower_;
+    double* lower_;
     /// Row lower bounds - working copy
-    double * rowLowerWork_;
+    double* rowLowerWork_;
     /// Column lower bounds - working copy
-    double * columnLowerWork_;
+    double* columnLowerWork_;
     /// Working copy of upper bounds (Owner of arrays below)
-    double * upper_;
+    double* upper_;
     /// Row upper bounds - working copy
-    double * rowUpperWork_;
+    double* rowUpperWork_;
     /// Column upper bounds - working copy
-    double * columnUpperWork_;
+    double* columnUpperWork_;
     /// Working copy of objective (Owner of arrays below)
-    double * cost_;
+    double* cost_;
     /// Row objective - working copy
-    double * rowObjectiveWork_;
+    double* rowObjectiveWork_;
     /// Column objective - working copy
-    double * objectiveWork_;
+    double* objectiveWork_;
     /// Useful row length arrays
-    CoinIndexedVector * rowArray_[6];
+    CoinIndexedVector* rowArray_[6];
     /// Useful column length arrays
-    CoinIndexedVector * columnArray_[6];
+    CoinIndexedVector* columnArray_[6];
     /// Sequence of In variable
     int sequenceIn_;
     /// Direction of In, 1 going up, -1 going down, 0 not a clude
@@ -1548,17 +1548,17 @@ protected:
     /// Last good iteration (immediately after a re-factorization)
     int lastGoodIteration_;
     /// Working copy of reduced costs (Owner of arrays below)
-    double * dj_;
+    double* dj_;
     /// Reduced costs of slacks not same as duals (or - duals)
-    double * rowReducedCost_;
+    double* rowReducedCost_;
     /// Possible scaled reduced costs
-    double * reducedCostWork_;
+    double* reducedCostWork_;
     /// Working copy of primal solution (Owner of arrays below)
-    double * solution_;
+    double* solution_;
     /// Row activities - working copy
-    double * rowActivityWork_;
+    double* rowActivityWork_;
     /// Column activities - working copy
-    double * columnActivityWork_;
+    double* columnActivityWork_;
     /// Number of dual infeasibilities
     int numberDualInfeasibilities_;
     /// Number of dual infeasibilities (without free)
@@ -1568,19 +1568,19 @@ protected:
     /// How many iterative refinements to do
     int numberRefinements_;
     /// dual row pivot choice
-    ClpDualRowPivot * dualRowPivot_;
+    ClpDualRowPivot* dualRowPivot_;
     /// primal column pivot choice
-    ClpPrimalColumnPivot * primalColumnPivot_;
+    ClpPrimalColumnPivot* primalColumnPivot_;
     /// Basic variables pivoting on which rows
-    int * pivotVariable_;
+    int* pivotVariable_;
     /// factorization
-    ClpFactorization * factorization_;
+    ClpFactorization* factorization_;
     /// Saved version of solution
-    double * savedSolution_;
+    double* savedSolution_;
     /// Number of times code has tentatively thought optimal
     int numberTimesOptimal_;
     /// Disaster handler
-    ClpDisasterHandler * disasterArea_;
+    ClpDisasterHandler* disasterArea_;
     /// If change has been made (first attempt at stopping looping)
     int changeMade_;
     /// Algorithm >0 == Primal, <0 == Dual
@@ -1597,12 +1597,12 @@ protected:
     */
     int perturbation_;
     /// Saved status regions
-    unsigned char * saveStatus_;
+    unsigned char* saveStatus_;
     /** Very wasteful way of dealing with infeasibilities in primal.
         However it will allow non-linearities and use of dual
         analysis.  If it doesn't work it can easily be replaced.
     */
-    ClpNonLinearCost * nonLinearCost_;
+    ClpNonLinearCost* nonLinearCost_;
     /// So we know when to be cautious
     int lastBadIteration_;
     /// So we know when to open up again
@@ -1640,9 +1640,9 @@ protected:
     /// Maximum perturbation array size (take out when code rewritten)
     int maximumPerturbationSize_;
     /// Perturbation array (maximumPerturbationSize_)
-    double * perturbationArray_;
+    double* perturbationArray_;
     /// A copy of model with certain state - normally without cuts
-    ClpSimplex * baseModel_;
+    ClpSimplex* baseModel_;
     /// For dealing with all issues of cycling etc
     ClpSimplexProgress progress_;
 public:

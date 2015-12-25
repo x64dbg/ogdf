@@ -57,94 +57,94 @@
 namespace ogdf
 {
 
-class PlanRep;
-class PlanRepUML;
-class OrthoRep;
+    class PlanRep;
+    class PlanRepUML;
+    class OrthoRep;
 
 
-//---------------------------------------------------------
-// GridLayoutMapped
-// extends GridLayout by a grid mapping mechanism
-//---------------------------------------------------------
-class OGDF_EXPORT GridLayoutMapped : public GridLayout
-{
-    //scaling to allow correct edge anchors
-    enum { cGridScale = 2 };
-
-public:
-
-    // construction (determines mapping factor)
-    GridLayoutMapped(const PlanRep &PG,
-                     const OrthoRep &OR,
-                     double separation,
-                     double cOverhang,
-                     int fineness = 4);
-
-
-    // writes grid layout to layout using re-mapping
-    void remap(Layout &drawing);
-
-    // transforms real coordinates to grid coordinates
-    int toGrid(double x) const
+    //---------------------------------------------------------
+    // GridLayoutMapped
+    // extends GridLayout by a grid mapping mechanism
+    //---------------------------------------------------------
+    class OGDF_EXPORT GridLayoutMapped : public GridLayout
     {
-        return cGridScale*int(m_fMapping * x + 0.5);
-    }
+        //scaling to allow correct edge anchors
+        enum { cGridScale = 2 };
 
-    // transforms grid coordinates to real coordinates
-    double toDouble(int i) const
-    {
-        return (i/cGridScale) / m_fMapping;
-    }
+    public:
 
-
-    const NodeArray<int> &width() const
-    {
-        return m_gridWidth;
-    }
-    // returns a reference to the array storing grid widths of nodes
-    NodeArray<int> &width()
-    {
-        return m_gridWidth;
-    }
-
-    const NodeArray<int> &height() const
-    {
-        return m_gridHeight;
-    }
-    // returns a reference to the array storing grid heights of nodes
-    NodeArray<int> &height()
-    {
-        return m_gridHeight;
-    }
-
-    const int &width(node v) const
-    {
-        return m_gridWidth[v];
-    }
-    // returns grid width of node v
-    int &width(node v)
-    {
-        return m_gridWidth[v];
-    }
-
-    const int &height(node v) const
-    {
-        return m_gridWidth[v];
-    }
-    // returns grid height of node v
-    int &height(node v)
-    {
-        return m_gridWidth[v];
-    }
+        // construction (determines mapping factor)
+        GridLayoutMapped(const PlanRep & PG,
+                         const OrthoRep & OR,
+                         double separation,
+                         double cOverhang,
+                         int fineness = 4);
 
 
-private:
-    NodeArray<int> m_gridWidth;  // grid width of nodes
-    NodeArray<int> m_gridHeight; // grid heights of nodes
+        // writes grid layout to layout using re-mapping
+        void remap(Layout & drawing);
 
-    const PlanRep *m_pPG;     // planarized representation of grid layout
-    double m_fMapping;           // mapping factor
-};
+        // transforms real coordinates to grid coordinates
+        int toGrid(double x) const
+        {
+            return cGridScale * int(m_fMapping * x + 0.5);
+        }
+
+        // transforms grid coordinates to real coordinates
+        double toDouble(int i) const
+        {
+            return (i / cGridScale) / m_fMapping;
+        }
+
+
+        const NodeArray<int> & width() const
+        {
+            return m_gridWidth;
+        }
+        // returns a reference to the array storing grid widths of nodes
+        NodeArray<int> & width()
+        {
+            return m_gridWidth;
+        }
+
+        const NodeArray<int> & height() const
+        {
+            return m_gridHeight;
+        }
+        // returns a reference to the array storing grid heights of nodes
+        NodeArray<int> & height()
+        {
+            return m_gridHeight;
+        }
+
+        const int & width(node v) const
+        {
+            return m_gridWidth[v];
+        }
+        // returns grid width of node v
+        int & width(node v)
+        {
+            return m_gridWidth[v];
+        }
+
+        const int & height(node v) const
+        {
+            return m_gridWidth[v];
+        }
+        // returns grid height of node v
+        int & height(node v)
+        {
+            return m_gridWidth[v];
+        }
+
+
+    private:
+        NodeArray<int> m_gridWidth;  // grid width of nodes
+        NodeArray<int> m_gridHeight; // grid heights of nodes
+
+        const PlanRep* m_pPG;     // planarized representation of grid layout
+        double m_fMapping;           // mapping factor
+    };
 
 
 } // end namespace ogdf

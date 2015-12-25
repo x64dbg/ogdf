@@ -53,35 +53,35 @@
 namespace ogdf
 {
 
-/** \brief An example Layout using the Modular Mutlievel Mixer
- *
- * This example is tuned for nice drawings for most types of graphs.
- * EdgeCoverMerger and BarycenterPlacer are used as merging and placement
- * strategies. The FastMultipoleEmbedder is for force calculation.
- *
- * For an easy variation of the Modular Multilevel Mixer copy the code in call.
- */
-class OGDF_EXPORT MMMExampleNiceLayout : public LayoutModule
-{
-public:
-
-    //! Constructor
-    MMMExampleNiceLayout();
-
-    //! calculates a drawing for the Graph GA
-    void call(GraphAttributes &GA);
-
-    void call(GraphAttributes &GA, GraphConstraints & GC)
+    /** \brief An example Layout using the Modular Mutlievel Mixer
+     *
+     * This example is tuned for nice drawings for most types of graphs.
+     * EdgeCoverMerger and BarycenterPlacer are used as merging and placement
+     * strategies. The FastMultipoleEmbedder is for force calculation.
+     *
+     * For an easy variation of the Modular Multilevel Mixer copy the code in call.
+     */
+    class OGDF_EXPORT MMMExampleNiceLayout : public LayoutModule
     {
-        call(GA);
-    }
+    public:
 
-    //! calculates a drawing for the Graph MLG
-    void call(MultilevelGraph &MLG);
+        //! Constructor
+        MMMExampleNiceLayout();
 
-private:
+        //! calculates a drawing for the Graph GA
+        void call(GraphAttributes & GA);
 
-};
+        void call(GraphAttributes & GA, GraphConstraints & GC)
+        {
+            call(GA);
+        }
+
+        //! calculates a drawing for the Graph MLG
+        void call(MultilevelGraph & MLG);
+
+    private:
+
+    };
 
 } // namespace ogdf
 

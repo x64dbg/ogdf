@@ -82,37 +82,37 @@ enum ClpStrParam
 
 /// Copy (I don't like complexity of Coin version)
 template <class T> inline void
-ClpDisjointCopyN( const T * array, const int size, T * newArray)
+ClpDisjointCopyN(const T* array, const int size, T* newArray)
 {
-    memcpy(reinterpret_cast<void *> (newArray), array, size * sizeof(T));
+    memcpy(reinterpret_cast<void*>(newArray), array, size * sizeof(T));
 }
 /// And set
 template <class T> inline void
-ClpFillN( T * array, const int size, T value)
+ClpFillN(T* array, const int size, T value)
 {
     int i;
-    for (i = 0; i < size; i++)
+    for(i = 0; i < size; i++)
         array[i] = value;
 }
 /// This returns a non const array filled with input from scalar or actual array
 template <class T> inline T*
-ClpCopyOfArray( const T * array, const int size, T value)
+ClpCopyOfArray(const T* array, const int size, T value)
 {
-    T * arrayNew = new T[size];
-    if (array)
+    T* arrayNew = new T[size];
+    if(array)
         ClpDisjointCopyN(array, size, arrayNew);
     else
-        ClpFillN ( arrayNew, size, value);
+        ClpFillN(arrayNew, size, value);
     return arrayNew;
 }
 
 /// This returns a non const array filled with actual array (or NULL)
 template <class T> inline T*
-ClpCopyOfArray( const T * array, const int size)
+ClpCopyOfArray(const T* array, const int size)
 {
-    if (array)
+    if(array)
     {
-        T * arrayNew = new T[size];
+        T* arrayNew = new T[size];
         ClpDisjointCopyN(array, size, arrayNew);
         return arrayNew;
     }
@@ -126,6 +126,6 @@ typedef struct
 {
     int typeStruct; // allocated as 1,2 etc
     int typeCall;
-    void * data;
+    void* data;
 } ClpTrustedData;
 #endif

@@ -53,25 +53,25 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT MixedForceLayout : public LayoutModule
-{
-public:
-
-    MixedForceLayout();
-
-    void call(GraphAttributes &GA);
-    void call(GraphAttributes &GA, GraphConstraints & GC)
+    class OGDF_EXPORT MixedForceLayout : public LayoutModule
     {
-        call(GA);
-    }
-    void call(MultilevelGraph &MLG);
+    public:
 
-private:
+        MixedForceLayout();
 
-    LayoutModule * m_FR;
-    LayoutModule * m_FME;
+        void call(GraphAttributes & GA);
+        void call(GraphAttributes & GA, GraphConstraints & GC)
+        {
+            call(GA);
+        }
+        void call(MultilevelGraph & MLG);
 
-};
+    private:
+
+        LayoutModule* m_FR;
+        LayoutModule* m_FME;
+
+    };
 
 } // namespace ogdf
 

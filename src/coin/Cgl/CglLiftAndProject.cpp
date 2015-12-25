@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 // Generate Lift-and-Project cuts
 //-------------------------------------------------------------------
-void CglLiftAndProject::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
+void CglLiftAndProject::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                                      const CglTreeInfo /*info*/) const
 {
     // Assumes the mixed 0-1 problem
@@ -57,16 +57,16 @@ void CglLiftAndProject::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
     // let Atilde be an m by n matrix
     const int m = si.getNumRows();
     const int n = si.getNumCols();
-    const double * x = si.getColSolution();
+    const double* x = si.getColSolution();
 
     // Remember - Atildes may have gaps..
-    const CoinPackedMatrix * Atilde = si.getMatrixByRow();
-    const double * AtildeElements =  Atilde->getElements();
-    const int * AtildeIndices =  Atilde->getIndices();
-    const CoinBigIndex * AtildeStarts = Atilde->getVectorStarts();
-    const int * AtildeLengths = Atilde->getVectorLengths();
+    const CoinPackedMatrix* Atilde = si.getMatrixByRow();
+    const double* AtildeElements =  Atilde->getElements();
+    const int* AtildeIndices =  Atilde->getIndices();
+    const CoinBigIndex* AtildeStarts = Atilde->getVectorStarts();
+    const int* AtildeLengths = Atilde->getVectorLengths();
     const int AtildeFullSize = AtildeStarts[m];
-    const double * btilde = si.getRowLower();
+    const double* btilde = si.getRowLower();
 
     // Set up memory for system (10) [BCC:307]
     // (the problem over the norm intersected
@@ -105,67 +105,67 @@ void CglLiftAndProject::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
 
     // B without u_0 and v_0 is a (n+2 x 2m) size matrix.
 
-    int twoM = 2*m;
-    int BNumRows = n+2;
-    int BNumCols = twoM+2;
-    int BFullSize = 2*AtildeFullSize+twoM+3;
-    double * BElements = new double[BFullSize];
-    int * BIndices = new int[BFullSize];
-    CoinBigIndex * BStarts = new CoinBigIndex [BNumCols+1];
-    int * BLengths = new int[BNumCols];
+    int twoM = 2 * m;
+    int BNumRows = n + 2;
+    int BNumCols = twoM + 2;
+    int BFullSize = 2 * AtildeFullSize + twoM + 3;
+    double* BElements = new double[BFullSize];
+    int* BIndices = new int[BFullSize];
+    CoinBigIndex* BStarts = new CoinBigIndex [BNumCols + 1];
+    int* BLengths = new int[BNumCols];
 
 
-    int i, ij, k=0;
-    int nPlus1=n+1;
-    int offset = AtildeStarts[m]+m;
-    for (i=0; i<m; i++)
+    int i, ij, k = 0;
+    int nPlus1 = n + 1;
+    int offset = AtildeStarts[m] + m;
+    for(i = 0; i < m; i++)
     {
-        for (ij=AtildeStarts[i]; ij<AtildeStarts[i]+AtildeLengths[i]; ij++)
+        for(ij = AtildeStarts[i]; ij < AtildeStarts[i] + AtildeLengths[i]; ij++)
         {
-            BElements[k]=AtildeElements[ij];
-            BElements[k+offset]=-AtildeElements[ij];
-            BIndices[k]= AtildeIndices[ij];
-            BIndices[k+offset]= AtildeIndices[ij];
+            BElements[k] = AtildeElements[ij];
+            BElements[k + offset] = -AtildeElements[ij];
+            BIndices[k] = AtildeIndices[ij];
+            BIndices[k + offset] = AtildeIndices[ij];
 
             k++;
         }
-        BElements[k]=btilde[i];
-        BElements[k+offset]=btilde[i];
-        BIndices[k]=n;
-        BIndices[k+offset]=nPlus1;
-        BStarts[i]= AtildeStarts[i]+i;
-        BStarts[i+m]=offset+BStarts[i];// = AtildeStarts[m]+m+AtildeStarts[i]+i
-        BLengths[i]= AtildeLengths[i]+1;
-        BLengths[i+m]= AtildeLengths[i]+1;
+        BElements[k] = btilde[i];
+        BElements[k + offset] = btilde[i];
+        BIndices[k] = n;
+        BIndices[k + offset] = nPlus1;
+        BStarts[i] = AtildeStarts[i] + i;
+        BStarts[i + m] = offset + BStarts[i]; // = AtildeStarts[m]+m+AtildeStarts[i]+i
+        BLengths[i] = AtildeLengths[i] + 1;
+        BLengths[i + m] = AtildeLengths[i] + 1;
         k++;
     }
 
-    BStarts[twoM]=BStarts[twoM-1]+BLengths[twoM-1];
+    BStarts[twoM] = BStarts[twoM - 1] + BLengths[twoM - 1];
 
     // Cols that will be deleted each iteration
-    int BNumColsLessOne=BNumCols-1;
-    int BNumColsLessTwo=BNumCols-2;
+    int BNumColsLessOne = BNumCols - 1;
+    int BNumColsLessTwo = BNumCols - 2;
     const int delCols[2] = {BNumColsLessOne, BNumColsLessTwo};
 
     // Set lower bound on u and v
     // u_0, v_0 will be reset as free
     const double solverINFINITY = si.getInfinity();
-    double * BColLowers = new double[BNumCols];
-    double * BColUppers = new double[BNumCols];
-    CoinFillN(BColLowers,BNumCols,0.0);
-    CoinFillN(BColUppers,BNumCols,solverINFINITY);
+    double* BColLowers = new double[BNumCols];
+    double* BColUppers = new double[BNumCols];
+    CoinFillN(BColLowers, BNumCols, 0.0);
+    CoinFillN(BColUppers, BNumCols, solverINFINITY);
 
     // Set row lowers and uppers.
     // The rhs is zero, for but the last two rows.
     // For these the rhs is beta_
-    double * BRowLowers = new double[BNumRows];
-    double * BRowUppers = new double[BNumRows];
-    CoinFillN(BRowLowers,BNumRows,0.0);
-    CoinFillN(BRowUppers,BNumRows,0.0);
-    BRowLowers[BNumRows-2]=beta_;
-    BRowUppers[BNumRows-2]=beta_;
-    BRowLowers[BNumRows-1]=beta_;
-    BRowUppers[BNumRows-1]=beta_;
+    double* BRowLowers = new double[BNumRows];
+    double* BRowUppers = new double[BNumRows];
+    CoinFillN(BRowLowers, BNumRows, 0.0);
+    CoinFillN(BRowUppers, BNumRows, 0.0);
+    BRowLowers[BNumRows - 2] = beta_;
+    BRowUppers[BNumRows - 2] = beta_;
+    BRowLowers[BNumRows - 1] = beta_;
+    BRowUppers[BNumRows - 1] = beta_;
 
 
     // Calculate base objective <<x^T,Atilde^T>,u>
@@ -173,28 +173,28 @@ void CglLiftAndProject::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
     //       changes to <x^T,e_j>
     //       w=(u,v,beta,v_0,u_0) size 2m+3
     //       So, BOjective[2m+2]=x[j]
-    double * BObjective= new double[BNumCols];
-    double * Atildex = new double[m];
-    CoinFillN(BObjective,BNumCols,0.0);
-    Atilde->times(x,Atildex); // Atildex is size m, x is size n
-    CoinDisjointCopyN(Atildex,m,BObjective);
+    double* BObjective = new double[BNumCols];
+    double* Atildex = new double[m];
+    CoinFillN(BObjective, BNumCols, 0.0);
+    Atilde->times(x, Atildex); // Atildex is size m, x is size n
+    CoinDisjointCopyN(Atildex, m, BObjective);
 
     // Number of cols and size of Elements vector
     // in B without the v_0 and u_0 cols
-    int BFullSizeLessThree = BFullSize-3;
+    int BFullSizeLessThree = BFullSize - 3;
 
     // Load B matrix into a column orders CoinPackedMatrix
-    CoinPackedMatrix * BMatrix = new CoinPackedMatrix(true, BNumRows,
+    CoinPackedMatrix* BMatrix = new CoinPackedMatrix(true, BNumRows,
             BNumColsLessTwo,
             BFullSizeLessThree,
-            BElements,BIndices,
-            BStarts,BLengths);
+            BElements, BIndices,
+            BStarts, BLengths);
     // Assign problem into a solver interface
     // Note: coneSi will cleanup the memory itself
-    OsiSolverInterface * coneSi = si.clone(false);
-    coneSi->assignProblem (BMatrix, BColLowers, BColUppers,
-                           BObjective,
-                           BRowLowers, BRowUppers);
+    OsiSolverInterface* coneSi = si.clone(false);
+    coneSi->assignProblem(BMatrix, BColLowers, BColUppers,
+                          BObjective,
+                          BRowLowers, BRowUppers);
 
     // Problem sense should default to "min" by default,
     // but just to be virtuous...
@@ -228,48 +228,48 @@ void CglLiftAndProject::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
     // clean up memory
     // return 0;
 
-    int * nVectorIndices = new int[n];
+    int* nVectorIndices = new int[n];
     CoinIotaN(nVectorIndices, n, 0);
 
     bool haveWarmStart = false;
     bool equalObj1, equalObj2;
     CoinRelFltEq eq;
 
-    double v_0Elements[2] = {-1,1};
+    double v_0Elements[2] = { -1, 1};
     double u_0Elements[1] = {1};
 
-    CoinWarmStart * warmStart = 0;
+    CoinWarmStart* warmStart = 0;
 
-    double * ustar = new double[m];
+    double* ustar = new double[m];
     CoinFillN(ustar, m, 0.0);
 
     double* alpha = new double[n];
     CoinFillN(alpha, n, 0.0);
 
-    for (j=0; j<n; j++)
+    for(j = 0; j < n; j++)
     {
-        if (!si.isBinary(j)) continue; // Better to ask coneSi? No!
+        if(!si.isBinary(j)) continue;  // Better to ask coneSi? No!
         // coneSi has no binInfo.
-        equalObj1=eq(x[j],0);
-        equalObj2=eq(x[j],1);
-        if (equalObj1 || equalObj2) continue;
+        equalObj1 = eq(x[j], 0);
+        equalObj2 = eq(x[j], 1);
+        if(equalObj1 || equalObj2) continue;
         // IMPROVEME: if (haveWarmStart) check if j attractive;
 
         // AskLL:wanted to declare u_0 and v_0 packedVec outside loop
         // and setIndices, but didn't see a method to do that(?)
         // (Could "insert". Seems inefficient)
-        int v_0Indices[2]= {j,nPlus1};
-        int u_0Indices[1]= {j};
+        int v_0Indices[2] = {j, nPlus1};
+        int u_0Indices[1] = {j};
         //
-        CoinPackedVector  v_0(2,v_0Indices,v_0Elements,false);
-        CoinPackedVector  u_0(1,u_0Indices,u_0Elements,false);
+        CoinPackedVector  v_0(2, v_0Indices, v_0Elements, false);
+        CoinPackedVector  u_0(1, u_0Indices, u_0Elements, false);
 
 #if CGL_DEBUG
-        const CoinPackedMatrix *see1 = coneSi->getMatrixByRow();
+        const CoinPackedMatrix* see1 = coneSi->getMatrixByRow();
 #endif
 
-        coneSi->addCol(v_0,-solverINFINITY,solverINFINITY,0);
-        coneSi->addCol(u_0,-solverINFINITY,solverINFINITY,x[j]);
+        coneSi->addCol(v_0, -solverINFINITY, solverINFINITY, 0);
+        coneSi->addCol(u_0, -solverINFINITY, solverINFINITY, x[j]);
         if(haveWarmStart)
         {
             coneSi->setWarmStart(warmStart);
@@ -279,7 +279,7 @@ void CglLiftAndProject::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
         {
 
 #if CGL_DEBUG
-            const CoinPackedMatrix *see2 = coneSi->getMatrixByRow();
+            const CoinPackedMatrix* see2 = coneSi->getMatrixByRow();
 #endif
 
             coneSi->initialSolve();
@@ -287,17 +287,17 @@ void CglLiftAndProject::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
         if(coneSi->isProvenOptimal())
         {
             warmStart = coneSi->getWarmStart();
-            haveWarmStart=true;
-            const double * wstar = coneSi->getColSolution();
+            haveWarmStart = true;
+            const double* wstar = coneSi->getColSolution();
             CoinDisjointCopyN(wstar, m, ustar);
-            Atilde->transposeTimes(ustar,alpha);
-            alpha[j]+=wstar[BNumCols-1];
+            Atilde->transposeTimes(ustar, alpha);
+            alpha[j] += wstar[BNumCols - 1];
 
 #if debug
             int p;
             double sum;
-            for(p=0; p<n; p++)sum+=alpha[p]*x[p];
-            if (sum<=beta_)
+            for(p = 0; p < n; p++)sum += alpha[p] * x[p];
+            if(sum <= beta_)
             {
                 throw CoinError("Cut not violated",
                                 "cutGeneration",
@@ -307,13 +307,13 @@ void CglLiftAndProject::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
 
             // add <alpha^T,x> >= beta_ to cutset
             OsiRowCut rc;
-            rc.setRow(n,nVectorIndices,alpha);
+            rc.setRow(n, nVectorIndices, alpha);
             rc.setLb(beta_);
             rc.setUb(solverINFINITY);
             cs.insert(rc);
         }
         // delete col for u_o and v_0
-        coneSi->deleteCols(2,delCols);
+        coneSi->deleteCols(2, delCols);
 
         // clean up memory
     }
@@ -332,12 +332,12 @@ void CglLiftAndProject::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-CglLiftAndProject::CglLiftAndProject ()
+CglLiftAndProject::CglLiftAndProject()
     :
     CglCutGenerator(),
     beta_(1),
     epsilon_(1.0e-08),
-    onetol_(1-epsilon_)
+    onetol_(1 - epsilon_)
 {
     // nothing to do here
 }
@@ -345,7 +345,7 @@ CglLiftAndProject::CglLiftAndProject ()
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-CglLiftAndProject::CglLiftAndProject (const CglLiftAndProject & source) :
+CglLiftAndProject::CglLiftAndProject(const CglLiftAndProject & source) :
     CglCutGenerator(source),
     beta_(source.beta_),
     epsilon_(source.epsilon_),
@@ -357,7 +357,7 @@ CglLiftAndProject::CglLiftAndProject (const CglLiftAndProject & source) :
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CglCutGenerator *
+CglCutGenerator*
 CglLiftAndProject::clone() const
 {
     return new CglLiftAndProject(*this);
@@ -366,7 +366,7 @@ CglLiftAndProject::clone() const
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-CglLiftAndProject::~CglLiftAndProject ()
+CglLiftAndProject::~CglLiftAndProject()
 {
     // Nothing to do here
 }
@@ -376,32 +376,32 @@ CglLiftAndProject::~CglLiftAndProject ()
 //-------------------------------------------------------------------
 CglLiftAndProject &
 CglLiftAndProject::operator=(
-    const CglLiftAndProject& rhs)
+    const CglLiftAndProject & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         CglCutGenerator::operator=(rhs);
-        beta_=rhs.beta_;
-        epsilon_=rhs.epsilon_;
-        onetol_=rhs.onetol_;
+        beta_ = rhs.beta_;
+        epsilon_ = rhs.epsilon_;
+        onetol_ = rhs.onetol_;
     }
     return *this;
 }
 // Create C++ lines to get to current state
 std::string
-CglLiftAndProject::generateCpp( FILE * fp)
+CglLiftAndProject::generateCpp(FILE* fp)
 {
     CglLiftAndProject other;
-    fprintf(fp,"0#include \"CglLiftAndProject.hpp\"\n");
-    fprintf(fp,"3  CglLiftAndProject liftAndProject;\n");
-    if (beta_!=other.beta_)
-        fprintf(fp,"3  liftAndProject.setBeta(%d);\n",static_cast<int> (beta_));
+    fprintf(fp, "0#include \"CglLiftAndProject.hpp\"\n");
+    fprintf(fp, "3  CglLiftAndProject liftAndProject;\n");
+    if(beta_ != other.beta_)
+        fprintf(fp, "3  liftAndProject.setBeta(%d);\n", static_cast<int>(beta_));
     else
-        fprintf(fp,"4  liftAndProject.setBeta(%d);\n",static_cast<int> (beta_));
-    fprintf(fp,"3  liftAndProject.setAggressiveness(%d);\n",getAggressiveness());
-    if (getAggressiveness()!=other.getAggressiveness())
-        fprintf(fp,"3  liftAndProject.setAggressiveness(%d);\n",getAggressiveness());
+        fprintf(fp, "4  liftAndProject.setBeta(%d);\n", static_cast<int>(beta_));
+    fprintf(fp, "3  liftAndProject.setAggressiveness(%d);\n", getAggressiveness());
+    if(getAggressiveness() != other.getAggressiveness())
+        fprintf(fp, "3  liftAndProject.setAggressiveness(%d);\n", getAggressiveness());
     else
-        fprintf(fp,"4  liftAndProject.setAggressiveness(%d);\n",getAggressiveness());
+        fprintf(fp, "4  liftAndProject.setAggressiveness(%d);\n", getAggressiveness());
     return "liftAndProject";
 }

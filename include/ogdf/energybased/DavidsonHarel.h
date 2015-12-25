@@ -56,83 +56,83 @@ namespace ogdf
 {
 
 
-//! The Davidson-Harel approach for drawing graphs.
-class OGDF_EXPORT DavidsonHarel
-{
-public:
+    //! The Davidson-Harel approach for drawing graphs.
+    class OGDF_EXPORT DavidsonHarel
+    {
+    public:
 
-    //! Creates an instance of Davidsen-Harel base class.
-    DavidsonHarel();
+        //! Creates an instance of Davidsen-Harel base class.
+        DavidsonHarel();
 
-    ~DavidsonHarel() { }
+        ~DavidsonHarel() { }
 
-    //! Sets the start temperature to \a startTemp.
-    void setStartTemperature(int startTemp);
+        //! Sets the start temperature to \a startTemp.
+        void setStartTemperature(int startTemp);
 
-    //! Sets the number of iterations for each temperature step to \a steps.
-    void setNumberOfIterations(int steps);
+        //! Sets the number of iterations for each temperature step to \a steps.
+        void setNumberOfIterations(int steps);
 
-    //! Adds an energy function \a F with a certain weight.
-    void addEnergyFunction(EnergyFunction *F, double weight);
+        //! Adds an energy function \a F with a certain weight.
+        void addEnergyFunction(EnergyFunction* F, double weight);
 
-    //! Returns a list of the names of the energy functions.
-    List<string> returnEnergyFunctionNames();
+        //! Returns a list of the names of the energy functions.
+        List<string> returnEnergyFunctionNames();
 
-    //! Returns a list of the weights of the energy functions.
-    List<double> returnEnergyFunctionWeights();
+        //! Returns a list of the weights of the energy functions.
+        List<double> returnEnergyFunctionWeights();
 
-    //! Calls the Davidson-Harel method for graph \a GA.
-    void call(GraphAttributes &GA);
+        //! Calls the Davidson-Harel method for graph \a GA.
+        void call(GraphAttributes & GA);
 
-private:
-    //! The default starting temperature.
-    const static int m_defaultTemp;
-    //! The default starting radius.
-    const static double m_defaultRadius;
-    //! Per default, the number of iterations per temperature are set as a constant multiple of the number of vertices.
-    const static int m_iterationMultiplier;
-    //! The fraction by which the temperature is lowered after a temperature step is finished.
-    const static double m_coolingFactor;
-    //! the constant by which the radius of the circle around each vertex is shrunk when the temperature is lowered
-    const static double m_shrinkFactor;
+    private:
+        //! The default starting temperature.
+        const static int m_defaultTemp;
+        //! The default starting radius.
+        const static double m_defaultRadius;
+        //! Per default, the number of iterations per temperature are set as a constant multiple of the number of vertices.
+        const static int m_iterationMultiplier;
+        //! The fraction by which the temperature is lowered after a temperature step is finished.
+        const static double m_coolingFactor;
+        //! the constant by which the radius of the circle around each vertex is shrunk when the temperature is lowered
+        const static double m_shrinkFactor;
 
-    int m_temperature;          //!< The temperature during the annealing process.
-    double m_shrinkingFactor;   //!< The factor for radius.
-    double m_diskRadius;        //!< The radius of the disk around the old position of a vertex where the new position will be.
-    double m_energy;            //!< The current energy of the system.
-    int m_numberOfIterations;   //!< The number of iterations per temperature step.
+        int m_temperature;          //!< The temperature during the annealing process.
+        double m_shrinkingFactor;   //!< The factor for radius.
+        double m_diskRadius;        //!< The radius of the disk around the old position of a vertex where the new position will be.
+        double m_energy;            //!< The current energy of the system.
+        int m_numberOfIterations;   //!< The number of iterations per temperature step.
 
-    List<EnergyFunction*> m_energyFunctions; //!< The list of the energy functions.
-    List<double> m_weightsOfEnergyFunctions; //!< The list of the weights for the energy functions.
+        List<EnergyFunction*> m_energyFunctions; //!< The list of the energy functions.
+        List<double> m_weightsOfEnergyFunctions; //!< The list of the weights for the energy functions.
 
-    List<node> m_nonIsolatedNodes; //!< The list of nodes with degree greater 0.
+        List<node> m_nonIsolatedNodes; //!< The list of nodes with degree greater 0.
 
-    //! Resets the parameters for subsequent runs.
-    void initParameters();
+        //! Resets the parameters for subsequent runs.
+        void initParameters();
 
-    //! Randomly computes a node and a new position for that node.
-    node computeCandidateLayout(const GraphAttributes &, DPoint &) const;
+        //! Randomly computes a node and a new position for that node.
+        node computeCandidateLayout(const GraphAttributes &, DPoint &) const;
 
-    //! Tests if new energy value satisfies annealing property (only better if m_fineTune).
-    bool testEnergyValue(double newVal);
+        //! Tests if new energy value satisfies annealing property (only better if m_fineTune).
+        bool testEnergyValue(double newVal);
 
-    //! Computes a random number between zero and one
-    double randNum() const;
+        //! Computes a random number between zero and one
+        double randNum() const;
 
-    //! Computes the first disk radius as the half the diamter of the enclosing rectangle.
-    void computeFirstRadius(const GraphAttributes &AG);
+        //! Computes the first disk radius as the half the diamter of the enclosing rectangle.
+        void computeFirstRadius(const GraphAttributes & AG);
 
-    //! Computes the energy of the initial layout and stores it in \a m_energy.
-    void computeInitialEnergy();
+        //! Computes the energy of the initial layout and stores it in \a m_energy.
+        void computeInitialEnergy();
 
-    //! Computes positions for the vertices of degree zero.
-    void placeIsolatedNodes(GraphAttributes &AG) const;
+        //! Computes positions for the vertices of degree zero.
+        void placeIsolatedNodes(GraphAttributes & AG) const;
 
-    //! Fake assignment operator (dummy to avoid copying)
-    DavidsonHarel& operator=(const DavidsonHarel &dh);
-    //! Fake copy constructor (dummy to avoid copying)
-    DavidsonHarel(const DavidsonHarel &) { }
-};
+        //! Fake assignment operator (dummy to avoid copying)
+        DavidsonHarel & operator=(const DavidsonHarel & dh);
+        //! Fake copy constructor (dummy to avoid copying)
+        DavidsonHarel(const DavidsonHarel &) { }
+    };
 
 } //end namespace
 #endif

@@ -46,62 +46,62 @@
 namespace ogdf
 {
 
-namespace gexf
-{
+    namespace gexf
+    {
 
 
-std::string toString(const Shape &shape)
-{
-    switch(shape)
-    {
-    case shRect:
-        return "square";
-    case shRoundedRect:
-        return "rect"; // Not supported.
-    case shEllipse:
-        return "disc";
-    case shTriangle:
-        return "triangle";
-    case shRhomb:
-        return "diamond";
-    case shImage:
-        return "image";
-    default:
-        return "disc";
-    }
-}
+        std::string toString(const Shape & shape)
+        {
+            switch(shape)
+            {
+            case shRect:
+                return "square";
+            case shRoundedRect:
+                return "rect"; // Not supported.
+            case shEllipse:
+                return "disc";
+            case shTriangle:
+                return "triangle";
+            case shRhomb:
+                return "diamond";
+            case shImage:
+                return "image";
+            default:
+                return "disc";
+            }
+        }
 
 
-Shape toShape(const std::string &str)
-{
-    if(str == "square")
-    {
-        return shRect;
-    }
-    else if(str == "disc")
-    {
-        return shEllipse;
-    }
-    else if(str == "triangle")
-    {
-        return shTriangle;
-    }
-    else if(str == "diamond")
-    {
-        return shRhomb;
-    }
-    else if(str == "image")
-    {
-        return shImage;
-    }
-    else
-    {
-        return shRect;
-    }
-}
+        Shape toShape(const std::string & str)
+        {
+            if(str == "square")
+            {
+                return shRect;
+            }
+            else if(str == "disc")
+            {
+                return shEllipse;
+            }
+            else if(str == "triangle")
+            {
+                return shTriangle;
+            }
+            else if(str == "diamond")
+            {
+                return shRhomb;
+            }
+            else if(str == "image")
+            {
+                return shImage;
+            }
+            else
+            {
+                return shRect;
+            }
+        }
 
 
-} // end namespace gexf
+    } // end namespace gexf
 
 } // end namespace ogdf
 

@@ -23,9 +23,9 @@ typedef struct CP_PARAMS
 {
     int     verbosity;
     int     warm_start;
-    char    warm_start_file_name[MAX_FILE_NAME_LENGTH +1];
+    char    warm_start_file_name[MAX_FILE_NAME_LENGTH + 1];
     int     logging;
-    char    log_file_name[MAX_FILE_NAME_LENGTH +1];
+    char    log_file_name[MAX_FILE_NAME_LENGTH + 1];
     int     block_size;
     int     max_size;
     int     max_number_of_cuts;

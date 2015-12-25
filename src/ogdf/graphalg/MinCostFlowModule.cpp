@@ -51,123 +51,123 @@ namespace ogdf
 {
 
 
-void MinCostFlowModule::generateProblem(
-    Graph &G,
-    int n,
-    int m,
-    EdgeArray<int> &lowerBound,
-    EdgeArray<int> &upperBound,
-    EdgeArray<int> &cost,
-    NodeArray<int> &supply)
-{
-    ogdf::randomGraph(G,n,m);
-
-    node s = G.firstNode();
-    node t = G.lastNode();
-
-    node v;
-    forall_nodes(v,G)
+    void MinCostFlowModule::generateProblem(
+        Graph & G,
+        int n,
+        int m,
+        EdgeArray<int> & lowerBound,
+        EdgeArray<int> & upperBound,
+        EdgeArray<int> & cost,
+        NodeArray<int> & supply)
     {
-        G.newEdge(s,v);
-        G.newEdge(v,t);
-    }
+        ogdf::randomGraph(G, n, m);
 
-    edge e;
-    forall_edges(e,G)
-    {
-        lowerBound[e] = 0;
-        upperBound[e] = (e->source() != s) ? ogdf::randomNumber(1,10) : ogdf::randomNumber(2,13);
-        cost[e] = ogdf::randomNumber(0,100);
-    }
+        node s = G.firstNode();
+        node t = G.lastNode();
 
-
-
-    node vl;
-    for(v = G.firstNode(), vl = G.lastNode(); true; v = v->succ(), vl = vl->pred())
-    {
-        if (v == vl)
+        node v;
+        forall_nodes(v, G)
         {
-            supply[v] = 0;
-            break;
+            G.newEdge(s, v);
+            G.newEdge(v, t);
         }
 
-        supply[v] = -(supply[vl] = ogdf::randomNumber(-1,1));
-
-        if (vl == v->succ())
-            break;
-    }
-
-}
-
-bool MinCostFlowModule::checkProblem(
-    const Graph &G,
-    const EdgeArray<int> &lowerBound,
-    const EdgeArray<int> &upperBound,
-    const NodeArray<int> &supply)
-{
-    if(isConnected(G) == false)
-        return false;
-
-    edge e;
-    forall_edges(e,G)
-    {
-        if (lowerBound[e] > upperBound[e])
-            return false;
-    }
-
-    int sum = 0;
-    node v;
-    forall_nodes(v,G)
-    {
-        sum += supply[v];
-    }
-
-    return (sum == 0);
-}
-
-
-bool MinCostFlowModule::checkComputedFlow(
-    const Graph &G,
-    EdgeArray<int> &lowerBound,
-    EdgeArray<int> &upperBound,
-    EdgeArray<int> &cost,
-    NodeArray<int> &supply,
-    EdgeArray<int> &flow,
-    int &value)
-{
-    value = 0;
-
-    edge e;
-    forall_edges(e,G)
-    {
-        if (flow[e] < lowerBound[e] || upperBound[e] < flow[e])
+        edge e;
+        forall_edges(e, G)
         {
-            return false;
+            lowerBound[e] = 0;
+            upperBound[e] = (e->source() != s) ? ogdf::randomNumber(1, 10) : ogdf::randomNumber(2, 13);
+            cost[e] = ogdf::randomNumber(0, 100);
         }
 
-        value += flow[e] * cost[e];
+
+
+        node vl;
+        for(v = G.firstNode(), vl = G.lastNode(); true; v = v->succ(), vl = vl->pred())
+        {
+            if(v == vl)
+            {
+                supply[v] = 0;
+                break;
+            }
+
+            supply[v] = -(supply[vl] = ogdf::randomNumber(-1, 1));
+
+            if(vl == v->succ())
+                break;
+        }
+
     }
 
-    node v;
-    forall_nodes(v,G)
+    bool MinCostFlowModule::checkProblem(
+        const Graph & G,
+        const EdgeArray<int> & lowerBound,
+        const EdgeArray<int> & upperBound,
+        const NodeArray<int> & supply)
     {
+        if(isConnected(G) == false)
+            return false;
+
+        edge e;
+        forall_edges(e, G)
+        {
+            if(lowerBound[e] > upperBound[e])
+                return false;
+        }
+
         int sum = 0;
-        forall_adj_edges(e,v)
+        node v;
+        forall_nodes(v, G)
         {
-            if(e->isSelfLoop())
-                continue;
-
-            if (e->source() == v)
-                sum += flow[e];
-            else
-                sum -= flow[e];
+            sum += supply[v];
         }
-        if (sum != supply[v])
-            return false;
+
+        return (sum == 0);
     }
 
-    return true;
-}
+
+    bool MinCostFlowModule::checkComputedFlow(
+        const Graph & G,
+        EdgeArray<int> & lowerBound,
+        EdgeArray<int> & upperBound,
+        EdgeArray<int> & cost,
+        NodeArray<int> & supply,
+        EdgeArray<int> & flow,
+        int & value)
+    {
+        value = 0;
+
+        edge e;
+        forall_edges(e, G)
+        {
+            if(flow[e] < lowerBound[e] || upperBound[e] < flow[e])
+            {
+                return false;
+            }
+
+            value += flow[e] * cost[e];
+        }
+
+        node v;
+        forall_nodes(v, G)
+        {
+            int sum = 0;
+            forall_adj_edges(e, v)
+            {
+                if(e->isSelfLoop())
+                    continue;
+
+                if(e->source() == v)
+                    sum += flow[e];
+                else
+                    sum -= flow[e];
+            }
+            if(sum != supply[v])
+                return false;
+        }
+
+        return true;
+    }
 
 
 } // end namespace ogdf

@@ -56,111 +56,111 @@
 namespace ogdf
 {
 
-namespace dot
-{
-
-
-//! Just a simple token struct representing a DOT file fragment.
-/**
- * Each token is represented by type: its either \a special string (a keyword
- * or punctuation character) or identifier (which is \a normal string).
- *
- * Additionaly, each token have its row and column fields indicating where
- * it appeared. This information could be useful for displaying useful debug
- * messages.
- *
- * \sa dot::Lexer
- */
-struct Token
-{
-
-    enum Type
+    namespace dot
     {
-        // Operators
-        assignment, colon, semicolon, comma, edgeOpDirected, edgeOpUndirected,
-        // Brackets
-        leftBracket, rightBracket,
-        leftBrace, rightBrace,
-        // Keywords
-        graph, digraph, subgraph, node, edge,
-        strict,
-        // Values
-        identifier
-    };
-
-    //! The type of an field.
-    Type type;
-    //! Indicates a token row (line).
-    size_t row;
-    //! Indicated a token column;
-    size_t column;
-    //! Identifier content (NULL for non-id tokens).
-    std::string *value;
-
-    Token(size_t row, size_t column, std::string *value = NULL);
-
-    //! Returns string representation of given token type.
-    static std::string toString(const Type &type);
-};
 
 
-//! Lexical analysis tool.
-/**
- * This class reads the given input and generates a token list. Token list
- * representation of DOT file is much easier for further processing (like
- * parsing) as it automatically gets rid of comments and deals with various
- * identifier representations in DOT format (C-like identifier, double-quoted
- * strings, number literals).
- *
- * \sa dot::Parser
- */
-class Lexer
-{
-private:
-    std::istream &m_input;
+        //! Just a simple token struct representing a DOT file fragment.
+        /**
+         * Each token is represented by type: its either \a special string (a keyword
+         * or punctuation character) or identifier (which is \a normal string).
+         *
+         * Additionaly, each token have its row and column fields indicating where
+         * it appeared. This information could be useful for displaying useful debug
+         * messages.
+         *
+         * \sa dot::Lexer
+         */
+        struct Token
+        {
 
-    std::string m_buffer; // Current line of given file.
-    size_t m_row, m_col; // Current position in parsed file.
+            enum Type
+            {
+                // Operators
+                assignment, colon, semicolon, comma, edgeOpDirected, edgeOpUndirected,
+                // Brackets
+                leftBracket, rightBracket,
+                leftBrace, rightBrace,
+                // Keywords
+                graph, digraph, subgraph, node, edge,
+                strict,
+                // Values
+                identifier
+            };
 
-    std::vector<Token> m_tokens;
+            //! The type of an field.
+            Type type;
+            //! Indicates a token row (line).
+            size_t row;
+            //! Indicated a token column;
+            size_t column;
+            //! Identifier content (NULL for non-id tokens).
+            std::string* value;
 
-    bool tokenizeLine();
+            Token(size_t row, size_t column, std::string* value = NULL);
 
-    //! Checks if \a head matches given token. Advances \a head on success.
-    /**
-     * @param type A type of token being matched.
-     * @return True if matches, false otherwise.
-     */
-    bool match(const Token::Type &type);
-    //! Checks if \a head matches given string. Advances \a head on success.
-    /**
-     * @param str A string being matched.
-     * @return True if matches, false otherwise.
-     */
-    bool match(const std::string &str);
-    //! Checks whether \a head is an identifier.
-    /**
-     * @param token Function fills it with identifier value and col/row info.
-     * @return True if matches, false otherwise.
-     */
-    bool identifier(Token &token);
-
-public:
-    //! Initializes lexer with given input (but does nothing to it).
-    Lexer(std::istream &input);
-    ~Lexer();
-
-    //! Scans input and turns it into token list.
-    /**
-     * @return True if success, false otherwise.
-     */
-    bool tokenize();
-    //! Returns list of tokens (first use Lexer#tokenize())
-    const std::vector<Token> &tokens() const;
-};
+            //! Returns string representation of given token type.
+            static std::string toString(const Type & type);
+        };
 
 
-} // end namespace dot
+        //! Lexical analysis tool.
+        /**
+         * This class reads the given input and generates a token list. Token list
+         * representation of DOT file is much easier for further processing (like
+         * parsing) as it automatically gets rid of comments and deals with various
+         * identifier representations in DOT format (C-like identifier, double-quoted
+         * strings, number literals).
+         *
+         * \sa dot::Parser
+         */
+        class Lexer
+        {
+        private:
+            std::istream & m_input;
+
+            std::string m_buffer; // Current line of given file.
+            size_t m_row, m_col; // Current position in parsed file.
+
+            std::vector<Token> m_tokens;
+
+            bool tokenizeLine();
+
+            //! Checks if \a head matches given token. Advances \a head on success.
+            /**
+             * @param type A type of token being matched.
+             * @return True if matches, false otherwise.
+             */
+            bool match(const Token::Type & type);
+            //! Checks if \a head matches given string. Advances \a head on success.
+            /**
+             * @param str A string being matched.
+             * @return True if matches, false otherwise.
+             */
+            bool match(const std::string & str);
+            //! Checks whether \a head is an identifier.
+            /**
+             * @param token Function fills it with identifier value and col/row info.
+             * @return True if matches, false otherwise.
+             */
+            bool identifier(Token & token);
+
+        public:
+            //! Initializes lexer with given input (but does nothing to it).
+            Lexer(std::istream & input);
+            ~Lexer();
+
+            //! Scans input and turns it into token list.
+            /**
+             * @return True if success, false otherwise.
+             */
+            bool tokenize();
+            //! Returns list of tokens (first use Lexer#tokenize())
+            const std::vector<Token> & tokens() const;
+        };
+
+
+    } // end namespace dot
 
 } // end namespace ogdf
 

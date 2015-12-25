@@ -58,62 +58,62 @@ namespace ogdf
 {
 
 
-//! The tile-to-rows algorithm for packing drawings of connected components.
-class OGDF_EXPORT TileToRowsCCPacker : public CCLayoutPackModule
-{
-    template<class POINT> struct RowInfo;
+    //! The tile-to-rows algorithm for packing drawings of connected components.
+    class OGDF_EXPORT TileToRowsCCPacker : public CCLayoutPackModule
+    {
+        template<class POINT> struct RowInfo;
 
-public:
-    //! Creates an instance of tile-to-rows packer.
-    TileToRowsCCPacker() { }
+    public:
+        //! Creates an instance of tile-to-rows packer.
+        TileToRowsCCPacker() { }
 
-    virtual ~TileToRowsCCPacker() { }
+        virtual ~TileToRowsCCPacker() { }
 
-    /**
-     * \brief Arranges the rectangles given by \a box.
-     *
-     * The algorithm call takes an input an array \a box of rectangles with
-     * real coordinates and computes in \a offset the offset to (0,0) of each
-     * rectangle in the layout.
-     * @param box is the array of input rectangles.
-     * @param offset is assigned the offset of each rectangle to the origin (0,0).
-     *        The offset of a rectangle is its lower left point in the layout.
-     * @param pageRatio is the desired page ratio (width / height) of the
-     *        resulting layout.
-     */
-    void call(Array<DPoint> &box,
-              Array<DPoint> &offset,
-              double pageRatio = 1.0);
+        /**
+         * \brief Arranges the rectangles given by \a box.
+         *
+         * The algorithm call takes an input an array \a box of rectangles with
+         * real coordinates and computes in \a offset the offset to (0,0) of each
+         * rectangle in the layout.
+         * @param box is the array of input rectangles.
+         * @param offset is assigned the offset of each rectangle to the origin (0,0).
+         *        The offset of a rectangle is its lower left point in the layout.
+         * @param pageRatio is the desired page ratio (width / height) of the
+         *        resulting layout.
+         */
+        void call(Array<DPoint> & box,
+                  Array<DPoint> & offset,
+                  double pageRatio = 1.0);
 
-    /**
-     * \brief Arranges the rectangles given by \a box.
-     *
-     * The algorithm call takes an input an array \a box of rectangles with
-     * real coordinates and computes in \a offset the offset to (0,0) of each
-     * rectangle in the layout.
-     * @param box is the array of input rectangles.
-     * @param offset is assigned the offset of each rectangle to the origin (0,0).
-     *        The offset of a rectangle is its lower left point in the layout.
-     * @param pageRatio is the desired page ratio (width / height) of the
-     *        resulting layout.
-     */
-    void call(Array<IPoint> &box,
-              Array<IPoint> &offset,
-              double pageRatio = 1.0);
+        /**
+         * \brief Arranges the rectangles given by \a box.
+         *
+         * The algorithm call takes an input an array \a box of rectangles with
+         * real coordinates and computes in \a offset the offset to (0,0) of each
+         * rectangle in the layout.
+         * @param box is the array of input rectangles.
+         * @param offset is assigned the offset of each rectangle to the origin (0,0).
+         *        The offset of a rectangle is its lower left point in the layout.
+         * @param pageRatio is the desired page ratio (width / height) of the
+         *        resulting layout.
+         */
+        void call(Array<IPoint> & box,
+                  Array<IPoint> & offset,
+                  double pageRatio = 1.0);
 
-private:
-    template<class POINT>
-    static void callGeneric(Array<POINT> &box,
-                            Array<POINT> &offset,
-                            double pageRatio);
+    private:
+        template<class POINT>
+        static void callGeneric(Array<POINT> & box,
+                                Array<POINT> & offset,
+                                double pageRatio);
 
-    template<class POINT>
-    static int findBestRow(Array<RowInfo<POINT> > &row,
-                           int nRows,
-                           double pageRatio,
-                           const POINT &rect);
+        template<class POINT>
+        static int findBestRow(Array<RowInfo<POINT>> & row,
+                               int nRows,
+                               double pageRatio,
+                               const POINT & rect);
 
-};
+    };
 
 
 } // end namespace ogdf

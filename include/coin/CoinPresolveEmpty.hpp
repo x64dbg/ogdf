@@ -44,35 +44,35 @@ private:
         double sol;
         int jcol;
     };
-    const action *const actions_;
+    const action* const actions_;
 
     drop_empty_cols_action(int nactions,
-                           const action *const actions,
-                           const CoinPresolveAction *next) :
+                           const action* const actions,
+                           const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions),
         actions_(actions)
     {}
 
 public:
-    const char *name() const
+    const char* name() const
     {
         return ("drop_empty_cols_action");
     }
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *,
-            int *ecols,
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix*,
+            int* ecols,
             int necols,
             const CoinPresolveAction*);
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-            const CoinPresolveAction *next);
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            const CoinPresolveAction* next);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     ~drop_empty_cols_action()
     {
-        deleteAction(actions_,action*);
+        deleteAction(actions_, action*);
     }
 };
 
@@ -103,29 +103,29 @@ private:
     };
 
     const int nactions_;
-    const action *const actions_;
+    const action* const actions_;
 
     drop_empty_rows_action(int nactions,
-                           const action *actions,
-                           const CoinPresolveAction *next) :
+                           const action* actions,
+                           const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions), actions_(actions)
     {}
 
 public:
-    const char *name() const
+    const char* name() const
     {
         return ("drop_empty_rows_action");
     }
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-            const CoinPresolveAction *next);
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            const CoinPresolveAction* next);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     ~drop_empty_rows_action()
     {
-        deleteAction(actions_,action*);
+        deleteAction(actions_, action*);
     }
 };
 #endif

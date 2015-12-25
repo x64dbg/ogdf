@@ -58,129 +58,129 @@
 namespace ogdf
 {
 
-class HierarchyLevels;
-class LayerBasedUPRLayout;
+    class HierarchyLevels;
+    class LayerBasedUPRLayout;
 
 
-template <class T = double>
-class WeightComparer
-{
-    const NodeArray<T> *m_pWeight;
-
-public:
-    WeightComparer(const NodeArray<T> *pWeight) : m_pWeight(pWeight) { }
-
-    bool less(node v, node w) const
+    template <class T = double>
+    class WeightComparer
     {
-        return (*m_pWeight)[v] < (*m_pWeight)[w];
-    }
-    bool operator()(node v, node w) const
-    {
-        return (*m_pWeight)[v] < (*m_pWeight)[w];
-    }
-};
+        const NodeArray<T>* m_pWeight;
+
+    public:
+        WeightComparer(const NodeArray<T>* pWeight) : m_pWeight(pWeight) { }
+
+        bool less(node v, node w) const
+        {
+            return (*m_pWeight)[v] < (*m_pWeight)[w];
+        }
+        bool operator()(node v, node w) const
+        {
+            return (*m_pWeight)[v] < (*m_pWeight)[w];
+        }
+    };
 
 
-//! Representation of levels in hierarchies.
-/**
- * \see Hierarchy, SugiyamaLayout
- */
-class OGDF_EXPORT Level : public LevelBase
-{
-
-    friend class HierarchyLevels;
-    friend class HierarchyLayoutModule;
-    friend class LayerBasedUPRLayout;
-
-    Array<node> m_nodes;     //!< The nodes on this level.
-    HierarchyLevels *m_pLevels; //!< The hierarchy to which this level belongs.
-    int m_index;             //!< The index of this level.
-
-public:
-    //! Creates a level with index \a index in hierarchy \a pHierarchy.
+    //! Representation of levels in hierarchies.
     /**
-     * @param pLevels is a pointer to the hierarchy to which the created level will belong.
-     * @param index   is the index of the level.
-     * @param num     is the number of nodes on this level.
+     * \see Hierarchy, SugiyamaLayout
      */
-    Level(HierarchyLevels *pLevels, int index, int num) :
-        m_nodes(num), m_pLevels(pLevels), m_index(index) { }
-
-    // destruction
-    ~Level() { }
-
-    //! Returns the node at position \a i.
-    const node &operator[](int i) const
+    class OGDF_EXPORT Level : public LevelBase
     {
-        return m_nodes[i];
-    }
-    //! Returns the node at position \a i.
-    node &operator[](int i)
-    {
-        return m_nodes[i];
-    }
 
-    //! Returns the number of nodes on this level.
-    int size() const
-    {
-        return m_nodes.size();
-    }
+        friend class HierarchyLevels;
+        friend class HierarchyLayoutModule;
+        friend class LayerBasedUPRLayout;
 
-    //! Returns the maximal array index (= size()-1).
-    int high() const
-    {
-        return m_nodes.high();
-    }
+        Array<node> m_nodes;     //!< The nodes on this level.
+        HierarchyLevels* m_pLevels; //!< The hierarchy to which this level belongs.
+        int m_index;             //!< The index of this level.
 
-    //! Returns the array index of this level in the hierarchy.
-    int index() const
-    {
-        return m_index;
-    }
+    public:
+        //! Creates a level with index \a index in hierarchy \a pHierarchy.
+        /**
+         * @param pLevels is a pointer to the hierarchy to which the created level will belong.
+         * @param index   is the index of the level.
+         * @param num     is the number of nodes on this level.
+         */
+        Level(HierarchyLevels* pLevels, int index, int num) :
+            m_nodes(num), m_pLevels(pLevels), m_index(index) { }
 
-    //! Returns the (sorted) array of adjacent nodes of \a v (according to direction()).
-    const Array<node> &adjNodes(node v) const;
+        // destruction
+        ~Level() { }
 
-    //! Returns the hierarchy to which this level belongs.
-    const HierarchyLevels &levels() const
-    {
-        return *m_pLevels;
-    }
+        //! Returns the node at position \a i.
+        const node & operator[](int i) const
+        {
+            return m_nodes[i];
+        }
+        //! Returns the node at position \a i.
+        node & operator[](int i)
+        {
+            return m_nodes[i];
+        }
 
-    //! Exchanges nodes at position \a i and \a j.
-    void swap(int i, int j);
+        //! Returns the number of nodes on this level.
+        int size() const
+        {
+            return m_nodes.size();
+        }
 
-    //! Sorts the nodes according to \a weight using quicksort.
-    void sort(NodeArray<double> &weight);
+        //! Returns the maximal array index (= size()-1).
+        int high() const
+        {
+            return m_nodes.high();
+        }
 
-    //! Sorts the nodes according to \a weight using bucket sort.
-    void sort(NodeArray<int> &weight, int minBucket, int maxBucket);
+        //! Returns the array index of this level in the hierarchy.
+        int index() const
+        {
+            return m_index;
+        }
 
-    //! Sorts the nodes according to \a weight (without special placement for "isolated" nodes).
-    void sortByWeightOnly(NodeArray<double> &weight);
+        //! Returns the (sorted) array of adjacent nodes of \a v (according to direction()).
+        const Array<node> & adjNodes(node v) const;
 
-    //!Sorts the nodes according to \a orderComparer
-    template<class C>
-    void sortOrder(C &orderComparer)
-    {
-        m_nodes.quicksort(orderComparer);
-        recalcPos();
-    }
+        //! Returns the hierarchy to which this level belongs.
+        const HierarchyLevels & levels() const
+        {
+            return *m_pLevels;
+        }
 
-    void recalcPos();
+        //! Exchanges nodes at position \a i and \a j.
+        void swap(int i, int j);
 
-    friend ostream &operator<<(ostream &os, const Level &L)
-    {
-        os << L.m_nodes;
-        return os;
-    }
+        //! Sorts the nodes according to \a weight using quicksort.
+        void sort(NodeArray<double> & weight);
 
-private:
-    void getIsolatedNodes(SListPure<Tuple2<node,int> > &isolated) const;
-    void setIsolatedNodes(SListPure<Tuple2<node,int> > &isolated);
+        //! Sorts the nodes according to \a weight using bucket sort.
+        void sort(NodeArray<int> & weight, int minBucket, int maxBucket);
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        //! Sorts the nodes according to \a weight (without special placement for "isolated" nodes).
+        void sortByWeightOnly(NodeArray<double> & weight);
+
+        //!Sorts the nodes according to \a orderComparer
+        template<class C>
+        void sortOrder(C & orderComparer)
+        {
+            m_nodes.quicksort(orderComparer);
+            recalcPos();
+        }
+
+        void recalcPos();
+
+        friend ostream & operator<<(ostream & os, const Level & L)
+        {
+            os << L.m_nodes;
+            return os;
+        }
+
+    private:
+        void getIsolatedNodes(SListPure<Tuple2<node, int>> & isolated) const;
+        void setIsolatedNodes(SListPure<Tuple2<node, int>> & isolated);
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 } // end namespace ogdf
 

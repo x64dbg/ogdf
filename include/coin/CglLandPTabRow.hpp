@@ -17,63 +17,63 @@
 
 namespace LAP
 {
-class CglLandPSimplex;
-struct TabRow: public CoinIndexedVector
-{
-    /** Row number.*/
-    int num;
-    /** Row right-hand-side.*/
-    double rhs;
-    /** Row of what?*/
-    const CglLandPSimplex * si_;
-
-    /** Flag to say if row is modularized.*/
-    bool modularized_;
-
-    TabRow():
-        CoinIndexedVector(), si_(NULL), modularized_(false) {}
-
-    TabRow(const CglLandPSimplex *si):
-        CoinIndexedVector(), num(-1), rhs(0), si_(si), modularized_(false) {}
-
-    TabRow(const TabRow & source):CoinIndexedVector(source),
-        num(source.num), rhs(source.rhs), si_(source.si_)
+    class CglLandPSimplex;
+    struct TabRow: public CoinIndexedVector
     {
-    }
+        /** Row number.*/
+        int num;
+        /** Row right-hand-side.*/
+        double rhs;
+        /** Row of what?*/
+        const CglLandPSimplex* si_;
 
-    TabRow& operator=(const TabRow & r)
-    {
-        if (this != &r)
+        /** Flag to say if row is modularized.*/
+        bool modularized_;
+
+        TabRow():
+            CoinIndexedVector(), si_(NULL), modularized_(false) {}
+
+        TabRow(const CglLandPSimplex* si):
+            CoinIndexedVector(), num(-1), rhs(0), si_(si), modularized_(false) {}
+
+        TabRow(const TabRow & source): CoinIndexedVector(source),
+            num(source.num), rhs(source.rhs), si_(source.si_)
         {
-            CoinIndexedVector::operator=(r);
-            num = r.num;
-            rhs = r.rhs;
-            si_ = r.si_;
         }
-        return *this;
-    }
 
-    bool operator==(const TabRow &r) const;
-    ~TabRow()
-    {
-    }
+        TabRow & operator=(const TabRow & r)
+        {
+            if(this != &r)
+            {
+                CoinIndexedVector::operator=(r);
+                num = r.num;
+                rhs = r.rhs;
+                si_ = r.si_;
+            }
+            return *this;
+        }
 
-    void modularize(const bool * integerVar);
+        bool operator==(const TabRow & r) const;
+        ~TabRow()
+        {
+        }
 
-    void print(std::ostream & os, int width = 9, const int * nonBasics = NULL,
-               int m = 0);
-    inline
-    const double& operator[](const int &index) const
-    {
-        return denseVector()[index];
-    }
+        void modularize(const bool* integerVar);
 
-    inline
-    double& operator[](const int &index)
-    {
-        return denseVector()[index];
-    }
-};
+        void print(std::ostream & os, int width = 9, const int* nonBasics = NULL,
+                   int m = 0);
+        inline
+        const double & operator[](const int & index) const
+        {
+            return denseVector()[index];
+        }
+
+        inline
+        double & operator[](const int & index)
+        {
+            return denseVector()[index];
+        }
+    };
 }/* Ends LAP Namespace.*/
 
 #endif

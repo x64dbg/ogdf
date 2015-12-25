@@ -30,32 +30,32 @@ public:
         Uses model for scaling
         Returns non-zero if gradient undefined at current solution
     */
-    virtual int gradient(const ClpSimplex * model,
-                         const double * solution,
-                         double * gradient,
+    virtual int gradient(const ClpSimplex* model,
+                         const double* solution,
+                         double* gradient,
                          double & functionValue ,
                          double & offset,
                          bool useScaling = false,
                          bool refresh = true) const = 0;
     /// Constraint function value
-    virtual double functionValue (const ClpSimplex * model,
-                                  const double * solution,
-                                  bool useScaling = false,
-                                  bool refresh = true) const ;
+    virtual double functionValue(const ClpSimplex* model,
+                                 const double* solution,
+                                 bool useScaling = false,
+                                 bool refresh = true) const ;
     /// Resize constraint
     virtual void resize(int newNumberColumns) = 0;
     /// Delete columns in  constraint
-    virtual void deleteSome(int numberToDelete, const int * which) = 0;
+    virtual void deleteSome(int numberToDelete, const int* which) = 0;
     /// Scale constraint
-    virtual void reallyScale(const double * columnScale) = 0;
+    virtual void reallyScale(const double* columnScale) = 0;
     /** Given a zeroed array sets nonlinear columns to 1.
         Returns number of nonlinear columns
      */
-    virtual int markNonlinear(char * which) const = 0;
+    virtual int markNonlinear(char* which) const = 0;
     /** Given a zeroed array sets possible nonzero coefficients to 1.
         Returns number of nonzeros
      */
-    virtual int markNonzero(char * which) const = 0;
+    virtual int markNonzero(char* which) const = 0;
     //@}
 
 
@@ -68,13 +68,13 @@ public:
     ClpConstraint(const ClpConstraint &);
 
     /// Assignment operator
-    ClpConstraint & operator=(const ClpConstraint& rhs);
+    ClpConstraint & operator=(const ClpConstraint & rhs);
 
     /// Destructor
-    virtual ~ClpConstraint ();
+    virtual ~ClpConstraint();
 
     /// Clone
-    virtual ClpConstraint * clone() const = 0;
+    virtual ClpConstraint* clone() const = 0;
 
     //@}
 
@@ -95,13 +95,13 @@ public:
     virtual int numberCoefficients() const = 0;
 
     /// Stored constraint function value
-    inline double functionValue () const
+    inline double functionValue() const
     {
         return functionValue_;
     }
 
     /// Constraint offset
-    inline double offset () const
+    inline double offset() const
     {
         return offset_;
     }
@@ -115,7 +115,7 @@ protected:
     ///@name Protected member data
     //@{
     /// Gradient at last evaluation
-    mutable double * lastGradient_;
+    mutable double* lastGradient_;
     /// Value of non-linear part of constraint
     mutable double functionValue_;
     /// Value of offset for constraint

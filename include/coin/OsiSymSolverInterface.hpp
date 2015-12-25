@@ -70,19 +70,19 @@ public:
     virtual void multiCriteriaBranchAndBound();
 
     /// Get a lower bound for the new rhs problem using the warm start tree.
-    virtual double getLbForNewRhs(int cnt, int *index,
-                                  double * value);
+    virtual double getLbForNewRhs(int cnt, int* index,
+                                  double* value);
     /// Get an upper bound for the new rhs problem using the warm start tree.
-    virtual double getUbForNewRhs(int cnt, int *index,
-                                  double * value);
+    virtual double getUbForNewRhs(int cnt, int* index,
+                                  double* value);
 #if 0
     /// Get a lower bound for the new obj problem using the warm start tree.
-    virtual double getLbForNewObj(int cnt, int *index,
-                                  double * value);
+    virtual double getLbForNewObj(int cnt, int* index,
+                                  double* value);
     /// Get an upper bound for the new obj problem using the warm start tree.
 #endif
-    virtual double getUbForNewObj(int cnt, int *index,
-                                  double * value);
+    virtual double getUbForNewObj(int cnt, int* index,
+                                  double* value);
 
     //@}
 
@@ -136,34 +136,34 @@ public:
 
 
     // Get an integer parameter
-    virtual bool getIntParam(OsiIntParam key, int& value) const;
+    virtual bool getIntParam(OsiIntParam key, int & value) const;
 
     // Get SYMPHONY int parameter
-    virtual bool getSymParam(OsiSymIntParam key, int& value) const;
+    virtual bool getSymParam(OsiSymIntParam key, int & value) const;
 
     // Get SYMPHONY int parameter directly by the C interface parameter name
-    virtual bool getSymParam(const std::string key, int& value) const;
+    virtual bool getSymParam(const std::string key, int & value) const;
 
 
     // Get an double parameter
-    virtual bool getDblParam(OsiDblParam key, double& value) const;
+    virtual bool getDblParam(OsiDblParam key, double & value) const;
 
     // Get SYMPHONY double parameter
-    virtual bool getSymParam(OsiSymDblParam key, double& value) const;
+    virtual bool getSymParam(OsiSymDblParam key, double & value) const;
 
     // Get SYMPHONY double parameter directly by the C interface parameter name
-    virtual bool getSymParam(const std::string key, double& value) const;
+    virtual bool getSymParam(const std::string key, double & value) const;
 
 
 
     // Get a string parameter
-    virtual bool getStrParam(OsiStrParam key, std::string& value) const;
+    virtual bool getStrParam(OsiStrParam key, std::string & value) const;
 
     // Get SYMPHONY string parameter
-    virtual bool getSymParam(OsiSymStrParam key, std::string& value) const;
+    virtual bool getSymParam(OsiSymStrParam key, std::string & value) const;
 
     // Get SYMPHONY string parameter directly by the C interface parameter name
-    virtual bool getSymParam(const std::string key, std::string& value) const;
+    virtual bool getSymParam(const std::string key, std::string & value) const;
 
     //@}
 
@@ -214,7 +214,7 @@ public:
       appropriate type, which can resized and modified as desired.
     */
 
-    virtual CoinWarmStart *getEmptyWarmStart () const
+    virtual CoinWarmStart* getEmptyWarmStart() const
     {
         throw CoinError("Error: Function not implemented",
                         "getEmptyWarmStart", "OsiSymSolverInterface");
@@ -251,7 +251,7 @@ public:
     */
     //@{
     /// Get pointer to SYMPHONY environment (eventually we won't need this)
-    sym_environment *getSymphonyEnvironment() const
+    sym_environment* getSymphonyEnvironment() const
     {
         return env_;
     }
@@ -266,10 +266,10 @@ public:
     virtual int getNumElements() const;
 
     /// Get pointer to array[getNumCols()] of column lower bounds
-    virtual const double * getColLower() const;
+    virtual const double* getColLower() const;
 
     /// Get pointer to array[getNumCols()] of column upper bounds
-    virtual const double * getColUpper() const;
+    virtual const double* getColUpper() const;
 
     /** Get pointer to array[getNumRows()] of row constraint senses.
     <ul>
@@ -280,7 +280,7 @@ public:
     <li>'N': free constraint
     </ul>
     */
-    virtual const char * getRowSense() const;
+    virtual const char* getRowSense() const;
 
     /** Get pointer to array[getNumRows()] of row right-hand sides
     <ul>
@@ -294,7 +294,7 @@ public:
          getRightHandSide()[i] == 0.0
     </ul>
     */
-    virtual const double * getRightHandSide() const;
+    virtual const double* getRightHandSide() const;
 
     /** Get pointer to array[getNumRows()] of row ranges.
     <ul>
@@ -304,21 +304,21 @@ public:
                   getRowRange()[i] is 0.0
         </ul>
     */
-    virtual const double * getRowRange() const;
+    virtual const double* getRowRange() const;
 
     /// Get pointer to array[getNumRows()] of row lower bounds
-    virtual const double * getRowLower() const;
+    virtual const double* getRowLower() const;
 
     /// Get pointer to array[getNumRows()] of row upper bounds
-    virtual const double * getRowUpper() const;
+    virtual const double* getRowUpper() const;
 
     /// Get pointer to array[getNumCols()] of objective function coefficients
-    virtual const double * getObjCoefficients() const;
+    virtual const double* getObjCoefficients() const;
 
     /** Get pointer to array[getNumCols()] of second
         objective function coefficients if loaded before.
     */
-    virtual const double * getObj2Coefficients() const;
+    virtual const double* getObj2Coefficients() const;
 
     /// Get objective function sense (1 for min (default), -1 for max)
     virtual double getObjSense() const;
@@ -342,10 +342,10 @@ public:
     virtual bool isFreeBinary(int colIndex) const;
 
     /// Get pointer to row-wise copy of matrix
-    virtual const CoinPackedMatrix * getMatrixByRow() const;
+    virtual const CoinPackedMatrix* getMatrixByRow() const;
 
     /// Get pointer to column-wise copy of matrix
-    virtual const CoinPackedMatrix * getMatrixByCol() const;
+    virtual const CoinPackedMatrix* getMatrixByCol() const;
 
     /// Get solver's value for infinity
     virtual double getInfinity() const;
@@ -355,17 +355,17 @@ public:
     /**@name Solution query methods */
     //@{
     /// Get pointer to array[getNumCols()] of primal variable values
-    virtual const double * getColSolution() const;
+    virtual const double* getColSolution() const;
 
     /// Get pointer to array[getNumRows()] of dual variable values
-    virtual const double * getRowPrice() const;
+    virtual const double* getRowPrice() const;
 
     /// Get a pointer to array[getNumCols()] of reduced costs
-    virtual const double * getReducedCost() const;
+    virtual const double* getReducedCost() const;
 
     /** Get pointer to array[getNumRows()] of row activity levels (constraint
     matrix times the solution vector). */
-    virtual const double * getRowActivity() const;
+    virtual const double* getRowActivity() const;
 
     /// Get objective function value
     virtual double getObjValue() const;
@@ -428,28 +428,28 @@ public:
     */
     //@{
     /** Set an objective function coefficient */
-    virtual void setObjCoeff( int elementIndex, double elementValue );
+    virtual void setObjCoeff(int elementIndex, double elementValue);
 
     /** Set an objective function coefficient for the second objective */
-    virtual void setObj2Coeff( int elementIndex, double elementValue );
+    virtual void setObj2Coeff(int elementIndex, double elementValue);
 
     using OsiSolverInterface::setColLower ;
     /** Set a single column lower bound.
       Use -getInfinity() for -infinity. */
-    virtual void setColLower( int elementIndex, double elementValue );
+    virtual void setColLower(int elementIndex, double elementValue);
 
     using OsiSolverInterface::setColUpper ;
     /** Set a single column upper bound.
       Use getInfinity() for infinity. */
-    virtual void setColUpper( int elementIndex, double elementValue );
+    virtual void setColUpper(int elementIndex, double elementValue);
 
     /** Set a single row lower bound.
       Use -getInfinity() for -infinity. */
-    virtual void setRowLower( int elementIndex, double elementValue );
+    virtual void setRowLower(int elementIndex, double elementValue);
 
     /** Set a single row upper bound.
       Use getInfinity() for infinity. */
-    virtual void setRowUpper( int elementIndex, double elementValue );
+    virtual void setRowUpper(int elementIndex, double elementValue);
 
     /** Set the type of a single row */
     virtual void setRowType(int index, char sense, double rightHandSide,
@@ -468,7 +468,7 @@ public:
     solver routine.  Whether the solver makes use of the solution in any
     way is solver-dependent.
     */
-    virtual void setColSolution(const double *colsol);
+    virtual void setColSolution(const double* colsol);
 
     /** Set the a priori upper/lower bound */
 
@@ -484,7 +484,7 @@ public:
     solution in any way is solver-dependent.
     */
 
-    virtual void setRowPrice(const double * rowprice);
+    virtual void setRowPrice(const double* rowprice);
 
     //@}
 
@@ -502,7 +502,7 @@ public:
 
 
     using OsiSolverInterface::setColName ;
-    virtual void setColName(char **colname);
+    virtual void setColName(char** colname);
 
     //@}
     //-------------------------------------------------------------------------
@@ -517,24 +517,24 @@ public:
 
     using OsiSolverInterface::addCol ;
     /** Add a column (primal variable) to the problem. */
-    virtual void addCol(const CoinPackedVectorBase& vec,
+    virtual void addCol(const CoinPackedVectorBase & vec,
                         const double collb, const double colub,
                         const double obj);
 
     /** Remove a set of columns (primal variables) from the problem.  */
-    virtual void deleteCols(const int num, const int * colIndices);
+    virtual void deleteCols(const int num, const int* colIndices);
 
     using OsiSolverInterface::addRow ;
     /** Add a row (constraint) to the problem. */
-    virtual void addRow(const CoinPackedVectorBase& vec,
+    virtual void addRow(const CoinPackedVectorBase & vec,
                         const double rowlb, const double rowub);
     /** */
-    virtual void addRow(const CoinPackedVectorBase& vec,
+    virtual void addRow(const CoinPackedVectorBase & vec,
                         const char rowsen, const double rowrhs,
                         const double rowrng);
 
     /** Delete a set of rows (constraints) from the problem. */
-    virtual void deleteRows(const int num, const int * rowIndices);
+    virtual void deleteRows(const int num, const int* rowIndices);
 
     //@}
 
@@ -556,7 +556,7 @@ public:
       <li> <code>obj</code>: all variables have 0 objective coefficient
         </ul>
     */
-    virtual void loadProblem(const CoinPackedMatrix& matrix,
+    virtual void loadProblem(const CoinPackedMatrix & matrix,
                              const double* collb, const double* colub,
                              const double* obj,
                              const double* rowlb, const double* rowub);
@@ -570,9 +570,9 @@ public:
     freed using the C++ <code>delete</code> and <code>delete[]</code>
     functions.
     */
-    virtual void assignProblem(CoinPackedMatrix*& matrix,
-                               double*& collb, double*& colub, double*& obj,
-                               double*& rowlb, double*& rowub);
+    virtual void assignProblem(CoinPackedMatrix* & matrix,
+                               double* & collb, double* & colub, double* & obj,
+                               double* & rowlb, double* & rowub);
 
     /** Load in an problem by copying the arguments (the constraints on the
     rows are given by sense/rhs/range triplets). If a pointer is 0 then the
@@ -586,7 +586,7 @@ public:
           <li> <code>rowrng</code>: 0 for the ranged rows
         </ul>
     */
-    virtual void loadProblem(const CoinPackedMatrix& matrix,
+    virtual void loadProblem(const CoinPackedMatrix & matrix,
                              const double* collb, const double* colub,
                              const double* obj,
                              const char* rowsen, const double* rowrhs,
@@ -601,15 +601,15 @@ public:
     freed using the C++ <code>delete</code> and <code>delete[]</code>
     functions.
     */
-    virtual void assignProblem(CoinPackedMatrix*& matrix,
-                               double*& collb, double*& colub, double*& obj,
-                               char*& rowsen, double*& rowrhs,
-                               double*& rowrng);
+    virtual void assignProblem(CoinPackedMatrix* & matrix,
+                               double* & collb, double* & colub, double* & obj,
+                               char* & rowsen, double* & rowrhs,
+                               double* & rowrng);
 
     /** Just like the other loadProblem() methods except that the matrix is
     given in a standard column major ordered format (without gaps). */
     virtual void loadProblem(const int numcols, const int numrows,
-                             const CoinBigIndex * start, const int* index,
+                             const CoinBigIndex* start, const int* index,
                              const double* value,
                              const double* collb, const double* colub,
                              const double* obj,
@@ -618,7 +618,7 @@ public:
     /** Just like the other loadProblem() methods except that the matrix is
     given in a standard column major ordered format (without gaps). */
     virtual void loadProblem(const int numcols, const int numrows,
-                             const CoinBigIndex * start, const int* index,
+                             const CoinBigIndex* start, const int* index,
                              const double* value,
                              const double* collb, const double* colub,
                              const double* obj,
@@ -631,16 +631,16 @@ public:
       written with a maximization objective; +1.0 forces a minimization
       objective. If objSense is zero, the choice is left to implementation.
     */
-    virtual void writeMps(const char *filename,
-                          const char *extension = "mps",
-                          double objSense=0.0) const;
+    virtual void writeMps(const char* filename,
+                          const char* extension = "mps",
+                          double objSense = 0.0) const;
 
-    void parseCommandLine(int argc, char **argv);
+    void parseCommandLine(int argc, char** argv);
 
     using OsiSolverInterface::readMps ;
-    virtual int readMps(const char * infile, const char *extension = "mps");
+    virtual int readMps(const char* infile, const char* extension = "mps");
 
-    virtual int readGMPL(const char * modelFile, const char * dataFile=NULL);
+    virtual int readGMPL(const char* modelFile, const char* dataFile = NULL);
 
     void findInitialBounds();
 
@@ -686,16 +686,16 @@ public:
       The result of calling clone(false) is defined to be equivalent to
       calling the default constructor OsiSolverInterface().
     */
-    virtual OsiSolverInterface * clone(bool copyData = true) const;
+    virtual OsiSolverInterface* clone(bool copyData = true) const;
 
     /// Copy constructor
     OsiSymSolverInterface(const OsiSymSolverInterface &);
 
     /// Assignment operator
-    OsiSymSolverInterface & operator=(const OsiSymSolverInterface& rhs);
+    OsiSymSolverInterface & operator=(const OsiSymSolverInterface & rhs);
 
     /// Destructor
-    virtual ~OsiSymSolverInterface ();
+    virtual ~OsiSymSolverInterface();
 
     /** Reset the solver interface.
 
@@ -712,10 +712,10 @@ protected:
     ///@name Protected methods
     //@{
     /** Apply a row cut (append to the constraint matrix). */
-    virtual void applyRowCut( const OsiRowCut & rc );
+    virtual void applyRowCut(const OsiRowCut & rc);
 
     /** Apply a column cut (adjust the bounds of one or more variables). */
-    virtual void applyColCut( const OsiColCut & cc );
+    virtual void applyColCut(const OsiColCut & cc);
 
     /** Set OsiSolverInterface object state for default constructor
 
@@ -748,7 +748,7 @@ private:
     void freeCachedMatrix();
 
     /// free all cached data (except specified entries, see getLpPtr())
-    void freeCachedData( int keepCached = KEEPCACHED_NONE );
+    void freeCachedData(int keepCached = KEEPCACHED_NONE);
 
     /// free all allocated memory
     void freeAllMemory();
@@ -756,55 +756,55 @@ private:
     /**@name Private member data */
     //@{
     /// The pointer to the SYMPHONY problem environment
-    sym_environment *env_;
+    sym_environment* env_;
     //@}
 
     /// Pointer to objective vector
-    mutable double  *obj_;
+    mutable double*  obj_;
 
     /// Pointer to second objective vector to be used in bicriteria solver
-    mutable double  *obj2_;
+    mutable double*  obj2_;
 
     /// Pointer to dense vector of variable lower bounds
-    mutable double  *collower_;
+    mutable double*  collower_;
 
     /// Pointer to dense vector of variable lower bounds
-    mutable double  *colupper_;
+    mutable double*  colupper_;
 
     /// Pointer to dense vector of variable lower bounds
-    mutable double  *colredcost_;
+    mutable double*  colredcost_;
 
     /// Pointer to dense vector of row sense indicators
-    mutable char    *rowsense_;
+    mutable char*    rowsense_;
 
     /// Pointer to dense vector of row right-hand side values
-    mutable double  *rhs_;
+    mutable double*  rhs_;
 
     /** Pointer to dense vector of slack upper bounds for range constraints
         (undefined for non-range rows)
     */
-    mutable double  *rowrange_;
+    mutable double*  rowrange_;
 
     /// Pointer to dense vector of row lower bounds
-    mutable double  *rowlower_;
+    mutable double*  rowlower_;
 
     /// Pointer to dense vector of row upper bounds
-    mutable double  *rowupper_;
+    mutable double*  rowupper_;
 
     /// Pointer to dense vector of row prices
-    mutable double  *rowprice_;
+    mutable double*  rowprice_;
 
     /// Pointer to primal solution vector
-    mutable double  *colsol_;
+    mutable double*  colsol_;
 
     /// Pointer to row activity (slack) vector
-    mutable double  *rowact_;
+    mutable double*  rowact_;
 
     /// Pointer to row-wise copy of problem matrix coefficients.
-    mutable CoinPackedMatrix *matrixByRow_;
+    mutable CoinPackedMatrix* matrixByRow_;
 
     /// Pointer to row-wise copy of problem matrix coefficients.
-    mutable CoinPackedMatrix *matrixByCol_;
+    mutable CoinPackedMatrix* matrixByCol_;
 
 };
 

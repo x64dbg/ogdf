@@ -50,64 +50,64 @@
 namespace ogdf
 {
 
-PlanarityGrid::~PlanarityGrid()
-{
-    delete m_currentGrid;
-    if(m_candidateGrid != NULL)
-        delete m_candidateGrid;
-}
+    PlanarityGrid::~PlanarityGrid()
+    {
+        delete m_currentGrid;
+        if(m_candidateGrid != NULL)
+            delete m_candidateGrid;
+    }
 
 
-// intialize m_currentLayout and m_candidateLayout
-PlanarityGrid::PlanarityGrid(GraphAttributes &AG):
-    EnergyFunction("PlanarityGrid",AG), m_layout(AG)
-{
-    m_currentGrid = new UniformGrid(AG);
-    m_candidateGrid = NULL;
-}
+    // intialize m_currentLayout and m_candidateLayout
+    PlanarityGrid::PlanarityGrid(GraphAttributes & AG):
+        EnergyFunction("PlanarityGrid", AG), m_layout(AG)
+    {
+        m_currentGrid = new UniformGrid(AG);
+        m_candidateGrid = NULL;
+    }
 
 
-// computes energy of layout, stores it and sets the crossingMatrix
-void PlanarityGrid::computeEnergy()
-{
-    m_energy = m_currentGrid->numberOfCrossings();
-}
+    // computes energy of layout, stores it and sets the crossingMatrix
+    void PlanarityGrid::computeEnergy()
+    {
+        m_energy = m_currentGrid->numberOfCrossings();
+    }
 
 
-// computes the energy if the node returned by testNode() is moved
-// to position testPos().
-void PlanarityGrid::compCandEnergy()
-{
-    if(m_candidateGrid != NULL)
-        delete m_candidateGrid;
-    node v = testNode();
-    const DPoint& newPos = testPos();
-    if(m_currentGrid->newGridNecessary(v,newPos))
-        m_candidateGrid = new UniformGrid(m_layout,v,newPos);
-    else
-        m_candidateGrid = new UniformGrid(*m_currentGrid,v,newPos);
-    m_candidateEnergy = m_candidateGrid->numberOfCrossings();
-}
+    // computes the energy if the node returned by testNode() is moved
+    // to position testPos().
+    void PlanarityGrid::compCandEnergy()
+    {
+        if(m_candidateGrid != NULL)
+            delete m_candidateGrid;
+        node v = testNode();
+        const DPoint & newPos = testPos();
+        if(m_currentGrid->newGridNecessary(v, newPos))
+            m_candidateGrid = new UniformGrid(m_layout, v, newPos);
+        else
+            m_candidateGrid = new UniformGrid(*m_currentGrid, v, newPos);
+        m_candidateEnergy = m_candidateGrid->numberOfCrossings();
+    }
 
 
-// this functions sets the currentGrid to the candidateGrid
-void PlanarityGrid::internalCandidateTaken()
-{
-    delete m_currentGrid;
-    m_currentGrid = m_candidateGrid;
-    m_candidateGrid = NULL;
-}
+    // this functions sets the currentGrid to the candidateGrid
+    void PlanarityGrid::internalCandidateTaken()
+    {
+        delete m_currentGrid;
+        m_currentGrid = m_candidateGrid;
+        m_candidateGrid = NULL;
+    }
 
 
 #ifdef OGDF_DEBUG
-void PlanarityGrid::printInternalData() const
-{
-    cout << "\nCurrent grid: " << *m_currentGrid;
-    cout << "\nCandidate grid: ";
-    if(m_candidateGrid != NULL)
-        cout << *m_candidateGrid;
-    else cout << "empty.";
-}
+    void PlanarityGrid::printInternalData() const
+    {
+        cout << "\nCurrent grid: " << *m_currentGrid;
+        cout << "\nCandidate grid: ";
+        if(m_candidateGrid != NULL)
+            cout << *m_candidateGrid;
+        else cout << "empty.";
+    }
 #endif
 
 }

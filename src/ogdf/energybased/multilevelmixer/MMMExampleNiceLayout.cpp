@@ -53,64 +53,64 @@
 namespace ogdf
 {
 
-MMMExampleNiceLayout::MMMExampleNiceLayout()
-{
-}
+    MMMExampleNiceLayout::MMMExampleNiceLayout()
+    {
+    }
 
 
-void MMMExampleNiceLayout::call(GraphAttributes &GA)
-{
-    MultilevelGraph MLG(GA);
-    call(MLG);
-    MLG.exportAttributes(GA);
-}
+    void MMMExampleNiceLayout::call(GraphAttributes & GA)
+    {
+        MultilevelGraph MLG(GA);
+        call(MLG);
+        MLG.exportAttributes(GA);
+    }
 
 
-void MMMExampleNiceLayout::call(MultilevelGraph &MLG)
-{
-    // Fast Multipole Embedder
-    FastMultipoleEmbedder * FME = new FastMultipoleEmbedder();
-    FME->setNumIterations(1000);
-    FME->setRandomize(false);
+    void MMMExampleNiceLayout::call(MultilevelGraph & MLG)
+    {
+        // Fast Multipole Embedder
+        FastMultipoleEmbedder* FME = new FastMultipoleEmbedder();
+        FME->setNumIterations(1000);
+        FME->setRandomize(false);
 
-    // Fast Edges Only Embedder
-    FastMultipoleEmbedder * FEOE = new FastMultipoleEmbedder();
-    FEOE->setNumIterations(0);
-    FEOE->setRandomize(false);
+        // Fast Edges Only Embedder
+        FastMultipoleEmbedder* FEOE = new FastMultipoleEmbedder();
+        FEOE->setNumIterations(0);
+        FEOE->setRandomize(false);
 
-    // Edge Cover Merger
-    EdgeCoverMerger * ECM = new EdgeCoverMerger();
-    ECM->setFactor(2.0);
-    ECM->setEdgeLengthAdjustment(0); // BEFORE (but arg is int!): ECM->setEdgeLengthAdjustment(0.1);
+        // Edge Cover Merger
+        EdgeCoverMerger* ECM = new EdgeCoverMerger();
+        ECM->setFactor(2.0);
+        ECM->setEdgeLengthAdjustment(0); // BEFORE (but arg is int!): ECM->setEdgeLengthAdjustment(0.1);
 
-    // Barycenter Placer with weighted Positions
-    BarycenterPlacer * BP = new BarycenterPlacer();
-    BP->weightedPositionPriority(true);
+        // Barycenter Placer with weighted Positions
+        BarycenterPlacer* BP = new BarycenterPlacer();
+        BP->weightedPositionPriority(true);
 
-    // No Scaling
-    ScalingLayout * SL = new ScalingLayout();
-    SL->setExtraScalingSteps(0);
-    SL->setScaling(1.0, 1.0);
-    SL->setScalingType(ScalingLayout::st_relativeToDrawing);
-    SL->setSecondaryLayout(FME);
-    SL->setLayoutRepeats(1);
+        // No Scaling
+        ScalingLayout* SL = new ScalingLayout();
+        SL->setExtraScalingSteps(0);
+        SL->setScaling(1.0, 1.0);
+        SL->setScalingType(ScalingLayout::st_relativeToDrawing);
+        SL->setSecondaryLayout(FME);
+        SL->setLayoutRepeats(1);
 
-    ModularMultilevelMixer *MMM = new ModularMultilevelMixer;
-    MMM->setLayoutRepeats(1);
-//  MMM->setAllEdgeLenghts(5.0);
-//  MMM->setAllNodeSizes(1.0);
-    MMM->setLevelLayoutModule(SL);
-    MMM->setInitialPlacer(BP);
-    MMM->setMultilevelBuilder(ECM);
+        ModularMultilevelMixer* MMM = new ModularMultilevelMixer;
+        MMM->setLayoutRepeats(1);
+        //  MMM->setAllEdgeLenghts(5.0);
+        //  MMM->setAllNodeSizes(1.0);
+        MMM->setLevelLayoutModule(SL);
+        MMM->setInitialPlacer(BP);
+        MMM->setMultilevelBuilder(ECM);
 
-    ComponentSplitterLayout *CS = new ComponentSplitterLayout;
-    CS->setLayoutModule(MMM);
-    PreprocessorLayout PPL;
-    PPL.setLayoutModule(CS);
-    PPL.setRandomizePositions(true);
+        ComponentSplitterLayout* CS = new ComponentSplitterLayout;
+        CS->setLayoutModule(MMM);
+        PreprocessorLayout PPL;
+        PPL.setLayoutModule(CS);
+        PPL.setRandomizePositions(true);
 
-    PPL.call(MLG);
-}
+        PPL.call(MLG);
+    }
 
 } // namespace ogdf
 

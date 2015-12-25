@@ -59,65 +59,65 @@ namespace ogdf
 {
 
 
-class OGDF_EXPORT MinCut
-{
-
-public:
-    //Todo: Shift parameters to the call!
-    //m_minCut is only initialized once!!!
-    MinCut(Graph &G, EdgeArray<double> &w);
-    ~MinCut();
-
-    // implements the main loop that computes the minimum cut by invoking function
-    // minimumCutPhase() in each iteration. Returns the mincut value.
-    double minimumCut();
-
-    // returns the edges defining the computed mincut in list \a edges.
-    void cutEdges(List<edge> &edges, Graph &G);
-
-    // returns list of nodes belonging to one side of the bipartition in list \a nodes.
-    void partition(List<node> &nodes);
-
-    double minCutValue() const
+    class OGDF_EXPORT MinCut
     {
-        return m_minCut;
-    }
 
-private:
+    public:
+        //Todo: Shift parameters to the call!
+        //m_minCut is only initialized once!!!
+        MinCut(Graph & G, EdgeArray<double> & w);
+        ~MinCut();
 
-    // stores the value of the minimum cut
-    double m_minCut;
+        // implements the main loop that computes the minimum cut by invoking function
+        // minimumCutPhase() in each iteration. Returns the mincut value.
+        double minimumCut();
 
-    // GraphCopy of the corresponding Graph. Used for the computation in order not
-    // to destroy the original Graph.
-    GraphCopy m_GC;
+        // returns the edges defining the computed mincut in list \a edges.
+        void cutEdges(List<edge> & edges, Graph & G);
 
-    // an EdgeArray containing the corresponding edge weights.
-    EdgeArray<double> m_w;
+        // returns list of nodes belonging to one side of the bipartition in list \a nodes.
+        void partition(List<node> & nodes);
 
-    // the two node lists corresponding to the node contraction
-    List<node> m_contraction1, m_contraction2;
+        double minCutValue() const
+        {
+            return m_minCut;
+        }
 
-    // store one side of the computed bipartition.
-    List<node> m_partition;
+    private:
 
-    // the list of edges defining the cut
-    List<edge> m_cutEdges;
+        // stores the value of the minimum cut
+        double m_minCut;
 
-    // each node has a list containing the nodes with which it has been contracted.
-    // Because the GraphCopy \a m_GC is destroyed during the algorithm, this is
-    // necessary to be able to determine the original nodes in the end.
-    NodeArray<List<node> > m_contractedNodes;
+        // GraphCopy of the corresponding Graph. Used for the computation in order not
+        // to destroy the original Graph.
+        GraphCopy m_GC;
 
-    // computes and returns the value of the minimum cut of the current phase (itertion).
-    double minimumCutPhase();
+        // an EdgeArray containing the corresponding edge weights.
+        EdgeArray<double> m_w;
 
-    // Contracts the nodes \a s and \a t, i.e \a s is collapsed to \a t.
-    // The edge (if existing) between \a s and \t s is deleted. Edges incident to \a s are redirected to \t.
-    // If parallel edges occur, one of them is deleted and its weight is added to the other one.
-    void contraction(node t, node s);
+        // the two node lists corresponding to the node contraction
+        List<node> m_contraction1, m_contraction2;
 
-};
+        // store one side of the computed bipartition.
+        List<node> m_partition;
+
+        // the list of edges defining the cut
+        List<edge> m_cutEdges;
+
+        // each node has a list containing the nodes with which it has been contracted.
+        // Because the GraphCopy \a m_GC is destroyed during the algorithm, this is
+        // necessary to be able to determine the original nodes in the end.
+        NodeArray<List<node>> m_contractedNodes;
+
+        // computes and returns the value of the minimum cut of the current phase (itertion).
+        double minimumCutPhase();
+
+        // Contracts the nodes \a s and \a t, i.e \a s is collapsed to \a t.
+        // The edge (if existing) between \a s and \t s is deleted. Edges incident to \a s are redirected to \t.
+        // If parallel edges occur, one of them is deleted and its weight is added to the other one.
+        void contraction(node t, node s);
+
+    };
 
 }// end namespace
 

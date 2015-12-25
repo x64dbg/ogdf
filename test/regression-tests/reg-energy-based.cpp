@@ -21,17 +21,17 @@
 using namespace ogdf;
 
 
-void randomLayout(GraphAttributes &GA)
+void randomLayout(GraphAttributes & GA)
 {
-    const Graph &G = GA.constGraph();
+    const Graph & G = GA.constGraph();
     int max_x = (int)(2.0f * sqrt((float)G.numberOfNodes()));
     int max_y = max_x;
 
     node v;
-    forall_nodes(v,G)
+    forall_nodes(v, G)
     {
-        GA.x(v) = randomNumber(0,max_x);
-        GA.y(v) = randomNumber(0,max_y);
+        GA.x(v) = randomNumber(0, max_x);
+        GA.y(v) = randomNumber(0, max_y);
     }
 }
 
@@ -42,7 +42,7 @@ bool regEnergyBased()
     const int max_n = 100;
     const int step_n = 25;
 
-    int totalGraphs = numGraphs * (1+(max_n-min_n)/step_n) * 3;
+    int totalGraphs = numGraphs * (1 + (max_n - min_n) / step_n) * 3;
 
     Graph G;
     GraphAttributes GA(G);
@@ -66,7 +66,7 @@ bool regEnergyBased()
         cout << "\r" << n << flush;
         for(int i = 0; i < numGraphs; ++i)
         {
-            int m = 3*n/2;
+            int m = 3 * n / 2;
             randomBiconnectedGraph(G, n, m);
             makeSimpleUndirected(G);
 
@@ -90,7 +90,7 @@ bool regEnergyBased()
             dhl.call(GA);
             msecDH += System::usedRealTime(T);
 
-            m = 2*n;
+            m = 2 * n;
             randomBiconnectedGraph(G, n, m);
             makeSimpleUndirected(G);
 
@@ -114,7 +114,7 @@ bool regEnergyBased()
             dhl.call(GA);
             msecDH += System::usedRealTime(T);
 
-            m = 5*n/2;
+            m = 5 * n / 2;
             randomBiconnectedGraph(G, n, m);
             makeSimpleUndirected(G);
 
@@ -141,16 +141,16 @@ bool regEnergyBased()
     }
 
     cout.precision(3);
-    cout << "\r  FMMM: " << std::fixed << 0.001*double(msecFMMM) << " seconds (avg. " <<
+    cout << "\r  FMMM: " << std::fixed << 0.001 * double(msecFMMM) << " seconds (avg. " <<
          double(msecFMMM) / totalGraphs <<
          " ms per graph)" << endl;
-    cout << "\r  FR:   " << std::fixed << 0.001*double(msecFR) << " seconds (avg. " <<
+    cout << "\r  FR:   " << std::fixed << 0.001 * double(msecFR) << " seconds (avg. " <<
          double(msecFR) / totalGraphs <<
          " ms per graph)" << endl;
-    cout << "\r  GEM:  " << std::fixed << 0.001*double(msecGEM) << " seconds (avg. " <<
+    cout << "\r  GEM:  " << std::fixed << 0.001 * double(msecGEM) << " seconds (avg. " <<
          double(msecGEM) / totalGraphs <<
          " ms per graph)" << endl;
-    cout << "\r  DH:   " << std::fixed << 0.001*double(msecDH)  << " seconds (avg. " <<
+    cout << "\r  DH:   " << std::fixed << 0.001 * double(msecDH)  << " seconds (avg. " <<
          double(msecDH) / totalGraphs <<
          " ms per graph)" << endl;
 
@@ -165,7 +165,7 @@ bool regEnergyBased()
     msecFMMM = msecFR = msecGEM = msecDH = 0;
     for(int n = min_n; n <= max_n; n += step_n)
     {
-        int b = n/25;
+        int b = n / 25;
 
         cout << "\r" << n << flush;
         for(int i = 0; i < numGraphs; ++i)
@@ -239,16 +239,16 @@ bool regEnergyBased()
     }
 
     cout.precision(3);
-    cout << "\r  FMMM: " << std::fixed << 0.001*double(msecFMMM) << " seconds (avg. " <<
+    cout << "\r  FMMM: " << std::fixed << 0.001 * double(msecFMMM) << " seconds (avg. " <<
          double(msecFMMM) / totalGraphs <<
          " ms per graph)" << endl;
-    cout << "\r  FR:   " << std::fixed << 0.001*double(msecFR) << " seconds (avg. " <<
+    cout << "\r  FR:   " << std::fixed << 0.001 * double(msecFR) << " seconds (avg. " <<
          double(msecFR) / totalGraphs <<
          " ms per graph)" << endl;
-    cout << "\r  GEM:  " << std::fixed << 0.001*double(msecGEM) << " seconds (avg. " <<
+    cout << "\r  GEM:  " << std::fixed << 0.001 * double(msecGEM) << " seconds (avg. " <<
          double(msecGEM) / totalGraphs <<
          " ms per graph)" << endl;
-    cout << "\r  DH:   " << std::fixed << 0.001*double(msecDH) << " seconds (avg. " <<
+    cout << "\r  DH:   " << std::fixed << 0.001 * double(msecDH) << " seconds (avg. " <<
          double(msecDH) / totalGraphs <<
          " ms per graph)" << endl;
 
@@ -266,7 +266,7 @@ bool regEnergyBased()
         msecFMMM = msecFR = msecGEM = msecDH = 0;
         for(int i = 0; i < numGraphs; ++i)
         {
-            planarBiconnectedGraph(G, n, 3*n/2);
+            planarBiconnectedGraph(G, n, 3 * n / 2);
 
             randomLayout(GA);
             System::usedRealTime(T);
@@ -285,9 +285,9 @@ bool regEnergyBased()
         }
         cout.precision(3);
         cout << n << ": \t" << std::fixed <<
-             0.001*double(msecFMMM)/numGraphs << " s  - \t" <<
-             0.001*double(msecFR)  /numGraphs << " s  - \t" <<
-             0.001*double(msecGEM) /numGraphs << " s" << endl;
+             0.001 * double(msecFMMM) / numGraphs << " s  - \t" <<
+             0.001 * double(msecFR)  / numGraphs << " s  - \t" <<
+             0.001 * double(msecGEM) / numGraphs << " s" << endl;
     }
 
     return true;

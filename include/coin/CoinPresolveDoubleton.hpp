@@ -40,7 +40,7 @@ public:
         double coeffx;
         double coeffy;
 
-        double *colel;
+        double* colel;
 
         int icolx;
         int icoly;
@@ -50,26 +50,26 @@ public:
     };
 
     const int nactions_;
-    const action *const actions_;
+    const action* const actions_;
 
 private:
     doubleton_action(int nactions,
-                     const action *actions,
-                     const CoinPresolveAction *next) :
+                     const action* actions,
+                     const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions), actions_(actions)
     {}
 
 public:
-    const char *name() const
+    const char* name() const
     {
         return ("doubleton_action");
     }
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *,
-            const CoinPresolveAction *next);
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix*,
+            const CoinPresolveAction* next);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     ~doubleton_action();
 };

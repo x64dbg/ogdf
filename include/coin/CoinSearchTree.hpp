@@ -20,7 +20,7 @@
 
 class BitVector128
 {
-    friend bool operator<(const BitVector128& b0, const BitVector128& b1);
+    friend bool operator<(const BitVector128 & b0, const BitVector128 & b1);
 private:
     unsigned int bits_[4];
 public:
@@ -31,7 +31,7 @@ public:
     std::string str() const;
 };
 
-bool operator<(const BitVector128& b0, const BitVector128& b1);
+bool operator<(const BitVector128 & b0, const BitVector128 & b1);
 
 //#############################################################################
 
@@ -57,15 +57,15 @@ protected:
         quality_(q),
         true_lower_bound_(tlb),
         preferred_(p) {}
-    CoinTreeNode(const CoinTreeNode& x) :
+    CoinTreeNode(const CoinTreeNode & x) :
         depth_(x.depth_),
         fractionality_(x.fractionality_),
         quality_(x.quality_),
         true_lower_bound_(x.true_lower_bound_),
         preferred_(x.preferred_) {}
-    CoinTreeNode& operator=(const CoinTreeNode& x)
+    CoinTreeNode & operator=(const CoinTreeNode & x)
     {
-        if (this != &x)
+        if(this != &x)
         {
             depth_ = x.depth_;
             fractionality_ = x.fractionality_;
@@ -143,7 +143,7 @@ class CoinTreeSiblings
 {
 private:
     CoinTreeSiblings();
-    CoinTreeSiblings& operator=(const CoinTreeSiblings&);
+    CoinTreeSiblings & operator=(const CoinTreeSiblings &);
 private:
     int current_;
     int numSiblings_;
@@ -154,7 +154,7 @@ public:
     {
         CoinDisjointCopyN(nodes, n, siblings_);
     }
-    CoinTreeSiblings(const CoinTreeSiblings& s) :
+    CoinTreeSiblings(const CoinTreeSiblings & s) :
         current_(s.current_),
         numSiblings_(s.numSiblings_),
         siblings_(new CoinTreeNode*[s.numSiblings_])
@@ -184,7 +184,7 @@ public:
     }
     inline void printPref() const
     {
-        for (int i = 0; i < numSiblings_; ++i)
+        for(int i = 0; i < numSiblings_; ++i)
         {
             std::string pref = siblings_[i]->getPreferred().str();
             printf("prefs of sibligs: sibling[%i]: %s\n", i, pref.c_str());
@@ -213,11 +213,11 @@ struct CoinSearchTreeComparePreferred
         const BitVector128 xPref = xNode->getPreferred();
         const BitVector128 yPref = yNode->getPreferred();
         bool retval = true;
-        if (xPref < yPref)
+        if(xPref < yPref)
         {
             retval = true;
         }
-        else if (yPref < xPref)
+        else if(yPref < xPref)
         {
             retval = false;
         }
@@ -292,8 +292,8 @@ struct CoinSearchTreeCompareBest
 class CoinSearchTreeBase
 {
 private:
-    CoinSearchTreeBase(const CoinSearchTreeBase&);
-    CoinSearchTreeBase& operator=(const CoinSearchTreeBase&);
+    CoinSearchTreeBase(const CoinSearchTreeBase &);
+    CoinSearchTreeBase & operator=(const CoinSearchTreeBase &);
 
 protected:
     std::vector<CoinTreeSiblings*> candidateList_;
@@ -311,7 +311,7 @@ public:
     virtual ~CoinSearchTreeBase() {}
     virtual const char* compName() const = 0;
 
-    inline const std::vector<CoinTreeSiblings*>& getCandidates() const
+    inline const std::vector<CoinTreeSiblings*> & getCandidates() const
     {
         return candidateList_;
     }
@@ -329,7 +329,7 @@ public:
     }
     inline CoinTreeNode* top() const
     {
-        if (size_ == 0)
+        if(size_ == 0)
             return NULL;
 #ifdef DEBUG_PRINT
         char output[44];
@@ -345,7 +345,7 @@ public:
     inline void pop()
     {
         CoinTreeSiblings* s = candidateList_.front();
-        if (!s->advanceNode())
+        if(!s->advanceNode())
         {
             realpop();
             delete s;
@@ -361,13 +361,13 @@ public:
     {
         CoinTreeSiblings* s = new CoinTreeSiblings(numNodes, nodes);
         realpush(s);
-        if (incrInserted)
+        if(incrInserted)
         {
             numInserted_ += numNodes;
         }
         size_ += numNodes;
     }
-    inline void push(const CoinTreeSiblings& sib,
+    inline void push(const CoinTreeSiblings & sib,
                      const bool incrInserted = true)
     {
         CoinTreeSiblings* s = new CoinTreeSiblings(sib);
@@ -375,7 +375,7 @@ public:
         s->printPref();
 #endif
         realpush(s);
-        if (incrInserted)
+        if(incrInserted)
         {
             numInserted_ += sib.toProcess();
         }
@@ -411,7 +411,7 @@ protected:
     }
 public:
     CoinSearchTree() : CoinSearchTreeBase(), comp_() {}
-    CoinSearchTree(const CoinSearchTreeBase& t) :
+    CoinSearchTree(const CoinSearchTreeBase & t) :
         CoinSearchTreeBase(), comp_()
     {
         candidateList_ = t.getCandidates();
@@ -445,24 +445,24 @@ protected:
     virtual void fixTop()
     {
         const size_t size = candidateList_.size();
-        if (size > 1)
+        if(size > 1)
         {
             CoinTreeSiblings** candidates = &candidateList_[0];
             CoinTreeSiblings* s = candidates[0];
             --candidates;
             size_t pos = 1;
             size_t ch;
-            for (ch = 2; ch < size; pos = ch, ch *= 2)
+            for(ch = 2; ch < size; pos = ch, ch *= 2)
             {
-                if (comp_(candidates[ch+1], candidates[ch]))
+                if(comp_(candidates[ch + 1], candidates[ch]))
                     ++ch;
-                if (comp_(s, candidates[ch]))
+                if(comp_(s, candidates[ch]))
                     break;
                 candidates[pos] = candidates[ch];
             }
-            if (ch == size)
+            if(ch == size)
             {
-                if (comp_(candidates[ch], s))
+                if(comp_(candidates[ch], s))
                 {
                     candidates[pos] = candidates[ch];
                     pos = ch;
@@ -478,9 +478,9 @@ protected:
         --candidates;
         size_t pos = candidateList_.size();
         size_t ch;
-        for (ch = pos/2; ch != 0; pos = ch, ch /= 2)
+        for(ch = pos / 2; ch != 0; pos = ch, ch /= 2)
         {
-            if (comp_(candidates[ch], s))
+            if(comp_(candidates[ch], s))
                 break;
             candidates[pos] = candidates[ch];
         }
@@ -489,7 +489,7 @@ protected:
 
 public:
     CoinSearchTree() : CoinSearchTreeBase(), comp_() {}
-    CoinSearchTree(const CoinSearchTreeBase& t) :
+    CoinSearchTree(const CoinSearchTreeBase & t) :
         CoinSearchTreeBase(), comp_()
     {
         candidateList_ = t.getCandidates();
@@ -518,8 +518,8 @@ enum CoinNodeAction
 class CoinSearchTreeManager
 {
 private:
-    CoinSearchTreeManager(const CoinSearchTreeManager&);
-    CoinSearchTreeManager& operator=(const CoinSearchTreeManager&);
+    CoinSearchTreeManager(const CoinSearchTreeManager &);
+    CoinSearchTreeManager & operator=(const CoinSearchTreeManager &);
 private:
     CoinSearchTreeBase* candidates_;
     int numSolution;
@@ -575,7 +575,7 @@ public:
     {
         candidates_->push(1, &node, incrInserted);
     }
-    inline void push(const CoinTreeSiblings& s, const bool incrInserted=true)
+    inline void push(const CoinTreeSiblings & s, const bool incrInserted = true)
     {
         candidates_->push(s, incrInserted);
     }

@@ -49,7 +49,7 @@ int init_send(int data_packing)
 
 /*===========================================================================*/
 
-int send_char_array(char *array, int size)
+int send_char_array(char* array, int size)
 {
     int info;
 
@@ -60,7 +60,7 @@ int send_char_array(char *array, int size)
 
 /*===========================================================================*/
 
-int send_int_array(int *array, int size)
+int send_int_array(int* array, int size)
 {
     int info;
 
@@ -71,7 +71,7 @@ int send_int_array(int *array, int size)
 
 /*===========================================================================*/
 
-int send_float_array(float *array, int size)
+int send_float_array(float* array, int size)
 {
     int info;
 
@@ -82,7 +82,7 @@ int send_float_array(float *array, int size)
 
 /*===========================================================================*/
 
-int send_dbl_array(double *array, int size)
+int send_dbl_array(double* array, int size)
 {
     int info;
 
@@ -93,7 +93,7 @@ int send_dbl_array(double *array, int size)
 
 /*===========================================================================*/
 
-int send_str(char *str)
+int send_str(char* str)
 {
     int info;
 
@@ -115,7 +115,7 @@ int send_msg(int recipient, int msgtag)
 
 /*===========================================================================*/
 
-int msend_msg(int *recipients, int number, int msgtag)
+int msend_msg(int* recipients, int number, int msgtag)
 {
     int info;
 
@@ -148,7 +148,7 @@ int nreceive_msg(int who, int what)
 
 /*===========================================================================*/
 
-int treceive_msg(int who, int what, struct timeval *timeout)
+int treceive_msg(int who, int what, struct timeval* timeout)
 {
     int r_bufid;
 
@@ -159,7 +159,7 @@ int treceive_msg(int who, int what, struct timeval *timeout)
 
 /*===========================================================================*/
 
-int bufinfo(int r_bufid, int *bytes, int *msgtag, int *sender)
+int bufinfo(int r_bufid, int* bytes, int* msgtag, int* sender)
 {
     int info;
 
@@ -181,7 +181,7 @@ int freebuf(int bufid)
 
 /*===========================================================================*/
 
-int receive_char_array(char *array, int size)
+int receive_char_array(char* array, int size)
 {
     int info;
 
@@ -192,7 +192,7 @@ int receive_char_array(char *array, int size)
 
 /*===========================================================================*/
 
-int receive_int_array(int *array, int size)
+int receive_int_array(int* array, int size)
 {
     int info;
 
@@ -203,7 +203,7 @@ int receive_int_array(int *array, int size)
 
 /*===========================================================================*/
 
-int receive_dbl_array(double *array, int size)
+int receive_dbl_array(double* array, int size)
 {
     int info;
 
@@ -214,7 +214,7 @@ int receive_dbl_array(double *array, int size)
 
 /*===========================================================================*/
 
-int receive_float_array(float *array, int size)
+int receive_float_array(float* array, int size)
 {
     int info;
 
@@ -225,7 +225,7 @@ int receive_float_array(float *array, int size)
 
 /*===========================================================================*/
 
-int receive_str(char *str)
+int receive_str(char* str)
 {
     int info;
 
@@ -243,12 +243,12 @@ void comm_exit(void)
 
 /*===========================================================================*/
 
-int spawn(char *task, char **argv, int flag, char *where, int ntask,
-          int *tids)
+int spawn(char* task, char** argv, int flag, char* where, int ntask,
+          int* tids)
 {
     int status;
 
-    if ((status = pvm_spawn(task, argv, flag, where, ntask, tids)) != ntask)
+    if((status = pvm_spawn(task, argv, flag, where, ntask, tids)) != ntask)
     {
         printf("Couldn't start %s!! \n", task);
         PVM_ERROR(*tids);
@@ -294,7 +294,7 @@ void setrbuf(int rbufid)
 void PVM_ERROR(int info)
 {
     printf("Pvm Error %i : ", info);
-    switch (info)
+    switch(info)
     {
     case PvmOk:
         printf("PvmOk(Error 0)");
@@ -416,7 +416,7 @@ int init_send(int data_packing)
 
 /*===========================================================================*/
 
-int send_char_array(char *array, int size)
+int send_char_array(char* array, int size)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -425,7 +425,7 @@ int send_char_array(char *array, int size)
 
 /*===========================================================================*/
 
-int send_int_array(int *array, int size)
+int send_int_array(int* array, int size)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -434,7 +434,7 @@ int send_int_array(int *array, int size)
 
 /*===========================================================================*/
 
-int send_dbl_array(double *array, int size)
+int send_dbl_array(double* array, int size)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -443,7 +443,7 @@ int send_dbl_array(double *array, int size)
 
 /*===========================================================================*/
 
-int send_float_array(float *array, int size)
+int send_float_array(float* array, int size)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -452,7 +452,7 @@ int send_float_array(float *array, int size)
 
 /*===========================================================================*/
 
-int send_str(char *str)
+int send_str(char* str)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -470,7 +470,7 @@ int send_msg(int sender, int msgtag)
 
 /*===========================================================================*/
 
-int msend_msg(int *recipients, int number, int msgtag)
+int msend_msg(int* recipients, int number, int msgtag)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -496,7 +496,7 @@ int nreceive_msg(int who, int what)
 
 /*===========================================================================*/
 
-int treceive_msg(int who, int what, struct timeval *timeout)
+int treceive_msg(int who, int what, struct timeval* timeout)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -505,7 +505,7 @@ int treceive_msg(int who, int what, struct timeval *timeout)
 
 /*===========================================================================*/
 
-int bufinfo(int r_bufid, int *bytes, int *msgtag, int *sender)
+int bufinfo(int r_bufid, int* bytes, int* msgtag, int* sender)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -523,7 +523,7 @@ int freebuf(int bufid)
 
 /*===========================================================================*/
 
-int receive_char_array(char *array, int size)
+int receive_char_array(char* array, int size)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -532,7 +532,7 @@ int receive_char_array(char *array, int size)
 
 /*===========================================================================*/
 
-int receive_int_array(int *array, int size)
+int receive_int_array(int* array, int size)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -541,7 +541,7 @@ int receive_int_array(int *array, int size)
 
 /*===========================================================================*/
 
-int receive_dbl_array(double *array, int size)
+int receive_dbl_array(double* array, int size)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -550,7 +550,7 @@ int receive_dbl_array(double *array, int size)
 
 /*===========================================================================*/
 
-int receive_float_array(float *array, int size)
+int receive_float_array(float* array, int size)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -559,7 +559,7 @@ int receive_float_array(float *array, int size)
 
 /*===========================================================================*/
 
-int receive_str(char *str)
+int receive_str(char* str)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 
@@ -575,8 +575,8 @@ void comm_exit(void)
 
 /*===========================================================================*/
 
-int spawn(char *task, char **argv, int flag, char *where, int ntask,
-          int *tids)
+int spawn(char* task, char** argv, int flag, char* where, int ntask,
+          int* tids)
 {
     printf("\nComm Error: Unknown communications protocol\n\n");
 

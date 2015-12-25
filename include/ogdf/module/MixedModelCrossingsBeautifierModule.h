@@ -57,73 +57,73 @@
 namespace ogdf
 {
 
-/**
- * \brief The base class for Mixed-Model crossings beautifier algorithms.
- *
- * The class MixedModelCrossingsBeautifierModule is the base class for
- * mixed model bend crossing modules. Such a module transforms an input
- * graph \a G into an output graph \a G' such that crossings of edges don't
- * look weird.
- *
- * <H3>Implementation of Mixed-Model Crossings Beautifier Algorithms</H3>
- *
- * An implementation of a Mixed-Model crossings beautifier module must override
- * the protected method doCall().
- */
-
-class OGDF_EXPORT MixedModelCrossingsBeautifierModule
-{
-public:
-    //! Initializes the Mixed-Model crossings beautifier module.
-    MixedModelCrossingsBeautifierModule() { }
-
-    // destruction
-    virtual ~MixedModelCrossingsBeautifierModule() { }
-
-
-    /*
-     * \brief Calls the Mixed-Model crossings beautifier module for graph \a PG and grid layout \a gl.
-     *
-     * @param PG is the input graph.
-     * @param gl is the grid layout of \a PG.
-     */
-    void call(const PlanRep &PG, GridLayout &gl);
-
-    //! Returns the number of processed crossings.
-    int numberOfCrossings() const
-    {
-        return m_nCrossings;
-    }
-
-
-protected:
     /**
-     * \brief Implements the crossings beautifier module.
+     * \brief The base class for Mixed-Model crossings beautifier algorithms.
      *
-     * @param PG is the input graph.
-     * @param gl is the grid layout of \a PG.
-     * @param L is the list of crossing nodes.
+     * The class MixedModelCrossingsBeautifierModule is the base class for
+     * mixed model bend crossing modules. Such a module transforms an input
+     * graph \a G into an output graph \a G' such that crossings of edges don't
+     * look weird.
+     *
+     * <H3>Implementation of Mixed-Model Crossings Beautifier Algorithms</H3>
+     *
+     * An implementation of a Mixed-Model crossings beautifier module must override
+     * the protected method doCall().
      */
-    virtual void doCall(const PlanRep &PG, GridLayout &gl, const List<node> &L) = 0;
 
-private:
-    int m_nCrossings; //!< the number of processed crossings.
+    class OGDF_EXPORT MixedModelCrossingsBeautifierModule
+    {
+    public:
+        //! Initializes the Mixed-Model crossings beautifier module.
+        MixedModelCrossingsBeautifierModule() { }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        // destruction
+        virtual ~MixedModelCrossingsBeautifierModule() { }
 
 
-//! Dummy implementation of Mixed-Model crossings beautifier.
-/**
- * This implementation does no beautification at all and can thus be used
- * for obtaining the original Mixed-Model layout.
- */
-class MMDummyCrossingsBeautifier : public MixedModelCrossingsBeautifierModule
-{
-protected:
-    //!< Dummy implementation.
-    void doCall(const PlanRep &, GridLayout &, const List<node> &) { }
-};
+        /*
+         * \brief Calls the Mixed-Model crossings beautifier module for graph \a PG and grid layout \a gl.
+         *
+         * @param PG is the input graph.
+         * @param gl is the grid layout of \a PG.
+         */
+        void call(const PlanRep & PG, GridLayout & gl);
+
+        //! Returns the number of processed crossings.
+        int numberOfCrossings() const
+        {
+            return m_nCrossings;
+        }
+
+
+    protected:
+        /**
+         * \brief Implements the crossings beautifier module.
+         *
+         * @param PG is the input graph.
+         * @param gl is the grid layout of \a PG.
+         * @param L is the list of crossing nodes.
+         */
+        virtual void doCall(const PlanRep & PG, GridLayout & gl, const List<node> & L) = 0;
+
+    private:
+        int m_nCrossings; //!< the number of processed crossings.
+
+        OGDF_MALLOC_NEW_DELETE
+    };
+
+
+    //! Dummy implementation of Mixed-Model crossings beautifier.
+    /**
+     * This implementation does no beautification at all and can thus be used
+     * for obtaining the original Mixed-Model layout.
+     */
+    class MMDummyCrossingsBeautifier : public MixedModelCrossingsBeautifierModule
+    {
+    protected:
+        //!< Dummy implementation.
+        void doCall(const PlanRep &, GridLayout &, const List<node> &) { }
+    };
 
 
 } // end namespace ogdf

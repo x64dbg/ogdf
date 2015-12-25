@@ -14,7 +14,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpDualRowPivot::ClpDualRowPivot () :
+ClpDualRowPivot::ClpDualRowPivot() :
     model_(NULL),
     type_(-1)
 {
@@ -24,7 +24,7 @@ ClpDualRowPivot::ClpDualRowPivot () :
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpDualRowPivot::ClpDualRowPivot (const ClpDualRowPivot & source) :
+ClpDualRowPivot::ClpDualRowPivot(const ClpDualRowPivot & source) :
     model_(source.model_),
     type_(source.type_)
 {
@@ -34,7 +34,7 @@ ClpDualRowPivot::ClpDualRowPivot (const ClpDualRowPivot & source) :
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpDualRowPivot::~ClpDualRowPivot ()
+ClpDualRowPivot::~ClpDualRowPivot()
 {
 
 }
@@ -43,9 +43,9 @@ ClpDualRowPivot::~ClpDualRowPivot ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpDualRowPivot &
-ClpDualRowPivot::operator=(const ClpDualRowPivot& rhs)
+ClpDualRowPivot::operator=(const ClpDualRowPivot & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         type_ = rhs.type_;
         model_ = rhs.model_;
@@ -53,7 +53,7 @@ ClpDualRowPivot::operator=(const ClpDualRowPivot& rhs)
     return *this;
 }
 void
-ClpDualRowPivot::saveWeights(ClpSimplex * model, int /*mode*/)
+ClpDualRowPivot::saveWeights(ClpSimplex* model, int /*mode*/)
 {
     model_ = model;
 }

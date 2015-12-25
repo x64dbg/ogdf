@@ -53,28 +53,28 @@
 using namespace ogdf;
 
 bool
-isSameUndirectedGraph(const Graph &G1, const Graph &G2)
+isSameUndirectedGraph(const Graph & G1, const Graph & G2)
 {
-    if (G1.numberOfNodes() != G2.numberOfNodes()
+    if(G1.numberOfNodes() != G2.numberOfNodes()
             || G1.numberOfEdges() != G2.numberOfEdges())
     {
         return false;
     }
     // we assert that node indices of G1 and G2 coincide
-    for (node v1 = G1.firstNode(), v2 = G2.firstNode(); v1; v1 = v1->succ(), v2 = v2->succ())
+    for(node v1 = G1.firstNode(), v2 = G2.firstNode(); v1; v1 = v1->succ(), v2 = v2->succ())
     {
         List<int> neighbors1, neighbors2;
-        for (adjEntry adj1 = v1->firstAdj(); adj1; adj1 = adj1->succ())
+        for(adjEntry adj1 = v1->firstAdj(); adj1; adj1 = adj1->succ())
         {
             neighbors1.pushBack(adj1->twinNode()->index());
         }
-        for (adjEntry adj2 = v2->firstAdj(); adj2; adj2 = adj2->succ())
+        for(adjEntry adj2 = v2->firstAdj(); adj2; adj2 = adj2->succ())
         {
             neighbors2.pushBack(adj2->twinNode()->index());
         }
         neighbors1.quicksort();
         neighbors2.quicksort();
-        if (neighbors1 != neighbors2)
+        if(neighbors1 != neighbors2)
         {
             return false;
         }

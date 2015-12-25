@@ -52,17 +52,17 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT RandomMerger : public MultilevelBuilder
-{
-private:
-    double m_levelSizeFactor;
+    class OGDF_EXPORT RandomMerger : public MultilevelBuilder
+    {
+    private:
+        double m_levelSizeFactor;
 
-    bool buildOneLevel(MultilevelGraph &MLG);
+        bool buildOneLevel(MultilevelGraph & MLG);
 
-public:
-    RandomMerger();
-    void setFactor(double factor);
-};
+    public:
+        RandomMerger();
+        void setFactor(double factor);
+    };
 
 } // namespace ogdf
 

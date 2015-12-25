@@ -36,9 +36,9 @@ typedef struct
 class double_int_pair_compare
 {
 public:
-    bool operator() (double_int_pair x , double_int_pair y) const
+    bool operator()(double_int_pair x , double_int_pair y) const
     {
-        return ( x.infeasibility < y.infeasibility);
+        return (x.infeasibility < y.infeasibility);
     }
 };
 // for hashing
@@ -46,31 +46,31 @@ typedef struct
 {
     int index, next;
 } CoinHashLink;
-static double multiplier[] = {1.23456789e2,-9.87654321};
-static int hashCut (const OsiRowCut2 & x, int size)
+static double multiplier[] = {1.23456789e2, -9.87654321};
+static int hashCut(const OsiRowCut2 & x, int size)
 {
-    int xN =x.row().getNumElements();
+    int xN = x.row().getNumElements();
     double xLb = x.lb();
     double xUb = x.ub();
-    const int * xIndices = x.row().getIndices();
-    const double * xElements = x.row().getElements();
+    const int* xIndices = x.row().getIndices();
+    const double* xElements = x.row().getElements();
     unsigned int hashValue;
-    double value=1.0;
-    if (xLb>-1.0e10)
-        value += xLb*multiplier[0];
-    if (xUb<1.0e10)
-        value += xUb*multiplier[1];
-    for( int j=0; j<xN; j++)
+    double value = 1.0;
+    if(xLb > -1.0e10)
+        value += xLb * multiplier[0];
+    if(xUb < 1.0e10)
+        value += xUb * multiplier[1];
+    for(int j = 0; j < xN; j++)
     {
         int xColumn = xIndices[j];
         double xValue = xElements[j];
-        int k=(j&1);
-        value += (j+1)*multiplier[k]*(xColumn+1)*xValue;
+        int k = (j & 1);
+        value += (j + 1) * multiplier[k] * (xColumn + 1) * xValue;
     }
     // should be compile time but too lazy for now
-    if (sizeof(value)>sizeof(hashValue))
+    if(sizeof(value) > sizeof(hashValue))
     {
-        assert (sizeof(value)==2*sizeof(hashValue));
+        assert(sizeof(value) == 2 * sizeof(hashValue));
         union
         {
             double d;
@@ -81,7 +81,7 @@ static int hashCut (const OsiRowCut2 & x, int size)
     }
     else
     {
-        assert (sizeof(value)==sizeof(hashValue));
+        assert(sizeof(value) == sizeof(hashValue));
         union
         {
             double d;
@@ -90,34 +90,34 @@ static int hashCut (const OsiRowCut2 & x, int size)
         xx.d = value;
         hashValue = xx.i[0];
     }
-    return hashValue%(size);
+    return hashValue % (size);
 }
-static bool same (const OsiRowCut2 & x, const OsiRowCut2 & y)
+static bool same(const OsiRowCut2 & x, const OsiRowCut2 & y)
 {
-    int xN =x.row().getNumElements();
-    int yN =y.row().getNumElements();
-    bool identical=false;
-    if (xN==yN)
+    int xN = x.row().getNumElements();
+    int yN = y.row().getNumElements();
+    bool identical = false;
+    if(xN == yN)
     {
         double xLb = x.lb();
         double xUb = x.ub();
         double yLb = y.lb();
         double yUb = y.ub();
-        if (fabs(xLb-yLb)<1.0e-8&&fabs(xUb-yUb)<1.0e-8)
+        if(fabs(xLb - yLb) < 1.0e-8 && fabs(xUb - yUb) < 1.0e-8)
         {
-            const int * xIndices = x.row().getIndices();
-            const double * xElements = x.row().getElements();
-            const int * yIndices = y.row().getIndices();
-            const double * yElements = y.row().getElements();
+            const int* xIndices = x.row().getIndices();
+            const double* xElements = x.row().getElements();
+            const int* yIndices = y.row().getIndices();
+            const double* yElements = y.row().getElements();
             int j;
-            for( j=0; j<xN; j++)
+            for(j = 0; j < xN; j++)
             {
-                if (xIndices[j]!=yIndices[j])
+                if(xIndices[j] != yIndices[j])
                     break;
-                if (fabs(xElements[j]-yElements[j])>1.0e-12)
+                if(fabs(xElements[j] - yElements[j]) > 1.0e-12)
                     break;
             }
-            identical =  (j==xN);
+            identical = (j == xN);
         }
     }
     return identical;
@@ -126,51 +126,51 @@ class row_cut
 {
 public:
 
-    row_cut(int nRows, bool initialPass )
+    row_cut(int nRows, bool initialPass)
     {
-        numberCuts_=0;
-        if (nRows<500)
+        numberCuts_ = 0;
+        if(nRows < 500)
         {
-            maxSize_ = SIZE_ROW_MULT*nRows + SIZE_ROW_ADD;
+            maxSize_ = SIZE_ROW_MULT * nRows + SIZE_ROW_ADD;
         }
-        else if (nRows<5000)
+        else if(nRows < 5000)
         {
-            maxSize_ = (SIZE_ROW_MULT*nRows + SIZE_ROW_ADD)>>1;
+            maxSize_ = (SIZE_ROW_MULT * nRows + SIZE_ROW_ADD) >> 1;
         }
-        else if (nRows<10000)
+        else if(nRows < 10000)
         {
-            maxSize_ = (SIZE_ROW_MULT*(nRows>>1) + SIZE_ROW_ADD)>>1;
+            maxSize_ = (SIZE_ROW_MULT * (nRows >> 1) + SIZE_ROW_ADD) >> 1;
         }
         else
         {
-            maxSize_ = (SIZE_ROW_MULT*CoinMin(nRows,100000) + SIZE_ROW_ADD)>>2;
+            maxSize_ = (SIZE_ROW_MULT * CoinMin(nRows, 100000) + SIZE_ROW_ADD) >> 2;
         }
-        size_ = (maxSize_>>3)+10;
-        if (initialPass)
-            size_ = size_>>1;
-        if (size_<1000)
-            hashSize_=4*size_;
+        size_ = (maxSize_ >> 3) + 10;
+        if(initialPass)
+            size_ = size_ >> 1;
+        if(size_ < 1000)
+            hashSize_ = 4 * size_;
         else
-            hashSize_=2*size_;
+            hashSize_ = 2 * size_;
         nRows_ = nRows;
         rowCut_ = new  OsiRowCut2 * [size_];
         hash_ = new CoinHashLink[hashSize_];
-        for (int i=0; i<hashSize_; i++)
+        for(int i = 0; i < hashSize_; i++)
         {
-            hash_[i].index=-1;
-            hash_[i].next=-1;
+            hash_[i].index = -1;
+            hash_[i].next = -1;
         }
-        numberCuts_=0;
-        lastHash_=-1;
+        numberCuts_ = 0;
+        lastHash_ = -1;
     }
     ~row_cut()
     {
-        for (int i=0; i<numberCuts_; i++)
+        for(int i = 0; i < numberCuts_; i++)
             delete rowCut_[i];
         delete [] rowCut_;
         delete [] hash_;
     }
-    OsiRowCut2 * cut(int i) const
+    OsiRowCut2* cut(int i) const
     {
         return rowCut_[i];
     }
@@ -180,11 +180,11 @@ public:
     }
     inline bool outOfSpace() const
     {
-        return maxSize_==numberCuts_;
+        return maxSize_ == numberCuts_;
     }
-    OsiRowCut2 ** rowCut_;
+    OsiRowCut2** rowCut_;
     /// Hash table
-    CoinHashLink *hash_;
+    CoinHashLink* hash_;
     int size_;
     int maxSize_;
     int hashSize_;
@@ -192,43 +192,43 @@ public:
     int numberCuts_;
     int lastHash_;
     // Return 0 if added, 1 if not, -1 if not added because of space
-    int addCutIfNotDuplicate(OsiRowCut & cut,int whichRow=-1)
+    int addCutIfNotDuplicate(OsiRowCut & cut, int whichRow = -1)
     {
-        if (numberCuts_==size_&&numberCuts_<maxSize_)
+        if(numberCuts_ == size_ && numberCuts_ < maxSize_)
         {
-            size_ = CoinMin(2*size_+100,maxSize_);
-            if (size_<1000)
-                hashSize_=4*size_;
+            size_ = CoinMin(2 * size_ + 100, maxSize_);
+            if(size_ < 1000)
+                hashSize_ = 4 * size_;
             else
-                hashSize_=2*size_;
+                hashSize_ = 2 * size_;
 #ifdef COIN_DEVELOP
             printf("increaing size from %d to %d (hash size %d, maxsize %d)\n",
-                   numberCuts_,size_,hashSize_,maxSize_);
+                   numberCuts_, size_, hashSize_, maxSize_);
 #endif
-            OsiRowCut2 ** temp = new  OsiRowCut2 * [size_];
+            OsiRowCut2** temp = new  OsiRowCut2 * [size_];
             delete [] hash_;
             hash_ = new CoinHashLink[hashSize_];
-            for (int i=0; i<hashSize_; i++)
+            for(int i = 0; i < hashSize_; i++)
             {
-                hash_[i].index=-1;
-                hash_[i].next=-1;
+                hash_[i].index = -1;
+                hash_[i].next = -1;
             }
-            for (int i=0; i<numberCuts_; i++)
+            for(int i = 0; i < numberCuts_; i++)
             {
-                temp[i]=rowCut_[i];
-                int ipos = hashCut(*temp[i],hashSize_);
+                temp[i] = rowCut_[i];
+                int ipos = hashCut(*temp[i], hashSize_);
                 int found = -1;
-                int jpos=ipos;
-                while ( true )
+                int jpos = ipos;
+                while(true)
                 {
                     int j1 = hash_[ipos].index;
 
-                    if ( j1 >= 0 )
+                    if(j1 >= 0)
                     {
-                        if ( !same(*temp[i],*temp[j1]) )
+                        if(!same(*temp[i], *temp[j1]))
                         {
                             int k = hash_[ipos].next;
-                            if ( k != -1 )
+                            if(k != -1)
                                 ipos = k;
                             else
                                 break;
@@ -244,22 +244,22 @@ public:
                         break;
                     }
                 }
-                if (found<0)
+                if(found < 0)
                 {
-                    assert (hash_[ipos].next==-1);
-                    if (ipos==jpos)
+                    assert(hash_[ipos].next == -1);
+                    if(ipos == jpos)
                     {
                         // first
-                        hash_[ipos].index=i;
+                        hash_[ipos].index = i;
                     }
                     else
                     {
                         // find next space
-                        while ( true )
+                        while(true)
                         {
                             ++lastHash_;
-                            assert (lastHash_<hashSize_);
-                            if ( hash_[lastHash_].index == -1 )
+                            assert(lastHash_ < hashSize_);
+                            if(hash_[lastHash_].index == -1)
                                 break;
                         }
                         hash_[ipos].next = lastHash_;
@@ -270,42 +270,42 @@ public:
             delete [] rowCut_;
             rowCut_ = temp;
         }
-        if (numberCuts_<size_)
+        if(numberCuts_ < size_)
         {
             double newLb = cut.lb();
             double newUb = cut.ub();
             CoinPackedVector vector = cut.row();
-            int numberElements =vector.getNumElements();
-            int * newIndices = vector.getIndices();
-            double * newElements = vector.getElements();
-            CoinSort_2(newIndices,newIndices+numberElements,newElements);
+            int numberElements = vector.getNumElements();
+            int* newIndices = vector.getIndices();
+            double* newElements = vector.getElements();
+            CoinSort_2(newIndices, newIndices + numberElements, newElements);
             int i;
-            bool bad=false;
-            for (i=0; i<numberElements; i++)
+            bool bad = false;
+            for(i = 0; i < numberElements; i++)
             {
                 double value = fabs(newElements[i]);
-                if (value<1.0e-12||value>1.0e12)
-                    bad=true;
+                if(value < 1.0e-12 || value > 1.0e12)
+                    bad = true;
             }
-            if (bad)
+            if(bad)
                 return 1;
             OsiRowCut2 newCut(whichRow);
             newCut.setLb(newLb);
             newCut.setUb(newUb);
             newCut.setRow(vector);
-            int ipos = hashCut(newCut,hashSize_);
+            int ipos = hashCut(newCut, hashSize_);
             int found = -1;
-            int jpos=ipos;
-            while ( true )
+            int jpos = ipos;
+            while(true)
             {
                 int j1 = hash_[ipos].index;
 
-                if ( j1 >= 0 )
+                if(j1 >= 0)
                 {
-                    if ( !same(newCut,*rowCut_[j1]) )
+                    if(!same(newCut, *rowCut_[j1]))
                     {
                         int k = hash_[ipos].next;
-                        if ( k != -1 )
+                        if(k != -1)
                             ipos = k;
                         else
                             break;
@@ -321,32 +321,32 @@ public:
                     break;
                 }
             }
-            if (found<0)
+            if(found < 0)
             {
-                assert (hash_[ipos].next==-1);
-                if (ipos==jpos)
+                assert(hash_[ipos].next == -1);
+                if(ipos == jpos)
                 {
                     // first
-                    hash_[ipos].index=numberCuts_;
+                    hash_[ipos].index = numberCuts_;
                 }
                 else
                 {
                     // find next space
-                    while ( true )
+                    while(true)
                     {
                         ++lastHash_;
-                        assert (lastHash_<hashSize_);
-                        if ( hash_[lastHash_].index == -1 )
+                        assert(lastHash_ < hashSize_);
+                        if(hash_[lastHash_].index == -1)
                             break;
                     }
                     hash_[ipos].next = lastHash_;
                     hash_[lastHash_].index = numberCuts_;
                 }
-                OsiRowCut2 * newCutPtr = new OsiRowCut2(whichRow);
+                OsiRowCut2* newCutPtr = new OsiRowCut2(whichRow);
                 newCutPtr->setLb(newLb);
                 newCutPtr->setUb(newUb);
                 newCutPtr->setRow(vector);
-                rowCut_[numberCuts_++]=newCutPtr;
+                rowCut_[numberCuts_++] = newCutPtr;
                 return 0;
             }
             else
@@ -359,36 +359,36 @@ public:
             return -1;
         }
     }
-    void addCuts(OsiCuts & cs, OsiRowCut ** whichRow,int iPass)
+    void addCuts(OsiCuts & cs, OsiRowCut** whichRow, int iPass)
     {
-        int numberCuts=cs.sizeRowCuts();
+        int numberCuts = cs.sizeRowCuts();
         int i ;
-        if (numberCuts_<nRows_)
+        if(numberCuts_ < nRows_)
         {
-            if ((iPass&1)==1)
+            if((iPass & 1) == 1)
             {
-                for (i=0; i<numberCuts_; i++)
+                for(i = 0; i < numberCuts_; i++)
                 {
                     cs.insert(*rowCut_[i]);
-                    if (whichRow)
+                    if(whichRow)
                     {
-                        int iRow= rowCut_[i]->whichRow();
-                        if (iRow>=0&&!whichRow[iRow])
-                            whichRow[iRow]=cs.rowCutPtr(numberCuts);;
+                        int iRow = rowCut_[i]->whichRow();
+                        if(iRow >= 0 && !whichRow[iRow])
+                            whichRow[iRow] = cs.rowCutPtr(numberCuts);;
                     }
                     numberCuts++;
                 }
             }
             else
             {
-                for (i=numberCuts_-1; i>=0; i--)
+                for(i = numberCuts_ - 1; i >= 0; i--)
                 {
                     cs.insert(*rowCut_[i]);
-                    if (whichRow)
+                    if(whichRow)
                     {
-                        int iRow= rowCut_[i]->whichRow();
-                        if (iRow>=0&&!whichRow[iRow])
-                            whichRow[iRow]=cs.rowCutPtr(numberCuts);;
+                        int iRow = rowCut_[i]->whichRow();
+                        if(iRow >= 0 && !whichRow[iRow])
+                            whichRow[iRow] = cs.rowCutPtr(numberCuts);;
                     }
                     numberCuts++;
                 }
@@ -397,81 +397,81 @@ public:
         else
         {
             // just best
-            double * effectiveness = new double[numberCuts_];
-            int iCut=0;
-            for (i=0; i<numberCuts_; i++)
+            double* effectiveness = new double[numberCuts_];
+            int iCut = 0;
+            for(i = 0; i < numberCuts_; i++)
             {
                 double value = -rowCut_[i]->effectiveness();
-                if (whichRow)
+                if(whichRow)
                 {
-                    int iRow= rowCut_[i]->whichRow();
-                    if (iRow>=0)
+                    int iRow = rowCut_[i]->whichRow();
+                    if(iRow >= 0)
                         value -= 1.0e10;
                 }
-                effectiveness[iCut++]=value;
+                effectiveness[iCut++] = value;
             }
-            std::sort(effectiveness,effectiveness+numberCuts_);
+            std::sort(effectiveness, effectiveness + numberCuts_);
             double threshold = -1.0e20;
-            if (iCut>nRows_)
+            if(iCut > nRows_)
                 threshold = effectiveness[nRows_];
-            for ( i=0; i<numberCuts_; i++)
+            for(i = 0; i < numberCuts_; i++)
             {
-                if (rowCut_[i]->effectiveness()>threshold)
+                if(rowCut_[i]->effectiveness() > threshold)
                 {
                     cs.insert(*rowCut_[i]);
-                    if (whichRow)
+                    if(whichRow)
                     {
-                        int iRow= rowCut_[i]->whichRow();
-                        if (iRow>=0&&!whichRow[iRow])
-                            whichRow[iRow]=cs.rowCutPtr(numberCuts);;
+                        int iRow = rowCut_[i]->whichRow();
+                        if(iRow >= 0 && !whichRow[iRow])
+                            whichRow[iRow] = cs.rowCutPtr(numberCuts);;
                     }
                     numberCuts++;
                 }
             }
             delete[] effectiveness ;
         }
-        for (i = 0 ; i < numberCuts_ ; i++)
+        for(i = 0 ; i < numberCuts_ ; i++)
         {
             delete rowCut_[i] ;
             rowCut_[i] = 0 ;
         }
-        numberCuts_=0;
+        numberCuts_ = 0;
     }
 };
 // Adds in cut to list
 #ifdef CGL_DEBUG
 // Checks bounds okay against debugger
-static void checkBounds(const OsiRowCutDebugger * debugger,OsiColCut & cut)
+static void checkBounds(const OsiRowCutDebugger* debugger, OsiColCut & cut)
 {
-    if (debugger)
+    if(debugger)
     {
         // on optimal path
-        const double * optimal = debugger->optimalSolution();
+        const double* optimal = debugger->optimalSolution();
         int i;
         int nIndex;
-        const double * values;
-        const int * index;
+        const double* values;
+        const int* index;
         const CoinPackedVector & lbs = cut.lbs();
         values = lbs.getElements();
         nIndex = lbs.getNumElements();
         index = lbs.getIndices();
-        for (i=0; i<nIndex; i++)
+        for(i = 0; i < nIndex; i++)
         {
-            double value=values[i];
+            double value = values[i];
             int iColumn = index[i];
-            printf("%d optimal %g lower %g\n",iColumn,optimal[iColumn],value);
-            assert(value<=optimal[iColumn]+1.0e-5);
+            printf("%d optimal %g lower %g\n", iColumn, optimal[iColumn], value);
+            assert(value <= optimal[iColumn] + 1.0e-5);
         }
         const CoinPackedVector & ubs = cut.ubs();
         values = ubs.getElements();
         nIndex = ubs.getNumElements();
         index = ubs.getIndices();
-        for (i=0; i<nIndex; i++)
+        for(i = 0; i < nIndex; i++)
         {
-            double value=values[i];
+            double value = values[i];
             int iColumn = index[i];
-            printf("%d optimal %g upper %g\n",iColumn,optimal[iColumn],value);
-            assert(value>=optimal[iColumn]-1.0e-5);
+            printf("%d optimal %g upper %g\n", iColumn, optimal[iColumn], value);
+            assert(value >= optimal[iColumn] - 1.0e-5);
         }
     }
 }
@@ -480,28 +480,28 @@ static void checkBounds(const OsiRowCutDebugger * debugger,OsiColCut & cut)
 // This tightens column bounds (and can declare infeasibility)
 // It may also declare rows to be redundant
 int
-CglProbing::tighten(double *colLower, double * colUpper,
-                    const int *column, const double *rowElements,
-                    const CoinBigIndex *rowStart,
-                    const CoinBigIndex * rowStartPos,const int * rowLength,
-                    double *rowLower, double *rowUpper,
-                    int nRows,int nCols,char * intVar,int maxpass,
+CglProbing::tighten(double* colLower, double* colUpper,
+                    const int* column, const double* rowElements,
+                    const CoinBigIndex* rowStart,
+                    const CoinBigIndex* rowStartPos, const int* rowLength,
+                    double* rowLower, double* rowUpper,
+                    int nRows, int nCols, char* intVar, int maxpass,
                     double tolerance) const
 {
     int i, j, k, kre;
     int krs;
     int dolrows;
     int iflagu, iflagl;
-    int ntotal=0,nchange=1,jpass=0;
+    int ntotal = 0, nchange = 1, jpass = 0;
     double dmaxup, dmaxdown, dbound;
-    int ninfeas=0;
+    int ninfeas = 0;
     // For clique stuff
-    double * cliqueMin=NULL;
-    double * cliqueMax=NULL;
+    double* cliqueMin = NULL;
+    double* cliqueMax = NULL;
     // And second best ones
-    double * cliqueMin2 = NULL;
-    double * cliqueMax2 = NULL;
-    if (cliqueRowStart_&&numberRows_&&cliqueRowStart_[numberRows_])
+    double* cliqueMin2 = NULL;
+    double* cliqueMax2 = NULL;
+    if(cliqueRowStart_ && numberRows_ && cliqueRowStart_[numberRows_])
     {
         cliqueMin = new double[nCols];
         cliqueMax = new double[nCols];
@@ -511,17 +511,17 @@ CglProbing::tighten(double *colLower, double * colUpper,
     else
     {
         // do without cliques and using sorted version
-        assert (rowStartPos);
+        assert(rowStartPos);
         while(nchange)
         {
             nchange = 0;
-            if (jpass==maxpass) break;
+            if(jpass == maxpass) break;
             jpass++;
             dolrows = (jpass & 1) == 1;
 
-            for (i = 0; i < nRows; ++i)
+            for(i = 0; i < nRows; ++i)
             {
-                if (rowLower[i]>-1.0e20||rowUpper[i]<1.0e20)
+                if(rowLower[i] > -1.0e20 || rowUpper[i] < 1.0e20)
                 {
                     int iflagu = 0;
                     int iflagl = 0;
@@ -529,42 +529,42 @@ CglProbing::tighten(double *colLower, double * colUpper,
                     double dmaxdown = 0.0;
                     int krs = rowStart[i];
                     int krs2 = rowStartPos[i];
-                    int kre = rowStart[i]+rowLength[i];
+                    int kre = rowStart[i] + rowLength[i];
 
                     /* ------------------------------------------------------------*/
                     /* Compute L(i) and U(i) */
                     /* ------------------------------------------------------------*/
-                    for (k = krs; k < krs2; ++k)
+                    for(k = krs; k < krs2; ++k)
                     {
-                        double value=rowElements[k];
+                        double value = rowElements[k];
                         int j = column[k];
-                        if (colUpper[j] < 1.0e12)
+                        if(colUpper[j] < 1.0e12)
                             dmaxdown += colUpper[j] * value;
                         else
                             ++iflagl;
-                        if (colLower[j] > -1.0e12)
+                        if(colLower[j] > -1.0e12)
                             dmaxup += colLower[j] * value;
                         else
                             ++iflagu;
                     }
-                    for (k = krs2; k < kre; ++k)
+                    for(k = krs2; k < kre; ++k)
                     {
-                        double value=rowElements[k];
+                        double value = rowElements[k];
                         int j = column[k];
-                        if (colUpper[j] < 1.0e12)
+                        if(colUpper[j] < 1.0e12)
                             dmaxup += colUpper[j] * value;
                         else
                             ++iflagu;
-                        if (colLower[j] > -1.0e12)
+                        if(colLower[j] > -1.0e12)
                             dmaxdown += colLower[j] * value;
                         else
                             ++iflagl;
                     }
-                    if (iflagu)
-                        dmaxup=1.0e31;
-                    if (iflagl)
-                        dmaxdown=-1.0e31;
-                    if (dmaxup <= rowUpper[i] + tolerance && dmaxdown >= rowLower[i] - tolerance)
+                    if(iflagu)
+                        dmaxup = 1.0e31;
+                    if(iflagl)
+                        dmaxdown = -1.0e31;
+                    if(dmaxup <= rowUpper[i] + tolerance && dmaxdown >= rowLower[i] - tolerance)
                     {
                         /*
                          * The sum of the column maxs is at most the row ub, and
@@ -575,12 +575,12 @@ CglProbing::tighten(double *colLower, double * colUpper,
                          * where the singleton in question is the row slack.
                          */
                         ++nchange;
-                        rowLower[i]=-COIN_DBL_MAX;
-                        rowUpper[i]=COIN_DBL_MAX;
+                        rowLower[i] = -COIN_DBL_MAX;
+                        rowUpper[i] = COIN_DBL_MAX;
                     }
                     else
                     {
-                        if (dmaxup < rowLower[i] -tolerance || dmaxdown > rowUpper[i]+tolerance)
+                        if(dmaxup < rowLower[i] - tolerance || dmaxdown > rowUpper[i] + tolerance)
                         {
                             ninfeas++;
                             break;
@@ -589,9 +589,9 @@ CglProbing::tighten(double *colLower, double * colUpper,
                         /* -------------------------------------------------------------*/
                         /* below is deliberate mistake (previously was by chance) */
                         /*        never do both */
-                        if (iflagu == 0 && rowLower[i] > 0.0 && iflagl == 0 && rowUpper[i] < 1e15)
+                        if(iflagu == 0 && rowLower[i] > 0.0 && iflagl == 0 && rowUpper[i] < 1e15)
                         {
-                            if (dolrows)
+                            if(dolrows)
                             {
                                 iflagu = 1;
                             }
@@ -600,18 +600,18 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                 iflagl = 1;
                             }
                         }
-                        if (iflagu == 0 && rowLower[i] > -1e15)
+                        if(iflagu == 0 && rowLower[i] > -1e15)
                         {
-                            for (k = krs; k < kre; ++k)
+                            for(k = krs; k < kre; ++k)
                             {
-                                double value=rowElements[k];
+                                double value = rowElements[k];
                                 j = column[k];
-                                if (value > 0.0)
+                                if(value > 0.0)
                                 {
-                                    if (colUpper[j] < 1.0e12)
+                                    if(colUpper[j] < 1.0e12)
                                     {
                                         dbound = colUpper[j] + (rowLower[i] - dmaxup) / value;
-                                        if (dbound > colLower[j] + 1.0e-8)
+                                        if(dbound > colLower[j] + 1.0e-8)
                                         {
                                             /* we can tighten the lower bound */
                                             /* the paper mentions this as a possibility on p. 227 */
@@ -631,12 +631,12 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                              * By doing it this way, we can tighten bounds and
                                              * get forcing constraints for free.
                                              */
-                                            if (colUpper[j] - colLower[j] <= tolerance)
+                                            if(colUpper[j] - colLower[j] <= tolerance)
                                             {
                                                 /* --------------------------------------------------*/
                                                 /*                check if infeasible !!!!! */
                                                 /* --------------------------------------------------*/
-                                                if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                 {
                                                     ninfeas++;
                                                 }
@@ -646,19 +646,19 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                 }
                                 else
                                 {
-                                    if (colLower[j] > -1.0e12)
+                                    if(colLower[j] > -1.0e12)
                                     {
                                         dbound = colLower[j] + (rowLower[i] - dmaxup) / value;
-                                        if (dbound < colUpper[j] - 1.0e-8)
+                                        if(dbound < colUpper[j] - 1.0e-8)
                                         {
                                             colUpper[j] = dbound;
                                             ++nchange;
-                                            if (colUpper[j] - colLower[j] <= tolerance)
+                                            if(colUpper[j] - colLower[j] <= tolerance)
                                             {
                                                 /* --------------------------------------------------*/
                                                 /*                check if infeasible !!!!! */
                                                 /* --------------------------------------------------*/
-                                                if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                 {
                                                     ninfeas++;
                                                 }
@@ -672,27 +672,27 @@ CglProbing::tighten(double *colLower, double * colUpper,
                         /* ----------------------------------------------------------------*/
                         /*        Finite L(i) */
                         /* ----------------------------------------------------------------*/
-                        if (iflagl == 0 && rowUpper[i] < 1e15)
+                        if(iflagl == 0 && rowUpper[i] < 1e15)
                         {
-                            for (k = krs; k < kre; ++k)
+                            for(k = krs; k < kre; ++k)
                             {
-                                double value=rowElements[k];
+                                double value = rowElements[k];
                                 j = column[k];
-                                if (value < 0.0)
+                                if(value < 0.0)
                                 {
-                                    if (colUpper[j] < 1.0e12)
+                                    if(colUpper[j] < 1.0e12)
                                     {
                                         dbound = colUpper[j] + (rowUpper[i] - dmaxdown) / value;
-                                        if (dbound > colLower[j] + 1.0e-8)
+                                        if(dbound > colLower[j] + 1.0e-8)
                                         {
                                             colLower[j] = dbound;
                                             ++nchange;
-                                            if (! (colUpper[j] - colLower[j] > tolerance))
+                                            if(!(colUpper[j] - colLower[j] > tolerance))
                                             {
                                                 /* --------------------------------------------------*/
                                                 /*                check if infeasible !!!!! */
                                                 /* --------------------------------------------------*/
-                                                if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                 {
                                                     ninfeas++;
                                                 }
@@ -702,19 +702,19 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                 }
                                 else
                                 {
-                                    if (colLower[j] > -1.0e12)
+                                    if(colLower[j] > -1.0e12)
                                     {
                                         dbound = colLower[j] + (rowUpper[i] - dmaxdown) / value;
-                                        if (dbound < colUpper[j] - 1.0e-8)
+                                        if(dbound < colUpper[j] - 1.0e-8)
                                         {
                                             colUpper[j] = dbound;
                                             ++nchange;
-                                            if (! (colUpper[j] - colLower[j] > tolerance))
+                                            if(!(colUpper[j] - colLower[j] > tolerance))
                                             {
                                                 /* --------------------------------------------------*/
                                                 /*                check if infeasible !!!!! */
                                                 /* --------------------------------------------------*/
-                                                if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                 {
                                                     ninfeas++;
                                                 }
@@ -727,21 +727,21 @@ CglProbing::tighten(double *colLower, double * colUpper,
                     }
                 }
             }
-            for (j = 0; j < nCols; ++j)
+            for(j = 0; j < nCols; ++j)
             {
-                if (intVar[j])
+                if(intVar[j])
                 {
-                    if (colUpper[j]-colLower[j]>1.0e-8)
+                    if(colUpper[j] - colLower[j] > 1.0e-8)
                     {
-                        if (floor(colUpper[j]+1.0e-4)<colUpper[j])
+                        if(floor(colUpper[j] + 1.0e-4) < colUpper[j])
                             nchange++;
                         // clean up anyway
-                        colUpper[j]=floor(colUpper[j]+1.0e-4);
-                        if (ceil(colLower[j]-1.0e-4)>colLower[j])
+                        colUpper[j] = floor(colUpper[j] + 1.0e-4);
+                        if(ceil(colLower[j] - 1.0e-4) > colLower[j])
                             nchange++;
                         // clean up anyway
-                        colLower[j]=ceil(colLower[j]-1.0e-4);
-                        if (colUpper[j]<colLower[j])
+                        colLower[j] = ceil(colLower[j] - 1.0e-4);
+                        if(colUpper[j] < colLower[j])
                         {
                             /*printf("infeasible\n");*/
                             ninfeas++;
@@ -749,7 +749,7 @@ CglProbing::tighten(double *colLower, double * colUpper,
                     }
                 }
             }
-            if (ninfeas) break;
+            if(ninfeas) break;
         }
         return (ninfeas);
     }
@@ -759,79 +759,79 @@ CglProbing::tighten(double *colLower, double * colUpper,
         int ilbred = 0; /* bounds reduced */
         int iubred = 0; /* bounds reduced */
         int nrwdrp = 0; /* redundant rows */
-        if (jpass==maxpass) break;
+        if(jpass == maxpass) break;
         jpass++;
         dolrows = (jpass & 1) == 1;
 
-        for (i = 0; i < nRows; ++i)
+        for(i = 0; i < nRows; ++i)
         {
-            bool cliqueChanges=false;
-            if (rowLower[i]>-1.0e20||rowUpper[i]<1.0e20)
+            bool cliqueChanges = false;
+            if(rowLower[i] > -1.0e20 || rowUpper[i] < 1.0e20)
             {
                 iflagu = 0;
                 iflagl = 0;
                 dmaxup = 0.0;
                 dmaxdown = 0.0;
                 krs = rowStart[i];
-                kre = rowStart[i]+rowLength[i];
+                kre = rowStart[i] + rowLength[i];
 
                 /* ------------------------------------------------------------*/
                 /* Compute L(i) and U(i) */
                 /* ------------------------------------------------------------*/
-                if (!cliqueMin||i>=numberRows_||cliqueRowStart_[i]==cliqueRowStart_[i+1])
+                if(!cliqueMin || i >= numberRows_ || cliqueRowStart_[i] == cliqueRowStart_[i + 1])
                 {
                     // without cliques
-                    for (k = krs; k < kre; ++k)
+                    for(k = krs; k < kre; ++k)
                     {
-                        double value=rowElements[k];
+                        double value = rowElements[k];
                         j = column[k];
-                        if (value > 0.0)
+                        if(value > 0.0)
                         {
-                            if (colUpper[j] < 1.0e12)
+                            if(colUpper[j] < 1.0e12)
                                 dmaxup += colUpper[j] * value;
                             else
                                 ++iflagu;
-                            if (colLower[j] > -1.0e12)
+                            if(colLower[j] > -1.0e12)
                                 dmaxdown += colLower[j] * value;
                             else
                                 ++iflagl;
                         }
-                        else if (value<0.0)
+                        else if(value < 0.0)
                         {
-                            if (colUpper[j] < 1.0e12)
+                            if(colUpper[j] < 1.0e12)
                                 dmaxdown += colUpper[j] * value;
                             else
                                 ++iflagl;
-                            if (colLower[j] > -1.0e12)
+                            if(colLower[j] > -1.0e12)
                                 dmaxup += colLower[j] * value;
                             else
                                 ++iflagu;
                         }
                     }
-                    if (iflagu)
-                        dmaxup=1.0e31;
-                    if (iflagl)
-                        dmaxdown=-1.0e31;
+                    if(iflagu)
+                        dmaxup = 1.0e31;
+                    if(iflagl)
+                        dmaxdown = -1.0e31;
                 }
                 else
                 {
                     // with cliques
-                    int nClique=0;
-                    int bias = cliqueRowStart_[i]-krs;
-                    double dmaxup2=0.0;
-                    double dmaxdown2=0.0;
-                    double sumZeroFixes=0.0;
-                    for (k = krs; k < kre; ++k)
+                    int nClique = 0;
+                    int bias = cliqueRowStart_[i] - krs;
+                    double dmaxup2 = 0.0;
+                    double dmaxdown2 = 0.0;
+                    double sumZeroFixes = 0.0;
+                    for(k = krs; k < kre; ++k)
                     {
-                        double value=rowElements[k];
+                        double value = rowElements[k];
                         j = column[k];
-                        int iClique = sequenceInCliqueEntry(cliqueRow_[k+bias]);
-                        bool oneFixes = oneFixesInCliqueEntry(cliqueRow_[k+bias]);
-                        if (iClique>=numberColumns_||colUpper[j]==colLower[j])
+                        int iClique = sequenceInCliqueEntry(cliqueRow_[k + bias]);
+                        bool oneFixes = oneFixesInCliqueEntry(cliqueRow_[k + bias]);
+                        if(iClique >= numberColumns_ || colUpper[j] == colLower[j])
                         {
-                            if (value > 0.0)
+                            if(value > 0.0)
                             {
-                                if (colUpper[j] >= 1.0e12)
+                                if(colUpper[j] >= 1.0e12)
                                 {
                                     dmaxup = 1e31;
                                     ++iflagu;
@@ -840,7 +840,7 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                 {
                                     dmaxup += colUpper[j] * value;
                                 }
-                                if (colLower[j] <= -1.0e12)
+                                if(colLower[j] <= -1.0e12)
                                 {
                                     dmaxdown = -1e31;
                                     ++iflagl;
@@ -850,9 +850,9 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                     dmaxdown += colLower[j] * value;
                                 }
                             }
-                            else if (value<0.0)
+                            else if(value < 0.0)
                             {
-                                if (colUpper[j] >= 1.0e12)
+                                if(colUpper[j] >= 1.0e12)
                                 {
                                     dmaxdown = -1e31;
                                     ++iflagl;
@@ -861,7 +861,7 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                 {
                                     dmaxdown += colUpper[j] * value;
                                 }
-                                if (colLower[j] <= -1.0e12)
+                                if(colLower[j] <= -1.0e12)
                                 {
                                     dmaxup = 1e31;
                                     ++iflagu;
@@ -875,73 +875,73 @@ CglProbing::tighten(double *colLower, double * colUpper,
                         else
                         {
                             // clique may help
-                            if (iClique>=nClique)
+                            if(iClique >= nClique)
                             {
                                 //zero out
-                                for (int j=nClique; j<=iClique; j++)
+                                for(int j = nClique; j <= iClique; j++)
                                 {
-                                    cliqueMin[j]=0.0;
-                                    cliqueMax[j]=0.0;
-                                    cliqueMin2[j]=0.0;
-                                    cliqueMax2[j]=0.0;
+                                    cliqueMin[j] = 0.0;
+                                    cliqueMax[j] = 0.0;
+                                    cliqueMin2[j] = 0.0;
+                                    cliqueMax2[j] = 0.0;
                                 }
-                                nClique=iClique+1;
+                                nClique = iClique + 1;
                             }
                             //  Update best and second best
-                            if (oneFixes)
+                            if(oneFixes)
                             {
-                                if (value > 0.0)
+                                if(value > 0.0)
                                 {
                                     dmaxup2 += value;
                                     cliqueMax2[iClique] = cliqueMax[iClique];
-                                    cliqueMax[iClique] = CoinMax(cliqueMax[iClique],value);
+                                    cliqueMax[iClique] = CoinMax(cliqueMax[iClique], value);
                                 }
-                                else if (value<0.0)
+                                else if(value < 0.0)
                                 {
                                     dmaxdown2 +=  value;
                                     cliqueMin2[iClique] = cliqueMin[iClique];
-                                    cliqueMin[iClique] = CoinMin(cliqueMin[iClique],value);
+                                    cliqueMin[iClique] = CoinMin(cliqueMin[iClique], value);
                                 }
                             }
                             else
                             {
                                 sumZeroFixes += value;
-                                if (value > 0.0)
+                                if(value > 0.0)
                                 {
                                     dmaxup2 += value;
                                     cliqueMin2[iClique] = cliqueMin[iClique];
-                                    cliqueMin[iClique] = CoinMin(cliqueMin[iClique],-value);
+                                    cliqueMin[iClique] = CoinMin(cliqueMin[iClique], -value);
                                 }
-                                else if (value<0.0)
+                                else if(value < 0.0)
                                 {
                                     dmaxdown2 +=  value;
                                     cliqueMax2[iClique] = cliqueMax[iClique];
-                                    cliqueMax[iClique] = CoinMax(cliqueMax[iClique],-value);
+                                    cliqueMax[iClique] = CoinMax(cliqueMax[iClique], -value);
                                 }
                             }
                         }
                     }
                     double dmaxup3 = dmaxup + sumZeroFixes;
                     double dmaxdown3 = dmaxdown + sumZeroFixes;
-                    for (int iClique=0; iClique<nClique; iClique++)
+                    for(int iClique = 0; iClique < nClique; iClique++)
                     {
                         dmaxup3 += cliqueMax[iClique];
                         dmaxdown3 += cliqueMin[iClique];
                     }
                     dmaxup += dmaxup2;
                     dmaxdown += dmaxdown2;
-                    assert (dmaxup3<=dmaxup+1.0e-8);
-                    assert (dmaxdown3>=dmaxdown-1.0e-8);
-                    if (dmaxup3<dmaxup-1.0e-8||dmaxdown3>dmaxdown+1.0e-8)
+                    assert(dmaxup3 <= dmaxup + 1.0e-8);
+                    assert(dmaxdown3 >= dmaxdown - 1.0e-8);
+                    if(dmaxup3 < dmaxup - 1.0e-8 || dmaxdown3 > dmaxdown + 1.0e-8)
                     {
-                        cliqueChanges=true;
+                        cliqueChanges = true;
                         //printf("normal min/max %g , %g clique %g , %g\n",
                         //     dmaxdown,dmaxup,dmaxdown3,dmaxup3);
-                        dmaxdown=dmaxdown3;
-                        dmaxup=dmaxup3;
+                        dmaxdown = dmaxdown3;
+                        dmaxup = dmaxup3;
                     }
                 }
-                if (dmaxup <= rowUpper[i] + tolerance && dmaxdown >= rowLower[i] - tolerance)
+                if(dmaxup <= rowUpper[i] + tolerance && dmaxdown >= rowLower[i] - tolerance)
                 {
                     /*
                      * The sum of the column maxs is at most the row ub, and
@@ -952,24 +952,24 @@ CglProbing::tighten(double *colLower, double * colUpper,
                      * where the singleton in question is the row slack.
                      */
                     ++nrwdrp;
-                    rowLower[i]=-COIN_DBL_MAX;
-                    rowUpper[i]=COIN_DBL_MAX;
+                    rowLower[i] = -COIN_DBL_MAX;
+                    rowUpper[i] = COIN_DBL_MAX;
                 }
                 else
                 {
-                    if (dmaxup < rowLower[i] -tolerance || dmaxdown > rowUpper[i]+tolerance)
+                    if(dmaxup < rowLower[i] - tolerance || dmaxdown > rowUpper[i] + tolerance)
                     {
                         ninfeas++;
-                        assert (!cliqueChanges);
+                        assert(!cliqueChanges);
                         break;
                     }
                     /*        Finite U(i) */
                     /* -------------------------------------------------------------*/
                     /* below is deliberate mistake (previously was by chance) */
                     /*        never do both */
-                    if (iflagu == 0 && rowLower[i] > 0.0 && iflagl == 0 && rowUpper[i] < 1e15)
+                    if(iflagu == 0 && rowLower[i] > 0.0 && iflagl == 0 && rowUpper[i] < 1e15)
                     {
-                        if (dolrows)
+                        if(dolrows)
                         {
                             iflagu = 1;
                         }
@@ -978,21 +978,21 @@ CglProbing::tighten(double *colLower, double * colUpper,
                             iflagl = 1;
                         }
                     }
-                    if (!cliqueChanges)
+                    if(!cliqueChanges)
                     {
                         // without cliques
-                        if (iflagu == 0 && rowLower[i] > -1e15)
+                        if(iflagu == 0 && rowLower[i] > -1e15)
                         {
-                            for (k = krs; k < kre; ++k)
+                            for(k = krs; k < kre; ++k)
                             {
-                                double value=rowElements[k];
+                                double value = rowElements[k];
                                 j = column[k];
-                                if (value > 0.0)
+                                if(value > 0.0)
                                 {
-                                    if (colUpper[j] < 1.0e12)
+                                    if(colUpper[j] < 1.0e12)
                                     {
                                         dbound = colUpper[j] + (rowLower[i] - dmaxup) / value;
-                                        if (dbound > colLower[j] + 1.0e-8)
+                                        if(dbound > colLower[j] + 1.0e-8)
                                         {
                                             /* we can tighten the lower bound */
                                             /* the paper mentions this as a possibility on p. 227 */
@@ -1012,12 +1012,12 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                              * By doing it this way, we can tighten bounds and
                                              * get forcing constraints for free.
                                              */
-                                            if (colUpper[j] - colLower[j] <= tolerance)
+                                            if(colUpper[j] - colLower[j] <= tolerance)
                                             {
                                                 /* --------------------------------------------------*/
                                                 /*                check if infeasible !!!!! */
                                                 /* --------------------------------------------------*/
-                                                if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                 {
                                                     ninfeas++;
                                                 }
@@ -1027,19 +1027,19 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                 }
                                 else
                                 {
-                                    if (colLower[j] > -1.0e12)
+                                    if(colLower[j] > -1.0e12)
                                     {
                                         dbound = colLower[j] + (rowLower[i] - dmaxup) / value;
-                                        if (dbound < colUpper[j] - 1.0e-8)
+                                        if(dbound < colUpper[j] - 1.0e-8)
                                         {
                                             colUpper[j] = dbound;
                                             ++iubred;
-                                            if (colUpper[j] - colLower[j] <= tolerance)
+                                            if(colUpper[j] - colLower[j] <= tolerance)
                                             {
                                                 /* --------------------------------------------------*/
                                                 /*                check if infeasible !!!!! */
                                                 /* --------------------------------------------------*/
-                                                if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                 {
                                                     ninfeas++;
                                                 }
@@ -1053,27 +1053,27 @@ CglProbing::tighten(double *colLower, double * colUpper,
                         /* ----------------------------------------------------------------*/
                         /*        Finite L(i) */
                         /* ----------------------------------------------------------------*/
-                        if (iflagl == 0 && rowUpper[i] < 1e15)
+                        if(iflagl == 0 && rowUpper[i] < 1e15)
                         {
-                            for (k = krs; k < kre; ++k)
+                            for(k = krs; k < kre; ++k)
                             {
-                                double value=rowElements[k];
+                                double value = rowElements[k];
                                 j = column[k];
-                                if (value < 0.0)
+                                if(value < 0.0)
                                 {
-                                    if (colUpper[j] < 1.0e12)
+                                    if(colUpper[j] < 1.0e12)
                                     {
                                         dbound = colUpper[j] + (rowUpper[i] - dmaxdown) / value;
-                                        if (dbound > colLower[j] + 1.0e-8)
+                                        if(dbound > colLower[j] + 1.0e-8)
                                         {
                                             colLower[j] = dbound;
                                             ++ilbred;
-                                            if (! (colUpper[j] - colLower[j] > tolerance))
+                                            if(!(colUpper[j] - colLower[j] > tolerance))
                                             {
                                                 /* --------------------------------------------------*/
                                                 /*                check if infeasible !!!!! */
                                                 /* --------------------------------------------------*/
-                                                if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                 {
                                                     ninfeas++;
                                                 }
@@ -1083,19 +1083,19 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                 }
                                 else
                                 {
-                                    if (colLower[j] > -1.0e12)
+                                    if(colLower[j] > -1.0e12)
                                     {
                                         dbound = colLower[j] + (rowUpper[i] - dmaxdown) / value;
-                                        if (dbound < colUpper[j] - 1.0e-8)
+                                        if(dbound < colUpper[j] - 1.0e-8)
                                         {
                                             colUpper[j] = dbound;
                                             ++iubred;
-                                            if (! (colUpper[j] - colLower[j] > tolerance))
+                                            if(!(colUpper[j] - colLower[j] > tolerance))
                                             {
                                                 /* --------------------------------------------------*/
                                                 /*                check if infeasible !!!!! */
                                                 /* --------------------------------------------------*/
-                                                if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                 {
                                                     ninfeas++;
                                                 }
@@ -1109,23 +1109,23 @@ CglProbing::tighten(double *colLower, double * colUpper,
                     else
                     {
                         // with cliques
-                        int bias = cliqueRowStart_[i]-krs;
-                        if (iflagu == 0 && rowLower[i] > -1e15)
+                        int bias = cliqueRowStart_[i] - krs;
+                        if(iflagu == 0 && rowLower[i] > -1e15)
                         {
-                            for (k = krs; k < kre; ++k)
+                            for(k = krs; k < kre; ++k)
                             {
-                                double value=rowElements[k];
+                                double value = rowElements[k];
                                 j = column[k];
-                                int iClique = sequenceInCliqueEntry(cliqueRow_[k+bias]);
+                                int iClique = sequenceInCliqueEntry(cliqueRow_[k + bias]);
                                 //bool oneFixes = (cliqueRow_[k+bias].oneFixes!=0);
-                                if (iClique>=numberColumns_)
+                                if(iClique >= numberColumns_)
                                 {
-                                    if (value > 0.0)
+                                    if(value > 0.0)
                                     {
-                                        if (colUpper[j] < 1.0e12)
+                                        if(colUpper[j] < 1.0e12)
                                         {
                                             dbound = colUpper[j] + (rowLower[i] - dmaxup) / value;
-                                            if (dbound > colLower[j] + 1.0e-8)
+                                            if(dbound > colLower[j] + 1.0e-8)
                                             {
                                                 /* we can tighten the lower bound */
                                                 /* the paper mentions this as a possibility on p. 227 */
@@ -1145,30 +1145,30 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                                  * By doing it this way, we can tighten bounds and
                                                  * get forcing constraints for free.
                                                  */
-                                                if (colUpper[j] - colLower[j] <= tolerance)
+                                                if(colUpper[j] - colLower[j] <= tolerance)
                                                 {
                                                     /* --------------------------------------------------*/
                                                     /*                check if infeasible !!!!! */
                                                     /* --------------------------------------------------*/
-                                                    if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                    if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                     {
                                                         ninfeas++;
                                                     }
                                                 }
 #if 0
                                             }
-                                            else if (intVar[j]==1 && rowUpper[i]>1.0e20)
+                                            else if(intVar[j] == 1 && rowUpper[i] > 1.0e20)
                                             {
                                                 // can we modify coefficient
-                                                if (dmaxdown+value>rowLower[i]+1.0e-8)
+                                                if(dmaxdown + value > rowLower[i] + 1.0e-8)
                                                 {
-                                                    assert (dmaxdown<rowLower[i]+1.0e-8);
-                                                    double change = dmaxdown+value - rowLower[i];
+                                                    assert(dmaxdown < rowLower[i] + 1.0e-8);
+                                                    double change = dmaxdown + value - rowLower[i];
                                                     double newValue = value - change;
-                                                    if (newValue<1.0e-12)
-                                                        newValue=0.0;
+                                                    if(newValue < 1.0e-12)
+                                                        newValue = 0.0;
                                                     printf("Could change value from %g to %g\n",
-                                                           value,newValue);
+                                                           value, newValue);
                                                     // dmaxup -= change;
                                                 }
 #endif
@@ -1177,38 +1177,38 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                     }
                                     else
                                     {
-                                        if (colLower[j] > -1.0e12)
+                                        if(colLower[j] > -1.0e12)
                                         {
                                             dbound = colLower[j] + (rowLower[i] - dmaxup) / value;
-                                            if (dbound < colUpper[j] - 1.0e-8)
+                                            if(dbound < colUpper[j] - 1.0e-8)
                                             {
                                                 colUpper[j] = dbound;
                                                 ++iubred;
-                                                if (colUpper[j] - colLower[j] <= tolerance)
+                                                if(colUpper[j] - colLower[j] <= tolerance)
                                                 {
                                                     /* --------------------------------------------------*/
                                                     /*                check if infeasible !!!!! */
                                                     /* --------------------------------------------------*/
-                                                    if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                    if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                     {
                                                         ninfeas++;
                                                     }
                                                 }
 #if 0
                                             }
-                                            else if (intVar[j]==1 && rowUpper[i]>1.0e20)
+                                            else if(intVar[j] == 1 && rowUpper[i] > 1.0e20)
                                             {
                                                 // can we modify coefficient
-                                                if (dmaxdown-value>rowLower[i]+1.0e-8)
+                                                if(dmaxdown - value > rowLower[i] + 1.0e-8)
                                                 {
-                                                    assert (dmaxdown<rowLower[i]+1.0e-8);
-                                                    double change = dmaxdown-value-rowLower[i];
-                                                    double newValue = value+change;
-                                                    double newLower = rowLower[i]+change;
-                                                    if (newValue<1.0e-12)
-                                                        newValue=0.0;
+                                                    assert(dmaxdown < rowLower[i] + 1.0e-8);
+                                                    double change = dmaxdown - value - rowLower[i];
+                                                    double newValue = value + change;
+                                                    double newLower = rowLower[i] + change;
+                                                    if(newValue < 1.0e-12)
+                                                        newValue = 0.0;
                                                     printf("Could change value from %g to %g and lorow from %g to %g\n",
-                                                           value,newValue,rowLower[i],newLower);
+                                                           value, newValue, rowLower[i], newLower);
                                                     // dmaxdown += change
                                                 }
 #endif
@@ -1216,29 +1216,29 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                         }
                                     }
                                 }
-                                else if (colUpper[j]>colLower[j])
+                                else if(colUpper[j] > colLower[j])
                                 {
                                     // in clique
                                     // adjustment
-                                    double dmaxup2=dmaxup;
-                                    assert (cliqueMax[iClique]>=0);
-                                    assert (cliqueMax2[iClique]>=0);
+                                    double dmaxup2 = dmaxup;
+                                    assert(cliqueMax[iClique] >= 0);
+                                    assert(cliqueMax2[iClique] >= 0);
                                     /* get max up if at other bound
                                        May not go down at all but will not go up */
-                                    if (fabs(value)==fabs(cliqueMax[iClique]))
-                                        dmaxup2 -= cliqueMax[iClique]-cliqueMax2[iClique];
-                                    if (dmaxup2<rowLower[i]-1.0e-8)
+                                    if(fabs(value) == fabs(cliqueMax[iClique]))
+                                        dmaxup2 -= cliqueMax[iClique] - cliqueMax2[iClique];
+                                    if(dmaxup2 < rowLower[i] - 1.0e-8)
                                     {
                                         /* --------------------------------------------------*/
                                         /*                check if infeasible !!!!! */
                                         /* --------------------------------------------------*/
-                                        if ( dmaxup<rowLower[i]-1.0e-8)
+                                        if(dmaxup < rowLower[i] - 1.0e-8)
                                         {
                                             ninfeas++;
                                         }
                                         else
                                         {
-                                            if (value > 0.0)
+                                            if(value > 0.0)
                                             {
                                                 colLower[j] = 1.0;
                                                 ++ilbred;
@@ -1257,49 +1257,49 @@ CglProbing::tighten(double *colLower, double * colUpper,
                         /* ----------------------------------------------------------------*/
                         /*        Finite L(i) */
                         /* ----------------------------------------------------------------*/
-                        if (iflagl == 0 && rowUpper[i] < 1e15)
+                        if(iflagl == 0 && rowUpper[i] < 1e15)
                         {
-                            for (k = krs; k < kre; ++k)
+                            for(k = krs; k < kre; ++k)
                             {
-                                double value=rowElements[k];
+                                double value = rowElements[k];
                                 j = column[k];
-                                int iClique = sequenceInCliqueEntry(cliqueRow_[k+bias]);
+                                int iClique = sequenceInCliqueEntry(cliqueRow_[k + bias]);
                                 //bool oneFixes = (cliqueRow_[k+bias].oneFixes!=0);
-                                if (iClique>=numberColumns_)
+                                if(iClique >= numberColumns_)
                                 {
-                                    if (value < 0.0)
+                                    if(value < 0.0)
                                     {
-                                        if (colUpper[j] < 1.0e12)
+                                        if(colUpper[j] < 1.0e12)
                                         {
                                             dbound = colUpper[j] + (rowUpper[i] - dmaxdown) / value;
-                                            if (dbound > colLower[j] + 1.0e-8)
+                                            if(dbound > colLower[j] + 1.0e-8)
                                             {
                                                 colLower[j] = dbound;
                                                 ++ilbred;
-                                                if (! (colUpper[j] - colLower[j] > tolerance))
+                                                if(!(colUpper[j] - colLower[j] > tolerance))
                                                 {
                                                     /* --------------------------------------------------*/
                                                     /*                check if infeasible !!!!! */
                                                     /* --------------------------------------------------*/
-                                                    if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                    if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                     {
                                                         ninfeas++;
                                                     }
                                                 }
 #if 0
                                             }
-                                            else if (intVar[j]==1 && rowLower[i]<-1.0e20)
+                                            else if(intVar[j] == 1 && rowLower[i] < -1.0e20)
                                             {
                                                 // can we modify coefficient
-                                                if (dmaxup+value<rowUpper[i]-1.0e-8)
+                                                if(dmaxup + value < rowUpper[i] - 1.0e-8)
                                                 {
-                                                    assert (dmaxup>rowUpper[i]-1.0e-8);
-                                                    double change = dmaxup+value - rowUpper[i];
+                                                    assert(dmaxup > rowUpper[i] - 1.0e-8);
+                                                    double change = dmaxup + value - rowUpper[i];
                                                     double newValue = value - change;
-                                                    if (newValue<1.0e-12)
-                                                        newValue=0.0;
+                                                    if(newValue < 1.0e-12)
+                                                        newValue = 0.0;
                                                     printf("Could change value from %g to %g b\n",
-                                                           value,newValue);
+                                                           value, newValue);
                                                     // dmaxdown -= change;
                                                 }
 #endif
@@ -1308,38 +1308,38 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                     }
                                     else
                                     {
-                                        if (colLower[j] > -1.0e12)
+                                        if(colLower[j] > -1.0e12)
                                         {
                                             dbound = colLower[j] + (rowUpper[i] - dmaxdown) / value;
-                                            if (dbound < colUpper[j] - 1.0e-8)
+                                            if(dbound < colUpper[j] - 1.0e-8)
                                             {
                                                 colUpper[j] = dbound;
                                                 ++iubred;
-                                                if (! (colUpper[j] - colLower[j] > tolerance))
+                                                if(!(colUpper[j] - colLower[j] > tolerance))
                                                 {
                                                     /* --------------------------------------------------*/
                                                     /*                check if infeasible !!!!! */
                                                     /* --------------------------------------------------*/
-                                                    if (colUpper[j] - colLower[j] < -100.0*tolerance)
+                                                    if(colUpper[j] - colLower[j] < -100.0 * tolerance)
                                                     {
                                                         ninfeas++;
                                                     }
                                                 }
 #if 0
                                             }
-                                            else if (intVar[j]==1 && rowLower[i]<-1.0e20)
+                                            else if(intVar[j] == 1 && rowLower[i] < -1.0e20)
                                             {
                                                 // can we modify coefficient
-                                                if (dmaxup-value<rowUpper[i]-1.0e-8)
+                                                if(dmaxup - value < rowUpper[i] - 1.0e-8)
                                                 {
-                                                    assert (dmaxup>rowUpper[i]-1.0e-8);
-                                                    double change = dmaxup-value-rowUpper[i];
-                                                    double newValue = value+change;
-                                                    double newUpper = rowUpper[i]+change;
-                                                    if (newValue<1.0e-12)
-                                                        newValue=0.0;
+                                                    assert(dmaxup > rowUpper[i] - 1.0e-8);
+                                                    double change = dmaxup - value - rowUpper[i];
+                                                    double newValue = value + change;
+                                                    double newUpper = rowUpper[i] + change;
+                                                    if(newValue < 1.0e-12)
+                                                        newValue = 0.0;
                                                     printf("Could change value from %g to %g and uprow from %g to %g b\n",
-                                                           value,newValue,rowLower[i],newUpper);
+                                                           value, newValue, rowLower[i], newUpper);
                                                     // dmaxup += change
                                                 }
 #endif
@@ -1347,29 +1347,29 @@ CglProbing::tighten(double *colLower, double * colUpper,
                                         }
                                     }
                                 }
-                                else if (colUpper[j]>colLower[j])
+                                else if(colUpper[j] > colLower[j])
                                 {
                                     // in clique
                                     // adjustment
-                                    double dmaxdown2=dmaxdown;
-                                    assert (cliqueMin[iClique]<=0);
-                                    assert (cliqueMin2[iClique]<=0);
+                                    double dmaxdown2 = dmaxdown;
+                                    assert(cliqueMin[iClique] <= 0);
+                                    assert(cliqueMin2[iClique] <= 0);
                                     /* get max down if this is at other bound
                                        May not go up at all but will not go down */
-                                    if (fabs(value)==fabs(cliqueMin[iClique]))
-                                        dmaxdown2 -= cliqueMin[iClique]-cliqueMin2[iClique];
-                                    if (dmaxdown2>rowUpper[i]+1.0e-8)
+                                    if(fabs(value) == fabs(cliqueMin[iClique]))
+                                        dmaxdown2 -= cliqueMin[iClique] - cliqueMin2[iClique];
+                                    if(dmaxdown2 > rowUpper[i] + 1.0e-8)
                                     {
                                         /* --------------------------------------------------*/
                                         /*                check if infeasible !!!!! */
                                         /* --------------------------------------------------*/
-                                        if ( dmaxdown>rowUpper[i]+1.0e-8)
+                                        if(dmaxdown > rowUpper[i] + 1.0e-8)
                                         {
                                             ninfeas++;
                                         }
                                         else
                                         {
-                                            if (value < 0.0)
+                                            if(value < 0.0)
                                             {
                                                 colLower[j] = 1.0;
                                                 ++ilbred;
@@ -1388,21 +1388,21 @@ CglProbing::tighten(double *colLower, double * colUpper,
                 }
             }
         }
-        for (j = 0; j < nCols; ++j)
+        for(j = 0; j < nCols; ++j)
         {
-            if (intVar[j])
+            if(intVar[j])
             {
-                if (colUpper[j]-colLower[j]>1.0e-8)
+                if(colUpper[j] - colLower[j] > 1.0e-8)
                 {
-                    if (floor(colUpper[j]+1.0e-4)<colUpper[j])
+                    if(floor(colUpper[j] + 1.0e-4) < colUpper[j])
                         nchange++;
                     // clean up anyway
-                    colUpper[j]=floor(colUpper[j]+1.0e-4);
-                    if (ceil(colLower[j]-1.0e-4)>colLower[j])
+                    colUpper[j] = floor(colUpper[j] + 1.0e-4);
+                    if(ceil(colLower[j] - 1.0e-4) > colLower[j])
                         nchange++;
                     // clean up anyway
-                    colLower[j]=ceil(colLower[j]-1.0e-4);
-                    if (colUpper[j]<colLower[j])
+                    colLower[j] = ceil(colLower[j] - 1.0e-4);
+                    if(colUpper[j] < colLower[j])
                     {
                         /*printf("infeasible\n");*/
                         ninfeas++;
@@ -1410,9 +1410,9 @@ CglProbing::tighten(double *colLower, double * colUpper,
                 }
             }
         }
-        nchange=ilbred+iubred+nrwdrp;
+        nchange = ilbred + iubred + nrwdrp;
         ntotal += nchange;
-        if (ninfeas) break;
+        if(ninfeas) break;
     }
     delete [] cliqueMin;
     delete [] cliqueMax;
@@ -1422,12 +1422,12 @@ CglProbing::tighten(double *colLower, double * colUpper,
 }
 // This just sets minima and maxima on rows
 void
-CglProbing::tighten2(double *colLower, double * colUpper,
-                     const int *column, const double *rowElements,
-                     const CoinBigIndex *rowStart,
-                     const int * rowLength,
-                     double *rowLower, double *rowUpper,
-                     double * minR, double * maxR, int * markR,
+CglProbing::tighten2(double* colLower, double* colUpper,
+                     const int* column, const double* rowElements,
+                     const CoinBigIndex* rowStart,
+                     const int* rowLength,
+                     double* rowLower, double* rowUpper,
+                     double* minR, double* maxR, int* markR,
                      int nRows) const
 {
     int i, j, k, kre;
@@ -1435,83 +1435,83 @@ CglProbing::tighten2(double *colLower, double * colUpper,
     int iflagu, iflagl;
     double dmaxup, dmaxdown;
 
-    for (i = 0; i < nRows; ++i)
+    for(i = 0; i < nRows; ++i)
     {
-        if (rowLower[i]>-1.0e20||rowUpper[i]<1.0e20)
+        if(rowLower[i] > -1.0e20 || rowUpper[i] < 1.0e20)
         {
             iflagu = 0;
             iflagl = 0;
             dmaxup = 0.0;
             dmaxdown = 0.0;
             krs = rowStart[i];
-            kre = rowStart[i]+rowLength[i];
+            kre = rowStart[i] + rowLength[i];
 
             /* ------------------------------------------------------------*/
             /* Compute L(i) and U(i) */
             /* ------------------------------------------------------------*/
-            for (k = krs; k < kre; ++k)
+            for(k = krs; k < kre; ++k)
             {
-                double value=rowElements[k];
+                double value = rowElements[k];
                 j = column[k];
-                if (value > 0.0)
+                if(value > 0.0)
                 {
-                    if (colUpper[j] < 1.0e12)
+                    if(colUpper[j] < 1.0e12)
                         dmaxup += colUpper[j] * value;
                     else
                         ++iflagu;
-                    if (colLower[j] > -1.0e12)
+                    if(colLower[j] > -1.0e12)
                         dmaxdown += colLower[j] * value;
                     else
                         ++iflagl;
                 }
-                else if (value<0.0)
+                else if(value < 0.0)
                 {
-                    if (colUpper[j] < 1.0e12)
+                    if(colUpper[j] < 1.0e12)
                         dmaxdown += colUpper[j] * value;
                     else
                         ++iflagl;
-                    if (colLower[j] > -1.0e12)
+                    if(colLower[j] > -1.0e12)
                         dmaxup += colLower[j] * value;
                     else
                         ++iflagu;
                 }
             }
-            if (iflagu)
-                maxR[i]=1.0e60;
+            if(iflagu)
+                maxR[i] = 1.0e60;
             else
-                maxR[i]=dmaxup;
-            if (iflagl)
-                minR[i]=-1.0e60;
+                maxR[i] = dmaxup;
+            if(iflagl)
+                minR[i] = -1.0e60;
             else
-                minR[i]=dmaxdown;
+                minR[i] = dmaxdown;
 #if 0
-            if (minR[i]<-1.0e10&&maxR[i]>1.0e10)
+            if(minR[i] < -1.0e10 && maxR[i] > 1.0e10)
             {
-                markR[i]=-2;
+                markR[i] = -2;
             }
             else
             {
 #endif
-                markR[i]=-1;
+                markR[i] = -1;
 #if 0
             }
 #endif
         }
         else
         {
-            minR[i]=-1.0e60;
-            maxR[i]=1.0e60;
+            minR[i] = -1.0e60;
+            maxR[i] = 1.0e60;
 #if 0
-            markR[i]=-2;
+            markR[i] = -2;
             abort();
 #else
-            markR[i]=-1;
+            markR[i] = -1;
 #endif
         }
     }
 }
 #ifdef CGL_DEBUG
-static int nPath=0;
+static int nPath = 0;
 #endif
 //-------------------------------------------------------------------
 // Generate disaggregation cuts
@@ -1521,56 +1521,56 @@ void CglProbing::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
 {
 
 #ifdef CGL_DEBUG
-    const OsiRowCutDebugger * debugger = si.getRowCutDebugger();
-    if (debugger&&debugger->onOptimalPath(si))
+    const OsiRowCutDebugger* debugger = si.getRowCutDebugger();
+    if(debugger && debugger->onOptimalPath(si))
     {
-        printf("On optimal path %d\n",nPath);
+        printf("On optimal path %d\n", nPath);
         nPath++;
-        int nCols=si.getNumCols();
+        int nCols = si.getNumCols();
         int i;
-        const double * solution = si.getColSolution();
-        const double * lower = si.getColLower();
-        const double * upper = si.getColUpper();
-        const double * optimal = debugger->optimalSolution();
-        const double * objective = si.getObjCoefficients();
-        double objval1=0.0,objval2=0.0;
-        for (i=0; i<nCols; i++)
+        const double* solution = si.getColSolution();
+        const double* lower = si.getColLower();
+        const double* upper = si.getColUpper();
+        const double* optimal = debugger->optimalSolution();
+        const double* objective = si.getObjCoefficients();
+        double objval1 = 0.0, objval2 = 0.0;
+        for(i = 0; i < nCols; i++)
         {
 #if CGL_DEBUG>1
-            printf("%d %g %g %g %g\n",i,lower[i],solution[i],upper[i],optimal[i]);
+            printf("%d %g %g %g %g\n", i, lower[i], solution[i], upper[i], optimal[i]);
 #endif
-            objval1 += solution[i]*objective[i];
-            objval2 += optimal[i]*objective[i];
-            assert(optimal[i]>=lower[i]&&optimal[i]<=upper[i]);
+            objval1 += solution[i] * objective[i];
+            objval2 += optimal[i] * objective[i];
+            assert(optimal[i] >= lower[i] && optimal[i] <= upper[i]);
         }
-        printf("current obj %g, integer %g\n",objval1,objval2);
+        printf("current obj %g, integer %g\n", objval1, objval2);
     }
 #endif
-    int saveRowCuts=rowCuts_;
-    if (rowCuts_<0)
+    int saveRowCuts = rowCuts_;
+    if(rowCuts_ < 0)
     {
-        if (info2.inTree)
-            rowCuts_=4;
+        if(info2.inTree)
+            rowCuts_ = 4;
         else
-            rowCuts_=-rowCuts_;
+            rowCuts_ = -rowCuts_;
     }
-    int nRows=si.getNumRows();
-    double * rowLower = new double[nRows+1];
-    double * rowUpper = new double[nRows+1];
+    int nRows = si.getNumRows();
+    double* rowLower = new double[nRows + 1];
+    double* rowUpper = new double[nRows + 1];
 
-    int nCols=si.getNumCols();
+    int nCols = si.getNumCols();
     // Set size if not set
-    if (!rowCopy_)
+    if(!rowCopy_)
     {
-        numberRows_=nRows;
-        numberColumns_=nCols;
+        numberRows_ = nRows;
+        numberColumns_ = nCols;
     }
-    double * colLower = new double[nCols];
-    double * colUpper = new double[nCols];
+    double* colLower = new double[nCols];
+    double* colUpper = new double[nCols];
 
     CglTreeInfo info = info2;
-    int ninfeas=gutsOfGenerateCuts(si,cs,rowLower,rowUpper,colLower,colUpper,&info);
-    if (ninfeas)
+    int ninfeas = gutsOfGenerateCuts(si, cs, rowLower, rowUpper, colLower, colUpper, &info);
+    if(ninfeas)
     {
         // generate infeasible cut and return
         OsiRowCut rc;
@@ -1578,8 +1578,8 @@ void CglProbing::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
         rc.setUb(0.0);
         cs.insert(rc);
 #ifdef CGL_DEBUG
-        const OsiRowCutDebugger * debugger = si.getRowCutDebugger();
-        if (debugger&&debugger->onOptimalPath(si))
+        const OsiRowCutDebugger* debugger = si.getRowCutDebugger();
+        if(debugger && debugger->onOptimalPath(si))
             assert(!debugger->invalidCut(rc));
 #endif
     }
@@ -1591,70 +1591,70 @@ void CglProbing::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
     delete [] colUpper_;
     colLower_ = NULL;
     colUpper_ = NULL;
-    rowCuts_=saveRowCuts;
+    rowCuts_ = saveRowCuts;
 }
 int CglProbing::generateCutsAndModify(const OsiSolverInterface & si,
                                       OsiCuts & cs,
-                                      CglTreeInfo * info)
+                                      CglTreeInfo* info)
 {
 #ifdef CGL_DEBUG
-    const OsiRowCutDebugger * debugger = si.getRowCutDebugger();
-    if (debugger&&debugger->onOptimalPath(si))
+    const OsiRowCutDebugger* debugger = si.getRowCutDebugger();
+    if(debugger && debugger->onOptimalPath(si))
     {
-        printf("On optimal path %d\n",nPath);
+        printf("On optimal path %d\n", nPath);
         nPath++;
-        int nCols=si.getNumCols();
+        int nCols = si.getNumCols();
         int i;
-        const double * solution = si.getColSolution();
-        const double * lower = si.getColLower();
-        const double * upper = si.getColUpper();
-        const double * optimal = debugger->optimalSolution();
-        const double * objective = si.getObjCoefficients();
-        double objval1=0.0,objval2=0.0;
-        for (i=0; i<nCols; i++)
+        const double* solution = si.getColSolution();
+        const double* lower = si.getColLower();
+        const double* upper = si.getColUpper();
+        const double* optimal = debugger->optimalSolution();
+        const double* objective = si.getObjCoefficients();
+        double objval1 = 0.0, objval2 = 0.0;
+        for(i = 0; i < nCols; i++)
         {
 #if CGL_DEBUG>1
-            printf("%d %g %g %g %g\n",i,lower[i],solution[i],upper[i],optimal[i]);
+            printf("%d %g %g %g %g\n", i, lower[i], solution[i], upper[i], optimal[i]);
 #endif
-            objval1 += solution[i]*objective[i];
-            objval2 += optimal[i]*objective[i];
-            assert(optimal[i]>=lower[i]-1.0e-5&&optimal[i]<=upper[i]+1.0e-5);
+            objval1 += solution[i] * objective[i];
+            objval2 += optimal[i] * objective[i];
+            assert(optimal[i] >= lower[i] - 1.0e-5 && optimal[i] <= upper[i] + 1.0e-5);
         }
-        printf("current obj %g, integer %g\n",objval1,objval2);
+        printf("current obj %g, integer %g\n", objval1, objval2);
     }
 #endif
-    int saveRowCuts=rowCuts_;
-    if (rowCuts_<0)
+    int saveRowCuts = rowCuts_;
+    if(rowCuts_ < 0)
     {
-        if (info->inTree)
-            rowCuts_=4;
+        if(info->inTree)
+            rowCuts_ = 4;
         else
-            rowCuts_=-rowCuts_;
+            rowCuts_ = -rowCuts_;
     }
     int saveMode = mode_;
-    bool rowCliques=false;
-    if (!mode_)
+    bool rowCliques = false;
+    if(!mode_)
     {
-        if (info->pass!=4||info->inTree)
+        if(info->pass != 4 || info->inTree)
         {
-            mode_=1;
+            mode_ = 1;
         }
         else
         {
-            saveMode=1; // make sure do just once
-            rowCliques=true;
+            saveMode = 1; // make sure do just once
+            rowCliques = true;
         }
     }
-    int nRows=si.getNumRows();
-    double * rowLower = new double[nRows+1];
-    double * rowUpper = new double[nRows+1];
+    int nRows = si.getNumRows();
+    double* rowLower = new double[nRows + 1];
+    double* rowUpper = new double[nRows + 1];
 
-    int nCols=si.getNumCols();
-    double * colLower = new double[nCols];
-    double * colUpper = new double[nCols];
+    int nCols = si.getNumCols();
+    double* colLower = new double[nCols];
+    double* colUpper = new double[nCols];
 
-    int ninfeas=gutsOfGenerateCuts(si,cs,rowLower,rowUpper,colLower,colUpper,info);
-    if (ninfeas)
+    int ninfeas = gutsOfGenerateCuts(si, cs, rowLower, rowUpper, colLower, colUpper, info);
+    if(ninfeas)
     {
         // generate infeasible cut and return
         OsiRowCut rc;
@@ -1662,15 +1662,15 @@ int CglProbing::generateCutsAndModify(const OsiSolverInterface & si,
         rc.setUb(0.0);
         cs.insert(rc);
 #ifdef CGL_DEBUG
-        const OsiRowCutDebugger * debugger = si.getRowCutDebugger();
-        if (debugger&&debugger->onOptimalPath(si))
+        const OsiRowCutDebugger* debugger = si.getRowCutDebugger();
+        if(debugger && debugger->onOptimalPath(si))
             assert(!debugger->invalidCut(rc));
 #endif
     }
-    rowCuts_=saveRowCuts;
-    mode_=saveMode;
+    rowCuts_ = saveRowCuts;
+    mode_ = saveMode;
     // move bounds so can be used by user
-    if (mode_==3)
+    if(mode_ == 3)
     {
         delete [] rowLower_;
         delete [] rowUpper_;
@@ -1687,306 +1687,306 @@ int CglProbing::generateCutsAndModify(const OsiSolverInterface & si,
     colLower_ = colLower;
     colUpper_ = colUpper;
     // Setup information
-    if (rowCliques&&numberRows_&&numberColumns_)
+    if(rowCliques && numberRows_ && numberColumns_)
         setupRowCliqueInformation(si);
     return ninfeas;
 }
-bool analyze(const OsiSolverInterface * solverX, char * intVar,
-             double * lower, double * upper)
+bool analyze(const OsiSolverInterface* solverX, char* intVar,
+             double* lower, double* upper)
 {
-    OsiSolverInterface * solver = solverX->clone();
-    const double *objective = solver->getObjCoefficients() ;
+    OsiSolverInterface* solver = solverX->clone();
+    const double* objective = solver->getObjCoefficients() ;
     int numberColumns = solver->getNumCols() ;
     int numberRows = solver->getNumRows();
     double direction = solver->getObjSense();
-    int iRow,iColumn;
+    int iRow, iColumn;
 
     // Row copy
     CoinPackedMatrix matrixByRow(*solver->getMatrixByRow());
-    const double * elementByRow = matrixByRow.getElements();
-    const int * column = matrixByRow.getIndices();
-    const CoinBigIndex * rowStart = matrixByRow.getVectorStarts();
-    const int * rowLength = matrixByRow.getVectorLengths();
+    const double* elementByRow = matrixByRow.getElements();
+    const int* column = matrixByRow.getIndices();
+    const CoinBigIndex* rowStart = matrixByRow.getVectorStarts();
+    const int* rowLength = matrixByRow.getVectorLengths();
 
     // Column copy
     CoinPackedMatrix  matrixByCol(*solver->getMatrixByCol());
-    const double * element = matrixByCol.getElements();
-    const int * row = matrixByCol.getIndices();
-    const CoinBigIndex * columnStart = matrixByCol.getVectorStarts();
-    const int * columnLength = matrixByCol.getVectorLengths();
+    const double* element = matrixByCol.getElements();
+    const int* row = matrixByCol.getIndices();
+    const CoinBigIndex* columnStart = matrixByCol.getVectorStarts();
+    const int* columnLength = matrixByCol.getVectorLengths();
 
-    const double * rowLower = solver->getRowLower();
-    const double * rowUpper = solver->getRowUpper();
+    const double* rowLower = solver->getRowLower();
+    const double* rowUpper = solver->getRowUpper();
 
-    char * ignore = new char [numberRows];
-    int * which = new int[numberRows];
-    double * changeRhs = new double[numberRows];
-    memset(changeRhs,0,numberRows*sizeof(double));
-    memset(ignore,0,numberRows);
-    int numberChanged=0;
-    bool finished=false;
-    while (!finished)
+    char* ignore = new char [numberRows];
+    int* which = new int[numberRows];
+    double* changeRhs = new double[numberRows];
+    memset(changeRhs, 0, numberRows * sizeof(double));
+    memset(ignore, 0, numberRows);
+    int numberChanged = 0;
+    bool finished = false;
+    while(!finished)
     {
         int saveNumberChanged = numberChanged;
-        for (iRow=0; iRow<numberRows; iRow++)
+        for(iRow = 0; iRow < numberRows; iRow++)
         {
-            int numberContinuous=0;
-            double value1=0.0,value2=0.0;
-            bool allIntegerCoeff=true;
-            double sumFixed=0.0;
-            int jColumn1=-1,jColumn2=-1;
-            for (CoinBigIndex j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+            int numberContinuous = 0;
+            double value1 = 0.0, value2 = 0.0;
+            bool allIntegerCoeff = true;
+            double sumFixed = 0.0;
+            int jColumn1 = -1, jColumn2 = -1;
+            for(CoinBigIndex j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
             {
                 int jColumn = column[j];
                 double value = elementByRow[j];
-                if (upper[jColumn] > lower[jColumn]+1.0e-8)
+                if(upper[jColumn] > lower[jColumn] + 1.0e-8)
                 {
-                    if (!intVar[jColumn])
+                    if(!intVar[jColumn])
                     {
-                        if (numberContinuous==0)
+                        if(numberContinuous == 0)
                         {
-                            jColumn1=jColumn;
-                            value1=value;
+                            jColumn1 = jColumn;
+                            value1 = value;
                         }
                         else
                         {
-                            jColumn2=jColumn;
-                            value2=value;
+                            jColumn2 = jColumn;
+                            value2 = value;
                         }
                         numberContinuous++;
                     }
                     else
                     {
-                        if (fabs(value-floor(value+0.5))>1.0e-12)
-                            allIntegerCoeff=false;
+                        if(fabs(value - floor(value + 0.5)) > 1.0e-12)
+                            allIntegerCoeff = false;
                     }
                 }
                 else
                 {
-                    sumFixed += lower[jColumn]*value;
+                    sumFixed += lower[jColumn] * value;
                 }
             }
             double low = rowLower[iRow];
-            if (low>-1.0e20)
+            if(low > -1.0e20)
             {
                 low -= sumFixed;
-                if (fabs(low-floor(low+0.5))>1.0e-12)
-                    allIntegerCoeff=false;
+                if(fabs(low - floor(low + 0.5)) > 1.0e-12)
+                    allIntegerCoeff = false;
             }
             double up = rowUpper[iRow];
-            if (up<1.0e20)
+            if(up < 1.0e20)
             {
                 up -= sumFixed;
-                if (fabs(up-floor(up+0.5))>1.0e-12)
-                    allIntegerCoeff=false;
+                if(fabs(up - floor(up + 0.5)) > 1.0e-12)
+                    allIntegerCoeff = false;
             }
-            if (!allIntegerCoeff)
+            if(!allIntegerCoeff)
                 continue; // can't do
-            if (numberContinuous==1)
+            if(numberContinuous == 1)
             {
                 // see if really integer
                 // This does not allow for complicated cases
-                if (low==up)
+                if(low == up)
                 {
-                    if (fabs(value1)>1.0e-3)
+                    if(fabs(value1) > 1.0e-3)
                     {
-                        value1 = 1.0/value1;
-                        if (fabs(value1-floor(value1+0.5))<1.0e-12)
+                        value1 = 1.0 / value1;
+                        if(fabs(value1 - floor(value1 + 0.5)) < 1.0e-12)
                         {
                             // integer
                             numberChanged++;
-                            intVar[jColumn1]=77;
+                            intVar[jColumn1] = 77;
                         }
                     }
                 }
                 else
                 {
-                    if (fabs(value1)>1.0e-3)
+                    if(fabs(value1) > 1.0e-3)
                     {
-                        value1 = 1.0/value1;
-                        if (fabs(value1-floor(value1+0.5))<1.0e-12)
+                        value1 = 1.0 / value1;
+                        if(fabs(value1 - floor(value1 + 0.5)) < 1.0e-12)
                         {
                             // This constraint will not stop it being integer
-                            ignore[iRow]=1;
+                            ignore[iRow] = 1;
                         }
                     }
                 }
             }
-            else if (numberContinuous==2)
+            else if(numberContinuous == 2)
             {
-                if (low==up)
+                if(low == up)
                 {
                     /* need general theory - for now just look at 2 cases -
                        1 - +- 1 one in column and just costs i.e. matching objective
                        2 - +- 1 two in column but feeds into G/L row which will try and minimize
                        (take out 2 for now - until fixed)
                     */
-                    if (fabs(value1)==1.0&&value1*value2==-1.0&&!lower[jColumn1]
-                            &&!lower[jColumn2]&&columnLength[jColumn1]==1&&columnLength[jColumn2]==1)
+                    if(fabs(value1) == 1.0 && value1 * value2 == -1.0 && !lower[jColumn1]
+                            && !lower[jColumn2] && columnLength[jColumn1] == 1 && columnLength[jColumn2] == 1)
                     {
-                        int n=0;
+                        int n = 0;
                         int i;
-                        double objChange=direction*(objective[jColumn1]+objective[jColumn2]);
-                        double bound = CoinMin(upper[jColumn1],upper[jColumn2]);
-                        bound = CoinMin(bound,1.0e20);
-                        for ( i=columnStart[jColumn1]; i<columnStart[jColumn1]+columnLength[jColumn1]; i++)
+                        double objChange = direction * (objective[jColumn1] + objective[jColumn2]);
+                        double bound = CoinMin(upper[jColumn1], upper[jColumn2]);
+                        bound = CoinMin(bound, 1.0e20);
+                        for(i = columnStart[jColumn1]; i < columnStart[jColumn1] + columnLength[jColumn1]; i++)
                         {
                             int jRow = row[i];
                             double value = element[i];
-                            if (jRow!=iRow)
+                            if(jRow != iRow)
                             {
-                                which[n++]=jRow;
-                                changeRhs[jRow]=value;
+                                which[n++] = jRow;
+                                changeRhs[jRow] = value;
                             }
                         }
-                        for ( i=columnStart[jColumn2]; i<columnStart[jColumn2]+columnLength[jColumn2]; i++)
+                        for(i = columnStart[jColumn2]; i < columnStart[jColumn2] + columnLength[jColumn2]; i++)
                         {
                             int jRow = row[i];
                             double value = element[i];
-                            if (jRow!=iRow)
+                            if(jRow != iRow)
                             {
-                                if (!changeRhs[jRow])
+                                if(!changeRhs[jRow])
                                 {
-                                    which[n++]=jRow;
-                                    changeRhs[jRow]=value;
+                                    which[n++] = jRow;
+                                    changeRhs[jRow] = value;
                                 }
                                 else
                                 {
-                                    changeRhs[jRow]+=value;
+                                    changeRhs[jRow] += value;
                                 }
                             }
                         }
-                        if (objChange>=0.0)
+                        if(objChange >= 0.0)
                         {
                             // see if all rows OK
-                            bool good=true;
-                            for (i=0; i<n; i++)
+                            bool good = true;
+                            for(i = 0; i < n; i++)
                             {
                                 int jRow = which[i];
                                 double value = changeRhs[jRow];
-                                if (value)
+                                if(value)
                                 {
                                     value *= bound;
-                                    if (rowLength[jRow]==1)
+                                    if(rowLength[jRow] == 1)
                                     {
-                                        if (value>0.0)
+                                        if(value > 0.0)
                                         {
                                             double rhs = rowLower[jRow];
-                                            if (rhs>0.0)
+                                            if(rhs > 0.0)
                                             {
-                                                double ratio =rhs/value;
-                                                if (fabs(ratio-floor(ratio+0.5))>1.0e-12)
-                                                    good=false;
+                                                double ratio = rhs / value;
+                                                if(fabs(ratio - floor(ratio + 0.5)) > 1.0e-12)
+                                                    good = false;
                                             }
                                         }
                                         else
                                         {
                                             double rhs = rowUpper[jRow];
-                                            if (rhs<0.0)
+                                            if(rhs < 0.0)
                                             {
-                                                double ratio =rhs/value;
-                                                if (fabs(ratio-floor(ratio+0.5))>1.0e-12)
-                                                    good=false;
+                                                double ratio = rhs / value;
+                                                if(fabs(ratio - floor(ratio + 0.5)) > 1.0e-12)
+                                                    good = false;
                                             }
                                         }
                                     }
-                                    else if (rowLength[jRow]==2)
+                                    else if(rowLength[jRow] == 2)
                                     {
-                                        if (value>0.0)
+                                        if(value > 0.0)
                                         {
-                                            if (rowLower[jRow]>-1.0e20)
-                                                good=false;
+                                            if(rowLower[jRow] > -1.0e20)
+                                                good = false;
                                         }
                                         else
                                         {
-                                            if (rowUpper[jRow]<1.0e20)
-                                                good=false;
+                                            if(rowUpper[jRow] < 1.0e20)
+                                                good = false;
                                         }
                                     }
                                     else
                                     {
-                                        good=false;
+                                        good = false;
                                     }
                                 }
                             }
-                            if (good)
+                            if(good)
                             {
                                 // both can be integer
                                 numberChanged++;
-                                intVar[jColumn1]=77;
+                                intVar[jColumn1] = 77;
                                 numberChanged++;
-                                intVar[jColumn2]=77;
+                                intVar[jColumn2] = 77;
                             }
                         }
                         // clear
-                        for (i=0; i<n; i++)
+                        for(i = 0; i < n; i++)
                         {
-                            changeRhs[which[i]]=0.0;
+                            changeRhs[which[i]] = 0.0;
                         }
                     }
                 }
             }
         }
-        for (iColumn=0; iColumn<numberColumns; iColumn++)
+        for(iColumn = 0; iColumn < numberColumns; iColumn++)
         {
-            if (upper[iColumn] > lower[iColumn]+1.0e-8&&!intVar[iColumn])
+            if(upper[iColumn] > lower[iColumn] + 1.0e-8 && !intVar[iColumn])
             {
                 double value;
                 value = upper[iColumn];
-                if (value<1.0e20&&fabs(value-floor(value+0.5))>1.0e-12)
+                if(value < 1.0e20 && fabs(value - floor(value + 0.5)) > 1.0e-12)
                     continue;
                 value = lower[iColumn];
-                if (value>-1.0e20&&fabs(value-floor(value+0.5))>1.0e-12)
+                if(value > -1.0e20 && fabs(value - floor(value + 0.5)) > 1.0e-12)
                     continue;
-                bool integer=true;
-                for (CoinBigIndex j=columnStart[iColumn]; j<columnStart[iColumn]+columnLength[iColumn]; j++)
+                bool integer = true;
+                for(CoinBigIndex j = columnStart[iColumn]; j < columnStart[iColumn] + columnLength[iColumn]; j++)
                 {
                     int iRow = row[j];
-                    if (!ignore[iRow])
+                    if(!ignore[iRow])
                     {
-                        integer=false;
+                        integer = false;
                         break;
                     }
                 }
-                if (integer)
+                if(integer)
                 {
                     // integer
                     numberChanged++;
-                    intVar[iColumn]=77;
+                    intVar[iColumn] = 77;
                 }
             }
         }
-        finished = numberChanged==saveNumberChanged;
+        finished = numberChanged == saveNumberChanged;
     }
-    bool feasible=true;
-    for (iColumn=0; iColumn<numberColumns; iColumn++)
+    bool feasible = true;
+    for(iColumn = 0; iColumn < numberColumns; iColumn++)
     {
-        if (intVar[iColumn]==77)
+        if(intVar[iColumn] == 77)
         {
-            if (upper[iColumn]>1.0e20)
+            if(upper[iColumn] > 1.0e20)
             {
                 upper[iColumn] = 1.0e20;
             }
             else
             {
-                upper[iColumn] = floor(upper[iColumn]+1.0e-5);
+                upper[iColumn] = floor(upper[iColumn] + 1.0e-5);
             }
-            if (lower[iColumn]<-1.0e20)
+            if(lower[iColumn] < -1.0e20)
             {
                 lower[iColumn] = -1.0e20;
             }
             else
             {
-                lower[iColumn] = ceil(lower[iColumn]-1.0e-5);
-                if (lower[iColumn]>upper[iColumn])
-                    feasible=false;
+                lower[iColumn] = ceil(lower[iColumn] - 1.0e-5);
+                if(lower[iColumn] > upper[iColumn])
+                    feasible = false;
             }
-            if (lower[iColumn]==0.0&&upper[iColumn]==1.0)
-                intVar[iColumn]=1;
-            else if (lower[iColumn]==upper[iColumn])
-                intVar[iColumn]=0;
+            if(lower[iColumn] == 0.0 && upper[iColumn] == 1.0)
+                intVar[iColumn] = 1;
+            else if(lower[iColumn] == upper[iColumn])
+                intVar[iColumn] = 0;
             else
-                intVar[iColumn]=2;
+                intVar[iColumn] = 2;
         }
     }
     delete [] which;
@@ -1999,121 +1999,121 @@ bool analyze(const OsiSolverInterface * solverX, char * intVar,
 }
 int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                                    OsiCuts & cs ,
-                                   double * rowLower, double * rowUpper,
-                                   double * colLower, double * colUpper,
-                                   CglTreeInfo * info) const
+                                   double* rowLower, double* rowUpper,
+                                   double* colLower, double* colUpper,
+                                   CglTreeInfo* info) const
 {
     //printf("PASS\n");
     // Get basic problem information
     int nRows;
 
-    CoinPackedMatrix * rowCopy=NULL;
+    CoinPackedMatrix* rowCopy = NULL;
     int numberRowCutsBefore = cs.sizeRowCuts();
 
     // get branch and bound cutoff
     double cutoff;
-    bool cutoff_available = si.getDblParam(OsiDualObjectiveLimit,cutoff);
-    if (!cutoff_available||usingObjective_<0)   // cut off isn't set or isn't valid
+    bool cutoff_available = si.getDblParam(OsiDualObjectiveLimit, cutoff);
+    if(!cutoff_available || usingObjective_ < 0) // cut off isn't set or isn't valid
     {
         cutoff = si.getInfinity();
     }
     cutoff *= si.getObjSense();
-    if (fabs(cutoff)>1.0e30)
-        assert (cutoff>1.0e30);
-    int mode=mode_;
+    if(fabs(cutoff) > 1.0e30)
+        assert(cutoff > 1.0e30);
+    int mode = mode_;
 
-    int nCols=si.getNumCols();
+    int nCols = si.getNumCols();
 
     // get integer variables
-    const char * intVarOriginal = si.getColType(true);
-    char * intVar = CoinCopyOfArray(intVarOriginal,nCols);
+    const char* intVarOriginal = si.getColType(true);
+    char* intVar = CoinCopyOfArray(intVarOriginal, nCols);
     int i;
-    int numberIntegers=0;
-    CoinMemcpyN(si.getColLower(),nCols,colLower);
-    CoinMemcpyN(si.getColUpper(),nCols,colUpper);
-    const double * colsol =si.getColSolution();
+    int numberIntegers = 0;
+    CoinMemcpyN(si.getColLower(), nCols, colLower);
+    CoinMemcpyN(si.getColUpper(), nCols, colUpper);
+    const double* colsol = si.getColSolution();
     // and put reasonable bounds on integer variables
-    for (i=0; i<nCols; i++)
+    for(i = 0; i < nCols; i++)
     {
-        if (intVar[i])
+        if(intVar[i])
         {
             numberIntegers++;
-            if (intVar[i]==2)
+            if(intVar[i] == 2)
             {
                 // make sure reasonable bounds
-                if (colsol[i]<1.0e10&&colUpper[i]>1.0e12)
+                if(colsol[i] < 1.0e10 && colUpper[i] > 1.0e12)
                     colUpper[i] = CGL_REASONABLE_INTEGER_BOUND;
-                if (colsol[i]>-1.0e10&&colLower[i]<-1.0e12)
+                if(colsol[i] > -1.0e10 && colLower[i] < -1.0e12)
                     colLower[i] = -CGL_REASONABLE_INTEGER_BOUND;
             }
         }
     }
-    bool feasible=true;
-    if (!info->inTree&&!info->pass)
+    bool feasible = true;
+    if(!info->inTree && !info->pass)
     {
         // make more integer
-        feasible = analyze(&si,intVar,colLower,colUpper);
+        feasible = analyze(&si, intVar, colLower, colUpper);
     }
-    if (feasible&&PROBING_EXTRA_STUFF)
+    if(feasible && PROBING_EXTRA_STUFF)
     {
         // tighten bounds on djs
         // should be in CbcCutGenerator and check if basic
-        const double * djs =si.getReducedCost();
-        const double * colsol =si.getColSolution();
+        const double* djs = si.getReducedCost();
+        const double* colsol = si.getColSolution();
         double direction = si.getObjSense();
         double cutoff;
-        bool cutoff_available = si.getDblParam(OsiDualObjectiveLimit,cutoff);
-        if (!cutoff_available||usingObjective_<0)   // cut off isn't set or isn't valid
+        bool cutoff_available = si.getDblParam(OsiDualObjectiveLimit, cutoff);
+        if(!cutoff_available || usingObjective_ < 0) // cut off isn't set or isn't valid
         {
             cutoff = si.getInfinity();
         }
         cutoff *= direction;
-        if (fabs(cutoff)>1.0e30)
-            assert (cutoff>1.0e30);
+        if(fabs(cutoff) > 1.0e30)
+            assert(cutoff > 1.0e30);
         double current = si.getObjValue();
         current *= direction;
-        double gap=CoinMax(cutoff-current,1.0e-1);
-        for (int i = 0; i < nCols; ++i)
+        double gap = CoinMax(cutoff - current, 1.0e-1);
+        for(int i = 0; i < nCols; ++i)
         {
-            double djValue = djs[i]*direction;
-            if (colUpper[i]-colLower[i]>1.0e-8)
+            double djValue = djs[i] * direction;
+            if(colUpper[i] - colLower[i] > 1.0e-8)
             {
-                if (colsol[i]<colLower[i]+primalTolerance_)
+                if(colsol[i] < colLower[i] + primalTolerance_)
                 {
-                    if (djValue>gap)
+                    if(djValue > gap)
                     {
-                        if (si.isInteger(i))
+                        if(si.isInteger(i))
                         {
-                            printf("why int %d not fixed at lb\n",i);
-                            colUpper[i]= colLower[i];
+                            printf("why int %d not fixed at lb\n", i);
+                            colUpper[i] = colLower[i];
                         }
                         else
                         {
-                            double newUpper = colLower[i] + gap/djValue;
-                            if (newUpper<colUpper[i])
+                            double newUpper = colLower[i] + gap / djValue;
+                            if(newUpper < colUpper[i])
                             {
                                 //printf("%d ub from %g to %g\n",i,colUpper[i],newUpper);
-                                colUpper[i]= CoinMax(newUpper,colLower[i]+1.0e-5);
+                                colUpper[i] = CoinMax(newUpper, colLower[i] + 1.0e-5);
                             }
                         }
                     }
                 }
-                else if (colsol[i]>colUpper[i]-primalTolerance_)
+                else if(colsol[i] > colUpper[i] - primalTolerance_)
                 {
-                    if (-djValue>gap)
+                    if(-djValue > gap)
                     {
-                        if (si.isInteger(i))
+                        if(si.isInteger(i))
                         {
-                            printf("why int %d not fixed at ub\n",i);
-                            colLower[i]= colUpper[i];
+                            printf("why int %d not fixed at ub\n", i);
+                            colLower[i] = colUpper[i];
                         }
                         else
                         {
-                            double newLower = colUpper[i] + gap/djValue;
-                            if (newLower>colLower[i])
+                            double newLower = colUpper[i] + gap / djValue;
+                            if(newLower > colLower[i])
                             {
                                 //printf("%d lb from %g to %g\n",i,colLower[i],newLower);
-                                colLower[i]= CoinMin(newLower,colUpper[i]-1.0e-5);
+                                colLower[i] = CoinMin(newLower, colUpper[i] - 1.0e-5);
                             }
                         }
                     }
@@ -2121,7 +2121,7 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
             }
         }
     }
-    int ninfeas=0;
+    int ninfeas = 0;
     // Set up maxes
     int maxProbe = info->inTree ? maxProbe_ : maxProbeRoot_;
     int maxElements = info->inTree ? maxElements_ : maxElementsRoot_;
@@ -2129,167 +2129,167 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
     //maxElements=nCols;
     // Get objective offset
     double offset;
-    si.getDblParam(OsiObjOffset,offset);
+    si.getDblParam(OsiObjOffset, offset);
 #ifdef COIN_DEVELOP
-    if (offset&&!info->inTree&&!info->pass)
-        printf("CglProbing obj offset %g\n",offset);
+    if(offset && !info->inTree && !info->pass)
+        printf("CglProbing obj offset %g\n", offset);
 #endif
     // see if using cached copy or not
-    if (!rowCopy_)
+    if(!rowCopy_)
     {
         // create from current
-        nRows=si.getNumRows();
+        nRows = si.getNumRows();
 
         // mode==0 is invalid if going from current matrix
-        if (mode==0)
-            mode=1;
+        if(mode == 0)
+            mode = 1;
         // add in objective if there is a cutoff
-        if (cutoff<1.0e30&&usingObjective_>0)
+        if(cutoff < 1.0e30 && usingObjective_ > 0)
         {
-            rowCopy = new CoinPackedMatrix(*si.getMatrixByRow(),1,nCols,false);
+            rowCopy = new CoinPackedMatrix(*si.getMatrixByRow(), 1, nCols, false);
         }
         else
         {
             rowCopy = new CoinPackedMatrix(*si.getMatrixByRow());
         }
         // add in objective if there is a cutoff
-        if (cutoff<1.0e30&&usingObjective_>0)
+        if(cutoff < 1.0e30 && usingObjective_ > 0)
         {
-            int * columns = new int[nCols];
-            double * elements = new double[nCols];
-            int n=0;
-            const double * objective = si.getObjCoefficients();
-            bool maximize = (si.getObjSense()==-1);
-            for (i=0; i<nCols; i++)
+            int* columns = new int[nCols];
+            double* elements = new double[nCols];
+            int n = 0;
+            const double* objective = si.getObjCoefficients();
+            bool maximize = (si.getObjSense() == -1);
+            for(i = 0; i < nCols; i++)
             {
-                if (objective[i])
+                if(objective[i])
                 {
-                    elements[n]= (maximize) ? -objective[i] : objective[i];
-                    columns[n++]=i;
+                    elements[n] = (maximize) ? -objective[i] : objective[i];
+                    columns[n++] = i;
                 }
             }
-            rowCopy->appendRow(n,columns,elements);
+            rowCopy->appendRow(n, columns, elements);
             delete [] columns;
             delete [] elements;
-            CoinMemcpyN(si.getRowLower(),nRows,rowLower);
-            CoinMemcpyN(si.getRowUpper(),nRows,rowUpper);
-            rowLower[nRows]=-COIN_DBL_MAX;
-            rowUpper[nRows]=cutoff+offset;
+            CoinMemcpyN(si.getRowLower(), nRows, rowLower);
+            CoinMemcpyN(si.getRowUpper(), nRows, rowUpper);
+            rowLower[nRows] = -COIN_DBL_MAX;
+            rowUpper[nRows] = cutoff + offset;
             nRows++;
         }
         else
         {
-            CoinMemcpyN(si.getRowLower(),nRows,rowLower);
-            CoinMemcpyN(si.getRowUpper(),nRows,rowUpper);
+            CoinMemcpyN(si.getRowLower(), nRows, rowLower);
+            CoinMemcpyN(si.getRowUpper(), nRows, rowUpper);
         }
     }
     else
     {
         // use snapshot
-        nRows=numberRows_;
-        assert(nCols==numberColumns_);
+        nRows = numberRows_;
+        assert(nCols == numberColumns_);
 
         rowCopy = new CoinPackedMatrix(*rowCopy_);
-        assert (rowCopy_->getNumRows()==numberRows_);
+        assert(rowCopy_->getNumRows() == numberRows_);
         rowLower = new double[nRows];
         rowUpper = new double[nRows];
-        CoinMemcpyN(rowLower_,nRows,rowLower);
-        CoinMemcpyN(rowUpper_,nRows,rowUpper);
-        if (usingObjective_>0)
+        CoinMemcpyN(rowLower_, nRows, rowLower);
+        CoinMemcpyN(rowUpper_, nRows, rowUpper);
+        if(usingObjective_ > 0)
         {
-            rowLower[nRows-1]=-COIN_DBL_MAX;
-            rowUpper[nRows-1]=cutoff+offset;
+            rowLower[nRows - 1] = -COIN_DBL_MAX;
+            rowUpper[nRows - 1] = cutoff + offset;
         }
     }
-    CoinBigIndex * rowStartPos = NULL;
-    int * realRows = NULL;
+    CoinBigIndex* rowStartPos = NULL;
+    int* realRows = NULL;
     {
         // Now take out rows with too many elements
-        int * rowLength = rowCopy->getMutableVectorLengths();
+        int* rowLength = rowCopy->getMutableVectorLengths();
         //#define OUTRUBBISH
-        double * elements = rowCopy->getMutableElements();
-        int * column = rowCopy->getMutableIndices();
-        CoinBigIndex * rowStart = rowCopy->getMutableVectorStarts();
+        double* elements = rowCopy->getMutableElements();
+        int* column = rowCopy->getMutableIndices();
+        CoinBigIndex* rowStart = rowCopy->getMutableVectorStarts();
 #ifdef OUTRUBBISH
-        double large=1.0e3;
+        double large = 1.0e3;
 #endif
         int nDelete = 0;
-        int nKeep=0;
-        int * which = new int[nRows];
-        int nElements=rowCopy->getNumElements();
-        int nTotalOut=0;
+        int nKeep = 0;
+        int* which = new int[nRows];
+        int nElements = rowCopy->getNumElements();
+        int nTotalOut = 0;
         int nRealRows = si.getNumRows();
-        for (i=0; i<nRows; i++)
+        for(i = 0; i < nRows; i++)
         {
-            if (rowLength[i]>maxElements||(rowLower[i]<-1.0e20&&rowUpper[i]>1.0e20))
+            if(rowLength[i] > maxElements || (rowLower[i] < -1.0e20 && rowUpper[i] > 1.0e20))
             {
                 // keep objective
-                if (i<nRealRows)
-                    nTotalOut+=rowLength[i];
+                if(i < nRealRows)
+                    nTotalOut += rowLength[i];
             }
         }
         // keep all if only a few dense
-        if (nTotalOut*10<nElements)
-            maxElements=nCols;
+        if(nTotalOut * 10 < nElements)
+            maxElements = nCols;
 #ifdef OUTRUBBISH
-        int nExtraDel=0;
+        int nExtraDel = 0;
 #endif
-        for (i=0; i<nRows; i++)
+        for(i = 0; i < nRows; i++)
         {
-            if ((rowLength[i]>maxElements&&i<nRealRows)||
-                    (rowLower[i]<-1.0e20&&rowUpper[i]>1.0e20))
+            if((rowLength[i] > maxElements && i < nRealRows) ||
+                    (rowLower[i] < -1.0e20 && rowUpper[i] > 1.0e20))
             {
-                which[nDelete++]=i;
+                which[nDelete++] = i;
             }
             else
             {
 #ifdef OUTRUBBISH
                 // out all rows with infinite plus and minus
-                int nPlus=rowUpper[i]>-large ? 0 : 1;
-                int nMinus=rowLower[i]<large ? 0 : 1;
+                int nPlus = rowUpper[i] > -large ? 0 : 1;
+                int nMinus = rowLower[i] < large ? 0 : 1;
                 CoinBigIndex start = rowStart[i];
                 CoinBigIndex end = start + rowLength[i];
-                for (CoinBigIndex j=start; j<end ; j++)
+                for(CoinBigIndex j = start; j < end ; j++)
                 {
                     int iColumn = column[j];
-                    if (colUpper[iColumn]>large)
+                    if(colUpper[iColumn] > large)
                     {
-                        if (elements[j]>0.0)
+                        if(elements[j] > 0.0)
                             nPlus++;
                         else
                             nMinus++;
                     }
-                    if (colLower[iColumn]<-large)
+                    if(colLower[iColumn] < -large)
                     {
-                        if (elements[j]<0.0)
+                        if(elements[j] < 0.0)
                             nPlus++;
                         else
                             nMinus++;
                     }
                 }
-                if (!nPlus||!nMinus)
+                if(!nPlus || !nMinus)
                 {
-                    rowLower[nKeep]=rowLower[i];
-                    rowUpper[nKeep]=rowUpper[i];
+                    rowLower[nKeep] = rowLower[i];
+                    rowUpper[nKeep] = rowUpper[i];
                     nKeep++;
                 }
                 else
                 {
                     nExtraDel++;
-                    which[nDelete++]=i;
+                    which[nDelete++] = i;
                 }
 #else
-                if (info->strengthenRow&&!info->pass&&(rowLower[i]<-1.0e20||rowUpper[i]>1.0e20))
+                if(info->strengthenRow && !info->pass && (rowLower[i] < -1.0e20 || rowUpper[i] > 1.0e20))
                 {
-                    int nPlus=0;
-                    int nMinus=0;
-                    for (CoinBigIndex j=rowStart[i]; j<rowStart[i+1]; j++)
+                    int nPlus = 0;
+                    int nMinus = 0;
+                    for(CoinBigIndex j = rowStart[i]; j < rowStart[i + 1]; j++)
                     {
-                        int jColumn=column[j];
-                        if (intVar[jColumn]&&colLower[jColumn]==0.0&&colUpper[jColumn]==1.0)
+                        int jColumn = column[j];
+                        if(intVar[jColumn] && colLower[jColumn] == 0.0 && colUpper[jColumn] == 1.0)
                         {
-                            double value=elements[j];
-                            if (value>0.0)
+                            double value = elements[j];
+                            if(value > 0.0)
                             {
                                 nPlus++;
                             }
@@ -2300,19 +2300,19 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                         }
                         else
                         {
-                            nPlus=2;
-                            nMinus=2;
+                            nPlus = 2;
+                            nMinus = 2;
                             break;
                         }
                     }
-                    double effectiveness=0.0;
-                    if (nPlus==1&&rowUpper[i]>0.0&&rowUpper[i]<1.0e10)
+                    double effectiveness = 0.0;
+                    if(nPlus == 1 && rowUpper[i] > 0.0 && rowUpper[i] < 1.0e10)
                     {
                         // can make element smaller
-                        for (CoinBigIndex j=rowStart[i]; j<rowStart[i+1]; j++)
+                        for(CoinBigIndex j = rowStart[i]; j < rowStart[i + 1]; j++)
                         {
-                            double value=elements[j];
-                            if (value>0.0)
+                            double value = elements[j];
+                            if(value > 0.0)
                             {
                                 elements[j] -= rowUpper[i];
                                 //printf("pass %d row %d plus el from %g to %g\n",info->pass,
@@ -2320,15 +2320,15 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                             }
                             effectiveness += fabs(elements[j]);
                         }
-                        rowUpper[i]=0.0;
+                        rowUpper[i] = 0.0;
                     }
-                    else if (nMinus==1&&rowLower[i]<0.0&&rowLower[i]>-1.0e10)
+                    else if(nMinus == 1 && rowLower[i] < 0.0 && rowLower[i] > -1.0e10)
                     {
                         // can make element smaller in magnitude
-                        for (CoinBigIndex j=rowStart[i]; j<rowStart[i+1]; j++)
+                        for(CoinBigIndex j = rowStart[i]; j < rowStart[i + 1]; j++)
                         {
-                            double value=elements[j];
-                            if (value<0.0)
+                            double value = elements[j];
+                            if(value < 0.0)
                             {
                                 elements[j] -= rowLower[i];
                                 //printf("pass %d row %d minus el from %g to %g\n",info->pass,
@@ -2336,59 +2336,59 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                             }
                             effectiveness += fabs(elements[j]);
                         }
-                        rowLower[i]=0.0;
+                        rowLower[i] = 0.0;
                     }
-                    if (effectiveness)
+                    if(effectiveness)
                     {
                         OsiRowCut rc;
                         rc.setLb(rowLower[i]);
                         rc.setUb(rowUpper[i]);
                         int start = rowStart[i];
-                        rc.setRow(rowLength[i],column+start,elements+start,false);
+                        rc.setRow(rowLength[i], column + start, elements + start, false);
                         rc.setEffectiveness(effectiveness);
-                        assert (!info->strengthenRow[i]);
-                        info->strengthenRow[i]=rc.clone();
+                        assert(!info->strengthenRow[i]);
+                        info->strengthenRow[i] = rc.clone();
                     }
                 }
-                rowLower[nKeep]=rowLower[i];
-                rowUpper[nKeep]=rowUpper[i];
+                rowLower[nKeep] = rowLower[i];
+                rowUpper[nKeep] = rowUpper[i];
                 nKeep++;
 #endif
             }
         }
-        if (nDelete)
+        if(nDelete)
         {
 #ifdef OUTRUBBISH
-            if (nExtraDel)
+            if(nExtraDel)
             {
-                printf("%d rows deleted (extra %d)\n",nDelete,nExtraDel);
+                printf("%d rows deleted (extra %d)\n", nDelete, nExtraDel);
             }
 #else
 #endif
-            if (info->strengthenRow)
+            if(info->strengthenRow)
             {
                 // Set up pointers to real rows
                 realRows = new int [nRows];
-                CoinZeroN(realRows,nRows);
-                for (i=0; i<nDelete; i++)
-                    realRows[which[i]]=-1;
-                int k=0;
-                for (i=0; i<nRows; i++)
+                CoinZeroN(realRows, nRows);
+                for(i = 0; i < nDelete; i++)
+                    realRows[which[i]] = -1;
+                int k = 0;
+                for(i = 0; i < nRows; i++)
                 {
-                    if (!realRows[i])
+                    if(!realRows[i])
                     {
-                        if (i<nRealRows)
-                            realRows[k++]=i; // keep
+                        if(i < nRealRows)
+                            realRows[k++] = i; // keep
                         else
-                            realRows[k++]=-1; // objective - discard
+                            realRows[k++] = -1; // objective - discard
                     }
                 }
             }
-            rowCopy->deleteRows(nDelete,which);
-            nRows=nKeep;
+            rowCopy->deleteRows(nDelete, which);
+            nRows = nKeep;
         }
         delete [] which;
-        if (!nRows)
+        if(!nRows)
         {
 #ifdef COIN_DEVELOP
             printf("All rows too long for probing\n");
@@ -2396,22 +2396,22 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
             // nothing left!!
             // delete stuff
             delete rowCopy;
-            if (rowCopy_)
+            if(rowCopy_)
             {
                 delete [] rowLower;
                 delete [] rowUpper;
             }
             delete [] intVar;
             // and put back unreasonable bounds on integer variables
-            const double * trueLower = si.getColLower();
-            const double * trueUpper = si.getColUpper();
-            for (i=0; i<nCols; i++)
+            const double* trueLower = si.getColLower();
+            const double* trueUpper = si.getColUpper();
+            for(i = 0; i < nCols; i++)
             {
-                if (intVarOriginal[i]==2)
+                if(intVarOriginal[i] == 2)
                 {
-                    if (colUpper[i] == CGL_REASONABLE_INTEGER_BOUND)
+                    if(colUpper[i] == CGL_REASONABLE_INTEGER_BOUND)
                         colUpper[i] = trueUpper[i];
-                    if (colLower[i] == -CGL_REASONABLE_INTEGER_BOUND)
+                    if(colLower[i] == -CGL_REASONABLE_INTEGER_BOUND)
                         colLower[i] = trueLower[i];
                 }
             }
@@ -2424,142 +2424,142 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
         rowStart = rowCopy->getMutableVectorStarts();
         rowLength = rowCopy->getMutableVectorLengths();
 #if 0
-        int nFixed=0;
-        for (i=0; i<nCols; i++)
+        int nFixed = 0;
+        for(i = 0; i < nCols; i++)
         {
-            if (colUpper[i]==colLower[i])
+            if(colUpper[i] == colLower[i])
                 nFixed++;
         }
-        printf("%d columns fixed\n",nFixed);
+        printf("%d columns fixed\n", nFixed);
 #endif
-        CoinBigIndex newSize=0;
-        int * column2 = new int[nCols];
-        double * elements2 = new double[nCols];
+        CoinBigIndex newSize = 0;
+        int* column2 = new int[nCols];
+        double* elements2 = new double[nCols];
         rowStartPos = new CoinBigIndex [nRows];
-        for (i=0; i<nRows; i++)
+        for(i = 0; i < nRows; i++)
         {
             double offset = 0.0;
             CoinBigIndex start = rowStart[i];
-            rowStart[i]=newSize;
-            CoinBigIndex save=newSize;
+            rowStart[i] = newSize;
+            CoinBigIndex save = newSize;
             CoinBigIndex end = start + rowLength[i];
-            int nOther=0;
-            for (CoinBigIndex j=start; j<end ; j++)
+            int nOther = 0;
+            for(CoinBigIndex j = start; j < end ; j++)
             {
                 int iColumn = column[j];
-                if (colUpper[iColumn]>colLower[iColumn])
+                if(colUpper[iColumn] > colLower[iColumn])
                 {
                     double value = elements[j];
-                    if (value<0.0)
+                    if(value < 0.0)
                     {
-                        elements[newSize]=value;
-                        column[newSize++]=iColumn;
+                        elements[newSize] = value;
+                        column[newSize++] = iColumn;
                     }
-                    else if (value>0.0)
+                    else if(value > 0.0)
                     {
-                        elements2[nOther]=value;
-                        column2[nOther++]=iColumn;
+                        elements2[nOther] = value;
+                        column2[nOther++] = iColumn;
                     }
                 }
                 else
                 {
-                    offset += colUpper[iColumn]*elements[j];
+                    offset += colUpper[iColumn] * elements[j];
                 }
             }
             rowStartPos[i] = newSize;
-            for (int k=0; k<nOther; k++)
+            for(int k = 0; k < nOther; k++)
             {
-                elements[newSize]=elements2[k];
-                column[newSize++]=column2[k];
+                elements[newSize] = elements2[k];
+                column[newSize++] = column2[k];
             }
-            rowLength[i]=newSize-save;
-            if (offset)
+            rowLength[i] = newSize - save;
+            if(offset)
             {
-                if (rowLower[i]>-1.0e20)
+                if(rowLower[i] > -1.0e20)
                     rowLower[i] -= offset;
-                if (rowUpper[i]<1.0e20)
+                if(rowUpper[i] < 1.0e20)
                     rowUpper[i] -= offset;
             }
         }
         delete [] column2;
         delete [] elements2;
-        rowStart[nRows]=newSize;
+        rowStart[nRows] = newSize;
         rowCopy->setNumElements(newSize);
     }
-    CoinPackedMatrix * columnCopy=new CoinPackedMatrix(*rowCopy,0,0,true);
-    int nRowsSafe=CoinMin(nRows,si.getNumRows());
+    CoinPackedMatrix* columnCopy = new CoinPackedMatrix(*rowCopy, 0, 0, true);
+    int nRowsSafe = CoinMin(nRows, si.getNumRows());
 #ifdef CGL_DEBUG
-    const OsiRowCutDebugger * debugger = si.getRowCutDebugger();
-    if (debugger&&!debugger->onOptimalPath(si))
+    const OsiRowCutDebugger* debugger = si.getRowCutDebugger();
+    if(debugger && !debugger->onOptimalPath(si))
         debugger = NULL;
 #else
-    const OsiRowCutDebugger * debugger = NULL;
+    const OsiRowCutDebugger* debugger = NULL;
 #endif
 
-    const int * column = rowCopy->getIndices();
-    const CoinBigIndex * rowStart = rowCopy->getVectorStarts();
-    const int * rowLength = rowCopy->getVectorLengths();
-    const double * rowElements = rowCopy->getElements();
+    const int* column = rowCopy->getIndices();
+    const CoinBigIndex* rowStart = rowCopy->getVectorStarts();
+    const int* rowLength = rowCopy->getVectorLengths();
+    const double* rowElements = rowCopy->getElements();
     // Arrays so user can find out what happened
-    if (!lookedAt_)
+    if(!lookedAt_)
     {
         lookedAt_ = new int[nCols];
     }
-    numberThisTime_=0;
+    numberThisTime_ = 0;
     // Let us never add more than twice the number of rows worth of row cuts
     // Keep cuts out of cs until end so we can find duplicates quickly
-    int nRowsFake = info->inTree ? nRowsSafe/3 : nRowsSafe;
-    if (!info->inTree&&!info->pass)
+    int nRowsFake = info->inTree ? nRowsSafe / 3 : nRowsSafe;
+    if(!info->inTree && !info->pass)
         nRowsFake *= 5;
-    row_cut rowCut(nRowsFake,!info->inTree);
-    int * markR = new int [nRows];
-    double * minR = new double [nRows];
-    double * maxR = new double [nRows];
-    if (mode)
+    row_cut rowCut(nRowsFake, !info->inTree);
+    int* markR = new int [nRows];
+    double* minR = new double [nRows];
+    double* maxR = new double [nRows];
+    if(mode)
     {
-        ninfeas= tighten(colLower, colUpper, column, rowElements,
-                         rowStart, rowStartPos ,rowLength, rowLower, rowUpper,
-                         nRows, nCols, intVar, 2, primalTolerance_);
-        if (!feasible)
-            ninfeas=1;
-        if (!ninfeas)
+        ninfeas = tighten(colLower, colUpper, column, rowElements,
+                          rowStart, rowStartPos , rowLength, rowLower, rowUpper,
+                          nRows, nCols, intVar, 2, primalTolerance_);
+        if(!feasible)
+            ninfeas = 1;
+        if(!ninfeas)
         {
             // create column cuts where integer bounds have changed
             {
-                const double * lower = si.getColLower();
-                const double * upper = si.getColUpper();
-                const double * colsol = si.getColSolution();
-                int numberChanged=0,ifCut=0;
+                const double* lower = si.getColLower();
+                const double* upper = si.getColUpper();
+                const double* colsol = si.getColSolution();
+                int numberChanged = 0, ifCut = 0;
                 CoinPackedVector lbs;
                 CoinPackedVector ubs;
-                for (i = 0; i < nCols; ++i)
+                for(i = 0; i < nCols; ++i)
                 {
-                    if (intVar[i])
+                    if(intVar[i])
                     {
-                        colUpper[i] = CoinMin(upper[i],floor(colUpper[i]+1.0e-4));
-                        if (colUpper[i]<upper[i]-1.0e-8)
+                        colUpper[i] = CoinMin(upper[i], floor(colUpper[i] + 1.0e-4));
+                        if(colUpper[i] < upper[i] - 1.0e-8)
                         {
-                            if (colUpper[i]<colsol[i]-1.0e-8)
-                                ifCut=1;
-                            ubs.insert(i,colUpper[i]);
+                            if(colUpper[i] < colsol[i] - 1.0e-8)
+                                ifCut = 1;
+                            ubs.insert(i, colUpper[i]);
                             numberChanged++;
                         }
-                        colLower[i] = CoinMax(lower[i],ceil(colLower[i]-1.0e-4));
-                        if (colLower[i]>lower[i]+1.0e-8)
+                        colLower[i] = CoinMax(lower[i], ceil(colLower[i] - 1.0e-4));
+                        if(colLower[i] > lower[i] + 1.0e-8)
                         {
-                            if (colLower[i]>colsol[i]+1.0e-8)
-                                ifCut=1;
-                            lbs.insert(i,colLower[i]);
+                            if(colLower[i] > colsol[i] + 1.0e-8)
+                                ifCut = 1;
+                            lbs.insert(i, colLower[i]);
                             numberChanged++;
                         }
                     }
                 }
-                if (numberChanged)
+                if(numberChanged)
                 {
                     OsiColCut cc;
                     cc.setUbs(ubs);
                     cc.setLbs(lbs);
-                    if (ifCut)
+                    if(ifCut)
                     {
                         cc.setEffectiveness(100.0);
                     }
@@ -2568,117 +2568,117 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                         cc.setEffectiveness(1.0e-5);
                     }
 #ifdef CGL_DEBUG
-                    checkBounds(debugger,cc);
+                    checkBounds(debugger, cc);
 #endif
                     cs.insert(cc);
                 }
             }
-            if (maxProbe>0)
+            if(maxProbe > 0)
             {
-                numberThisTime_=0;
+                numberThisTime_ = 0;
                 // get min max etc for rows
                 tighten2(colLower, colUpper, column, rowElements,
                          rowStart, rowLength, rowLower, rowUpper,
                          minR , maxR , markR, nRows);
                 // decide what to look at
-                if (mode==1)
+                if(mode == 1)
                 {
-                    const double * colsol = si.getColSolution();
-                    double_int_pair * array = new double_int_pair [nCols];
+                    const double* colsol = si.getColSolution();
+                    double_int_pair* array = new double_int_pair [nCols];
 #     ifdef ZEROFAULT
-                    std::memset(array,0,sizeof(double_int_pair)*nCols) ;
+                    std::memset(array, 0, sizeof(double_int_pair)*nCols) ;
 #     endif
                     double multiplier = -1.0;
-                    if (info->inTree||(info->pass&1)!=0)
-                        multiplier=1.0;
+                    if(info->inTree || (info->pass & 1) != 0)
+                        multiplier = 1.0;
                     //const int * columnLength = si.getMatrixByCol()->getVectorLengths();
-                    for (i=0; i<nCols; i++)
+                    for(i = 0; i < nCols; i++)
                     {
-                        if (intVar[i]&&colUpper[i]-colLower[i]>1.0e-8)
+                        if(intVar[i] && colUpper[i] - colLower[i] > 1.0e-8)
                         {
-                            double away = fabs(0.5-(colsol[i]-floor(colsol[i])));
-                            if (away<0.49999||!info->inTree)
+                            double away = fabs(0.5 - (colsol[i] - floor(colsol[i])));
+                            if(away < 0.49999 || !info->inTree)
                             {
                                 //array[numberThisTime_].infeasibility=away;
-                                array[numberThisTime_].infeasibility=away*multiplier;
+                                array[numberThisTime_].infeasibility = away * multiplier;
                                 //array[numberThisTime_].infeasibility=-columnLength[i];
-                                array[numberThisTime_++].sequence=i;
+                                array[numberThisTime_++].sequence = i;
                             }
                         }
                     }
                     //printf("maxP %d num %d\n",maxProbe,numberThisTime_);
-                    std::sort(array,array+numberThisTime_,double_int_pair_compare());
+                    std::sort(array, array + numberThisTime_, double_int_pair_compare());
                     //numberThisTime_=CoinMin(numberThisTime_,maxProbe);
-                    for (i=0; i<numberThisTime_; i++)
+                    for(i = 0; i < numberThisTime_; i++)
                     {
-                        lookedAt_[i]=array[i].sequence;
+                        lookedAt_[i] = array[i].sequence;
                     }
                     delete [] array;
                 }
                 else
                 {
-                    for (i=0; i<nCols; i++)
+                    for(i = 0; i < nCols; i++)
                     {
-                        if (intVar[i]&&colUpper[i]-colLower[i]>1.0e-8)
+                        if(intVar[i] && colUpper[i] - colLower[i] > 1.0e-8)
                         {
-                            lookedAt_[numberThisTime_++]=i;
+                            lookedAt_[numberThisTime_++] = i;
                         }
                     }
                 }
 #if 0
                 // Only look at short rows
-                for (i=0; i<nRows; i++)
+                for(i = 0; i < nRows; i++)
                 {
-                    if (rowLength[i]>maxElements)
+                    if(rowLength[i] > maxElements)
                         abort(); //markR[i]=-2;
                 }
 #endif
                 // sort to be clean
                 //std::sort(lookedAt_,lookedAt_+numberThisTime_);
-                if (!numberCliques_)
+                if(!numberCliques_)
                 {
-                    ninfeas= probe(si, debugger, cs, colLower, colUpper, rowCopy,columnCopy,
-                                   rowStartPos, realRows, rowLower, rowUpper,
-                                   intVar, minR, maxR, markR,
-                                   info);
+                    ninfeas = probe(si, debugger, cs, colLower, colUpper, rowCopy, columnCopy,
+                                    rowStartPos, realRows, rowLower, rowUpper,
+                                    intVar, minR, maxR, markR,
+                                    info);
                 }
                 else
                 {
-                    ninfeas= probeCliques(si, debugger, cs, colLower, colUpper, rowCopy,columnCopy,
-                                          realRows,rowLower, rowUpper,
-                                          intVar, minR, maxR, markR,
-                                          info);
+                    ninfeas = probeCliques(si, debugger, cs, colLower, colUpper, rowCopy, columnCopy,
+                                           realRows, rowLower, rowUpper,
+                                           intVar, minR, maxR, markR,
+                                           info);
                 }
             }
         }
     }
-    else if (maxProbe>0)
+    else if(maxProbe > 0)
     {
         // global cuts from previous calculations
         // could check more thoroughly that integers are correct
-        assert(numberIntegers==numberIntegers_);
+        assert(numberIntegers == numberIntegers_);
         // make up list of new variables to look at
-        numberThisTime_=0;
-        const double * colsol = si.getColSolution();
-        double_int_pair * array = new double_int_pair [nCols];
+        numberThisTime_ = 0;
+        const double* colsol = si.getColSolution();
+        double_int_pair* array = new double_int_pair [nCols];
 #   ifdef ZEROFAULT
-        std::memset(array,0,sizeof(double_int_pair)*nCols) ;
+        std::memset(array, 0, sizeof(double_int_pair)*nCols) ;
 #   endif
-        for (i=0; i<number01Integers_; i++)
+        for(i = 0; i < number01Integers_; i++)
         {
-            int j=cutVector_[i].sequence;
-            if (!cutVector_[i].index&&colUpper[j]-colLower[j]>1.0e-8)
+            int j = cutVector_[i].sequence;
+            if(!cutVector_[i].index && colUpper[j] - colLower[j] > 1.0e-8)
             {
-                double away = fabs(0.5-(colsol[j]-floor(colsol[j])));
-                array[numberThisTime_].infeasibility=away;
-                array[numberThisTime_++].sequence=i;
+                double away = fabs(0.5 - (colsol[j] - floor(colsol[j])));
+                array[numberThisTime_].infeasibility = away;
+                array[numberThisTime_++].sequence = i;
             }
         }
-        std::sort(array,array+numberThisTime_,double_int_pair_compare());
-        numberThisTime_=CoinMin(numberThisTime_,maxProbe);
-        for (i=0; i<numberThisTime_; i++)
+        std::sort(array, array + numberThisTime_, double_int_pair_compare());
+        numberThisTime_ = CoinMin(numberThisTime_, maxProbe);
+        for(i = 0; i < numberThisTime_; i++)
         {
-            lookedAt_[i]=array[i].sequence;
+            lookedAt_[i] = array[i].sequence;
         }
         // sort to be clean
         //std::sort(lookedAt_,lookedAt_+numberThisTime_);
@@ -2689,71 +2689,71 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                  minR , maxR , markR, nRows);
         OsiCuts csNew;
         // don't do cuts at all if 0 (i.e. we are just checking bounds)
-        if (rowCuts_)
+        if(rowCuts_)
         {
 #if 0
             // Only look at short rows
-            for (i=0; i<nRows; i++)
+            for(i = 0; i < nRows; i++)
             {
-                if (rowLength[i]>maxElements)
+                if(rowLength[i] > maxElements)
                     abort(); //markR[i]=-2;
             }
 #endif
-            ninfeas= probeCliques(si, debugger, csNew, colLower, colUpper, rowCopy,columnCopy,
-                                  realRows, rowLower, rowUpper,
-                                  intVar, minR, maxR, markR,
-                                  info);
+            ninfeas = probeCliques(si, debugger, csNew, colLower, colUpper, rowCopy, columnCopy,
+                                   realRows, rowLower, rowUpper,
+                                   intVar, minR, maxR, markR,
+                                   info);
         }
-        if (!ninfeas)
+        if(!ninfeas)
         {
             // go through row cuts
             int nCuts = csNew.sizeRowCuts();
             int iCut;
             // need space for backward lookup
             // just for ones being looked at
-            int * backward = new int [2*nCols];
-            int * onList = backward + nCols;
-            for (i=0; i<nCols; i++)
+            int* backward = new int [2 * nCols];
+            int* onList = backward + nCols;
+            for(i = 0; i < nCols; i++)
             {
-                backward[i]=-1;
-                onList[i]=0;
+                backward[i] = -1;
+                onList[i] = 0;
             }
-            for (i=0; i<number01Integers_; i++)
+            for(i = 0; i < number01Integers_; i++)
             {
-                int j=cutVector_[i].sequence;
-                backward[j]=i;
-                onList[j]=1;
+                int j = cutVector_[i].sequence;
+                backward[j] = i;
+                onList[j] = 1;
             }
             // first do counts
             // we know initialized to zero
-            for (iCut=0; iCut<nCuts; iCut++)
+            for(iCut = 0; iCut < nCuts; iCut++)
             {
                 OsiRowCut rcut;
                 CoinPackedVector rpv;
                 rcut = csNew.rowCut(iCut);
                 rpv = rcut.row();
-                assert(rpv.getNumElements()==2);
-                const int * indices = rpv.getIndices();
+                assert(rpv.getNumElements() == 2);
+                const int* indices = rpv.getIndices();
                 double* elements = rpv.getElements();
-                double lb=rcut.lb();
+                double lb = rcut.lb();
                 // find out which integer
-                int which=0;
-                i=backward[indices[0]];
-                if (i<0||!onList[indices[0]])
+                int which = 0;
+                i = backward[indices[0]];
+                if(i < 0 || !onList[indices[0]])
                 {
-                    which=1;
-                    i=backward[indices[1]];
+                    which = 1;
+                    i = backward[indices[1]];
                     // Just possible variable was general integer but now 0-1
-                    if (!onList[indices[which]])
+                    if(!onList[indices[which]])
                         continue;
                 }
-                int other = indices[1-which];
-                if (lb==-COIN_DBL_MAX)
+                int other = indices[1 - which];
+                if(lb == -COIN_DBL_MAX)
                 {
-                    if (!rcut.ub())
+                    if(!rcut.ub())
                     {
                         // UB
-                        if (elements[which]<0.0)
+                        if(elements[which] < 0.0)
                         {
                             //assert (elements[1-which]>0.0);
                             // delta to 0 => x to 0.0
@@ -2761,22 +2761,22 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                         }
                         else
                         {
-                            if (elements[1-which]<0.0&&fabs(elements[which]/elements[1-which]-
-                                                            colUpper[other])<1.0e-5)
+                            if(elements[1 - which] < 0.0 && fabs(elements[which] / elements[1 - which] -
+                                                                 colUpper[other]) < 1.0e-5)
                             {
                                 // delta to 1 => x to upper bound
                                 cutVector_[i].length++;
                             }
                             else
                             {
-                                if (onList[other])
+                                if(onList[other])
                                 {
                                     double value0 = elements[0];
                                     double value1 = elements[1];
-                                    if (value0*value1==-1.0)
+                                    if(value0 * value1 == -1.0)
                                     {
                                         // can do something ?
-                                        int j=backward[other];
+                                        int j = backward[other];
                                         cutVector_[i].length++;
                                         cutVector_[j].length++;
                                     }
@@ -2790,12 +2790,12 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                     }
                     else
                     {
-                        if (onList[other])
+                        if(onList[other])
                         {
-                            if (elements[0]==1.0&&elements[1]==1.0&&rcut.ub()==1.0)
+                            if(elements[0] == 1.0 && elements[1] == 1.0 && rcut.ub() == 1.0)
                             {
                                 // can do something ?
-                                int j=backward[other];
+                                int j = backward[other];
                                 cutVector_[i].length++;
                                 cutVector_[j].length++;
                             }
@@ -2808,11 +2808,11 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                 }
                 else
                 {
-                    assert(rcut.ub()==DBL_MAX);
-                    if (!lb)
+                    assert(rcut.ub() == DBL_MAX);
+                    if(!lb)
                     {
                         // LB
-                        if (elements[which]>0.0)
+                        if(elements[which] > 0.0)
                         {
                             //assert (elements[1-which]<0.0);
                             // delta to 0 => x to 0.0
@@ -2821,22 +2821,22 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                         }
                         else
                         {
-                            if (elements[1-which]<0.0&&fabs(elements[which]/elements[1-which]-
-                                                            colUpper[other])<1.0e-5)
+                            if(elements[1 - which] < 0.0 && fabs(elements[which] / elements[1 - which] -
+                                                                 colUpper[other]) < 1.0e-5)
                             {
                                 // delta to 1 => x to upper bound
                                 cutVector_[i].length++;
                             }
                             else
                             {
-                                if (onList[other])
+                                if(onList[other])
                                 {
                                     double value0 = elements[0];
                                     double value1 = elements[1];
-                                    if (value0*value1==-1.0)
+                                    if(value0 * value1 == -1.0)
                                     {
                                         // can do something ?
-                                        int j=backward[other];
+                                        int j = backward[other];
                                         cutVector_[i].length++;
                                         cutVector_[j].length++;
                                     }
@@ -2851,107 +2851,107 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                 }
             }
             // allocate space
-            for (i=0; i<number01Integers_; i++)
+            for(i = 0; i < number01Integers_; i++)
             {
-                int j=cutVector_[i].sequence;
-                if (onList[j]&&!cutVector_[i].index)
+                int j = cutVector_[i].sequence;
+                if(onList[j] && !cutVector_[i].index)
                 {
-                    disaggregation thisOne=cutVector_[i];
-                    cutVector_[i].index=new disaggregationAction [thisOne.length];
-                    cutVector_[i].length=0;
+                    disaggregation thisOne = cutVector_[i];
+                    cutVector_[i].index = new disaggregationAction [thisOne.length];
+                    cutVector_[i].length = 0;
                 }
             }
             // now put in
-            for (iCut=0; iCut<nCuts; iCut++)
+            for(iCut = 0; iCut < nCuts; iCut++)
             {
                 OsiRowCut rcut;
                 CoinPackedVector rpv;
                 int iput;
                 rcut = csNew.rowCut(iCut);
                 rpv = rcut.row();
-                assert(rpv.getNumElements()==2);
-                const int * indices = rpv.getIndices();
+                assert(rpv.getNumElements() == 2);
+                const int* indices = rpv.getIndices();
                 double* elements = rpv.getElements();
-                double lb=rcut.lb();
+                double lb = rcut.lb();
                 // find out which integer
                 // find out which integer
-                int which=0;
-                i=backward[indices[0]];
-                if (i<0||!onList[indices[0]])
+                int which = 0;
+                i = backward[indices[0]];
+                if(i < 0 || !onList[indices[0]])
                 {
-                    which=1;
-                    i=backward[indices[1]];
+                    which = 1;
+                    i = backward[indices[1]];
                     // Just possible variable was general integer but now 0-1
-                    if (!onList[indices[which]])
+                    if(!onList[indices[which]])
                         continue;
                 }
-                int other = indices[1-which];
+                int other = indices[1 - which];
                 int j = other ? backward[other] : -1;
-                if (lb==-COIN_DBL_MAX)
+                if(lb == -COIN_DBL_MAX)
                 {
-                    if (!rcut.ub())
+                    if(!rcut.ub())
                     {
                         // UB
-                        if (elements[which]<0.0)
+                        if(elements[which] < 0.0)
                         {
-                            iput=cutVector_[i].length;
-                            if (j>=0)
-                                setAffectedInDisaggregation(cutVector_[i].index[iput],j);
+                            iput = cutVector_[i].length;
+                            if(j >= 0)
+                                setAffectedInDisaggregation(cutVector_[i].index[iput], j);
                             else
-                                setAffectedInDisaggregation(cutVector_[i].index[iput],other);
-                            setWhenAtUBInDisaggregation(cutVector_[i].index[iput],false);
-                            setAffectedToUBInDisaggregation(cutVector_[i].index[iput],false);
-                            setZeroOneInDisaggregation(cutVector_[i].index[iput],onList[other]!=0);
+                                setAffectedInDisaggregation(cutVector_[i].index[iput], other);
+                            setWhenAtUBInDisaggregation(cutVector_[i].index[iput], false);
+                            setAffectedToUBInDisaggregation(cutVector_[i].index[iput], false);
+                            setZeroOneInDisaggregation(cutVector_[i].index[iput], onList[other] != 0);
                             cutVector_[i].length++;
                         }
                         else
                         {
-                            if (elements[1-which]<0.0&&fabs(elements[which]/elements[1-which]-
-                                                            colUpper[other])<1.0e-5)
+                            if(elements[1 - which] < 0.0 && fabs(elements[which] / elements[1 - which] -
+                                                                 colUpper[other]) < 1.0e-5)
                             {
                                 // delta to 1 => x to upper bound
-                                iput=cutVector_[i].length;
-                                if (j>=0)
-                                    setAffectedInDisaggregation(cutVector_[i].index[iput],j);
+                                iput = cutVector_[i].length;
+                                if(j >= 0)
+                                    setAffectedInDisaggregation(cutVector_[i].index[iput], j);
                                 else
-                                    setAffectedInDisaggregation(cutVector_[i].index[iput],other);
-                                setWhenAtUBInDisaggregation(cutVector_[i].index[iput],true);
-                                setAffectedToUBInDisaggregation(cutVector_[i].index[iput],true);
-                                setZeroOneInDisaggregation(cutVector_[i].index[iput],onList[other]!=0);
+                                    setAffectedInDisaggregation(cutVector_[i].index[iput], other);
+                                setWhenAtUBInDisaggregation(cutVector_[i].index[iput], true);
+                                setAffectedToUBInDisaggregation(cutVector_[i].index[iput], true);
+                                setZeroOneInDisaggregation(cutVector_[i].index[iput], onList[other] != 0);
                                 cutVector_[i].length++;
                             }
                             else
                             {
-                                if (onList[other])
+                                if(onList[other])
                                 {
                                     double value0 = elements[0];
                                     double value1 = elements[1];
-                                    if (value0*value1==-1.0)
+                                    if(value0 * value1 == -1.0)
                                     {
                                         // can do something ?
-                                        int j=backward[other];
-                                        assert (j>=0);
+                                        int j = backward[other];
+                                        assert(j >= 0);
                                         // flip so value0 1.0
-                                        if (value1==1.0)
+                                        if(value1 == 1.0)
                                         {
-                                            j=i;
-                                            i=backward[other];
-                                            value1=value0;
-                                            value0=1.0;
+                                            j = i;
+                                            i = backward[other];
+                                            value1 = value0;
+                                            value0 = 1.0;
                                         }
-                                        assert (value0==1.0);
-                                        assert (value1==-1.0);
-                                        iput=cutVector_[i].length;
-                                        setAffectedInDisaggregation(cutVector_[i].index[iput],j);
-                                        setWhenAtUBInDisaggregation(cutVector_[i].index[iput],true);
-                                        setAffectedToUBInDisaggregation(cutVector_[i].index[iput],true);
-                                        setZeroOneInDisaggregation(cutVector_[i].index[iput],true);
+                                        assert(value0 == 1.0);
+                                        assert(value1 == -1.0);
+                                        iput = cutVector_[i].length;
+                                        setAffectedInDisaggregation(cutVector_[i].index[iput], j);
+                                        setWhenAtUBInDisaggregation(cutVector_[i].index[iput], true);
+                                        setAffectedToUBInDisaggregation(cutVector_[i].index[iput], true);
+                                        setZeroOneInDisaggregation(cutVector_[i].index[iput], true);
                                         cutVector_[i].length++;
-                                        iput=cutVector_[j].length;
-                                        setAffectedInDisaggregation(cutVector_[j].index[iput],i);
-                                        setWhenAtUBInDisaggregation(cutVector_[j].index[iput],false);
-                                        setAffectedToUBInDisaggregation(cutVector_[j].index[iput],false);
-                                        setZeroOneInDisaggregation(cutVector_[j].index[iput],true);
+                                        iput = cutVector_[j].length;
+                                        setAffectedInDisaggregation(cutVector_[j].index[iput], i);
+                                        setWhenAtUBInDisaggregation(cutVector_[j].index[iput], false);
+                                        setAffectedToUBInDisaggregation(cutVector_[j].index[iput], false);
+                                        setZeroOneInDisaggregation(cutVector_[j].index[iput], true);
                                         cutVector_[j].length++;
                                     }
                                 }
@@ -2960,24 +2960,24 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                     }
                     else
                     {
-                        if (onList[other])
+                        if(onList[other])
                         {
-                            if (elements[0]==1.0&&elements[1]==1.0&&rcut.ub()==1.0)
+                            if(elements[0] == 1.0 && elements[1] == 1.0 && rcut.ub() == 1.0)
                             {
                                 // can do something ?
-                                int j=backward[other];
-                                assert (j>=0);
-                                iput=cutVector_[i].length;
-                                setAffectedInDisaggregation(cutVector_[i].index[iput],j);
-                                setWhenAtUBInDisaggregation(cutVector_[i].index[iput],true);
-                                setAffectedToUBInDisaggregation(cutVector_[i].index[iput],false);
-                                setZeroOneInDisaggregation(cutVector_[i].index[iput],true);
+                                int j = backward[other];
+                                assert(j >= 0);
+                                iput = cutVector_[i].length;
+                                setAffectedInDisaggregation(cutVector_[i].index[iput], j);
+                                setWhenAtUBInDisaggregation(cutVector_[i].index[iput], true);
+                                setAffectedToUBInDisaggregation(cutVector_[i].index[iput], false);
+                                setZeroOneInDisaggregation(cutVector_[i].index[iput], true);
                                 cutVector_[i].length++;
-                                iput=cutVector_[j].length;
-                                setAffectedInDisaggregation(cutVector_[j].index[iput],i);
-                                setWhenAtUBInDisaggregation(cutVector_[j].index[iput],true);
-                                setAffectedToUBInDisaggregation(cutVector_[j].index[iput],false);
-                                setZeroOneInDisaggregation(cutVector_[j].index[iput],true);
+                                iput = cutVector_[j].length;
+                                setAffectedInDisaggregation(cutVector_[j].index[iput], i);
+                                setWhenAtUBInDisaggregation(cutVector_[j].index[iput], true);
+                                setAffectedToUBInDisaggregation(cutVector_[j].index[iput], false);
+                                setZeroOneInDisaggregation(cutVector_[j].index[iput], true);
                                 cutVector_[j].length++;
                             }
                             else
@@ -2992,69 +2992,69 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                 }
                 else
                 {
-                    assert(rcut.ub()==DBL_MAX);
-                    if (!lb)
+                    assert(rcut.ub() == DBL_MAX);
+                    if(!lb)
                     {
                         // LB
-                        if (elements[which]>0.0)
+                        if(elements[which] > 0.0)
                         {
-                            iput=cutVector_[i].length;
-                            if (j>=0)
-                                setAffectedInDisaggregation(cutVector_[i].index[iput],j);
+                            iput = cutVector_[i].length;
+                            if(j >= 0)
+                                setAffectedInDisaggregation(cutVector_[i].index[iput], j);
                             else
-                                setAffectedInDisaggregation(cutVector_[i].index[iput],other);
-                            setWhenAtUBInDisaggregation(cutVector_[i].index[iput],false);
-                            setAffectedToUBInDisaggregation(cutVector_[i].index[iput],false);
-                            setZeroOneInDisaggregation(cutVector_[i].index[iput],onList[other]!=0);
+                                setAffectedInDisaggregation(cutVector_[i].index[iput], other);
+                            setWhenAtUBInDisaggregation(cutVector_[i].index[iput], false);
+                            setAffectedToUBInDisaggregation(cutVector_[i].index[iput], false);
+                            setZeroOneInDisaggregation(cutVector_[i].index[iput], onList[other] != 0);
                             cutVector_[i].length++;
                         }
                         else
                         {
-                            if (elements[1-which]<0.0&&fabs(elements[which]/elements[1-which]-
-                                                            colUpper[other])<1.0e-5)
+                            if(elements[1 - which] < 0.0 && fabs(elements[which] / elements[1 - which] -
+                                                                 colUpper[other]) < 1.0e-5)
                             {
-                                iput=cutVector_[i].length;
-                                if (j>=0)
-                                    setAffectedInDisaggregation(cutVector_[i].index[iput],j);
+                                iput = cutVector_[i].length;
+                                if(j >= 0)
+                                    setAffectedInDisaggregation(cutVector_[i].index[iput], j);
                                 else
-                                    setAffectedInDisaggregation(cutVector_[i].index[iput],other);
-                                setWhenAtUBInDisaggregation(cutVector_[i].index[iput],true);
-                                setAffectedToUBInDisaggregation(cutVector_[i].index[iput],true);
-                                setZeroOneInDisaggregation(cutVector_[i].index[iput],onList[other]!=0);
+                                    setAffectedInDisaggregation(cutVector_[i].index[iput], other);
+                                setWhenAtUBInDisaggregation(cutVector_[i].index[iput], true);
+                                setAffectedToUBInDisaggregation(cutVector_[i].index[iput], true);
+                                setZeroOneInDisaggregation(cutVector_[i].index[iput], onList[other] != 0);
                                 cutVector_[i].length++;
                             }
                             else
                             {
-                                if (onList[other])
+                                if(onList[other])
                                 {
                                     double value0 = elements[0];
                                     double value1 = elements[1];
-                                    if (value0*value1==-1.0)
+                                    if(value0 * value1 == -1.0)
                                     {
                                         // can do something ?
-                                        int j=backward[other];
-                                        assert (j>=0);
+                                        int j = backward[other];
+                                        assert(j >= 0);
                                         // flip so value0 -1.0
-                                        if (value1==-1.0)
+                                        if(value1 == -1.0)
                                         {
-                                            j=i;
-                                            i=backward[other];
-                                            value1=value0;
-                                            value0=-1.0;
+                                            j = i;
+                                            i = backward[other];
+                                            value1 = value0;
+                                            value0 = -1.0;
                                         }
-                                        assert (value0==-1.0);
-                                        assert (value1==1.0);
-                                        iput=cutVector_[i].length;
-                                        setAffectedInDisaggregation(cutVector_[i].index[iput],j);
-                                        setWhenAtUBInDisaggregation(cutVector_[i].index[iput],true);
-                                        setAffectedToUBInDisaggregation(cutVector_[i].index[iput],true);
-                                        setZeroOneInDisaggregation(cutVector_[i].index[iput],true);
+                                        assert(value0 == -1.0);
+                                        assert(value1 == 1.0);
+                                        iput = cutVector_[i].length;
+                                        setAffectedInDisaggregation(cutVector_[i].index[iput], j);
+                                        setWhenAtUBInDisaggregation(cutVector_[i].index[iput], true);
+                                        setAffectedToUBInDisaggregation(cutVector_[i].index[iput], true);
+                                        setZeroOneInDisaggregation(cutVector_[i].index[iput], true);
                                         cutVector_[i].length++;
-                                        iput=cutVector_[j].length;
-                                        setAffectedInDisaggregation(cutVector_[j].index[iput],i);
-                                        setWhenAtUBInDisaggregation(cutVector_[j].index[iput],false);
-                                        setAffectedToUBInDisaggregation(cutVector_[j].index[iput],false);
-                                        setZeroOneInDisaggregation(cutVector_[j].index[iput],true);
+                                        iput = cutVector_[j].length;
+                                        setAffectedInDisaggregation(cutVector_[j].index[iput], i);
+                                        setWhenAtUBInDisaggregation(cutVector_[j].index[iput], false);
+                                        setAffectedToUBInDisaggregation(cutVector_[j].index[iput], false);
+                                        setZeroOneInDisaggregation(cutVector_[j].index[iput], true);
                                         cutVector_[j].length++;
                                     }
                                 }
@@ -3066,99 +3066,99 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
             delete [] backward;
             // Now sort and get rid of duplicates
             // could also see if any are cliques
-            int longest=0;
-            for (i=0; i<number01Integers_; i++)
+            int longest = 0;
+            for(i = 0; i < number01Integers_; i++)
                 longest = CoinMax(longest, cutVector_[i].length);
-            unsigned int * sortit = new unsigned int[longest];
-            for (i=0; i<number01Integers_; i++)
+            unsigned int* sortit = new unsigned int[longest];
+            for(i = 0; i < number01Integers_; i++)
             {
-                disaggregation & thisOne=cutVector_[i];
+                disaggregation & thisOne = cutVector_[i];
                 int k;
                 int number = thisOne.length;
-                for (k=0; k<number; k++)
+                for(k = 0; k < number; k++)
                 {
                     int affected = affectedInDisaggregation(thisOne.index[k]);
                     int zeroOne = zeroOneInDisaggregation(thisOne.index[k]) ? 1 : 0;
                     int whenAtUB = whenAtUBInDisaggregation(thisOne.index[k]) ? 1 : 0;
-                    int affectedToUB = affectedToUBInDisaggregation(thisOne.index[k]) ? 1: 0;
-                    sortit[k]=(affected<<3)|(zeroOne<<2)|(whenAtUB<<1)|affectedToUB;
+                    int affectedToUB = affectedToUBInDisaggregation(thisOne.index[k]) ? 1 : 0;
+                    sortit[k] = (affected << 3) | (zeroOne << 2) | (whenAtUB << 1) | affectedToUB;
                 }
-                std::sort(sortit,sortit+number);
+                std::sort(sortit, sortit + number);
                 int affectedLast = 0xffffffff;
                 int zeroOneLast = 0;
                 int whenAtUBLast = 0;
                 int affectedToUBLast = 0;
-                int put=0;
-                for (k=0; k<number; k++)
+                int put = 0;
+                for(k = 0; k < number; k++)
                 {
-                    int affected = sortit[k]>>3;
-                    int zeroOne = (sortit[k]&4)>>2;
-                    int whenAtUB = (sortit[k]&2)>>1;
-                    int affectedToUB = sortit[k]&1;
+                    int affected = sortit[k] >> 3;
+                    int zeroOne = (sortit[k] & 4) >> 2;
+                    int whenAtUB = (sortit[k] & 2) >> 1;
+                    int affectedToUB = sortit[k] & 1;
                     disaggregationAction action;
-                    action.affected=0;
-                    setAffectedInDisaggregation(action,affected);
-                    setZeroOneInDisaggregation(action,zeroOne!=0);
-                    setWhenAtUBInDisaggregation(action,whenAtUB!=0);
-                    setAffectedToUBInDisaggregation(action,affectedToUB!=0);
-                    if (affected!=affectedLast||zeroOne!=zeroOneLast)
+                    action.affected = 0;
+                    setAffectedInDisaggregation(action, affected);
+                    setZeroOneInDisaggregation(action, zeroOne != 0);
+                    setWhenAtUBInDisaggregation(action, whenAtUB != 0);
+                    setAffectedToUBInDisaggregation(action, affectedToUB != 0);
+                    if(affected != affectedLast || zeroOne != zeroOneLast)
                     {
                         // new variable
-                        thisOne.index[put++]=action;
+                        thisOne.index[put++] = action;
                     }
-                    else if (whenAtUB!=whenAtUBLast||affectedToUB!=affectedToUBLast)
+                    else if(whenAtUB != whenAtUBLast || affectedToUB != affectedToUBLast)
                     {
                         // new action - what can we discover
-                        thisOne.index[put++]=action;
-                        int j=cutVector_[i].sequence;
-                        int k=affected;
-                        if (zeroOne)
+                        thisOne.index[put++] = action;
+                        int j = cutVector_[i].sequence;
+                        int k = affected;
+                        if(zeroOne)
                         {
-                            k=cutVector_[k].sequence;
-                            if (logLevel_>1)
-                                printf("For %d %d 0-1 pair",j,k) ;
+                            k = cutVector_[k].sequence;
+                            if(logLevel_ > 1)
+                                printf("For %d %d 0-1 pair", j, k) ;
                         }
                         else
                         {
-                            if (logLevel_>1)
-                                printf("For %d %d pair",j,k) ;
+                            if(logLevel_ > 1)
+                                printf("For %d %d pair", j, k) ;
                         }
-                        if (logLevel_>1)
+                        if(logLevel_ > 1)
                             printf(" old whenAtUB, affectedToUB %d %d, new whenAtUB, affectedToUB %d %d\n",
-                                   whenAtUBLast, affectedToUBLast,whenAtUB, affectedToUB);
+                                   whenAtUBLast, affectedToUBLast, whenAtUB, affectedToUB);
                     }
-                    affectedLast=affected;
-                    zeroOneLast=zeroOne;
-                    whenAtUBLast=whenAtUB;
-                    affectedToUBLast=affectedToUB;
+                    affectedLast = affected;
+                    zeroOneLast = zeroOne;
+                    whenAtUBLast = whenAtUB;
+                    affectedToUBLast = affectedToUB;
                 }
-                if (put<number)
+                if(put < number)
                 {
                     //printf("%d reduced from %d to %d\n",i,number,put);
-                    thisOne.length=put;
+                    thisOne.length = put;
                 }
             }
             // And look at all where two 0-1 variables involved
-            for (i=0; i<number01Integers_; i++)
+            for(i = 0; i < number01Integers_; i++)
             {
-                disaggregation & thisOne=cutVector_[i];
+                disaggregation & thisOne = cutVector_[i];
                 int k;
                 int number = thisOne.length;
-                for (k=0; k<number; k++)
+                for(k = 0; k < number; k++)
                 {
                     int affected = affectedInDisaggregation(thisOne.index[k]);
                     bool zeroOne = zeroOneInDisaggregation(thisOne.index[k]);
-                    if (zeroOne&&static_cast<int>(affected)>i)
+                    if(zeroOne && static_cast<int>(affected) > i)
                     {
                         bool whenAtUB = whenAtUBInDisaggregation(thisOne.index[k]);
                         bool affectedToUB = affectedToUBInDisaggregation(thisOne.index[k]);
-                        disaggregation otherOne=cutVector_[affected];
+                        disaggregation otherOne = cutVector_[affected];
                         int numberOther = otherOne.length;
                         // Could do binary search if a lot
-                        int lastAction=-1;
-                        for (int j=0; j<numberOther; j++)
+                        int lastAction = -1;
+                        for(int j = 0; j < numberOther; j++)
                         {
-                            if (affectedInDisaggregation(otherOne.index[j])==i)
+                            if(affectedInDisaggregation(otherOne.index[j]) == i)
                             {
                                 bool whenAtUBOther = whenAtUBInDisaggregation(otherOne.index[j]);
                                 bool affectedToUBOther = affectedToUBInDisaggregation(otherOne.index[j]);
@@ -3174,140 +3174,140 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                                   22 -> y == 0
                                   23 -> y == 1
                                 */
-                                int action=-1;
-                                if (whenAtUB)
+                                int action = -1;
+                                if(whenAtUB)
                                 {
-                                    if (affectedToUB)
+                                    if(affectedToUB)
                                     {
                                         // x -> 1 => y -> 1
-                                        if (whenAtUBOther)
+                                        if(whenAtUBOther)
                                         {
-                                            if (affectedToUBOther)
+                                            if(affectedToUBOther)
                                             {
                                                 // y -> 1 => x -> 1
-                                                action=10; // x,y must be same
+                                                action = 10; // x,y must be same
                                             }
                                             else
                                             {
                                                 // y -> 1 => x -> 0
-                                                action=20; // If x is 1 then contradiction
+                                                action = 20; // If x is 1 then contradiction
                                             }
                                         }
                                         else
                                         {
-                                            if (affectedToUBOther)
+                                            if(affectedToUBOther)
                                             {
                                                 // y -> 0 => x -> 1
-                                                action=23; // if y is 0 then contradiction
+                                                action = 23; // if y is 0 then contradiction
                                             }
                                             else
                                             {
                                                 // y -> 0 => x -> 0
-                                                action=1; // x,y 1,0 impossible
+                                                action = 1; // x,y 1,0 impossible
                                             }
                                         }
                                     }
                                     else
                                     {
                                         // x -> 1 => y -> 0
-                                        if (whenAtUBOther)
+                                        if(whenAtUBOther)
                                         {
-                                            if (affectedToUBOther)
+                                            if(affectedToUBOther)
                                             {
                                                 // y -> 1 => x -> 1
-                                                action=22; // If y is 1 then contradiction
+                                                action = 22; // If y is 1 then contradiction
                                             }
                                             else
                                             {
                                                 // y -> 1 => x -> 0
-                                                action=0;
+                                                action = 0;
                                             }
                                         }
                                         else
                                         {
-                                            if (affectedToUBOther)
+                                            if(affectedToUBOther)
                                             {
                                                 // y -> 0 => x -> 1
-                                                action=11; // x,y with same values impossible
+                                                action = 11; // x,y with same values impossible
                                             }
                                             else
                                             {
                                                 // y -> 0 => x -> 0
-                                                action=20; // If x is 1 then contradiction
+                                                action = 20; // If x is 1 then contradiction
                                             }
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    if (affectedToUB)
+                                    if(affectedToUB)
                                     {
                                         // x -> 0 => y -> 1
-                                        if (whenAtUBOther)
+                                        if(whenAtUBOther)
                                         {
-                                            if (affectedToUBOther)
+                                            if(affectedToUBOther)
                                             {
                                                 // y -> 1 => x -> 1
-                                                action=21; // If x is 0 then contradiction
+                                                action = 21; // If x is 0 then contradiction
                                             }
                                             else
                                             {
                                                 // y -> 1 => x -> 0
-                                                action=11; // x,y must be different
+                                                action = 11; // x,y must be different
                                             }
                                         }
                                         else
                                         {
-                                            if (affectedToUBOther)
+                                            if(affectedToUBOther)
                                             {
                                                 // y -> 0 => x -> 1
-                                                action=3; // one of x,y must be 1
+                                                action = 3; // one of x,y must be 1
                                             }
                                             else
                                             {
                                                 // y -> 0 => x -> 0
-                                                action=23; // if y is 0 then contradiction
+                                                action = 23; // if y is 0 then contradiction
                                             }
                                         }
                                     }
                                     else
                                     {
                                         // x -> 0 => y -> 0
-                                        if (whenAtUBOther)
+                                        if(whenAtUBOther)
                                         {
-                                            if (affectedToUBOther)
+                                            if(affectedToUBOther)
                                             {
                                                 // y -> 1 => x -> 1
-                                                action=2; // x,y 0,1 impossible
+                                                action = 2; // x,y 0,1 impossible
                                             }
                                             else
                                             {
                                                 // y -> 1 => x -> 0
-                                                action=22; // If y is 1 then contradiction
+                                                action = 22; // If y is 1 then contradiction
                                             }
                                         }
                                         else
                                         {
-                                            if (affectedToUBOther)
+                                            if(affectedToUBOther)
                                             {
                                                 // y -> 0 => x -> 1
-                                                action=21; // if x is 0 then contradiction
+                                                action = 21; // if x is 0 then contradiction
                                             }
                                             else
                                             {
                                                 // y -> 0 => x -> 0
-                                                action=10; // x,y must be same
+                                                action = 10; // x,y must be same
                                             }
                                         }
                                     }
                                 }
-                                assert (action>=0);
-                                if (action<4)
+                                assert(action >= 0);
+                                if(action < 4)
                                 {
                                     // clique - see if there
-                                    if (oneFixStart_)
+                                    if(oneFixStart_)
                                     {
-                                        switch (action)
+                                        switch(action)
                                         {
                                         case 0:
                                             break;
@@ -3321,54 +3321,54 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                                         // If not can we add or strengthen
                                     }
                                     // check last action
-                                    if (lastAction>=0)
+                                    if(lastAction >= 0)
                                     {
-                                        if (logLevel_>1)
-                                            printf("XX lastAction %d, this %d\n",lastAction,action);
+                                        if(logLevel_ > 1)
+                                            printf("XX lastAction %d, this %d\n", lastAction, action);
                                     }
                                 }
-                                else if (action<12)
+                                else if(action < 12)
                                 {
-                                    if (logLevel_>1)
-                                        printf("XX Could eliminate one of %d %d 0-1 variables %c\n",i,affected,
-                                               (lastAction>=0) ? '*' : ' ');
-                                    if (info->strengthenRow)
+                                    if(logLevel_ > 1)
+                                        printf("XX Could eliminate one of %d %d 0-1 variables %c\n", i, affected,
+                                               (lastAction >= 0) ? '*' : ' ');
+                                    if(info->strengthenRow)
                                     {
                                         OsiRowCut rc;
                                         int index[2];
                                         double element[2];
-                                        index[0]=cutVector_[i].sequence;
-                                        element[0]=1.0;
-                                        index[1]=cutVector_[affected].sequence;
-                                        if (action==10)
+                                        index[0] = cutVector_[i].sequence;
+                                        element[0] = 1.0;
+                                        index[1] = cutVector_[affected].sequence;
+                                        if(action == 10)
                                         {
                                             // 10 -> x == y
                                             rc.setLb(0.0);
                                             rc.setUb(0.0);
-                                            element[1]= -1.0;
+                                            element[1] = -1.0;
                                         }
                                         else
                                         {
                                             // 11 -> x + y == 1
                                             rc.setLb(1.0);
                                             rc.setUb(1.0);
-                                            element[1]= 1.0;
+                                            element[1] = 1.0;
                                         }
-                                        rc.setRow(2,index,element,false);
+                                        rc.setRow(2, index, element, false);
                                         cs.insert(rc);
                                     }
                                 }
                                 else
                                 {
-                                    if (action<22)
+                                    if(action < 22)
                                     {
-                                        if (logLevel_>1)
-                                            printf("XX Could fix a 0-1 variable %d\n",i);
+                                        if(logLevel_ > 1)
+                                            printf("XX Could fix a 0-1 variable %d\n", i);
                                     }
                                     else
                                     {
-                                        if (logLevel_>1)
-                                            printf("XX Could fix a 0-1 variable %d\n",affected);
+                                        if(logLevel_ > 1)
+                                            printf("XX Could fix a 0-1 variable %d\n", affected);
                                     }
                                 }
                                 //printf("%d when %d forces %d to %d , %d when %d forces %d to %d\n",
@@ -3381,51 +3381,51 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
             }
             delete [] sortit;
         }
-        if (cutVector_)
+        if(cutVector_)
         {
             // now see if any disaggregation cuts are violated
-            for (i=0; i<number01Integers_; i++)
+            for(i = 0; i < number01Integers_; i++)
             {
-                int j=cutVector_[i].sequence;
-                double solInt=colsol[j];
+                int j = cutVector_[i].sequence;
+                double solInt = colsol[j];
                 double  upper, solValue;
                 int icol;
                 int index[2];
                 double element[2];
-                if (colUpper[j]-colLower[j]>1.0e-8)
+                if(colUpper[j] - colLower[j] > 1.0e-8)
                 {
-                    double away = fabs(0.5-(solInt-floor(solInt)));
-                    if (away<0.4999999)
+                    double away = fabs(0.5 - (solInt - floor(solInt)));
+                    if(away < 0.4999999)
                     {
-                        disaggregation thisOne=cutVector_[i];
+                        disaggregation thisOne = cutVector_[i];
                         int k;
                         OsiRowCut rc;
-                        for (k=0; k<thisOne.length; k++)
+                        for(k = 0; k < thisOne.length; k++)
                         {
                             icol = affectedInDisaggregation(thisOne.index[k]);
-                            if (zeroOneInDisaggregation(thisOne.index[k]))
+                            if(zeroOneInDisaggregation(thisOne.index[k]))
                                 icol = cutVector_[icol].sequence;
-                            solValue=colsol[icol];
-                            upper=colUpper_[icol];
-                            double infeasibility=0.0;
-                            if (!whenAtUBInDisaggregation(thisOne.index[k]))
+                            solValue = colsol[icol];
+                            upper = colUpper_[icol];
+                            double infeasibility = 0.0;
+                            if(!whenAtUBInDisaggregation(thisOne.index[k]))
                             {
-                                if (!affectedToUBInDisaggregation(thisOne.index[k]))
+                                if(!affectedToUBInDisaggregation(thisOne.index[k]))
                                 {
                                     // delta -> 0 => x to lb (at present just 0)
                                     infeasibility = solValue - upper * solInt;
-                                    if (infeasibility > 1.0e-3)
+                                    if(infeasibility > 1.0e-3)
                                     {
                                         rc.setLb(-COIN_DBL_MAX);
                                         rc.setUb(0.0);
-                                        index[0]=icol;
-                                        element[0]=1.0;
-                                        index[1]=j;
-                                        element[1]= -upper;
+                                        index[0] = icol;
+                                        element[0] = 1.0;
+                                        index[1] = j;
+                                        element[1] = -upper;
                                     }
                                     else
                                     {
-                                        infeasibility=0.0;
+                                        infeasibility = 0.0;
                                     }
                                 }
                                 else
@@ -3436,82 +3436,82 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
                             }
                             else
                             {
-                                if (affectedToUBInDisaggregation(thisOne.index[k]))
+                                if(affectedToUBInDisaggregation(thisOne.index[k]))
                                 {
                                     // delta -> 1 => x to ub (?)
                                     icol = affectedInDisaggregation(thisOne.index[k]);
-                                    if (zeroOneInDisaggregation(thisOne.index[k]))
+                                    if(zeroOneInDisaggregation(thisOne.index[k]))
                                         icol = cutVector_[icol].sequence;
-                                    solValue=colsol[icol];
-                                    upper=colUpper_[icol];
-                                    if (!colLower[icol])
+                                    solValue = colsol[icol];
+                                    upper = colUpper_[icol];
+                                    if(!colLower[icol])
                                     {
                                         infeasibility = upper * solInt - solValue;
-                                        if (infeasibility > 1.0e-3)
+                                        if(infeasibility > 1.0e-3)
                                         {
                                             rc.setLb(-COIN_DBL_MAX);
                                             rc.setUb(0.0);
-                                            index[0]=icol;
-                                            element[0]=-1.0;
-                                            index[1]=j;
-                                            element[1]= upper;
+                                            index[0] = icol;
+                                            element[0] = -1.0;
+                                            index[1] = j;
+                                            element[1] = upper;
                                         }
                                         else
                                         {
-                                            infeasibility=0.0;
+                                            infeasibility = 0.0;
                                         }
                                     }
                                     else
                                     {
-                                        assert (upper==colLower[icol]);
-                                        infeasibility=0.0;
+                                        assert(upper == colLower[icol]);
+                                        infeasibility = 0.0;
                                     }
                                 }
                                 else
                                 {
                                     // delta + delta2 <= 1
-                                    assert (zeroOneInDisaggregation(thisOne.index[k]));
+                                    assert(zeroOneInDisaggregation(thisOne.index[k]));
                                     // delta -> 1 => delta2 -> 0
                                     icol = affectedInDisaggregation(thisOne.index[k]);
                                     icol = cutVector_[icol].sequence;
                                     // only do if icol > j
-                                    if (icol >j && colUpper[icol] )
+                                    if(icol > j && colUpper[icol])
                                     {
-                                        solValue=colsol[icol];
-                                        if (!colLower[icol])
+                                        solValue = colsol[icol];
+                                        if(!colLower[icol])
                                         {
                                             infeasibility = solInt + solValue - 1.0;
-                                            if (infeasibility > 1.0e-3)
+                                            if(infeasibility > 1.0e-3)
                                             {
                                                 rc.setLb(-COIN_DBL_MAX);
                                                 rc.setUb(1.0);
-                                                index[0]=icol;
-                                                element[0]=1.0;
-                                                index[1]=j;
-                                                element[1]= 1.0;
+                                                index[0] = icol;
+                                                element[0] = 1.0;
+                                                index[1] = j;
+                                                element[1] = 1.0;
                                             }
                                             else
                                             {
-                                                infeasibility=0.0;
+                                                infeasibility = 0.0;
                                             }
                                         }
                                         else
                                         {
-                                            assert (upper==colLower[icol]);
-                                            infeasibility=0.0;
+                                            assert(upper == colLower[icol]);
+                                            infeasibility = 0.0;
                                         }
                                     }
                                 }
                             }
-                            if (infeasibility)
+                            if(infeasibility)
                             {
                                 rc.setEffectiveness(infeasibility);
-                                rc.setRow(2,index,element,false);
-                                if (logLevel_>1)
+                                rc.setRow(2, index, element, false);
+                                if(logLevel_ > 1)
                                     printf("%g <= %g * x%d + %g * x%d <= %g\n",
-                                           rc.lb(),element[0],index[0],element[1],index[1],rc.ub());
+                                           rc.lb(), element[0], index[0], element[1], index[1], rc.ub());
 #ifdef CGL_DEBUG
-                                if (debugger) assert(!debugger->invalidCut(rc));
+                                if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                 rowCut.addCutIfNotDuplicate(rc);
                             }
@@ -3525,14 +3525,14 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
     delete [] minR;
     delete [] maxR;
     // Add in row cuts
-    if (!ninfeas)
+    if(!ninfeas)
     {
-        rowCut.addCuts(cs,info->strengthenRow,0);
+        rowCut.addCuts(cs, info->strengthenRow, 0);
     }
     // delete stuff
     delete rowCopy;
     delete columnCopy;
-    if (rowCopy_)
+    if(rowCopy_)
     {
         delete [] rowLower;
         delete [] rowUpper;
@@ -3541,290 +3541,290 @@ int CglProbing::gutsOfGenerateCuts(const OsiSolverInterface & si,
     delete [] rowStartPos;
     delete [] realRows;
     // and put back unreasonable bounds on integer variables
-    const double * trueLower = si.getColLower();
-    const double * trueUpper = si.getColUpper();
-    if (!ninfeas)
+    const double* trueLower = si.getColLower();
+    const double* trueUpper = si.getColUpper();
+    if(!ninfeas)
     {
-        for (i=0; i<nCols; i++)
+        for(i = 0; i < nCols; i++)
         {
-            if (intVarOriginal[i]==2)
+            if(intVarOriginal[i] == 2)
             {
-                if (colUpper[i] == CGL_REASONABLE_INTEGER_BOUND)
+                if(colUpper[i] == CGL_REASONABLE_INTEGER_BOUND)
                     colUpper[i] = trueUpper[i];
-                if (colLower[i] == -CGL_REASONABLE_INTEGER_BOUND)
+                if(colLower[i] == -CGL_REASONABLE_INTEGER_BOUND)
                     colLower[i] = trueLower[i];
             }
         }
     }
     else
     {
-        memcpy(colLower,trueLower,nCols*sizeof(double));
-        memcpy(colUpper,trueUpper,nCols*sizeof(double));
+        memcpy(colLower, trueLower, nCols * sizeof(double));
+        memcpy(colUpper, trueUpper, nCols * sizeof(double));
     }
-    if (!info->inTree&&((info->options&4)==4||((info->options&8)&&!info->pass)))
+    if(!info->inTree && ((info->options & 4) == 4 || ((info->options & 8) && !info->pass)))
     {
         int numberRowCutsAfter = cs.sizeRowCuts();
-        for (int i=numberRowCutsBefore; i<numberRowCutsAfter; i++)
+        for(int i = numberRowCutsBefore; i < numberRowCutsAfter; i++)
             cs.rowCutPtr(i)->setGloballyValid();
     }
     return ninfeas;
 }
 // Does probing and adding cuts
-int CglProbing::probe( const OsiSolverInterface & si,
-                       const OsiRowCutDebugger *
+int CglProbing::probe(const OsiSolverInterface & si,
+                      const OsiRowCutDebugger *
 #ifdef CGL_DEBUG
-                       debugger
+                      debugger
 #endif
-                       ,OsiCuts & cs,
-                       double * colLower, double * colUpper,
-                       CoinPackedMatrix *rowCopy,
-                       CoinPackedMatrix *columnCopy,
-                       const CoinBigIndex * rowStartPos,const int * realRows,
-                       const double * rowLower, const double * rowUpper,
-                       const char * intVar, double * minR, double * maxR,
-                       int * markR,
-                       CglTreeInfo * info) const
+                      , OsiCuts & cs,
+                      double* colLower, double* colUpper,
+                      CoinPackedMatrix* rowCopy,
+                      CoinPackedMatrix* columnCopy,
+                      const CoinBigIndex* rowStartPos, const int* realRows,
+                      const double* rowLower, const double* rowUpper,
+                      const char* intVar, double* minR, double* maxR,
+                      int* markR,
+                      CglTreeInfo* info) const
 {
-    int nRows=rowCopy->getNumRows();
-    int nRowsSafe=CoinMin(nRows,si.getNumRows());
-    int nCols=rowCopy->getNumCols();
-    const double * currentColLower = si.getColLower();
-    const double * currentColUpper = si.getColUpper();
+    int nRows = rowCopy->getNumRows();
+    int nRowsSafe = CoinMin(nRows, si.getNumRows());
+    int nCols = rowCopy->getNumCols();
+    const double* currentColLower = si.getColLower();
+    const double* currentColUpper = si.getColUpper();
     // Set up maxes
     int maxStack = info->inTree ? maxStack_ : maxStackRoot_;
     int maxPass = info->inTree ? maxPass_ : maxPassRoot_;
-    if ((totalTimesCalled_%10)==-1)
+    if((totalTimesCalled_ % 10) == -1)
     {
-        int newMax=CoinMin(2*maxStack,50);
-        maxStack=CoinMax(newMax,maxStack);
+        int newMax = CoinMin(2 * maxStack, 50);
+        maxStack = CoinMax(newMax, maxStack);
     }
 #define ONE_ARRAY
 #ifdef ONE_ARRAY
-    unsigned int DIratio = sizeof(double)/sizeof(int);
-    assert (DIratio==1||DIratio==2);
-    int nSpace = 8*nCols+4*nRows+2*maxStack;
-    nSpace += (4*nCols+nRows+maxStack+DIratio-1)>>(DIratio-1);
-    double * colsol = new double[nSpace];
-    double * djs = colsol + nCols;
-    double * columnGap = djs + nCols;
-    double * saveL = columnGap + nCols;
-    double * saveU = saveL + 2*nCols;
-    double * saveMin = saveU + 2*nCols;
-    double * saveMax = saveMin + nRows;
-    double * largestPositiveInRow = saveMax + nRows;
-    double * largestNegativeInRow = largestPositiveInRow + nRows;
-    double * element = largestNegativeInRow + nRows;
-    double * lo0 = element + nCols;
-    double * up0 = lo0 + maxStack;
-    int * markC = reinterpret_cast<int *> (up0+maxStack);
-    int * stackC = markC + nCols;
-    int * stackR = stackC + 2*nCols;
-    int * index = stackR + nRows;
-    int * stackC0 = index + nCols;
+    unsigned int DIratio = sizeof(double) / sizeof(int);
+    assert(DIratio == 1 || DIratio == 2);
+    int nSpace = 8 * nCols + 4 * nRows + 2 * maxStack;
+    nSpace += (4 * nCols + nRows + maxStack + DIratio - 1) >> (DIratio - 1);
+    double* colsol = new double[nSpace];
+    double* djs = colsol + nCols;
+    double* columnGap = djs + nCols;
+    double* saveL = columnGap + nCols;
+    double* saveU = saveL + 2 * nCols;
+    double* saveMin = saveU + 2 * nCols;
+    double* saveMax = saveMin + nRows;
+    double* largestPositiveInRow = saveMax + nRows;
+    double* largestNegativeInRow = largestPositiveInRow + nRows;
+    double* element = largestNegativeInRow + nRows;
+    double* lo0 = element + nCols;
+    double* up0 = lo0 + maxStack;
+    int* markC = reinterpret_cast<int*>(up0 + maxStack);
+    int* stackC = markC + nCols;
+    int* stackR = stackC + 2 * nCols;
+    int* index = stackR + nRows;
+    int* stackC0 = index + nCols;
 #else
-    double * colsol = new double[nCols];
-    double * djs = new double[nCols];
-    double * columnGap = new double [nCols];
-    double * saveL = new double [2*nCols];
-    double * saveU = new double [2*nCols];
-    double * saveMin = new double [nRows];
-    double * saveMax = new double [nRows];
-    double * largestPositiveInRow = new double [nRows];
-    double * largestNegativeInRow = new double [nRows];
-    double * element = new double[nCols];
-    double * lo0 = new double[maxStack];
-    double * up0 = new double[maxStack];
-    int * markC = new int [nCols];
-    int * stackC = new int [2*nCols];
-    int * stackR = new int [nRows];
-    int * index = new int[nCols];
-    int * stackC0 = new int[maxStack];
+    double* colsol = new double[nCols];
+    double* djs = new double[nCols];
+    double* columnGap = new double [nCols];
+    double* saveL = new double [2 * nCols];
+    double* saveU = new double [2 * nCols];
+    double* saveMin = new double [nRows];
+    double* saveMax = new double [nRows];
+    double* largestPositiveInRow = new double [nRows];
+    double* largestNegativeInRow = new double [nRows];
+    double* element = new double[nCols];
+    double* lo0 = new double[maxStack];
+    double* up0 = new double[maxStack];
+    int* markC = new int [nCols];
+    int* stackC = new int [2 * nCols];
+    int* stackR = new int [nRows];
+    int* index = new int[nCols];
+    int* stackC0 = new int[maxStack];
 #endif
     // Let us never add more than twice the number of rows worth of row cuts
     // Keep cuts out of cs until end so we can find duplicates quickly
 #define PROBING4
 #ifdef PROBING4
-    int nRowsFake = info->inTree ? nRowsSafe/3 : nRowsSafe*10;
+    int nRowsFake = info->inTree ? nRowsSafe / 3 : nRowsSafe * 10;
 #else
-    int nRowsFake = info->inTree ? nRowsSafe/3 : nRowsSafe;
+    int nRowsFake = info->inTree ? nRowsSafe / 3 : nRowsSafe;
 #endif
-    if (!info->inTree&&!info->pass)
+    if(!info->inTree && !info->pass)
         nRowsFake *= 10;
-    bool justReplace = ((info->options&64)!=0)&&(realRows!=NULL);
-    if (justReplace)
+    bool justReplace = ((info->options & 64) != 0) && (realRows != NULL);
+    if(justReplace)
     {
-        nRowsFake=nRows;
+        nRowsFake = nRows;
     }
     row_cut rowCut(nRowsFake, !info->inTree);
     totalTimesCalled_++;
-    const int * column = rowCopy->getIndices();
-    const CoinBigIndex * rowStart = rowCopy->getVectorStarts();
-    const double * rowElements = rowCopy->getElements();
-    const int * row = columnCopy->getIndices();
-    const CoinBigIndex * columnStart = columnCopy->getVectorStarts();
-    const int * columnLength = columnCopy->getVectorLengths();
-    const double * columnElements = columnCopy->getElements();
+    const int* column = rowCopy->getIndices();
+    const CoinBigIndex* rowStart = rowCopy->getVectorStarts();
+    const double* rowElements = rowCopy->getElements();
+    const int* row = columnCopy->getIndices();
+    const CoinBigIndex* columnStart = columnCopy->getVectorStarts();
+    const int* columnLength = columnCopy->getVectorLengths();
+    const double* columnElements = columnCopy->getElements();
 #define MOVE_SINGLETONS
 #ifdef MOVE_SINGLETONS
-    const double * objective = si.getObjCoefficients();
-    const int * columnLength2 = si.getMatrixByCol()->getVectorLengths();
+    const double* objective = si.getObjCoefficients();
+    const int* columnLength2 = si.getMatrixByCol()->getVectorLengths();
 #endif
-    bool anyColumnCuts=false;
-    int ninfeas=0;
+    bool anyColumnCuts = false;
+    int ninfeas = 0;
     int rowCuts;
     double disaggEffectiveness;
     /* clean up djs and solution */
-    CoinMemcpyN(si.getReducedCost(),nCols,djs);
-    CoinMemcpyN( si.getColSolution(),nCols,colsol);
-    disaggEffectiveness=1.0e-3;
-    rowCuts=rowCuts_;
+    CoinMemcpyN(si.getReducedCost(), nCols, djs);
+    CoinMemcpyN(si.getColSolution(), nCols, colsol);
+    disaggEffectiveness = 1.0e-3;
+    rowCuts = rowCuts_;
     //CoinBigIndex * rowStartPos = new CoinBigIndex [nRows];
 #ifndef NDEBUG
-    const int * rowLength = rowCopy->getVectorLengths();
+    const int* rowLength = rowCopy->getVectorLengths();
 #endif
-    for (int i=0; i<nRows; i++)
+    for(int i = 0; i < nRows; i++)
     {
-        assert (rowStart[i]+rowLength[i]==rowStart[i+1]);
+        assert(rowStart[i] + rowLength[i] == rowStart[i + 1]);
         int kk;
 #ifndef NDEBUG
-        for ( kk =rowStart[i]; kk<rowStart[i+1]; kk++)
+        for(kk = rowStart[i]; kk < rowStart[i + 1]; kk++)
         {
             double value = rowElements[kk];
-            if (value>0.0)
+            if(value > 0.0)
                 break;
         }
-        assert (rowStartPos[i]==kk);
+        assert(rowStartPos[i] == kk);
 #endif
         double value;
-        value=0.0;
-        for ( kk =rowStart[i]; kk<rowStartPos[i]; kk++)
+        value = 0.0;
+        for(kk = rowStart[i]; kk < rowStartPos[i]; kk++)
         {
             int iColumn = column[kk];
-            double gap = CoinMin(1.0e100,colUpper[iColumn]-colLower[iColumn]);
-            value = CoinMin(value,gap*rowElements[kk]);
+            double gap = CoinMin(1.0e100, colUpper[iColumn] - colLower[iColumn]);
+            value = CoinMin(value, gap * rowElements[kk]);
         }
-        largestNegativeInRow[i]=value;
-        value=0.0;
-        for ( ; kk<rowStart[i+1]; kk++)
+        largestNegativeInRow[i] = value;
+        value = 0.0;
+        for(; kk < rowStart[i + 1]; kk++)
         {
             int iColumn = column[kk];
-            double gap = CoinMin(1.0e100,colUpper[iColumn]-colLower[iColumn]);
-            value = CoinMax(value,gap*rowElements[kk]);
+            double gap = CoinMin(1.0e100, colUpper[iColumn] - colLower[iColumn]);
+            value = CoinMax(value, gap * rowElements[kk]);
         }
-        largestPositiveInRow[i]=value;
+        largestPositiveInRow[i] = value;
     }
     double direction = si.getObjSense();
-    for (int i = 0; i < nCols; ++i)
+    for(int i = 0; i < nCols; ++i)
     {
-        double djValue = djs[i]*direction;
-        double gap=colUpper[i]-colLower[i];
-        if (gap>1.0e-8)
+        double djValue = djs[i] * direction;
+        double gap = colUpper[i] - colLower[i];
+        if(gap > 1.0e-8)
         {
-            if (colsol[i]<colLower[i]+primalTolerance_)
+            if(colsol[i] < colLower[i] + primalTolerance_)
             {
-                colsol[i]=colLower[i];
-                djs[i] = CoinMax(0.0,djValue);
+                colsol[i] = colLower[i];
+                djs[i] = CoinMax(0.0, djValue);
             }
-            else if (colsol[i]>colUpper[i]-primalTolerance_)
+            else if(colsol[i] > colUpper[i] - primalTolerance_)
             {
-                colsol[i]=colUpper[i];
-                djs[i] = CoinMin(0.0,djValue);
+                colsol[i] = colUpper[i];
+                djs[i] = CoinMin(0.0, djValue);
             }
             else
             {
-                djs[i]=0.0;
+                djs[i] = 0.0;
             }
         }
-        columnGap[i]=gap-primalTolerance_;
+        columnGap[i] = gap - primalTolerance_;
     }
 
-    int ipass=0,nfixed=-1;
+    int ipass = 0, nfixed = -1;
 
     double cutoff;
-    bool cutoff_available = si.getDblParam(OsiDualObjectiveLimit,cutoff);
-    if (!cutoff_available||usingObjective_<0)   // cut off isn't set or isn't valid
+    bool cutoff_available = si.getDblParam(OsiDualObjectiveLimit, cutoff);
+    if(!cutoff_available || usingObjective_ < 0) // cut off isn't set or isn't valid
     {
         cutoff = si.getInfinity();
     }
     cutoff *= direction;
-    if (fabs(cutoff)>1.0e30)
-        assert (cutoff>1.0e30);
+    if(fabs(cutoff) > 1.0e30)
+        assert(cutoff > 1.0e30);
     double current = si.getObjValue();
     current *= direction;
     /* for both way coding */
-    int nstackC0=-1;
-    int nstackR,nstackC;
+    int nstackC0 = -1;
+    int nstackR, nstackC;
     //int nFix=0;
-    for (int i=0; i<nCols; i++)
+    for(int i = 0; i < nCols; i++)
     {
-        if (colUpper[i]-colLower[i]<1.0e-8)
+        if(colUpper[i] - colLower[i] < 1.0e-8)
         {
-            markC[i]=3;
+            markC[i] = 3;
             //nFix++;
         }
         else
         {
-            markC[i]=0;
-            if (colUpper[i]>1.0e10)
+            markC[i] = 0;
+            if(colUpper[i] > 1.0e10)
                 markC[i] |= 8;
-            if (colLower[i]<-1.0e10)
+            if(colLower[i] < -1.0e10)
                 markC[i] |= 4;
         }
     }
     //printf("PROBE %d fixed out of %d\n",nFix,nCols);
-    double tolerance = 1.0e1*primalTolerance_;
+    double tolerance = 1.0e1 * primalTolerance_;
     // If we are going to replace coefficient then we don't need to be effective
     //double needEffectiveness = info->strengthenRow ? -1.0e10 : 1.0e-3;
     double needEffectiveness = info->strengthenRow ? 1.0e-8 : 1.0e-3;
-    if (justReplace&&(info->pass&1)!=0)
-        needEffectiveness=-1.0e10;
-    if (PROBING_EXTRA_STUFF)
+    if(justReplace && (info->pass & 1) != 0)
+        needEffectiveness = -1.0e10;
+    if(PROBING_EXTRA_STUFF)
     {
-        int nCut=0;
-        for (int iRow=0; iRow<nRows; iRow++)
+        int nCut = 0;
+        for(int iRow = 0; iRow < nRows; iRow++)
         {
-            int numberInt=0;
-            int whichInt=-1;
-            int numberNeg=0;
-            double sumFixed=0.0;
-            double intValue=0.0;
-            for (CoinBigIndex j=rowStart[iRow]; j<rowStart[iRow+1]; j++)
+            int numberInt = 0;
+            int whichInt = -1;
+            int numberNeg = 0;
+            double sumFixed = 0.0;
+            double intValue = 0.0;
+            for(CoinBigIndex j = rowStart[iRow]; j < rowStart[iRow + 1]; j++)
             {
                 int jColumn = column[j];
                 double value = rowElements[j];
-                if (colUpper[jColumn] > colLower[jColumn]+1.0e-8)
+                if(colUpper[jColumn] > colLower[jColumn] + 1.0e-8)
                 {
-                    if (intVar[jColumn])
+                    if(intVar[jColumn])
                     {
                         numberInt++;
-                        whichInt=jColumn;
-                        intValue=value;
+                        whichInt = jColumn;
+                        intValue = value;
                     }
-                    else if (value<0)
+                    else if(value < 0)
                     {
                         numberNeg++;
                     }
                 }
                 else
                 {
-                    sumFixed += colLower[jColumn]*value;
+                    sumFixed += colLower[jColumn] * value;
                 }
             }
-            if (numberInt==1&&numberNeg==0&&intValue<0.0&&!rowUpper[iRow]&&rowLower[iRow]<-1.0e30&&!sumFixed)
+            if(numberInt == 1 && numberNeg == 0 && intValue < 0.0 && !rowUpper[iRow] && rowLower[iRow] < -1.0e30 && !sumFixed)
             {
                 double intSol = colsol[whichInt];
-                for (CoinBigIndex j=rowStart[iRow]; j<rowStart[iRow+1]; j++)
+                for(CoinBigIndex j = rowStart[iRow]; j < rowStart[iRow + 1]; j++)
                 {
                     int jColumn = column[j];
                     //double value = rowElements[j];
-                    if (colUpper[jColumn] > colLower[jColumn]+1.0e-8)
+                    if(colUpper[jColumn] > colLower[jColumn] + 1.0e-8)
                     {
-                        if (!intVar[jColumn])
+                        if(!intVar[jColumn])
                         {
-                            if (colLower[jColumn]||colUpper[jColumn]>1.0)
+                            if(colLower[jColumn] || colUpper[jColumn] > 1.0)
                                 continue;;
                             double upper = colUpper[jColumn];
-                            if (colsol[jColumn]>intSol*upper+1.0e-4)
+                            if(colsol[jColumn] > intSol * upper + 1.0e-4)
                             {
                                 nCut++;
                                 OsiRowCut rc;
@@ -3833,11 +3833,11 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                 rc.setEffectiveness(1.0e-5);
                                 int index[2];
                                 double element[2];
-                                index[0]=jColumn;
-                                index[1]=whichInt;
-                                element[0]=1.0;
-                                element[1]=-upper;
-                                rc.setRow(2,index,element,false);
+                                index[0] = jColumn;
+                                index[1] = whichInt;
+                                element[0] = 1.0;
+                                element[1] = -upper;
+                                rc.setRow(2, index, element, false);
                                 cs.insert(rc);
                             }
                         }
@@ -3845,324 +3845,324 @@ int CglProbing::probe( const OsiSolverInterface & si,
                 }
             }
         }
-        if (nCut)
-            printf("%d possible cuts\n",nCut);
+        if(nCut)
+            printf("%d possible cuts\n", nCut);
     }
     bool saveFixingInfo =  false;
 #if PROBING100
-    CglTreeProbingInfo * probingInfo = dynamic_cast<CglTreeProbingInfo *> (info);
-    const int * backward = NULL;
-    const int * integerVariable = NULL;
-    const int * toZero = NULL;
-    const int * toOne = NULL;
-    const fixEntry * fixEntries=NULL;
+    CglTreeProbingInfo* probingInfo = dynamic_cast<CglTreeProbingInfo*>(info);
+    const int* backward = NULL;
+    const int* integerVariable = NULL;
+    const int* toZero = NULL;
+    const int* toOne = NULL;
+    const fixEntry* fixEntries = NULL;
 #endif
-    if (info->inTree)
+    if(info->inTree)
     {
 #if PROBING100
         backward = probingInfo->backward();
         integerVariable = probingInfo->integerVariable();
         toZero = probingInfo->toZero();
         toOne = probingInfo->toOne();
-        fixEntries=probingInfo->fixEntries();
+        fixEntries = probingInfo->fixEntries();
 #endif
     }
     else
     {
-        saveFixingInfo = (info->initializeFixing(&si)>0);
+        saveFixingInfo = (info->initializeFixing(&si) > 0);
     }
-    while (ipass<maxPass&&nfixed)
+    while(ipass < maxPass && nfixed)
     {
         int iLook;
         ipass++;
         //printf("pass %d\n",ipass);
-        nfixed=0;
-        int justFix= (!info->inTree&&!info->pass) ? -1 : 0;
+        nfixed = 0;
+        int justFix = (!info->inTree && !info->pass) ? -1 : 0;
         int maxProbe = info->inTree ? maxProbe_ : maxProbeRoot_;
-        if (justFix<0)
-            maxProbe=numberThisTime_;
-        if (maxProbe==123)
+        if(justFix < 0)
+            maxProbe = numberThisTime_;
+        if(maxProbe == 123)
         {
             // Try and be a bit intelligent
-            maxProbe=0;
-            if (!info->inTree)
+            maxProbe = 0;
+            if(!info->inTree)
             {
-                if (!info->pass||numberThisTime_<-100)
+                if(!info->pass || numberThisTime_ < -100)
                 {
-                    maxProbe=numberThisTime_;
+                    maxProbe = numberThisTime_;
                 }
                 else
                 {
                     int cutDown = 4;
                     int offset = info->pass % cutDown;
                     int i;
-                    int k=0;
-                    int kk=offset;
-                    for (i=0; i<numberThisTime_; i++)
+                    int k = 0;
+                    int kk = offset;
+                    for(i = 0; i < numberThisTime_; i++)
                     {
-                        if (!kk)
+                        if(!kk)
                         {
 #define XXXXXX
 #ifdef XXXXXX
-                            lookedAt_[maxProbe]=lookedAt_[i];
+                            lookedAt_[maxProbe] = lookedAt_[i];
 #endif
                             maxProbe++;
-                            kk=cutDown-1;
+                            kk = cutDown - 1;
                         }
                         else
                         {
-                            stackC[k++]=lookedAt_[i];
+                            stackC[k++] = lookedAt_[i];
                             kk--;
                         }
                     }
 #ifdef XXXXXX
-                    memcpy(lookedAt_+maxProbe,stackC,k*sizeof(int));
+                    memcpy(lookedAt_ + maxProbe, stackC, k * sizeof(int));
 #endif
                 }
             }
             else
             {
                 // in tree
-                if (numberThisTime_<200)
+                if(numberThisTime_ < 200)
                 {
-                    maxProbe=numberThisTime_;
+                    maxProbe = numberThisTime_;
                 }
                 else
                 {
-                    int cutDown = CoinMax(numberThisTime_/100,4);
+                    int cutDown = CoinMax(numberThisTime_ / 100, 4);
                     int offset = info->pass % cutDown;
                     int i;
-                    int k=0;
-                    int kk=offset;
-                    for (i=0; i<numberThisTime_; i++)
+                    int k = 0;
+                    int kk = offset;
+                    for(i = 0; i < numberThisTime_; i++)
                     {
-                        if (!kk)
+                        if(!kk)
                         {
 #ifdef XXXXXX
-                            lookedAt_[maxProbe]=lookedAt_[i];
+                            lookedAt_[maxProbe] = lookedAt_[i];
 #endif
                             maxProbe++;
-                            kk=cutDown-1;
+                            kk = cutDown - 1;
                         }
                         else
                         {
-                            stackC[k++]=lookedAt_[i];
+                            stackC[k++] = lookedAt_[i];
                             kk--;
                         }
                     }
 #ifdef XXXXXX
-                    memcpy(lookedAt_+maxProbe,stackC,k*sizeof(int));
+                    memcpy(lookedAt_ + maxProbe, stackC, k * sizeof(int));
 #endif
                 }
             }
         }
-        int leftTotalStack=maxStack*CoinMax(200,maxProbe);
+        int leftTotalStack = maxStack * CoinMax(200, maxProbe);
 #ifdef PROBING5
-        if (!info->inTree&&!info->pass)
+        if(!info->inTree && !info->pass)
             leftTotalStack = 1234567890;
 #endif
         //printf("maxStack %d maxPass %d numberThisTime %d info pass %d\n",
         //   maxStack,maxPass,numberThisTime_,info->pass);
-        for (iLook=0; iLook<numberThisTime_; iLook++)
+        for(iLook = 0; iLook < numberThisTime_; iLook++)
         {
             double solval;
             double down;
             double up;
-            if (rowCut.outOfSpace()||leftTotalStack<=0)
+            if(rowCut.outOfSpace() || leftTotalStack <= 0)
             {
-                if (!justFix&&(!nfixed||info->inTree))
+                if(!justFix && (!nfixed || info->inTree))
                 {
 #ifdef COIN_DEVELOP
-                    if (!info->inTree)
+                    if(!info->inTree)
                         printf("Exiting a on pass %d, maxProbe %d\n",
-                               ipass,maxProbe);
+                               ipass, maxProbe);
 #endif
                     break;
                 }
-                else if (justFix<=0)
+                else if(justFix <= 0)
                 {
-                    if (!info->inTree)
+                    if(!info->inTree)
                     {
-                        rowCuts=0;
-                        justFix=1;
-                        disaggEffectiveness=COIN_DBL_MAX;
-                        needEffectiveness=COIN_DBL_MAX;
+                        rowCuts = 0;
+                        justFix = 1;
+                        disaggEffectiveness = COIN_DBL_MAX;
+                        needEffectiveness = COIN_DBL_MAX;
                         //maxStack=10;
-                        maxPass=1;
+                        maxPass = 1;
                     }
-                    else if (!nfixed)
+                    else if(!nfixed)
                     {
 #ifdef COIN_DEVELOP
                         printf("Exiting b on pass %d, maxProbe %d\n",
-                               ipass,maxProbe);
+                               ipass, maxProbe);
 #endif
                         break;
                     }
                 }
             }
-            int awayFromBound=1;
-            int j=lookedAt_[iLook];
+            int awayFromBound = 1;
+            int j = lookedAt_[iLook];
             //if (j==231||j==226)
             //printf("size %d %d j is %d\n",rowCut.numberCuts(),cs.sizeRowCuts(),j);//printf("looking at %d (%d out of %d)\n",j,iLook,numberThisTime_);
-            solval=colsol[j];
-            down = floor(solval+tolerance);
-            up = ceil(solval-tolerance);
-            if(columnGap[j]<0.0) markC[j]=3;
-            if ((markC[j]&3)!=0||!intVar[j]) continue;
+            solval = colsol[j];
+            down = floor(solval + tolerance);
+            up = ceil(solval - tolerance);
+            if(columnGap[j] < 0.0) markC[j] = 3;
+            if((markC[j] & 3) != 0 || !intVar[j]) continue;
             double saveSolval = solval;
-            if (solval>=colUpper[j]-tolerance||solval<=colLower[j]+tolerance||up==down)
+            if(solval >= colUpper[j] - tolerance || solval <= colLower[j] + tolerance || up == down)
             {
-                awayFromBound=0;
-                if (solval<=colLower[j]+2.0*tolerance)
+                awayFromBound = 0;
+                if(solval <= colLower[j] + 2.0 * tolerance)
                 {
-                    solval = colLower[j]+1.0e-1;
-                    down=colLower[j];
-                    up=down+1.0;
+                    solval = colLower[j] + 1.0e-1;
+                    down = colLower[j];
+                    up = down + 1.0;
                 }
-                else if (solval>=colUpper[j]-2.0*tolerance)
+                else if(solval >= colUpper[j] - 2.0 * tolerance)
                 {
-                    solval = colUpper[j]-1.0e-1;
-                    up=colUpper[j];
-                    down=up-1;
+                    solval = colUpper[j] - 1.0e-1;
+                    up = colUpper[j];
+                    down = up - 1;
                 }
                 else
                 {
                     // odd
-                    up=down+1.0;
-                    solval = down+1.0e-1;
+                    up = down + 1.0;
+                    solval = down + 1.0e-1;
                 }
             }
-            assert (up<=colUpper[j]);
-            assert (down>=colLower[j]);
-            assert (up>down);
-            int istackC,iway, istackR;
-            int way[]= {1,2,1};
-            int feas[]= {1,2,4};
-            int feasible=0;
+            assert(up <= colUpper[j]);
+            assert(down >= colLower[j]);
+            assert(up > down);
+            int istackC, iway, istackR;
+            int way[] = {1, 2, 1};
+            int feas[] = {1, 2, 4};
+            int feasible = 0;
             int notFeasible;
-            for (iway=0; iway<3; iway ++)
+            for(iway = 0; iway < 3; iway ++)
             {
-                int fixThis=0;
-                double objVal=current;
-                int goingToTrueBound=0;
-                stackC[0]=j;
-                markC[j]=way[iway];
+                int fixThis = 0;
+                double objVal = current;
+                int goingToTrueBound = 0;
+                stackC[0] = j;
+                markC[j] = way[iway];
                 double solMovement;
                 double movement;
-                if (way[iway]==1)
+                if(way[iway] == 1)
                 {
-                    movement=down-colUpper[j];
-                    solMovement = down-colsol[j];
-                    assert(movement<-0.99999);
-                    if (fabs(down-colLower[j])<1.0e-7)
+                    movement = down - colUpper[j];
+                    solMovement = down - colsol[j];
+                    assert(movement < -0.99999);
+                    if(fabs(down - colLower[j]) < 1.0e-7)
                     {
-                        goingToTrueBound=2;
-                        down=colLower[j];
+                        goingToTrueBound = 2;
+                        down = colLower[j];
                     }
                 }
                 else
                 {
-                    movement=up-colLower[j];
-                    solMovement = up-colsol[j];
-                    assert(movement>0.99999);
-                    if (fabs(up-colUpper[j])<1.0e-7)
+                    movement = up - colLower[j];
+                    solMovement = up - colsol[j];
+                    assert(movement > 0.99999);
+                    if(fabs(up - colUpper[j]) < 1.0e-7)
                     {
-                        goingToTrueBound=2;
-                        up=colUpper[j];
+                        goingToTrueBound = 2;
+                        up = colUpper[j];
                     }
                 }
-                if (goingToTrueBound&&(colUpper[j]-colLower[j]>1.5||colLower[j]))
-                    goingToTrueBound=1;
+                if(goingToTrueBound && (colUpper[j] - colLower[j] > 1.5 || colLower[j]))
+                    goingToTrueBound = 1;
                 // switch off disaggregation if not wanted
-                if ((rowCuts&1)==0)
-                    goingToTrueBound=0;
-                bool canReplace = info->strengthenRow&&(goingToTrueBound==2);
+                if((rowCuts & 1) == 0)
+                    goingToTrueBound = 0;
+                bool canReplace = info->strengthenRow && (goingToTrueBound == 2);
 #ifdef PRINT_DEBUG
-                if (fabs(movement)>1.01)
+                if(fabs(movement) > 1.01)
                 {
-                    printf("big %d %g %g %g\n",j,colLower[j],solval,colUpper[j]);
+                    printf("big %d %g %g %g\n", j, colLower[j], solval, colUpper[j]);
                 }
 #endif
-                if (solMovement*djs[j]>0.0)
-                    objVal += solMovement*djs[j];
-                nstackC=1;
-                nstackR=0;
-                saveL[0]=colLower[j];
-                saveU[0]=colUpper[j];
-                assert (saveU[0]>saveL[0]);
-                notFeasible=0;
-                if (movement<0.0)
+                if(solMovement * djs[j] > 0.0)
+                    objVal += solMovement * djs[j];
+                nstackC = 1;
+                nstackR = 0;
+                saveL[0] = colLower[j];
+                saveU[0] = colUpper[j];
+                assert(saveU[0] > saveL[0]);
+                notFeasible = 0;
+                if(movement < 0.0)
                 {
                     colUpper[j] += movement;
-                    colUpper[j] = floor(colUpper[j]+0.5);
-                    columnGap[j] = colUpper[j]-colLower[j]-primalTolerance_;
+                    colUpper[j] = floor(colUpper[j] + 0.5);
+                    columnGap[j] = colUpper[j] - colLower[j] - primalTolerance_;
 #ifdef PRINT_DEBUG
-                    printf("** Trying %d down to 0\n",j);
+                    printf("** Trying %d down to 0\n", j);
 #endif
                 }
                 else
                 {
                     colLower[j] += movement;
-                    colLower[j] = floor(colLower[j]+0.5);
-                    columnGap[j] = colUpper[j]-colLower[j]-primalTolerance_;
+                    colLower[j] = floor(colLower[j] + 0.5);
+                    columnGap[j] = colUpper[j] - colLower[j] - primalTolerance_;
 #ifdef PRINT_DEBUG
-                    printf("** Trying %d up to 1\n",j);
+                    printf("** Trying %d up to 1\n", j);
 #endif
                 }
-                if (fabs(colUpper[j]-colLower[j])<1.0e-6)
-                    markC[j]=3; // say fixed
+                if(fabs(colUpper[j] - colLower[j]) < 1.0e-6)
+                    markC[j] = 3; // say fixed
                 markC[j] &= ~12;
-                if (colUpper[j]>1.0e10)
+                if(colUpper[j] > 1.0e10)
                     markC[j] |= 8;
-                if (colLower[j]<-1.0e10)
+                if(colLower[j] < -1.0e10)
                     markC[j] |= 4;
-                istackC=0;
+                istackC = 0;
                 /* update immediately */
                 int k;
-                for ( k=columnStart[j]; k<columnStart[j]+columnLength[j]; k++)
+                for(k = columnStart[j]; k < columnStart[j] + columnLength[j]; k++)
                 {
                     int irow = row[k];
                     double value = columnElements[k];
-                    assert (markR[irow]!=-2);
-                    if (markR[irow]==-1)
+                    assert(markR[irow] != -2);
+                    if(markR[irow] == -1)
                     {
-                        stackR[nstackR]=irow;
-                        markR[irow]=nstackR;
-                        saveMin[nstackR]=minR[irow];
-                        saveMax[nstackR]=maxR[irow];
+                        stackR[nstackR] = irow;
+                        markR[irow] = nstackR;
+                        saveMin[nstackR] = minR[irow];
+                        saveMax[nstackR] = maxR[irow];
                         nstackR++;
 #if 0
                     }
-                    else if (markR[irow]==-2)
+                    else if(markR[irow] == -2)
                     {
                         continue;
 #endif
                     }
                     /* could check immediately if violation */
-                    if (movement>0.0)
+                    if(movement > 0.0)
                     {
                         /* up */
-                        if (value>0.0)
+                        if(value > 0.0)
                         {
                             /* up does not change - down does */
-                            if (minR[irow]>-1.0e10)
+                            if(minR[irow] > -1.0e10)
                                 minR[irow] += value;
-                            if (minR[irow]>rowUpper[irow]+1.0e-5)
+                            if(minR[irow] > rowUpper[irow] + 1.0e-5)
                             {
-                                notFeasible=1;
-                                istackC=1;
+                                notFeasible = 1;
+                                istackC = 1;
                                 break;
                             }
                         }
                         else
                         {
                             /* down does not change - up does */
-                            if (maxR[irow]<1.0e10)
+                            if(maxR[irow] < 1.0e10)
                                 maxR[irow] += value;
-                            if (maxR[irow]<rowLower[irow]-1.0e-5)
+                            if(maxR[irow] < rowLower[irow] - 1.0e-5)
                             {
-                                notFeasible=1;
-                                istackC=1;
+                                notFeasible = 1;
+                                istackC = 1;
                                 break;
                             }
                         }
@@ -4170,201 +4170,201 @@ int CglProbing::probe( const OsiSolverInterface & si,
                     else
                     {
                         /* down */
-                        if (value<0.0)
+                        if(value < 0.0)
                         {
                             /* up does not change - down does */
-                            if (minR[irow]>-1.0e10)
+                            if(minR[irow] > -1.0e10)
                                 minR[irow] -= value;
-                            if (minR[irow]>rowUpper[irow]+1.0e-5)
+                            if(minR[irow] > rowUpper[irow] + 1.0e-5)
                             {
-                                notFeasible=1;
-                                istackC=1;
+                                notFeasible = 1;
+                                istackC = 1;
                                 break;
                             }
                         }
                         else
                         {
                             /* down does not change - up does */
-                            if (maxR[irow]<1.0e10)
+                            if(maxR[irow] < 1.0e10)
                                 maxR[irow] -= value;
-                            if (maxR[irow]<rowLower[irow]-1.0e-5)
+                            if(maxR[irow] < rowLower[irow] - 1.0e-5)
                             {
-                                notFeasible=1;
-                                istackC=1;
+                                notFeasible = 1;
+                                istackC = 1;
                                 break;
                             }
                         }
                     }
                 }
-                while (istackC<nstackC&&nstackC<maxStack)   // could be istackC<maxStack?
+                while(istackC < nstackC && nstackC < maxStack) // could be istackC<maxStack?
                 {
                     leftTotalStack--;
                     int jway;
-                    int jcol =stackC[istackC];
-                    jway=markC[jcol];
+                    int jcol = stackC[istackC];
+                    jway = markC[jcol];
                     // If not first and fixed then skip
-                    if ((jway&3)==3&&istackC)
+                    if((jway & 3) == 3 && istackC)
                     {
                         //istackC++;
                         //continue;
                         //printf("fixed %d on stack\n",jcol);
                     }
 #if PROBING100
-                    if (backward)
+                    if(backward)
                     {
                         int jColumn = backward[jcol];
-                        if (jColumn>=0)
+                        if(jColumn >= 0)
                         {
-                            int nFix=0;
+                            int nFix = 0;
                             // 0-1 see what else could be fixed
-                            if (jway==1)
+                            if(jway == 1)
                             {
                                 // fixed to 0
                                 int j;
-                                for ( j=toZero_[jColumn]; j<toOne_[jColumn]; j++)
+                                for(j = toZero_[jColumn]; j < toOne_[jColumn]; j++)
                                 {
-                                    int kColumn=fixEntry_[j].sequence;
+                                    int kColumn = fixEntry_[j].sequence;
                                     kColumn = integerVariable_[kColumn];
                                     bool fixToOne = fixEntry_[j].oneFixed;
-                                    if (fixToOne)
+                                    if(fixToOne)
                                     {
-                                        if (colLower[kColumn]==0.0)
+                                        if(colLower[kColumn] == 0.0)
                                         {
-                                            if (colUpper[kColumn]==1.0)
+                                            if(colUpper[kColumn] == 1.0)
                                             {
                                                 // See if on list
-                                                if (!(markC[kColumn]&3))
+                                                if(!(markC[kColumn] & 3))
                                                 {
-                                                    if(nStackC<nCols)
+                                                    if(nStackC < nCols)
                                                     {
-                                                        stackC[nstackC]=kColumn;
-                                                        saveL[nstackC]=colLower[kColumn];
-                                                        saveU[nstackC]=colUpper[kColumn];
-                                                        assert (saveU[nstackC]>saveL[nstackC]);
-                                                        assert (nstackC<nCols);
+                                                        stackC[nstackC] = kColumn;
+                                                        saveL[nstackC] = colLower[kColumn];
+                                                        saveU[nstackC] = colUpper[kColumn];
+                                                        assert(saveU[nstackC] > saveL[nstackC]);
+                                                        assert(nstackC < nCols);
                                                         nstackC++;
-                                                        markC[kColumn]|=2;
+                                                        markC[kColumn] |= 2;
                                                         nFix++;
                                                     }
                                                 }
-                                                else if ((markC[kColumn]&3)==1)
+                                                else if((markC[kColumn] & 3) == 1)
                                                 {
-                                                    notFeasible=true;
+                                                    notFeasible = true;
                                                 }
                                             }
                                             else
                                             {
                                                 // infeasible!
-                                                notFeasible=true;
+                                                notFeasible = true;
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        if (colUpper[kColumn]==1.0)
+                                        if(colUpper[kColumn] == 1.0)
                                         {
-                                            if (colLower[kColumn]==0.0)
+                                            if(colLower[kColumn] == 0.0)
                                             {
                                                 // See if on list
-                                                if (!(markC[kColumn]&3))
+                                                if(!(markC[kColumn] & 3))
                                                 {
-                                                    if(nStackC<nCols)
+                                                    if(nStackC < nCols)
                                                     {
-                                                        stackC[nstackC]=kColumn;
-                                                        saveL[nstackC]=colLower[kColumn];
-                                                        saveU[nstackC]=colUpper[kColumn];
-                                                        assert (saveU[nstackC]>saveL[nstackC]);
-                                                        assert (nstackC<nCols);
+                                                        stackC[nstackC] = kColumn;
+                                                        saveL[nstackC] = colLower[kColumn];
+                                                        saveU[nstackC] = colUpper[kColumn];
+                                                        assert(saveU[nstackC] > saveL[nstackC]);
+                                                        assert(nstackC < nCols);
                                                         nstackC++;
-                                                        markC[kColumn]|=1;
+                                                        markC[kColumn] |= 1;
                                                         nFix++;
                                                     }
                                                 }
-                                                else if ((markC[kColumn]&3)==2)
+                                                else if((markC[kColumn] & 3) == 2)
                                                 {
-                                                    notFeasible=true;
+                                                    notFeasible = true;
                                                 }
                                             }
                                             else
                                             {
                                                 // infeasible!
-                                                notFeasible=true;
+                                                notFeasible = true;
                                             }
                                         }
                                     }
                                 }
                             }
-                            else if (jway==2)
+                            else if(jway == 2)
                             {
                                 int j;
-                                for ( j=toOne_[jColumn]; j<toZero_[jColumn+1]; j++)
+                                for(j = toOne_[jColumn]; j < toZero_[jColumn + 1]; j++)
                                 {
-                                    int kColumn=fixEntry_[j].sequence;
+                                    int kColumn = fixEntry_[j].sequence;
                                     kColumn = integerVariable_[kColumn];
                                     bool fixToOne = fixEntry_[j].oneFixed;
-                                    if (fixToOne)
+                                    if(fixToOne)
                                     {
-                                        if (colLower[kColumn]==0.0)
+                                        if(colLower[kColumn] == 0.0)
                                         {
-                                            if (colUpper[kColumn]==1.0)
+                                            if(colUpper[kColumn] == 1.0)
                                             {
                                                 // See if on list
-                                                if (!(markC[kColumn]&3))
+                                                if(!(markC[kColumn] & 3))
                                                 {
-                                                    if(nStackC<nCols)
+                                                    if(nStackC < nCols)
                                                     {
-                                                        stackC[nstackC]=kColumn;
-                                                        saveL[nstackC]=colLower[kColumn];
-                                                        saveU[nstackC]=colUpper[kColumn];
-                                                        assert (saveU[nstackC]>saveL[nstackC]);
-                                                        assert (nstackC<nCols);
+                                                        stackC[nstackC] = kColumn;
+                                                        saveL[nstackC] = colLower[kColumn];
+                                                        saveU[nstackC] = colUpper[kColumn];
+                                                        assert(saveU[nstackC] > saveL[nstackC]);
+                                                        assert(nstackC < nCols);
                                                         nstackC++;
-                                                        markC[kColumn]|=2;
+                                                        markC[kColumn] |= 2;
                                                         nFix++;
                                                     }
                                                 }
-                                                else if ((markC[kColumn]&3)==1)
+                                                else if((markC[kColumn] & 3) == 1)
                                                 {
-                                                    notFeasible=true;
+                                                    notFeasible = true;
                                                 }
                                             }
                                             else
                                             {
                                                 // infeasible!
-                                                notFeasible=true;
+                                                notFeasible = true;
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        if (colUpper[kColumn]==1.0)
+                                        if(colUpper[kColumn] == 1.0)
                                         {
-                                            if (colLower[kColumn]==0.0)
+                                            if(colLower[kColumn] == 0.0)
                                             {
                                                 // See if on list
-                                                if (!(markC[kColumn]&3))
+                                                if(!(markC[kColumn] & 3))
                                                 {
-                                                    if(nStackC<nCols)
+                                                    if(nStackC < nCols)
                                                     {
-                                                        stackC[nstackC]=kColumn;
-                                                        saveL[nstackC]=colLower[kColumn];
-                                                        saveU[nstackC]=colUpper[kColumn];
-                                                        assert (saveU[nstackC]>saveL[nstackC]);
-                                                        assert (nstackC<nCols);
+                                                        stackC[nstackC] = kColumn;
+                                                        saveL[nstackC] = colLower[kColumn];
+                                                        saveU[nstackC] = colUpper[kColumn];
+                                                        assert(saveU[nstackC] > saveL[nstackC]);
+                                                        assert(nstackC < nCols);
                                                         nstackC++;
-                                                        markC[kColumn]|=1;
+                                                        markC[kColumn] |= 1;
                                                         nFix++;
                                                     }
                                                 }
-                                                else if ((markC[kColumn]&3)==2)
+                                                else if((markC[kColumn] & 3) == 2)
                                                 {
-                                                    notFeasible=true;
+                                                    notFeasible = true;
                                                 }
                                             }
                                             else
                                             {
                                                 // infeasible!
-                                                notFeasible=true;
+                                                notFeasible = true;
                                             }
                                         }
                                     }
@@ -4373,305 +4373,305 @@ int CglProbing::probe( const OsiSolverInterface & si,
                         }
                     }
 #endif
-                    for (k=columnStart[jcol]; k<columnStart[jcol]+columnLength[jcol]; k++)
+                    for(k = columnStart[jcol]; k < columnStart[jcol] + columnLength[jcol]; k++)
                     {
                         // break if found not feasible
-                        if (notFeasible)
+                        if(notFeasible)
                             break;
                         int irow = row[k];
                         /* see if anything forced */
                         int rStart = rowStart[irow];
                         int rEnd = rowStartPos[irow];
                         double rowUp = rowUpper[irow];
-                        double rowUp2=0.0;
+                        double rowUp2 = 0.0;
                         bool doRowUpN;
                         bool doRowUpP;
-                        if (rowUp<1.0e10)
+                        if(rowUp < 1.0e10)
                         {
-                            doRowUpN=true;
-                            doRowUpP=true;
-                            rowUp2 = rowUp-minR[irow];
-                            if (rowUp2<-primalTolerance_)
+                            doRowUpN = true;
+                            doRowUpP = true;
+                            rowUp2 = rowUp - minR[irow];
+                            if(rowUp2 < -primalTolerance_)
                             {
-                                notFeasible=true;
+                                notFeasible = true;
                                 break;
                             }
                             else
                             {
-                                if (rowUp2+largestNegativeInRow[irow]>0)
-                                    doRowUpN=false;
-                                if (rowUp2-largestPositiveInRow[irow]>0)
-                                    doRowUpP=false;
+                                if(rowUp2 + largestNegativeInRow[irow] > 0)
+                                    doRowUpN = false;
+                                if(rowUp2 - largestPositiveInRow[irow] > 0)
+                                    doRowUpP = false;
                             }
                         }
                         else
                         {
-                            doRowUpN=false;
-                            doRowUpP=false;
-                            rowUp2=COIN_DBL_MAX;
+                            doRowUpN = false;
+                            doRowUpP = false;
+                            rowUp2 = COIN_DBL_MAX;
                         }
                         double rowLo = rowLower[irow];
-                        double rowLo2=0.0;
+                        double rowLo2 = 0.0;
                         bool doRowLoN;
                         bool doRowLoP;
-                        if (rowLo>-1.0e10)
+                        if(rowLo > -1.0e10)
                         {
-                            doRowLoN=true;
-                            doRowLoP=true;
-                            rowLo2 = rowLo-maxR[irow];
-                            if (rowLo2>primalTolerance_)
+                            doRowLoN = true;
+                            doRowLoP = true;
+                            rowLo2 = rowLo - maxR[irow];
+                            if(rowLo2 > primalTolerance_)
                             {
-                                notFeasible=true;
+                                notFeasible = true;
                                 break;
                             }
                             else
                             {
-                                if (rowLo2-largestNegativeInRow[irow]<0)
-                                    doRowLoN=false;
-                                if (rowLo2+largestPositiveInRow[irow]<0)
-                                    doRowLoP=false;
+                                if(rowLo2 - largestNegativeInRow[irow] < 0)
+                                    doRowLoN = false;
+                                if(rowLo2 + largestPositiveInRow[irow] < 0)
+                                    doRowLoP = false;
                             }
                         }
                         else
                         {
-                            doRowLoN=false;
-                            doRowLoP=false;
-                            rowLo2=-COIN_DBL_MAX;
+                            doRowLoN = false;
+                            doRowLoP = false;
+                            rowLo2 = -COIN_DBL_MAX;
                         }
-                        if (doRowUpN&&doRowLoN)
+                        if(doRowUpN && doRowLoN)
                         {
                             //doRowUpN=doRowLoN=false;
                             // Start neg values loop
-                            for (int kk =rStart; kk<rEnd; kk++)
+                            for(int kk = rStart; kk < rEnd; kk++)
                             {
-                                int kcol=column[kk];
-                                int markIt=markC[kcol];
-                                if ((markIt&3)!=3)
+                                int kcol = column[kk];
+                                int markIt = markC[kcol];
+                                if((markIt & 3) != 3)
                                 {
-                                    double value2=rowElements[kk];
-                                    if (colUpper[kcol]<=1e10)
-                                        assert ((markIt&8)==0);
+                                    double value2 = rowElements[kk];
+                                    if(colUpper[kcol] <= 1e10)
+                                        assert((markIt & 8) == 0);
                                     else
-                                        assert ((markIt&8)!=0);
-                                    if (colLower[kcol]>=-1e10)
-                                        assert ((markIt&4)==0);
+                                        assert((markIt & 8) != 0);
+                                    if(colLower[kcol] >= -1e10)
+                                        assert((markIt & 4) == 0);
                                     else
-                                        assert ((markIt&4)!=0);
-                                    assert (value2<0.0);
-                                    double gap = columnGap[kcol]*value2;
+                                        assert((markIt & 4) != 0);
+                                    assert(value2 < 0.0);
+                                    double gap = columnGap[kcol] * value2;
                                     bool doUp = (rowUp2 + gap < 0.0);
-                                    bool doDown = (rowLo2 -gap > 0.0);
-                                    if (doUp||doDown)
+                                    bool doDown = (rowLo2 - gap > 0.0);
+                                    if(doUp || doDown)
                                     {
-                                        double moveUp=0.0;
-                                        double moveDown=0.0;
-                                        double newUpper=-1.0;
-                                        double newLower=1.0;
-                                        if ( doUp&&(markIt&(2+8))==0)
+                                        double moveUp = 0.0;
+                                        double moveDown = 0.0;
+                                        double newUpper = -1.0;
+                                        double newLower = 1.0;
+                                        if(doUp && (markIt & (2 + 8)) == 0)
                                         {
-                                            double dbound = colUpper[kcol]+rowUp2/value2;
-                                            if (intVar[kcol])
+                                            double dbound = colUpper[kcol] + rowUp2 / value2;
+                                            if(intVar[kcol])
                                             {
                                                 markIt |= 2;
-                                                newLower = ceil(dbound-primalTolerance_);
+                                                newLower = ceil(dbound - primalTolerance_);
                                             }
                                             else
                                             {
-                                                newLower=dbound;
-                                                if (newLower+primalTolerance_>colUpper[kcol]&&
-                                                        newLower-primalTolerance_<=colUpper[kcol])
+                                                newLower = dbound;
+                                                if(newLower + primalTolerance_ > colUpper[kcol] &&
+                                                        newLower - primalTolerance_ <= colUpper[kcol])
                                                 {
-                                                    newLower=colUpper[kcol];
+                                                    newLower = colUpper[kcol];
                                                     markIt |= 2;
                                                     //markIt=3;
                                                 }
                                                 else
                                                 {
                                                     // avoid problems - fix later ?
-                                                    markIt=3;
+                                                    markIt = 3;
                                                 }
                                             }
-                                            moveUp = newLower-colLower[kcol];
+                                            moveUp = newLower - colLower[kcol];
                                         }
-                                        if ( doDown&&(markIt&(1+4))==0)
+                                        if(doDown && (markIt & (1 + 4)) == 0)
                                         {
-                                            double dbound = colLower[kcol] + rowLo2/value2;
-                                            if (intVar[kcol])
+                                            double dbound = colLower[kcol] + rowLo2 / value2;
+                                            if(intVar[kcol])
                                             {
                                                 markIt |= 1;
-                                                newUpper = floor(dbound+primalTolerance_);
+                                                newUpper = floor(dbound + primalTolerance_);
                                             }
                                             else
                                             {
-                                                newUpper=dbound;
-                                                if (newUpper-primalTolerance_<colLower[kcol]&&
-                                                        newUpper+primalTolerance_>=colLower[kcol])
+                                                newUpper = dbound;
+                                                if(newUpper - primalTolerance_ < colLower[kcol] &&
+                                                        newUpper + primalTolerance_ >= colLower[kcol])
                                                 {
-                                                    newUpper=colLower[kcol];
+                                                    newUpper = colLower[kcol];
                                                     markIt |= 1;
                                                     //markIt=3;
                                                 }
                                                 else
                                                 {
                                                     // avoid problems - fix later ?
-                                                    markIt=3;
+                                                    markIt = 3;
                                                 }
                                             }
-                                            moveDown = newUpper-colUpper[kcol];
+                                            moveDown = newUpper - colUpper[kcol];
                                         }
-                                        if (!moveUp&&!moveDown)
+                                        if(!moveUp && !moveDown)
                                             continue;
-                                        bool onList = ((markC[kcol]&3)!=0);
-                                        if (nstackC<2*maxStack)
+                                        bool onList = ((markC[kcol] & 3) != 0);
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             markC[kcol] = markIt;
                                         }
-                                        if (moveUp&&nstackC<2*maxStack)
+                                        if(moveUp && nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                assert (nstackC<nCols);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                assert(nstackC < nCols);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newLower>colsol[kcol])
+                                            if(newLower > colsol[kcol])
                                             {
-                                                if (djs[kcol]<0.0)
+                                                if(djs[kcol] < 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (newLower>colUpper[kcol]+primalTolerance_);
+                                                    assert(newLower > colUpper[kcol] + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveUp*djs[kcol];
+                                                    objVal += moveUp * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newLower = CoinMax(colLower[kcol],ceil(newLower-1.0e-4));
-                                            colLower[kcol]=newLower;
-                                            columnGap[kcol] = colUpper[kcol]-newLower-primalTolerance_;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newLower = CoinMax(colLower[kcol], ceil(newLower - 1.0e-4));
+                                            colLower[kcol] = newLower;
+                                            columnGap[kcol] = colUpper[kcol] - newLower - primalTolerance_;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             markC[kcol] &= ~12;
-                                            if (colUpper[kcol]>1.0e10)
+                                            if(colUpper[kcol] > 1.0e10)
                                                 markC[kcol] |= 8;
-                                            if (colLower[kcol]<-1.0e10)
+                                            if(colLower[kcol] < -1.0e10)
                                                 markC[kcol] |= 4;
                                             /* update immediately */
-                                            for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 int krow = row[jj];
                                                 double value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
                                                 }
                                                 /* could check immediately if violation */
                                                 /* up */
-                                                if (value>0.0)
+                                                if(value > 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveUp;
-                                                    if (krow==irow)
-                                                        rowUp2 = rowUp-minR[irow];
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveUp;
+                                                    if(krow == irow)
+                                                        rowUp2 = rowUp - minR[irow];
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         break;
                                                     }
                                                 }
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveUp;
-                                                    if (krow==irow)
-                                                        rowLo2 = rowLo-maxR[irow];
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveUp;
+                                                    if(krow == irow)
+                                                        rowLo2 = rowLo - maxR[irow];
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (moveDown&&nstackC<2*maxStack)
+                                        if(moveDown && nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                assert (nstackC<nCols);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                assert(nstackC < nCols);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newUpper<colsol[kcol])
+                                            if(newUpper < colsol[kcol])
                                             {
-                                                if (djs[kcol]>0.0)
+                                                if(djs[kcol] > 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (colLower[kcol]>newUpper+primalTolerance_);
+                                                    assert(colLower[kcol] > newUpper + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveDown*djs[kcol];
+                                                    objVal += moveDown * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newUpper = CoinMin(colUpper[kcol],floor(newUpper+1.0e-4));
-                                            colUpper[kcol]=newUpper;
-                                            columnGap[kcol] = newUpper-colLower[kcol]-primalTolerance_;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newUpper = CoinMin(colUpper[kcol], floor(newUpper + 1.0e-4));
+                                            colUpper[kcol] = newUpper;
+                                            columnGap[kcol] = newUpper - colLower[kcol] - primalTolerance_;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             markC[kcol] &= ~12;
-                                            if (colUpper[kcol]>1.0e10)
+                                            if(colUpper[kcol] > 1.0e10)
                                                 markC[kcol] |= 8;
-                                            if (colLower[kcol]<-1.0e10)
+                                            if(colLower[kcol] < -1.0e10)
                                                 markC[kcol] |= 4;
                                             /* update immediately */
-                                            for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 int krow = row[jj];
                                                 double value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
                                                 }
                                                 /* could check immediately if violation */
                                                 /* down */
-                                                if (value<0.0)
+                                                if(value < 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveDown;
-                                                    if (krow==irow)
-                                                        rowUp2 = rowUp-minR[irow];
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveDown;
+                                                    if(krow == irow)
+                                                        rowUp2 = rowUp - minR[irow];
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
@@ -4679,141 +4679,141 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveDown;
-                                                    if (krow==irow)
-                                                        rowLo2 = rowLo-maxR[irow];
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveDown;
+                                                    if(krow == irow)
+                                                        rowLo2 = rowLo - maxR[irow];
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (colLower[kcol]>colUpper[kcol]+primalTolerance_)
+                                        if(colLower[kcol] > colUpper[kcol] + primalTolerance_)
                                         {
-                                            notFeasible=1;;
-                                            k=columnStart[jcol]+columnLength[jcol];
-                                            istackC=nstackC+1;
+                                            notFeasible = 1;;
+                                            k = columnStart[jcol] + columnLength[jcol];
+                                            istackC = nstackC + 1;
                                             break;
                                         }
                                     }
                                 }
                             } // end big loop rStart->rPos
                         }
-                        else if (doRowUpN)
+                        else if(doRowUpN)
                         {
                             // Start neg values loop
-                            for (int kk =rStart; kk<rEnd; kk++)
+                            for(int kk = rStart; kk < rEnd; kk++)
                             {
-                                int kcol =column[kk];
-                                int markIt=markC[kcol];
-                                if ((markIt&3)!=3)
+                                int kcol = column[kk];
+                                int markIt = markC[kcol];
+                                if((markIt & 3) != 3)
                                 {
-                                    double value2=rowElements[kk];
-                                    double gap = columnGap[kcol]*value2;
-                                    if (!(rowUp2 + gap < 0.0))
+                                    double value2 = rowElements[kk];
+                                    double gap = columnGap[kcol] * value2;
+                                    if(!(rowUp2 + gap < 0.0))
                                         continue;
-                                    double moveUp=0.0;
-                                    double newLower=1.0;
-                                    if ((markIt&(2+8))==0)
+                                    double moveUp = 0.0;
+                                    double newLower = 1.0;
+                                    if((markIt & (2 + 8)) == 0)
                                     {
-                                        double dbound = colUpper[kcol]+rowUp2/value2;
-                                        if (intVar[kcol])
+                                        double dbound = colUpper[kcol] + rowUp2 / value2;
+                                        if(intVar[kcol])
                                         {
                                             markIt |= 2;
-                                            newLower = ceil(dbound-primalTolerance_);
+                                            newLower = ceil(dbound - primalTolerance_);
                                         }
                                         else
                                         {
-                                            newLower=dbound;
-                                            if (newLower+primalTolerance_>colUpper[kcol]&&
-                                                    newLower-primalTolerance_<=colUpper[kcol])
+                                            newLower = dbound;
+                                            if(newLower + primalTolerance_ > colUpper[kcol] &&
+                                                    newLower - primalTolerance_ <= colUpper[kcol])
                                             {
-                                                newLower=colUpper[kcol];
+                                                newLower = colUpper[kcol];
                                                 markIt |= 2;
                                                 //markIt=3;
                                             }
                                             else
                                             {
                                                 // avoid problems - fix later ?
-                                                markIt=3;
+                                                markIt = 3;
                                             }
                                         }
-                                        moveUp = newLower-colLower[kcol];
-                                        if (!moveUp)
+                                        moveUp = newLower - colLower[kcol];
+                                        if(!moveUp)
                                             continue;
-                                        bool onList = ((markC[kcol]&3)!=0);
-                                        if (nstackC<2*maxStack)
+                                        bool onList = ((markC[kcol] & 3) != 0);
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             markC[kcol] = markIt;
                                         }
-                                        if (moveUp&&nstackC<2*maxStack)
+                                        if(moveUp && nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                assert (nstackC<nCols);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                assert(nstackC < nCols);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newLower>colsol[kcol])
+                                            if(newLower > colsol[kcol])
                                             {
-                                                if (djs[kcol]<0.0)
+                                                if(djs[kcol] < 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (newLower>colUpper[kcol]+primalTolerance_);
+                                                    assert(newLower > colUpper[kcol] + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveUp*djs[kcol];
+                                                    objVal += moveUp * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newLower = CoinMax(colLower[kcol],ceil(newLower-1.0e-4));
-                                            colLower[kcol]=newLower;
-                                            columnGap[kcol] = colUpper[kcol]-newLower-primalTolerance_;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newLower = CoinMax(colLower[kcol], ceil(newLower - 1.0e-4));
+                                            colLower[kcol] = newLower;
+                                            columnGap[kcol] = colUpper[kcol] - newLower - primalTolerance_;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             markC[kcol] &= ~12;
-                                            if (colUpper[kcol]>1.0e10)
+                                            if(colUpper[kcol] > 1.0e10)
                                                 markC[kcol] |= 8;
-                                            if (colLower[kcol]<-1.0e10)
+                                            if(colLower[kcol] < -1.0e10)
                                                 markC[kcol] |= 4;
                                             /* update immediately */
-                                            for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 int krow = row[jj];
                                                 double value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
                                                 }
                                                 /* could check immediately if violation */
                                                 /* up */
-                                                if (value>0.0)
+                                                if(value > 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveUp;
-                                                    if (krow==irow)
-                                                        rowUp2 = rowUp-minR[irow];
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveUp;
+                                                    if(krow == irow)
+                                                        rowUp2 = rowUp - minR[irow];
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
@@ -4821,141 +4821,141 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveUp;
-                                                    if (krow==irow)
-                                                        rowLo2 = rowLo-maxR[irow];
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveUp;
+                                                    if(krow == irow)
+                                                        rowLo2 = rowLo - maxR[irow];
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (colLower[kcol]>colUpper[kcol]+primalTolerance_)
+                                        if(colLower[kcol] > colUpper[kcol] + primalTolerance_)
                                         {
-                                            notFeasible=1;;
-                                            k=columnStart[jcol]+columnLength[jcol];
-                                            istackC=nstackC+1;
+                                            notFeasible = 1;;
+                                            k = columnStart[jcol] + columnLength[jcol];
+                                            istackC = nstackC + 1;
                                             break;
                                         }
                                     }
                                 }
                             } // end big loop rStart->rPos
                         }
-                        else if (doRowLoN)
+                        else if(doRowLoN)
                         {
                             // Start neg values loop
-                            for (int kk =rStart; kk<rEnd; kk++)
+                            for(int kk = rStart; kk < rEnd; kk++)
                             {
-                                int kcol =column[kk];
-                                if ((markC[kcol]&3)!=3)
+                                int kcol = column[kk];
+                                if((markC[kcol] & 3) != 3)
                                 {
-                                    double moveDown=0.0;
-                                    double newUpper=-1.0;
-                                    double value2=rowElements[kk];
-                                    int markIt=markC[kcol];
-                                    assert (value2<0.0);
-                                    double gap = columnGap[kcol]*value2;
-                                    bool doDown = (rowLo2 -gap > 0.0);
-                                    if (doDown&& (markIt&(1+4))==0 )
+                                    double moveDown = 0.0;
+                                    double newUpper = -1.0;
+                                    double value2 = rowElements[kk];
+                                    int markIt = markC[kcol];
+                                    assert(value2 < 0.0);
+                                    double gap = columnGap[kcol] * value2;
+                                    bool doDown = (rowLo2 - gap > 0.0);
+                                    if(doDown && (markIt & (1 + 4)) == 0)
                                     {
-                                        double dbound = colLower[kcol] + rowLo2/value2;
-                                        if (intVar[kcol])
+                                        double dbound = colLower[kcol] + rowLo2 / value2;
+                                        if(intVar[kcol])
                                         {
                                             markIt |= 1;
-                                            newUpper = floor(dbound+primalTolerance_);
+                                            newUpper = floor(dbound + primalTolerance_);
                                         }
                                         else
                                         {
-                                            newUpper=dbound;
-                                            if (newUpper-primalTolerance_<colLower[kcol]&&
-                                                    newUpper+primalTolerance_>=colLower[kcol])
+                                            newUpper = dbound;
+                                            if(newUpper - primalTolerance_ < colLower[kcol] &&
+                                                    newUpper + primalTolerance_ >= colLower[kcol])
                                             {
-                                                newUpper=colLower[kcol];
+                                                newUpper = colLower[kcol];
                                                 markIt |= 1;
                                                 //markIt=3;
                                             }
                                             else
                                             {
                                                 // avoid problems - fix later ?
-                                                markIt=3;
+                                                markIt = 3;
                                             }
                                         }
-                                        moveDown = newUpper-colUpper[kcol];
-                                        if (!moveDown)
+                                        moveDown = newUpper - colUpper[kcol];
+                                        if(!moveDown)
                                             continue;
-                                        bool onList = ((markC[kcol]&3)!=0);
-                                        if (nstackC<2*maxStack)
+                                        bool onList = ((markC[kcol] & 3) != 0);
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             markC[kcol] = markIt;
                                         }
-                                        if (moveDown&&nstackC<2*maxStack)
+                                        if(moveDown && nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                assert (nstackC<nCols);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                assert(nstackC < nCols);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newUpper<colsol[kcol])
+                                            if(newUpper < colsol[kcol])
                                             {
-                                                if (djs[kcol]>0.0)
+                                                if(djs[kcol] > 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (colLower[kcol]>newUpper+primalTolerance_);
+                                                    assert(colLower[kcol] > newUpper + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveDown*djs[kcol];
+                                                    objVal += moveDown * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newUpper = CoinMin(colUpper[kcol],floor(newUpper+1.0e-4));
-                                            colUpper[kcol]=newUpper;
-                                            columnGap[kcol] = newUpper-colLower[kcol]-primalTolerance_;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newUpper = CoinMin(colUpper[kcol], floor(newUpper + 1.0e-4));
+                                            colUpper[kcol] = newUpper;
+                                            columnGap[kcol] = newUpper - colLower[kcol] - primalTolerance_;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             markC[kcol] &= ~12;
-                                            if (colUpper[kcol]>1.0e10)
+                                            if(colUpper[kcol] > 1.0e10)
                                                 markC[kcol] |= 8;
-                                            if (colLower[kcol]<-1.0e10)
+                                            if(colLower[kcol] < -1.0e10)
                                                 markC[kcol] |= 4;
                                             /* update immediately */
-                                            for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 int krow = row[jj];
                                                 double value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
                                                 }
                                                 /* could check immediately if violation */
                                                 /* down */
-                                                if (value<0.0)
+                                                if(value < 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveDown;
-                                                    if (krow==irow)
-                                                        rowUp2 = rowUp-minR[irow];
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveDown;
+                                                    if(krow == irow)
+                                                        rowUp2 = rowUp - minR[irow];
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
@@ -4963,24 +4963,24 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveDown;
-                                                    if (krow==irow)
-                                                        rowLo2 = rowLo-maxR[irow];
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveDown;
+                                                    if(krow == irow)
+                                                        rowLo2 = rowLo - maxR[irow];
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (colLower[kcol]>colUpper[kcol]+primalTolerance_)
+                                        if(colLower[kcol] > colUpper[kcol] + primalTolerance_)
                                         {
-                                            notFeasible=1;;
-                                            k=columnStart[jcol]+columnLength[jcol];
-                                            istackC=nstackC+1;
+                                            notFeasible = 1;;
+                                            k = columnStart[jcol] + columnLength[jcol];
+                                            istackC = nstackC + 1;
                                             break;
                                         }
                                     }
@@ -4988,152 +4988,152 @@ int CglProbing::probe( const OsiSolverInterface & si,
                             } // end big loop rStart->rPos
                         }
                         rStart = rEnd;
-                        rEnd = rowStart[irow+1];
-                        if (doRowUpP&&doRowLoP)
+                        rEnd = rowStart[irow + 1];
+                        if(doRowUpP && doRowLoP)
                         {
                             //doRowUpP=doRowLoP=false;
                             // Start pos values loop
-                            for (int kk =rStart; kk<rEnd; kk++)
+                            for(int kk = rStart; kk < rEnd; kk++)
                             {
-                                int kcol=column[kk];
-                                int markIt=markC[kcol];
-                                if ((markIt&3)!=3)
+                                int kcol = column[kk];
+                                int markIt = markC[kcol];
+                                if((markIt & 3) != 3)
                                 {
-                                    double value2=rowElements[kk];
-                                    assert (value2 > 0.0);
+                                    double value2 = rowElements[kk];
+                                    assert(value2 > 0.0);
                                     /* positive element */
-                                    double gap = columnGap[kcol]*value2;
+                                    double gap = columnGap[kcol] * value2;
                                     bool doDown = (rowLo2 + gap > 0.0);
                                     bool doUp = (rowUp2 - gap < 0.0);
-                                    if (doDown||doUp)
+                                    if(doDown || doUp)
                                     {
-                                        double moveUp=0.0;
-                                        double moveDown=0.0;
-                                        double newUpper=-1.0;
-                                        double newLower=1.0;
-                                        if (doDown&&(markIt&(2+8))==0)
+                                        double moveUp = 0.0;
+                                        double moveDown = 0.0;
+                                        double newUpper = -1.0;
+                                        double newLower = 1.0;
+                                        if(doDown && (markIt & (2 + 8)) == 0)
                                         {
-                                            double dbound = colUpper[kcol] + rowLo2/value2;
-                                            if (intVar[kcol])
+                                            double dbound = colUpper[kcol] + rowLo2 / value2;
+                                            if(intVar[kcol])
                                             {
                                                 markIt |= 2;
-                                                newLower = ceil(dbound-primalTolerance_);
+                                                newLower = ceil(dbound - primalTolerance_);
                                             }
                                             else
                                             {
-                                                newLower=dbound;
-                                                if (newLower+primalTolerance_>colUpper[kcol]&&
-                                                        newLower-primalTolerance_<=colUpper[kcol])
+                                                newLower = dbound;
+                                                if(newLower + primalTolerance_ > colUpper[kcol] &&
+                                                        newLower - primalTolerance_ <= colUpper[kcol])
                                                 {
-                                                    newLower=colUpper[kcol];
+                                                    newLower = colUpper[kcol];
                                                     markIt |= 2;
                                                     //markIt=3;
                                                 }
                                                 else
                                                 {
                                                     // avoid problems - fix later ?
-                                                    markIt=3;
+                                                    markIt = 3;
                                                 }
                                             }
-                                            moveUp = newLower-colLower[kcol];
+                                            moveUp = newLower - colLower[kcol];
                                         }
-                                        if (doUp&&(markIt&(1+4))==0)
+                                        if(doUp && (markIt & (1 + 4)) == 0)
                                         {
-                                            double dbound = colLower[kcol] + rowUp2/value2;
-                                            if (intVar[kcol])
+                                            double dbound = colLower[kcol] + rowUp2 / value2;
+                                            if(intVar[kcol])
                                             {
                                                 markIt |= 1;
-                                                newUpper = floor(dbound+primalTolerance_);
+                                                newUpper = floor(dbound + primalTolerance_);
                                             }
                                             else
                                             {
-                                                newUpper=dbound;
-                                                if (newUpper-primalTolerance_<colLower[kcol]&&
-                                                        newUpper+primalTolerance_>=colLower[kcol])
+                                                newUpper = dbound;
+                                                if(newUpper - primalTolerance_ < colLower[kcol] &&
+                                                        newUpper + primalTolerance_ >= colLower[kcol])
                                                 {
-                                                    newUpper=colLower[kcol];
+                                                    newUpper = colLower[kcol];
                                                     markIt |= 1;
                                                     //markIt=3;
                                                 }
                                                 else
                                                 {
                                                     // avoid problems - fix later ?
-                                                    markIt=3;
+                                                    markIt = 3;
                                                 }
                                             }
-                                            moveDown = newUpper-colUpper[kcol];
+                                            moveDown = newUpper - colUpper[kcol];
                                         }
-                                        if (!moveUp&&!moveDown)
+                                        if(!moveUp && !moveDown)
                                             continue;
-                                        bool onList = ((markC[kcol]&3)!=0);
-                                        if (nstackC<2*maxStack)
+                                        bool onList = ((markC[kcol] & 3) != 0);
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             markC[kcol] = markIt;
                                         }
-                                        if (moveUp&&nstackC<2*maxStack)
+                                        if(moveUp && nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                assert (nstackC<nCols);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                assert(nstackC < nCols);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newLower>colsol[kcol])
+                                            if(newLower > colsol[kcol])
                                             {
-                                                if (djs[kcol]<0.0)
+                                                if(djs[kcol] < 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (newLower>colUpper[kcol]+primalTolerance_);
+                                                    assert(newLower > colUpper[kcol] + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveUp*djs[kcol];
+                                                    objVal += moveUp * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newLower = CoinMax(colLower[kcol],ceil(newLower-1.0e-4));
-                                            colLower[kcol]=newLower;
-                                            columnGap[kcol] = colUpper[kcol]-newLower-primalTolerance_;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newLower = CoinMax(colLower[kcol], ceil(newLower - 1.0e-4));
+                                            colLower[kcol] = newLower;
+                                            columnGap[kcol] = colUpper[kcol] - newLower - primalTolerance_;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             markC[kcol] &= ~12;
-                                            if (colUpper[kcol]>1.0e10)
+                                            if(colUpper[kcol] > 1.0e10)
                                                 markC[kcol] |= 8;
-                                            if (colLower[kcol]<-1.0e10)
+                                            if(colLower[kcol] < -1.0e10)
                                                 markC[kcol] |= 4;
                                             /* update immediately */
-                                            for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 int krow = row[jj];
                                                 double value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
                                                 }
                                                 /* could check immediately if violation */
                                                 /* up */
-                                                if (value>0.0)
+                                                if(value > 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveUp;
-                                                    if (krow==irow)
-                                                        rowUp2 = rowUp-minR[irow];
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveUp;
+                                                    if(krow == irow)
+                                                        rowUp2 = rowUp - minR[irow];
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
@@ -5141,83 +5141,83 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveUp;
-                                                    if (krow==irow)
-                                                        rowLo2 = rowLo-maxR[irow];
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveUp;
+                                                    if(krow == irow)
+                                                        rowLo2 = rowLo - maxR[irow];
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (moveDown&&nstackC<2*maxStack)
+                                        if(moveDown && nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                assert (nstackC<nCols);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                assert(nstackC < nCols);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newUpper<colsol[kcol])
+                                            if(newUpper < colsol[kcol])
                                             {
-                                                if (djs[kcol]>0.0)
+                                                if(djs[kcol] > 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (colLower[kcol]>newUpper+primalTolerance_);
+                                                    assert(colLower[kcol] > newUpper + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveDown*djs[kcol];
+                                                    objVal += moveDown * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newUpper = CoinMin(colUpper[kcol],floor(newUpper+1.0e-4));
-                                            colUpper[kcol]=newUpper;
-                                            columnGap[kcol] = newUpper-colLower[kcol]-primalTolerance_;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newUpper = CoinMin(colUpper[kcol], floor(newUpper + 1.0e-4));
+                                            colUpper[kcol] = newUpper;
+                                            columnGap[kcol] = newUpper - colLower[kcol] - primalTolerance_;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             markC[kcol] &= ~12;
-                                            if (colUpper[kcol]>1.0e10)
+                                            if(colUpper[kcol] > 1.0e10)
                                                 markC[kcol] |= 8;
-                                            if (colLower[kcol]<-1.0e10)
+                                            if(colLower[kcol] < -1.0e10)
                                                 markC[kcol] |= 4;
                                             /* update immediately */
-                                            for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 int krow = row[jj];
                                                 double value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
                                                 }
                                                 /* could check immediately if violation */
                                                 /* down */
-                                                if (value<0.0)
+                                                if(value < 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveDown;
-                                                    if (krow==irow)
-                                                        rowUp2 = rowUp-minR[irow];
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveDown;
+                                                    if(krow == irow)
+                                                        rowUp2 = rowUp - minR[irow];
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
@@ -5225,141 +5225,141 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveDown;
-                                                    if (krow==irow)
-                                                        rowLo2 = rowLo-maxR[irow];
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveDown;
+                                                    if(krow == irow)
+                                                        rowLo2 = rowLo - maxR[irow];
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (colLower[kcol]>colUpper[kcol]+primalTolerance_)
+                                        if(colLower[kcol] > colUpper[kcol] + primalTolerance_)
                                         {
-                                            notFeasible=1;;
-                                            k=columnStart[jcol]+columnLength[jcol];
-                                            istackC=nstackC+1;
+                                            notFeasible = 1;;
+                                            k = columnStart[jcol] + columnLength[jcol];
+                                            istackC = nstackC + 1;
                                             break;
                                         }
                                     }
                                 }
                             } // end big loop rPos->rEnd
                         }
-                        else if (doRowUpP)
+                        else if(doRowUpP)
                         {
                             // Start pos values loop
-                            for (int kk =rStart; kk<rEnd; kk++)
+                            for(int kk = rStart; kk < rEnd; kk++)
                             {
-                                int kcol =column[kk];
-                                int markIt=markC[kcol];
-                                if ((markIt&3)!=3)
+                                int kcol = column[kk];
+                                int markIt = markC[kcol];
+                                if((markIt & 3) != 3)
                                 {
-                                    double value2=rowElements[kk];
-                                    assert (value2 > 0.0);
+                                    double value2 = rowElements[kk];
+                                    assert(value2 > 0.0);
                                     /* positive element */
-                                    double gap = columnGap[kcol]*value2;
+                                    double gap = columnGap[kcol] * value2;
                                     bool doUp = (rowUp2 - gap < 0.0);
-                                    if (doUp&&(markIt&(1+4))==0)
+                                    if(doUp && (markIt & (1 + 4)) == 0)
                                     {
-                                        double newUpper=-1.0;
-                                        double dbound = colLower[kcol] + rowUp2/value2;
-                                        if (intVar[kcol])
+                                        double newUpper = -1.0;
+                                        double dbound = colLower[kcol] + rowUp2 / value2;
+                                        if(intVar[kcol])
                                         {
                                             markIt |= 1;
-                                            newUpper = floor(dbound+primalTolerance_);
+                                            newUpper = floor(dbound + primalTolerance_);
                                         }
                                         else
                                         {
-                                            newUpper=dbound;
-                                            if (newUpper-primalTolerance_<colLower[kcol]&&
-                                                    newUpper+primalTolerance_>=colLower[kcol])
+                                            newUpper = dbound;
+                                            if(newUpper - primalTolerance_ < colLower[kcol] &&
+                                                    newUpper + primalTolerance_ >= colLower[kcol])
                                             {
-                                                newUpper=colLower[kcol];
+                                                newUpper = colLower[kcol];
                                                 markIt |= 1;
                                                 //markIt=3;
                                             }
                                             else
                                             {
                                                 // avoid problems - fix later ?
-                                                markIt=3;
+                                                markIt = 3;
                                             }
                                         }
-                                        double moveDown = newUpper-colUpper[kcol];
-                                        if (!moveDown)
+                                        double moveDown = newUpper - colUpper[kcol];
+                                        if(!moveDown)
                                             continue;
-                                        bool onList = ((markC[kcol]&3)!=0);
-                                        if (nstackC<2*maxStack)
+                                        bool onList = ((markC[kcol] & 3) != 0);
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             markC[kcol] = markIt;
                                         }
-                                        if (nstackC<2*maxStack)
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                assert (nstackC<nCols);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                assert(nstackC < nCols);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newUpper<colsol[kcol])
+                                            if(newUpper < colsol[kcol])
                                             {
-                                                if (djs[kcol]>0.0)
+                                                if(djs[kcol] > 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (colLower[kcol]>newUpper+primalTolerance_);
+                                                    assert(colLower[kcol] > newUpper + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveDown*djs[kcol];
+                                                    objVal += moveDown * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newUpper = CoinMin(colUpper[kcol],floor(newUpper+1.0e-4));
-                                            colUpper[kcol]=newUpper;
-                                            columnGap[kcol] = newUpper-colLower[kcol]-primalTolerance_;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newUpper = CoinMin(colUpper[kcol], floor(newUpper + 1.0e-4));
+                                            colUpper[kcol] = newUpper;
+                                            columnGap[kcol] = newUpper - colLower[kcol] - primalTolerance_;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             markC[kcol] &= ~12;
-                                            if (colUpper[kcol]>1.0e10)
+                                            if(colUpper[kcol] > 1.0e10)
                                                 markC[kcol] |= 8;
-                                            if (colLower[kcol]<-1.0e10)
+                                            if(colLower[kcol] < -1.0e10)
                                                 markC[kcol] |= 4;
                                             /* update immediately */
-                                            for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 int krow = row[jj];
                                                 double value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
                                                 }
                                                 /* could check immediately if violation */
                                                 /* down */
-                                                if (value<0.0)
+                                                if(value < 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveDown;
-                                                    if (krow==irow)
-                                                        rowUp2 = rowUp-minR[irow];
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveDown;
+                                                    if(krow == irow)
+                                                        rowUp2 = rowUp - minR[irow];
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
@@ -5367,141 +5367,141 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveDown;
-                                                    if (krow==irow)
-                                                        rowLo2 = rowLo-maxR[irow];
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveDown;
+                                                    if(krow == irow)
+                                                        rowLo2 = rowLo - maxR[irow];
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (colLower[kcol]>colUpper[kcol]+primalTolerance_)
+                                        if(colLower[kcol] > colUpper[kcol] + primalTolerance_)
                                         {
-                                            notFeasible=1;;
-                                            k=columnStart[jcol]+columnLength[jcol];
-                                            istackC=nstackC+1;
+                                            notFeasible = 1;;
+                                            k = columnStart[jcol] + columnLength[jcol];
+                                            istackC = nstackC + 1;
                                             break;
                                         }
                                     }
                                 }
                             } // end big loop rPos->rEnd
                         }
-                        else if (doRowLoP)
+                        else if(doRowLoP)
                         {
                             // Start pos values loop
-                            for (int kk =rStart; kk<rEnd; kk++)
+                            for(int kk = rStart; kk < rEnd; kk++)
                             {
-                                int kcol =column[kk];
-                                if ((markC[kcol]&3)!=3)
+                                int kcol = column[kk];
+                                if((markC[kcol] & 3) != 3)
                                 {
-                                    double value2=rowElements[kk];
-                                    int markIt=markC[kcol];
-                                    assert (value2 > 0.0);
+                                    double value2 = rowElements[kk];
+                                    int markIt = markC[kcol];
+                                    assert(value2 > 0.0);
                                     /* positive element */
-                                    double gap = columnGap[kcol]*value2;
-                                    bool doDown = (rowLo2 +gap > 0.0);
-                                    if (doDown&&(markIt&(2+8))==0)
+                                    double gap = columnGap[kcol] * value2;
+                                    bool doDown = (rowLo2 + gap > 0.0);
+                                    if(doDown && (markIt & (2 + 8)) == 0)
                                     {
-                                        double newLower=1.0;
-                                        double dbound = colUpper[kcol] + rowLo2/value2;
-                                        if (intVar[kcol])
+                                        double newLower = 1.0;
+                                        double dbound = colUpper[kcol] + rowLo2 / value2;
+                                        if(intVar[kcol])
                                         {
                                             markIt |= 2;
-                                            newLower = ceil(dbound-primalTolerance_);
+                                            newLower = ceil(dbound - primalTolerance_);
                                         }
                                         else
                                         {
-                                            newLower=dbound;
-                                            if (newLower+primalTolerance_>colUpper[kcol]&&
-                                                    newLower-primalTolerance_<=colUpper[kcol])
+                                            newLower = dbound;
+                                            if(newLower + primalTolerance_ > colUpper[kcol] &&
+                                                    newLower - primalTolerance_ <= colUpper[kcol])
                                             {
-                                                newLower=colUpper[kcol];
+                                                newLower = colUpper[kcol];
                                                 markIt |= 2;
                                                 //markIt=3;
                                             }
                                             else
                                             {
                                                 // avoid problems - fix later ?
-                                                markIt=3;
+                                                markIt = 3;
                                             }
                                         }
-                                        double moveUp = newLower-colLower[kcol];
-                                        if (!moveUp)
+                                        double moveUp = newLower - colLower[kcol];
+                                        if(!moveUp)
                                             continue;
-                                        bool onList = ((markC[kcol]&3)!=0);
-                                        if (nstackC<2*maxStack)
+                                        bool onList = ((markC[kcol] & 3) != 0);
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             markC[kcol] = markIt;
                                         }
-                                        if (nstackC<2*maxStack)
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                assert (nstackC<nCols);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                assert(nstackC < nCols);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newLower>colsol[kcol])
+                                            if(newLower > colsol[kcol])
                                             {
-                                                if (djs[kcol]<0.0)
+                                                if(djs[kcol] < 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (newLower>colUpper[kcol]+primalTolerance_);
+                                                    assert(newLower > colUpper[kcol] + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveUp*djs[kcol];
+                                                    objVal += moveUp * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newLower = CoinMax(colLower[kcol],ceil(newLower-1.0e-4));
-                                            colLower[kcol]=newLower;
-                                            columnGap[kcol] = colUpper[kcol]-newLower-primalTolerance_;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newLower = CoinMax(colLower[kcol], ceil(newLower - 1.0e-4));
+                                            colLower[kcol] = newLower;
+                                            columnGap[kcol] = colUpper[kcol] - newLower - primalTolerance_;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             markC[kcol] &= ~12;
-                                            if (colUpper[kcol]>1.0e10)
+                                            if(colUpper[kcol] > 1.0e10)
                                                 markC[kcol] |= 8;
-                                            if (colLower[kcol]<-1.0e10)
+                                            if(colLower[kcol] < -1.0e10)
                                                 markC[kcol] |= 4;
                                             /* update immediately */
-                                            for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 int krow = row[jj];
                                                 double value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
                                                 }
                                                 /* could check immediately if violation */
                                                 /* up */
-                                                if (value>0.0)
+                                                if(value > 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveUp;
-                                                    if (krow==irow)
-                                                        rowUp2 = rowUp-minR[irow];
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveUp;
+                                                    if(krow == irow)
+                                                        rowUp2 = rowUp - minR[irow];
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
@@ -5509,24 +5509,24 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveUp;
-                                                    if (krow==irow)
-                                                        rowLo2 = rowLo-maxR[irow];
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveUp;
+                                                    if(krow == irow)
+                                                        rowLo2 = rowLo - maxR[irow];
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         columnGap[kcol] = -1.0e50;
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (colLower[kcol]>colUpper[kcol]+primalTolerance_)
+                                        if(colLower[kcol] > colUpper[kcol] + primalTolerance_)
                                         {
-                                            notFeasible=1;;
-                                            k=columnStart[jcol]+columnLength[jcol];
-                                            istackC=nstackC+1;
+                                            notFeasible = 1;;
+                                            k = columnStart[jcol] + columnLength[jcol];
+                                            istackC = nstackC + 1;
                                             break;
                                         }
                                     }
@@ -5536,9 +5536,9 @@ int CglProbing::probe( const OsiSolverInterface & si,
                     }
                     istackC++;
                 }
-                if (!notFeasible)
+                if(!notFeasible)
                 {
-                    if (objVal<=cutoff)
+                    if(objVal <= cutoff)
                     {
                         feasible |= feas[iway];
                     }
@@ -5547,104 +5547,104 @@ int CglProbing::probe( const OsiSolverInterface & si,
 #ifdef PRINT_DEBUG
                         printf("not feasible on dj\n");
 #endif
-                        notFeasible=1;
-                        if (iway==1&&feasible==0)
+                        notFeasible = 1;
+                        if(iway == 1 && feasible == 0)
                         {
                             /* not feasible at all */
-                            ninfeas=1;
-                            j=nCols-1;
+                            ninfeas = 1;
+                            j = nCols - 1;
                             break;
                         }
                     }
-                    if (!notFeasible&&saveFixingInfo)
+                    if(!notFeasible && saveFixingInfo)
                     {
                         // save fixing info
-                        assert (j==stackC[0]);
-                        int toValue = (way[iway]==1) ? -1 : +1;
-                        for (istackC=1; istackC<nstackC; istackC++)
+                        assert(j == stackC[0]);
+                        int toValue = (way[iway] == 1) ? -1 : +1;
+                        for(istackC = 1; istackC < nstackC; istackC++)
                         {
-                            int icol=stackC[istackC];
+                            int icol = stackC[istackC];
                             // for now back to just 0-1
-                            if (colUpper[icol]-colLower[icol]<1.0e-12&&!saveL[istackC]&&saveU[istackC]==1.0)
+                            if(colUpper[icol] - colLower[icol] < 1.0e-12 && !saveL[istackC] && saveU[istackC] == 1.0)
                             {
-                                assert(saveL[istackC]==colLower[icol]||
-                                       saveU[istackC]==colUpper[icol]);
-                                saveFixingInfo = info->fixes(j,toValue,
-                                                             icol,colLower[icol]==saveL[istackC]);
+                                assert(saveL[istackC] == colLower[icol] ||
+                                       saveU[istackC] == colUpper[icol]);
+                                saveFixingInfo = info->fixes(j, toValue,
+                                                             icol, colLower[icol] == saveL[istackC]);
                             }
                         }
                     }
                 }
-                else if (iway==1&&feasible==0)
+                else if(iway == 1 && feasible == 0)
                 {
                     /* not feasible at all */
-                    ninfeas=1;
-                    j=nCols-1;
-                    iLook=numberThisTime_;
-                    ipass=maxPass;
+                    ninfeas = 1;
+                    j = nCols - 1;
+                    iLook = numberThisTime_;
+                    ipass = maxPass;
                     break;
                 }
-                if (notFeasible)
-                    goingToTrueBound=0;
-                if (iway==2||(iway==1&&feasible==2))
+                if(notFeasible)
+                    goingToTrueBound = 0;
+                if(iway == 2 || (iway == 1 && feasible == 2))
                 {
                     /* keep */
-                    iway=3;
+                    iway = 3;
                     nfixed++;
                     OsiColCut cc;
-                    int nTot=0,nFix=0,nInt=0;
-                    bool ifCut=false;
-                    for (istackC=0; istackC<nstackC; istackC++)
+                    int nTot = 0, nFix = 0, nInt = 0;
+                    bool ifCut = false;
+                    for(istackC = 0; istackC < nstackC; istackC++)
                     {
-                        int icol=stackC[istackC];
-                        if (intVar[icol])
+                        int icol = stackC[istackC];
+                        if(intVar[icol])
                         {
-                            if (colUpper[icol]<currentColUpper[icol]-1.0e-4)
+                            if(colUpper[icol] < currentColUpper[icol] - 1.0e-4)
                             {
-                                element[nFix]=colUpper[icol];
-                                index[nFix++]=icol;
+                                element[nFix] = colUpper[icol];
+                                index[nFix++] = icol;
                                 nInt++;
-                                if (colsol[icol]>colUpper[icol]+primalTolerance_)
+                                if(colsol[icol] > colUpper[icol] + primalTolerance_)
                                 {
-                                    ifCut=true;
-                                    anyColumnCuts=true;
+                                    ifCut = true;
+                                    anyColumnCuts = true;
                                 }
                             }
                         }
                     }
-                    if (nFix)
+                    if(nFix)
                     {
-                        nTot=nFix;
-                        cc.setUbs(nFix,index,element);
-                        nFix=0;
+                        nTot = nFix;
+                        cc.setUbs(nFix, index, element);
+                        nFix = 0;
                     }
-                    for (istackC=0; istackC<nstackC; istackC++)
+                    for(istackC = 0; istackC < nstackC; istackC++)
                     {
-                        int icol=stackC[istackC];
-                        if (intVar[icol])
+                        int icol = stackC[istackC];
+                        if(intVar[icol])
                         {
-                            if (colLower[icol]>currentColLower[icol]+1.0e-4)
+                            if(colLower[icol] > currentColLower[icol] + 1.0e-4)
                             {
-                                element[nFix]=colLower[icol];
-                                index[nFix++]=icol;
+                                element[nFix] = colLower[icol];
+                                index[nFix++] = icol;
                                 nInt++;
-                                if (colsol[icol]<colLower[icol]-primalTolerance_)
+                                if(colsol[icol] < colLower[icol] - primalTolerance_)
                                 {
-                                    ifCut=true;
-                                    anyColumnCuts=true;
+                                    ifCut = true;
+                                    anyColumnCuts = true;
                                 }
                             }
                         }
                     }
-                    if (nFix)
+                    if(nFix)
                     {
-                        nTot+=nFix;
-                        cc.setLbs(nFix,index,element);
+                        nTot += nFix;
+                        cc.setLbs(nFix, index, element);
                     }
                     // could tighten continuous as well
-                    if (nInt)
+                    if(nInt)
                     {
-                        if (ifCut)
+                        if(ifCut)
                         {
                             cc.setEffectiveness(100.0);
                         }
@@ -5653,200 +5653,200 @@ int CglProbing::probe( const OsiSolverInterface & si,
                             cc.setEffectiveness(1.0e-5);
                         }
 #ifdef CGL_DEBUG
-                        checkBounds(debugger,cc);
+                        checkBounds(debugger, cc);
 #endif
                         cs.insert(cc);
                     }
-                    for (istackC=0; istackC<nstackC; istackC++)
+                    for(istackC = 0; istackC < nstackC; istackC++)
                     {
-                        int icol=stackC[istackC];
-                        if (colUpper[icol]-colLower[icol]>primalTolerance_)
+                        int icol = stackC[istackC];
+                        if(colUpper[icol] - colLower[icol] > primalTolerance_)
                         {
-                            markC[icol]&= ~3;
+                            markC[icol] &= ~3;
                         }
                         else
                         {
-                            markC[icol]=3;
+                            markC[icol] = 3;
                         }
                     }
-                    for (istackR=0; istackR<nstackR; istackR++)
+                    for(istackR = 0; istackR < nstackR; istackR++)
                     {
-                        int irow=stackR[istackR];
-                        markR[irow]=-1;
+                        int irow = stackR[istackR];
+                        markR[irow] = -1;
                     }
                 }
                 else
                 {
                     /* is it worth seeing if can increase coefficients
                        or maybe better see if it is a cut */
-                    if (iway==0)
+                    if(iway == 0)
                     {
-                        nstackC0=CoinMin(nstackC,maxStack);
-                        double solMove = saveSolval-down;
+                        nstackC0 = CoinMin(nstackC, maxStack);
+                        double solMove = saveSolval - down;
                         double boundChange;
-                        if (notFeasible)
+                        if(notFeasible)
                         {
-                            nstackC0=0;
+                            nstackC0 = 0;
                         }
                         else
                         {
-                            for (istackC=0; istackC<nstackC0; istackC++)
+                            for(istackC = 0; istackC < nstackC0; istackC++)
                             {
-                                int icol=stackC[istackC];
-                                stackC0[istackC]=icol;
-                                lo0[istackC]=colLower[icol];
-                                up0[istackC]=colUpper[icol];
+                                int icol = stackC[istackC];
+                                stackC0[istackC] = icol;
+                                lo0[istackC] = colLower[icol];
+                                up0[istackC] = colUpper[icol];
                             }
                         }
                         /* restore all */
-                        assert (iway==0);
-                        for (istackC=nstackC-1; istackC>=0; istackC--)
+                        assert(iway == 0);
+                        for(istackC = nstackC - 1; istackC >= 0; istackC--)
                         {
-                            int icol=stackC[istackC];
-                            double oldU=saveU[istackC];
-                            double oldL=saveL[istackC];
-                            if(goingToTrueBound==2&&istackC&&!justReplace)
+                            int icol = stackC[istackC];
+                            double oldU = saveU[istackC];
+                            double oldL = saveL[istackC];
+                            if(goingToTrueBound == 2 && istackC && !justReplace)
                             {
                                 // upper disaggregation cut would be
                                 // xval < upper + (old_upper-upper) (jval-down)
-                                boundChange = oldU-colUpper[icol];
-                                if (boundChange>0.0&&oldU<1.0e10&&
-                                        (colsol[icol]>colUpper[icol]
-                                         + boundChange*solMove+primalTolerance_))
+                                boundChange = oldU - colUpper[icol];
+                                if(boundChange > 0.0 && oldU < 1.0e10 &&
+                                        (colsol[icol] > colUpper[icol]
+                                         + boundChange * solMove + primalTolerance_))
                                 {
                                     // create cut
                                     OsiRowCut rc;
                                     rc.setLb(-COIN_DBL_MAX);
-                                    rc.setUb(colUpper[icol]-down*boundChange);
-                                    index[0]=icol;
-                                    element[0]=1.0;
-                                    index[1]=j;
-                                    element[1]= - boundChange;
+                                    rc.setUb(colUpper[icol] - down * boundChange);
+                                    index[0] = icol;
+                                    element[0] = 1.0;
+                                    index[1] = j;
+                                    element[1] = - boundChange;
                                     // effectiveness is how far j moves
-                                    double newSol = (colsol[icol]-colUpper[icol])/
+                                    double newSol = (colsol[icol] - colUpper[icol]) /
                                                     boundChange;
-                                    assert(newSol>solMove);
-                                    rc.setEffectiveness(newSol-solMove);
-                                    if (rc.effectiveness()>disaggEffectiveness)
+                                    assert(newSol > solMove);
+                                    rc.setEffectiveness(newSol - solMove);
+                                    if(rc.effectiveness() > disaggEffectiveness)
                                     {
-                                        rc.setRow(2,index,element,false);
+                                        rc.setRow(2, index, element, false);
 #ifdef CGL_DEBUG
-                                        if (debugger) assert(!debugger->invalidCut(rc));
+                                        if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                         rowCut.addCutIfNotDuplicate(rc);
                                     }
                                 }
                                 // lower disaggregation cut would be
                                 // xval > lower + (old_lower-lower) (jval-down)
-                                boundChange = oldL-colLower[icol];
-                                if (boundChange<0.0&&oldL>-1.0e10&&
-                                        (colsol[icol]<colLower[icol]
-                                         + boundChange*solMove-primalTolerance_))
+                                boundChange = oldL - colLower[icol];
+                                if(boundChange < 0.0 && oldL > -1.0e10 &&
+                                        (colsol[icol] < colLower[icol]
+                                         + boundChange * solMove - primalTolerance_))
                                 {
                                     // create cut
                                     OsiRowCut rc;
-                                    rc.setLb(colLower[icol]-down*boundChange);
+                                    rc.setLb(colLower[icol] - down * boundChange);
                                     rc.setUb(COIN_DBL_MAX);
-                                    index[0]=icol;
-                                    element[0]=1.0;
-                                    index[1]=j;
+                                    index[0] = icol;
+                                    element[0] = 1.0;
+                                    index[1] = j;
                                     element[1] = -boundChange;
                                     // effectiveness is how far j moves
-                                    double newSol = (colsol[icol]-colLower[icol])/
+                                    double newSol = (colsol[icol] - colLower[icol]) /
                                                     boundChange;
-                                    assert(newSol>solMove);
-                                    rc.setEffectiveness(newSol-solMove);
-                                    if (rc.effectiveness()>disaggEffectiveness)
+                                    assert(newSol > solMove);
+                                    rc.setEffectiveness(newSol - solMove);
+                                    if(rc.effectiveness() > disaggEffectiveness)
                                     {
-                                        rc.setRow(2,index,element,false);
+                                        rc.setRow(2, index, element, false);
 #ifdef CGL_DEBUG
-                                        if (debugger) assert(!debugger->invalidCut(rc));
+                                        if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                         rowCut.addCutIfNotDuplicate(rc);
 #if 0
-                                        printf("%d original bounds %g, %g new Lo %g sol= %g int %d sol= %g\n",icol,oldL,oldU,colLower[icol],colsol[icol], j, colsol[j]);
+                                        printf("%d original bounds %g, %g new Lo %g sol= %g int %d sol= %g\n", icol, oldL, oldU, colLower[icol], colsol[icol], j, colsol[j]);
                                         printf("-1.0 * x(%d) + %g * y(%d) <= %g\n",
-                                               icol,boundChange,j,rc.ub());
+                                               icol, boundChange, j, rc.ub());
 #endif
                                     }
                                 }
                             }
-                            colUpper[icol]=oldU;
-                            colLower[icol]=oldL;
-                            columnGap[icol] = oldU-oldL-primalTolerance_;
-                            markC[icol]= 0;
-                            if (oldU>1.0e10)
+                            colUpper[icol] = oldU;
+                            colLower[icol] = oldL;
+                            columnGap[icol] = oldU - oldL - primalTolerance_;
+                            markC[icol] = 0;
+                            if(oldU > 1.0e10)
                                 markC[icol] |= 8;
-                            if (oldL<-1.0e10)
+                            if(oldL < -1.0e10)
                                 markC[icol] |= 4;
                         }
-                        for (istackR=0; istackR<nstackR; istackR++)
+                        for(istackR = 0; istackR < nstackR; istackR++)
                         {
-                            int irow=stackR[istackR];
+                            int irow = stackR[istackR];
                             // switch off strengthening if not wanted
-                            if ((rowCuts&2)!=0&&goingToTrueBound)
+                            if((rowCuts & 2) != 0 && goingToTrueBound)
                             {
-                                bool ifCut=anyColumnCuts;
-                                double gap = rowUpper[irow]-maxR[irow];
-                                double sum=0.0;
-                                if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                bool ifCut = anyColumnCuts;
+                                double gap = rowUpper[irow] - maxR[irow];
+                                double sum = 0.0;
+                                if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                 {
                                     // see if the strengthened row is a cut
                                     // also see if singletons can go to good objective
                                     // Taken out as should be found elsewhere
                                     // and has to be original column length
 #ifdef MOVE_SINGLETONS
-                                    bool moveSingletons=true;
+                                    bool moveSingletons = true;
 #endif
-                                    for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                    for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                             kk++)
                                     {
                                         int iColumn = column[kk];
                                         double value = rowElements[kk];
-                                        sum += value*colsol[iColumn];
+                                        sum += value * colsol[iColumn];
 #ifdef MOVE_SINGLETONS
-                                        if (moveSingletons&&j!=iColumn)
+                                        if(moveSingletons && j != iColumn)
                                         {
-                                            if (colUpper[iColumn]>colLower[iColumn])
+                                            if(colUpper[iColumn] > colLower[iColumn])
                                             {
-                                                if (columnLength2[iColumn]!=1)
+                                                if(columnLength2[iColumn] != 1)
                                                 {
-                                                    moveSingletons=false;
+                                                    moveSingletons = false;
                                                 }
                                             }
                                         }
 #endif
                                     }
 #ifdef MOVE_SINGLETONS
-                                    if (moveSingletons)
+                                    if(moveSingletons)
                                     {
                                         // can fix any with good costs
-                                        for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                        for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                 kk++)
                                         {
                                             int iColumn = column[kk];
-                                            if (j!=iColumn)
+                                            if(j != iColumn)
                                             {
-                                                if (colUpper[iColumn]>colLower[iColumn])
+                                                if(colUpper[iColumn] > colLower[iColumn])
                                                 {
-                                                    if (columnLength2[iColumn]==1)
+                                                    if(columnLength2[iColumn] == 1)
                                                     {
                                                         double value = rowElements[kk];
-                                                        if (direction*objective[iColumn]*value<0.0&&!(markC[iColumn]&3))
+                                                        if(direction * objective[iColumn]*value < 0.0 && !(markC[iColumn] & 3))
                                                         {
                                                             // Fix
-                                                            if (nstackC0+1<maxStack)
+                                                            if(nstackC0 + 1 < maxStack)
                                                             {
-                                                                stackC0[nstackC0]=iColumn;
-                                                                if (value>0.0)
+                                                                stackC0[nstackC0] = iColumn;
+                                                                if(value > 0.0)
                                                                 {
-                                                                    lo0[nstackC0]=colUpper[iColumn];
-                                                                    up0[nstackC0]=colUpper[iColumn];
+                                                                    lo0[nstackC0] = colUpper[iColumn];
+                                                                    up0[nstackC0] = colUpper[iColumn];
                                                                 }
                                                                 else
                                                                 {
-                                                                    lo0[nstackC0]=colLower[iColumn];
-                                                                    up0[nstackC0]=colLower[iColumn];
+                                                                    lo0[nstackC0] = colLower[iColumn];
+                                                                    up0[nstackC0] = colLower[iColumn];
                                                                 }
                                                                 nstackC0++;
                                                             }
@@ -5857,179 +5857,179 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                         }
                                     }
 #endif
-                                    if (sum-gap*colsol[j]>maxR[irow]+primalTolerance_||(info->strengthenRow&&rowLower[irow]<-1.0e20))
+                                    if(sum - gap * colsol[j] > maxR[irow] + primalTolerance_ || (info->strengthenRow && rowLower[irow] < -1.0e20))
                                     {
                                         // can be a cut
                                         // subtract gap from upper and integer coefficient
                                         // saveU and saveL spare
-                                        int * index = reinterpret_cast<int *>(saveL);
-                                        double * element = saveU;
-                                        int n=0;
-                                        bool coefficientExists=false;
-                                        double sum2=0.0;
-                                        for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                        int* index = reinterpret_cast<int*>(saveL);
+                                        double* element = saveU;
+                                        int n = 0;
+                                        bool coefficientExists = false;
+                                        double sum2 = 0.0;
+                                        for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                 kk++)
                                         {
                                             int kColumn = column[kk];
                                             double el = rowElements[kk];
-                                            if (kColumn!=j)
+                                            if(kColumn != j)
                                             {
-                                                index[n]=kColumn;
-                                                element[n++]=el;
+                                                index[n] = kColumn;
+                                                element[n++] = el;
                                             }
                                             else
                                             {
-                                                el=el-gap;
-                                                if (fabs(el)>1.0e-12)
+                                                el = el - gap;
+                                                if(fabs(el) > 1.0e-12)
                                                 {
-                                                    index[n]=kColumn;
-                                                    element[n++]=el;
+                                                    index[n] = kColumn;
+                                                    element[n++] = el;
                                                 }
-                                                coefficientExists=true;
+                                                coefficientExists = true;
                                             }
-                                            sum2 += colsol[kColumn]*el;
+                                            sum2 += colsol[kColumn] * el;
                                         }
-                                        if (!coefficientExists)
+                                        if(!coefficientExists)
                                         {
-                                            index[n]=j;
-                                            element[n++]=-gap;
-                                            sum2 -= colsol[j]*gap;
+                                            index[n] = j;
+                                            element[n++] = -gap;
+                                            sum2 -= colsol[j] * gap;
                                         }
                                         OsiRowCut rc;
                                         rc.setLb(-COIN_DBL_MAX);
-                                        double ub =rowUpper[irow]-gap*(colLower[j]+1.0);
+                                        double ub = rowUpper[irow] - gap * (colLower[j] + 1.0);
                                         rc.setUb(ub);
-                                        double effectiveness=sum2-ub;
+                                        double effectiveness = sum2 - ub;
                                         effectiveness = CoinMax(effectiveness,
-                                                                (sum-gap*colsol[j]
-                                                                 -maxR[irow])/gap);
-                                        if (!coefficientExists)
-                                            effectiveness=CoinMax(1.0e-7,
-                                                                  effectiveness);
+                                                                (sum - gap * colsol[j]
+                                                                 - maxR[irow]) / gap);
+                                        if(!coefficientExists)
+                                            effectiveness = CoinMax(1.0e-7,
+                                                                    effectiveness);
                                         rc.setEffectiveness(effectiveness);
                                         //rc.setEffectiveness((sum-gap*colsol[j]-maxR[irow])/gap);
-                                        if (rc.effectiveness()>needEffectiveness)
+                                        if(rc.effectiveness() > needEffectiveness)
                                         {
-                                            rc.setRow(n,index,element,false);
+                                            rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             // If strengthenRow point to row
                                             //if(info->strengthenRow)
                                             //printf("a point to row %d\n",irow);
                                             //#define STRENGTHEN_PRINT
 #ifdef STRENGTHEN_PRINT
-                                            if (canReplace&&rowLower[irow]<-1.0e20)
+                                            if(canReplace && rowLower[irow] < -1.0e20)
                                             {
-                                                printf("1Cut %g <= ",rc.lb());
+                                                printf("1Cut %g <= ", rc.lb());
                                                 int k;
                                                 //printf("original row %d - %g <= <= %g - j = %d\n",iow,rowLower[irow],rowUpper[irow],j);
                                                 //for (int kk=rowStart[irow];kk<rowStart[irow+1];kk++)
                                                 //printf("(%d,%g) ",column[kk],rowElements[kk]);
                                                 //printf("\n");
-                                                for ( k=0; k<n; k++)
+                                                for(k = 0; k < n; k++)
                                                 {
                                                     int iColumn = index[k];
-                                                    printf("%g*",element[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", element[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rc.ub());
-                                                printf("Row %g <= ",rowLower[irow]);
-                                                for (k=rowStart[irow]; k<rowStart[irow+1]; k++)
+                                                printf("<= %g\n", rc.ub());
+                                                printf("Row %g <= ", rowLower[irow]);
+                                                for(k = rowStart[irow]; k < rowStart[irow + 1]; k++)
                                                 {
                                                     int iColumn = column[k];
-                                                    printf("%g*",rowElements[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", rowElements[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rowUpper[irow]);
+                                                printf("<= %g\n", rowUpper[irow]);
                                             }
 #endif
-                                            int realRow = (canReplace&&rowLower[irow]<-1.0e20) ? irow : -1;
-                                            if (realRows&&realRow>=0)
-                                                realRow=realRows[realRow];
-                                            if (!justReplace)
+                                            int realRow = (canReplace && rowLower[irow] < -1.0e20) ? irow : -1;
+                                            if(realRows && realRow >= 0)
+                                                realRow = realRows[realRow];
+                                            if(!justReplace)
                                             {
-                                                rowCut.addCutIfNotDuplicate(rc,realRow);
+                                                rowCut.addCutIfNotDuplicate(rc, realRow);
                                             }
-                                            else if (realRow>=0)
+                                            else if(realRow >= 0)
                                             {
-                                                double effectiveness=0.0;
-                                                for (int i=0; i<n; i++)
-                                                    effectiveness+=fabs(element[i]);
-                                                if (!info->strengthenRow[realRow]||info->strengthenRow[realRow]->effectiveness()>effectiveness)
+                                                double effectiveness = 0.0;
+                                                for(int i = 0; i < n; i++)
+                                                    effectiveness += fabs(element[i]);
+                                                if(!info->strengthenRow[realRow] || info->strengthenRow[realRow]->effectiveness() > effectiveness)
                                                 {
                                                     delete info->strengthenRow[realRow];
                                                     rc.setEffectiveness(effectiveness);
-                                                    info->strengthenRow[realRow]=rc.clone();
+                                                    info->strengthenRow[realRow] = rc.clone();
                                                 }
                                             }
                                         }
                                     }
                                 }
-                                gap = minR[irow]-rowLower[irow];
-                                if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                gap = minR[irow] - rowLower[irow];
+                                if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                 {
                                     // see if the strengthened row is a cut
-                                    sum =0.0;
+                                    sum = 0.0;
                                     // also see if singletons can go to good objective
 #ifdef MOVE_SINGLETONS
-                                    bool moveSingletons=true;
+                                    bool moveSingletons = true;
 #endif
-                                    for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                    for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                             kk++)
                                     {
                                         int iColumn = column[kk];
                                         double value = rowElements[kk];
-                                        sum += value*colsol[iColumn];
+                                        sum += value * colsol[iColumn];
 #ifdef MOVE_SINGLETONS
-                                        if (moveSingletons&&j!=iColumn)
+                                        if(moveSingletons && j != iColumn)
                                         {
-                                            if (colUpper[iColumn]>colLower[iColumn])
+                                            if(colUpper[iColumn] > colLower[iColumn])
                                             {
-                                                if (columnLength2[iColumn]!=1)
+                                                if(columnLength2[iColumn] != 1)
                                                 {
-                                                    moveSingletons=false;
+                                                    moveSingletons = false;
                                                 }
                                             }
                                         }
 #endif
                                     }
 #ifdef MOVE_SINGLETONS
-                                    if (moveSingletons)
+                                    if(moveSingletons)
                                     {
                                         // can fix any with good costs
-                                        for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                        for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                 kk++)
                                         {
                                             int iColumn = column[kk];
-                                            if (j!=iColumn)
+                                            if(j != iColumn)
                                             {
-                                                if (colUpper[iColumn]>colLower[iColumn])
+                                                if(colUpper[iColumn] > colLower[iColumn])
                                                 {
-                                                    if (columnLength2[iColumn]==1)
+                                                    if(columnLength2[iColumn] == 1)
                                                     {
                                                         double value = rowElements[kk];
-                                                        if (direction*objective[iColumn]*value>0.0&&!(markC[iColumn]&3))
+                                                        if(direction * objective[iColumn]*value > 0.0 && !(markC[iColumn] & 3))
                                                         {
                                                             // Fix
-                                                            if (nstackC0+1<maxStack)
+                                                            if(nstackC0 + 1 < maxStack)
                                                             {
-                                                                stackC0[nstackC0]=iColumn;
-                                                                if (value<0.0)
+                                                                stackC0[nstackC0] = iColumn;
+                                                                if(value < 0.0)
                                                                 {
-                                                                    lo0[nstackC0]=colUpper[iColumn];
-                                                                    up0[nstackC0]=colUpper[iColumn];
+                                                                    lo0[nstackC0] = colUpper[iColumn];
+                                                                    up0[nstackC0] = colUpper[iColumn];
                                                                 }
                                                                 else
                                                                 {
-                                                                    lo0[nstackC0]=colLower[iColumn];
-                                                                    up0[nstackC0]=colLower[iColumn];
+                                                                    lo0[nstackC0] = colLower[iColumn];
+                                                                    up0[nstackC0] = colLower[iColumn];
                                                                 }
                                                                 nstackC0++;
                                                             }
@@ -6040,184 +6040,184 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                         }
                                     }
 #endif
-                                    if (sum+gap*colsol[j]<minR[irow]-primalTolerance_||(info->strengthenRow&&rowUpper[irow]>1.0e20))
+                                    if(sum + gap * colsol[j] < minR[irow] - primalTolerance_ || (info->strengthenRow && rowUpper[irow] > 1.0e20))
                                     {
                                         // can be a cut
                                         // add gap to lower and integer coefficient
                                         // saveU and saveL spare
-                                        int * index = reinterpret_cast<int *>(saveL);
-                                        double * element = saveU;
-                                        int n=0;
-                                        bool coefficientExists=false;
-                                        double sum2=0.0;
-                                        for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                        int* index = reinterpret_cast<int*>(saveL);
+                                        double* element = saveU;
+                                        int n = 0;
+                                        bool coefficientExists = false;
+                                        double sum2 = 0.0;
+                                        for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                 kk++)
                                         {
                                             int kColumn = column[kk];
                                             double el = rowElements[kk];
-                                            if (kColumn!=j)
+                                            if(kColumn != j)
                                             {
-                                                index[n]=kColumn;
-                                                element[n++]=el;
+                                                index[n] = kColumn;
+                                                element[n++] = el;
                                             }
                                             else
                                             {
-                                                el=el+gap;
-                                                if (fabs(el)>1.0e-12)
+                                                el = el + gap;
+                                                if(fabs(el) > 1.0e-12)
                                                 {
-                                                    index[n]=kColumn;
-                                                    element[n++]=el;
+                                                    index[n] = kColumn;
+                                                    element[n++] = el;
                                                 }
-                                                coefficientExists=true;
+                                                coefficientExists = true;
                                             }
-                                            sum2 += colsol[kColumn]*el;
+                                            sum2 += colsol[kColumn] * el;
                                         }
-                                        if (!coefficientExists)
+                                        if(!coefficientExists)
                                         {
-                                            index[n]=j;
-                                            element[n++]=gap;
-                                            sum2 += colsol[j]*gap;
+                                            index[n] = j;
+                                            element[n++] = gap;
+                                            sum2 += colsol[j] * gap;
                                         }
                                         OsiRowCut rc;
-                                        double lb = rowLower[irow]+gap*(colLower[j]+1.0);
+                                        double lb = rowLower[irow] + gap * (colLower[j] + 1.0);
                                         rc.setLb(lb);
                                         rc.setUb(COIN_DBL_MAX);
                                         // effectiveness
-                                        double effectiveness=lb-sum2;
+                                        double effectiveness = lb - sum2;
                                         effectiveness = CoinMax(effectiveness,
-                                                                (minR[irow]-
-                                                                 sum-gap*colsol[j])/gap);
-                                        if (!coefficientExists)
-                                            effectiveness=CoinMax(1.0e-7,
-                                                                  effectiveness);
+                                                                (minR[irow] -
+                                                                 sum - gap * colsol[j]) / gap);
+                                        if(!coefficientExists)
+                                            effectiveness = CoinMax(1.0e-7,
+                                                                    effectiveness);
                                         rc.setEffectiveness(effectiveness);
-                                        if (rc.effectiveness()>needEffectiveness)
+                                        if(rc.effectiveness() > needEffectiveness)
                                         {
-                                            rc.setRow(n,index,element,false);
+                                            rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             //if(info->strengthenRow)
                                             //printf("b point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
-                                            if (canReplace&&rowUpper[irow]>1.0e20)
+                                            if(canReplace && rowUpper[irow] > 1.0e20)
                                             {
-                                                printf("2Cut %g <= ",rc.lb());
+                                                printf("2Cut %g <= ", rc.lb());
                                                 int k;
-                                                for ( k=0; k<n; k++)
+                                                for(k = 0; k < n; k++)
                                                 {
                                                     int iColumn = index[k];
-                                                    printf("%g*",element[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", element[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rc.ub());
-                                                printf("Row %g <= ",rowLower[irow]);
-                                                for (k=rowStart[irow]; k<rowStart[irow+1]; k++)
+                                                printf("<= %g\n", rc.ub());
+                                                printf("Row %g <= ", rowLower[irow]);
+                                                for(k = rowStart[irow]; k < rowStart[irow + 1]; k++)
                                                 {
                                                     int iColumn = column[k];
-                                                    printf("%g*",rowElements[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", rowElements[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rowUpper[irow]);
+                                                printf("<= %g\n", rowUpper[irow]);
                                             }
 #endif
-                                            int realRow = (canReplace&&rowUpper[irow]>1.0e20) ? irow : -1;
-                                            if (realRows&&realRow>=0)
-                                                realRow=realRows[realRow];
-                                            if (!justReplace)
+                                            int realRow = (canReplace && rowUpper[irow] > 1.0e20) ? irow : -1;
+                                            if(realRows && realRow >= 0)
+                                                realRow = realRows[realRow];
+                                            if(!justReplace)
                                             {
-                                                rowCut.addCutIfNotDuplicate(rc,realRow);
+                                                rowCut.addCutIfNotDuplicate(rc, realRow);
                                             }
-                                            else if (realRow>=0)
+                                            else if(realRow >= 0)
                                             {
-                                                double effectiveness=0.0;
-                                                for (int i=0; i<n; i++)
-                                                    effectiveness+=fabs(element[i]);
-                                                if (!info->strengthenRow[realRow]||info->strengthenRow[realRow]->effectiveness()>effectiveness)
+                                                double effectiveness = 0.0;
+                                                for(int i = 0; i < n; i++)
+                                                    effectiveness += fabs(element[i]);
+                                                if(!info->strengthenRow[realRow] || info->strengthenRow[realRow]->effectiveness() > effectiveness)
                                                 {
                                                     delete info->strengthenRow[realRow];
                                                     rc.setEffectiveness(effectiveness);
-                                                    info->strengthenRow[realRow]=rc.clone();
+                                                    info->strengthenRow[realRow] = rc.clone();
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                            minR[irow]=saveMin[istackR];
-                            maxR[irow]=saveMax[istackR];
-                            markR[irow]=-1;
+                            minR[irow] = saveMin[istackR];
+                            maxR[irow] = saveMax[istackR];
+                            markR[irow] = -1;
                         }
                     }
                     else
                     {
-                        if (iway==1&&feasible==3)
+                        if(iway == 1 && feasible == 3)
                         {
-                            iway=3;
+                            iway = 3;
 #ifdef MOVE_SINGLETONS
                             // look for singletons that can move (just at root)
-                            if ((rowCuts&2)!=0&&goingToTrueBound&&info->strengthenRow)
+                            if((rowCuts & 2) != 0 && goingToTrueBound && info->strengthenRow)
                             {
-                                for (istackR=0; istackR<nstackR; istackR++)
+                                for(istackR = 0; istackR < nstackR; istackR++)
                                 {
-                                    int irow=stackR[istackR];
-                                    double gap = rowUpper[irow]-maxR[irow];
-                                    if (gap>primalTolerance_)
+                                    int irow = stackR[istackR];
+                                    double gap = rowUpper[irow] - maxR[irow];
+                                    if(gap > primalTolerance_)
                                     {
                                         // also see if singletons can go to good objective
-                                        bool moveSingletons=true;
-                                        for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                        bool moveSingletons = true;
+                                        for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                 kk++)
                                         {
                                             int iColumn = column[kk];
-                                            if (moveSingletons&&j!=iColumn)
+                                            if(moveSingletons && j != iColumn)
                                             {
-                                                if (colUpper[iColumn]>colLower[iColumn])
+                                                if(colUpper[iColumn] > colLower[iColumn])
                                                 {
-                                                    if (columnLength2[iColumn]!=1)
+                                                    if(columnLength2[iColumn] != 1)
                                                     {
-                                                        moveSingletons=false;
+                                                        moveSingletons = false;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (moveSingletons)
+                                        if(moveSingletons)
                                         {
                                             // can fix any with good costs
-                                            for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                            for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                     kk++)
                                             {
                                                 int iColumn = column[kk];
-                                                if (j!=iColumn)
+                                                if(j != iColumn)
                                                 {
-                                                    if (colUpper[iColumn]>colLower[iColumn])
+                                                    if(colUpper[iColumn] > colLower[iColumn])
                                                     {
-                                                        if (columnLength2[iColumn]==1)
+                                                        if(columnLength2[iColumn] == 1)
                                                         {
                                                             double value = rowElements[kk];
-                                                            if (direction*objective[iColumn]*value<0.0&&!(markC[iColumn]&3))
+                                                            if(direction * objective[iColumn]*value < 0.0 && !(markC[iColumn] & 3))
                                                             {
                                                                 // Fix
-                                                                stackC[nstackC]=iColumn;
-                                                                saveL[nstackC]=colLower[iColumn];
-                                                                saveU[nstackC]=colUpper[iColumn];
-                                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                                if (value>0.0)
+                                                                stackC[nstackC] = iColumn;
+                                                                saveL[nstackC] = colLower[iColumn];
+                                                                saveU[nstackC] = colUpper[iColumn];
+                                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                                if(value > 0.0)
                                                                 {
-                                                                    colLower[iColumn]=colUpper[iColumn];
+                                                                    colLower[iColumn] = colUpper[iColumn];
                                                                 }
                                                                 else
                                                                 {
-                                                                    colUpper[iColumn]=colLower[iColumn];
+                                                                    colUpper[iColumn] = colLower[iColumn];
                                                                 }
                                                                 columnGap[iColumn] = -primalTolerance_;
-                                                                assert (nstackC<nCols);
+                                                                assert(nstackC < nCols);
                                                                 nstackC++;
                                                             }
                                                         }
@@ -6226,57 +6226,57 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                             }
                                         }
                                     }
-                                    gap = minR[irow]-rowLower[irow];
-                                    if (gap>primalTolerance_)
+                                    gap = minR[irow] - rowLower[irow];
+                                    if(gap > primalTolerance_)
                                     {
                                         // also see if singletons can go to good objective
-                                        bool moveSingletons=true;
-                                        for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                        bool moveSingletons = true;
+                                        for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                 kk++)
                                         {
                                             int iColumn = column[kk];
-                                            if (moveSingletons&&j!=iColumn)
+                                            if(moveSingletons && j != iColumn)
                                             {
-                                                if (colUpper[iColumn]>colLower[iColumn])
+                                                if(colUpper[iColumn] > colLower[iColumn])
                                                 {
-                                                    if (columnLength2[iColumn]!=1)
+                                                    if(columnLength2[iColumn] != 1)
                                                     {
-                                                        moveSingletons=false;
+                                                        moveSingletons = false;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (moveSingletons)
+                                        if(moveSingletons)
                                         {
                                             // can fix any with good costs
-                                            for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                            for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                     kk++)
                                             {
                                                 int iColumn = column[kk];
-                                                if (j!=iColumn)
+                                                if(j != iColumn)
                                                 {
-                                                    if (colUpper[iColumn]>colLower[iColumn])
+                                                    if(colUpper[iColumn] > colLower[iColumn])
                                                     {
-                                                        if (columnLength2[iColumn]==1)
+                                                        if(columnLength2[iColumn] == 1)
                                                         {
                                                             double value = rowElements[kk];
-                                                            if (direction*objective[iColumn]*value>0.0&&!(markC[iColumn]&3))
+                                                            if(direction * objective[iColumn]*value > 0.0 && !(markC[iColumn] & 3))
                                                             {
                                                                 // Fix
-                                                                stackC[nstackC]=iColumn;
-                                                                saveL[nstackC]=colLower[iColumn];
-                                                                saveU[nstackC]=colUpper[iColumn];
-                                                                assert (saveU[nstackC]>saveL[nstackC]);
-                                                                if (value<0.0)
+                                                                stackC[nstackC] = iColumn;
+                                                                saveL[nstackC] = colLower[iColumn];
+                                                                saveU[nstackC] = colUpper[iColumn];
+                                                                assert(saveU[nstackC] > saveL[nstackC]);
+                                                                if(value < 0.0)
                                                                 {
-                                                                    colLower[iColumn]=colUpper[iColumn];
+                                                                    colLower[iColumn] = colUpper[iColumn];
                                                                 }
                                                                 else
                                                                 {
-                                                                    colUpper[iColumn]=colLower[iColumn];
+                                                                    colUpper[iColumn] = colLower[iColumn];
                                                                 }
                                                                 columnGap[iColumn] = -primalTolerance_;
-                                                                assert (nstackC<nCols);
+                                                                assert(nstackC < nCols);
                                                                 nstackC++;
                                                             }
                                                         }
@@ -6289,61 +6289,61 @@ int CglProbing::probe( const OsiSolverInterface & si,
                             }
 #endif
                             /* point back to stack */
-                            for (istackC=nstackC-1; istackC>=0; istackC--)
+                            for(istackC = nstackC - 1; istackC >= 0; istackC--)
                             {
-                                int icol=stackC[istackC];
-                                markC[icol]=istackC+1000;
+                                int icol = stackC[istackC];
+                                markC[icol] = istackC + 1000;
                             }
                             OsiColCut cc;
-                            int nTot=0,nFix=0,nInt=0;
-                            bool ifCut=false;
-                            for (istackC=1; istackC<nstackC0; istackC++)
+                            int nTot = 0, nFix = 0, nInt = 0;
+                            bool ifCut = false;
+                            for(istackC = 1; istackC < nstackC0; istackC++)
                             {
-                                int icol=stackC0[istackC];
-                                int istackC1=markC[icol]-1000;
-                                if (istackC1>=0)
+                                int icol = stackC0[istackC];
+                                int istackC1 = markC[icol] - 1000;
+                                if(istackC1 >= 0)
                                 {
-                                    if (CoinMin(lo0[istackC],colLower[icol])>saveL[istackC1]+1.0e-4)
+                                    if(CoinMin(lo0[istackC], colLower[icol]) > saveL[istackC1] + 1.0e-4)
                                     {
-                                        saveL[istackC1]=CoinMin(lo0[istackC],colLower[icol]);
-                                        if (intVar[icol]/*||!info->inTree*/)
+                                        saveL[istackC1] = CoinMin(lo0[istackC], colLower[icol]);
+                                        if(intVar[icol]/*||!info->inTree*/)
                                         {
-                                            element[nFix]=saveL[istackC1];
-                                            index[nFix++]=icol;
+                                            element[nFix] = saveL[istackC1];
+                                            index[nFix++] = icol;
                                             nInt++;
-                                            if (colsol[icol]<saveL[istackC1]-primalTolerance_)
-                                                ifCut=true;
+                                            if(colsol[icol] < saveL[istackC1] - primalTolerance_)
+                                                ifCut = true;
                                         }
                                         nfixed++;
                                     }
                                 }
                             }
-                            if (nFix)
+                            if(nFix)
                             {
-                                nTot=nFix;
-                                cc.setLbs(nFix,index,element);
-                                nFix=0;
+                                nTot = nFix;
+                                cc.setLbs(nFix, index, element);
+                                nFix = 0;
                             }
-                            for (istackC=1; istackC<nstackC0; istackC++)
+                            for(istackC = 1; istackC < nstackC0; istackC++)
                             {
-                                int icol=stackC0[istackC];
-                                int istackC1=markC[icol]-1000;
-                                if (istackC1>=0)
+                                int icol = stackC0[istackC];
+                                int istackC1 = markC[icol] - 1000;
+                                if(istackC1 >= 0)
                                 {
-                                    if (CoinMax(up0[istackC],colUpper[icol])<saveU[istackC1]-1.0e-4)
+                                    if(CoinMax(up0[istackC], colUpper[icol]) < saveU[istackC1] - 1.0e-4)
                                     {
-                                        saveU[istackC1]=CoinMax(up0[istackC],colUpper[icol]);
-                                        if (intVar[icol]/*||!info->inTree*/)
+                                        saveU[istackC1] = CoinMax(up0[istackC], colUpper[icol]);
+                                        if(intVar[icol]/*||!info->inTree*/)
                                         {
-                                            element[nFix]=saveU[istackC1];
-                                            index[nFix++]=icol;
+                                            element[nFix] = saveU[istackC1];
+                                            index[nFix++] = icol;
                                             nInt++;
-                                            if (colsol[icol]>saveU[istackC1]+primalTolerance_)
-                                                ifCut=true;
+                                            if(colsol[icol] > saveU[istackC1] + primalTolerance_)
+                                                ifCut = true;
                                         }
                                         nfixed++;
                                     }
-                                    else if (!info->inTree&&saveL[0]==0.0&&saveU[0]==1.0)
+                                    else if(!info->inTree && saveL[0] == 0.0 && saveU[0] == 1.0)
                                     {
                                         // See if can do two cut
                                         double upperWhenDown = up0[istackC];
@@ -6352,7 +6352,7 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                         double lowerWhenUp = colLower[icol];
                                         double upperOriginal = saveU[istackC1];
                                         double lowerOriginal = saveL[istackC1];
-                                        if (upperWhenDown<lowerOriginal+1.0e-12&&lowerWhenUp>upperOriginal-1.0e-12)
+                                        if(upperWhenDown < lowerOriginal + 1.0e-12 && lowerWhenUp > upperOriginal - 1.0e-12)
                                         {
                                             OsiRowCut rc;
                                             rc.setLb(lowerOriginal);
@@ -6360,18 +6360,18 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                             rc.setEffectiveness(1.0e-5);
                                             int index[2];
                                             double element[2];
-                                            index[0]=j;
-                                            index[1]=icol;
-                                            element[0]=-(upperOriginal-lowerOriginal);
+                                            index[0] = j;
+                                            index[1] = icol;
+                                            element[0] = -(upperOriginal - lowerOriginal);
                                             // If zero then - must have been fixed without noticing!
-                                            if (fabs(element[0])>1.0e-8)
+                                            if(fabs(element[0]) > 1.0e-8)
                                             {
-                                                element[1]=1.0;
-                                                rc.setRow(2,index,element,false);
+                                                element[1] = 1.0;
+                                                rc.setRow(2, index, element, false);
                                                 cs.insert(rc);
                                             }
                                         }
-                                        else if (upperWhenUp<lowerOriginal+1.0e-12&&lowerWhenDown>upperOriginal-1.0e-12)
+                                        else if(upperWhenUp < lowerOriginal + 1.0e-12 && lowerWhenDown > upperOriginal - 1.0e-12)
                                         {
                                             OsiRowCut rc;
                                             rc.setLb(upperOriginal);
@@ -6379,25 +6379,25 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                             rc.setEffectiveness(1.0e-5);
                                             int index[2];
                                             double element[2];
-                                            index[0]=j;
-                                            index[1]=icol;
-                                            element[0]=upperOriginal-lowerOriginal;
-                                            element[1]=1.0;
-                                            rc.setRow(2,index,element,false);
+                                            index[0] = j;
+                                            index[1] = icol;
+                                            element[0] = upperOriginal - lowerOriginal;
+                                            element[1] = 1.0;
+                                            rc.setRow(2, index, element, false);
                                             cs.insert(rc);
                                         }
                                     }
                                 }
                             }
-                            if (nFix)
+                            if(nFix)
                             {
-                                nTot+=nFix;
-                                cc.setUbs(nFix,index,element);
+                                nTot += nFix;
+                                cc.setUbs(nFix, index, element);
                             }
                             // could tighten continuous as well
-                            if (nInt)
+                            if(nInt)
                             {
-                                if (ifCut)
+                                if(ifCut)
                                 {
                                     cc.setEffectiveness(100.0);
                                 }
@@ -6406,410 +6406,410 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                     cc.setEffectiveness(1.0e-5);
                                 }
 #ifdef CGL_DEBUG
-                                checkBounds(debugger,cc);
+                                checkBounds(debugger, cc);
 #endif
                                 cs.insert(cc);
                             }
                         }
                         else
                         {
-                            goingToTrueBound=0;
+                            goingToTrueBound = 0;
                         }
-                        double solMove = up-saveSolval;
+                        double solMove = up - saveSolval;
                         double boundChange;
                         /* restore all */
-                        for (istackC=nstackC-1; istackC>=0; istackC--)
+                        for(istackC = nstackC - 1; istackC >= 0; istackC--)
                         {
-                            int icol=stackC[istackC];
-                            double oldU=saveU[istackC];
-                            double oldL=saveL[istackC];
-                            if(goingToTrueBound==2&&istackC&&!justReplace)
+                            int icol = stackC[istackC];
+                            double oldU = saveU[istackC];
+                            double oldL = saveL[istackC];
+                            if(goingToTrueBound == 2 && istackC && !justReplace)
                             {
                                 // upper disaggregation cut would be
                                 // xval < upper + (old_upper-upper) (up-jval)
-                                boundChange = oldU-colUpper[icol];
-                                if (boundChange>0.0&&oldU<1.0e10&&
-                                        (colsol[icol]>colUpper[icol]
-                                         + boundChange*solMove+primalTolerance_))
+                                boundChange = oldU - colUpper[icol];
+                                if(boundChange > 0.0 && oldU < 1.0e10 &&
+                                        (colsol[icol] > colUpper[icol]
+                                         + boundChange * solMove + primalTolerance_))
                                 {
                                     // create cut
                                     OsiRowCut rc;
                                     rc.setLb(-COIN_DBL_MAX);
-                                    rc.setUb(colUpper[icol]+up*boundChange);
-                                    index[0]=icol;
-                                    element[0]=1.0;
-                                    index[1]=j;
-                                    element[1]= + boundChange;
+                                    rc.setUb(colUpper[icol] + up * boundChange);
+                                    index[0] = icol;
+                                    element[0] = 1.0;
+                                    index[1] = j;
+                                    element[1] = + boundChange;
                                     // effectiveness is how far j moves
-                                    double newSol = (colsol[icol]-colUpper[icol])/
+                                    double newSol = (colsol[icol] - colUpper[icol]) /
                                                     boundChange;
-                                    assert(newSol>solMove);
-                                    rc.setEffectiveness(newSol-solMove);
-                                    if (rc.effectiveness()>disaggEffectiveness)
+                                    assert(newSol > solMove);
+                                    rc.setEffectiveness(newSol - solMove);
+                                    if(rc.effectiveness() > disaggEffectiveness)
                                     {
-                                        rc.setRow(2,index,element,false);
+                                        rc.setRow(2, index, element, false);
 #ifdef CGL_DEBUG
-                                        if (debugger) assert(!debugger->invalidCut(rc));
+                                        if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                         rowCut.addCutIfNotDuplicate(rc);
                                     }
                                 }
                                 // lower disaggregation cut would be
                                 // xval > lower + (old_lower-lower) (up-jval)
-                                boundChange = oldL-colLower[icol];
-                                if (boundChange<0.0&&oldL>-1.0e10&&
-                                        (colsol[icol]<colLower[icol]
-                                         + boundChange*solMove-primalTolerance_))
+                                boundChange = oldL - colLower[icol];
+                                if(boundChange < 0.0 && oldL > -1.0e10 &&
+                                        (colsol[icol] < colLower[icol]
+                                         + boundChange * solMove - primalTolerance_))
                                 {
                                     // create cut
                                     OsiRowCut rc;
-                                    rc.setLb(colLower[icol]+up*boundChange);
+                                    rc.setLb(colLower[icol] + up * boundChange);
                                     rc.setUb(COIN_DBL_MAX);
-                                    index[0]=icol;
-                                    element[0]=1.0;
-                                    index[1]=j;
-                                    element[1]= + boundChange;
+                                    index[0] = icol;
+                                    element[0] = 1.0;
+                                    index[1] = j;
+                                    element[1] = + boundChange;
                                     // effectiveness is how far j moves
-                                    double newSol = (colsol[icol]-colLower[icol])/
+                                    double newSol = (colsol[icol] - colLower[icol]) /
                                                     boundChange;
-                                    assert(newSol>solMove);
-                                    rc.setEffectiveness(newSol-solMove);
-                                    if (rc.effectiveness()>disaggEffectiveness)
+                                    assert(newSol > solMove);
+                                    rc.setEffectiveness(newSol - solMove);
+                                    if(rc.effectiveness() > disaggEffectiveness)
                                     {
-                                        rc.setRow(2,index,element,false);
+                                        rc.setRow(2, index, element, false);
 #ifdef CGL_DEBUG
-                                        if (debugger) assert(!debugger->invalidCut(rc));
+                                        if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                         rowCut.addCutIfNotDuplicate(rc);
                                     }
                                 }
                             }
-                            colUpper[icol]=oldU;
-                            colLower[icol]=oldL;
-                            columnGap[icol] = oldU-oldL-primalTolerance_;
-                            if (oldU>oldL+1.0e-4)
+                            colUpper[icol] = oldU;
+                            colLower[icol] = oldL;
+                            columnGap[icol] = oldU - oldL - primalTolerance_;
+                            if(oldU > oldL + 1.0e-4)
                             {
-                                markC[icol]=0;
-                                if (oldU>1.0e10)
+                                markC[icol] = 0;
+                                if(oldU > 1.0e10)
                                     markC[icol] |= 8;
-                                if (oldL<-1.0e10)
+                                if(oldL < -1.0e10)
                                     markC[icol] |= 4;
                             }
                             else
                             {
-                                markC[icol]=3;
+                                markC[icol] = 3;
                             }
                         }
-                        for (istackR=0; istackR<nstackR; istackR++)
+                        for(istackR = 0; istackR < nstackR; istackR++)
                         {
-                            int irow=stackR[istackR];
+                            int irow = stackR[istackR];
                             // switch off strengthening if not wanted
-                            if ((rowCuts&2)!=0&&goingToTrueBound)
+                            if((rowCuts & 2) != 0 && goingToTrueBound)
                             {
-                                bool canReplace = info->strengthenRow&&(goingToTrueBound==2);
-                                bool ifCut=anyColumnCuts;
-                                double gap = rowUpper[irow]-maxR[irow];
-                                double sum=0.0;
-                                if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                bool canReplace = info->strengthenRow && (goingToTrueBound == 2);
+                                bool ifCut = anyColumnCuts;
+                                double gap = rowUpper[irow] - maxR[irow];
+                                double sum = 0.0;
+                                if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                 {
                                     // see if the strengthened row is a cut
-                                    for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                    for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                             kk++)
                                     {
-                                        sum += rowElements[kk]*colsol[column[kk]];
+                                        sum += rowElements[kk] * colsol[column[kk]];
                                     }
-                                    if (sum+gap*colsol[j]>rowUpper[irow]+primalTolerance_||(canReplace&&rowLower[irow]<-1.e20))
+                                    if(sum + gap * colsol[j] > rowUpper[irow] + primalTolerance_ || (canReplace && rowLower[irow] < -1.e20))
                                     {
                                         // can be a cut
                                         // add gap to integer coefficient
                                         // saveU and saveL spare
-                                        int * index = reinterpret_cast<int *>(saveL);
-                                        double * element = saveU;
-                                        int n=0;
-                                        bool coefficientExists=false;
-                                        double sum2=0.0;
-                                        for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                        int* index = reinterpret_cast<int*>(saveL);
+                                        double* element = saveU;
+                                        int n = 0;
+                                        bool coefficientExists = false;
+                                        double sum2 = 0.0;
+                                        for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                 kk++)
                                         {
                                             int kColumn = column[kk];
                                             double el = rowElements[kk];
-                                            if (kColumn!=j)
+                                            if(kColumn != j)
                                             {
-                                                index[n]=kColumn;
-                                                element[n++]=el;
+                                                index[n] = kColumn;
+                                                element[n++] = el;
                                             }
                                             else
                                             {
-                                                el=el+gap;
-                                                if (fabs(el)>1.0e-12)
+                                                el = el + gap;
+                                                if(fabs(el) > 1.0e-12)
                                                 {
-                                                    index[n]=kColumn;
-                                                    element[n++]=el;
+                                                    index[n] = kColumn;
+                                                    element[n++] = el;
                                                 }
-                                                coefficientExists=true;
+                                                coefficientExists = true;
                                             }
-                                            sum2 += colsol[kColumn]*el;
+                                            sum2 += colsol[kColumn] * el;
                                         }
-                                        if (!coefficientExists)
+                                        if(!coefficientExists)
                                         {
-                                            index[n]=j;
-                                            element[n++]=gap;
-                                            sum2 += colsol[j]*gap;
+                                            index[n] = j;
+                                            element[n++] = gap;
+                                            sum2 += colsol[j] * gap;
                                         }
                                         OsiRowCut rc;
                                         rc.setLb(-COIN_DBL_MAX);
-                                        double ub = rowUpper[irow]+gap*(colUpper[j]-1.0);
+                                        double ub = rowUpper[irow] + gap * (colUpper[j] - 1.0);
                                         rc.setUb(ub);
                                         // effectiveness
-                                        double effectiveness=sum2-ub;
+                                        double effectiveness = sum2 - ub;
                                         effectiveness = CoinMax(effectiveness,
-                                                                (sum+gap*colsol[j]-
-                                                                 rowUpper[irow])/gap);
-                                        if (!coefficientExists)
-                                            effectiveness=CoinMax(1.0e-7,
-                                                                  effectiveness);
+                                                                (sum + gap * colsol[j] -
+                                                                 rowUpper[irow]) / gap);
+                                        if(!coefficientExists)
+                                            effectiveness = CoinMax(1.0e-7,
+                                                                    effectiveness);
                                         rc.setEffectiveness(effectiveness);
-                                        if (rc.effectiveness()>needEffectiveness)
+                                        if(rc.effectiveness() > needEffectiveness)
                                         {
-                                            rc.setRow(n,index,element,false);
+                                            rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             //if(canReplace)
                                             //printf("c point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
-                                            if (canReplace&&rowLower[irow]<-1.0e20)
+                                            if(canReplace && rowLower[irow] < -1.0e20)
                                             {
-                                                printf("3Cut %g <= ",rc.lb());
+                                                printf("3Cut %g <= ", rc.lb());
                                                 int k;
-                                                for ( k=0; k<n; k++)
+                                                for(k = 0; k < n; k++)
                                                 {
                                                     int iColumn = index[k];
-                                                    printf("%g*",element[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", element[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rc.ub());
-                                                printf("Row %g <= ",rowLower[irow]);
-                                                for (k=rowStart[irow]; k<rowStart[irow+1]; k++)
+                                                printf("<= %g\n", rc.ub());
+                                                printf("Row %g <= ", rowLower[irow]);
+                                                for(k = rowStart[irow]; k < rowStart[irow + 1]; k++)
                                                 {
                                                     int iColumn = column[k];
-                                                    printf("%g*",rowElements[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", rowElements[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rowUpper[irow]);
+                                                printf("<= %g\n", rowUpper[irow]);
                                             }
 #endif
-                                            int realRow = (canReplace&&rowLower[irow]<-1.0e20) ? irow : -1;
-                                            if (realRows&&realRow>=0)
-                                                realRow=realRows[realRow];
-                                            if (!justReplace)
+                                            int realRow = (canReplace && rowLower[irow] < -1.0e20) ? irow : -1;
+                                            if(realRows && realRow >= 0)
+                                                realRow = realRows[realRow];
+                                            if(!justReplace)
                                             {
-                                                rowCut.addCutIfNotDuplicate(rc,realRow);
+                                                rowCut.addCutIfNotDuplicate(rc, realRow);
                                             }
-                                            else if (realRow>=0)
+                                            else if(realRow >= 0)
                                             {
-                                                double effectiveness=0.0;
-                                                for (int i=0; i<n; i++)
-                                                    effectiveness+=fabs(element[i]);
-                                                if (!info->strengthenRow[realRow]||info->strengthenRow[realRow]->effectiveness()>effectiveness)
+                                                double effectiveness = 0.0;
+                                                for(int i = 0; i < n; i++)
+                                                    effectiveness += fabs(element[i]);
+                                                if(!info->strengthenRow[realRow] || info->strengthenRow[realRow]->effectiveness() > effectiveness)
                                                 {
                                                     delete info->strengthenRow[realRow];
                                                     rc.setEffectiveness(effectiveness);
-                                                    info->strengthenRow[realRow]=rc.clone();
+                                                    info->strengthenRow[realRow] = rc.clone();
                                                 }
                                             }
                                         }
                                     }
                                 }
-                                gap = minR[irow]-rowLower[irow];
-                                if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                gap = minR[irow] - rowLower[irow];
+                                if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                 {
                                     // see if the strengthened row is a cut
-                                    if (!sum)
+                                    if(!sum)
                                     {
-                                        for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                        for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                 kk++)
                                         {
-                                            sum += rowElements[kk]*colsol[column[kk]];
+                                            sum += rowElements[kk] * colsol[column[kk]];
                                         }
                                     }
-                                    if (sum-gap*colsol[j]<rowLower[irow]-primalTolerance_||(canReplace&&rowUpper[irow]>1.0e20))
+                                    if(sum - gap * colsol[j] < rowLower[irow] - primalTolerance_ || (canReplace && rowUpper[irow] > 1.0e20))
                                     {
                                         // can be a cut
                                         // subtract gap from integer coefficient
                                         // saveU and saveL spare
-                                        int * index = reinterpret_cast<int *>(saveL);
-                                        double * element = saveU;
-                                        int n=0;
-                                        bool coefficientExists=false;
-                                        double sum2=0.0;
-                                        for (int kk =rowStart[irow]; kk<rowStart[irow+1];
+                                        int* index = reinterpret_cast<int*>(saveL);
+                                        double* element = saveU;
+                                        int n = 0;
+                                        bool coefficientExists = false;
+                                        double sum2 = 0.0;
+                                        for(int kk = rowStart[irow]; kk < rowStart[irow + 1];
                                                 kk++)
                                         {
                                             int kColumn = column[kk];
                                             double el = rowElements[kk];
-                                            if (kColumn!=j)
+                                            if(kColumn != j)
                                             {
-                                                index[n]=kColumn;
-                                                element[n++]=el;
+                                                index[n] = kColumn;
+                                                element[n++] = el;
                                             }
                                             else
                                             {
-                                                el=el-gap;
-                                                if (fabs(el)>1.0e-12)
+                                                el = el - gap;
+                                                if(fabs(el) > 1.0e-12)
                                                 {
-                                                    index[n]=kColumn;
-                                                    element[n++]=el;
+                                                    index[n] = kColumn;
+                                                    element[n++] = el;
                                                 }
-                                                coefficientExists=true;
+                                                coefficientExists = true;
                                             }
-                                            sum2 += colsol[kColumn]*el;
+                                            sum2 += colsol[kColumn] * el;
                                         }
-                                        if (!coefficientExists)
+                                        if(!coefficientExists)
                                         {
-                                            index[n]=j;
-                                            element[n++]=-gap;
-                                            sum2 -= colsol[j]*gap;
+                                            index[n] = j;
+                                            element[n++] = -gap;
+                                            sum2 -= colsol[j] * gap;
                                         }
                                         OsiRowCut rc;
-                                        double lb = rowLower[irow]-gap*(colUpper[j]-1);
+                                        double lb = rowLower[irow] - gap * (colUpper[j] - 1);
                                         rc.setLb(lb);
                                         rc.setUb(COIN_DBL_MAX);
-                                        double effectiveness=lb-sum2;
+                                        double effectiveness = lb - sum2;
                                         effectiveness = CoinMax(effectiveness,
-                                                                (rowLower[irow]-
-                                                                 sum+gap*colsol[j])/gap);
-                                        if (!coefficientExists)
-                                            effectiveness=CoinMax(1.0e-7,
-                                                                  effectiveness);
+                                                                (rowLower[irow] -
+                                                                 sum + gap * colsol[j]) / gap);
+                                        if(!coefficientExists)
+                                            effectiveness = CoinMax(1.0e-7,
+                                                                    effectiveness);
                                         rc.setEffectiveness(effectiveness);
-                                        if (rc.effectiveness()>needEffectiveness)
+                                        if(rc.effectiveness() > needEffectiveness)
                                         {
-                                            rc.setRow(n,index,element,false);
+                                            rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             //if(canReplace)
                                             //printf("d point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
-                                            if (canReplace&&rowUpper[irow]>1.0e20)
+                                            if(canReplace && rowUpper[irow] > 1.0e20)
                                             {
-                                                printf("4Cut %g <= ",rc.lb());
+                                                printf("4Cut %g <= ", rc.lb());
                                                 int k;
-                                                for ( k=0; k<n; k++)
+                                                for(k = 0; k < n; k++)
                                                 {
                                                     int iColumn = index[k];
-                                                    printf("%g*",element[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", element[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rc.ub());
-                                                printf("Row %g <= ",rowLower[irow]);
-                                                for (k=rowStart[irow]; k<rowStart[irow+1]; k++)
+                                                printf("<= %g\n", rc.ub());
+                                                printf("Row %g <= ", rowLower[irow]);
+                                                for(k = rowStart[irow]; k < rowStart[irow + 1]; k++)
                                                 {
                                                     int iColumn = column[k];
-                                                    printf("%g*",rowElements[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", rowElements[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rowUpper[irow]);
+                                                printf("<= %g\n", rowUpper[irow]);
                                             }
 #endif
-                                            int realRow = (canReplace&&rowUpper[irow]>1.0e20) ? irow : -1;
-                                            if (realRows&&realRow>=0)
-                                                realRow=realRows[realRow];
-                                            if (!justReplace)
+                                            int realRow = (canReplace && rowUpper[irow] > 1.0e20) ? irow : -1;
+                                            if(realRows && realRow >= 0)
+                                                realRow = realRows[realRow];
+                                            if(!justReplace)
                                             {
-                                                rowCut.addCutIfNotDuplicate(rc,realRow);
+                                                rowCut.addCutIfNotDuplicate(rc, realRow);
                                             }
-                                            else if (realRow>=0)
+                                            else if(realRow >= 0)
                                             {
-                                                double effectiveness=0.0;
-                                                for (int i=0; i<n; i++)
-                                                    effectiveness+=fabs(element[i]);
-                                                if (!info->strengthenRow[realRow]||info->strengthenRow[realRow]->effectiveness()>effectiveness)
+                                                double effectiveness = 0.0;
+                                                for(int i = 0; i < n; i++)
+                                                    effectiveness += fabs(element[i]);
+                                                if(!info->strengthenRow[realRow] || info->strengthenRow[realRow]->effectiveness() > effectiveness)
                                                 {
                                                     delete info->strengthenRow[realRow];
                                                     rc.setEffectiveness(effectiveness);
-                                                    info->strengthenRow[realRow]=rc.clone();
+                                                    info->strengthenRow[realRow] = rc.clone();
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                            minR[irow]=saveMin[istackR];
-                            maxR[irow]=saveMax[istackR];
-                            markR[irow]=-1;
+                            minR[irow] = saveMin[istackR];
+                            maxR[irow] = saveMax[istackR];
+                            markR[irow] = -1;
                         }
                     }
                 }
             }
         }
     }
-    if ((!ninfeas&&!rowCut.outOfSpace())&&(info->strengthenRow||
-                                           !rowCut.numberCuts())&&rowCuts)
+    if((!ninfeas && !rowCut.outOfSpace()) && (info->strengthenRow ||
+            !rowCut.numberCuts()) && rowCuts)
     {
         // Try and find ALL big M's
-        for (int i = 0; i < nRowsSafe; ++i)
+        for(int i = 0; i < nRowsSafe; ++i)
         {
-            if ((rowLower[i]>-1.0e20||rowUpper[i]<1.0e20)&&
-                    (!info->strengthenRow||!info->strengthenRow[i]))
+            if((rowLower[i] > -1.0e20 || rowUpper[i] < 1.0e20) &&
+                    (!info->strengthenRow || !info->strengthenRow[i]))
             {
                 int iflagu = 0;
                 int iflagl = 0;
                 double dmaxup = 0.0;
                 double dmaxdown = 0.0;
                 int krs = rowStart[i];
-                int kre = rowStart[i+1];
+                int kre = rowStart[i + 1];
                 int kInt = -1;
-                double rhsAdjustment=0.0;
-                int nPosInt=0;
-                int nNegInt=0;
-                double valueInteger=0.0;
+                double rhsAdjustment = 0.0;
+                int nPosInt = 0;
+                int nNegInt = 0;
+                double valueInteger = 0.0;
                 // Find largest integer coefficient
                 int k;
-                for ( k = krs; k < kre; ++k)
+                for(k = krs; k < kre; ++k)
                 {
                     int j = column[k];
-                    if (intVar[j])
+                    if(intVar[j])
                     {
-                        double value=rowElements[k];
-                        if (colUpper[j]>colLower[j]&&!colLower[j]&&
-                                fabs(value)>fabs(valueInteger))
+                        double value = rowElements[k];
+                        if(colUpper[j] > colLower[j] && !colLower[j] &&
+                                fabs(value) > fabs(valueInteger))
                         {
-                            kInt=j;
-                            valueInteger=value;
+                            kInt = j;
+                            valueInteger = value;
                         }
                     }
                 }
-                if (kInt>=0)
+                if(kInt >= 0)
                 {
-                    double upperBound = CoinMin(colUpper[kInt],static_cast<double>(COIN_INT_MAX));
-                    double upAdjust=0.0;
-                    double downAdjust=0.0;
-                    for (k = krs; k < kre; ++k)
+                    double upperBound = CoinMin(colUpper[kInt], static_cast<double>(COIN_INT_MAX));
+                    double upAdjust = 0.0;
+                    double downAdjust = 0.0;
+                    for(k = krs; k < kre; ++k)
                     {
-                        double value=rowElements[k];
+                        double value = rowElements[k];
                         int j = column[k];
-                        if (colUpper[j]==colLower[j])
+                        if(colUpper[j] == colLower[j])
                         {
-                            rhsAdjustment += colUpper[j]*value;
+                            rhsAdjustment += colUpper[j] * value;
                             continue;
                         }
-                        if (intVar[j])
+                        if(intVar[j])
                         {
-                            if (value>0.0)
+                            if(value > 0.0)
                                 nPosInt++;
                             else
                                 nNegInt++;
@@ -6818,12 +6818,12 @@ int CglProbing::probe( const OsiSolverInterface & si,
                         {
                             nPosInt = -nCols;
                         }
-                        if (j!=kInt)
+                        if(j != kInt)
                         {
                             // treat as continuous
-                            if (value > 0.0)
+                            if(value > 0.0)
                             {
-                                if (colUpper[j] >= 1e15)
+                                if(colUpper[j] >= 1e15)
                                 {
                                     dmaxup = 1e31;
                                     ++iflagu;
@@ -6832,7 +6832,7 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                 {
                                     dmaxup += colUpper[j] * value;
                                 }
-                                if (colLower[j] <= -1e15)
+                                if(colLower[j] <= -1e15)
                                 {
                                     dmaxdown = -1e31;
                                     ++iflagl;
@@ -6842,9 +6842,9 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                     dmaxdown += colLower[j] * value;
                                 }
                             }
-                            else if (value<0.0)
+                            else if(value < 0.0)
                             {
-                                if (colUpper[j] >= 1e15)
+                                if(colUpper[j] >= 1e15)
                                 {
                                     dmaxdown = -1e31;
                                     ++iflagl;
@@ -6853,7 +6853,7 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                 {
                                     dmaxdown += colUpper[j] * value;
                                 }
-                                if (colLower[j] <= -1e15)
+                                if(colLower[j] <= -1e15)
                                 {
                                     dmaxup = 1e31;
                                     ++iflagu;
@@ -6867,9 +6867,9 @@ int CglProbing::probe( const OsiSolverInterface & si,
                         else
                         {
                             // Chosen variable
-                            if (value > 0.0)
+                            if(value > 0.0)
                             {
-                                if (colUpper[j] >= 1e15)
+                                if(colUpper[j] >= 1e15)
                                 {
                                     upAdjust = 1e31;
                                 }
@@ -6877,7 +6877,7 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                 {
                                     upAdjust = colUpper[j] * value;
                                 }
-                                if (colLower[j] <= -1e15)
+                                if(colLower[j] <= -1e15)
                                 {
                                     downAdjust = -1e31;
                                 }
@@ -6886,9 +6886,9 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                     downAdjust = colLower[j] * value;
                                 }
                             }
-                            else if (value<0.0)
+                            else if(value < 0.0)
                             {
-                                if (colUpper[j] >= 1e15)
+                                if(colUpper[j] >= 1e15)
                                 {
                                     downAdjust = -1e31;
                                 }
@@ -6896,7 +6896,7 @@ int CglProbing::probe( const OsiSolverInterface & si,
                                 {
                                     downAdjust = colUpper[j] * value;
                                 }
-                                if (colLower[j] <= -1e15)
+                                if(colLower[j] <= -1e15)
                                 {
                                     upAdjust = 1e31;
                                 }
@@ -6910,108 +6910,108 @@ int CglProbing::probe( const OsiSolverInterface & si,
                     dmaxup += rhsAdjustment;
                     dmaxdown += rhsAdjustment;
                     // end of row
-                    if (iflagu)
-                        dmaxup=1.0e31;
-                    if (iflagl)
-                        dmaxdown=-1.0e31;
+                    if(iflagu)
+                        dmaxup = 1.0e31;
+                    if(iflagl)
+                        dmaxdown = -1.0e31;
                     // See if redundant
-                    if (dmaxdown+downAdjust>rowLower[i]-tolerance&&
-                            dmaxup+upAdjust<rowUpper[i]+tolerance)
+                    if(dmaxdown + downAdjust > rowLower[i] - tolerance &&
+                            dmaxup + upAdjust < rowUpper[i] + tolerance)
                         continue;
-                    if (dmaxdown+valueInteger*upperBound>rowLower[i]&&
-                            dmaxup+valueInteger*upperBound<rowUpper[i])
+                    if(dmaxdown + valueInteger * upperBound > rowLower[i] &&
+                            dmaxup + valueInteger * upperBound < rowUpper[i])
                     {
                         // check to see if always feasible at 1 but not always at 0
-                        if (dmaxdown+valueInteger>rowLower[i]&&dmaxup+valueInteger<rowUpper[i]&&
-                                (dmaxdown<rowLower[i]-primalTolerance_||dmaxup>rowUpper[i]+primalTolerance_))
+                        if(dmaxdown + valueInteger > rowLower[i] && dmaxup + valueInteger < rowUpper[i] &&
+                                (dmaxdown < rowLower[i] - primalTolerance_ || dmaxup > rowUpper[i] + primalTolerance_))
                         {
                             // can tighten (maybe)
                             double saveValue = valueInteger;
-                            if (valueInteger>0.0)
+                            if(valueInteger > 0.0)
                             {
-                                assert (dmaxdown<rowLower[i]);
-                                valueInteger = rowLower[i]-dmaxdown;
+                                assert(dmaxdown < rowLower[i]);
+                                valueInteger = rowLower[i] - dmaxdown;
                             }
                             else
                             {
-                                assert (dmaxup>rowUpper[i]);
-                                valueInteger = rowUpper[i]-dmaxup;
+                                assert(dmaxup > rowUpper[i]);
+                                valueInteger = rowUpper[i] - dmaxup;
                             }
-                            if (fabs(saveValue-valueInteger)>1.0e-12)
+                            if(fabs(saveValue - valueInteger) > 1.0e-12)
                             {
                                 // take
                                 OsiRowCut rc;
                                 rc.setLb(rowLower[i]);
                                 rc.setUb(rowUpper[i]);
-                                int n=0;
-                                double sum=0.0;
-                                for (int kk=rowStart[i]; kk<rowStart[i+1]; kk++)
+                                int n = 0;
+                                double sum = 0.0;
+                                for(int kk = rowStart[i]; kk < rowStart[i + 1]; kk++)
                                 {
-                                    int j=column[kk];
-                                    if (j!=kInt)
+                                    int j = column[kk];
+                                    if(j != kInt)
                                     {
-                                        sum += colsol[j]*rowElements[kk];
-                                        index[n]=j;
-                                        element[n++]=rowElements[kk];
+                                        sum += colsol[j] * rowElements[kk];
+                                        index[n] = j;
+                                        element[n++] = rowElements[kk];
                                     }
                                     else
                                     {
-                                        sum += colsol[j]*valueInteger;
-                                        assert (rowElements[kk]*valueInteger>=0.0);
+                                        sum += colsol[j] * valueInteger;
+                                        assert(rowElements[kk]*valueInteger >= 0.0);
 #if 0
-                                        if (fabs(rowElements[kk])>1.01*fabs(valueInteger))
+                                        if(fabs(rowElements[kk]) > 1.01 * fabs(valueInteger))
                                         {
                                             printf("row %d changing coefficient of %d from %g to %g\n",
-                                                   i,kInt,rowElements[kk],valueInteger);
+                                                   i, kInt, rowElements[kk], valueInteger);
                                         }
 #endif
-                                        if (fabs(valueInteger)>1.0e-12)
+                                        if(fabs(valueInteger) > 1.0e-12)
                                         {
-                                            index[n]=column[kk];
-                                            element[n++]=valueInteger;
+                                            index[n] = column[kk];
+                                            element[n++] = valueInteger;
                                         }
                                     }
                                 }
                                 double gap = 0.0;
-                                if (sum<rowLower[i])
-                                    gap=rowLower[i]-sum;
-                                else if (sum>rowUpper[i])
-                                    gap=sum-rowUpper[i];
-                                if (gap>1.0e-4||info->strengthenRow!=NULL)
+                                if(sum < rowLower[i])
+                                    gap = rowLower[i] - sum;
+                                else if(sum > rowUpper[i])
+                                    gap = sum - rowUpper[i];
+                                if(gap > 1.0e-4 || info->strengthenRow != NULL)
                                 {
                                     gap += 1.0e5;
                                     rc.setEffectiveness(gap);
-                                    rc.setRow(n,index,element,false);
+                                    rc.setRow(n, index, element, false);
 #ifdef STRENGTHEN_PRINT
                                     {
-                                        printf("1aCut %g <= ",rc.lb());
-                                        int irow =i;
+                                        printf("1aCut %g <= ", rc.lb());
+                                        int irow = i;
                                         int k;
-                                        for ( k=0; k<n; k++)
+                                        for(k = 0; k < n; k++)
                                         {
                                             int iColumn = index[k];
-                                            printf("%g*",element[k]);
-                                            if (si.isInteger(iColumn))
-                                                printf("i%d ",iColumn);
+                                            printf("%g*", element[k]);
+                                            if(si.isInteger(iColumn))
+                                                printf("i%d ", iColumn);
                                             else
-                                                printf("x%d ",iColumn);
+                                                printf("x%d ", iColumn);
                                         }
-                                        printf("<= %g\n",rc.ub());
-                                        printf("Row %g <= ",rowLower[irow]);
-                                        for (k=rowStart[irow]; k<rowStart[irow+1]; k++)
+                                        printf("<= %g\n", rc.ub());
+                                        printf("Row %g <= ", rowLower[irow]);
+                                        for(k = rowStart[irow]; k < rowStart[irow + 1]; k++)
                                         {
                                             int iColumn = column[k];
-                                            printf("%g*",rowElements[k]);
-                                            if (si.isInteger(iColumn))
-                                                printf("i%d ",iColumn);
+                                            printf("%g*", rowElements[k]);
+                                            if(si.isInteger(iColumn))
+                                                printf("i%d ", iColumn);
                                             else
-                                                printf("x%d ",iColumn);
+                                                printf("x%d ", iColumn);
                                         }
-                                        printf("<= %g\n",rowUpper[irow]);
+                                        printf("<= %g\n", rowUpper[irow]);
                                     }
 #endif
-                                    int returnCode=rowCut.addCutIfNotDuplicate(rc,i);
-                                    if (returnCode<0)
+                                    int returnCode = rowCut.addCutIfNotDuplicate(rc, i);
+                                    if(returnCode < 0)
                                         break; // out of space
                                 }
                             }
@@ -7041,24 +7041,24 @@ int CglProbing::probe( const OsiSolverInterface & si,
 #endif
     delete [] colsol;
     // Add in row cuts
-    if (!ninfeas)
+    if(!ninfeas)
     {
-        if (!justReplace)
+        if(!justReplace)
         {
-            rowCut.addCuts(cs,info->strengthenRow,info->pass);
+            rowCut.addCuts(cs, info->strengthenRow, info->pass);
         }
         else
         {
-            for (int i=0; i<nRows; i++)
+            for(int i = 0; i < nRows; i++)
             {
-                int realRow=realRows[i];
-                if (realRow>=0)
+                int realRow = realRows[i];
+                if(realRow >= 0)
                 {
-                    OsiRowCut * cut = info->strengthenRow[realRow];
-                    if (cut)
+                    OsiRowCut* cut = info->strengthenRow[realRow];
+                    if(cut)
                     {
 #ifdef CLP_INVESTIGATE
-                        printf("Row %d, real row %d effectiveness %g\n",i,realRow,cut->effectiveness());
+                        printf("Row %d, real row %d effectiveness %g\n", i, realRow, cut->effectiveness());
 #endif
                         cs.insert(cut);
                     }
@@ -7070,139 +7070,139 @@ int CglProbing::probe( const OsiSolverInterface & si,
     {
         int numberRowCutsAfter = cs.sizeRowCuts() ;
         int k ;
-        for (k = 0; k<numberRowCutsAfter; k++)
+        for(k = 0; k < numberRowCutsAfter; k++)
         {
             OsiRowCut thisCut = cs.rowCut(k) ;
-            printf("Cut %d is %g <=",k,thisCut.lb());
-            int n=thisCut.row().getNumElements();
-            const int * column = thisCut.row().getIndices();
-            const double * element = thisCut.row().getElements();
-            assert (n);
-            for (int i=0; i<n; i++)
+            printf("Cut %d is %g <=", k, thisCut.lb());
+            int n = thisCut.row().getNumElements();
+            const int* column = thisCut.row().getIndices();
+            const double* element = thisCut.row().getElements();
+            assert(n);
+            for(int i = 0; i < n; i++)
             {
-                printf(" %g*x%d",element[i],column[i]);
+                printf(" %g*x%d", element[i], column[i]);
             }
-            printf(" <= %g\n",thisCut.ub());
+            printf(" <= %g\n", thisCut.ub());
         }
     }
 #endif
     return (ninfeas);
 }
 // Does probing and adding cuts
-int CglProbing::probeCliques( const OsiSolverInterface & si,
-                              const OsiRowCutDebugger *
+int CglProbing::probeCliques(const OsiSolverInterface & si,
+                             const OsiRowCutDebugger *
 #ifdef CGL_DEBUG
-                              debugger
+                             debugger
 #endif
-                              ,OsiCuts & cs,
-                              double * colLower, double * colUpper,
-                              CoinPackedMatrix *rowCopy,
-                              CoinPackedMatrix *columnCopy, const int * realRows,
-                              double * rowLower, double * rowUpper,
-                              char * intVar, double * minR, double * maxR,
-                              int * markR,
-                              CglTreeInfo * info) const
+                             , OsiCuts & cs,
+                             double* colLower, double* colUpper,
+                             CoinPackedMatrix* rowCopy,
+                             CoinPackedMatrix* columnCopy, const int* realRows,
+                             double* rowLower, double* rowUpper,
+                             char* intVar, double* minR, double* maxR,
+                             int* markR,
+                             CglTreeInfo* info) const
 {
     // Set up maxes
     int maxStack = info->inTree ? maxStack_ : maxStackRoot_;
-    int nRows=rowCopy->getNumRows();
-    int nCols=rowCopy->getNumCols();
-    double * colsol = new double[nCols];
-    double * djs = new double[nCols];
-    const double * currentColLower = si.getColLower();
-    const double * currentColUpper = si.getColUpper();
-    double * tempL = new double [nCols];
-    double * tempU = new double [nCols];
-    int * markC = new int [nCols];
-    int * stackC = new int [2*nCols];
-    int * stackR = new int [nRows];
-    double * saveL = new double [2*nCols];
-    double * saveU = new double [2*nCols];
-    double * saveMin = new double [nRows];
-    double * saveMax = new double [nRows];
-    double * element = new double[nCols];
-    int * index = new int[nCols];
+    int nRows = rowCopy->getNumRows();
+    int nCols = rowCopy->getNumCols();
+    double* colsol = new double[nCols];
+    double* djs = new double[nCols];
+    const double* currentColLower = si.getColLower();
+    const double* currentColUpper = si.getColUpper();
+    double* tempL = new double [nCols];
+    double* tempU = new double [nCols];
+    int* markC = new int [nCols];
+    int* stackC = new int [2 * nCols];
+    int* stackR = new int [nRows];
+    double* saveL = new double [2 * nCols];
+    double* saveU = new double [2 * nCols];
+    double* saveMin = new double [nRows];
+    double* saveMax = new double [nRows];
+    double* element = new double[nCols];
+    int* index = new int[nCols];
     // For trying to extend cliques
-    int * cliqueStack=NULL;
-    int * cliqueCount=NULL;
-    int * to_01=NULL;
-    if (!mode_)
+    int* cliqueStack = NULL;
+    int* cliqueCount = NULL;
+    int* to_01 = NULL;
+    if(!mode_)
     {
         to_01 = new int[nCols];
         cliqueStack = new int[numberCliques_];
         cliqueCount = new int[numberCliques_];
         int i;
-        for (i=0; i<numberCliques_; i++)
+        for(i = 0; i < numberCliques_; i++)
         {
-            cliqueCount[i]=cliqueStart_[i+1]-cliqueStart_[i];
+            cliqueCount[i] = cliqueStart_[i + 1] - cliqueStart_[i];
         }
-        for (i=0; i<nCols; i++)
-            to_01[i]=-1;
-        for (i=0; i<number01Integers_; i++)
+        for(i = 0; i < nCols; i++)
+            to_01[i] = -1;
+        for(i = 0; i < number01Integers_; i++)
         {
-            int j=cutVector_[i].sequence;
-            to_01[j]=i;
+            int j = cutVector_[i].sequence;
+            to_01[j] = i;
         }
     }
     // Let us never add more than twice the number of rows worth of row cuts
     // Keep cuts out of cs until end so we can find duplicates quickly
-    int nRowsFake = info->inTree ? nRows/3 : nRows;
+    int nRowsFake = info->inTree ? nRows / 3 : nRows;
     row_cut rowCut(nRowsFake, !info->inTree);
-    const int * column = rowCopy->getIndices();
-    const CoinBigIndex * rowStart = rowCopy->getVectorStarts();
-    const int * rowLength = rowCopy->getVectorLengths();
-    const double * rowElements = rowCopy->getElements();
-    const int * row = columnCopy->getIndices();
-    const CoinBigIndex * columnStart = columnCopy->getVectorStarts();
-    const int * columnLength = columnCopy->getVectorLengths();
-    const double * columnElements = columnCopy->getElements();
+    const int* column = rowCopy->getIndices();
+    const CoinBigIndex* rowStart = rowCopy->getVectorStarts();
+    const int* rowLength = rowCopy->getVectorLengths();
+    const double* rowElements = rowCopy->getElements();
+    const int* row = columnCopy->getIndices();
+    const CoinBigIndex* columnStart = columnCopy->getVectorStarts();
+    const int* columnLength = columnCopy->getVectorLengths();
+    const double* columnElements = columnCopy->getElements();
     double movement;
-    int i, j, k,kk,jj;
-    int kcol,krow;
-    bool anyColumnCuts=false;
+    int i, j, k, kk, jj;
+    int kcol, krow;
+    bool anyColumnCuts = false;
     double dbound, value, value2;
-    int ninfeas=0;
+    int ninfeas = 0;
     int rowCuts;
     double disaggEffectiveness;
-    if (mode_)
+    if(mode_)
     {
         /* clean up djs and solution */
-        CoinMemcpyN(si.getReducedCost(),nCols,djs);
-        CoinMemcpyN( si.getColSolution(),nCols,colsol);
-        disaggEffectiveness=1.0e-3;
-        rowCuts=rowCuts_;
+        CoinMemcpyN(si.getReducedCost(), nCols, djs);
+        CoinMemcpyN(si.getColSolution(), nCols, colsol);
+        disaggEffectiveness = 1.0e-3;
+        rowCuts = rowCuts_;
     }
     else
     {
         // need to go from a neutral place
-        memset(djs,0,nCols*sizeof(double));
-        CoinMemcpyN( si.getColSolution(),nCols,colsol);
-        disaggEffectiveness=-1.0e10;
-        if (rowCuts_!=4)
-            rowCuts=1;
+        memset(djs, 0, nCols * sizeof(double));
+        CoinMemcpyN(si.getColSolution(), nCols, colsol);
+        disaggEffectiveness = -1.0e10;
+        if(rowCuts_ != 4)
+            rowCuts = 1;
         else
-            rowCuts=4;
+            rowCuts = 4;
     }
-    for (i = 0; i < nCols; ++i)
+    for(i = 0; i < nCols; ++i)
     {
         /* was if (intVar[i]) */
-        if (1)
+        if(1)
         {
-            if (colUpper[i]-colLower[i]>1.0e-8)
+            if(colUpper[i] - colLower[i] > 1.0e-8)
             {
-                if (colsol[i]<colLower[i]+primalTolerance_)
+                if(colsol[i] < colLower[i] + primalTolerance_)
                 {
-                    colsol[i]=colLower[i];
-                    djs[i] = CoinMax(0.0,djs[i]);
+                    colsol[i] = colLower[i];
+                    djs[i] = CoinMax(0.0, djs[i]);
                 }
-                else if (colsol[i]>colUpper[i]-primalTolerance_)
+                else if(colsol[i] > colUpper[i] - primalTolerance_)
                 {
-                    colsol[i]=colUpper[i];
-                    djs[i] = CoinMin(0.0,djs[i]);
+                    colsol[i] = colUpper[i];
+                    djs[i] = CoinMin(0.0, djs[i]);
                 }
                 else
                 {
-                    djs[i]=0.0;
+                    djs[i] = 0.0;
                 }
                 /*if (fabs(djs[i])<1.0e-5)
                   djs[i]=0.0;*/
@@ -7210,205 +7210,205 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
         }
     }
 
-    int ipass=0,nfixed=-1;
+    int ipass = 0, nfixed = -1;
 
     double cutoff;
-    bool cutoff_available = si.getDblParam(OsiDualObjectiveLimit,cutoff);
-    if (!cutoff_available||usingObjective_<0)   // cut off isn't set or isn't valid
+    bool cutoff_available = si.getDblParam(OsiDualObjectiveLimit, cutoff);
+    if(!cutoff_available || usingObjective_ < 0) // cut off isn't set or isn't valid
     {
         cutoff = si.getInfinity();
     }
     cutoff *= si.getObjSense();
-    if (fabs(cutoff)>1.0e30)
-        assert (cutoff>1.0e30);
+    if(fabs(cutoff) > 1.0e30)
+        assert(cutoff > 1.0e30);
     double current = si.getObjValue();
     // make irrelevant if mode is 0
-    if (!mode_)
-        cutoff=COIN_DBL_MAX;
+    if(!mode_)
+        cutoff = COIN_DBL_MAX;
     /* for both way coding */
-    int nstackC0=-1;
-    int * stackC0 = new int[maxStack];
-    double * lo0 = new double[maxStack];
-    double * up0 = new double[maxStack];
-    int nstackR,nstackC;
-    for (i=0; i<nCols; i++)
+    int nstackC0 = -1;
+    int* stackC0 = new int[maxStack];
+    double* lo0 = new double[maxStack];
+    double* up0 = new double[maxStack];
+    int nstackR, nstackC;
+    for(i = 0; i < nCols; i++)
     {
-        if (colUpper[i]-colLower[i]<1.0e-8)
+        if(colUpper[i] - colLower[i] < 1.0e-8)
         {
-            markC[i]=3;
+            markC[i] = 3;
         }
         else
         {
-            markC[i]=0;
+            markC[i] = 0;
         }
     }
-    double tolerance = 1.0e1*primalTolerance_;
+    double tolerance = 1.0e1 * primalTolerance_;
     int maxPass = info->inTree ? maxPass_ : maxPassRoot_;
     // If we are going to replace coefficient then we don't need to be effective
     double needEffectiveness = info->strengthenRow ? -1.0e10 : 1.0e-3;
-    while (ipass<maxPass&&nfixed)
+    while(ipass < maxPass && nfixed)
     {
         int iLook;
         ipass++;
-        nfixed=0;
-        for (iLook=0; iLook<numberThisTime_; iLook++)
+        nfixed = 0;
+        for(iLook = 0; iLook < numberThisTime_; iLook++)
         {
             double solval;
             double down;
             double up;
-            int awayFromBound=1;
-            j=lookedAt_[iLook];
-            solval=colsol[j];
-            down = floor(solval+tolerance);
-            up = ceil(solval-tolerance);
-            if(colUpper[j]-colLower[j]<1.0e-8) markC[j]=3;
-            if (markC[j]||!intVar[j]) continue;
+            int awayFromBound = 1;
+            j = lookedAt_[iLook];
+            solval = colsol[j];
+            down = floor(solval + tolerance);
+            up = ceil(solval - tolerance);
+            if(colUpper[j] - colLower[j] < 1.0e-8) markC[j] = 3;
+            if(markC[j] || !intVar[j]) continue;
             double saveSolval = solval;
-            if (solval>=colUpper[j]-tolerance||solval<=colLower[j]+tolerance||up==down)
+            if(solval >= colUpper[j] - tolerance || solval <= colLower[j] + tolerance || up == down)
             {
-                awayFromBound=0;
-                if (solval<=colLower[j]+2.0*tolerance)
+                awayFromBound = 0;
+                if(solval <= colLower[j] + 2.0 * tolerance)
                 {
-                    solval = colLower[j]+1.0e-1;
-                    down=colLower[j];
-                    up=down+1.0;
+                    solval = colLower[j] + 1.0e-1;
+                    down = colLower[j];
+                    up = down + 1.0;
                 }
-                else if (solval>=colUpper[j]-2.0*tolerance)
+                else if(solval >= colUpper[j] - 2.0 * tolerance)
                 {
-                    solval = colUpper[j]-1.0e-1;
-                    up=colUpper[j];
-                    down=up-1;
+                    solval = colUpper[j] - 1.0e-1;
+                    up = colUpper[j];
+                    down = up - 1;
                 }
                 else
                 {
                     // odd
-                    up=down+1.0;
-                    solval = down+1.0e-1;
+                    up = down + 1.0;
+                    solval = down + 1.0e-1;
                 }
             }
-            assert (up<=colUpper[j]);
-            assert (down>=colLower[j]);
-            assert (up>down);
-            if ((solval-down>1.0e-6&&up-solval>1.0e-6)||mode_!=1)
+            assert(up <= colUpper[j]);
+            assert(down >= colLower[j]);
+            assert(up > down);
+            if((solval - down > 1.0e-6 && up - solval > 1.0e-6) || mode_ != 1)
             {
-                int istackC,iway, istackR;
-                int way[]= {1,2,1};
-                int feas[]= {1,2,4};
-                int feasible=0;
+                int istackC, iway, istackR;
+                int way[] = {1, 2, 1};
+                int feas[] = {1, 2, 4};
+                int feasible = 0;
                 int notFeasible;
-                for (iway=0; iway<3; iway ++)
+                for(iway = 0; iway < 3; iway ++)
                 {
-                    int fixThis=0;
-                    double objVal=current;
-                    int goingToTrueBound=0;
-                    stackC[0]=j;
-                    markC[j]=way[iway];
+                    int fixThis = 0;
+                    double objVal = current;
+                    int goingToTrueBound = 0;
+                    stackC[0] = j;
+                    markC[j] = way[iway];
                     double solMovement;
-                    if (way[iway]==1)
+                    if(way[iway] == 1)
                     {
-                        movement=down-colUpper[j];
-                        solMovement = down-colsol[j];
-                        assert(movement<-0.99999);
-                        if (fabs(down-colLower[j])<1.0e-7)
+                        movement = down - colUpper[j];
+                        solMovement = down - colsol[j];
+                        assert(movement < -0.99999);
+                        if(fabs(down - colLower[j]) < 1.0e-7)
                         {
-                            goingToTrueBound=2;
-                            down=colLower[j];
+                            goingToTrueBound = 2;
+                            down = colLower[j];
                         }
                     }
                     else
                     {
-                        movement=up-colLower[j];
-                        solMovement = up-colsol[j];
-                        assert(movement>0.99999);
-                        if (fabs(up-colUpper[j])<1.0e-7)
+                        movement = up - colLower[j];
+                        solMovement = up - colsol[j];
+                        assert(movement > 0.99999);
+                        if(fabs(up - colUpper[j]) < 1.0e-7)
                         {
-                            goingToTrueBound=2;
-                            up=colUpper[j];
+                            goingToTrueBound = 2;
+                            up = colUpper[j];
                         }
                     }
-                    if (goingToTrueBound&&(colUpper[j]-colLower[j]>1.5||colLower[j]))
-                        goingToTrueBound=1;
+                    if(goingToTrueBound && (colUpper[j] - colLower[j] > 1.5 || colLower[j]))
+                        goingToTrueBound = 1;
                     // switch off disaggregation if not wanted
-                    if ((rowCuts&1)==0)
-                        goingToTrueBound=0;
+                    if((rowCuts & 1) == 0)
+                        goingToTrueBound = 0;
 #ifdef PRINT_DEBUG
-                    if (fabs(movement)>1.01)
+                    if(fabs(movement) > 1.01)
                     {
-                        printf("big %d %g %g %g\n",j,colLower[j],solval,colUpper[j]);
+                        printf("big %d %g %g %g\n", j, colLower[j], solval, colUpper[j]);
                     }
 #endif
-                    if (solMovement*djs[j]>0.0)
-                        objVal += solMovement*djs[j];
-                    nstackC=1;
-                    nstackR=0;
-                    saveL[0]=colLower[j];
-                    saveU[0]=colUpper[j];
-                    assert (saveU[0]>saveL[0]);
-                    notFeasible=0;
-                    if (movement<0.0)
+                    if(solMovement * djs[j] > 0.0)
+                        objVal += solMovement * djs[j];
+                    nstackC = 1;
+                    nstackR = 0;
+                    saveL[0] = colLower[j];
+                    saveU[0] = colUpper[j];
+                    assert(saveU[0] > saveL[0]);
+                    notFeasible = 0;
+                    if(movement < 0.0)
                     {
                         colUpper[j] += movement;
-                        colUpper[j] = floor(colUpper[j]+0.5);
+                        colUpper[j] = floor(colUpper[j] + 0.5);
 #ifdef PRINT_DEBUG
-                        printf("** Trying %d down to 0\n",j);
+                        printf("** Trying %d down to 0\n", j);
 #endif
                     }
                     else
                     {
                         colLower[j] += movement;
-                        colLower[j] = floor(colLower[j]+0.5);
+                        colLower[j] = floor(colLower[j] + 0.5);
 #ifdef PRINT_DEBUG
-                        printf("** Trying %d up to 1\n",j);
+                        printf("** Trying %d up to 1\n", j);
 #endif
                     }
-                    if (fabs(colUpper[j]-colLower[j])<1.0e-6)
-                        markC[j]=3; // say fixed
-                    istackC=0;
+                    if(fabs(colUpper[j] - colLower[j]) < 1.0e-6)
+                        markC[j] = 3; // say fixed
+                    istackC = 0;
                     /* update immediately */
-                    for (k=columnStart[j]; k<columnStart[j]+columnLength[j]; k++)
+                    for(k = columnStart[j]; k < columnStart[j] + columnLength[j]; k++)
                     {
                         int irow = row[k];
                         value = columnElements[k];
-                        assert (markR[irow]!=-2);
-                        if (markR[irow]==-1)
+                        assert(markR[irow] != -2);
+                        if(markR[irow] == -1)
                         {
-                            stackR[nstackR]=irow;
-                            markR[irow]=nstackR;
-                            saveMin[nstackR]=minR[irow];
-                            saveMax[nstackR]=maxR[irow];
+                            stackR[nstackR] = irow;
+                            markR[irow] = nstackR;
+                            saveMin[nstackR] = minR[irow];
+                            saveMax[nstackR] = maxR[irow];
                             nstackR++;
 #if 0
                         }
-                        else if (markR[irow]==-2)
+                        else if(markR[irow] == -2)
                         {
                             continue;
 #endif
                         }
                         /* could check immediately if violation */
-                        if (movement>0.0)
+                        if(movement > 0.0)
                         {
                             /* up */
-                            if (value>0.0)
+                            if(value > 0.0)
                             {
                                 /* up does not change - down does */
-                                if (minR[irow]>-1.0e10)
+                                if(minR[irow] > -1.0e10)
                                     minR[irow] += value;
-                                if (minR[irow]>rowUpper[irow]+1.0e-5)
+                                if(minR[irow] > rowUpper[irow] + 1.0e-5)
                                 {
-                                    notFeasible=1;
-                                    istackC=1;
+                                    notFeasible = 1;
+                                    istackC = 1;
                                     break;
                                 }
                             }
                             else
                             {
                                 /* down does not change - up does */
-                                if (maxR[irow]<1.0e10)
+                                if(maxR[irow] < 1.0e10)
                                     maxR[irow] += value;
-                                if (maxR[irow]<rowLower[irow]-1.0e-5)
+                                if(maxR[irow] < rowLower[irow] - 1.0e-5)
                                 {
-                                    notFeasible=1;
-                                    istackC=1;
+                                    notFeasible = 1;
+                                    istackC = 1;
                                     break;
                                 }
                             }
@@ -7416,50 +7416,50 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                         else
                         {
                             /* down */
-                            if (value<0.0)
+                            if(value < 0.0)
                             {
                                 /* up does not change - down does */
-                                if (minR[irow]>-1.0e10)
+                                if(minR[irow] > -1.0e10)
                                     minR[irow] -= value;
-                                if (minR[irow]>rowUpper[irow]+1.0e-5)
+                                if(minR[irow] > rowUpper[irow] + 1.0e-5)
                                 {
-                                    notFeasible=1;
-                                    istackC=1;
+                                    notFeasible = 1;
+                                    istackC = 1;
                                     break;
                                 }
                             }
                             else
                             {
                                 /* down does not change - up does */
-                                if (maxR[irow]<1.0e10)
+                                if(maxR[irow] < 1.0e10)
                                     maxR[irow] -= value;
-                                if (maxR[irow]<rowLower[irow]-1.0e-5)
+                                if(maxR[irow] < rowLower[irow] - 1.0e-5)
                                 {
-                                    notFeasible=1;
-                                    istackC=1;
+                                    notFeasible = 1;
+                                    istackC = 1;
                                     break;
                                 }
                             }
                         }
                     }
-                    while (istackC<nstackC&&nstackC<maxStack)
+                    while(istackC < nstackC && nstackC < maxStack)
                     {
                         int jway;
-                        int jcol =stackC[istackC];
-                        jway=markC[jcol];
+                        int jcol = stackC[istackC];
+                        jway = markC[jcol];
                         // If not first and fixed then skip
-                        if (jway==3&&istackC)
+                        if(jway == 3 && istackC)
                         {
                             //istackC++;
                             //continue;
                             //printf("fixed %d on stack\n",jcol);
                         }
                         // Do cliques
-                        if (oneFixStart_&&oneFixStart_[jcol]>=0)
+                        if(oneFixStart_ && oneFixStart_[jcol] >= 0)
                         {
                             int start;
                             int end;
-                            if (colLower[jcol]>saveL[istackC])
+                            if(colLower[jcol] > saveL[istackC])
                             {
                                 // going up
                                 start = oneFixStart_[jcol];
@@ -7467,85 +7467,85 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                             }
                             else
                             {
-                                assert (colUpper[jcol]<saveU[istackC]);
+                                assert(colUpper[jcol] < saveU[istackC]);
                                 // going down
                                 start = zeroFixStart_[jcol];
                                 end = endFixStart_[jcol];
                             }
-                            for (int i=start; i<end; i++)
+                            for(int i = start; i < end; i++)
                             {
                                 int iClique = whichClique_[i];
-                                for (int k=cliqueStart_[iClique]; k<cliqueStart_[iClique+1]; k++)
+                                for(int k = cliqueStart_[iClique]; k < cliqueStart_[iClique + 1]; k++)
                                 {
                                     int kcol = sequenceInCliqueEntry(cliqueEntry_[k]);
-                                    if (jcol==kcol)
+                                    if(jcol == kcol)
                                         continue;
                                     int kway = oneFixesInCliqueEntry(cliqueEntry_[k]);
-                                    if (kcol!=jcol)
+                                    if(kcol != jcol)
                                     {
-                                        if (!markC[kcol])
+                                        if(!markC[kcol])
                                         {
                                             // not on list yet
-                                            if (nstackC<2*maxStack)
+                                            if(nstackC < 2 * maxStack)
                                             {
                                                 markC[kcol] = 3; // say fixed
                                                 fixThis++;
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
                                                 nstackC++;
-                                                if (!kway)
+                                                if(!kway)
                                                 {
                                                     // going up
-                                                    double solMovement=1.0-colsol[kcol];
-                                                    if (solMovement>0.0001)
+                                                    double solMovement = 1.0 - colsol[kcol];
+                                                    if(solMovement > 0.0001)
                                                     {
-                                                        assert (djs[kcol]>=0.0);
-                                                        objVal += djs[kcol]*solMovement;
+                                                        assert(djs[kcol] >= 0.0);
+                                                        objVal += djs[kcol] * solMovement;
                                                     }
-                                                    colLower[kcol]=1.0;
+                                                    colLower[kcol] = 1.0;
                                                     /* update immediately */
-                                                    for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                                    for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                                     {
                                                         krow = row[jj];
                                                         value = columnElements[jj];
-                                                        assert (markR[krow]!=-2);
-                                                        if (markR[krow]==-1)
+                                                        assert(markR[krow] != -2);
+                                                        if(markR[krow] == -1)
                                                         {
-                                                            stackR[nstackR]=krow;
-                                                            markR[krow]=nstackR;
-                                                            saveMin[nstackR]=minR[krow];
-                                                            saveMax[nstackR]=maxR[krow];
+                                                            stackR[nstackR] = krow;
+                                                            markR[krow] = nstackR;
+                                                            saveMin[nstackR] = minR[krow];
+                                                            saveMax[nstackR] = maxR[krow];
                                                             nstackR++;
 #if 0
                                                         }
-                                                        else if (markR[krow]==-2)
+                                                        else if(markR[krow] == -2)
                                                         {
                                                             continue;
 #endif
                                                         }
                                                         /* could check immediately if violation */
                                                         /* up */
-                                                        if (value>0.0)
+                                                        if(value > 0.0)
                                                         {
                                                             /* up does not change - down does */
-                                                            if (minR[krow]>-1.0e10)
+                                                            if(minR[krow] > -1.0e10)
                                                                 minR[krow] += value;
-                                                            if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                            if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                             {
-                                                                colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                                colUpper[kcol] = -1.0e50; /* force infeasible */
                                                                 break;
                                                             }
                                                         }
                                                         else
                                                         {
                                                             /* down does not change - up does */
-                                                            if (maxR[krow]<1.0e10)
+                                                            if(maxR[krow] < 1.0e10)
                                                                 maxR[krow] += value;
-                                                            if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                            if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                             {
-                                                                notFeasible=1;
+                                                                notFeasible = 1;
                                                                 break;
                                                             }
                                                         }
@@ -7554,54 +7554,54 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                                                 else
                                                 {
                                                     // going down
-                                                    double solMovement=0.0-colsol[kcol];
-                                                    if (solMovement<-0.0001)
+                                                    double solMovement = 0.0 - colsol[kcol];
+                                                    if(solMovement < -0.0001)
                                                     {
-                                                        assert (djs[kcol]<=0.0);
-                                                        objVal += djs[kcol]*solMovement;
+                                                        assert(djs[kcol] <= 0.0);
+                                                        objVal += djs[kcol] * solMovement;
                                                     }
-                                                    colUpper[kcol]=0.0;
+                                                    colUpper[kcol] = 0.0;
                                                     /* update immediately */
-                                                    for (int jj =columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                                    for(int jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                                     {
                                                         krow = row[jj];
                                                         value = columnElements[jj];
-                                                        assert (markR[krow]!=-2);
-                                                        if (markR[krow]==-1)
+                                                        assert(markR[krow] != -2);
+                                                        if(markR[krow] == -1)
                                                         {
-                                                            stackR[nstackR]=krow;
-                                                            markR[krow]=nstackR;
-                                                            saveMin[nstackR]=minR[krow];
-                                                            saveMax[nstackR]=maxR[krow];
+                                                            stackR[nstackR] = krow;
+                                                            markR[krow] = nstackR;
+                                                            saveMin[nstackR] = minR[krow];
+                                                            saveMax[nstackR] = maxR[krow];
                                                             nstackR++;
 #if 0
                                                         }
-                                                        else if (markR[krow]==-2)
+                                                        else if(markR[krow] == -2)
                                                         {
                                                             continue;
 #endif
                                                         }
                                                         /* could check immediately if violation */
                                                         /* down */
-                                                        if (value<0.0)
+                                                        if(value < 0.0)
                                                         {
                                                             /* up does not change - down does */
-                                                            if (minR[krow]>-1.0e10)
+                                                            if(minR[krow] > -1.0e10)
                                                                 minR[krow] -= value;
-                                                            if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                            if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                             {
-                                                                notFeasible=1;
+                                                                notFeasible = 1;
                                                                 break;
                                                             }
                                                         }
                                                         else
                                                         {
                                                             /* down does not change - up does */
-                                                            if (maxR[krow]<1.0e10)
+                                                            if(maxR[krow] < 1.0e10)
                                                                 maxR[krow] -= value;
-                                                            if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                            if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                             {
-                                                                notFeasible=1;
+                                                                notFeasible = 1;
                                                                 break;
                                                             }
                                                         }
@@ -7609,422 +7609,422 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                                                 }
                                             }
                                         }
-                                        else if (markC[kcol]==1)
+                                        else if(markC[kcol] == 1)
                                         {
                                             // marked as going to 0
-                                            assert (!colUpper[kcol]);
-                                            if (!kway)
+                                            assert(!colUpper[kcol]);
+                                            if(!kway)
                                             {
                                                 // contradiction
-                                                notFeasible=1;
+                                                notFeasible = 1;
                                                 break;
                                             }
                                         }
-                                        else if (markC[kcol]==2)
+                                        else if(markC[kcol] == 2)
                                         {
                                             // marked as going to 1
-                                            assert (colLower[kcol]);
-                                            if (kway)
+                                            assert(colLower[kcol]);
+                                            if(kway)
                                             {
                                                 // contradiction
-                                                notFeasible=1;
+                                                notFeasible = 1;
                                                 break;
                                             }
                                         }
                                         else
                                         {
                                             // marked as fixed
-                                            assert (markC[kcol]==3);
+                                            assert(markC[kcol] == 3);
                                             int jkway;
-                                            if (colLower[kcol])
-                                                jkway=1;
+                                            if(colLower[kcol])
+                                                jkway = 1;
                                             else
-                                                jkway=0;
-                                            if (kway==jkway)
+                                                jkway = 0;
+                                            if(kway == jkway)
                                             {
                                                 // contradiction
-                                                notFeasible=1;
+                                                notFeasible = 1;
                                                 break;
                                             }
                                         }
                                     }
                                 }
-                                if (notFeasible)
+                                if(notFeasible)
                                     break;
                             }
-                            if (notFeasible)
-                                istackC=nstackC+1;
+                            if(notFeasible)
+                                istackC = nstackC + 1;
                         }
-                        for (k=columnStart[jcol]; k<columnStart[jcol]+columnLength[jcol]; k++)
+                        for(k = columnStart[jcol]; k < columnStart[jcol] + columnLength[jcol]; k++)
                         {
                             // break if found not feasible
-                            if (notFeasible)
+                            if(notFeasible)
                                 break;
                             int irow = row[k];
                             /*value = columnElements[k];*/
-                            assert (markR[irow]!=-2);
+                            assert(markR[irow] != -2);
 #if 0
-                            if (markR[irow]!=-2)
+                            if(markR[irow] != -2)
                             {
 #endif
                                 /* see if anything forced */
-                                for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow]; kk++)
+                                for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow]; kk++)
                                 {
-                                    double moveUp=0.0;
-                                    double moveDown=0.0;
-                                    double newUpper=-1.0,newLower=1.0;
-                                    kcol=column[kk];
-                                    bool onList = (markC[kcol]!=0);
-                                    if (markC[kcol]!=3)
+                                    double moveUp = 0.0;
+                                    double moveDown = 0.0;
+                                    double newUpper = -1.0, newLower = 1.0;
+                                    kcol = column[kk];
+                                    bool onList = (markC[kcol] != 0);
+                                    if(markC[kcol] != 3)
                                     {
-                                        value2=rowElements[kk];
-                                        int markIt=markC[kcol];
-                                        if (value2 < 0.0)
+                                        value2 = rowElements[kk];
+                                        int markIt = markC[kcol];
+                                        if(value2 < 0.0)
                                         {
-                                            if (colUpper[kcol] < 1e10 && (markIt&2)==0 &&
-                                                    rowUpper[irow]<1.0e10)
+                                            if(colUpper[kcol] < 1e10 && (markIt & 2) == 0 &&
+                                                    rowUpper[irow] < 1.0e10)
                                             {
-                                                dbound = colUpper[kcol]+
-                                                         (rowUpper[irow]-minR[irow])/value2;
-                                                if (dbound > colLower[kcol] + primalTolerance_)
+                                                dbound = colUpper[kcol] +
+                                                         (rowUpper[irow] - minR[irow]) / value2;
+                                                if(dbound > colLower[kcol] + primalTolerance_)
                                                 {
-                                                    if (intVar[kcol])
+                                                    if(intVar[kcol])
                                                     {
                                                         markIt |= 2;
-                                                        newLower = ceil(dbound-primalTolerance_);
+                                                        newLower = ceil(dbound - primalTolerance_);
                                                     }
                                                     else
                                                     {
-                                                        newLower=dbound;
-                                                        if (newLower+primalTolerance_>colUpper[kcol]&&
-                                                                newLower-primalTolerance_<=colUpper[kcol])
+                                                        newLower = dbound;
+                                                        if(newLower + primalTolerance_ > colUpper[kcol] &&
+                                                                newLower - primalTolerance_ <= colUpper[kcol])
                                                         {
-                                                            newLower=colUpper[kcol];
+                                                            newLower = colUpper[kcol];
                                                             markIt |= 2;
                                                             //markIt=3;
                                                         }
                                                         else
                                                         {
                                                             // avoid problems - fix later ?
-                                                            markIt=3;
+                                                            markIt = 3;
                                                         }
                                                     }
-                                                    moveUp = newLower-colLower[kcol];
+                                                    moveUp = newLower - colLower[kcol];
                                                 }
                                             }
-                                            if (colLower[kcol] > -1e10 && (markIt&1)==0 &&
-                                                    rowLower[irow]>-1.0e10)
+                                            if(colLower[kcol] > -1e10 && (markIt & 1) == 0 &&
+                                                    rowLower[irow] > -1.0e10)
                                             {
                                                 dbound = colLower[kcol] +
-                                                         (rowLower[irow]-maxR[irow])/value2;
-                                                if (dbound < colUpper[kcol] - primalTolerance_)
+                                                         (rowLower[irow] - maxR[irow]) / value2;
+                                                if(dbound < colUpper[kcol] - primalTolerance_)
                                                 {
-                                                    if (intVar[kcol])
+                                                    if(intVar[kcol])
                                                     {
                                                         markIt |= 1;
-                                                        newUpper = floor(dbound+primalTolerance_);
+                                                        newUpper = floor(dbound + primalTolerance_);
                                                     }
                                                     else
                                                     {
-                                                        newUpper=dbound;
-                                                        if (newUpper-primalTolerance_<colLower[kcol]&&
-                                                                newUpper+primalTolerance_>=colLower[kcol])
+                                                        newUpper = dbound;
+                                                        if(newUpper - primalTolerance_ < colLower[kcol] &&
+                                                                newUpper + primalTolerance_ >= colLower[kcol])
                                                         {
-                                                            newUpper=colLower[kcol];
+                                                            newUpper = colLower[kcol];
                                                             markIt |= 1;
                                                             //markIt=3;
                                                         }
                                                         else
                                                         {
                                                             // avoid problems - fix later ?
-                                                            markIt=3;
+                                                            markIt = 3;
                                                         }
                                                     }
-                                                    moveDown = newUpper-colUpper[kcol];
+                                                    moveDown = newUpper - colUpper[kcol];
                                                 }
                                             }
                                         }
                                         else
                                         {
                                             /* positive element */
-                                            if (colUpper[kcol] < 1e10 && (markIt&2)==0 &&
-                                                    rowLower[irow]>-1.0e10)
+                                            if(colUpper[kcol] < 1e10 && (markIt & 2) == 0 &&
+                                                    rowLower[irow] > -1.0e10)
                                             {
                                                 dbound = colUpper[kcol] +
-                                                         (rowLower[irow]-maxR[irow])/value2;
-                                                if (dbound > colLower[kcol] + primalTolerance_)
+                                                         (rowLower[irow] - maxR[irow]) / value2;
+                                                if(dbound > colLower[kcol] + primalTolerance_)
                                                 {
-                                                    if (intVar[kcol])
+                                                    if(intVar[kcol])
                                                     {
                                                         markIt |= 2;
-                                                        newLower = ceil(dbound-primalTolerance_);
+                                                        newLower = ceil(dbound - primalTolerance_);
                                                     }
                                                     else
                                                     {
-                                                        newLower=dbound;
-                                                        if (newLower+primalTolerance_>colUpper[kcol]&&
-                                                                newLower-primalTolerance_<=colUpper[kcol])
+                                                        newLower = dbound;
+                                                        if(newLower + primalTolerance_ > colUpper[kcol] &&
+                                                                newLower - primalTolerance_ <= colUpper[kcol])
                                                         {
-                                                            newLower=colUpper[kcol];
+                                                            newLower = colUpper[kcol];
                                                             markIt |= 2;
                                                             //markIt=3;
                                                         }
                                                         else
                                                         {
                                                             // avoid problems - fix later ?
-                                                            markIt=3;
+                                                            markIt = 3;
                                                         }
                                                     }
-                                                    moveUp = newLower-colLower[kcol];
+                                                    moveUp = newLower - colLower[kcol];
                                                 }
                                             }
-                                            if (colLower[kcol] > -1e10 && (markIt&1)==0 &&
-                                                    rowUpper[irow]<1.0e10)
+                                            if(colLower[kcol] > -1e10 && (markIt & 1) == 0 &&
+                                                    rowUpper[irow] < 1.0e10)
                                             {
                                                 dbound = colLower[kcol] +
-                                                         (rowUpper[irow]-minR[irow])/value2;
-                                                if (dbound < colUpper[kcol] - primalTolerance_)
+                                                         (rowUpper[irow] - minR[irow]) / value2;
+                                                if(dbound < colUpper[kcol] - primalTolerance_)
                                                 {
-                                                    if (intVar[kcol])
+                                                    if(intVar[kcol])
                                                     {
                                                         markIt |= 1;
-                                                        newUpper = floor(dbound+primalTolerance_);
+                                                        newUpper = floor(dbound + primalTolerance_);
                                                     }
                                                     else
                                                     {
-                                                        newUpper=dbound;
-                                                        if (newUpper-primalTolerance_<colLower[kcol]&&
-                                                                newUpper+primalTolerance_>=colLower[kcol])
+                                                        newUpper = dbound;
+                                                        if(newUpper - primalTolerance_ < colLower[kcol] &&
+                                                                newUpper + primalTolerance_ >= colLower[kcol])
                                                         {
-                                                            newUpper=colLower[kcol];
+                                                            newUpper = colLower[kcol];
                                                             markIt |= 1;
                                                             //markIt=3;
                                                         }
                                                         else
                                                         {
                                                             // avoid problems - fix later ?
-                                                            markIt=3;
+                                                            markIt = 3;
                                                         }
                                                     }
-                                                    moveDown = newUpper-colUpper[kcol];
+                                                    moveDown = newUpper - colUpper[kcol];
                                                 }
                                             }
                                         }
-                                        if (nstackC<2*maxStack)
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             markC[kcol] = markIt;
                                         }
-                                        if (moveUp&&nstackC<2*maxStack)
+                                        if(moveUp && nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
 #ifdef PRINT_DEBUG
-                                            printf("lower bound on %d increased from %g to %g by row %d %g %g\n",kcol,colLower[kcol],newLower,irow,rowLower[irow],rowUpper[irow]);
-                                            value=0.0;
-                                            for (jj=rowStart[irow]; jj<rowStart[irow]+rowLength[irow]; jj++)
+                                            printf("lower bound on %d increased from %g to %g by row %d %g %g\n", kcol, colLower[kcol], newLower, irow, rowLower[irow], rowUpper[irow]);
+                                            value = 0.0;
+                                            for(jj = rowStart[irow]; jj < rowStart[irow] + rowLength[irow]; jj++)
                                             {
-                                                int ii=column[jj];
-                                                if (colUpper[ii]-colLower[ii]>primalTolerance_)
+                                                int ii = column[jj];
+                                                if(colUpper[ii] - colLower[ii] > primalTolerance_)
                                                 {
-                                                    printf("(%d, %g) ",ii,rowElements[jj]);
+                                                    printf("(%d, %g) ", ii, rowElements[jj]);
                                                 }
                                                 else
                                                 {
-                                                    value += rowElements[jj]*colLower[ii];
+                                                    value += rowElements[jj] * colLower[ii];
                                                 }
                                             }
-                                            printf(" - fixed %g\n",value);
-                                            for (jj=rowStart[irow]; jj<rowStart[irow]+rowLength[irow]; jj++)
+                                            printf(" - fixed %g\n", value);
+                                            for(jj = rowStart[irow]; jj < rowStart[irow] + rowLength[irow]; jj++)
                                             {
-                                                int ii=column[jj];
-                                                if (colUpper[ii]-colLower[ii]<primalTolerance_)
+                                                int ii = column[jj];
+                                                if(colUpper[ii] - colLower[ii] < primalTolerance_)
                                                 {
-                                                    printf("(%d, %g, %g) ",ii,rowElements[jj],colLower[ii]);
+                                                    printf("(%d, %g, %g) ", ii, rowElements[jj], colLower[ii]);
                                                 }
                                             }
                                             printf("\n");
 #endif
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newLower>colsol[kcol])
+                                            if(newLower > colsol[kcol])
                                             {
-                                                if (djs[kcol]<0.0)
+                                                if(djs[kcol] < 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (newLower>colUpper[kcol]+primalTolerance_);
+                                                    assert(newLower > colUpper[kcol] + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveUp*djs[kcol];
+                                                    objVal += moveUp * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newLower = CoinMax(colLower[kcol],ceil(newLower-1.0e-4));
-                                            colLower[kcol]=newLower;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newLower = CoinMax(colLower[kcol], ceil(newLower - 1.0e-4));
+                                            colLower[kcol] = newLower;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             /* update immediately */
-                                            for (jj=columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 krow = row[jj];
                                                 value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
 #if 0
                                                 }
-                                                else if (markR[krow]==-2)
+                                                else if(markR[krow] == -2)
                                                 {
                                                     continue;
 #endif
                                                 }
                                                 /* could check immediately if violation */
                                                 /* up */
-                                                if (value>0.0)
+                                                if(value > 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveUp;
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveUp;
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         break;
                                                     }
                                                 }
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveUp;
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveUp;
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (moveDown&&nstackC<2*maxStack)
+                                        if(moveDown && nstackC < 2 * maxStack)
                                         {
                                             fixThis++;
 #ifdef PRINT_DEBUG
-                                            printf("upper bound on %d decreased from %g to %g by row %d %g %g\n",kcol,colUpper[kcol],newUpper,irow,rowLower[irow],rowUpper[irow]);
-                                            value=0.0;
-                                            for (jj=rowStart[irow]; jj<rowStart[irow]+rowLength[irow]; jj++)
+                                            printf("upper bound on %d decreased from %g to %g by row %d %g %g\n", kcol, colUpper[kcol], newUpper, irow, rowLower[irow], rowUpper[irow]);
+                                            value = 0.0;
+                                            for(jj = rowStart[irow]; jj < rowStart[irow] + rowLength[irow]; jj++)
                                             {
-                                                int ii=column[jj];
-                                                if (colUpper[ii]-colLower[ii]>primalTolerance_)
+                                                int ii = column[jj];
+                                                if(colUpper[ii] - colLower[ii] > primalTolerance_)
                                                 {
-                                                    printf("(%d, %g) ",ii,rowElements[jj]);
+                                                    printf("(%d, %g) ", ii, rowElements[jj]);
                                                 }
                                                 else
                                                 {
-                                                    value += rowElements[jj]*colLower[ii];
+                                                    value += rowElements[jj] * colLower[ii];
                                                 }
                                             }
-                                            printf(" - fixed %g\n",value);
-                                            for (jj=rowStart[irow]; jj<rowStart[irow]+rowLength[irow]; jj++)
+                                            printf(" - fixed %g\n", value);
+                                            for(jj = rowStart[irow]; jj < rowStart[irow] + rowLength[irow]; jj++)
                                             {
-                                                int ii=column[jj];
-                                                if (colUpper[ii]-colLower[ii]<primalTolerance_)
+                                                int ii = column[jj];
+                                                if(colUpper[ii] - colLower[ii] < primalTolerance_)
                                                 {
-                                                    printf("(%d, %g, %g) ",ii,rowElements[jj],colLower[ii]);
+                                                    printf("(%d, %g, %g) ", ii, rowElements[jj], colLower[ii]);
                                                 }
                                             }
                                             printf("\n");
 #endif
-                                            if (!onList)
+                                            if(!onList)
                                             {
-                                                stackC[nstackC]=kcol;
-                                                saveL[nstackC]=colLower[kcol];
-                                                saveU[nstackC]=colUpper[kcol];
-                                                assert (saveU[nstackC]>saveL[nstackC]);
+                                                stackC[nstackC] = kcol;
+                                                saveL[nstackC] = colLower[kcol];
+                                                saveU[nstackC] = colUpper[kcol];
+                                                assert(saveU[nstackC] > saveL[nstackC]);
                                                 nstackC++;
-                                                onList=true;
+                                                onList = true;
                                             }
-                                            if (newUpper<colsol[kcol])
+                                            if(newUpper < colsol[kcol])
                                             {
-                                                if (djs[kcol]>0.0)
+                                                if(djs[kcol] > 0.0)
                                                 {
                                                     /* should be infeasible */
-                                                    assert (colLower[kcol]>newUpper+primalTolerance_);
+                                                    assert(colLower[kcol] > newUpper + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    objVal += moveDown*djs[kcol];
+                                                    objVal += moveDown * djs[kcol];
                                                 }
                                             }
-                                            if (intVar[kcol])
-                                                newUpper = CoinMin(colUpper[kcol],floor(newUpper+1.0e-4));
-                                            colUpper[kcol]=newUpper;
-                                            if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                            if(intVar[kcol])
+                                                newUpper = CoinMin(colUpper[kcol], floor(newUpper + 1.0e-4));
+                                            colUpper[kcol] = newUpper;
+                                            if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                             {
-                                                markC[kcol]=3; // say fixed
+                                                markC[kcol] = 3; // say fixed
                                             }
                                             /* update immediately */
-                                            for (jj=columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                            for(jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                             {
                                                 krow = row[jj];
                                                 value = columnElements[jj];
-                                                assert (markR[krow]!=-2);
-                                                if (markR[krow]==-1)
+                                                assert(markR[krow] != -2);
+                                                if(markR[krow] == -1)
                                                 {
-                                                    stackR[nstackR]=krow;
-                                                    markR[krow]=nstackR;
-                                                    saveMin[nstackR]=minR[krow];
-                                                    saveMax[nstackR]=maxR[krow];
+                                                    stackR[nstackR] = krow;
+                                                    markR[krow] = nstackR;
+                                                    saveMin[nstackR] = minR[krow];
+                                                    saveMax[nstackR] = maxR[krow];
                                                     nstackR++;
 #if 0
                                                 }
-                                                else if (markR[krow]==-2)
+                                                else if(markR[krow] == -2)
                                                 {
 #endif
                                                     continue;
                                                 }
                                                 /* could check immediately if violation */
                                                 /* down */
-                                                if (value<0.0)
+                                                if(value < 0.0)
                                                 {
                                                     /* up does not change - down does */
-                                                    if (minR[krow]>-1.0e10)
-                                                        minR[krow] += value*moveDown;
-                                                    if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                    if(minR[krow] > -1.0e10)
+                                                        minR[krow] += value * moveDown;
+                                                    if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         break;
                                                     }
                                                 }
                                                 else
                                                 {
                                                     /* down does not change - up does */
-                                                    if (maxR[krow]<1.0e10)
-                                                        maxR[krow] += value*moveDown;
-                                                    if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                    if(maxR[krow] < 1.0e10)
+                                                        maxR[krow] += value * moveDown;
+                                                    if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                     {
-                                                        colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                        colUpper[kcol] = -1.0e50; /* force infeasible */
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
-                                        if (colLower[kcol]>colUpper[kcol]+primalTolerance_)
+                                        if(colLower[kcol] > colUpper[kcol] + primalTolerance_)
                                         {
-                                            notFeasible=1;;
-                                            k=columnStart[jcol]+columnLength[jcol];
-                                            istackC=nstackC+1;
+                                            notFeasible = 1;;
+                                            k = columnStart[jcol] + columnLength[jcol];
+                                            istackC = nstackC + 1;
 #ifdef PRINT_DEBUG
                                             printf("** not feasible this way\n");
 #endif
@@ -8038,9 +8038,9 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                         }
                         istackC++;
                     }
-                    if (!notFeasible)
+                    if(!notFeasible)
                     {
-                        if (objVal<=cutoff)
+                        if(objVal <= cutoff)
                         {
                             feasible |= feas[iway];
                         }
@@ -8049,88 +8049,88 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
 #ifdef PRINT_DEBUG
                             printf("not feasible on dj\n");
 #endif
-                            notFeasible=1;
-                            if (iway==1&&feasible==0)
+                            notFeasible = 1;
+                            if(iway == 1 && feasible == 0)
                             {
                                 /* not feasible at all */
-                                ninfeas=1;
-                                j=nCols-1;
+                                ninfeas = 1;
+                                j = nCols - 1;
                                 break;
                             }
                         }
                     }
-                    else if (iway==1&&feasible==0)
+                    else if(iway == 1 && feasible == 0)
                     {
                         /* not feasible at all */
-                        ninfeas=1;
-                        j=nCols-1;
-                        iLook=numberThisTime_;
-                        ipass=maxPass;
+                        ninfeas = 1;
+                        j = nCols - 1;
+                        iLook = numberThisTime_;
+                        ipass = maxPass;
                         break;
                     }
-                    if (notFeasible)
-                        goingToTrueBound=0;
-                    if (iway==2||(iway==1&&feasible==2))
+                    if(notFeasible)
+                        goingToTrueBound = 0;
+                    if(iway == 2 || (iway == 1 && feasible == 2))
                     {
                         /* keep */
-                        iway=3;
+                        iway = 3;
                         nfixed++;
-                        if (mode_)
+                        if(mode_)
                         {
                             OsiColCut cc;
-                            int nTot=0,nFix=0,nInt=0;
-                            bool ifCut=false;
-                            for (istackC=0; istackC<nstackC; istackC++)
+                            int nTot = 0, nFix = 0, nInt = 0;
+                            bool ifCut = false;
+                            for(istackC = 0; istackC < nstackC; istackC++)
                             {
-                                int icol=stackC[istackC];
-                                if (intVar[icol])
+                                int icol = stackC[istackC];
+                                if(intVar[icol])
                                 {
-                                    if (colUpper[icol]<currentColUpper[icol]-1.0e-4)
+                                    if(colUpper[icol] < currentColUpper[icol] - 1.0e-4)
                                     {
-                                        element[nFix]=colUpper[icol];
-                                        index[nFix++]=icol;
+                                        element[nFix] = colUpper[icol];
+                                        index[nFix++] = icol;
                                         nInt++;
-                                        if (colsol[icol]>colUpper[icol]+primalTolerance_)
+                                        if(colsol[icol] > colUpper[icol] + primalTolerance_)
                                         {
-                                            ifCut=true;
-                                            anyColumnCuts=true;
+                                            ifCut = true;
+                                            anyColumnCuts = true;
                                         }
                                     }
                                 }
                             }
-                            if (nFix)
+                            if(nFix)
                             {
-                                nTot=nFix;
-                                cc.setUbs(nFix,index,element);
-                                nFix=0;
+                                nTot = nFix;
+                                cc.setUbs(nFix, index, element);
+                                nFix = 0;
                             }
-                            for (istackC=0; istackC<nstackC; istackC++)
+                            for(istackC = 0; istackC < nstackC; istackC++)
                             {
-                                int icol=stackC[istackC];
-                                if (intVar[icol])
+                                int icol = stackC[istackC];
+                                if(intVar[icol])
                                 {
-                                    if (colLower[icol]>currentColLower[icol]+1.0e-4)
+                                    if(colLower[icol] > currentColLower[icol] + 1.0e-4)
                                     {
-                                        element[nFix]=colLower[icol];
-                                        index[nFix++]=icol;
+                                        element[nFix] = colLower[icol];
+                                        index[nFix++] = icol;
                                         nInt++;
-                                        if (colsol[icol]<colLower[icol]-primalTolerance_)
+                                        if(colsol[icol] < colLower[icol] - primalTolerance_)
                                         {
-                                            ifCut=true;
-                                            anyColumnCuts=true;
+                                            ifCut = true;
+                                            anyColumnCuts = true;
                                         }
                                     }
                                 }
                             }
-                            if (nFix)
+                            if(nFix)
                             {
-                                nTot+=nFix;
-                                cc.setLbs(nFix,index,element);
+                                nTot += nFix;
+                                cc.setLbs(nFix, index, element);
                             }
                             // could tighten continuous as well
-                            if (nInt)
+                            if(nInt)
                             {
-                                if (ifCut)
+                                if(ifCut)
                                 {
                                     cc.setEffectiveness(100.0);
                                 }
@@ -8139,71 +8139,71 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                                     cc.setEffectiveness(1.0e-5);
                                 }
 #ifdef CGL_DEBUG
-                                checkBounds(debugger,cc);
+                                checkBounds(debugger, cc);
 #endif
                                 cs.insert(cc);
                             }
                         }
-                        for (istackC=0; istackC<nstackC; istackC++)
+                        for(istackC = 0; istackC < nstackC; istackC++)
                         {
-                            int icol=stackC[istackC];
-                            if (colUpper[icol]-colLower[icol]>primalTolerance_)
+                            int icol = stackC[istackC];
+                            if(colUpper[icol] - colLower[icol] > primalTolerance_)
                             {
-                                markC[icol]=0;
+                                markC[icol] = 0;
                             }
                             else
                             {
-                                markC[icol]=3;
+                                markC[icol] = 3;
                             }
                         }
-                        for (istackR=0; istackR<nstackR; istackR++)
+                        for(istackR = 0; istackR < nstackR; istackR++)
                         {
-                            int irow=stackR[istackR];
-                            markR[irow]=-1;
+                            int irow = stackR[istackR];
+                            markR[irow] = -1;
                         }
                     }
                     else
                     {
                         /* is it worth seeing if can increase coefficients
                            or maybe better see if it is a cut */
-                        if (iway==0)
+                        if(iway == 0)
                         {
-                            nstackC0=CoinMin(nstackC,maxStack);
-                            double solMove = saveSolval-down;
+                            nstackC0 = CoinMin(nstackC, maxStack);
+                            double solMove = saveSolval - down;
                             double boundChange;
-                            if (notFeasible)
+                            if(notFeasible)
                             {
-                                nstackC0=0;
+                                nstackC0 = 0;
                             }
                             else
                             {
-                                for (istackC=0; istackC<nstackC0; istackC++)
+                                for(istackC = 0; istackC < nstackC0; istackC++)
                                 {
-                                    int icol=stackC[istackC];
-                                    stackC0[istackC]=icol;
-                                    lo0[istackC]=colLower[icol];
-                                    up0[istackC]=colUpper[icol];
+                                    int icol = stackC[istackC];
+                                    stackC0[istackC] = icol;
+                                    lo0[istackC] = colLower[icol];
+                                    up0[istackC] = colUpper[icol];
                                 }
                             }
                             /* restore all */
-                            int nCliquesAffected=0;
-                            assert (iway==0);
-                            for (istackC=nstackC-1; istackC>=0; istackC--)
+                            int nCliquesAffected = 0;
+                            assert(iway == 0);
+                            for(istackC = nstackC - 1; istackC >= 0; istackC--)
                             {
-                                int icol=stackC[istackC];
-                                double oldU=saveU[istackC];
-                                double oldL=saveL[istackC];
-                                if(goingToTrueBound==2&&istackC)
+                                int icol = stackC[istackC];
+                                double oldU = saveU[istackC];
+                                double oldL = saveL[istackC];
+                                if(goingToTrueBound == 2 && istackC)
                                 {
                                     // Work for extending cliques
-                                    if (!mode_&&numberCliques_)
+                                    if(!mode_ && numberCliques_)
                                     {
                                         int i_01 = to_01[icol];
-                                        if (i_01>=0)
+                                        if(i_01 >= 0)
                                         {
                                             int start;
                                             int end;
-                                            if (colLower[icol])
+                                            if(colLower[icol])
                                             {
                                                 // going up - but we want weak way
                                                 start = zeroFixStart_[icol];
@@ -8218,14 +8218,14 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                                             //if (end>start)
                                             //printf("j %d, other %d is in %d cliques\n",
                                             //     j,i_01,end-start);
-                                            for (int i=start; i<end; i++)
+                                            for(int i = start; i < end; i++)
                                             {
                                                 int iClique = whichClique_[i];
-                                                int size = cliqueStart_[iClique+1]-cliqueStart_[iClique];
-                                                if (cliqueCount[iClique]==size)
+                                                int size = cliqueStart_[iClique + 1] - cliqueStart_[iClique];
+                                                if(cliqueCount[iClique] == size)
                                                 {
                                                     // first time
-                                                    cliqueStack[nCliquesAffected++]=iClique;
+                                                    cliqueStack[nCliquesAffected++] = iClique;
                                                 }
                                                 // decrement counts
                                                 cliqueCount[iClique]--;
@@ -8234,360 +8234,360 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                                     }
                                     // upper disaggregation cut would be
                                     // xval < upper + (old_upper-upper) (jval-down)
-                                    boundChange = oldU-colUpper[icol];
-                                    if (boundChange>0.0&&oldU<1.0e10&&
-                                            (!mode_||colsol[icol]>colUpper[icol]
-                                             + boundChange*solMove+primalTolerance_))
+                                    boundChange = oldU - colUpper[icol];
+                                    if(boundChange > 0.0 && oldU < 1.0e10 &&
+                                            (!mode_ || colsol[icol] > colUpper[icol]
+                                             + boundChange * solMove + primalTolerance_))
                                     {
                                         // create cut
                                         OsiRowCut rc;
                                         rc.setLb(-COIN_DBL_MAX);
-                                        rc.setUb(colUpper[icol]-down*boundChange);
-                                        index[0]=icol;
-                                        element[0]=1.0;
-                                        index[1]=j;
-                                        element[1]= - boundChange;
+                                        rc.setUb(colUpper[icol] - down * boundChange);
+                                        index[0] = icol;
+                                        element[0] = 1.0;
+                                        index[1] = j;
+                                        element[1] = - boundChange;
                                         // effectiveness is how far j moves
-                                        double newSol = (colsol[icol]-colUpper[icol])/
+                                        double newSol = (colsol[icol] - colUpper[icol]) /
                                                         boundChange;
-                                        if (mode_)
-                                            assert(newSol>solMove);
-                                        rc.setEffectiveness(newSol-solMove);
-                                        if (rc.effectiveness()>disaggEffectiveness)
+                                        if(mode_)
+                                            assert(newSol > solMove);
+                                        rc.setEffectiveness(newSol - solMove);
+                                        if(rc.effectiveness() > disaggEffectiveness)
                                         {
-                                            rc.setRow(2,index,element,false);
+                                            rc.setRow(2, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             rowCut.addCutIfNotDuplicate(rc);
                                         }
                                     }
                                     // lower disaggregation cut would be
                                     // xval > lower + (old_lower-lower) (jval-down)
-                                    boundChange = oldL-colLower[icol];
-                                    if (boundChange<0.0&&oldL>-1.0e10&&
-                                            (!mode_||colsol[icol]<colLower[icol]
-                                             + boundChange*solMove-primalTolerance_))
+                                    boundChange = oldL - colLower[icol];
+                                    if(boundChange < 0.0 && oldL > -1.0e10 &&
+                                            (!mode_ || colsol[icol] < colLower[icol]
+                                             + boundChange * solMove - primalTolerance_))
                                     {
                                         // create cut
                                         OsiRowCut rc;
-                                        rc.setLb(colLower[icol]-down*boundChange);
+                                        rc.setLb(colLower[icol] - down * boundChange);
                                         rc.setUb(COIN_DBL_MAX);
-                                        index[0]=icol;
-                                        element[0]=1.0;
-                                        index[1]=j;
+                                        index[0] = icol;
+                                        element[0] = 1.0;
+                                        index[1] = j;
                                         element[1] = -boundChange;
                                         // effectiveness is how far j moves
-                                        double newSol = (colsol[icol]-colLower[icol])/
+                                        double newSol = (colsol[icol] - colLower[icol]) /
                                                         boundChange;
-                                        if (mode_)
-                                            assert(newSol>solMove);
-                                        rc.setEffectiveness(newSol-solMove);
-                                        if (rc.effectiveness()>disaggEffectiveness)
+                                        if(mode_)
+                                            assert(newSol > solMove);
+                                        rc.setEffectiveness(newSol - solMove);
+                                        if(rc.effectiveness() > disaggEffectiveness)
                                         {
-                                            rc.setRow(2,index,element,false);
+                                            rc.setRow(2, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             rowCut.addCutIfNotDuplicate(rc);
 #if 0
-                                            printf("%d original bounds %g, %g new Lo %g sol= %g int %d sol= %g\n",icol,oldL,oldU,colLower[icol],colsol[icol], j, colsol[j]);
+                                            printf("%d original bounds %g, %g new Lo %g sol= %g int %d sol= %g\n", icol, oldL, oldU, colLower[icol], colsol[icol], j, colsol[j]);
                                             printf("-1.0 * x(%d) + %g * y(%d) <= %g\n",
-                                                   icol,boundChange,j,rc.ub());
+                                                   icol, boundChange, j, rc.ub());
 #endif
                                         }
                                     }
                                 }
-                                colUpper[icol]=oldU;
-                                colLower[icol]=oldL;
-                                markC[icol]=0;
+                                colUpper[icol] = oldU;
+                                colLower[icol] = oldL;
+                                markC[icol] = 0;
                             }
-                            if (nCliquesAffected)
+                            if(nCliquesAffected)
                             {
-                                for (int i=0; i<nCliquesAffected; i++)
+                                for(int i = 0; i < nCliquesAffected; i++)
                                 {
                                     int iClique = cliqueStack[i];
                                     int size = cliqueCount[iClique];
                                     // restore
-                                    cliqueCount[iClique]= cliqueStart_[iClique+1]-cliqueStart_[iClique];
-                                    if (!size)
+                                    cliqueCount[iClique] = cliqueStart_[iClique + 1] - cliqueStart_[iClique];
+                                    if(!size)
                                     {
-                                        if (logLevel_>1)
+                                        if(logLevel_ > 1)
                                             printf("** could extend clique by adding j!\n");
                                     }
                                 }
                             }
-                            for (istackR=0; istackR<nstackR; istackR++)
+                            for(istackR = 0; istackR < nstackR; istackR++)
                             {
-                                int irow=stackR[istackR];
+                                int irow = stackR[istackR];
                                 // switch off strengthening if not wanted
-                                if ((rowCuts&2)!=0&&goingToTrueBound)
+                                if((rowCuts & 2) != 0 && goingToTrueBound)
                                 {
-                                    bool ifCut=anyColumnCuts;
-                                    double gap = rowUpper[irow]-maxR[irow];
-                                    double sum=0.0;
-                                    if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                    bool ifCut = anyColumnCuts;
+                                    double gap = rowUpper[irow] - maxR[irow];
+                                    double sum = 0.0;
+                                    if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                     {
                                         // see if the strengthened row is a cut
-                                        for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                        for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                 kk++)
                                         {
-                                            sum += rowElements[kk]*colsol[column[kk]];
+                                            sum += rowElements[kk] * colsol[column[kk]];
                                         }
-                                        if (sum-gap*colsol[j]>maxR[irow]+primalTolerance_||(info->strengthenRow&&rowLower[irow]<-1.0e20))
+                                        if(sum - gap * colsol[j] > maxR[irow] + primalTolerance_ || (info->strengthenRow && rowLower[irow] < -1.0e20))
                                         {
                                             // can be a cut
                                             // subtract gap from upper and integer coefficient
                                             // saveU and saveL spare
-                                            int * index = reinterpret_cast<int *>(saveL);
-                                            double * element = saveU;
-                                            int n=0;
-                                            bool coefficientExists=false;
-                                            for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                            int* index = reinterpret_cast<int*>(saveL);
+                                            double* element = saveU;
+                                            int n = 0;
+                                            bool coefficientExists = false;
+                                            for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                     kk++)
                                             {
-                                                if (column[kk]!=j)
+                                                if(column[kk] != j)
                                                 {
-                                                    index[n]=column[kk];
-                                                    element[n++]=rowElements[kk];
+                                                    index[n] = column[kk];
+                                                    element[n++] = rowElements[kk];
                                                 }
                                                 else
                                                 {
-                                                    double value=rowElements[kk]-gap;
-                                                    if (fabs(value)>1.0e-12)
+                                                    double value = rowElements[kk] - gap;
+                                                    if(fabs(value) > 1.0e-12)
                                                     {
-                                                        index[n]=column[kk];
-                                                        element[n++]=value;
+                                                        index[n] = column[kk];
+                                                        element[n++] = value;
                                                     }
-                                                    coefficientExists=true;
+                                                    coefficientExists = true;
                                                 }
                                             }
-                                            if (!coefficientExists)
+                                            if(!coefficientExists)
                                             {
-                                                index[n]=j;
-                                                element[n++]=-gap;
+                                                index[n] = j;
+                                                element[n++] = -gap;
                                             }
                                             OsiRowCut rc;
                                             rc.setLb(-COIN_DBL_MAX);
-                                            rc.setUb(rowUpper[irow]-gap*(colLower[j]+1.0));
+                                            rc.setUb(rowUpper[irow] - gap * (colLower[j] + 1.0));
                                             // effectiveness is how far j moves
-                                            rc.setEffectiveness((sum-gap*colsol[j]-maxR[irow])/gap);
-                                            if (rc.effectiveness()>needEffectiveness)
+                                            rc.setEffectiveness((sum - gap * colsol[j] - maxR[irow]) / gap);
+                                            if(rc.effectiveness() > needEffectiveness)
                                             {
-                                                rc.setRow(n,index,element,false);
+                                                rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                                if (debugger) assert(!debugger->invalidCut(rc));
+                                                if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                                 // If strengthenRow point to row
                                                 //if(info->strengthenRow)
                                                 //printf("a point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
-                                                if (rowLower[irow]<-1.0e20)
+                                                if(rowLower[irow] < -1.0e20)
                                                 {
-                                                    printf("5Cut %g <= ",rc.lb());
+                                                    printf("5Cut %g <= ", rc.lb());
                                                     int k;
-                                                    for ( k=0; k<n; k++)
+                                                    for(k = 0; k < n; k++)
                                                     {
                                                         int iColumn = index[k];
-                                                        printf("%g*",element[k]);
-                                                        if (si.isInteger(iColumn))
-                                                            printf("i%d ",iColumn);
+                                                        printf("%g*", element[k]);
+                                                        if(si.isInteger(iColumn))
+                                                            printf("i%d ", iColumn);
                                                         else
-                                                            printf("x%d ",iColumn);
+                                                            printf("x%d ", iColumn);
                                                     }
-                                                    printf("<= %g\n",rc.ub());
-                                                    printf("Row %g <= ",rowLower[irow]);
-                                                    for (k=rowStart[irow]; k<rowStart[irow]+rowLength[irow]; k++)
+                                                    printf("<= %g\n", rc.ub());
+                                                    printf("Row %g <= ", rowLower[irow]);
+                                                    for(k = rowStart[irow]; k < rowStart[irow] + rowLength[irow]; k++)
                                                     {
                                                         int iColumn = column[k];
-                                                        printf("%g*",rowElements[k]);
-                                                        if (si.isInteger(iColumn))
-                                                            printf("i%d ",iColumn);
+                                                        printf("%g*", rowElements[k]);
+                                                        if(si.isInteger(iColumn))
+                                                            printf("i%d ", iColumn);
                                                         else
-                                                            printf("x%d ",iColumn);
+                                                            printf("x%d ", iColumn);
                                                     }
-                                                    printf("<= %g\n",rowUpper[irow]);
+                                                    printf("<= %g\n", rowUpper[irow]);
                                                 }
 #endif
-                                                int realRow = (rowLower[irow]<-1.0e20) ? irow : -1;
-                                                if (realRows&&realRow>0)
-                                                    realRow=realRows[realRow];
-                                                rowCut.addCutIfNotDuplicate(rc,realRow);
+                                                int realRow = (rowLower[irow] < -1.0e20) ? irow : -1;
+                                                if(realRows && realRow > 0)
+                                                    realRow = realRows[realRow];
+                                                rowCut.addCutIfNotDuplicate(rc, realRow);
                                             }
                                         }
                                     }
-                                    gap = minR[irow]-rowLower[irow];
-                                    if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                    gap = minR[irow] - rowLower[irow];
+                                    if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                     {
                                         // see if the strengthened row is a cut
-                                        if (!sum)
+                                        if(!sum)
                                         {
-                                            for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                            for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                     kk++)
                                             {
-                                                sum += rowElements[kk]*colsol[column[kk]];
+                                                sum += rowElements[kk] * colsol[column[kk]];
                                             }
                                         }
-                                        if (sum+gap*colsol[j]<minR[irow]+primalTolerance_||(info->strengthenRow&&rowUpper[irow]>1.0e20))
+                                        if(sum + gap * colsol[j] < minR[irow] + primalTolerance_ || (info->strengthenRow && rowUpper[irow] > 1.0e20))
                                         {
                                             // can be a cut
                                             // add gap to lower and integer coefficient
                                             // saveU and saveL spare
-                                            int * index = reinterpret_cast<int *>(saveL);
-                                            double * element = saveU;
-                                            int n=0;
-                                            bool coefficientExists=false;
-                                            for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                            int* index = reinterpret_cast<int*>(saveL);
+                                            double* element = saveU;
+                                            int n = 0;
+                                            bool coefficientExists = false;
+                                            for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                     kk++)
                                             {
-                                                if (column[kk]!=j)
+                                                if(column[kk] != j)
                                                 {
-                                                    index[n]=column[kk];
-                                                    element[n++]=rowElements[kk];
+                                                    index[n] = column[kk];
+                                                    element[n++] = rowElements[kk];
                                                 }
                                                 else
                                                 {
-                                                    double value=rowElements[kk]+gap;
-                                                    if (fabs(value)>1.0e-12)
+                                                    double value = rowElements[kk] + gap;
+                                                    if(fabs(value) > 1.0e-12)
                                                     {
-                                                        index[n]=column[kk];
-                                                        element[n++]=value;
+                                                        index[n] = column[kk];
+                                                        element[n++] = value;
                                                     }
-                                                    coefficientExists=true;
+                                                    coefficientExists = true;
                                                 }
                                             }
-                                            if (!coefficientExists)
+                                            if(!coefficientExists)
                                             {
-                                                index[n]=j;
-                                                element[n++]=gap;
+                                                index[n] = j;
+                                                element[n++] = gap;
                                             }
                                             OsiRowCut rc;
-                                            rc.setLb(rowLower[irow]+gap*(colLower[j]+1.0));
+                                            rc.setLb(rowLower[irow] + gap * (colLower[j] + 1.0));
                                             rc.setUb(COIN_DBL_MAX);
                                             // effectiveness is how far j moves
-                                            rc.setEffectiveness((minR[irow]-sum-gap*colsol[j])/gap);
-                                            if (rc.effectiveness()>needEffectiveness)
+                                            rc.setEffectiveness((minR[irow] - sum - gap * colsol[j]) / gap);
+                                            if(rc.effectiveness() > needEffectiveness)
                                             {
-                                                rc.setRow(n,index,element,false);
+                                                rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                                if (debugger) assert(!debugger->invalidCut(rc));
+                                                if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                                 //if(info->strengthenRow)
                                                 //printf("b point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
-                                                if (rowUpper[irow]>1.0e20)
+                                                if(rowUpper[irow] > 1.0e20)
                                                 {
-                                                    printf("6Cut %g <= ",rc.lb());
+                                                    printf("6Cut %g <= ", rc.lb());
                                                     int k;
-                                                    for ( k=0; k<n; k++)
+                                                    for(k = 0; k < n; k++)
                                                     {
                                                         int iColumn = index[k];
-                                                        printf("%g*",element[k]);
-                                                        if (si.isInteger(iColumn))
-                                                            printf("i%d ",iColumn);
+                                                        printf("%g*", element[k]);
+                                                        if(si.isInteger(iColumn))
+                                                            printf("i%d ", iColumn);
                                                         else
-                                                            printf("x%d ",iColumn);
+                                                            printf("x%d ", iColumn);
                                                     }
-                                                    printf("<= %g\n",rc.ub());
-                                                    printf("Row %g <= ",rowLower[irow]);
-                                                    for (k=rowStart[irow]; k<rowStart[irow]+rowLength[irow]; k++)
+                                                    printf("<= %g\n", rc.ub());
+                                                    printf("Row %g <= ", rowLower[irow]);
+                                                    for(k = rowStart[irow]; k < rowStart[irow] + rowLength[irow]; k++)
                                                     {
                                                         int iColumn = column[k];
-                                                        printf("%g*",rowElements[k]);
-                                                        if (si.isInteger(iColumn))
-                                                            printf("i%d ",iColumn);
+                                                        printf("%g*", rowElements[k]);
+                                                        if(si.isInteger(iColumn))
+                                                            printf("i%d ", iColumn);
                                                         else
-                                                            printf("x%d ",iColumn);
+                                                            printf("x%d ", iColumn);
                                                     }
-                                                    printf("<= %g\n",rowUpper[irow]);
+                                                    printf("<= %g\n", rowUpper[irow]);
                                                 }
 #endif
-                                                int realRow = (rowUpper[irow]>1.0e20) ? irow : -1;
-                                                if (realRows&&realRow>0)
-                                                    realRow=realRows[realRow];
-                                                rowCut.addCutIfNotDuplicate(rc,realRow);
+                                                int realRow = (rowUpper[irow] > 1.0e20) ? irow : -1;
+                                                if(realRows && realRow > 0)
+                                                    realRow = realRows[realRow];
+                                                rowCut.addCutIfNotDuplicate(rc, realRow);
                                             }
                                         }
                                     }
                                 }
-                                minR[irow]=saveMin[istackR];
-                                maxR[irow]=saveMax[istackR];
-                                markR[irow]=-1;
+                                minR[irow] = saveMin[istackR];
+                                maxR[irow] = saveMax[istackR];
+                                markR[irow] = -1;
                             }
                         }
                         else
                         {
-                            if (iway==1&&feasible==3)
+                            if(iway == 1 && feasible == 3)
                             {
-                                iway=3;
+                                iway = 3;
                                 /* point back to stack */
-                                for (istackC=nstackC-1; istackC>=0; istackC--)
+                                for(istackC = nstackC - 1; istackC >= 0; istackC--)
                                 {
-                                    int icol=stackC[istackC];
-                                    markC[icol]=istackC+1000;
+                                    int icol = stackC[istackC];
+                                    markC[icol] = istackC + 1000;
                                 }
-                                if (mode_)
+                                if(mode_)
                                 {
                                     OsiColCut cc;
-                                    int nTot=0,nFix=0,nInt=0;
-                                    bool ifCut=false;
-                                    for (istackC=0; istackC<nstackC0; istackC++)
+                                    int nTot = 0, nFix = 0, nInt = 0;
+                                    bool ifCut = false;
+                                    for(istackC = 0; istackC < nstackC0; istackC++)
                                     {
-                                        int icol=stackC0[istackC];
-                                        int istackC1=markC[icol]-1000;
-                                        if (istackC1>=0)
+                                        int icol = stackC0[istackC];
+                                        int istackC1 = markC[icol] - 1000;
+                                        if(istackC1 >= 0)
                                         {
-                                            if (CoinMin(lo0[istackC],colLower[icol])>saveL[istackC1]+1.0e-4)
+                                            if(CoinMin(lo0[istackC], colLower[icol]) > saveL[istackC1] + 1.0e-4)
                                             {
-                                                saveL[istackC1]=CoinMin(lo0[istackC],colLower[icol]);
-                                                if (intVar[icol])
+                                                saveL[istackC1] = CoinMin(lo0[istackC], colLower[icol]);
+                                                if(intVar[icol])
                                                 {
-                                                    element[nFix]=saveL[istackC1];
-                                                    index[nFix++]=icol;
+                                                    element[nFix] = saveL[istackC1];
+                                                    index[nFix++] = icol;
                                                     nInt++;
-                                                    if (colsol[icol]<saveL[istackC1]-primalTolerance_)
-                                                        ifCut=true;
+                                                    if(colsol[icol] < saveL[istackC1] - primalTolerance_)
+                                                        ifCut = true;
                                                 }
                                                 nfixed++;
                                             }
                                         }
                                     }
-                                    if (nFix)
+                                    if(nFix)
                                     {
-                                        nTot=nFix;
-                                        cc.setLbs(nFix,index,element);
-                                        nFix=0;
+                                        nTot = nFix;
+                                        cc.setLbs(nFix, index, element);
+                                        nFix = 0;
                                     }
-                                    for (istackC=0; istackC<nstackC0; istackC++)
+                                    for(istackC = 0; istackC < nstackC0; istackC++)
                                     {
-                                        int icol=stackC0[istackC];
-                                        int istackC1=markC[icol]-1000;
-                                        if (istackC1>=0)
+                                        int icol = stackC0[istackC];
+                                        int istackC1 = markC[icol] - 1000;
+                                        if(istackC1 >= 0)
                                         {
-                                            if (CoinMax(up0[istackC],colUpper[icol])<saveU[istackC1]-1.0e-4)
+                                            if(CoinMax(up0[istackC], colUpper[icol]) < saveU[istackC1] - 1.0e-4)
                                             {
-                                                saveU[istackC1]=CoinMax(up0[istackC],colUpper[icol]);
-                                                if (intVar[icol])
+                                                saveU[istackC1] = CoinMax(up0[istackC], colUpper[icol]);
+                                                if(intVar[icol])
                                                 {
-                                                    element[nFix]=saveU[istackC1];
-                                                    index[nFix++]=icol;
+                                                    element[nFix] = saveU[istackC1];
+                                                    index[nFix++] = icol;
                                                     nInt++;
-                                                    if (colsol[icol]>saveU[istackC1]+primalTolerance_)
-                                                        ifCut=true;
+                                                    if(colsol[icol] > saveU[istackC1] + primalTolerance_)
+                                                        ifCut = true;
                                                 }
                                                 nfixed++;
                                             }
                                         }
                                     }
-                                    if (nFix)
+                                    if(nFix)
                                     {
-                                        nTot+=nFix;
-                                        cc.setUbs(nFix,index,element);
+                                        nTot += nFix;
+                                        cc.setUbs(nFix, index, element);
                                     }
                                     // could tighten continuous as well
-                                    if (nInt)
+                                    if(nInt)
                                     {
-                                        if (ifCut)
+                                        if(ifCut)
                                         {
                                             cc.setEffectiveness(100.0);
                                         }
@@ -8596,7 +8596,7 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                                             cc.setEffectiveness(1.0e-5);
                                         }
 #ifdef CGL_DEBUG
-                                        checkBounds(debugger,cc);
+                                        checkBounds(debugger, cc);
 #endif
                                         cs.insert(cc);
                                     }
@@ -8604,28 +8604,28 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                             }
                             else
                             {
-                                goingToTrueBound=0;
+                                goingToTrueBound = 0;
                             }
-                            double solMove = up-saveSolval;
+                            double solMove = up - saveSolval;
                             double boundChange;
                             /* restore all */
-                            int nCliquesAffected=0;
-                            for (istackC=nstackC-1; istackC>=0; istackC--)
+                            int nCliquesAffected = 0;
+                            for(istackC = nstackC - 1; istackC >= 0; istackC--)
                             {
-                                int icol=stackC[istackC];
-                                double oldU=saveU[istackC];
-                                double oldL=saveL[istackC];
-                                if(goingToTrueBound==2&&istackC)
+                                int icol = stackC[istackC];
+                                double oldU = saveU[istackC];
+                                double oldL = saveL[istackC];
+                                if(goingToTrueBound == 2 && istackC)
                                 {
                                     // Work for extending cliques
-                                    if (!mode_&&numberCliques_&&iway==3)
+                                    if(!mode_ && numberCliques_ && iway == 3)
                                     {
                                         int i_01 = to_01[icol];
-                                        if (i_01>=0)
+                                        if(i_01 >= 0)
                                         {
                                             int start;
                                             int end;
-                                            if (colLower[icol])
+                                            if(colLower[icol])
                                             {
                                                 // going up - but we want weak way
                                                 start = zeroFixStart_[icol];
@@ -8640,14 +8640,14 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                                             //if (end>start)
                                             //printf("up j %d, other %d is in %d cliques\n",
                                             //     j,i_01,end-start);
-                                            for (int i=start; i<end; i++)
+                                            for(int i = start; i < end; i++)
                                             {
                                                 int iClique = whichClique_[i];
-                                                int size = cliqueStart_[iClique+1]-cliqueStart_[iClique];
-                                                if (cliqueCount[iClique]==size)
+                                                int size = cliqueStart_[iClique + 1] - cliqueStart_[iClique];
+                                                if(cliqueCount[iClique] == size)
                                                 {
                                                     // first time
-                                                    cliqueStack[nCliquesAffected++]=iClique;
+                                                    cliqueStack[nCliquesAffected++] = iClique;
                                                 }
                                                 // decrement counts
                                                 cliqueCount[iClique]--;
@@ -8656,282 +8656,282 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
                                     }
                                     // upper disaggregation cut would be
                                     // xval < upper + (old_upper-upper) (up-jval)
-                                    boundChange = oldU-colUpper[icol];
-                                    if (boundChange>0.0&&oldU<1.0e10&&
-                                            (!mode_||colsol[icol]>colUpper[icol]
-                                             + boundChange*solMove+primalTolerance_))
+                                    boundChange = oldU - colUpper[icol];
+                                    if(boundChange > 0.0 && oldU < 1.0e10 &&
+                                            (!mode_ || colsol[icol] > colUpper[icol]
+                                             + boundChange * solMove + primalTolerance_))
                                     {
                                         // create cut
                                         OsiRowCut rc;
                                         rc.setLb(-COIN_DBL_MAX);
-                                        rc.setUb(colUpper[icol]+up*boundChange);
-                                        index[0]=icol;
-                                        element[0]=1.0;
-                                        index[1]=j;
-                                        element[1]= + boundChange;
+                                        rc.setUb(colUpper[icol] + up * boundChange);
+                                        index[0] = icol;
+                                        element[0] = 1.0;
+                                        index[1] = j;
+                                        element[1] = + boundChange;
                                         // effectiveness is how far j moves
-                                        double newSol = (colsol[icol]-colUpper[icol])/
+                                        double newSol = (colsol[icol] - colUpper[icol]) /
                                                         boundChange;
-                                        if (mode_)
-                                            assert(newSol>solMove);
-                                        rc.setEffectiveness(newSol-solMove);
-                                        if (rc.effectiveness()>disaggEffectiveness)
+                                        if(mode_)
+                                            assert(newSol > solMove);
+                                        rc.setEffectiveness(newSol - solMove);
+                                        if(rc.effectiveness() > disaggEffectiveness)
                                         {
-                                            rc.setRow(2,index,element,false);
+                                            rc.setRow(2, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             rowCut.addCutIfNotDuplicate(rc);
                                         }
                                     }
                                     // lower disaggregation cut would be
                                     // xval > lower + (old_lower-lower) (up-jval)
-                                    boundChange = oldL-colLower[icol];
-                                    if (boundChange<0.0&&oldL>-1.0e10&&
-                                            (!mode_||colsol[icol]<colLower[icol]
-                                             + boundChange*solMove-primalTolerance_))
+                                    boundChange = oldL - colLower[icol];
+                                    if(boundChange < 0.0 && oldL > -1.0e10 &&
+                                            (!mode_ || colsol[icol] < colLower[icol]
+                                             + boundChange * solMove - primalTolerance_))
                                     {
                                         // create cut
                                         OsiRowCut rc;
-                                        rc.setLb(colLower[icol]+up*boundChange);
+                                        rc.setLb(colLower[icol] + up * boundChange);
                                         rc.setUb(COIN_DBL_MAX);
-                                        index[0]=icol;
-                                        element[0]=1.0;
-                                        index[1]=j;
-                                        element[1]= + boundChange;
+                                        index[0] = icol;
+                                        element[0] = 1.0;
+                                        index[1] = j;
+                                        element[1] = + boundChange;
                                         // effectiveness is how far j moves
-                                        double newSol = (colsol[icol]-colLower[icol])/
+                                        double newSol = (colsol[icol] - colLower[icol]) /
                                                         boundChange;
-                                        if (mode_)
-                                            assert(newSol>solMove);
-                                        rc.setEffectiveness(newSol-solMove);
-                                        if (rc.effectiveness()>disaggEffectiveness)
+                                        if(mode_)
+                                            assert(newSol > solMove);
+                                        rc.setEffectiveness(newSol - solMove);
+                                        if(rc.effectiveness() > disaggEffectiveness)
                                         {
-                                            rc.setRow(2,index,element,false);
+                                            rc.setRow(2, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             rowCut.addCutIfNotDuplicate(rc);
                                         }
                                     }
                                 }
-                                colUpper[icol]=oldU;
-                                colLower[icol]=oldL;
-                                if (oldU>oldL+1.0e-4)
-                                    markC[icol]=0;
+                                colUpper[icol] = oldU;
+                                colLower[icol] = oldL;
+                                if(oldU > oldL + 1.0e-4)
+                                    markC[icol] = 0;
                                 else
-                                    markC[icol]=3;
+                                    markC[icol] = 3;
                             }
-                            if (nCliquesAffected)
+                            if(nCliquesAffected)
                             {
-                                for (int i=0; i<nCliquesAffected; i++)
+                                for(int i = 0; i < nCliquesAffected; i++)
                                 {
                                     int iClique = cliqueStack[i];
                                     int size = cliqueCount[iClique];
                                     // restore
-                                    cliqueCount[iClique]= cliqueStart_[iClique+1]-cliqueStart_[iClique];
-                                    if (!size)
+                                    cliqueCount[iClique] = cliqueStart_[iClique + 1] - cliqueStart_[iClique];
+                                    if(!size)
                                     {
-                                        if (logLevel_>1)
+                                        if(logLevel_ > 1)
                                             printf("** could extend clique by adding j!\n");
                                     }
                                 }
                             }
-                            for (istackR=0; istackR<nstackR; istackR++)
+                            for(istackR = 0; istackR < nstackR; istackR++)
                             {
-                                int irow=stackR[istackR];
+                                int irow = stackR[istackR];
                                 // switch off strengthening if not wanted
-                                if ((rowCuts&2)!=0&&goingToTrueBound)
+                                if((rowCuts & 2) != 0 && goingToTrueBound)
                                 {
-                                    bool ifCut=anyColumnCuts;
-                                    double gap = rowUpper[irow]-maxR[irow];
-                                    double sum=0.0;
-                                    if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                    bool ifCut = anyColumnCuts;
+                                    double gap = rowUpper[irow] - maxR[irow];
+                                    double sum = 0.0;
+                                    if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                     {
                                         // see if the strengthened row is a cut
-                                        for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                        for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                 kk++)
                                         {
-                                            sum += rowElements[kk]*colsol[column[kk]];
+                                            sum += rowElements[kk] * colsol[column[kk]];
                                         }
-                                        if (sum+gap*colsol[j]>rowUpper[irow]+primalTolerance_||(info->strengthenRow&&rowLower[irow]<-1.0e20))
+                                        if(sum + gap * colsol[j] > rowUpper[irow] + primalTolerance_ || (info->strengthenRow && rowLower[irow] < -1.0e20))
                                         {
                                             // can be a cut
                                             // add gap to integer coefficient
                                             // saveU and saveL spare
-                                            int * index = reinterpret_cast<int *>(saveL);
-                                            double * element = saveU;
-                                            int n=0;
-                                            bool coefficientExists=false;
-                                            for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                            int* index = reinterpret_cast<int*>(saveL);
+                                            double* element = saveU;
+                                            int n = 0;
+                                            bool coefficientExists = false;
+                                            for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                     kk++)
                                             {
-                                                if (column[kk]!=j)
+                                                if(column[kk] != j)
                                                 {
-                                                    index[n]=column[kk];
-                                                    element[n++]=rowElements[kk];
+                                                    index[n] = column[kk];
+                                                    element[n++] = rowElements[kk];
                                                 }
                                                 else
                                                 {
-                                                    double value=rowElements[kk]+gap;
-                                                    if (fabs(value)>1.0e-12)
+                                                    double value = rowElements[kk] + gap;
+                                                    if(fabs(value) > 1.0e-12)
                                                     {
-                                                        index[n]=column[kk];
-                                                        element[n++]=value;
+                                                        index[n] = column[kk];
+                                                        element[n++] = value;
                                                     }
-                                                    coefficientExists=true;
+                                                    coefficientExists = true;
                                                 }
                                             }
-                                            if (!coefficientExists)
+                                            if(!coefficientExists)
                                             {
-                                                index[n]=j;
-                                                element[n++]=gap;
+                                                index[n] = j;
+                                                element[n++] = gap;
                                             }
                                             OsiRowCut rc;
                                             rc.setLb(-COIN_DBL_MAX);
-                                            rc.setUb(rowUpper[irow]+gap*(colUpper[j]-1.0));
+                                            rc.setUb(rowUpper[irow] + gap * (colUpper[j] - 1.0));
                                             // effectiveness is how far j moves
-                                            rc.setEffectiveness((sum+gap*colsol[j]-rowUpper[irow])/gap);
-                                            if (rc.effectiveness()>needEffectiveness)
+                                            rc.setEffectiveness((sum + gap * colsol[j] - rowUpper[irow]) / gap);
+                                            if(rc.effectiveness() > needEffectiveness)
                                             {
-                                                rc.setRow(n,index,element,false);
+                                                rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                                if (debugger) assert(!debugger->invalidCut(rc));
+                                                if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                                 //if(info->strengthenRow)
                                                 //printf("c point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
-                                                if (rowLower[irow]<-1.0e20)
+                                                if(rowLower[irow] < -1.0e20)
                                                 {
-                                                    printf("7Cut %g <= ",rc.lb());
+                                                    printf("7Cut %g <= ", rc.lb());
                                                     int k;
-                                                    for ( k=0; k<n; k++)
+                                                    for(k = 0; k < n; k++)
                                                     {
                                                         int iColumn = index[k];
-                                                        printf("%g*",element[k]);
-                                                        if (si.isInteger(iColumn))
-                                                            printf("i%d ",iColumn);
+                                                        printf("%g*", element[k]);
+                                                        if(si.isInteger(iColumn))
+                                                            printf("i%d ", iColumn);
                                                         else
-                                                            printf("x%d ",iColumn);
+                                                            printf("x%d ", iColumn);
                                                     }
-                                                    printf("<= %g\n",rc.ub());
-                                                    printf("Row %g <= ",rowLower[irow]);
-                                                    for (k=rowStart[irow]; k<rowStart[irow]+rowLength[irow]; k++)
+                                                    printf("<= %g\n", rc.ub());
+                                                    printf("Row %g <= ", rowLower[irow]);
+                                                    for(k = rowStart[irow]; k < rowStart[irow] + rowLength[irow]; k++)
                                                     {
                                                         int iColumn = column[k];
-                                                        printf("%g*",rowElements[k]);
-                                                        if (si.isInteger(iColumn))
-                                                            printf("i%d ",iColumn);
+                                                        printf("%g*", rowElements[k]);
+                                                        if(si.isInteger(iColumn))
+                                                            printf("i%d ", iColumn);
                                                         else
-                                                            printf("x%d ",iColumn);
+                                                            printf("x%d ", iColumn);
                                                     }
-                                                    printf("<= %g\n",rowUpper[irow]);
+                                                    printf("<= %g\n", rowUpper[irow]);
                                                 }
 #endif
-                                                int realRow = (rowLower[irow]<-1.0e20) ? irow : -1;
-                                                if (realRows&&realRow>0)
-                                                    realRow=realRows[realRow];
-                                                rowCut.addCutIfNotDuplicate(rc,realRow);
+                                                int realRow = (rowLower[irow] < -1.0e20) ? irow : -1;
+                                                if(realRows && realRow > 0)
+                                                    realRow = realRows[realRow];
+                                                rowCut.addCutIfNotDuplicate(rc, realRow);
                                             }
                                         }
                                     }
-                                    gap = minR[irow]-rowLower[irow];
-                                    if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                    gap = minR[irow] - rowLower[irow];
+                                    if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                     {
                                         // see if the strengthened row is a cut
-                                        if (!sum)
+                                        if(!sum)
                                         {
-                                            for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                            for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                     kk++)
                                             {
-                                                sum += rowElements[kk]*colsol[column[kk]];
+                                                sum += rowElements[kk] * colsol[column[kk]];
                                             }
                                         }
-                                        if (sum-gap*colsol[j]<rowLower[irow]+primalTolerance_||(info->strengthenRow&&rowUpper[irow]>1.0e20))
+                                        if(sum - gap * colsol[j] < rowLower[irow] + primalTolerance_ || (info->strengthenRow && rowUpper[irow] > 1.0e20))
                                         {
                                             // can be a cut
                                             // subtract gap from integer coefficient
                                             // saveU and saveL spare
-                                            int * index = reinterpret_cast<int *>(saveL);
-                                            double * element = saveU;
-                                            int n=0;
-                                            bool coefficientExists=false;
-                                            for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                            int* index = reinterpret_cast<int*>(saveL);
+                                            double* element = saveU;
+                                            int n = 0;
+                                            bool coefficientExists = false;
+                                            for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                     kk++)
                                             {
-                                                if (column[kk]!=j)
+                                                if(column[kk] != j)
                                                 {
-                                                    index[n]=column[kk];
-                                                    element[n++]=rowElements[kk];
+                                                    index[n] = column[kk];
+                                                    element[n++] = rowElements[kk];
                                                 }
                                                 else
                                                 {
-                                                    double value=rowElements[kk]-gap;
-                                                    if (fabs(value)>1.0e-12)
+                                                    double value = rowElements[kk] - gap;
+                                                    if(fabs(value) > 1.0e-12)
                                                     {
-                                                        index[n]=column[kk];
-                                                        element[n++]=value;
+                                                        index[n] = column[kk];
+                                                        element[n++] = value;
                                                     }
-                                                    coefficientExists=true;
+                                                    coefficientExists = true;
                                                 }
                                             }
-                                            if (!coefficientExists)
+                                            if(!coefficientExists)
                                             {
-                                                index[n]=j;
-                                                element[n++]=-gap;
+                                                index[n] = j;
+                                                element[n++] = -gap;
                                             }
                                             OsiRowCut rc;
-                                            rc.setLb(rowLower[irow]-gap*(colUpper[j]-1));
+                                            rc.setLb(rowLower[irow] - gap * (colUpper[j] - 1));
                                             rc.setUb(COIN_DBL_MAX);
                                             // effectiveness is how far j moves
-                                            rc.setEffectiveness((rowLower[irow]-sum+gap*colsol[j])/gap);
-                                            if (rc.effectiveness()>needEffectiveness)
+                                            rc.setEffectiveness((rowLower[irow] - sum + gap * colsol[j]) / gap);
+                                            if(rc.effectiveness() > needEffectiveness)
                                             {
-                                                rc.setRow(n,index,element,false);
+                                                rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                                if (debugger) assert(!debugger->invalidCut(rc));
+                                                if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                                 //if(info->strengthenRow)
                                                 //printf("d point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
-                                                if (rowUpper[irow]>1.0e20)
+                                                if(rowUpper[irow] > 1.0e20)
                                                 {
-                                                    printf("8Cut %g <= ",rc.lb());
+                                                    printf("8Cut %g <= ", rc.lb());
                                                     int k;
-                                                    for ( k=0; k<n; k++)
+                                                    for(k = 0; k < n; k++)
                                                     {
                                                         int iColumn = index[k];
-                                                        printf("%g*",element[k]);
-                                                        if (si.isInteger(iColumn))
-                                                            printf("i%d ",iColumn);
+                                                        printf("%g*", element[k]);
+                                                        if(si.isInteger(iColumn))
+                                                            printf("i%d ", iColumn);
                                                         else
-                                                            printf("x%d ",iColumn);
+                                                            printf("x%d ", iColumn);
                                                     }
-                                                    printf("<= %g\n",rc.ub());
-                                                    printf("Row %g <= ",rowLower[irow]);
-                                                    for (k=rowStart[irow]; k<rowStart[irow]+rowLength[irow]; k++)
+                                                    printf("<= %g\n", rc.ub());
+                                                    printf("Row %g <= ", rowLower[irow]);
+                                                    for(k = rowStart[irow]; k < rowStart[irow] + rowLength[irow]; k++)
                                                     {
                                                         int iColumn = column[k];
-                                                        printf("%g*",rowElements[k]);
-                                                        if (si.isInteger(iColumn))
-                                                            printf("i%d ",iColumn);
+                                                        printf("%g*", rowElements[k]);
+                                                        if(si.isInteger(iColumn))
+                                                            printf("i%d ", iColumn);
                                                         else
-                                                            printf("x%d ",iColumn);
+                                                            printf("x%d ", iColumn);
                                                     }
-                                                    printf("<= %g\n",rowUpper[irow]);
+                                                    printf("<= %g\n", rowUpper[irow]);
                                                 }
 #endif
-                                                int realRow = (rowUpper[irow]>1.0e20) ? irow : -1;
-                                                if (realRows&&realRow>0)
-                                                    realRow=realRows[realRow];
-                                                rowCut.addCutIfNotDuplicate(rc,realRow);
+                                                int realRow = (rowUpper[irow] > 1.0e20) ? irow : -1;
+                                                if(realRows && realRow > 0)
+                                                    realRow = realRows[realRow];
+                                                rowCut.addCutIfNotDuplicate(rc, realRow);
                                             }
                                         }
                                     }
                                 }
-                                minR[irow]=saveMin[istackR];
-                                maxR[irow]=saveMax[istackR];
-                                markR[irow]=-1;
+                                minR[irow] = saveMin[istackR];
+                                maxR[irow] = saveMax[istackR];
+                                markR[irow] = -1;
                             }
                         }
                     }
@@ -8959,246 +8959,246 @@ int CglProbing::probeCliques( const OsiSolverInterface & si,
     delete [] djs;
     delete [] colsol;
     // Add in row cuts
-    if (!ninfeas)
+    if(!ninfeas)
     {
-        rowCut.addCuts(cs,info->strengthenRow,0);
+        rowCut.addCuts(cs, info->strengthenRow, 0);
     }
     return (ninfeas);
 }
 // Does probing and adding cuts for clique slacks
 int
-CglProbing::probeSlacks( const OsiSolverInterface & si,
-                         const OsiRowCutDebugger *
+CglProbing::probeSlacks(const OsiSolverInterface & si,
+                        const OsiRowCutDebugger *
 #ifdef CGL_DEBUG
-                         debugger
+                        debugger
 #endif
-                         ,OsiCuts & cs,
-                         double * colLower, double * colUpper, CoinPackedMatrix *rowCopy,
-                         CoinPackedMatrix *columnCopy,
-                         double * rowLower, double * rowUpper,
-                         char * intVar, double * minR, double * maxR,int * markR,
-                         CglTreeInfo * info) const
+                        , OsiCuts & cs,
+                        double* colLower, double* colUpper, CoinPackedMatrix* rowCopy,
+                        CoinPackedMatrix* columnCopy,
+                        double* rowLower, double* rowUpper,
+                        char* intVar, double* minR, double* maxR, int* markR,
+                        CglTreeInfo* info) const
 {
-    if (!numberCliques_)
+    if(!numberCliques_)
         return 0;
     // Set up maxes
     int maxProbe = info->inTree ? maxProbe_ : maxProbeRoot_;
     int maxStack = info->inTree ? maxStack_ : maxStackRoot_;
-    int nRows=rowCopy->getNumRows();
-    int nCols=rowCopy->getNumCols();
-    double * colsol = new double[nCols];
-    CoinMemcpyN( si.getColSolution(),nCols,colsol);
-    int rowCuts=rowCuts_;
-    double_int_pair * array = new double_int_pair [numberCliques_];
+    int nRows = rowCopy->getNumRows();
+    int nCols = rowCopy->getNumCols();
+    double* colsol = new double[nCols];
+    CoinMemcpyN(si.getColSolution(), nCols, colsol);
+    int rowCuts = rowCuts_;
+    double_int_pair* array = new double_int_pair [numberCliques_];
     // look at <= cliques
     int iClique;
-    int nLook=0;
-    for (iClique=0; iClique<numberCliques_; iClique++)
+    int nLook = 0;
+    for(iClique = 0; iClique < numberCliques_; iClique++)
     {
-        if (!cliqueType_[iClique].equality)
+        if(!cliqueType_[iClique].equality)
         {
-            double sum=0.0;
-            for (int j=cliqueStart_[iClique]; j<cliqueStart_[iClique+1]; j++)
+            double sum = 0.0;
+            for(int j = cliqueStart_[iClique]; j < cliqueStart_[iClique + 1]; j++)
             {
                 int iColumn = sequenceInCliqueEntry(cliqueEntry_[j]);
                 double value = colsol[iColumn];
-                if (oneFixesInCliqueEntry(cliqueEntry_[j]))
+                if(oneFixesInCliqueEntry(cliqueEntry_[j]))
                     sum += value;
                 else
                     sum -= value;
             }
-            double away = fabs(0.5-(sum-floor(sum)));
-            if (away<0.49999)
+            double away = fabs(0.5 - (sum - floor(sum)));
+            if(away < 0.49999)
             {
-                array[nLook].infeasibility=away;
-                array[nLook++].sequence=iClique;
+                array[nLook].infeasibility = away;
+                array[nLook++].sequence = iClique;
             }
         }
     }
-    std::sort(array,array+nLook,double_int_pair_compare());
-    nLook=CoinMin(nLook,maxProbe);
-    const double * currentColLower = si.getColLower();
-    const double * currentColUpper = si.getColUpper();
-    double * tempL = new double [nCols];
-    double * tempU = new double [nCols];
-    int * markC = new int [nCols];
-    int * stackC = new int [2*nCols];
-    int * stackR = new int [nRows];
-    double * saveL = new double [2*nCols];
-    double * saveU = new double [2*nCols];
-    double * saveMin = new double [nRows];
-    double * saveMax = new double [nRows];
-    double * element = new double[nCols];
-    int * index = new int[nCols];
+    std::sort(array, array + nLook, double_int_pair_compare());
+    nLook = CoinMin(nLook, maxProbe);
+    const double* currentColLower = si.getColLower();
+    const double* currentColUpper = si.getColUpper();
+    double* tempL = new double [nCols];
+    double* tempU = new double [nCols];
+    int* markC = new int [nCols];
+    int* stackC = new int [2 * nCols];
+    int* stackR = new int [nRows];
+    double* saveL = new double [2 * nCols];
+    double* saveU = new double [2 * nCols];
+    double* saveMin = new double [nRows];
+    double* saveMax = new double [nRows];
+    double* element = new double[nCols];
+    int* index = new int[nCols];
     // Let us never add more than twice the number of rows worth of row cuts
     // Keep cuts out of cs until end so we can find duplicates quickly
-    int nRowsFake = info->inTree ? nRows/3 : nRows;
+    int nRowsFake = info->inTree ? nRows / 3 : nRows;
     row_cut rowCut(nRowsFake, !info->inTree);
-    const int * column = rowCopy->getIndices();
-    const CoinBigIndex * rowStart = rowCopy->getVectorStarts();
-    const int * rowLength = rowCopy->getVectorLengths();
-    const double * rowElements = rowCopy->getElements();
-    const int * row = columnCopy->getIndices();
-    const CoinBigIndex * columnStart = columnCopy->getVectorStarts();
-    const int * columnLength = columnCopy->getVectorLengths();
-    const double * columnElements = columnCopy->getElements();
+    const int* column = rowCopy->getIndices();
+    const CoinBigIndex* rowStart = rowCopy->getVectorStarts();
+    const int* rowLength = rowCopy->getVectorLengths();
+    const double* rowElements = rowCopy->getElements();
+    const int* row = columnCopy->getIndices();
+    const CoinBigIndex* columnStart = columnCopy->getVectorStarts();
+    const int* columnLength = columnCopy->getVectorLengths();
+    const double* columnElements = columnCopy->getElements();
     double movement;
-    int i, j, k,kk,jj;
-    int kcol,irow,krow;
-    bool anyColumnCuts=false;
+    int i, j, k, kk, jj;
+    int kcol, irow, krow;
+    bool anyColumnCuts = false;
     double dbound, value, value2;
-    int ninfeas=0;
-    for (i = 0; i < nCols; ++i)
+    int ninfeas = 0;
+    for(i = 0; i < nCols; ++i)
     {
-        if (colUpper[i]-colLower[i]>1.0e-8)
+        if(colUpper[i] - colLower[i] > 1.0e-8)
         {
-            if (colsol[i]<colLower[i]+primalTolerance_)
+            if(colsol[i] < colLower[i] + primalTolerance_)
             {
-                colsol[i]=colLower[i];
+                colsol[i] = colLower[i];
             }
-            else if (colsol[i]>colUpper[i]-primalTolerance_)
+            else if(colsol[i] > colUpper[i] - primalTolerance_)
             {
-                colsol[i]=colUpper[i];
+                colsol[i] = colUpper[i];
             }
         }
     }
 
-    int ipass=0,nfixed=-1;
+    int ipass = 0, nfixed = -1;
 
     /* for both way coding */
-    int nstackC0=-1;
-    int * stackC0 = new int[maxStack];
-    double * lo0 = new double[maxStack];
-    double * up0 = new double[maxStack];
-    int nstackR,nstackC;
-    for (i=0; i<nCols; i++)
+    int nstackC0 = -1;
+    int* stackC0 = new int[maxStack];
+    double* lo0 = new double[maxStack];
+    double* up0 = new double[maxStack];
+    int nstackR, nstackC;
+    for(i = 0; i < nCols; i++)
     {
-        if (colUpper[i]-colLower[i]<1.0e-8)
+        if(colUpper[i] - colLower[i] < 1.0e-8)
         {
-            markC[i]=3;
+            markC[i] = 3;
         }
         else
         {
-            markC[i]=0;
+            markC[i] = 0;
         }
     }
-    double tolerance = 1.0e1*primalTolerance_;
+    double tolerance = 1.0e1 * primalTolerance_;
     // If we are going to replace coefficient then we don't need to be effective
     int maxPass = info->inTree ? maxPass_ : maxPassRoot_;
     double needEffectiveness = info->strengthenRow ? -1.0e10 : 1.0e-3;
-    while (ipass<maxPass&&nfixed)
+    while(ipass < maxPass && nfixed)
     {
         int iLook;
         ipass++;
-        nfixed=0;
-        for (iLook=0; iLook<nLook; iLook++)
+        nfixed = 0;
+        for(iLook = 0; iLook < nLook; iLook++)
         {
             double solval;
             double down;
             double up;
-            int iClique=array[iLook].sequence;
-            solval=0.0;
-            j=0;
-            for (j=cliqueStart_[iClique]; j<cliqueStart_[iClique+1]; j++)
+            int iClique = array[iLook].sequence;
+            solval = 0.0;
+            j = 0;
+            for(j = cliqueStart_[iClique]; j < cliqueStart_[iClique + 1]; j++)
             {
                 int iColumn = sequenceInCliqueEntry(cliqueEntry_[j]);
                 double value = colsol[iColumn];
-                if (oneFixesInCliqueEntry(cliqueEntry_[j]))
+                if(oneFixesInCliqueEntry(cliqueEntry_[j]))
                     solval += value;
                 else
                     solval -= value;
             }
-            down = floor(solval+tolerance);
-            up = ceil(solval-tolerance);
-            int istackC,iway, istackR;
-            int way[]= {1,2,1};
-            int feas[]= {1,2,4};
-            int feasible=0;
+            down = floor(solval + tolerance);
+            up = ceil(solval - tolerance);
+            int istackC, iway, istackR;
+            int way[] = {1, 2, 1};
+            int feas[] = {1, 2, 4};
+            int feasible = 0;
             int notFeasible;
-            for (iway=0; iway<3; iway ++)
+            for(iway = 0; iway < 3; iway ++)
             {
-                int fixThis=0;
-                stackC[0]=j;
-                markC[j]=way[iway];
-                if (way[iway]==1)
+                int fixThis = 0;
+                stackC[0] = j;
+                markC[j] = way[iway];
+                if(way[iway] == 1)
                 {
-                    movement=down-colUpper[j];
-                    assert(movement<-0.99999);
-                    down=colLower[j];
+                    movement = down - colUpper[j];
+                    assert(movement < -0.99999);
+                    down = colLower[j];
                 }
                 else
                 {
-                    movement=up-colLower[j];
-                    assert(movement>0.99999);
-                    up=colUpper[j];
+                    movement = up - colLower[j];
+                    assert(movement > 0.99999);
+                    up = colUpper[j];
                 }
-                nstackC=1;
-                nstackR=0;
-                saveL[0]=colLower[j];
-                saveU[0]=colUpper[j];
-                assert (saveU[0]>saveL[0]);
-                notFeasible=0;
-                if (movement<0.0)
+                nstackC = 1;
+                nstackR = 0;
+                saveL[0] = colLower[j];
+                saveU[0] = colUpper[j];
+                assert(saveU[0] > saveL[0]);
+                notFeasible = 0;
+                if(movement < 0.0)
                 {
                     colUpper[j] += movement;
-                    colUpper[j] = floor(colUpper[j]+0.5);
+                    colUpper[j] = floor(colUpper[j] + 0.5);
 #ifdef PRINT_DEBUG
-                    printf("** Trying %d down to 0\n",j);
+                    printf("** Trying %d down to 0\n", j);
 #endif
                 }
                 else
                 {
                     colLower[j] += movement;
-                    colLower[j] = floor(colLower[j]+0.5);
+                    colLower[j] = floor(colLower[j] + 0.5);
 #ifdef PRINT_DEBUG
-                    printf("** Trying %d up to 1\n",j);
+                    printf("** Trying %d up to 1\n", j);
 #endif
                 }
-                if (fabs(colUpper[j]-colLower[j])<1.0e-6)
-                    markC[j]=3; // say fixed
-                istackC=0;
+                if(fabs(colUpper[j] - colLower[j]) < 1.0e-6)
+                    markC[j] = 3; // say fixed
+                istackC = 0;
                 /* update immediately */
-                for (k=columnStart[j]; k<columnStart[j]+columnLength[j]; k++)
+                for(k = columnStart[j]; k < columnStart[j] + columnLength[j]; k++)
                 {
                     int irow = row[k];
                     value = columnElements[k];
-                    if (markR[irow]==-1)
+                    if(markR[irow] == -1)
                     {
-                        stackR[nstackR]=irow;
-                        markR[irow]=nstackR;
-                        saveMin[nstackR]=minR[irow];
-                        saveMax[nstackR]=maxR[irow];
+                        stackR[nstackR] = irow;
+                        markR[irow] = nstackR;
+                        saveMin[nstackR] = minR[irow];
+                        saveMax[nstackR] = maxR[irow];
                         nstackR++;
                     }
-                    else if (markR[irow]==-2)
+                    else if(markR[irow] == -2)
                     {
                         continue;
                     }
                     /* could check immediately if violation */
-                    if (movement>0.0)
+                    if(movement > 0.0)
                     {
                         /* up */
-                        if (value>0.0)
+                        if(value > 0.0)
                         {
                             /* up does not change - down does */
-                            if (minR[irow]>-1.0e10)
+                            if(minR[irow] > -1.0e10)
                                 minR[irow] += value;
-                            if (minR[irow]>rowUpper[irow]+1.0e-5)
+                            if(minR[irow] > rowUpper[irow] + 1.0e-5)
                             {
-                                notFeasible=1;
-                                istackC=1;
+                                notFeasible = 1;
+                                istackC = 1;
                                 break;
                             }
                         }
                         else
                         {
                             /* down does not change - up does */
-                            if (maxR[irow]<1.0e10)
+                            if(maxR[irow] < 1.0e10)
                                 maxR[irow] += value;
-                            if (maxR[irow]<rowLower[irow]-1.0e-5)
+                            if(maxR[irow] < rowLower[irow] - 1.0e-5)
                             {
-                                notFeasible=1;
-                                istackC=1;
+                                notFeasible = 1;
+                                istackC = 1;
                                 break;
                             }
                         }
@@ -9206,50 +9206,50 @@ CglProbing::probeSlacks( const OsiSolverInterface & si,
                     else
                     {
                         /* down */
-                        if (value<0.0)
+                        if(value < 0.0)
                         {
                             /* up does not change - down does */
-                            if (minR[irow]>-1.0e10)
+                            if(minR[irow] > -1.0e10)
                                 minR[irow] -= value;
-                            if (minR[irow]>rowUpper[irow]+1.0e-5)
+                            if(minR[irow] > rowUpper[irow] + 1.0e-5)
                             {
-                                notFeasible=1;
-                                istackC=1;
+                                notFeasible = 1;
+                                istackC = 1;
                                 break;
                             }
                         }
                         else
                         {
                             /* down does not change - up does */
-                            if (maxR[irow]<1.0e10)
+                            if(maxR[irow] < 1.0e10)
                                 maxR[irow] -= value;
-                            if (maxR[irow]<rowLower[irow]-1.0e-5)
+                            if(maxR[irow] < rowLower[irow] - 1.0e-5)
                             {
-                                notFeasible=1;
-                                istackC=1;
+                                notFeasible = 1;
+                                istackC = 1;
                                 break;
                             }
                         }
                     }
                 }
-                while (istackC<nstackC&&nstackC<maxStack)
+                while(istackC < nstackC && nstackC < maxStack)
                 {
                     int jway;
-                    int jcol =stackC[istackC];
-                    jway=markC[jcol];
+                    int jcol = stackC[istackC];
+                    jway = markC[jcol];
                     // If not first and fixed then skip
-                    if (jway==3&&istackC)
+                    if(jway == 3 && istackC)
                     {
                         //istackC++;
                         //continue;
                         //printf("fixed %d on stack\n",jcol);
                     }
                     // Do cliques
-                    if (oneFixStart_&&oneFixStart_[jcol]>=0)
+                    if(oneFixStart_ && oneFixStart_[jcol] >= 0)
                     {
                         int start;
                         int end;
-                        if (colLower[jcol]>saveL[istackC])
+                        if(colLower[jcol] > saveL[istackC])
                         {
                             // going up
                             start = oneFixStart_[jcol];
@@ -9257,76 +9257,76 @@ CglProbing::probeSlacks( const OsiSolverInterface & si,
                         }
                         else
                         {
-                            assert (colUpper[jcol]<saveU[istackC]);
+                            assert(colUpper[jcol] < saveU[istackC]);
                             // going down
                             start = zeroFixStart_[jcol];
                             end = endFixStart_[jcol];
                         }
-                        for (int i=start; i<end; i++)
+                        for(int i = start; i < end; i++)
                         {
                             int iClique = whichClique_[i];
-                            for (int k=cliqueStart_[iClique]; k<cliqueStart_[iClique+1]; k++)
+                            for(int k = cliqueStart_[iClique]; k < cliqueStart_[iClique + 1]; k++)
                             {
                                 int kcol = sequenceInCliqueEntry(cliqueEntry_[k]);
-                                if (jcol==kcol)
+                                if(jcol == kcol)
                                     continue;
                                 int kway = oneFixesInCliqueEntry(cliqueEntry_[k]);
-                                if (kcol!=jcol)
+                                if(kcol != jcol)
                                 {
-                                    if (!markC[kcol])
+                                    if(!markC[kcol])
                                     {
                                         // not on list yet
-                                        if (nstackC<2*maxStack)
+                                        if(nstackC < 2 * maxStack)
                                         {
                                             markC[kcol] = 3; // say fixed
                                             fixThis++;
-                                            stackC[nstackC]=kcol;
-                                            saveL[nstackC]=colLower[kcol];
-                                            saveU[nstackC]=colUpper[kcol];
-                                            assert (saveU[nstackC]>saveL[nstackC]);
+                                            stackC[nstackC] = kcol;
+                                            saveL[nstackC] = colLower[kcol];
+                                            saveU[nstackC] = colUpper[kcol];
+                                            assert(saveU[nstackC] > saveL[nstackC]);
                                             nstackC++;
-                                            if (!kway)
+                                            if(!kway)
                                             {
                                                 // going up
-                                                colLower[kcol]=1.0;
+                                                colLower[kcol] = 1.0;
                                                 /* update immediately */
-                                                for (jj=columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                                for(jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                                 {
                                                     krow = row[jj];
                                                     value = columnElements[jj];
-                                                    if (markR[krow]==-1)
+                                                    if(markR[krow] == -1)
                                                     {
-                                                        stackR[nstackR]=krow;
-                                                        markR[krow]=nstackR;
-                                                        saveMin[nstackR]=minR[krow];
-                                                        saveMax[nstackR]=maxR[krow];
+                                                        stackR[nstackR] = krow;
+                                                        markR[krow] = nstackR;
+                                                        saveMin[nstackR] = minR[krow];
+                                                        saveMax[nstackR] = maxR[krow];
                                                         nstackR++;
                                                     }
-                                                    else if (markR[krow]==-2)
+                                                    else if(markR[krow] == -2)
                                                     {
                                                         continue;
                                                     }
                                                     /* could check immediately if violation */
                                                     /* up */
-                                                    if (value>0.0)
+                                                    if(value > 0.0)
                                                     {
                                                         /* up does not change - down does */
-                                                        if (minR[krow]>-1.0e10)
+                                                        if(minR[krow] > -1.0e10)
                                                             minR[krow] += value;
-                                                        if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                        if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                         {
-                                                            colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                            colUpper[kcol] = -1.0e50; /* force infeasible */
                                                             break;
                                                         }
                                                     }
                                                     else
                                                     {
                                                         /* down does not change - up does */
-                                                        if (maxR[krow]<1.0e10)
+                                                        if(maxR[krow] < 1.0e10)
                                                             maxR[krow] += value;
-                                                        if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                        if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                         {
-                                                            notFeasible=1;
+                                                            notFeasible = 1;
                                                             break;
                                                         }
                                                     }
@@ -9335,45 +9335,45 @@ CglProbing::probeSlacks( const OsiSolverInterface & si,
                                             else
                                             {
                                                 // going down
-                                                colUpper[kcol]=0.0;
+                                                colUpper[kcol] = 0.0;
                                                 /* update immediately */
-                                                for (jj=columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                                for(jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                                 {
                                                     krow = row[jj];
                                                     value = columnElements[jj];
-                                                    if (markR[krow]==-1)
+                                                    if(markR[krow] == -1)
                                                     {
-                                                        stackR[nstackR]=krow;
-                                                        markR[krow]=nstackR;
-                                                        saveMin[nstackR]=minR[krow];
-                                                        saveMax[nstackR]=maxR[krow];
+                                                        stackR[nstackR] = krow;
+                                                        markR[krow] = nstackR;
+                                                        saveMin[nstackR] = minR[krow];
+                                                        saveMax[nstackR] = maxR[krow];
                                                         nstackR++;
                                                     }
-                                                    else if (markR[krow]==-2)
+                                                    else if(markR[krow] == -2)
                                                     {
                                                         continue;
                                                     }
                                                     /* could check immediately if violation */
                                                     /* down */
-                                                    if (value<0.0)
+                                                    if(value < 0.0)
                                                     {
                                                         /* up does not change - down does */
-                                                        if (minR[krow]>-1.0e10)
+                                                        if(minR[krow] > -1.0e10)
                                                             minR[krow] -= value;
-                                                        if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                        if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                         {
-                                                            notFeasible=1;
+                                                            notFeasible = 1;
                                                             break;
                                                         }
                                                     }
                                                     else
                                                     {
                                                         /* down does not change - up does */
-                                                        if (maxR[krow]<1.0e10)
+                                                        if(maxR[krow] < 1.0e10)
                                                             maxR[krow] -= value;
-                                                        if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                        if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                         {
-                                                            notFeasible=1;
+                                                            notFeasible = 1;
                                                             break;
                                                         }
                                                     }
@@ -9381,389 +9381,389 @@ CglProbing::probeSlacks( const OsiSolverInterface & si,
                                             }
                                         }
                                     }
-                                    else if (markC[kcol]==1)
+                                    else if(markC[kcol] == 1)
                                     {
                                         // marked as going to 0
-                                        assert (!colUpper[kcol]);
-                                        if (!kway)
+                                        assert(!colUpper[kcol]);
+                                        if(!kway)
                                         {
                                             // contradiction
-                                            notFeasible=1;
+                                            notFeasible = 1;
                                             break;
                                         }
                                     }
-                                    else if (markC[kcol]==2)
+                                    else if(markC[kcol] == 2)
                                     {
                                         // marked as going to 1
-                                        assert (colLower[kcol]);
-                                        if (kway)
+                                        assert(colLower[kcol]);
+                                        if(kway)
                                         {
                                             // contradiction
-                                            notFeasible=1;
+                                            notFeasible = 1;
                                             break;
                                         }
                                     }
                                     else
                                     {
                                         // marked as fixed
-                                        assert (markC[kcol]==3);
+                                        assert(markC[kcol] == 3);
                                         int jkway;
-                                        if (colLower[kcol])
-                                            jkway=1;
+                                        if(colLower[kcol])
+                                            jkway = 1;
                                         else
-                                            jkway=0;
-                                        if (kway==jkway)
+                                            jkway = 0;
+                                        if(kway == jkway)
                                         {
                                             // contradiction
-                                            notFeasible=1;
+                                            notFeasible = 1;
                                             break;
                                         }
                                     }
                                 }
                             }
-                            if (notFeasible)
+                            if(notFeasible)
                                 break;
                         }
-                        if (notFeasible)
-                            istackC=nstackC+1;
+                        if(notFeasible)
+                            istackC = nstackC + 1;
                     }
-                    for (k=columnStart[jcol]; k<columnStart[jcol]+columnLength[jcol]; k++)
+                    for(k = columnStart[jcol]; k < columnStart[jcol] + columnLength[jcol]; k++)
                     {
                         // break if found not feasible
-                        if (notFeasible)
+                        if(notFeasible)
                             break;
                         irow = row[k];
                         /*value = columnElements[k];*/
-                        if (markR[irow]!=-2)
+                        if(markR[irow] != -2)
                         {
                             /* see if anything forced */
-                            for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow]; kk++)
+                            for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow]; kk++)
                             {
-                                double moveUp=0.0;
-                                double moveDown=0.0;
-                                double newUpper=-1.0,newLower=1.0;
-                                kcol=column[kk];
-                                bool onList = (markC[kcol]!=0);
-                                if (markC[kcol]!=3)
+                                double moveUp = 0.0;
+                                double moveDown = 0.0;
+                                double newUpper = -1.0, newLower = 1.0;
+                                kcol = column[kk];
+                                bool onList = (markC[kcol] != 0);
+                                if(markC[kcol] != 3)
                                 {
-                                    value2=rowElements[kk];
-                                    int markIt=markC[kcol];
-                                    if (value2 < 0.0)
+                                    value2 = rowElements[kk];
+                                    int markIt = markC[kcol];
+                                    if(value2 < 0.0)
                                     {
-                                        if (colUpper[kcol] < 1e10 && (markIt&2)==0 &&
-                                                rowUpper[irow]<1.0e10)
+                                        if(colUpper[kcol] < 1e10 && (markIt & 2) == 0 &&
+                                                rowUpper[irow] < 1.0e10)
                                         {
-                                            dbound = colUpper[kcol]+
-                                                     (rowUpper[irow]-minR[irow])/value2;
-                                            if (dbound > colLower[kcol] + primalTolerance_)
+                                            dbound = colUpper[kcol] +
+                                                     (rowUpper[irow] - minR[irow]) / value2;
+                                            if(dbound > colLower[kcol] + primalTolerance_)
                                             {
-                                                if (intVar[kcol])
+                                                if(intVar[kcol])
                                                 {
                                                     markIt |= 2;
-                                                    newLower = ceil(dbound-primalTolerance_);
+                                                    newLower = ceil(dbound - primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    newLower=dbound;
-                                                    if (newLower+primalTolerance_>colUpper[kcol]&&
-                                                            newLower-primalTolerance_<=colUpper[kcol])
+                                                    newLower = dbound;
+                                                    if(newLower + primalTolerance_ > colUpper[kcol] &&
+                                                            newLower - primalTolerance_ <= colUpper[kcol])
                                                     {
-                                                        newLower=colUpper[kcol];
+                                                        newLower = colUpper[kcol];
                                                         markIt |= 2;
-                                                        markIt=3;
+                                                        markIt = 3;
                                                     }
                                                     else
                                                     {
                                                         // avoid problems - fix later ?
-                                                        markIt=3;
+                                                        markIt = 3;
                                                     }
                                                 }
-                                                moveUp = newLower-colLower[kcol];
+                                                moveUp = newLower - colLower[kcol];
                                             }
                                         }
-                                        if (colLower[kcol] > -1e10 && (markIt&1)==0 &&
-                                                rowLower[irow]>-1.0e10)
+                                        if(colLower[kcol] > -1e10 && (markIt & 1) == 0 &&
+                                                rowLower[irow] > -1.0e10)
                                         {
                                             dbound = colLower[kcol] +
-                                                     (rowLower[irow]-maxR[irow])/value2;
-                                            if (dbound < colUpper[kcol] - primalTolerance_)
+                                                     (rowLower[irow] - maxR[irow]) / value2;
+                                            if(dbound < colUpper[kcol] - primalTolerance_)
                                             {
-                                                if (intVar[kcol])
+                                                if(intVar[kcol])
                                                 {
                                                     markIt |= 1;
-                                                    newUpper = floor(dbound+primalTolerance_);
+                                                    newUpper = floor(dbound + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    newUpper=dbound;
-                                                    if (newUpper-primalTolerance_<colLower[kcol]&&
-                                                            newUpper+primalTolerance_>=colLower[kcol])
+                                                    newUpper = dbound;
+                                                    if(newUpper - primalTolerance_ < colLower[kcol] &&
+                                                            newUpper + primalTolerance_ >= colLower[kcol])
                                                     {
-                                                        newUpper=colLower[kcol];
+                                                        newUpper = colLower[kcol];
                                                         markIt |= 1;
-                                                        markIt=3;
+                                                        markIt = 3;
                                                     }
                                                     else
                                                     {
                                                         // avoid problems - fix later ?
-                                                        markIt=3;
+                                                        markIt = 3;
                                                     }
                                                 }
-                                                moveDown = newUpper-colUpper[kcol];
+                                                moveDown = newUpper - colUpper[kcol];
                                             }
                                         }
                                     }
                                     else
                                     {
                                         /* positive element */
-                                        if (colUpper[kcol] < 1e10 && (markIt&2)==0 &&
-                                                rowLower[irow]>-1.0e10)
+                                        if(colUpper[kcol] < 1e10 && (markIt & 2) == 0 &&
+                                                rowLower[irow] > -1.0e10)
                                         {
                                             dbound = colUpper[kcol] +
-                                                     (rowLower[irow]-maxR[irow])/value2;
-                                            if (dbound > colLower[kcol] + primalTolerance_)
+                                                     (rowLower[irow] - maxR[irow]) / value2;
+                                            if(dbound > colLower[kcol] + primalTolerance_)
                                             {
-                                                if (intVar[kcol])
+                                                if(intVar[kcol])
                                                 {
                                                     markIt |= 2;
-                                                    newLower = ceil(dbound-primalTolerance_);
+                                                    newLower = ceil(dbound - primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    newLower=dbound;
-                                                    if (newLower+primalTolerance_>colUpper[kcol]&&
-                                                            newLower-primalTolerance_<=colUpper[kcol])
+                                                    newLower = dbound;
+                                                    if(newLower + primalTolerance_ > colUpper[kcol] &&
+                                                            newLower - primalTolerance_ <= colUpper[kcol])
                                                     {
-                                                        newLower=colUpper[kcol];
+                                                        newLower = colUpper[kcol];
                                                         markIt |= 2;
-                                                        markIt=3;
+                                                        markIt = 3;
                                                     }
                                                     else
                                                     {
                                                         // avoid problems - fix later ?
-                                                        markIt=3;
+                                                        markIt = 3;
                                                     }
                                                 }
-                                                moveUp = newLower-colLower[kcol];
+                                                moveUp = newLower - colLower[kcol];
                                             }
                                         }
-                                        if (colLower[kcol] > -1e10 && (markIt&1)==0 &&
-                                                rowUpper[irow]<1.0e10)
+                                        if(colLower[kcol] > -1e10 && (markIt & 1) == 0 &&
+                                                rowUpper[irow] < 1.0e10)
                                         {
                                             dbound = colLower[kcol] +
-                                                     (rowUpper[irow]-minR[irow])/value2;
-                                            if (dbound < colUpper[kcol] - primalTolerance_)
+                                                     (rowUpper[irow] - minR[irow]) / value2;
+                                            if(dbound < colUpper[kcol] - primalTolerance_)
                                             {
-                                                if (intVar[kcol])
+                                                if(intVar[kcol])
                                                 {
                                                     markIt |= 1;
-                                                    newUpper = floor(dbound+primalTolerance_);
+                                                    newUpper = floor(dbound + primalTolerance_);
                                                 }
                                                 else
                                                 {
-                                                    newUpper=dbound;
-                                                    if (newUpper-primalTolerance_<colLower[kcol]&&
-                                                            newUpper+primalTolerance_>=colLower[kcol])
+                                                    newUpper = dbound;
+                                                    if(newUpper - primalTolerance_ < colLower[kcol] &&
+                                                            newUpper + primalTolerance_ >= colLower[kcol])
                                                     {
-                                                        newUpper=colLower[kcol];
+                                                        newUpper = colLower[kcol];
                                                         markIt |= 1;
-                                                        markIt=3;
+                                                        markIt = 3;
                                                     }
                                                     else
                                                     {
                                                         // avoid problems - fix later ?
-                                                        markIt=3;
+                                                        markIt = 3;
                                                     }
                                                 }
-                                                moveDown = newUpper-colUpper[kcol];
+                                                moveDown = newUpper - colUpper[kcol];
                                             }
                                         }
                                     }
-                                    if (nstackC<2*maxStack)
+                                    if(nstackC < 2 * maxStack)
                                     {
                                         markC[kcol] = markIt;
                                     }
-                                    if (moveUp&&nstackC<2*maxStack)
+                                    if(moveUp && nstackC < 2 * maxStack)
                                     {
                                         fixThis++;
 #ifdef PRINT_DEBUG
-                                        printf("lower bound on %d increased from %g to %g by row %d %g %g\n",kcol,colLower[kcol],newLower,irow,rowLower[irow],rowUpper[irow]);
-                                        value=0.0;
-                                        for (jj=rowStart[irow]; jj<rowStart[irow]+rowLength[irow]; jj++)
+                                        printf("lower bound on %d increased from %g to %g by row %d %g %g\n", kcol, colLower[kcol], newLower, irow, rowLower[irow], rowUpper[irow]);
+                                        value = 0.0;
+                                        for(jj = rowStart[irow]; jj < rowStart[irow] + rowLength[irow]; jj++)
                                         {
-                                            int ii=column[jj];
-                                            if (colUpper[ii]-colLower[ii]>primalTolerance_)
+                                            int ii = column[jj];
+                                            if(colUpper[ii] - colLower[ii] > primalTolerance_)
                                             {
-                                                printf("(%d, %g) ",ii,rowElements[jj]);
+                                                printf("(%d, %g) ", ii, rowElements[jj]);
                                             }
                                             else
                                             {
-                                                value += rowElements[jj]*colLower[ii];
+                                                value += rowElements[jj] * colLower[ii];
                                             }
                                         }
-                                        printf(" - fixed %g\n",value);
-                                        for (jj=rowStart[irow]; jj<rowStart[irow]+rowLength[irow]; jj++)
+                                        printf(" - fixed %g\n", value);
+                                        for(jj = rowStart[irow]; jj < rowStart[irow] + rowLength[irow]; jj++)
                                         {
-                                            int ii=column[jj];
-                                            if (colUpper[ii]-colLower[ii]<primalTolerance_)
+                                            int ii = column[jj];
+                                            if(colUpper[ii] - colLower[ii] < primalTolerance_)
                                             {
-                                                printf("(%d, %g, %g) ",ii,rowElements[jj],colLower[ii]);
+                                                printf("(%d, %g, %g) ", ii, rowElements[jj], colLower[ii]);
                                             }
                                         }
                                         printf("\n");
 #endif
-                                        if (!onList)
+                                        if(!onList)
                                         {
-                                            stackC[nstackC]=kcol;
-                                            saveL[nstackC]=colLower[kcol];
-                                            saveU[nstackC]=colUpper[kcol];
-                                            assert (saveU[nstackC]>saveL[nstackC]);
+                                            stackC[nstackC] = kcol;
+                                            saveL[nstackC] = colLower[kcol];
+                                            saveU[nstackC] = colUpper[kcol];
+                                            assert(saveU[nstackC] > saveL[nstackC]);
                                             nstackC++;
-                                            onList=true;
+                                            onList = true;
                                         }
-                                        if (intVar[kcol])
-                                            newLower = CoinMax(colLower[kcol],ceil(newLower-1.0e-4));
-                                        colLower[kcol]=newLower;
-                                        if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                        if(intVar[kcol])
+                                            newLower = CoinMax(colLower[kcol], ceil(newLower - 1.0e-4));
+                                        colLower[kcol] = newLower;
+                                        if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                         {
-                                            markC[kcol]=3; // say fixed
+                                            markC[kcol] = 3; // say fixed
                                         }
                                         /* update immediately */
-                                        for (jj=columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                        for(jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                         {
                                             krow = row[jj];
                                             value = columnElements[jj];
-                                            if (markR[krow]==-1)
+                                            if(markR[krow] == -1)
                                             {
-                                                stackR[nstackR]=krow;
-                                                markR[krow]=nstackR;
-                                                saveMin[nstackR]=minR[krow];
-                                                saveMax[nstackR]=maxR[krow];
+                                                stackR[nstackR] = krow;
+                                                markR[krow] = nstackR;
+                                                saveMin[nstackR] = minR[krow];
+                                                saveMax[nstackR] = maxR[krow];
                                                 nstackR++;
                                             }
-                                            else if (markR[krow]==-2)
+                                            else if(markR[krow] == -2)
                                             {
                                                 continue;
                                             }
                                             /* could check immediately if violation */
                                             /* up */
-                                            if (value>0.0)
+                                            if(value > 0.0)
                                             {
                                                 /* up does not change - down does */
-                                                if (minR[krow]>-1.0e10)
-                                                    minR[krow] += value*moveUp;
-                                                if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                if(minR[krow] > -1.0e10)
+                                                    minR[krow] += value * moveUp;
+                                                if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                 {
-                                                    colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                    colUpper[kcol] = -1.0e50; /* force infeasible */
                                                     break;
                                                 }
                                             }
                                             else
                                             {
                                                 /* down does not change - up does */
-                                                if (maxR[krow]<1.0e10)
-                                                    maxR[krow] += value*moveUp;
-                                                if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                if(maxR[krow] < 1.0e10)
+                                                    maxR[krow] += value * moveUp;
+                                                if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                 {
-                                                    colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                    colUpper[kcol] = -1.0e50; /* force infeasible */
                                                     break;
                                                 }
                                             }
                                         }
                                     }
-                                    if (moveDown&&nstackC<2*maxStack)
+                                    if(moveDown && nstackC < 2 * maxStack)
                                     {
                                         fixThis++;
 #ifdef PRINT_DEBUG
-                                        printf("upper bound on %d decreased from %g to %g by row %d %g %g\n",kcol,colUpper[kcol],newUpper,irow,rowLower[irow],rowUpper[irow]);
-                                        value=0.0;
-                                        for (jj=rowStart[irow]; jj<rowStart[irow]+rowLength[irow]; jj++)
+                                        printf("upper bound on %d decreased from %g to %g by row %d %g %g\n", kcol, colUpper[kcol], newUpper, irow, rowLower[irow], rowUpper[irow]);
+                                        value = 0.0;
+                                        for(jj = rowStart[irow]; jj < rowStart[irow] + rowLength[irow]; jj++)
                                         {
-                                            int ii=column[jj];
-                                            if (colUpper[ii]-colLower[ii]>primalTolerance_)
+                                            int ii = column[jj];
+                                            if(colUpper[ii] - colLower[ii] > primalTolerance_)
                                             {
-                                                printf("(%d, %g) ",ii,rowElements[jj]);
+                                                printf("(%d, %g) ", ii, rowElements[jj]);
                                             }
                                             else
                                             {
-                                                value += rowElements[jj]*colLower[ii];
+                                                value += rowElements[jj] * colLower[ii];
                                             }
                                         }
-                                        printf(" - fixed %g\n",value);
-                                        for (jj=rowStart[irow]; jj<rowStart[irow]+rowLength[irow]; jj++)
+                                        printf(" - fixed %g\n", value);
+                                        for(jj = rowStart[irow]; jj < rowStart[irow] + rowLength[irow]; jj++)
                                         {
-                                            int ii=column[jj];
-                                            if (colUpper[ii]-colLower[ii]<primalTolerance_)
+                                            int ii = column[jj];
+                                            if(colUpper[ii] - colLower[ii] < primalTolerance_)
                                             {
-                                                printf("(%d, %g, %g) ",ii,rowElements[jj],colLower[ii]);
+                                                printf("(%d, %g, %g) ", ii, rowElements[jj], colLower[ii]);
                                             }
                                         }
                                         printf("\n");
 #endif
-                                        if (!onList)
+                                        if(!onList)
                                         {
-                                            stackC[nstackC]=kcol;
-                                            saveL[nstackC]=colLower[kcol];
-                                            saveU[nstackC]=colUpper[kcol];
-                                            assert (saveU[nstackC]>saveL[nstackC]);
+                                            stackC[nstackC] = kcol;
+                                            saveL[nstackC] = colLower[kcol];
+                                            saveU[nstackC] = colUpper[kcol];
+                                            assert(saveU[nstackC] > saveL[nstackC]);
                                             nstackC++;
-                                            onList=true;
+                                            onList = true;
                                         }
-                                        if (intVar[kcol])
-                                            newUpper = CoinMin(colUpper[kcol],floor(newUpper+1.0e-4));
-                                        colUpper[kcol]=newUpper;
-                                        if (fabs(colUpper[kcol]-colLower[kcol])<1.0e-6)
+                                        if(intVar[kcol])
+                                            newUpper = CoinMin(colUpper[kcol], floor(newUpper + 1.0e-4));
+                                        colUpper[kcol] = newUpper;
+                                        if(fabs(colUpper[kcol] - colLower[kcol]) < 1.0e-6)
                                         {
-                                            markC[kcol]=3; // say fixed
+                                            markC[kcol] = 3; // say fixed
                                         }
                                         /* update immediately */
-                                        for (jj=columnStart[kcol]; jj<columnStart[kcol]+columnLength[kcol]; jj++)
+                                        for(jj = columnStart[kcol]; jj < columnStart[kcol] + columnLength[kcol]; jj++)
                                         {
                                             krow = row[jj];
                                             value = columnElements[jj];
-                                            if (markR[krow]==-1)
+                                            if(markR[krow] == -1)
                                             {
-                                                stackR[nstackR]=krow;
-                                                markR[krow]=nstackR;
-                                                saveMin[nstackR]=minR[krow];
-                                                saveMax[nstackR]=maxR[krow];
+                                                stackR[nstackR] = krow;
+                                                markR[krow] = nstackR;
+                                                saveMin[nstackR] = minR[krow];
+                                                saveMax[nstackR] = maxR[krow];
                                                 nstackR++;
                                             }
-                                            else if (markR[krow]==-2)
+                                            else if(markR[krow] == -2)
                                             {
                                                 continue;
                                             }
                                             /* could check immediately if violation */
                                             /* down */
-                                            if (value<0.0)
+                                            if(value < 0.0)
                                             {
                                                 /* up does not change - down does */
-                                                if (minR[krow]>-1.0e10)
-                                                    minR[krow] += value*moveDown;
-                                                if (minR[krow]>rowUpper[krow]+1.0e-5)
+                                                if(minR[krow] > -1.0e10)
+                                                    minR[krow] += value * moveDown;
+                                                if(minR[krow] > rowUpper[krow] + 1.0e-5)
                                                 {
-                                                    colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                    colUpper[kcol] = -1.0e50; /* force infeasible */
                                                     break;
                                                 }
                                             }
                                             else
                                             {
                                                 /* down does not change - up does */
-                                                if (maxR[krow]<1.0e10)
-                                                    maxR[krow] += value*moveDown;
-                                                if (maxR[krow]<rowLower[krow]-1.0e-5)
+                                                if(maxR[krow] < 1.0e10)
+                                                    maxR[krow] += value * moveDown;
+                                                if(maxR[krow] < rowLower[krow] - 1.0e-5)
                                                 {
-                                                    colUpper[kcol]=-1.0e50; /* force infeasible */
+                                                    colUpper[kcol] = -1.0e50; /* force infeasible */
                                                     break;
                                                 }
                                             }
                                         }
                                     }
-                                    if (colLower[kcol]>colUpper[kcol]+primalTolerance_)
+                                    if(colLower[kcol] > colUpper[kcol] + primalTolerance_)
                                     {
-                                        notFeasible=1;;
-                                        k=columnStart[jcol]+columnLength[jcol];
-                                        istackC=nstackC+1;
+                                        notFeasible = 1;;
+                                        k = columnStart[jcol] + columnLength[jcol];
+                                        istackC = nstackC + 1;
 #ifdef PRINT_DEBUG
                                         printf("** not feasible this way\n");
 #endif
@@ -9775,80 +9775,80 @@ CglProbing::probeSlacks( const OsiSolverInterface & si,
                     }
                     istackC++;
                 }
-                if (!notFeasible)
+                if(!notFeasible)
                 {
                     feasible |= feas[iway];
                 }
-                else if (iway==1&&feasible==0)
+                else if(iway == 1 && feasible == 0)
                 {
                     /* not feasible at all */
-                    ninfeas=1;
-                    j=nCols-1;
-                    iLook=nLook;
-                    ipass=maxPass;
+                    ninfeas = 1;
+                    j = nCols - 1;
+                    iLook = nLook;
+                    ipass = maxPass;
                     break;
                 }
-                if (iway==2||(iway==1&&feasible==2))
+                if(iway == 2 || (iway == 1 && feasible == 2))
                 {
                     /* keep */
-                    iway=3;
+                    iway = 3;
                     nfixed++;
-                    if (mode_)
+                    if(mode_)
                     {
                         OsiColCut cc;
-                        int nTot=0,nFix=0,nInt=0;
-                        bool ifCut=false;
-                        for (istackC=0; istackC<nstackC; istackC++)
+                        int nTot = 0, nFix = 0, nInt = 0;
+                        bool ifCut = false;
+                        for(istackC = 0; istackC < nstackC; istackC++)
                         {
-                            int icol=stackC[istackC];
-                            if (intVar[icol])
+                            int icol = stackC[istackC];
+                            if(intVar[icol])
                             {
-                                if (colUpper[icol]<currentColUpper[icol]-1.0e-4)
+                                if(colUpper[icol] < currentColUpper[icol] - 1.0e-4)
                                 {
-                                    element[nFix]=colUpper[icol];
-                                    index[nFix++]=icol;
+                                    element[nFix] = colUpper[icol];
+                                    index[nFix++] = icol;
                                     nInt++;
-                                    if (colsol[icol]>colUpper[icol]+primalTolerance_)
+                                    if(colsol[icol] > colUpper[icol] + primalTolerance_)
                                     {
-                                        ifCut=true;
-                                        anyColumnCuts=true;
+                                        ifCut = true;
+                                        anyColumnCuts = true;
                                     }
                                 }
                             }
                         }
-                        if (nFix)
+                        if(nFix)
                         {
-                            nTot=nFix;
-                            cc.setUbs(nFix,index,element);
-                            nFix=0;
+                            nTot = nFix;
+                            cc.setUbs(nFix, index, element);
+                            nFix = 0;
                         }
-                        for (istackC=0; istackC<nstackC; istackC++)
+                        for(istackC = 0; istackC < nstackC; istackC++)
                         {
-                            int icol=stackC[istackC];
-                            if (intVar[icol])
+                            int icol = stackC[istackC];
+                            if(intVar[icol])
                             {
-                                if (colLower[icol]>currentColLower[icol]+1.0e-4)
+                                if(colLower[icol] > currentColLower[icol] + 1.0e-4)
                                 {
-                                    element[nFix]=colLower[icol];
-                                    index[nFix++]=icol;
+                                    element[nFix] = colLower[icol];
+                                    index[nFix++] = icol;
                                     nInt++;
-                                    if (colsol[icol]<colLower[icol]-primalTolerance_)
+                                    if(colsol[icol] < colLower[icol] - primalTolerance_)
                                     {
-                                        ifCut=true;
-                                        anyColumnCuts=true;
+                                        ifCut = true;
+                                        anyColumnCuts = true;
                                     }
                                 }
                             }
                         }
-                        if (nFix)
+                        if(nFix)
                         {
-                            nTot+=nFix;
-                            cc.setLbs(nFix,index,element);
+                            nTot += nFix;
+                            cc.setLbs(nFix, index, element);
                         }
                         // could tighten continuous as well
-                        if (nInt)
+                        if(nInt)
                         {
-                            if (ifCut)
+                            if(ifCut)
                             {
                                 cc.setEffectiveness(100.0);
                             }
@@ -9857,324 +9857,324 @@ CglProbing::probeSlacks( const OsiSolverInterface & si,
                                 cc.setEffectiveness(1.0e-5);
                             }
 #ifdef CGL_DEBUG
-                            checkBounds(debugger,cc);
+                            checkBounds(debugger, cc);
 #endif
                             cs.insert(cc);
                         }
                     }
-                    for (istackC=0; istackC<nstackC; istackC++)
+                    for(istackC = 0; istackC < nstackC; istackC++)
                     {
-                        int icol=stackC[istackC];
-                        if (colUpper[icol]-colLower[icol]>primalTolerance_)
+                        int icol = stackC[istackC];
+                        if(colUpper[icol] - colLower[icol] > primalTolerance_)
                         {
-                            markC[icol]=0;
+                            markC[icol] = 0;
                         }
                         else
                         {
-                            markC[icol]=3;
+                            markC[icol] = 3;
                         }
                     }
-                    for (istackR=0; istackR<nstackR; istackR++)
+                    for(istackR = 0; istackR < nstackR; istackR++)
                     {
-                        int irow=stackR[istackR];
-                        markR[irow]=-1;
+                        int irow = stackR[istackR];
+                        markR[irow] = -1;
                     }
                 }
                 else
                 {
                     /* is it worth seeing if can increase coefficients
                        or maybe better see if it is a cut */
-                    if (iway==0)
+                    if(iway == 0)
                     {
-                        nstackC0=CoinMin(nstackC,maxStack);
-                        if (notFeasible)
+                        nstackC0 = CoinMin(nstackC, maxStack);
+                        if(notFeasible)
                         {
-                            nstackC0=0;
+                            nstackC0 = 0;
                         }
                         else
                         {
-                            for (istackC=0; istackC<nstackC0; istackC++)
+                            for(istackC = 0; istackC < nstackC0; istackC++)
                             {
-                                int icol=stackC[istackC];
-                                stackC0[istackC]=icol;
-                                lo0[istackC]=colLower[icol];
-                                up0[istackC]=colUpper[icol];
+                                int icol = stackC[istackC];
+                                stackC0[istackC] = icol;
+                                lo0[istackC] = colLower[icol];
+                                up0[istackC] = colUpper[icol];
                             }
                         }
                         /* restore all */
-                        assert (iway==0);
-                        for (istackC=nstackC-1; istackC>=0; istackC--)
+                        assert(iway == 0);
+                        for(istackC = nstackC - 1; istackC >= 0; istackC--)
                         {
-                            int icol=stackC[istackC];
-                            double oldU=saveU[istackC];
-                            double oldL=saveL[istackC];
-                            colUpper[icol]=oldU;
-                            colLower[icol]=oldL;
-                            markC[icol]=0;
+                            int icol = stackC[istackC];
+                            double oldU = saveU[istackC];
+                            double oldL = saveL[istackC];
+                            colUpper[icol] = oldU;
+                            colLower[icol] = oldL;
+                            markC[icol] = 0;
                         }
-                        for (istackR=0; istackR<nstackR; istackR++)
+                        for(istackR = 0; istackR < nstackR; istackR++)
                         {
-                            int irow=stackR[istackR];
+                            int irow = stackR[istackR];
                             // switch off strengthening if not wanted
-                            if ((rowCuts&2)!=0)
+                            if((rowCuts & 2) != 0)
                             {
-                                bool ifCut=anyColumnCuts;
-                                double gap = rowUpper[irow]-maxR[irow];
-                                double sum=0.0;
-                                if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                bool ifCut = anyColumnCuts;
+                                double gap = rowUpper[irow] - maxR[irow];
+                                double sum = 0.0;
+                                if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                 {
                                     // see if the strengthened row is a cut
-                                    for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                    for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                             kk++)
                                     {
-                                        sum += rowElements[kk]*colsol[column[kk]];
+                                        sum += rowElements[kk] * colsol[column[kk]];
                                     }
-                                    if (sum-gap*colsol[j]>maxR[irow]+primalTolerance_||info->strengthenRow)
+                                    if(sum - gap * colsol[j] > maxR[irow] + primalTolerance_ || info->strengthenRow)
                                     {
                                         // can be a cut
                                         // subtract gap from upper and integer coefficient
                                         // saveU and saveL spare
-                                        int * index = reinterpret_cast<int *>(saveL);
-                                        double * element = saveU;
-                                        int n=0;
-                                        bool coefficientExists=false;
-                                        for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                        int* index = reinterpret_cast<int*>(saveL);
+                                        double* element = saveU;
+                                        int n = 0;
+                                        bool coefficientExists = false;
+                                        for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                 kk++)
                                         {
-                                            if (column[kk]!=j)
+                                            if(column[kk] != j)
                                             {
-                                                index[n]=column[kk];
-                                                element[n++]=rowElements[kk];
+                                                index[n] = column[kk];
+                                                element[n++] = rowElements[kk];
                                             }
                                             else
                                             {
-                                                double value=rowElements[kk]-gap;
-                                                if (fabs(value)>1.0e-12)
+                                                double value = rowElements[kk] - gap;
+                                                if(fabs(value) > 1.0e-12)
                                                 {
-                                                    index[n]=column[kk];
-                                                    element[n++]=value;
+                                                    index[n] = column[kk];
+                                                    element[n++] = value;
                                                 }
-                                                coefficientExists=true;
+                                                coefficientExists = true;
                                             }
                                         }
-                                        if (!coefficientExists)
+                                        if(!coefficientExists)
                                         {
-                                            index[n]=j;
-                                            element[n++]=-gap;
+                                            index[n] = j;
+                                            element[n++] = -gap;
                                         }
                                         OsiRowCut rc;
                                         rc.setLb(-COIN_DBL_MAX);
-                                        rc.setUb(rowUpper[irow]-gap*(colLower[j]+1.0));
+                                        rc.setUb(rowUpper[irow] - gap * (colLower[j] + 1.0));
                                         // effectiveness is how far j moves
-                                        rc.setEffectiveness((sum-gap*colsol[j]-maxR[irow])/gap);
-                                        if (rc.effectiveness()>needEffectiveness)
+                                        rc.setEffectiveness((sum - gap * colsol[j] - maxR[irow]) / gap);
+                                        if(rc.effectiveness() > needEffectiveness)
                                         {
-                                            rc.setRow(n,index,element,false);
+                                            rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             // If strengthenRow point to row
                                             //if(info->strengthenRow)
                                             //printf("a point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
                                             {
-                                                printf("9Cut %g <= ",rc.lb());
+                                                printf("9Cut %g <= ", rc.lb());
                                                 int k;
-                                                for ( k=0; k<n; k++)
+                                                for(k = 0; k < n; k++)
                                                 {
                                                     int iColumn = index[k];
-                                                    printf("%g*",element[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", element[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rc.ub());
-                                                printf("Row %g <= ",rowLower[irow]);
-                                                for (k=rowStart[irow]; k<rowStart[irow]+rowLength[irow]; k++)
+                                                printf("<= %g\n", rc.ub());
+                                                printf("Row %g <= ", rowLower[irow]);
+                                                for(k = rowStart[irow]; k < rowStart[irow] + rowLength[irow]; k++)
                                                 {
                                                     int iColumn = column[k];
-                                                    printf("%g*",rowElements[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", rowElements[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rowUpper[irow]);
+                                                printf("<= %g\n", rowUpper[irow]);
                                             }
 #endif
-                                            rowCut.addCutIfNotDuplicate(rc,irow);
+                                            rowCut.addCutIfNotDuplicate(rc, irow);
                                         }
                                     }
                                 }
-                                gap = minR[irow]-rowLower[irow];
-                                if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                gap = minR[irow] - rowLower[irow];
+                                if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                 {
                                     // see if the strengthened row is a cut
-                                    if (!sum)
+                                    if(!sum)
                                     {
-                                        for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                        for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                 kk++)
                                         {
-                                            sum += rowElements[kk]*colsol[column[kk]];
+                                            sum += rowElements[kk] * colsol[column[kk]];
                                         }
                                     }
-                                    if (sum+gap*colsol[j]<minR[irow]+primalTolerance_||info->strengthenRow)
+                                    if(sum + gap * colsol[j] < minR[irow] + primalTolerance_ || info->strengthenRow)
                                     {
                                         // can be a cut
                                         // add gap to lower and integer coefficient
                                         // saveU and saveL spare
-                                        int * index = reinterpret_cast<int *>(saveL);
-                                        double * element = saveU;
-                                        int n=0;
-                                        bool coefficientExists=false;
-                                        for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                        int* index = reinterpret_cast<int*>(saveL);
+                                        double* element = saveU;
+                                        int n = 0;
+                                        bool coefficientExists = false;
+                                        for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                 kk++)
                                         {
-                                            if (column[kk]!=j)
+                                            if(column[kk] != j)
                                             {
-                                                index[n]=column[kk];
-                                                element[n++]=rowElements[kk];
+                                                index[n] = column[kk];
+                                                element[n++] = rowElements[kk];
                                             }
                                             else
                                             {
-                                                double value=rowElements[kk]+gap;
-                                                if (fabs(value)>1.0e-12)
+                                                double value = rowElements[kk] + gap;
+                                                if(fabs(value) > 1.0e-12)
                                                 {
-                                                    index[n]=column[kk];
-                                                    element[n++]=value;
+                                                    index[n] = column[kk];
+                                                    element[n++] = value;
                                                 }
-                                                coefficientExists=true;
+                                                coefficientExists = true;
                                             }
                                         }
-                                        if (!coefficientExists)
+                                        if(!coefficientExists)
                                         {
-                                            index[n]=j;
-                                            element[n++]=gap;
+                                            index[n] = j;
+                                            element[n++] = gap;
                                         }
                                         OsiRowCut rc;
-                                        rc.setLb(rowLower[irow]+gap*(colLower[j]+1.0));
+                                        rc.setLb(rowLower[irow] + gap * (colLower[j] + 1.0));
                                         rc.setUb(COIN_DBL_MAX);
                                         // effectiveness is how far j moves
-                                        rc.setEffectiveness((minR[irow]-sum-gap*colsol[j])/gap);
-                                        if (rc.effectiveness()>needEffectiveness)
+                                        rc.setEffectiveness((minR[irow] - sum - gap * colsol[j]) / gap);
+                                        if(rc.effectiveness() > needEffectiveness)
                                         {
-                                            rc.setRow(n,index,element,false);
+                                            rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             //if(info->strengthenRow)
                                             //printf("b point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
                                             {
-                                                printf("10Cut %g <= ",rc.lb());
+                                                printf("10Cut %g <= ", rc.lb());
                                                 int k;
-                                                for ( k=0; k<n; k++)
+                                                for(k = 0; k < n; k++)
                                                 {
                                                     int iColumn = index[k];
-                                                    printf("%g*",element[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", element[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rc.ub());
-                                                printf("Row %g <= ",rowLower[irow]);
-                                                for (k=rowStart[irow]; k<rowStart[irow]+rowLength[irow]; k++)
+                                                printf("<= %g\n", rc.ub());
+                                                printf("Row %g <= ", rowLower[irow]);
+                                                for(k = rowStart[irow]; k < rowStart[irow] + rowLength[irow]; k++)
                                                 {
                                                     int iColumn = column[k];
-                                                    printf("%g*",rowElements[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", rowElements[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rowUpper[irow]);
+                                                printf("<= %g\n", rowUpper[irow]);
                                             }
 #endif
-                                            rowCut.addCutIfNotDuplicate(rc,irow);
+                                            rowCut.addCutIfNotDuplicate(rc, irow);
                                         }
                                     }
                                 }
                             }
-                            minR[irow]=saveMin[istackR];
-                            maxR[irow]=saveMax[istackR];
-                            markR[irow]=-1;
+                            minR[irow] = saveMin[istackR];
+                            maxR[irow] = saveMax[istackR];
+                            markR[irow] = -1;
                         }
                     }
                     else
                     {
-                        if (iway==1&&feasible==3)
+                        if(iway == 1 && feasible == 3)
                         {
-                            iway=3;
+                            iway = 3;
                             /* point back to stack */
-                            for (istackC=nstackC-1; istackC>=0; istackC--)
+                            for(istackC = nstackC - 1; istackC >= 0; istackC--)
                             {
-                                int icol=stackC[istackC];
-                                markC[icol]=istackC+1000;
+                                int icol = stackC[istackC];
+                                markC[icol] = istackC + 1000;
                             }
-                            if (mode_)
+                            if(mode_)
                             {
                                 OsiColCut cc;
-                                int nTot=0,nFix=0,nInt=0;
-                                bool ifCut=false;
-                                for (istackC=0; istackC<nstackC0; istackC++)
+                                int nTot = 0, nFix = 0, nInt = 0;
+                                bool ifCut = false;
+                                for(istackC = 0; istackC < nstackC0; istackC++)
                                 {
-                                    int icol=stackC0[istackC];
-                                    int istackC1=markC[icol]-1000;
-                                    if (istackC1>=0)
+                                    int icol = stackC0[istackC];
+                                    int istackC1 = markC[icol] - 1000;
+                                    if(istackC1 >= 0)
                                     {
-                                        if (CoinMin(lo0[istackC],colLower[icol])>saveL[istackC1]+1.0e-4)
+                                        if(CoinMin(lo0[istackC], colLower[icol]) > saveL[istackC1] + 1.0e-4)
                                         {
-                                            saveL[istackC1]=CoinMin(lo0[istackC],colLower[icol]);
-                                            if (intVar[icol])
+                                            saveL[istackC1] = CoinMin(lo0[istackC], colLower[icol]);
+                                            if(intVar[icol])
                                             {
-                                                element[nFix]=saveL[istackC1];
-                                                index[nFix++]=icol;
+                                                element[nFix] = saveL[istackC1];
+                                                index[nFix++] = icol;
                                                 nInt++;
-                                                if (colsol[icol]<saveL[istackC1]-primalTolerance_)
-                                                    ifCut=true;
+                                                if(colsol[icol] < saveL[istackC1] - primalTolerance_)
+                                                    ifCut = true;
                                             }
                                             nfixed++;
                                         }
                                     }
                                 }
-                                if (nFix)
+                                if(nFix)
                                 {
-                                    nTot=nFix;
-                                    cc.setLbs(nFix,index,element);
-                                    nFix=0;
+                                    nTot = nFix;
+                                    cc.setLbs(nFix, index, element);
+                                    nFix = 0;
                                 }
-                                for (istackC=0; istackC<nstackC0; istackC++)
+                                for(istackC = 0; istackC < nstackC0; istackC++)
                                 {
-                                    int icol=stackC0[istackC];
-                                    int istackC1=markC[icol]-1000;
-                                    if (istackC1>=0)
+                                    int icol = stackC0[istackC];
+                                    int istackC1 = markC[icol] - 1000;
+                                    if(istackC1 >= 0)
                                     {
-                                        if (CoinMax(up0[istackC],colUpper[icol])<saveU[istackC1]-1.0e-4)
+                                        if(CoinMax(up0[istackC], colUpper[icol]) < saveU[istackC1] - 1.0e-4)
                                         {
-                                            saveU[istackC1]=CoinMax(up0[istackC],colUpper[icol]);
-                                            if (intVar[icol])
+                                            saveU[istackC1] = CoinMax(up0[istackC], colUpper[icol]);
+                                            if(intVar[icol])
                                             {
-                                                element[nFix]=saveU[istackC1];
-                                                index[nFix++]=icol;
+                                                element[nFix] = saveU[istackC1];
+                                                index[nFix++] = icol;
                                                 nInt++;
-                                                if (colsol[icol]>saveU[istackC1]+primalTolerance_)
-                                                    ifCut=true;
+                                                if(colsol[icol] > saveU[istackC1] + primalTolerance_)
+                                                    ifCut = true;
                                             }
                                             nfixed++;
                                         }
                                     }
                                 }
-                                if (nFix)
+                                if(nFix)
                                 {
-                                    nTot+=nFix;
-                                    cc.setUbs(nFix,index,element);
+                                    nTot += nFix;
+                                    cc.setUbs(nFix, index, element);
                                 }
                                 // could tighten continuous as well
-                                if (nInt)
+                                if(nInt)
                                 {
-                                    if (ifCut)
+                                    if(ifCut)
                                     {
                                         cc.setEffectiveness(100.0);
                                     }
@@ -10183,212 +10183,212 @@ CglProbing::probeSlacks( const OsiSolverInterface & si,
                                         cc.setEffectiveness(1.0e-5);
                                     }
 #ifdef CGL_DEBUG
-                                    checkBounds(debugger,cc);
+                                    checkBounds(debugger, cc);
 #endif
                                     cs.insert(cc);
                                 }
                             }
                         }
                         /* restore all */
-                        for (istackC=nstackC-1; istackC>=0; istackC--)
+                        for(istackC = nstackC - 1; istackC >= 0; istackC--)
                         {
-                            int icol=stackC[istackC];
-                            double oldU=saveU[istackC];
-                            double oldL=saveL[istackC];
-                            colUpper[icol]=oldU;
-                            colLower[icol]=oldL;
-                            if (oldU>oldL+1.0e-4)
-                                markC[icol]=0;
+                            int icol = stackC[istackC];
+                            double oldU = saveU[istackC];
+                            double oldL = saveL[istackC];
+                            colUpper[icol] = oldU;
+                            colLower[icol] = oldL;
+                            if(oldU > oldL + 1.0e-4)
+                                markC[icol] = 0;
                             else
-                                markC[icol]=3;
+                                markC[icol] = 3;
                         }
-                        for (istackR=0; istackR<nstackR; istackR++)
+                        for(istackR = 0; istackR < nstackR; istackR++)
                         {
-                            int irow=stackR[istackR];
+                            int irow = stackR[istackR];
                             // switch off strengthening if not wanted
-                            if ((rowCuts&2)!=0)
+                            if((rowCuts & 2) != 0)
                             {
-                                bool ifCut=anyColumnCuts;
-                                double gap = rowUpper[irow]-maxR[irow];
-                                double sum=0.0;
-                                if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                bool ifCut = anyColumnCuts;
+                                double gap = rowUpper[irow] - maxR[irow];
+                                double sum = 0.0;
+                                if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                 {
                                     // see if the strengthened row is a cut
-                                    for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                    for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                             kk++)
                                     {
-                                        sum += rowElements[kk]*colsol[column[kk]];
+                                        sum += rowElements[kk] * colsol[column[kk]];
                                     }
-                                    if (sum+gap*colsol[j]>rowUpper[irow]+primalTolerance_||info->strengthenRow)
+                                    if(sum + gap * colsol[j] > rowUpper[irow] + primalTolerance_ || info->strengthenRow)
                                     {
                                         // can be a cut
                                         // add gap to integer coefficient
                                         // saveU and saveL spare
-                                        int * index = reinterpret_cast<int *>(saveL);
-                                        double * element = saveU;
-                                        int n=0;
-                                        bool coefficientExists=false;
-                                        for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                        int* index = reinterpret_cast<int*>(saveL);
+                                        double* element = saveU;
+                                        int n = 0;
+                                        bool coefficientExists = false;
+                                        for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                 kk++)
                                         {
-                                            if (column[kk]!=j)
+                                            if(column[kk] != j)
                                             {
-                                                index[n]=column[kk];
-                                                element[n++]=rowElements[kk];
+                                                index[n] = column[kk];
+                                                element[n++] = rowElements[kk];
                                             }
                                             else
                                             {
-                                                double value=rowElements[kk]+gap;
-                                                if (fabs(value)>1.0e-12)
+                                                double value = rowElements[kk] + gap;
+                                                if(fabs(value) > 1.0e-12)
                                                 {
-                                                    index[n]=column[kk];
-                                                    element[n++]=value;
+                                                    index[n] = column[kk];
+                                                    element[n++] = value;
                                                 }
-                                                coefficientExists=true;
+                                                coefficientExists = true;
                                             }
                                         }
-                                        if (!coefficientExists)
+                                        if(!coefficientExists)
                                         {
-                                            index[n]=j;
-                                            element[n++]=gap;
+                                            index[n] = j;
+                                            element[n++] = gap;
                                         }
                                         OsiRowCut rc;
                                         rc.setLb(-COIN_DBL_MAX);
-                                        rc.setUb(rowUpper[irow]+gap*(colUpper[j]-1.0));
+                                        rc.setUb(rowUpper[irow] + gap * (colUpper[j] - 1.0));
                                         // effectiveness is how far j moves
-                                        rc.setEffectiveness((sum+gap*colsol[j]-rowUpper[irow])/gap);
-                                        if (rc.effectiveness()>needEffectiveness)
+                                        rc.setEffectiveness((sum + gap * colsol[j] - rowUpper[irow]) / gap);
+                                        if(rc.effectiveness() > needEffectiveness)
                                         {
-                                            rc.setRow(n,index,element,false);
+                                            rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             //if(info->strengthenRow)
                                             //printf("c point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
                                             {
-                                                printf("11Cut %g <= ",rc.lb());
+                                                printf("11Cut %g <= ", rc.lb());
                                                 int k;
-                                                for ( k=0; k<n; k++)
+                                                for(k = 0; k < n; k++)
                                                 {
                                                     int iColumn = index[k];
-                                                    printf("%g*",element[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", element[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rc.ub());
-                                                printf("Row %g <= ",rowLower[irow]);
-                                                for (k=rowStart[irow]; k<rowStart[irow]+rowLength[irow]; k++)
+                                                printf("<= %g\n", rc.ub());
+                                                printf("Row %g <= ", rowLower[irow]);
+                                                for(k = rowStart[irow]; k < rowStart[irow] + rowLength[irow]; k++)
                                                 {
                                                     int iColumn = column[k];
-                                                    printf("%g*",rowElements[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", rowElements[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rowUpper[irow]);
+                                                printf("<= %g\n", rowUpper[irow]);
                                             }
 #endif
-                                            rowCut.addCutIfNotDuplicate(rc,irow);
+                                            rowCut.addCutIfNotDuplicate(rc, irow);
                                         }
                                     }
                                 }
-                                gap = minR[irow]-rowLower[irow];
-                                if (!ifCut&&(gap>primalTolerance_&&gap<1.0e8))
+                                gap = minR[irow] - rowLower[irow];
+                                if(!ifCut && (gap > primalTolerance_ && gap < 1.0e8))
                                 {
                                     // see if the strengthened row is a cut
-                                    if (!sum)
+                                    if(!sum)
                                     {
-                                        for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                        for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                 kk++)
                                         {
-                                            sum += rowElements[kk]*colsol[column[kk]];
+                                            sum += rowElements[kk] * colsol[column[kk]];
                                         }
                                     }
-                                    if (sum-gap*colsol[j]<rowLower[irow]+primalTolerance_||info->strengthenRow)
+                                    if(sum - gap * colsol[j] < rowLower[irow] + primalTolerance_ || info->strengthenRow)
                                     {
                                         // can be a cut
                                         // subtract gap from integer coefficient
                                         // saveU and saveL spare
-                                        int * index = reinterpret_cast<int *>(saveL);
-                                        double * element = saveU;
-                                        int n=0;
-                                        bool coefficientExists=false;
-                                        for (kk=rowStart[irow]; kk<rowStart[irow]+rowLength[irow];
+                                        int* index = reinterpret_cast<int*>(saveL);
+                                        double* element = saveU;
+                                        int n = 0;
+                                        bool coefficientExists = false;
+                                        for(kk = rowStart[irow]; kk < rowStart[irow] + rowLength[irow];
                                                 kk++)
                                         {
-                                            if (column[kk]!=j)
+                                            if(column[kk] != j)
                                             {
-                                                index[n]=column[kk];
-                                                element[n++]=rowElements[kk];
+                                                index[n] = column[kk];
+                                                element[n++] = rowElements[kk];
                                             }
                                             else
                                             {
-                                                double value=rowElements[kk]-gap;
-                                                if (fabs(value)>1.0e-12)
+                                                double value = rowElements[kk] - gap;
+                                                if(fabs(value) > 1.0e-12)
                                                 {
-                                                    index[n]=column[kk];
-                                                    element[n++]=value;
+                                                    index[n] = column[kk];
+                                                    element[n++] = value;
                                                 }
-                                                coefficientExists=true;
+                                                coefficientExists = true;
                                             }
                                         }
-                                        if (!coefficientExists)
+                                        if(!coefficientExists)
                                         {
-                                            index[n]=j;
-                                            element[n++]=-gap;
+                                            index[n] = j;
+                                            element[n++] = -gap;
                                         }
                                         OsiRowCut rc;
-                                        rc.setLb(rowLower[irow]-gap*(colUpper[j]-1));
+                                        rc.setLb(rowLower[irow] - gap * (colUpper[j] - 1));
                                         rc.setUb(COIN_DBL_MAX);
                                         // effectiveness is how far j moves
-                                        rc.setEffectiveness((rowLower[irow]-sum+gap*colsol[j])/gap);
-                                        if (rc.effectiveness()>needEffectiveness)
+                                        rc.setEffectiveness((rowLower[irow] - sum + gap * colsol[j]) / gap);
+                                        if(rc.effectiveness() > needEffectiveness)
                                         {
-                                            rc.setRow(n,index,element,false);
+                                            rc.setRow(n, index, element, false);
 #ifdef CGL_DEBUG
-                                            if (debugger) assert(!debugger->invalidCut(rc));
+                                            if(debugger) assert(!debugger->invalidCut(rc));
 #endif
                                             //if(info->strengthenRow)
                                             //printf("d point to row %d\n",irow);
 #ifdef STRENGTHEN_PRINT
                                             {
-                                                printf("12Cut %g <= ",rc.lb());
+                                                printf("12Cut %g <= ", rc.lb());
                                                 int k;
-                                                for ( k=0; k<n; k++)
+                                                for(k = 0; k < n; k++)
                                                 {
                                                     int iColumn = index[k];
-                                                    printf("%g*",element[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", element[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rc.ub());
-                                                printf("Row %g <= ",rowLower[irow]);
-                                                for (k=rowStart[irow]; k<rowStart[irow]+rowLength[irow]; k++)
+                                                printf("<= %g\n", rc.ub());
+                                                printf("Row %g <= ", rowLower[irow]);
+                                                for(k = rowStart[irow]; k < rowStart[irow] + rowLength[irow]; k++)
                                                 {
                                                     int iColumn = column[k];
-                                                    printf("%g*",rowElements[k]);
-                                                    if (si.isInteger(iColumn))
-                                                        printf("i%d ",iColumn);
+                                                    printf("%g*", rowElements[k]);
+                                                    if(si.isInteger(iColumn))
+                                                        printf("i%d ", iColumn);
                                                     else
-                                                        printf("x%d ",iColumn);
+                                                        printf("x%d ", iColumn);
                                                 }
-                                                printf("<= %g\n",rowUpper[irow]);
+                                                printf("<= %g\n", rowUpper[irow]);
                                             }
 #endif
-                                            rowCut.addCutIfNotDuplicate(rc,irow);
+                                            rowCut.addCutIfNotDuplicate(rc, irow);
                                         }
                                     }
                                 }
                             }
-                            minR[irow]=saveMin[istackR];
-                            maxR[irow]=saveMax[istackR];
-                            markR[irow]=-1;
+                            minR[irow] = saveMin[istackR];
+                            maxR[irow] = saveMax[istackR];
+                            markR[irow] = -1;
                         }
                     }
                 }
@@ -10411,9 +10411,9 @@ CglProbing::probeSlacks( const OsiSolverInterface & si,
     delete [] element;
     delete [] colsol;
     // Add in row cuts
-    if (!ninfeas)
+    if(!ninfeas)
     {
-        rowCut.addCuts(cs,info->strengthenRow,0);
+        rowCut.addCuts(cs, info->strengthenRow, 0);
     }
     delete [] array;
     abort();
@@ -10424,48 +10424,48 @@ CglProbing::probeSlacks( const OsiSolverInterface & si,
 // Can give an array with 1 set to select, 0 to ignore
 // column bounds are tightened
 // If array given then values of 1 will be set to 0 if redundant
-int CglProbing::snapshot ( const OsiSolverInterface & si,
-                           char * possible,bool withObjective)
+int CglProbing::snapshot(const OsiSolverInterface & si,
+                         char* possible, bool withObjective)
 {
     deleteSnapshot();
     // Get basic problem information
 
-    numberColumns_=si.getNumCols();
-    numberRows_=si.getNumRows();
+    numberColumns_ = si.getNumCols();
+    numberRows_ = si.getNumRows();
     colLower_ = new double[numberColumns_];
     colUpper_ = new double[numberColumns_];
-    CoinMemcpyN(si.getColLower(),numberColumns_,colLower_);
-    CoinMemcpyN(si.getColUpper(),numberColumns_,colUpper_);
-    rowLower_= new double [numberRows_+1];
-    rowUpper_= new double [numberRows_+1];
-    CoinMemcpyN(si.getRowLower(),numberRows_,rowLower_);
-    CoinMemcpyN(si.getRowUpper(),numberRows_,rowUpper_);
+    CoinMemcpyN(si.getColLower(), numberColumns_, colLower_);
+    CoinMemcpyN(si.getColUpper(), numberColumns_, colUpper_);
+    rowLower_ = new double [numberRows_ + 1];
+    rowUpper_ = new double [numberRows_ + 1];
+    CoinMemcpyN(si.getRowLower(), numberRows_, rowLower_);
+    CoinMemcpyN(si.getRowUpper(), numberRows_, rowUpper_);
 
     int i;
-    if (possible)
+    if(possible)
     {
-        for (i=0; i<numberRows_; i++)
+        for(i = 0; i < numberRows_; i++)
         {
-            if (!possible[i])
+            if(!possible[i])
             {
-                rowLower_[i]=-COIN_DBL_MAX;
-                rowUpper_[i]=COIN_DBL_MAX;
+                rowLower_[i] = -COIN_DBL_MAX;
+                rowUpper_[i] = COIN_DBL_MAX;
             }
         }
     }
 
 
     // get integer variables
-    const char * intVarOriginal = si.getColType(true);
-    char * intVar = CoinCopyOfArray(intVarOriginal,numberColumns_);
-    numberIntegers_=0;
-    number01Integers_=0;
-    for (i=0; i<numberColumns_; i++)
+    const char* intVarOriginal = si.getColType(true);
+    char* intVar = CoinCopyOfArray(intVarOriginal, numberColumns_);
+    numberIntegers_ = 0;
+    number01Integers_ = 0;
+    for(i = 0; i < numberColumns_; i++)
     {
-        if (intVar[i])
+        if(intVar[i])
         {
             numberIntegers_++;
-            if (intVar[i]==1)
+            if(intVar[i] == 1)
             {
                 number01Integers_++;
             }
@@ -10474,51 +10474,51 @@ int CglProbing::snapshot ( const OsiSolverInterface & si,
 
     rowCopy_ = new CoinPackedMatrix(*si.getMatrixByRow());
 
-    int * column = rowCopy_->getMutableIndices();
-    const CoinBigIndex * rowStart = rowCopy_->getVectorStarts();
-    const int * rowLength = rowCopy_->getVectorLengths();
-    double * rowElements = rowCopy_->getMutableElements();
+    int* column = rowCopy_->getMutableIndices();
+    const CoinBigIndex* rowStart = rowCopy_->getVectorStarts();
+    const int* rowLength = rowCopy_->getVectorLengths();
+    double* rowElements = rowCopy_->getMutableElements();
     // Put negative first
-    int * column2 = new int[numberColumns_];
-    double * elements2 = new double[numberColumns_];
-    CoinBigIndex * rowStartPos = new CoinBigIndex [numberRows_];
-    for (int i=0; i<numberRows_; i++)
+    int* column2 = new int[numberColumns_];
+    double* elements2 = new double[numberColumns_];
+    CoinBigIndex* rowStartPos = new CoinBigIndex [numberRows_];
+    for(int i = 0; i < numberRows_; i++)
     {
         CoinBigIndex start = rowStart[i];
         CoinBigIndex end = start + rowLength[i];
-        int nOther=0;
-        for (CoinBigIndex j=start; j<end ; j++)
+        int nOther = 0;
+        for(CoinBigIndex j = start; j < end ; j++)
         {
             int iColumn = column[j];
             double value = rowElements[j];
-            if (value<0.0)
+            if(value < 0.0)
             {
-                rowElements[start]=value;
-                column[start++]=iColumn;
+                rowElements[start] = value;
+                column[start++] = iColumn;
             }
             else
             {
-                elements2[nOther]=value;
-                column2[nOther++]=iColumn;
+                elements2[nOther] = value;
+                column2[nOther++] = iColumn;
             }
         }
         rowStartPos[i] = start;
-        for (int k=0; k<nOther; k++)
+        for(int k = 0; k < nOther; k++)
         {
-            rowElements[start]=elements2[k];
-            column[start++]=column2[k];
+            rowElements[start] = elements2[k];
+            column[start++] = column2[k];
         }
     }
     delete [] column2;
     delete [] elements2;
 
-    int returnCode=0;
-    int ninfeas=
+    int returnCode = 0;
+    int ninfeas =
         tighten(colLower_, colUpper_, column, rowElements,
-                rowStart, NULL,rowLength, rowLower_, rowUpper_,
+                rowStart, NULL, rowLength, rowLower_, rowUpper_,
                 numberRows_, numberColumns_, intVar, 5, primalTolerance_);
     delete [] rowStartPos;
-    if (ninfeas)
+    if(ninfeas)
     {
         // let someone else find out
         returnCode = 1;
@@ -10530,75 +10530,75 @@ int CglProbing::snapshot ( const OsiSolverInterface & si,
 
     // do integer stuff for mode 0
     cutVector_ = new disaggregation [number01Integers_];
-    memset(cutVector_,0,number01Integers_*sizeof(disaggregation));
-    number01Integers_=0;
-    for (i=0; i<numberColumns_; i++)
+    memset(cutVector_, 0, number01Integers_ * sizeof(disaggregation));
+    number01Integers_ = 0;
+    for(i = 0; i < numberColumns_; i++)
     {
-        if (intVar[i]==1)
-            cutVector_[number01Integers_++].sequence=i;
+        if(intVar[i] == 1)
+            cutVector_[number01Integers_++].sequence = i;
     }
     delete [] intVar;
 
     // now delete rows
-    if (possible)
+    if(possible)
     {
-        for (i=0; i<numberRows_; i++)
+        for(i = 0; i < numberRows_; i++)
         {
-            if (rowLower_[i]<-1.0e30&&rowUpper_[i]>1.0e30)
-                possible[i]=0;
+            if(rowLower_[i] < -1.0e30 && rowUpper_[i] > 1.0e30)
+                possible[i] = 0;
         }
     }
-    int * index = new int[numberRows_];
-    int nDrop=0,nKeep=0;
-    for (i=0; i<numberRows_; i++)
+    int* index = new int[numberRows_];
+    int nDrop = 0, nKeep = 0;
+    for(i = 0; i < numberRows_; i++)
     {
-        if (rowLower_[i]<-1.0e30&&rowUpper_[i]>1.0e30)
+        if(rowLower_[i] < -1.0e30 && rowUpper_[i] > 1.0e30)
         {
-            index[nDrop++]=i;
+            index[nDrop++] = i;
         }
         else
         {
-            rowLower_[nKeep]=rowLower_[i];
-            rowUpper_[nKeep++]=rowUpper_[i];
+            rowLower_[nKeep] = rowLower_[i];
+            rowUpper_[nKeep++] = rowUpper_[i];
         }
     }
-    numberRows_=nKeep;
-    if (nDrop)
-        rowCopy_->deleteRows(nDrop,index);
+    numberRows_ = nKeep;
+    if(nDrop)
+        rowCopy_->deleteRows(nDrop, index);
     delete [] index;
-    if (withObjective)
+    if(withObjective)
     {
         // add in objective
-        int * columns = new int[numberColumns_];
-        double * elements = new double[numberColumns_];
-        int n=0;
-        const double * objective = si.getObjCoefficients();
-        bool maximize = (si.getObjSense()==-1);
-        for (i=0; i<numberColumns_; i++)
+        int* columns = new int[numberColumns_];
+        double* elements = new double[numberColumns_];
+        int n = 0;
+        const double* objective = si.getObjCoefficients();
+        bool maximize = (si.getObjSense() == -1);
+        for(i = 0; i < numberColumns_; i++)
         {
-            if (objective[i])
+            if(objective[i])
             {
-                elements[n]= (maximize) ? -objective[i] : objective[i];
-                columns[n++]=i;
+                elements[n] = (maximize) ? -objective[i] : objective[i];
+                columns[n++] = i;
             }
         }
-        rowCopy_->appendRow(n,columns,elements);
+        rowCopy_->appendRow(n, columns, elements);
         delete [] columns;
         delete [] elements;
         numberRows_++;
     }
     // create column copy
-    if (rowCopy_->getNumElements())
+    if(rowCopy_->getNumElements())
     {
-        columnCopy_=new CoinPackedMatrix(*rowCopy_,0,0,true);
+        columnCopy_ = new CoinPackedMatrix(*rowCopy_, 0, 0, true);
     }
     else
     {
-        columnCopy_=new CoinPackedMatrix();
+        columnCopy_ = new CoinPackedMatrix();
     }
     // make sure big enough - in case too many rows dropped
-    columnCopy_->setDimensions(numberRows_,numberColumns_);
-    rowCopy_->setDimensions(numberRows_,numberColumns_);
+    columnCopy_->setDimensions(numberRows_, numberColumns_);
+    rowCopy_->setDimensions(numberRows_, numberColumns_);
     return returnCode;
 }
 // Delete snapshot
@@ -10610,26 +10610,26 @@ void CglProbing::deleteSnapshot()
     delete [] colUpper_;
     delete rowCopy_;
     delete columnCopy_;
-    rowCopy_=NULL;
-    columnCopy_=NULL;
-    rowLower_=NULL;
-    rowUpper_=NULL;
-    colLower_=NULL;
-    colUpper_=NULL;
+    rowCopy_ = NULL;
+    columnCopy_ = NULL;
+    rowLower_ = NULL;
+    rowUpper_ = NULL;
+    colLower_ = NULL;
+    colUpper_ = NULL;
     int i;
-    for (i=0; i<number01Integers_; i++)
+    for(i = 0; i < number01Integers_; i++)
     {
         delete [] cutVector_[i].index;
     }
     delete [] cutVector_;
-    numberIntegers_=0;
-    number01Integers_=0;
-    cutVector_=NULL;
+    numberIntegers_ = 0;
+    number01Integers_ = 0;
+    cutVector_ = NULL;
 }
 // Mode stuff
 void CglProbing::setMode(int mode)
 {
-    if (mode>=0&&mode<3)
+    if(mode >= 0 && mode < 3)
     {
         // take off bottom bit
         mode_ &= ~15;
@@ -10638,13 +10638,13 @@ void CglProbing::setMode(int mode)
 }
 int CglProbing::getMode() const
 {
-    return mode_&15;
+    return mode_ & 15;
 }
 // Set maximum number of passes per node
 void CglProbing::setMaxPass(int value)
 {
-    if (value>0)
-        maxPass_=value;
+    if(value > 0)
+        maxPass_ = value;
 }
 // Get maximum number of passes per node
 int CglProbing::getMaxPass() const
@@ -10654,8 +10654,8 @@ int CglProbing::getMaxPass() const
 // Set log level
 void CglProbing::setLogLevel(int value)
 {
-    if (value>=0)
-        logLevel_=value;
+    if(value >= 0)
+        logLevel_ = value;
 }
 // Get log level
 int CglProbing::getLogLevel() const
@@ -10665,8 +10665,8 @@ int CglProbing::getLogLevel() const
 // Set maximum number of unsatisfied variables to look at
 void CglProbing::setMaxProbe(int value)
 {
-    if (value>=0)
-        maxProbe_=value;
+    if(value >= 0)
+        maxProbe_ = value;
 }
 // Get maximum number of unsatisfied variables to look at
 int CglProbing::getMaxProbe() const
@@ -10676,8 +10676,8 @@ int CglProbing::getMaxProbe() const
 // Set maximum number of variables to look at in one probe
 void CglProbing::setMaxLook(int value)
 {
-    if (value>=0)
-        maxStack_=value;
+    if(value >= 0)
+        maxStack_ = value;
 }
 // Get maximum number of variables to look at in one probe
 int CglProbing::getMaxLook() const
@@ -10687,8 +10687,8 @@ int CglProbing::getMaxLook() const
 // Set maximum number of elements in row for scan
 void CglProbing::setMaxElements(int value)
 {
-    if (value>0)
-        maxElements_=value;
+    if(value > 0)
+        maxElements_ = value;
 }
 // Get maximum number of elements in row for scan
 int CglProbing::getMaxElements() const
@@ -10698,8 +10698,8 @@ int CglProbing::getMaxElements() const
 // Set maximum number of passes per node (root node)
 void CglProbing::setMaxPassRoot(int value)
 {
-    if (value>0)
-        maxPassRoot_=value;
+    if(value > 0)
+        maxPassRoot_ = value;
 }
 // Get maximum number of passes per node (root node)
 int CglProbing::getMaxPassRoot() const
@@ -10709,8 +10709,8 @@ int CglProbing::getMaxPassRoot() const
 // Set maximum number of unsatisfied variables to look at (root node)
 void CglProbing::setMaxProbeRoot(int value)
 {
-    if (value>0)
-        maxProbeRoot_=value;
+    if(value > 0)
+        maxProbeRoot_ = value;
 }
 // Get maximum number of unsatisfied variables to look at (root node)
 int CglProbing::getMaxProbeRoot() const
@@ -10720,8 +10720,8 @@ int CglProbing::getMaxProbeRoot() const
 // Set maximum number of variables to look at in one probe (root node)
 void CglProbing::setMaxLookRoot(int value)
 {
-    if (value>0)
-        maxStackRoot_=value;
+    if(value > 0)
+        maxStackRoot_ = value;
 }
 // Get maximum number of variables to look at in one probe (root node)
 int CglProbing::getMaxLookRoot() const
@@ -10731,8 +10731,8 @@ int CglProbing::getMaxLookRoot() const
 // Set maximum number of elements in row for scan (root node)
 void CglProbing::setMaxElementsRoot(int value)
 {
-    if (value>0)
-        maxElementsRoot_=value;
+    if(value > 0)
+        maxElementsRoot_ = value;
 }
 // Get maximum number of elements in row for scan (root node)
 int CglProbing::getMaxElementsRoot() const
@@ -10742,7 +10742,7 @@ int CglProbing::getMaxElementsRoot() const
 // Set whether to use objective
 void CglProbing::setUsingObjective(int yesNo)
 {
-    usingObjective_=yesNo;
+    usingObjective_ = yesNo;
 }
 // Get whether objective is being used
 int CglProbing::getUsingObjective() const
@@ -10752,8 +10752,8 @@ int CglProbing::getUsingObjective() const
 // Decide whether to do row cuts
 void CglProbing::setRowCuts(int type)
 {
-    if (type>-5&&type<5)
-        rowCuts_=type;
+    if(type > -5 && type < 5)
+        rowCuts_ = type;
 }
 // Returns row cuts generation type
 int CglProbing::rowCuts() const
@@ -10761,22 +10761,22 @@ int CglProbing::rowCuts() const
     return rowCuts_;
 }
 // Returns tight lower
-const double * CglProbing::tightLower() const
+const double* CglProbing::tightLower() const
 {
     return colLower_;
 }
 // Returns tight upper
-const double * CglProbing::tightUpper() const
+const double* CglProbing::tightUpper() const
 {
     return colUpper_;
 }
 // Returns relaxed Row lower
-const double * CglProbing::relaxedRowLower() const
+const double* CglProbing::relaxedRowLower() const
 {
     return rowLower_;
 }
 // Returns relaxed Row upper
-const double * CglProbing::relaxedRowUpper() const
+const double* CglProbing::relaxedRowUpper() const
 {
     return rowUpper_;
 }
@@ -10785,7 +10785,7 @@ const double * CglProbing::relaxedRowUpper() const
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-CglProbing::CglProbing ()
+CglProbing::CglProbing()
     :
     CglCutGenerator(),
     primalTolerance_(1.0e-07),
@@ -10803,37 +10803,37 @@ CglProbing::CglProbing ()
     usingObjective_(0)
 {
 
-    numberRows_=0;
-    numberColumns_=0;
-    rowCopy_=NULL;
-    columnCopy_=NULL;
-    rowLower_=NULL;
-    rowUpper_=NULL;
-    colLower_=NULL;
-    colUpper_=NULL;
-    numberIntegers_=0;
-    number01Integers_=0;
-    numberThisTime_=0;
-    totalTimesCalled_=0;
-    lookedAt_=NULL;
-    cutVector_=NULL;
-    numberCliques_=0;
-    cliqueType_=NULL;
-    cliqueStart_=NULL;
-    cliqueEntry_=NULL;
-    oneFixStart_=NULL;
-    zeroFixStart_=NULL;
-    endFixStart_=NULL;
-    whichClique_=NULL;
-    cliqueRow_=NULL;
-    cliqueRowStart_=NULL;
-    tightenBounds_=NULL;
+    numberRows_ = 0;
+    numberColumns_ = 0;
+    rowCopy_ = NULL;
+    columnCopy_ = NULL;
+    rowLower_ = NULL;
+    rowUpper_ = NULL;
+    colLower_ = NULL;
+    colUpper_ = NULL;
+    numberIntegers_ = 0;
+    number01Integers_ = 0;
+    numberThisTime_ = 0;
+    totalTimesCalled_ = 0;
+    lookedAt_ = NULL;
+    cutVector_ = NULL;
+    numberCliques_ = 0;
+    cliqueType_ = NULL;
+    cliqueStart_ = NULL;
+    cliqueEntry_ = NULL;
+    oneFixStart_ = NULL;
+    zeroFixStart_ = NULL;
+    endFixStart_ = NULL;
+    whichClique_ = NULL;
+    cliqueRow_ = NULL;
+    cliqueRowStart_ = NULL;
+    tightenBounds_ = NULL;
 }
 
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-CglProbing::CglProbing (  const CglProbing & rhs)
+CglProbing::CglProbing(const CglProbing & rhs)
     :
     CglCutGenerator(rhs),
     primalTolerance_(rhs.primalTolerance_),
@@ -10850,118 +10850,118 @@ CglProbing::CglProbing (  const CglProbing & rhs)
     maxElementsRoot_(rhs.maxElementsRoot_),
     usingObjective_(rhs.usingObjective_)
 {
-    numberRows_=rhs.numberRows_;
-    numberColumns_=rhs.numberColumns_;
-    numberCliques_=rhs.numberCliques_;
-    if (rhs.rowCopy_)
+    numberRows_ = rhs.numberRows_;
+    numberColumns_ = rhs.numberColumns_;
+    numberCliques_ = rhs.numberCliques_;
+    if(rhs.rowCopy_)
     {
-        rowCopy_= new CoinPackedMatrix(*(rhs.rowCopy_));
-        columnCopy_= new CoinPackedMatrix(*(rhs.columnCopy_));
-        rowLower_=new double[numberRows_];
-        CoinMemcpyN(rhs.rowLower_,numberRows_,rowLower_);
-        rowUpper_=new double[numberRows_];
-        CoinMemcpyN(rhs.rowUpper_,numberRows_,rowUpper_);
-        colLower_=new double[numberColumns_];
-        CoinMemcpyN(rhs.colLower_,numberColumns_,colLower_);
-        colUpper_=new double[numberColumns_];
-        CoinMemcpyN(rhs.colUpper_,numberColumns_,colUpper_);
+        rowCopy_ = new CoinPackedMatrix(*(rhs.rowCopy_));
+        columnCopy_ = new CoinPackedMatrix(*(rhs.columnCopy_));
+        rowLower_ = new double[numberRows_];
+        CoinMemcpyN(rhs.rowLower_, numberRows_, rowLower_);
+        rowUpper_ = new double[numberRows_];
+        CoinMemcpyN(rhs.rowUpper_, numberRows_, rowUpper_);
+        colLower_ = new double[numberColumns_];
+        CoinMemcpyN(rhs.colLower_, numberColumns_, colLower_);
+        colUpper_ = new double[numberColumns_];
+        CoinMemcpyN(rhs.colUpper_, numberColumns_, colUpper_);
         int i;
-        numberIntegers_=rhs.numberIntegers_;
-        number01Integers_=rhs.number01Integers_;
-        cutVector_=new disaggregation [number01Integers_];
-        CoinMemcpyN(rhs.cutVector_,number01Integers_,cutVector_);
-        for (i=0; i<number01Integers_; i++)
+        numberIntegers_ = rhs.numberIntegers_;
+        number01Integers_ = rhs.number01Integers_;
+        cutVector_ = new disaggregation [number01Integers_];
+        CoinMemcpyN(rhs.cutVector_, number01Integers_, cutVector_);
+        for(i = 0; i < number01Integers_; i++)
         {
-            if (cutVector_[i].index)
+            if(cutVector_[i].index)
             {
-                cutVector_[i].index = CoinCopyOfArray(rhs.cutVector_[i].index,cutVector_[i].length);
+                cutVector_[i].index = CoinCopyOfArray(rhs.cutVector_[i].index, cutVector_[i].length);
             }
         }
     }
     else
     {
-        rowCopy_=NULL;
-        columnCopy_=NULL;
-        rowLower_=NULL;
-        rowUpper_=NULL;
-        colLower_=NULL;
-        colUpper_=NULL;
-        numberIntegers_=0;
-        number01Integers_=0;
-        cutVector_=NULL;
+        rowCopy_ = NULL;
+        columnCopy_ = NULL;
+        rowLower_ = NULL;
+        rowUpper_ = NULL;
+        colLower_ = NULL;
+        colUpper_ = NULL;
+        numberIntegers_ = 0;
+        number01Integers_ = 0;
+        cutVector_ = NULL;
     }
-    numberThisTime_=rhs.numberThisTime_;
-    totalTimesCalled_=rhs.totalTimesCalled_;
-    if (numberColumns_)
-        lookedAt_=CoinCopyOfArray(rhs.lookedAt_,numberColumns_);
+    numberThisTime_ = rhs.numberThisTime_;
+    totalTimesCalled_ = rhs.totalTimesCalled_;
+    if(numberColumns_)
+        lookedAt_ = CoinCopyOfArray(rhs.lookedAt_, numberColumns_);
     else
         lookedAt_ = NULL;
-    if (numberCliques_)
+    if(numberCliques_)
     {
         cliqueType_ = new cliqueType [numberCliques_];
-        CoinMemcpyN(rhs.cliqueType_,numberCliques_,cliqueType_);
-        cliqueStart_ = new int [numberCliques_+1];
-        CoinMemcpyN(rhs.cliqueStart_,(numberCliques_+1),cliqueStart_);
+        CoinMemcpyN(rhs.cliqueType_, numberCliques_, cliqueType_);
+        cliqueStart_ = new int [numberCliques_ + 1];
+        CoinMemcpyN(rhs.cliqueStart_, (numberCliques_ + 1), cliqueStart_);
         int n = cliqueStart_[numberCliques_];
         cliqueEntry_ = new cliqueEntry [n];
-        CoinMemcpyN(rhs.cliqueEntry_,n,cliqueEntry_);
+        CoinMemcpyN(rhs.cliqueEntry_, n, cliqueEntry_);
         oneFixStart_ = new int [numberColumns_];
-        CoinMemcpyN(rhs.oneFixStart_,numberColumns_,oneFixStart_);
+        CoinMemcpyN(rhs.oneFixStart_, numberColumns_, oneFixStart_);
         zeroFixStart_ = new int [numberColumns_];
-        CoinMemcpyN(rhs.zeroFixStart_,numberColumns_,zeroFixStart_);
+        CoinMemcpyN(rhs.zeroFixStart_, numberColumns_, zeroFixStart_);
         endFixStart_ = new int [numberColumns_];
-        CoinMemcpyN(rhs.endFixStart_,numberColumns_,endFixStart_);
-        int n2=-1;
-        for (int i=numberColumns_-1; i>=0; i--)
+        CoinMemcpyN(rhs.endFixStart_, numberColumns_, endFixStart_);
+        int n2 = -1;
+        for(int i = numberColumns_ - 1; i >= 0; i--)
         {
-            if (oneFixStart_[i]>=0)
+            if(oneFixStart_[i] >= 0)
             {
-                n2=endFixStart_[i];
+                n2 = endFixStart_[i];
                 break;
             }
         }
-        assert (n==n2);
+        assert(n == n2);
         whichClique_ = new int [n];
-        CoinMemcpyN(rhs.whichClique_,n,whichClique_);
-        if (rhs.cliqueRowStart_)
+        CoinMemcpyN(rhs.whichClique_, n, whichClique_);
+        if(rhs.cliqueRowStart_)
         {
-            cliqueRowStart_ = CoinCopyOfArray(rhs.cliqueRowStart_,numberRows_+1);
-            n=cliqueRowStart_[numberRows_];
-            cliqueRow_ = CoinCopyOfArray(rhs.cliqueRow_,n);
+            cliqueRowStart_ = CoinCopyOfArray(rhs.cliqueRowStart_, numberRows_ + 1);
+            n = cliqueRowStart_[numberRows_];
+            cliqueRow_ = CoinCopyOfArray(rhs.cliqueRow_, n);
         }
         else
         {
-            cliqueRow_=NULL;
-            cliqueRowStart_=NULL;
+            cliqueRow_ = NULL;
+            cliqueRowStart_ = NULL;
         }
     }
     else
     {
-        cliqueType_=NULL;
-        cliqueStart_=NULL;
-        cliqueEntry_=NULL;
-        oneFixStart_=NULL;
-        zeroFixStart_=NULL;
-        endFixStart_=NULL;
-        cliqueRow_=NULL;
-        cliqueRowStart_=NULL;
-        whichClique_=NULL;
+        cliqueType_ = NULL;
+        cliqueStart_ = NULL;
+        cliqueEntry_ = NULL;
+        oneFixStart_ = NULL;
+        zeroFixStart_ = NULL;
+        endFixStart_ = NULL;
+        cliqueRow_ = NULL;
+        cliqueRowStart_ = NULL;
+        whichClique_ = NULL;
     }
-    if (rhs.tightenBounds_)
+    if(rhs.tightenBounds_)
     {
-        assert (numberColumns_);
-        tightenBounds_=CoinCopyOfArray(rhs.tightenBounds_,numberColumns_);
+        assert(numberColumns_);
+        tightenBounds_ = CoinCopyOfArray(rhs.tightenBounds_, numberColumns_);
     }
     else
     {
-        tightenBounds_=NULL;
+        tightenBounds_ = NULL;
     }
 }
 
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CglCutGenerator *
+CglCutGenerator*
 CglProbing::clone() const
 {
     return new CglProbing(*this);
@@ -10970,7 +10970,7 @@ CglProbing::clone() const
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-CglProbing::~CglProbing ()
+CglProbing::~CglProbing()
 {
     // free memory
     delete [] rowLower_;
@@ -10989,9 +10989,9 @@ CglProbing::~CglProbing ()
     delete [] whichClique_;
     delete [] cliqueRow_;
     delete [] cliqueRowStart_;
-    if (cutVector_)
+    if(cutVector_)
     {
-        for (int i=0; i<number01Integers_; i++)
+        for(int i = 0; i < number01Integers_; i++)
         {
             delete [] cutVector_[i].index;
         }
@@ -11005,14 +11005,14 @@ CglProbing::~CglProbing ()
 //-------------------------------------------------------------------
 CglProbing &
 CglProbing::operator=(
-    const CglProbing& rhs)
+    const CglProbing & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         CglCutGenerator::operator=(rhs);
-        primalTolerance_=rhs.primalTolerance_;
-        numberRows_=rhs.numberRows_;
-        numberColumns_=rhs.numberColumns_;
+        primalTolerance_ = rhs.primalTolerance_;
+        numberRows_ = rhs.numberRows_;
+        numberColumns_ = rhs.numberColumns_;
         delete [] rowLower_;
         delete [] rowUpper_;
         delete [] colLower_;
@@ -11030,126 +11030,126 @@ CglProbing::operator=(
         delete [] cliqueRow_;
         delete [] cliqueRowStart_;
         delete [] tightenBounds_;
-        mode_=rhs.mode_;
-        rowCuts_=rhs.rowCuts_;
-        maxPass_=rhs.maxPass_;
-        logLevel_=rhs.logLevel_;
-        maxProbe_=rhs.maxProbe_;
-        maxStack_=rhs.maxStack_;
+        mode_ = rhs.mode_;
+        rowCuts_ = rhs.rowCuts_;
+        maxPass_ = rhs.maxPass_;
+        logLevel_ = rhs.logLevel_;
+        maxProbe_ = rhs.maxProbe_;
+        maxStack_ = rhs.maxStack_;
         maxElements_ = rhs.maxElements_;
         maxPassRoot_ = rhs.maxPassRoot_;
         maxProbeRoot_ = rhs.maxProbeRoot_;
         maxStackRoot_ = rhs.maxStackRoot_;
         maxElementsRoot_ = rhs.maxElementsRoot_;
-        usingObjective_=rhs.usingObjective_;
-        numberCliques_=rhs.numberCliques_;
-        if (rhs.rowCopy_)
+        usingObjective_ = rhs.usingObjective_;
+        numberCliques_ = rhs.numberCliques_;
+        if(rhs.rowCopy_)
         {
-            rowCopy_= new CoinPackedMatrix(*(rhs.rowCopy_));
-            columnCopy_= new CoinPackedMatrix(*(rhs.columnCopy_));
-            rowLower_=new double[numberRows_];
-            CoinMemcpyN(rhs.rowLower_,numberRows_,rowLower_);
-            rowUpper_=new double[numberRows_];
-            CoinMemcpyN(rhs.rowUpper_,numberRows_,rowUpper_);
-            colLower_=new double[numberColumns_];
-            CoinMemcpyN(rhs.colLower_,numberColumns_,colLower_);
-            colUpper_=new double[numberColumns_];
-            CoinMemcpyN(rhs.colUpper_,numberColumns_,colUpper_);
+            rowCopy_ = new CoinPackedMatrix(*(rhs.rowCopy_));
+            columnCopy_ = new CoinPackedMatrix(*(rhs.columnCopy_));
+            rowLower_ = new double[numberRows_];
+            CoinMemcpyN(rhs.rowLower_, numberRows_, rowLower_);
+            rowUpper_ = new double[numberRows_];
+            CoinMemcpyN(rhs.rowUpper_, numberRows_, rowUpper_);
+            colLower_ = new double[numberColumns_];
+            CoinMemcpyN(rhs.colLower_, numberColumns_, colLower_);
+            colUpper_ = new double[numberColumns_];
+            CoinMemcpyN(rhs.colUpper_, numberColumns_, colUpper_);
             int i;
-            numberIntegers_=rhs.numberIntegers_;
-            number01Integers_=rhs.number01Integers_;
-            for (i=0; i<number01Integers_; i++)
+            numberIntegers_ = rhs.numberIntegers_;
+            number01Integers_ = rhs.number01Integers_;
+            for(i = 0; i < number01Integers_; i++)
             {
                 delete [] cutVector_[i].index;
             }
             delete [] cutVector_;
-            cutVector_=new disaggregation [number01Integers_];
-            CoinMemcpyN(rhs.cutVector_,number01Integers_,cutVector_);
-            for (i=0; i<number01Integers_; i++)
+            cutVector_ = new disaggregation [number01Integers_];
+            CoinMemcpyN(rhs.cutVector_, number01Integers_, cutVector_);
+            for(i = 0; i < number01Integers_; i++)
             {
-                if (cutVector_[i].index)
+                if(cutVector_[i].index)
                 {
-                    cutVector_[i].index = CoinCopyOfArray(rhs.cutVector_[i].index,cutVector_[i].length);
+                    cutVector_[i].index = CoinCopyOfArray(rhs.cutVector_[i].index, cutVector_[i].length);
                 }
             }
         }
         else
         {
-            rowCopy_=NULL;
-            columnCopy_=NULL;
-            rowLower_=NULL;
-            rowUpper_=NULL;
-            colLower_=NULL;
-            colUpper_=NULL;
-            numberIntegers_=0;
-            number01Integers_=0;
-            cutVector_=NULL;
+            rowCopy_ = NULL;
+            columnCopy_ = NULL;
+            rowLower_ = NULL;
+            rowUpper_ = NULL;
+            colLower_ = NULL;
+            colUpper_ = NULL;
+            numberIntegers_ = 0;
+            number01Integers_ = 0;
+            cutVector_ = NULL;
         }
-        numberThisTime_=rhs.numberThisTime_;
-        totalTimesCalled_=rhs.totalTimesCalled_;
-        if (numberColumns_)
-            lookedAt_=CoinCopyOfArray(rhs.lookedAt_,numberColumns_);
+        numberThisTime_ = rhs.numberThisTime_;
+        totalTimesCalled_ = rhs.totalTimesCalled_;
+        if(numberColumns_)
+            lookedAt_ = CoinCopyOfArray(rhs.lookedAt_, numberColumns_);
         else
             lookedAt_ = NULL;
-        if (numberCliques_)
+        if(numberCliques_)
         {
             cliqueType_ = new cliqueType [numberCliques_];
-            CoinMemcpyN(rhs.cliqueType_,numberCliques_,cliqueType_);
-            cliqueStart_ = new int [numberCliques_+1];
-            CoinMemcpyN(rhs.cliqueStart_,(numberCliques_+1),cliqueStart_);
+            CoinMemcpyN(rhs.cliqueType_, numberCliques_, cliqueType_);
+            cliqueStart_ = new int [numberCliques_ + 1];
+            CoinMemcpyN(rhs.cliqueStart_, (numberCliques_ + 1), cliqueStart_);
             int n = cliqueStart_[numberCliques_];
             cliqueEntry_ = new cliqueEntry [n];
-            CoinMemcpyN(rhs.cliqueEntry_,n,cliqueEntry_);
+            CoinMemcpyN(rhs.cliqueEntry_, n, cliqueEntry_);
             oneFixStart_ = new int [numberColumns_];
-            CoinMemcpyN(rhs.oneFixStart_,numberColumns_,oneFixStart_);
+            CoinMemcpyN(rhs.oneFixStart_, numberColumns_, oneFixStart_);
             zeroFixStart_ = new int [numberColumns_];
-            CoinMemcpyN(rhs.zeroFixStart_,numberColumns_,zeroFixStart_);
+            CoinMemcpyN(rhs.zeroFixStart_, numberColumns_, zeroFixStart_);
             endFixStart_ = new int [numberColumns_];
-            CoinMemcpyN(rhs.endFixStart_,numberColumns_,endFixStart_);
-            int n2=-1;
-            for (int i=numberColumns_-1; i>=0; i--)
+            CoinMemcpyN(rhs.endFixStart_, numberColumns_, endFixStart_);
+            int n2 = -1;
+            for(int i = numberColumns_ - 1; i >= 0; i--)
             {
-                if (oneFixStart_[i]>=0)
+                if(oneFixStart_[i] >= 0)
                 {
-                    n2=endFixStart_[i];
+                    n2 = endFixStart_[i];
                     break;
                 }
             }
-            assert (n==n2);
+            assert(n == n2);
             whichClique_ = new int [n];
-            CoinMemcpyN(rhs.whichClique_,n,whichClique_);
-            if (rhs.cliqueRowStart_)
+            CoinMemcpyN(rhs.whichClique_, n, whichClique_);
+            if(rhs.cliqueRowStart_)
             {
-                cliqueRowStart_ = CoinCopyOfArray(rhs.cliqueRowStart_,numberRows_+1);
-                n=cliqueRowStart_[numberRows_];
-                cliqueRow_ = CoinCopyOfArray(rhs.cliqueRow_,n);
+                cliqueRowStart_ = CoinCopyOfArray(rhs.cliqueRowStart_, numberRows_ + 1);
+                n = cliqueRowStart_[numberRows_];
+                cliqueRow_ = CoinCopyOfArray(rhs.cliqueRow_, n);
             }
             else
             {
-                cliqueRow_=NULL;
-                cliqueRowStart_=NULL;
+                cliqueRow_ = NULL;
+                cliqueRowStart_ = NULL;
             }
         }
         else
         {
-            cliqueType_=NULL;
-            cliqueStart_=NULL;
-            cliqueEntry_=NULL;
-            oneFixStart_=NULL;
-            zeroFixStart_=NULL;
-            endFixStart_=NULL;
-            whichClique_=NULL;
-            cliqueRow_=NULL;
-            cliqueRowStart_=NULL;
+            cliqueType_ = NULL;
+            cliqueStart_ = NULL;
+            cliqueEntry_ = NULL;
+            oneFixStart_ = NULL;
+            zeroFixStart_ = NULL;
+            endFixStart_ = NULL;
+            whichClique_ = NULL;
+            cliqueRow_ = NULL;
+            cliqueRowStart_ = NULL;
         }
-        if (rhs.tightenBounds_)
+        if(rhs.tightenBounds_)
         {
-            assert (numberColumns_);
-            tightenBounds_=CoinCopyOfArray(rhs.tightenBounds_,numberColumns_);
+            assert(numberColumns_);
+            tightenBounds_ = CoinCopyOfArray(rhs.tightenBounds_, numberColumns_);
         }
         else
         {
-            tightenBounds_=NULL;
+            tightenBounds_ = NULL;
         }
     }
     return *this;
@@ -11157,12 +11157,12 @@ CglProbing::operator=(
 
 /// This can be used to refresh any inforamtion
 void
-CglProbing::refreshSolver(OsiSolverInterface * solver)
+CglProbing::refreshSolver(OsiSolverInterface* solver)
 {
-    if (rowCopy_)
+    if(rowCopy_)
     {
         // snapshot existed - redo
-        snapshot(*solver,NULL);
+        snapshot(*solver, NULL);
     }
 }
 /* Creates cliques for use by probing.
@@ -11170,374 +11170,374 @@ CglProbing::refreshSolver(OsiSolverInterface * solver)
    Returns number of cliques found.
 */
 int
-CglProbing::createCliques( OsiSolverInterface & si,
-                           int minimumSize, int maximumSize)
+CglProbing::createCliques(OsiSolverInterface & si,
+                          int minimumSize, int maximumSize)
 {
     // get rid of what is there
     deleteCliques();
     CoinPackedMatrix matrixByRow(*si.getMatrixByRow());
     int numberRows = si.getNumRows();
-    if (!rowCopy_)
-        numberRows_=numberRows;
+    if(!rowCopy_)
+        numberRows_ = numberRows;
     numberColumns_ = si.getNumCols();
 
-    numberCliques_=0;
-    int numberEntries=0;
-    int numberIntegers=0;
-    int * lookup = new int[numberColumns_];
+    numberCliques_ = 0;
+    int numberEntries = 0;
+    int numberIntegers = 0;
+    int* lookup = new int[numberColumns_];
     int i;
-    for (i=0; i<numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
     {
-        if (si.isBinary(i))
-            lookup[i]=numberIntegers++;
+        if(si.isBinary(i))
+            lookup[i] = numberIntegers++;
         else
-            lookup[i]=-1;
+            lookup[i] = -1;
     }
 
-    int * which = new int[numberColumns_];
-    int * whichRow = new int[numberRows];
+    int* which = new int[numberColumns_];
+    int* whichRow = new int[numberRows];
     // Statistics
-    int totalP1=0,totalM1=0;
-    int numberBig=0,totalBig=0;
-    int numberFixed=0;
+    int totalP1 = 0, totalM1 = 0;
+    int numberBig = 0, totalBig = 0;
+    int numberFixed = 0;
 
     // Row copy
-    const double * elementByRow = matrixByRow.getElements();
-    const int * column = matrixByRow.getIndices();
-    const CoinBigIndex * rowStart = matrixByRow.getVectorStarts();
-    const int * rowLength = matrixByRow.getVectorLengths();
+    const double* elementByRow = matrixByRow.getElements();
+    const int* column = matrixByRow.getIndices();
+    const CoinBigIndex* rowStart = matrixByRow.getVectorStarts();
+    const int* rowLength = matrixByRow.getVectorLengths();
 
     // Column lengths for slacks
-    const int * columnLength = si.getMatrixByCol()->getVectorLengths();
+    const int* columnLength = si.getMatrixByCol()->getVectorLengths();
 
-    const double * lower = si.getColLower();
-    const double * upper = si.getColUpper();
-    const double * rowLower = si.getRowLower();
-    const double * rowUpper = si.getRowUpper();
+    const double* lower = si.getColLower();
+    const double* upper = si.getColUpper();
+    const double* rowLower = si.getRowLower();
+    const double* rowUpper = si.getRowUpper();
     int iRow;
-    for (iRow=0; iRow<numberRows; iRow++)
+    for(iRow = 0; iRow < numberRows; iRow++)
     {
-        int numberP1=0, numberM1=0;
+        int numberP1 = 0, numberM1 = 0;
         int j;
-        double upperValue=rowUpper[iRow];
-        double lowerValue=rowLower[iRow];
-        bool good=true;
+        double upperValue = rowUpper[iRow];
+        double lowerValue = rowLower[iRow];
+        bool good = true;
         int slack = -1;
-        for (j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+        for(j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
         {
             int iColumn = column[j];
-            int iInteger=lookup[iColumn];
-            if (upper[iColumn]-lower[iColumn]<1.0e-8)
+            int iInteger = lookup[iColumn];
+            if(upper[iColumn] - lower[iColumn] < 1.0e-8)
             {
                 // fixed
-                upperValue -= lower[iColumn]*elementByRow[j];
-                lowerValue -= lower[iColumn]*elementByRow[j];
+                upperValue -= lower[iColumn] * elementByRow[j];
+                lowerValue -= lower[iColumn] * elementByRow[j];
                 continue;
             }
-            else if (upper[iColumn]!=1.0||lower[iColumn]!=0.0)
+            else if(upper[iColumn] != 1.0 || lower[iColumn] != 0.0)
             {
                 good = false;
                 break;
             }
-            else if (iInteger<0)
+            else if(iInteger < 0)
             {
                 good = false;
                 break;
             }
             else
             {
-                if (columnLength[iColumn]==1)
+                if(columnLength[iColumn] == 1)
                     slack = iInteger;
             }
-            if (fabs(elementByRow[j])!=1.0)
+            if(fabs(elementByRow[j]) != 1.0)
             {
-                good=false;
+                good = false;
                 break;
             }
-            else if (elementByRow[j]>0.0)
+            else if(elementByRow[j] > 0.0)
             {
-                which[numberP1++]=iColumn;
+                which[numberP1++] = iColumn;
             }
             else
             {
                 numberM1++;
-                which[numberIntegers-numberM1]=iColumn;
+                which[numberIntegers - numberM1] = iColumn;
             }
         }
-        int iUpper = static_cast<int> (floor(upperValue+1.0e-5));
-        int iLower = static_cast<int> (ceil(lowerValue-1.0e-5));
-        int state=0;
-        if (upperValue<1.0e6)
+        int iUpper = static_cast<int>(floor(upperValue + 1.0e-5));
+        int iLower = static_cast<int>(ceil(lowerValue - 1.0e-5));
+        int state = 0;
+        if(upperValue < 1.0e6)
         {
-            if (iUpper==1-numberM1)
-                state=1;
-            else if (iUpper==-numberM1)
-                state=2;
-            else if (iUpper<-numberM1)
-                state=3;
+            if(iUpper == 1 - numberM1)
+                state = 1;
+            else if(iUpper == -numberM1)
+                state = 2;
+            else if(iUpper < -numberM1)
+                state = 3;
         }
-        if (!state&&lowerValue>-1.0e6)
+        if(!state && lowerValue > -1.0e6)
         {
-            if (-iLower==1-numberP1)
-                state=-1;
-            else if (-iLower==-numberP1)
-                state=-2;
-            else if (-iLower<-numberP1)
-                state=-3;
+            if(-iLower == 1 - numberP1)
+                state = -1;
+            else if(-iLower == -numberP1)
+                state = -2;
+            else if(-iLower < -numberP1)
+                state = -3;
         }
-        if (good&&state)
+        if(good && state)
         {
-            if (abs(state)==3)
+            if(abs(state) == 3)
             {
                 // infeasible
                 numberCliques_ = -99999;
                 break;
             }
-            else if (abs(state)==2)
+            else if(abs(state) == 2)
             {
                 // we can fix all
-                numberFixed += numberP1+numberM1;
-                if (state>0)
+                numberFixed += numberP1 + numberM1;
+                if(state > 0)
                 {
                     // fix all +1 at 0, -1 at 1
-                    for (i=0; i<numberP1; i++)
-                        si.setColUpper(which[i],0.0);
-                    for (i=0; i<numberM1; i++)
-                        si.setColLower(which[numberIntegers-i-1],
+                    for(i = 0; i < numberP1; i++)
+                        si.setColUpper(which[i], 0.0);
+                    for(i = 0; i < numberM1; i++)
+                        si.setColLower(which[numberIntegers - i - 1],
                                        1.0);
                 }
                 else
                 {
                     // fix all +1 at 1, -1 at 0
-                    for (i=0; i<numberP1; i++)
-                        si.setColLower(which[i],1.0);
-                    for (i=0; i<numberM1; i++)
-                        si.setColUpper(which[numberIntegers-i-1],
+                    for(i = 0; i < numberP1; i++)
+                        si.setColLower(which[i], 1.0);
+                    for(i = 0; i < numberM1; i++)
+                        si.setColUpper(which[numberIntegers - i - 1],
                                        0.0);
                 }
             }
             else
             {
-                int length = numberP1+numberM1;
+                int length = numberP1 + numberM1;
                 totalP1 += numberP1;
                 totalM1 += numberM1;
-                if (length >= minimumSize&&length<maximumSize)
+                if(length >= minimumSize && length < maximumSize)
                 {
-                    whichRow[numberCliques_++]=iRow;
+                    whichRow[numberCliques_++] = iRow;
                     numberEntries += length;
                 }
-                else if (numberP1+numberM1 >= maximumSize)
+                else if(numberP1 + numberM1 >= maximumSize)
                 {
                     // too big
                     numberBig++;
-                    totalBig += numberP1+numberM1;
+                    totalBig += numberP1 + numberM1;
                 }
             }
         }
     }
-    if (numberCliques_<0)
+    if(numberCliques_ < 0)
     {
-        if (logLevel_)
+        if(logLevel_)
             printf("*** Problem infeasible\n");
     }
     else
     {
-        if (numberCliques_)
+        if(numberCliques_)
         {
-            if (logLevel_)
+            if(logLevel_)
                 printf("%d cliques of average size %g found, %d P1, %d M1\n",
                        numberCliques_,
-                       (static_cast<double>(totalP1+totalM1))/
-                       (static_cast<double> (numberCliques_)),
-                       totalP1,totalM1);
+                       (static_cast<double>(totalP1 + totalM1)) /
+                       (static_cast<double>(numberCliques_)),
+                       totalP1, totalM1);
         }
         else
         {
-            if (logLevel_>1)
+            if(logLevel_ > 1)
                 printf("No cliques found\n");
         }
-        if (numberBig)
+        if(numberBig)
         {
-            if (logLevel_)
+            if(logLevel_)
                 printf("%d large cliques ( >= %d) found, total %d\n",
-                       numberBig,maximumSize,totalBig);
+                       numberBig, maximumSize, totalBig);
         }
-        if (numberFixed)
+        if(numberFixed)
         {
-            if (logLevel_)
-                printf("%d variables fixed\n",numberFixed);
+            if(logLevel_)
+                printf("%d variables fixed\n", numberFixed);
         }
     }
-    if (numberCliques_>0)
+    if(numberCliques_ > 0)
     {
         cliqueType_ = new cliqueType [numberCliques_];
-        cliqueStart_ = new int [numberCliques_+1];
+        cliqueStart_ = new int [numberCliques_ + 1];
         cliqueEntry_ = new cliqueEntry [numberEntries];
         oneFixStart_ = new int [numberColumns_];
         zeroFixStart_ = new int [numberColumns_];
         endFixStart_ = new int [numberColumns_];
         whichClique_ = new int [numberEntries];
-        numberEntries=0;
-        cliqueStart_[0]=0;
-        for (i=0; i<numberColumns_; i++)
+        numberEntries = 0;
+        cliqueStart_[0] = 0;
+        for(i = 0; i < numberColumns_; i++)
         {
-            oneFixStart_[i]=-1;
-            zeroFixStart_[i]=-1;
-            endFixStart_[i]=-1;
+            oneFixStart_[i] = -1;
+            zeroFixStart_[i] = -1;
+            endFixStart_[i] = -1;
         }
         int iClique;
         // Possible some have been fixed
-        int numberCliques=numberCliques_;
-        numberCliques_=0;
-        for (iClique=0; iClique<numberCliques; iClique++)
+        int numberCliques = numberCliques_;
+        numberCliques_ = 0;
+        for(iClique = 0; iClique < numberCliques; iClique++)
         {
-            int iRow=whichRow[iClique];
-            whichRow[numberCliques_]=iRow;
-            int numberP1=0, numberM1=0;
+            int iRow = whichRow[iClique];
+            whichRow[numberCliques_] = iRow;
+            int numberP1 = 0, numberM1 = 0;
             int j;
-            double upperValue=rowUpper[iRow];
-            double lowerValue=rowLower[iRow];
-            for (j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+            double upperValue = rowUpper[iRow];
+            double lowerValue = rowLower[iRow];
+            for(j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
             {
                 int iColumn = column[j];
-                if (upper[iColumn]-lower[iColumn]<1.0e-8)
+                if(upper[iColumn] - lower[iColumn] < 1.0e-8)
                 {
                     // fixed
-                    upperValue -= lower[iColumn]*elementByRow[j];
-                    lowerValue -= lower[iColumn]*elementByRow[j];
+                    upperValue -= lower[iColumn] * elementByRow[j];
+                    lowerValue -= lower[iColumn] * elementByRow[j];
                     continue;
                 }
-                if (elementByRow[j]>0.0)
+                if(elementByRow[j] > 0.0)
                 {
-                    which[numberP1++]=iColumn;
+                    which[numberP1++] = iColumn;
                 }
                 else
                 {
                     numberM1++;
-                    which[numberIntegers-numberM1]=iColumn;
+                    which[numberIntegers - numberM1] = iColumn;
                 }
             }
-            int iUpper = static_cast<int> (floor(upperValue+1.0e-5));
-            int iLower = static_cast<int> (ceil(lowerValue-1.0e-5));
-            int state=0;
-            if (upperValue<1.0e6)
+            int iUpper = static_cast<int>(floor(upperValue + 1.0e-5));
+            int iLower = static_cast<int>(ceil(lowerValue - 1.0e-5));
+            int state = 0;
+            if(upperValue < 1.0e6)
             {
-                if (iUpper==1-numberM1)
-                    state=1;
+                if(iUpper == 1 - numberM1)
+                    state = 1;
             }
-            if (!state&&lowerValue>-1.0e6)
+            if(!state && lowerValue > -1.0e6)
             {
-                state=-1;
+                state = -1;
             }
-            if (abs(state)!=1)
+            if(abs(state) != 1)
                 continue; // must have been fixed
-            if (iLower==iUpper)
+            if(iLower == iUpper)
             {
-                cliqueType_[numberCliques_].equality=1;
+                cliqueType_[numberCliques_].equality = 1;
             }
             else
             {
-                cliqueType_[numberCliques_].equality=0;
+                cliqueType_[numberCliques_].equality = 0;
             }
-            if (state>0)
+            if(state > 0)
             {
-                for (i=0; i<numberP1; i++)
+                for(i = 0; i < numberP1; i++)
                 {
                     // 1 is strong branch
                     int iColumn = which[i];
-                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries],iColumn);
-                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries],true);
+                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries], iColumn);
+                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries], true);
                     numberEntries++;
                     // zero counts
-                    oneFixStart_[iColumn]=0;
-                    zeroFixStart_[iColumn]=0;
+                    oneFixStart_[iColumn] = 0;
+                    zeroFixStart_[iColumn] = 0;
                 }
-                for (i=0; i<numberM1; i++)
+                for(i = 0; i < numberM1; i++)
                 {
                     // 0 is strong branch
-                    int iColumn = which[numberIntegers-i-1];
-                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries],iColumn);
-                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries],false);
+                    int iColumn = which[numberIntegers - i - 1];
+                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries], iColumn);
+                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries], false);
                     numberEntries++;
                     // zero counts
-                    oneFixStart_[iColumn]=0;
-                    zeroFixStart_[iColumn]=0;
+                    oneFixStart_[iColumn] = 0;
+                    zeroFixStart_[iColumn] = 0;
                 }
             }
             else
             {
-                for (i=0; i<numberP1; i++)
+                for(i = 0; i < numberP1; i++)
                 {
                     // 0 is strong branch
                     int iColumn = which[i];
-                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries],iColumn);
-                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries],false);
+                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries], iColumn);
+                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries], false);
                     numberEntries++;
                     // zero counts
-                    oneFixStart_[iColumn]=0;
-                    zeroFixStart_[iColumn]=0;
+                    oneFixStart_[iColumn] = 0;
+                    zeroFixStart_[iColumn] = 0;
                 }
-                for (i=0; i<numberM1; i++)
+                for(i = 0; i < numberM1; i++)
                 {
                     // 1 is strong branch
-                    int iColumn = which[numberIntegers-i-1];
-                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries],iColumn);
-                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries],true);
+                    int iColumn = which[numberIntegers - i - 1];
+                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries], iColumn);
+                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries], true);
                     numberEntries++;
                     // zero counts
-                    oneFixStart_[iColumn]=0;
-                    zeroFixStart_[iColumn]=0;
+                    oneFixStart_[iColumn] = 0;
+                    zeroFixStart_[iColumn] = 0;
                 }
             }
             numberCliques_++;
-            cliqueStart_[numberCliques_]=numberEntries;
+            cliqueStart_[numberCliques_] = numberEntries;
         }
         // Now do column lists
         // First do counts
-        for (iClique=0; iClique<numberCliques_; iClique++)
+        for(iClique = 0; iClique < numberCliques_; iClique++)
         {
-            for (int j=cliqueStart_[iClique]; j<cliqueStart_[iClique+1]; j++)
+            for(int j = cliqueStart_[iClique]; j < cliqueStart_[iClique + 1]; j++)
             {
                 int iColumn = sequenceInCliqueEntry(cliqueEntry_[j]);
-                if (oneFixesInCliqueEntry(cliqueEntry_[j]))
+                if(oneFixesInCliqueEntry(cliqueEntry_[j]))
                     oneFixStart_[iColumn]++;
                 else
                     zeroFixStart_[iColumn]++;
             }
         }
         // now get starts and use which and end as counters
-        numberEntries=0;
-        for (int iColumn=0; iColumn<numberColumns_; iColumn++)
+        numberEntries = 0;
+        for(int iColumn = 0; iColumn < numberColumns_; iColumn++)
         {
-            if (oneFixStart_[iColumn]>=0)
+            if(oneFixStart_[iColumn] >= 0)
             {
-                int n1=oneFixStart_[iColumn];
-                int n2=zeroFixStart_[iColumn];
-                oneFixStart_[iColumn]=numberEntries;
-                which[iColumn]=numberEntries;
+                int n1 = oneFixStart_[iColumn];
+                int n2 = zeroFixStart_[iColumn];
+                oneFixStart_[iColumn] = numberEntries;
+                which[iColumn] = numberEntries;
                 numberEntries += n1;
-                zeroFixStart_[iColumn]=numberEntries;
-                endFixStart_[iColumn]=numberEntries;
+                zeroFixStart_[iColumn] = numberEntries;
+                endFixStart_[iColumn] = numberEntries;
                 numberEntries += n2;
             }
         }
         // now put in
-        for (iClique=0; iClique<numberCliques_; iClique++)
+        for(iClique = 0; iClique < numberCliques_; iClique++)
         {
-            for (int j=cliqueStart_[iClique]; j<cliqueStart_[iClique+1]; j++)
+            for(int j = cliqueStart_[iClique]; j < cliqueStart_[iClique + 1]; j++)
             {
                 int iColumn = sequenceInCliqueEntry(cliqueEntry_[j]);
-                if (oneFixesInCliqueEntry(cliqueEntry_[j]))
+                if(oneFixesInCliqueEntry(cliqueEntry_[j]))
                 {
                     int put = which[iColumn];
                     which[iColumn]++;
-                    whichClique_[put]=iClique;
+                    whichClique_[put] = iClique;
                 }
                 else
                 {
                     int put = endFixStart_[iColumn];
                     endFixStart_[iColumn]++;
-                    whichClique_[put]=iClique;
+                    whichClique_[put] = iClique;
                 }
             }
         }
@@ -11560,16 +11560,16 @@ CglProbing::deleteCliques()
     delete [] whichClique_;
     delete [] cliqueRow_;
     delete [] cliqueRowStart_;
-    cliqueType_=NULL;
-    cliqueStart_=NULL;
-    cliqueEntry_=NULL;
-    oneFixStart_=NULL;
-    zeroFixStart_=NULL;
-    endFixStart_=NULL;
-    whichClique_=NULL;
-    cliqueRow_=NULL;
-    cliqueRowStart_=NULL;
-    numberCliques_=0;
+    cliqueType_ = NULL;
+    cliqueStart_ = NULL;
+    cliqueEntry_ = NULL;
+    oneFixStart_ = NULL;
+    zeroFixStart_ = NULL;
+    endFixStart_ = NULL;
+    whichClique_ = NULL;
+    cliqueRow_ = NULL;
+    cliqueRowStart_ = NULL;
+    numberCliques_ = 0;
 }
 /*
   Returns true if may generate Row cuts in tree (rather than root node).
@@ -11581,130 +11581,130 @@ CglProbing::deleteCliques()
 bool
 CglProbing::mayGenerateRowCutsInTree() const
 {
-    return rowCuts_>0;
+    return rowCuts_ > 0;
 }
 // Sets up clique information for each row
 void
 CglProbing::setupRowCliqueInformation(const OsiSolverInterface & si)
 {
-    if (!numberCliques_)
+    if(!numberCliques_)
         return;
-    CoinPackedMatrix * rowCopy;
-    if (!rowCopy_)
+    CoinPackedMatrix* rowCopy;
+    if(!rowCopy_)
     {
         // create from current
-        numberRows_=si.getNumRows();
-        numberColumns_=si.getNumCols();
+        numberRows_ = si.getNumRows();
+        numberColumns_ = si.getNumCols();
         rowCopy = new CoinPackedMatrix(*si.getMatrixByRow());
     }
     else
     {
         rowCopy = rowCopy_;
-        assert(numberRows_<=si.getNumRows());
-        assert(numberColumns_==si.getNumCols());
+        assert(numberRows_ <= si.getNumRows());
+        assert(numberColumns_ == si.getNumCols());
     }
-    assert(numberRows_&&numberColumns_);
-    cliqueRowStart_ = new int [numberRows_+1];
-    cliqueRowStart_[0]=0;
+    assert(numberRows_ && numberColumns_);
+    cliqueRowStart_ = new int [numberRows_ + 1];
+    cliqueRowStart_[0] = 0;
     // Temporary array while building list
-    cliqueEntry ** array = new cliqueEntry * [numberRows_];
+    cliqueEntry** array = new cliqueEntry * [numberRows_];
     // Which cliques in use
-    int * which = new int[numberCliques_];
-    int * count = new int[numberCliques_];
-    int * back =new int[numberColumns_];
-    CoinZeroN(count,numberCliques_);
-    CoinFillN(back,numberColumns_,-1);
-    const int * column = rowCopy->getIndices();
-    const CoinBigIndex * rowStart = rowCopy->getVectorStarts();
-    const int * rowLength = rowCopy->getVectorLengths();
-    const double * lower = si.getColLower();
-    const double * upper = si.getColUpper();
+    int* which = new int[numberCliques_];
+    int* count = new int[numberCliques_];
+    int* back = new int[numberColumns_];
+    CoinZeroN(count, numberCliques_);
+    CoinFillN(back, numberColumns_, -1);
+    const int* column = rowCopy->getIndices();
+    const CoinBigIndex* rowStart = rowCopy->getVectorStarts();
+    const int* rowLength = rowCopy->getVectorLengths();
+    const double* lower = si.getColLower();
+    const double* upper = si.getColUpper();
     int iRow;
-    for (iRow=0; iRow<numberRows_; iRow++)
+    for(iRow = 0; iRow < numberRows_; iRow++)
     {
         int j;
-        int numberFree=0;
-        int numberUsed=0;
-        for (j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+        int numberFree = 0;
+        int numberUsed = 0;
+        for(j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
         {
-            int iColumn=column[j];
-            if (upper[iColumn]>lower[iColumn])
+            int iColumn = column[j];
+            if(upper[iColumn] > lower[iColumn])
             {
-                back[iColumn]=j-rowStart[iRow];
+                back[iColumn] = j - rowStart[iRow];
                 numberFree++;
-                for (int k=oneFixStart_[iColumn]; k<endFixStart_[iColumn]; k++)
+                for(int k = oneFixStart_[iColumn]; k < endFixStart_[iColumn]; k++)
                 {
                     int iClique = whichClique_[k];
-                    if (!count[iClique])
+                    if(!count[iClique])
                     {
-                        which[numberUsed++]=iClique;
+                        which[numberUsed++] = iClique;
                     }
                     count[iClique]++;
                 }
             }
         }
         // find largest cliques
-        bool finished=false;
-        int numberInThis=0;
-        cliqueEntry * entries = NULL;
-        array[iRow]=entries;
-        while (!finished)
+        bool finished = false;
+        int numberInThis = 0;
+        cliqueEntry* entries = NULL;
+        array[iRow] = entries;
+        while(!finished)
         {
-            int largest=1;
-            int whichClique=-1;
-            for (int i=0; i<numberUsed; i++)
+            int largest = 1;
+            int whichClique = -1;
+            for(int i = 0; i < numberUsed; i++)
             {
                 int iClique = which[i];
-                if (count[iClique]>largest)
+                if(count[iClique] > largest)
                 {
-                    largest=count[iClique];
-                    whichClique=iClique;
+                    largest = count[iClique];
+                    whichClique = iClique;
                 }
             }
             // Add in if >1 (but not if all as that means clique==row)
-            if (whichClique>=0&&largest<numberFree)
+            if(whichClique >= 0 && largest < numberFree)
             {
-                if (!numberInThis)
+                if(!numberInThis)
                 {
-                    int length=rowLength[iRow];
+                    int length = rowLength[iRow];
                     entries = new cliqueEntry [length];
-                    array[iRow]=entries;
-                    for (int i=0; i<length; i++)
+                    array[iRow] = entries;
+                    for(int i = 0; i < length; i++)
                     {
-                        setOneFixesInCliqueEntry(entries[i],false);
-                        setSequenceInCliqueEntry(entries[i],numberColumns_+1);
+                        setOneFixesInCliqueEntry(entries[i], false);
+                        setSequenceInCliqueEntry(entries[i], numberColumns_ + 1);
                     }
                 }
                 // put in (and take out all counts)
-                for (j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+                for(j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
                 {
-                    int iColumn=column[j];
-                    if (upper[iColumn]>lower[iColumn])
+                    int iColumn = column[j];
+                    if(upper[iColumn] > lower[iColumn])
                     {
-                        bool found=false;
+                        bool found = false;
                         int k;
-                        for ( k=oneFixStart_[iColumn]; k<endFixStart_[iColumn]; k++)
+                        for(k = oneFixStart_[iColumn]; k < endFixStart_[iColumn]; k++)
                         {
                             int iClique = whichClique_[k];
-                            if (iClique==whichClique)
+                            if(iClique == whichClique)
                             {
-                                found=true;
+                                found = true;
                                 break;
                             }
                         }
-                        if (found)
+                        if(found)
                         {
-                            for ( k=oneFixStart_[iColumn]; k<endFixStart_[iColumn]; k++)
+                            for(k = oneFixStart_[iColumn]; k < endFixStart_[iColumn]; k++)
                             {
                                 int iClique = whichClique_[k];
                                 count[iClique]--;
                             }
-                            for (k=cliqueStart_[whichClique]; k<cliqueStart_[whichClique+1]; k++)
+                            for(k = cliqueStart_[whichClique]; k < cliqueStart_[whichClique + 1]; k++)
                             {
-                                if (sequenceInCliqueEntry(cliqueEntry_[k])==iColumn)
+                                if(sequenceInCliqueEntry(cliqueEntry_[k]) == iColumn)
                                 {
-                                    int iback=back[iColumn];
-                                    setSequenceInCliqueEntry(entries[iback],numberInThis);
+                                    int iback = back[iColumn];
+                                    setSequenceInCliqueEntry(entries[iback], numberInThis);
                                     setOneFixesInCliqueEntry(entries[iback],
                                                              oneFixesInCliqueEntry(cliqueEntry_[k]));
                                     break;
@@ -11717,22 +11717,22 @@ CglProbing::setupRowCliqueInformation(const OsiSolverInterface & si)
             }
             else
             {
-                finished=true;
+                finished = true;
             }
         }
-        if (numberInThis)
-            cliqueRowStart_[iRow+1]=cliqueRowStart_[iRow]+rowLength[iRow];
+        if(numberInThis)
+            cliqueRowStart_[iRow + 1] = cliqueRowStart_[iRow] + rowLength[iRow];
         else
-            cliqueRowStart_[iRow+1]=cliqueRowStart_[iRow];
-        for (int i=0; i<numberUsed; i++)
+            cliqueRowStart_[iRow + 1] = cliqueRowStart_[iRow];
+        for(int i = 0; i < numberUsed; i++)
         {
             int iClique = which[i];
-            count[iClique]=0;
+            count[iClique] = 0;
         }
-        for (j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+        for(j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
         {
-            int iColumn=column[j];
-            back[iColumn]=-1;
+            int iColumn = column[j];
+            back[iColumn] = -1;
         }
     }
     delete [] which;
@@ -11740,95 +11740,95 @@ CglProbing::setupRowCliqueInformation(const OsiSolverInterface & si)
     delete [] back;
     // Now put info in one array
     cliqueRow_ = new cliqueEntry [cliqueRowStart_[numberRows_]];
-    for (iRow=0; iRow<numberRows_; iRow++)
+    for(iRow = 0; iRow < numberRows_; iRow++)
     {
-        if (array[iRow])
+        if(array[iRow])
         {
             int start = cliqueRowStart_[iRow];
-            CoinMemcpyN(array[iRow],rowLength[iRow],cliqueRow_+start);
+            CoinMemcpyN(array[iRow], rowLength[iRow], cliqueRow_ + start);
             delete [] array[iRow];
         }
     }
     delete [] array;
-    if (rowCopy!=rowCopy_)
+    if(rowCopy != rowCopy_)
         delete rowCopy;
 }
 // Mark variables to be tightened
 void
-CglProbing::tightenThese(const OsiSolverInterface & solver,int number, const int * which)
+CglProbing::tightenThese(const OsiSolverInterface & solver, int number, const int* which)
 {
     delete [] tightenBounds_;
     int numberColumns = solver.getNumCols();
-    if (numberColumns_)
-        assert (numberColumns_==numberColumns);
+    if(numberColumns_)
+        assert(numberColumns_ == numberColumns);
     tightenBounds_ = new char [numberColumns];
-    memset(tightenBounds_,0,numberColumns);
-    for (int i=0; i<number; i++)
+    memset(tightenBounds_, 0, numberColumns);
+    for(int i = 0; i < number; i++)
     {
-        int k=which[i];
-        if (k>=0&&k<numberColumns)
-            tightenBounds_[k]=1;
+        int k = which[i];
+        if(k >= 0 && k < numberColumns)
+            tightenBounds_[k] = 1;
     }
 }
 // Create C++ lines to get to current state
 std::string
-CglProbing::generateCpp( FILE * fp)
+CglProbing::generateCpp(FILE* fp)
 {
     CglProbing other;
-    fprintf(fp,"0#include \"CglProbing.hpp\"\n");
-    fprintf(fp,"3  CglProbing probing;\n");
-    if (getMode()!=other.getMode())
-        fprintf(fp,"3  probing.setMode(%d);\n",getMode());
+    fprintf(fp, "0#include \"CglProbing.hpp\"\n");
+    fprintf(fp, "3  CglProbing probing;\n");
+    if(getMode() != other.getMode())
+        fprintf(fp, "3  probing.setMode(%d);\n", getMode());
     else
-        fprintf(fp,"4  probing.setMode(%d);\n",getMode());
-    if (getMaxPass()!=other.getMaxPass())
-        fprintf(fp,"3  probing.setMaxPass(%d);\n",getMaxPass());
+        fprintf(fp, "4  probing.setMode(%d);\n", getMode());
+    if(getMaxPass() != other.getMaxPass())
+        fprintf(fp, "3  probing.setMaxPass(%d);\n", getMaxPass());
     else
-        fprintf(fp,"4  probing.setMaxPass(%d);\n",getMaxPass());
-    if (getLogLevel()!=other.getLogLevel())
-        fprintf(fp,"3  probing.setLogLevel(%d);\n",getLogLevel());
+        fprintf(fp, "4  probing.setMaxPass(%d);\n", getMaxPass());
+    if(getLogLevel() != other.getLogLevel())
+        fprintf(fp, "3  probing.setLogLevel(%d);\n", getLogLevel());
     else
-        fprintf(fp,"4  probing.setLogLevel(%d);\n",getLogLevel());
-    if (getMaxProbe()!=other.getMaxProbe())
-        fprintf(fp,"3  probing.setMaxProbe(%d);\n",getMaxProbe());
+        fprintf(fp, "4  probing.setLogLevel(%d);\n", getLogLevel());
+    if(getMaxProbe() != other.getMaxProbe())
+        fprintf(fp, "3  probing.setMaxProbe(%d);\n", getMaxProbe());
     else
-        fprintf(fp,"4  probing.setMaxProbe(%d);\n",getMaxProbe());
-    if (getMaxLook()!=other.getMaxLook())
-        fprintf(fp,"3  probing.setMaxLook(%d);\n",getMaxLook());
+        fprintf(fp, "4  probing.setMaxProbe(%d);\n", getMaxProbe());
+    if(getMaxLook() != other.getMaxLook())
+        fprintf(fp, "3  probing.setMaxLook(%d);\n", getMaxLook());
     else
-        fprintf(fp,"4  probing.setMaxLook(%d);\n",getMaxLook());
-    if (getMaxElements()!=other.getMaxElements())
-        fprintf(fp,"3  probing.setMaxElements(%d);\n",getMaxElements());
+        fprintf(fp, "4  probing.setMaxLook(%d);\n", getMaxLook());
+    if(getMaxElements() != other.getMaxElements())
+        fprintf(fp, "3  probing.setMaxElements(%d);\n", getMaxElements());
     else
-        fprintf(fp,"4  probing.setMaxElements(%d);\n",getMaxElements());
-    if (getMaxPassRoot()!=other.getMaxPassRoot())
-        fprintf(fp,"3  probing.setMaxPassRoot(%d);\n",getMaxPassRoot());
+        fprintf(fp, "4  probing.setMaxElements(%d);\n", getMaxElements());
+    if(getMaxPassRoot() != other.getMaxPassRoot())
+        fprintf(fp, "3  probing.setMaxPassRoot(%d);\n", getMaxPassRoot());
     else
-        fprintf(fp,"4  probing.setMaxPassRoot(%d);\n",getMaxPassRoot());
-    if (getMaxProbeRoot()!=other.getMaxProbeRoot())
-        fprintf(fp,"3  probing.setMaxProbeRoot(%d);\n",getMaxProbeRoot());
+        fprintf(fp, "4  probing.setMaxPassRoot(%d);\n", getMaxPassRoot());
+    if(getMaxProbeRoot() != other.getMaxProbeRoot())
+        fprintf(fp, "3  probing.setMaxProbeRoot(%d);\n", getMaxProbeRoot());
     else
-        fprintf(fp,"4  probing.setMaxProbeRoot(%d);\n",getMaxProbeRoot());
-    if (getMaxLookRoot()!=other.getMaxLookRoot())
-        fprintf(fp,"3  probing.setMaxLookRoot(%d);\n",getMaxLookRoot());
+        fprintf(fp, "4  probing.setMaxProbeRoot(%d);\n", getMaxProbeRoot());
+    if(getMaxLookRoot() != other.getMaxLookRoot())
+        fprintf(fp, "3  probing.setMaxLookRoot(%d);\n", getMaxLookRoot());
     else
-        fprintf(fp,"4  probing.setMaxLookRoot(%d);\n",getMaxLookRoot());
-    if (getMaxElementsRoot()!=other.getMaxElementsRoot())
-        fprintf(fp,"3  probing.setMaxElementsRoot(%d);\n",getMaxElementsRoot());
+        fprintf(fp, "4  probing.setMaxLookRoot(%d);\n", getMaxLookRoot());
+    if(getMaxElementsRoot() != other.getMaxElementsRoot())
+        fprintf(fp, "3  probing.setMaxElementsRoot(%d);\n", getMaxElementsRoot());
     else
-        fprintf(fp,"4  probing.setMaxElementsRoot(%d);\n",getMaxElementsRoot());
-    if (rowCuts()!=other.rowCuts())
-        fprintf(fp,"3  probing.setRowCuts(%d);\n",rowCuts());
+        fprintf(fp, "4  probing.setMaxElementsRoot(%d);\n", getMaxElementsRoot());
+    if(rowCuts() != other.rowCuts())
+        fprintf(fp, "3  probing.setRowCuts(%d);\n", rowCuts());
     else
-        fprintf(fp,"4  probing.setRowCuts(%d);\n",rowCuts());
-    if (getUsingObjective()!=other.getUsingObjective())
-        fprintf(fp,"3  probing.setUsingObjective(%d);\n",getUsingObjective());
+        fprintf(fp, "4  probing.setRowCuts(%d);\n", rowCuts());
+    if(getUsingObjective() != other.getUsingObjective())
+        fprintf(fp, "3  probing.setUsingObjective(%d);\n", getUsingObjective());
     else
-        fprintf(fp,"4  probing.setUsingObjective(%d);\n",getUsingObjective());
-    if (getAggressiveness()!=other.getAggressiveness())
-        fprintf(fp,"3  probing.setAggressiveness(%d);\n",getAggressiveness());
+        fprintf(fp, "4  probing.setUsingObjective(%d);\n", getUsingObjective());
+    if(getAggressiveness() != other.getAggressiveness())
+        fprintf(fp, "3  probing.setAggressiveness(%d);\n", getAggressiveness());
     else
-        fprintf(fp,"4  probing.setAggressiveness(%d);\n",getAggressiveness());
+        fprintf(fp, "4  probing.setAggressiveness(%d);\n", getAggressiveness());
     return "probing";
 }
 //-------------------------------------------------------------
@@ -11836,10 +11836,10 @@ void
 CglImplication::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                              const CglTreeInfo info) const
 {
-    if (probingInfo_)
+    if(probingInfo_)
     {
         //int n1=cs.sizeRowCuts();
-        probingInfo_->generateCuts(si,cs,info);
+        probingInfo_->generateCuts(si, cs, info);
         //int n2=cs.sizeRowCuts();
         //if (n2>n1)
         //printf("added %d cuts\n",n2-n1);
@@ -11849,7 +11849,7 @@ CglImplication::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-CglImplication::CglImplication ()
+CglImplication::CglImplication()
     :
     CglCutGenerator(),
     probingInfo_(NULL)
@@ -11859,7 +11859,7 @@ CglImplication::CglImplication ()
 //-------------------------------------------------------------------
 // Constructor with info
 //-------------------------------------------------------------------
-CglImplication::CglImplication (CglTreeProbingInfo * info)
+CglImplication::CglImplication(CglTreeProbingInfo* info)
     :
     CglCutGenerator(),
     probingInfo_(info)
@@ -11869,7 +11869,7 @@ CglImplication::CglImplication (CglTreeProbingInfo * info)
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-CglImplication::CglImplication (
+CglImplication::CglImplication(
     const CglImplication & source)
     :
     CglCutGenerator(source),
@@ -11882,7 +11882,7 @@ CglImplication::CglImplication (
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CglCutGenerator *
+CglCutGenerator*
 CglImplication::clone() const
 {
     return new CglImplication(*this);
@@ -11891,7 +11891,7 @@ CglImplication::clone() const
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-CglImplication::~CglImplication ()
+CglImplication::~CglImplication()
 {
     // Nothing to do here
 }
@@ -11901,21 +11901,21 @@ CglImplication::~CglImplication ()
 //-------------------------------------------------------------------
 CglImplication &
 CglImplication::operator=(
-    const CglImplication& rhs)
+    const CglImplication & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         CglCutGenerator::operator=(rhs);
-        probingInfo_=rhs.probingInfo_;
+        probingInfo_ = rhs.probingInfo_;
     }
     return *this;
 }
 // Create C++ lines to get to current state
 std::string
-CglImplication::generateCpp( FILE * fp)
+CglImplication::generateCpp(FILE* fp)
 {
     CglImplication other;
-    fprintf(fp,"0#include \"CglImplication.hpp\"\n");
-    fprintf(fp,"3  CglImplication implication;\n");
+    fprintf(fp, "0#include \"CglImplication.hpp\"\n");
+    fprintf(fp, "3  CglImplication implication;\n");
     return "implication";
 }

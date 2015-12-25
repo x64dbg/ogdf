@@ -53,23 +53,23 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT InitialPlacer
-{
-protected:
-    bool m_randomOffset;
-
-public:
-    InitialPlacer():m_randomOffset(true) { }
-    virtual ~InitialPlacer() { }
-
-    virtual void placeOneLevel(MultilevelGraph &MLG) = 0;
-
-    void setRandomOffset(bool on)
+    class OGDF_EXPORT InitialPlacer
     {
-        m_randomOffset = on;
-    }
+    protected:
+        bool m_randomOffset;
 
-};
+    public:
+        InitialPlacer(): m_randomOffset(true) { }
+        virtual ~InitialPlacer() { }
+
+        virtual void placeOneLevel(MultilevelGraph & MLG) = 0;
+
+        void setRandomOffset(bool on)
+        {
+            m_randomOffset = on;
+        }
+
+    };
 
 } // namespace ogdf
 

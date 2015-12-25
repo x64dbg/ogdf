@@ -51,135 +51,135 @@
 namespace ogdf
 {
 
-bool MinCostFlowReinelt::call(
-    const Graph &G,
-    const EdgeArray<int> &lowerBound,
-    const EdgeArray<int> &upperBound,
-    const EdgeArray<int> &cost,
-    const NodeArray<int> &supply,
-    EdgeArray<int> &flow)
-{
-    NodeArray<int> dual(G);
-    return call(G, lowerBound, upperBound, cost, supply, flow, dual);
-}
-
-
-// computes min-cost-flow
-// returns true if a minimum cost flow could be found
-bool MinCostFlowReinelt::call(
-    const Graph &G,
-    const EdgeArray<int> &lowerBound,
-    const EdgeArray<int> &upperBound,
-    const EdgeArray<int> &cost,
-    const NodeArray<int> &supply,
-    EdgeArray<int> &flow,
-    NodeArray<int> &dual)
-{
-    OGDF_ASSERT(checkProblem(G,lowerBound,upperBound,supply) == true);
-
-    const int n = G.numberOfNodes();
-    const int m = G.numberOfEdges();
-
-    // assign indices 0, ..., n-1 to nodes in G
-    // (this is not guaranteed for v->index() )
-    NodeArray<int> vIndex(G);
-    // assigning supply
-    Array<int> mcfSupply(n);
-
-    node v;
-    int i = 0;
-    forall_nodes(v, G)
+    bool MinCostFlowReinelt::call(
+        const Graph & G,
+        const EdgeArray<int> & lowerBound,
+        const EdgeArray<int> & upperBound,
+        const EdgeArray<int> & cost,
+        const NodeArray<int> & supply,
+        EdgeArray<int> & flow)
     {
-        mcfSupply[i] = supply[v];
-        vIndex[v] = ++i;
+        NodeArray<int> dual(G);
+        return call(G, lowerBound, upperBound, cost, supply, flow, dual);
     }
 
 
-    // allocation of arrays for arcs
-    Array<int> mcfTail(m);
-    Array<int> mcfHead(m);
-    Array<int> mcfLb(m);
-    Array<int> mcfUb(m);
-    Array<int> mcfCost(m);
-    Array<int> mcfFlow(m);
-    Array<int> mcfDual(n+1); // dual[n] = dual variable of root struct
-
-    // set input data in edge arrays
-    int nSelfLoops = 0;
-    i = 0;
-    edge e;
-    forall_edges(e, G)
+    // computes min-cost-flow
+    // returns true if a minimum cost flow could be found
+    bool MinCostFlowReinelt::call(
+        const Graph & G,
+        const EdgeArray<int> & lowerBound,
+        const EdgeArray<int> & upperBound,
+        const EdgeArray<int> & cost,
+        const NodeArray<int> & supply,
+        EdgeArray<int> & flow,
+        NodeArray<int> & dual)
     {
-        // We handle self-loops in the network already in the front-end
-        // (they are just set to the lower bound below when copying result)
-        if(e->isSelfLoop())
+        OGDF_ASSERT(checkProblem(G, lowerBound, upperBound, supply) == true);
+
+        const int n = G.numberOfNodes();
+        const int m = G.numberOfEdges();
+
+        // assign indices 0, ..., n-1 to nodes in G
+        // (this is not guaranteed for v->index() )
+        NodeArray<int> vIndex(G);
+        // assigning supply
+        Array<int> mcfSupply(n);
+
+        node v;
+        int i = 0;
+        forall_nodes(v, G)
         {
-            nSelfLoops++;
-            continue;
+            mcfSupply[i] = supply[v];
+            vIndex[v] = ++i;
         }
 
-        mcfTail[i] = vIndex[e->source()];
-        mcfHead[i] = vIndex[e->target()];
-        mcfLb  [i] = lowerBound[e];
-        mcfUb  [i] = upperBound[e];
-        mcfCost[i] = cost[e];
 
-        ++i;
-    }
+        // allocation of arrays for arcs
+        Array<int> mcfTail(m);
+        Array<int> mcfHead(m);
+        Array<int> mcfLb(m);
+        Array<int> mcfUb(m);
+        Array<int> mcfCost(m);
+        Array<int> mcfFlow(m);
+        Array<int> mcfDual(n + 1); // dual[n] = dual variable of root struct
 
-
-    int retCode; // return (error or success) code
-    int objVal;  // value of flow
-
-    // call actual min-cost-flow function
-    // mcf does not support single nodes
-    if ( n > 1)
-    {
-        //mcf does not support single edges
-        if (m < 2)
+        // set input data in edge arrays
+        int nSelfLoops = 0;
+        i = 0;
+        edge e;
+        forall_edges(e, G)
         {
-            if ( m == 1)
+            // We handle self-loops in the network already in the front-end
+            // (they are just set to the lower bound below when copying result)
+            if(e->isSelfLoop())
             {
-                e = G.firstEdge();
-                flow[e] = lowerBound[e];
+                nSelfLoops++;
+                continue;
             }
-            retCode = 0;
+
+            mcfTail[i] = vIndex[e->source()];
+            mcfHead[i] = vIndex[e->target()];
+            mcfLb  [i] = lowerBound[e];
+            mcfUb  [i] = upperBound[e];
+            mcfCost[i] = cost[e];
+
+            ++i;
         }
-        else retCode = mcf(n, m-nSelfLoops, mcfSupply, mcfTail, mcfHead, mcfLb, mcfUb,
-                               mcfCost, mcfFlow, mcfDual, &objVal);
-    }
-    else retCode = 0;
 
 
-    // copy resulting flow for return
-    i = 0;
-    forall_edges(e, G)
-    {
-        if(e->isSelfLoop())
+        int retCode; // return (error or success) code
+        int objVal;  // value of flow
+
+        // call actual min-cost-flow function
+        // mcf does not support single nodes
+        if(n > 1)
         {
-            flow[e] = lowerBound[e];
-            continue;
+            //mcf does not support single edges
+            if(m < 2)
+            {
+                if(m == 1)
+                {
+                    e = G.firstEdge();
+                    flow[e] = lowerBound[e];
+                }
+                retCode = 0;
+            }
+            else retCode = mcf(n, m - nSelfLoops, mcfSupply, mcfTail, mcfHead, mcfLb, mcfUb,
+                                   mcfCost, mcfFlow, mcfDual, &objVal);
         }
+        else retCode = 0;
 
-        flow[e] = mcfFlow[i];
-        if (retCode == 0)
+
+        // copy resulting flow for return
+        i = 0;
+        forall_edges(e, G)
         {
-            OGDF_ASSERT( (flow[e]>=lowerBound[e]) && (flow[e]<= upperBound[e]) )
+            if(e->isSelfLoop())
+            {
+                flow[e] = lowerBound[e];
+                continue;
+            }
+
+            flow[e] = mcfFlow[i];
+            if(retCode == 0)
+            {
+                OGDF_ASSERT((flow[e] >= lowerBound[e]) && (flow[e] <= upperBound[e]))
+            }
+            ++i;
         }
-        ++i;
-    }
 
-    // copy resulting dual values for return
-    i = 0;
-    forall_nodes(v, G)
-    {
-        dual[v] = mcfDual[i];
-        ++i;
-    }
+        // copy resulting dual values for return
+        i = 0;
+        forall_nodes(v, G)
+        {
+            dual[v] = mcfDual[i];
+            ++i;
+        }
 
-    // successful if retCode == 0
-    return (retCode == 0);
-}
+        // successful if retCode == 0
+        return (retCode == 0);
+    }
 
 
 } // end namespace ogdf

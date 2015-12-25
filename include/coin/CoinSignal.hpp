@@ -16,7 +16,7 @@
 //#############################################################################
 
 #if defined(_MSC_VER)
-typedef void (__cdecl *CoinSighandler_t) (int);
+typedef void (__cdecl* CoinSighandler_t)(int);
 #  define CoinSighandler_t_defined
 #endif
 
@@ -72,7 +72,7 @@ typedef typeof(SIG_DFL) CoinSighandler_t;
 typedef typeof(SIG_DFL) CoinSighandler_t;
 #  else
 extern "C" {
-    typedef void (*CoinSighandler_t) (int);
+    typedef void (*CoinSighandler_t)(int);
 }
 #  endif
 #endif
@@ -83,7 +83,7 @@ extern "C" {
 #  if defined(__SUNPRO_CC)
 #     include <signal.h>
 extern "C" {
-    typedef void (*CoinSighandler_t) (int);
+    typedef void (*CoinSighandler_t)(int);
 }
 #     define CoinSighandler_t_defined
 #  endif
@@ -112,7 +112,7 @@ typedef typeof(SIG_DFL) CoinSighandler_t;
 #  warning("   typedef void (*CoinSighandler_t) (int);")
 #  warning("}")
 extern "C" {
-    typedef void (*CoinSighandler_t) (int);
+    typedef void (*CoinSighandler_t)(int);
 }
 #endif
 

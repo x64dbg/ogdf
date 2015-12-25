@@ -48,58 +48,58 @@
 namespace ogdf
 {
 
-//---------------------------------------------------------
-// constructor
-// sets default values for options
-//
-VariableEmbeddingInserterUML::VariableEmbeddingInserterUML()
-{
-    m_rrOption = rrNone;
-    m_percentMostCrossed = 25;
-}
+    //---------------------------------------------------------
+    // constructor
+    // sets default values for options
+    //
+    VariableEmbeddingInserterUML::VariableEmbeddingInserterUML()
+    {
+        m_rrOption = rrNone;
+        m_percentMostCrossed = 25;
+    }
 
 
-// copy constructor
-VariableEmbeddingInserterUML::VariableEmbeddingInserterUML(const VariableEmbeddingInserterUML &inserter)
-    : UMLEdgeInsertionModule(inserter)
-{
-    m_rrOption = inserter.m_rrOption;
-    m_percentMostCrossed = inserter.m_percentMostCrossed;
-}
+    // copy constructor
+    VariableEmbeddingInserterUML::VariableEmbeddingInserterUML(const VariableEmbeddingInserterUML & inserter)
+        : UMLEdgeInsertionModule(inserter)
+    {
+        m_rrOption = inserter.m_rrOption;
+        m_percentMostCrossed = inserter.m_percentMostCrossed;
+    }
 
 
-// clone method
-UMLEdgeInsertionModule *VariableEmbeddingInserterUML::clone() const
-{
-    VariableEmbeddingInserterUML *pInserter = new VariableEmbeddingInserterUML;
-    pInserter->m_rrOption = m_rrOption;
-    pInserter->m_percentMostCrossed = m_percentMostCrossed;
+    // clone method
+    UMLEdgeInsertionModule* VariableEmbeddingInserterUML::clone() const
+    {
+        VariableEmbeddingInserterUML* pInserter = new VariableEmbeddingInserterUML;
+        pInserter->m_rrOption = m_rrOption;
+        pInserter->m_percentMostCrossed = m_percentMostCrossed;
 
-    return pInserter;
-}
-
-
-// assignment operator
-VariableEmbeddingInserterUML &VariableEmbeddingInserterUML::operator=(const VariableEmbeddingInserterUML &inserter)
-{
-    m_timeLimit = inserter.m_timeLimit;
-    m_rrOption = inserter.m_rrOption;
-    m_percentMostCrossed = inserter.m_percentMostCrossed;
-    return *this;
-}
+        return pInserter;
+    }
 
 
-// actual call method
-Module::ReturnType VariableEmbeddingInserterUML::doCall(
-    PlanRepLight              &pr,
-    const Array<edge>         &origEdges,
-    const EdgeArray<int>      *pCostOrig,
-    const EdgeArray<__uint32> *pEdgeSubgraph)
-{
-    VarEdgeInserterUMLCore core(pr, pCostOrig, pEdgeSubgraph);
-    core.timeLimit(timeLimit());
+    // assignment operator
+    VariableEmbeddingInserterUML & VariableEmbeddingInserterUML::operator=(const VariableEmbeddingInserterUML & inserter)
+    {
+        m_timeLimit = inserter.m_timeLimit;
+        m_rrOption = inserter.m_rrOption;
+        m_percentMostCrossed = inserter.m_percentMostCrossed;
+        return *this;
+    }
 
-    return core.call(origEdges, m_rrOption, m_percentMostCrossed);
-}
+
+    // actual call method
+    Module::ReturnType VariableEmbeddingInserterUML::doCall(
+        PlanRepLight       &       pr,
+        const Array<edge>     &    origEdges,
+        const EdgeArray<int>*      pCostOrig,
+        const EdgeArray<__uint32>* pEdgeSubgraph)
+    {
+        VarEdgeInserterUMLCore core(pr, pCostOrig, pEdgeSubgraph);
+        core.timeLimit(timeLimit());
+
+        return core.call(origEdges, m_rrOption, m_percentMostCrossed);
+    }
 
 }

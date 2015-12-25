@@ -24,7 +24,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-MyMessageHandler::MyMessageHandler ()
+MyMessageHandler::MyMessageHandler()
     : CoinMessageHandler(),
       model_(NULL),
       feasibleExtremePoints_(),
@@ -35,7 +35,7 @@ MyMessageHandler::MyMessageHandler ()
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-MyMessageHandler::MyMessageHandler (const MyMessageHandler & rhs)
+MyMessageHandler::MyMessageHandler(const MyMessageHandler & rhs)
     : CoinMessageHandler(rhs),
       model_(rhs.model_),
       feasibleExtremePoints_(rhs.feasibleExtremePoints_),
@@ -43,7 +43,7 @@ MyMessageHandler::MyMessageHandler (const MyMessageHandler & rhs)
 {
 }
 
-MyMessageHandler::MyMessageHandler (const CoinMessageHandler & rhs)
+MyMessageHandler::MyMessageHandler(const CoinMessageHandler & rhs)
     : CoinMessageHandler(rhs),
       model_(NULL),
       feasibleExtremePoints_(),
@@ -52,8 +52,8 @@ MyMessageHandler::MyMessageHandler (const CoinMessageHandler & rhs)
 }
 
 // Constructor with pointer to model
-MyMessageHandler::MyMessageHandler(ClpSimplex * model,
-                                   FILE * /*userPointer*/)
+MyMessageHandler::MyMessageHandler(ClpSimplex* model,
+                                   FILE* /*userPointer*/)
     : CoinMessageHandler(),
       model_(model),
       feasibleExtremePoints_(),
@@ -64,7 +64,7 @@ MyMessageHandler::MyMessageHandler(ClpSimplex * model,
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-MyMessageHandler::~MyMessageHandler ()
+MyMessageHandler::~MyMessageHandler()
 {
 }
 
@@ -72,9 +72,9 @@ MyMessageHandler::~MyMessageHandler ()
 // Assignment operator
 //-------------------------------------------------------------------
 MyMessageHandler &
-MyMessageHandler::operator=(const MyMessageHandler& rhs)
+MyMessageHandler::operator=(const MyMessageHandler & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         CoinMessageHandler::operator=(rhs);
         model_ = rhs.model_;
@@ -86,7 +86,7 @@ MyMessageHandler::operator=(const MyMessageHandler& rhs)
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CoinMessageHandler * MyMessageHandler::clone() const
+CoinMessageHandler* MyMessageHandler::clone() const
 {
     return new MyMessageHandler(*this);
 }
@@ -94,29 +94,29 @@ CoinMessageHandler * MyMessageHandler::clone() const
 int
 MyMessageHandler::print()
 {
-    if (currentSource() == "Clp")
+    if(currentSource() == "Clp")
     {
-        if (currentMessage().externalNumber() == 102)
+        if(currentMessage().externalNumber() == 102)
         {
             printf("There are %d primal infeasibilities\n",
                    model_->nonLinearCost()->numberInfeasibilities());
             // Feasibility
-            if (!model_->nonLinearCost()->numberInfeasibilities())
+            if(!model_->nonLinearCost()->numberInfeasibilities())
             {
                 // Column solution
                 int numberColumns = model_->numberColumns();
-                const double * solution = model_->solutionRegion(1);
+                const double* solution = model_->solutionRegion(1);
 
                 // Create vector to contain solution
                 StdVectorDouble feasibleExtremePoint;
 
-                const double *objective = model_->objective();
+                const double* objective = model_->objective();
                 double objectiveValue = 0;
 
-                if (!model_->columnScale())
+                if(!model_->columnScale())
                 {
                     // No scaling
-                    for (int i = 0; i < numberColumns; i++)
+                    for(int i = 0; i < numberColumns; i++)
                     {
                         feasibleExtremePoint.push_back(solution[i]);
                         objectiveValue += solution[i] * objective[i];
@@ -125,8 +125,8 @@ MyMessageHandler::print()
                 else
                 {
                     // scaled
-                    const double * columnScale = model_->columnScale();
-                    for (int i = 0; i < numberColumns; i++)
+                    const double* columnScale = model_->columnScale();
+                    for(int i = 0; i < numberColumns; i++)
                     {
                         feasibleExtremePoint.push_back(solution[i]*columnScale[i]);
                         objectiveValue += solution[i] * objective[i] * columnScale[i];
@@ -138,10 +138,10 @@ MyMessageHandler::print()
 
                 // Want maximum of 10 solutions, so if more then 10 get rid of oldest
                 size_t numExtremePointsSaved = feasibleExtremePoints_.size();
-                if ( numExtremePointsSaved >= 10 )
+                if(numExtremePointsSaved >= 10)
                 {
                     feasibleExtremePoints_.pop_back();
-                    assert( feasibleExtremePoints_.size() == numExtremePointsSaved - 1 );
+                    assert(feasibleExtremePoints_.size() == numExtremePointsSaved - 1);
                 };
 
             }
@@ -156,13 +156,13 @@ MyMessageHandler::print()
 
     return CoinMessageHandler::print();
 }
-const ClpSimplex *
+const ClpSimplex*
 MyMessageHandler::model() const
 {
     return model_;
 }
 void
-MyMessageHandler::setModel(ClpSimplex * model)
+MyMessageHandler::setModel(ClpSimplex* model)
 {
     model_ = model;
 }

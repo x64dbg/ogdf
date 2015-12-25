@@ -11,7 +11,7 @@ typedef struct
     CLP_Message internalNumber;
     int externalNumber; // or continuation
     char detail;
-    const char * message;
+    const char* message;
 } Clp_message;
 static Clp_message clp_us_english[] =
 {
@@ -128,9 +128,9 @@ ClpMessage::ClpMessage(Language language) :
     language_ = language;
     strcpy(source_, "Clp");
     class_ = 1; //solver
-    Clp_message * message = clp_us_english;
+    Clp_message* message = clp_us_english;
 
-    while (message->internalNumber != CLP_DUMMY_END)
+    while(message->internalNumber != CLP_DUMMY_END)
     {
         CoinOneMessage oneMessage(message->externalNumber, message->detail,
                                   message->message);
@@ -142,7 +142,7 @@ ClpMessage::ClpMessage(Language language) :
 
     // now override any language ones
 
-    switch (language)
+    switch(language)
     {
     case uk_en:
         message = uk_english;
@@ -154,9 +154,9 @@ ClpMessage::ClpMessage(Language language) :
     }
 
     // replace if any found
-    if (message)
+    if(message)
     {
-        while (message->internalNumber != CLP_DUMMY_END)
+        while(message->internalNumber != CLP_DUMMY_END)
         {
             replaceMessage(message->internalNumber, message->message);
             message ++;

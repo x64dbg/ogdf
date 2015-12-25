@@ -90,10 +90,10 @@ static void operator delete(void *, void *) { }
 #define OGDF_ALLOCATOR ogdf::PoolMemoryAllocator
 #endif
 
-//! Creates new and delete operators in a class using ogdf's memory allocator.
+    //! Creates new and delete operators in a class using ogdf's memory allocator.
 #define OGDF_NEW_DELETE OGDF_MM(OGDF_ALLOCATOR)
 
-//! Creates new and delete operators in a class using the malloc memory allocator.
+    //! Creates new and delete operators in a class using the malloc memory allocator.
 #define OGDF_MALLOC_NEW_DELETE OGDF_MM(ogdf::MallocMemoryAllocator)
 
 } // namespace ogdf

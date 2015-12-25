@@ -85,12 +85,12 @@ public:
         return nElements_;
     }
     /// Get indices of elements
-    virtual const int * getIndices() const
+    virtual const int* getIndices() const
     {
         return indices_;
     }
     /// Get element values
-    virtual const double * getElements() const
+    virtual const double* getElements() const
     {
         return elements_;
     }
@@ -101,11 +101,11 @@ public:
     /// Reset the vector (as if were just created an empty vector)
     void clear();
     /** Assignment operator. */
-    CoinShallowPackedVector& operator=(const CoinShallowPackedVector & x);
+    CoinShallowPackedVector & operator=(const CoinShallowPackedVector & x);
     /** Assignment operator from a CoinPackedVectorBase. */
-    CoinShallowPackedVector& operator=(const CoinPackedVectorBase & x);
+    CoinShallowPackedVector & operator=(const CoinPackedVectorBase & x);
     /** just like the explicit constructor */
-    void setVector(int size, const int * indices, const double * elements,
+    void setVector(int size, const int* indices, const double* elements,
                    bool testForDuplicateIndex = true);
     //@}
 
@@ -122,7 +122,7 @@ public:
         advance that there are no duplicate indices.
     */
     CoinShallowPackedVector(int size,
-                            const int * indices, const double * elements,
+                            const int* indices, const double* elements,
                             bool testForDuplicateIndex = true);
     /** Copy constructor from the base class. */
     CoinShallowPackedVector(const CoinPackedVectorBase &);
@@ -138,9 +138,9 @@ private:
     /**@name Private member data */
     //@{
     /// Vector indices
-    const int * indices_;
+    const int* indices_;
     ///Vector elements
-    const double * elements_;
+    const double* elements_;
     /// Size of indices and elements vectors
     int nElements_;
     //@}

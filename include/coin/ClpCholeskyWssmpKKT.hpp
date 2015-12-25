@@ -22,7 +22,7 @@ public:
     //@{
     /** Orders rows and saves pointer to matrix.and model.
      Returns non-zero if not enough memory */
-    virtual int order(ClpInterior * model) ;
+    virtual int order(ClpInterior* model) ;
     /** Does Symbolic factorization given permutation.
         This is called immediately after order.  If user provides this then
         user must provide factorize and solve.  Otherwise the default factorization is used
@@ -30,13 +30,13 @@ public:
     virtual int symbolic();
     /** Factorize - filling in rowsDropped and returning number dropped.
         If return code negative then out of memory */
-    virtual int factorize(const double * diagonal, int * rowsDropped) ;
+    virtual int factorize(const double* diagonal, int* rowsDropped) ;
     /** Uses factorization to solve. */
-    virtual void solve (double * region) ;
+    virtual void solve(double* region) ;
     /** Uses factorization to solve. - given as if KKT.
      region1 is rows+columns, region2 is rows */
-    virtual void solveKKT (double * region1, double * region2, const double * diagonal,
-                           double diagonalScaleFactor);
+    virtual void solveKKT(double* region1, double* region2, const double* diagonal,
+                          double diagonalScaleFactor);
     //@}
 
 
@@ -48,11 +48,11 @@ public:
     /** Destructor  */
     virtual ~ClpCholeskyWssmpKKT();
     // Copy
-    ClpCholeskyWssmpKKT(const ClpCholeskyWssmpKKT&);
+    ClpCholeskyWssmpKKT(const ClpCholeskyWssmpKKT &);
     // Assignment
-    ClpCholeskyWssmpKKT& operator=(const ClpCholeskyWssmpKKT&);
+    ClpCholeskyWssmpKKT & operator=(const ClpCholeskyWssmpKKT &);
     /// Clone
-    virtual ClpCholeskyBase * clone() const ;
+    virtual ClpCholeskyBase* clone() const ;
     //@}
 
 

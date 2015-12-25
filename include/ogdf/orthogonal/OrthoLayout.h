@@ -59,128 +59,128 @@ namespace ogdf
 {
 
 
-//! The Orthogonal layout algorithm for planar graphs.
-class OGDF_EXPORT OrthoLayout : public LayoutPlanRepModule
-{
-public:
-    //! Creates an instance of Orthogonal layout and sets options to default values.
-    OrthoLayout();
-
-
-    // calls planar UML layout algorithm. Input is a planarized representation
-    // PG of a connected component of the graph, output is a layout of the
-    // (modified) planarized representation in drawing
-    //! Calls the layout algorithm for planarized representation \a PG.
-    /**
-     * \pre \a PG is embedded and \a adjExternal is an adjecenty entry in \a PG.
-     *
-     * @param PG          is the planarized representation for which a layout shall be computed.
-     *                    \a PG may be modified during the call.
-     * @param adjExternal is an adjaceny entry in \a PG that shall be on the external
-     *                    face of the drawing.
-     * @param drawing     is assigned the final layout.
-     */
-    void call(PlanRep &PG, adjEntry adjExternal, Layout &drawing);
-
-    /** @}
-     *  @name Optional parameters
-     *  @{
-     */
-
-    //! Returns the minimum distance between edges and vertices.
-    double separation() const
+    //! The Orthogonal layout algorithm for planar graphs.
+    class OGDF_EXPORT OrthoLayout : public LayoutPlanRepModule
     {
-        return m_separation;
-    }
+    public:
+        //! Creates an instance of Orthogonal layout and sets options to default values.
+        OrthoLayout();
 
-    //! Sets the minimum distance between vertices.
-    void separation(double sep)
-    {
-        m_separation = sep;
-    }
 
-    //! Returns the option \a cOverhang, which specifies the minimal distance of incident edges to the corner of a vertex.
-    /**
-     * \a cOverhang * \a separation is the minimum distance between the glue point of an edge and a corner of the vertex boundary.
-     */
-    double cOverhang() const
-    {
-        return m_cOverhang;
-    }
+        // calls planar UML layout algorithm. Input is a planarized representation
+        // PG of a connected component of the graph, output is a layout of the
+        // (modified) planarized representation in drawing
+        //! Calls the layout algorithm for planarized representation \a PG.
+        /**
+         * \pre \a PG is embedded and \a adjExternal is an adjecenty entry in \a PG.
+         *
+         * @param PG          is the planarized representation for which a layout shall be computed.
+         *                    \a PG may be modified during the call.
+         * @param adjExternal is an adjaceny entry in \a PG that shall be on the external
+         *                    face of the drawing.
+         * @param drawing     is assigned the final layout.
+         */
+        void call(PlanRep & PG, adjEntry adjExternal, Layout & drawing);
 
-    //! Sets the option \a cOverhang, which specifies the minimal distance of incident edges to the corner of a vertex.
-    void cOverhang(double c)
-    {
-        m_cOverhang = c;
-    }
+        /** @}
+         *  @name Optional parameters
+         *  @{
+         */
 
-    //! Returns the desired margin around the drawing.
-    /**
-     * This is the distance between the tight bounding box and the boundary of the drawing.
-     */
-    double margin() const
-    {
-        return m_margin;
-    }
+        //! Returns the minimum distance between edges and vertices.
+        double separation() const
+        {
+            return m_separation;
+        }
 
-    //! Sets the desired margin around the drawing.
-    void margin(double m)
-    {
-        m_margin = m;
-    }
+        //! Sets the minimum distance between vertices.
+        void separation(double sep)
+        {
+            m_separation = sep;
+        }
 
-    //! Returns whether the currently selected orthogonaliaztion model is \e progressive.
-    bool progressive() const
-    {
-        return m_progressive;
-    }
+        //! Returns the option \a cOverhang, which specifies the minimal distance of incident edges to the corner of a vertex.
+        /**
+         * \a cOverhang * \a separation is the minimum distance between the glue point of an edge and a corner of the vertex boundary.
+         */
+        double cOverhang() const
+        {
+            return m_cOverhang;
+        }
 
-    //! Selects if the progressive (true) or traditional (false) orthogonalization model is used.
-    /**
-     * In the progressive model, 180 degree angles at degree-2 nodes are preferred.
-     */
-    void progressive(bool b)
-    {
-        m_progressive = b;
-    }
+        //! Sets the option \a cOverhang, which specifies the minimal distance of incident edges to the corner of a vertex.
+        void cOverhang(double c)
+        {
+            m_cOverhang = c;
+        }
 
-    //! Returns whether scaling is used in the compaction phase.
-    bool scaling() const
-    {
-        return m_useScalingCompaction;
-    }
+        //! Returns the desired margin around the drawing.
+        /**
+         * This is the distance between the tight bounding box and the boundary of the drawing.
+         */
+        double margin() const
+        {
+            return m_margin;
+        }
 
-    //! Selects if scaling is used in the compaction phase.
-    void scaling(bool b)
-    {
-        m_useScalingCompaction = b;
-    }
+        //! Sets the desired margin around the drawing.
+        void margin(double m)
+        {
+            m_margin = m;
+        }
 
-    //! Set bound on the number of bends
-    void bendBound(int i)
-    {
-        if(i >= 0) m_bendBound = i;
-    }
+        //! Returns whether the currently selected orthogonaliaztion model is \e progressive.
+        bool progressive() const
+        {
+            return m_progressive;
+        }
 
-    //! @}
+        //! Selects if the progressive (true) or traditional (false) orthogonalization model is used.
+        /**
+         * In the progressive model, 180 degree angles at degree-2 nodes are preferred.
+         */
+        void progressive(bool b)
+        {
+            m_progressive = b;
+        }
 
-private:
-    // compute bounding box and move final drawing such that it is 0 aligned
-    // respecting margins
-    void computeBoundingBox(const PlanRep &PG, Layout &drawing);
+        //! Returns whether scaling is used in the compaction phase.
+        bool scaling() const
+        {
+            return m_useScalingCompaction;
+        }
 
-    // options
+        //! Selects if scaling is used in the compaction phase.
+        void scaling(bool b)
+        {
+            m_useScalingCompaction = b;
+        }
 
-    double m_separation;    //!< minimum distance between obkects
-    double m_cOverhang;     //!< distance to corner (relative to node size)
-    double m_margin;        //!< margin around drawing
+        //! Set bound on the number of bends
+        void bendBound(int i)
+        {
+            if(i >= 0) m_bendBound = i;
+        }
 
-    bool m_progressive; //!< use progressive ortho style (prefer 180 degree angles on deg-2 vertices).
-    int m_bendBound;    //!< bounds the number of bends per edge in ortho shaper
+        //! @}
 
-    bool m_useScalingCompaction;    //!< use scaling for compaction
-    int m_scalingSteps;             //!< number of scaling steps (NOT REALLY USED!)
-};
+    private:
+        // compute bounding box and move final drawing such that it is 0 aligned
+        // respecting margins
+        void computeBoundingBox(const PlanRep & PG, Layout & drawing);
+
+        // options
+
+        double m_separation;    //!< minimum distance between obkects
+        double m_cOverhang;     //!< distance to corner (relative to node size)
+        double m_margin;        //!< margin around drawing
+
+        bool m_progressive; //!< use progressive ortho style (prefer 180 degree angles on deg-2 vertices).
+        int m_bendBound;    //!< bounds the number of bends per edge in ortho shaper
+
+        bool m_useScalingCompaction;    //!< use scaling for compaction
+        int m_scalingSteps;             //!< number of scaling steps (NOT REALLY USED!)
+    };
 
 
 } // end namespace ogdf

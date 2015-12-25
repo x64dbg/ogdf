@@ -55,43 +55,43 @@
 namespace ogdf
 {
 
-class GraphAttributes;
+    class GraphAttributes;
 
 
 
-//! DFS-based algorithm for computing a maximal acyclic subgraph.
-/**
- * The algorithm simply removes all DFS-backedges and works in linear-time.
- */
-class OGDF_EXPORT DfsAcyclicSubgraph : public AcyclicSubgraphModule
-{
-public:
-    //! Computes the set of edges \a arcSet, which have to be deleted in the acyclic subgraph.
-    void call (const Graph &G, List<edge> &arcSet);
-
-    //! Call for UML graph.
+    //! DFS-based algorithm for computing a maximal acyclic subgraph.
     /**
-     * Computes the set of edges \a arcSet, which have to be deleted
-     * in the acyclic subgraph.
+     * The algorithm simply removes all DFS-backedges and works in linear-time.
      */
-    void callUML (const GraphAttributes &AG, List<edge> &arcSet);
+    class OGDF_EXPORT DfsAcyclicSubgraph : public AcyclicSubgraphModule
+    {
+    public:
+        //! Computes the set of edges \a arcSet, which have to be deleted in the acyclic subgraph.
+        void call(const Graph & G, List<edge> & arcSet);
 
-private:
-    int dfsFindHierarchies(
-        const GraphAttributes &AG,
-        NodeArray<int> &hierarchy,
-        int i,
-        node v);
+        //! Call for UML graph.
+        /**
+         * Computes the set of edges \a arcSet, which have to be deleted
+         * in the acyclic subgraph.
+         */
+        void callUML(const GraphAttributes & AG, List<edge> & arcSet);
 
-    void dfsBackedgesHierarchies(
-        const GraphAttributes &AG,
-        node v,
-        NodeArray<int> &number,
-        NodeArray<int> &completion,
-        int &nNumber,
-        int &nCompletion);
+    private:
+        int dfsFindHierarchies(
+            const GraphAttributes & AG,
+            NodeArray<int> & hierarchy,
+            int i,
+            node v);
 
-};
+        void dfsBackedgesHierarchies(
+            const GraphAttributes & AG,
+            node v,
+            NodeArray<int> & number,
+            NodeArray<int> & completion,
+            int & nNumber,
+            int & nCompletion);
+
+    };
 
 
 } // end namespace ogdf

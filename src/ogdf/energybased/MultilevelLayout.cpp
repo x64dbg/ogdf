@@ -46,74 +46,74 @@
 namespace ogdf
 {
 
-//! Sets the single level layout
-void MultilevelLayout::setLayout(LayoutModule* L)
-{
-    m_mmm->setLevelLayoutModule(L);
-}
+    //! Sets the single level layout
+    void MultilevelLayout::setLayout(LayoutModule* L)
+    {
+        m_mmm->setLevelLayoutModule(L);
+    }
 
 
-//! Sets the method used for coarsening
-void MultilevelLayout::setMultilevelBuilder(MultilevelBuilder* B)
-{
-    m_mmm->setMultilevelBuilder(B);
-}
+    //! Sets the method used for coarsening
+    void MultilevelLayout::setMultilevelBuilder(MultilevelBuilder* B)
+    {
+        m_mmm->setMultilevelBuilder(B);
+    }
 
 
-//! Sets the placement method used when refining the levels again.
-void MultilevelLayout::setPlacer(InitialPlacer* P)
-{
-    m_mmm->setInitialPlacer(P);
-}
+    //! Sets the placement method used when refining the levels again.
+    void MultilevelLayout::setPlacer(InitialPlacer* P)
+    {
+        m_mmm->setInitialPlacer(P);
+    }
 
 
-MultilevelLayout::MultilevelLayout()
-{
-    m_mmm = new ModularMultilevelMixer();
-    m_sc = new ScalingLayout();
-    m_cs = new ComponentSplitterLayout();
-    m_pp = new PreprocessorLayout();
-    //initial placer, coarsener are the default
-    //modules of m_mmm.
-    //For the layout, we set a scaling layout with
-    //standard level layout FR. This scales the layout
-    //on each level (with a constant factor) and then applies the FR.
-    m_sc->setSecondaryLayout(new SpringEmbedderFR);
-    m_sc->setScalingType(ScalingLayout::st_relativeToDrawing);
-    m_sc->setLayoutRepeats(1);
+    MultilevelLayout::MultilevelLayout()
+    {
+        m_mmm = new ModularMultilevelMixer();
+        m_sc = new ScalingLayout();
+        m_cs = new ComponentSplitterLayout();
+        m_pp = new PreprocessorLayout();
+        //initial placer, coarsener are the default
+        //modules of m_mmm.
+        //For the layout, we set a scaling layout with
+        //standard level layout FR. This scales the layout
+        //on each level (with a constant factor) and then applies the FR.
+        m_sc->setSecondaryLayout(new SpringEmbedderFR);
+        m_sc->setScalingType(ScalingLayout::st_relativeToDrawing);
+        m_sc->setLayoutRepeats(1);
 
-    m_sc->setScaling(1.0, 1.5);
-    m_sc->setExtraScalingSteps(2);
-    m_mmm->setLevelLayoutModule(m_sc);
+        m_sc->setScaling(1.0, 1.5);
+        m_sc->setExtraScalingSteps(2);
+        m_mmm->setLevelLayoutModule(m_sc);
 
-    //  m_mmm->setLayoutRepeats(1);
-    //  m_mmm->setAllEdgeLenghts(5.0);
-    //  m_mmm->setAllNodeSizes(1.0);
+        //  m_mmm->setLayoutRepeats(1);
+        //  m_mmm->setAllEdgeLenghts(5.0);
+        //  m_mmm->setAllNodeSizes(1.0);
 
-    m_cs->setLayoutModule(m_mmm);
-    m_pp->setLayoutModule(m_cs);
-    m_pp->setRandomizePositions(true);
+        m_cs->setLayoutModule(m_mmm);
+        m_pp->setLayoutModule(m_cs);
+        m_pp->setRandomizePositions(true);
 
-}//constructor
-
-
-void MultilevelLayout::call(GraphAttributes &GA, GraphConstraints &GC)
-{
-    //we assume that both structures work on the same graph
-
-    OGDF_THROW(AlgorithmFailureException);
-}
+    }//constructor
 
 
-void MultilevelLayout::call(GraphAttributes &GA)
-{
-    MultilevelGraph MLG(GA);
+    void MultilevelLayout::call(GraphAttributes & GA, GraphConstraints & GC)
+    {
+        //we assume that both structures work on the same graph
 
-    // Call the nested call, including preprocessing,
-    // component splitting, scaling, level layout.
-    m_pp->call(MLG);
+        OGDF_THROW(AlgorithmFailureException);
+    }
 
-    MLG.exportAttributes(GA);
-}
+
+    void MultilevelLayout::call(GraphAttributes & GA)
+    {
+        MultilevelGraph MLG(GA);
+
+        // Call the nested call, including preprocessing,
+        // component splitting, scaling, level layout.
+        m_pp->call(MLG);
+
+        MLG.exportAttributes(GA);
+    }
 
 } //end namespace ogdf

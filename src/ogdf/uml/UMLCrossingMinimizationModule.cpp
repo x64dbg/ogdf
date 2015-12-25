@@ -48,34 +48,34 @@ namespace ogdf
 {
 
 
-bool UMLCrossingMinimizationModule::checkCrossingGens(const PlanRepUML &prUML)
-{
-    edge e;
-    forall_edges(e,prUML)
+    bool UMLCrossingMinimizationModule::checkCrossingGens(const PlanRepUML & prUML)
     {
-        Graph::EdgeType et = prUML.typeOf(e);
-        if (et != Graph::generalization && et != Graph::association)
-            return false;
-    }
-
-    node v;
-    forall_nodes(v,prUML)
-    {
-        if (prUML.typeOf(v) == PlanRepUML::dummy && v->degree() == 4)
+        edge e;
+        forall_edges(e, prUML)
         {
-            adjEntry adj = v->firstAdj();
-
-            edge e1 = adj->theEdge();
-            edge e2 = adj->succ()->theEdge();
-
-            if (prUML.typeOf(e1) == Graph::generalization &&
-                    prUML.typeOf(e2) == Graph::generalization)
+            Graph::EdgeType et = prUML.typeOf(e);
+            if(et != Graph::generalization && et != Graph::association)
                 return false;
         }
-    }
 
-    return true;
-}
+        node v;
+        forall_nodes(v, prUML)
+        {
+            if(prUML.typeOf(v) == PlanRepUML::dummy && v->degree() == 4)
+            {
+                adjEntry adj = v->firstAdj();
+
+                edge e1 = adj->theEdge();
+                edge e2 = adj->succ()->theEdge();
+
+                if(prUML.typeOf(e1) == Graph::generalization &&
+                        prUML.typeOf(e2) == Graph::generalization)
+                    return false;
+            }
+        }
+
+        return true;
+    }
 
 
 } // end namespace ogdf

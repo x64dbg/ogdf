@@ -60,90 +60,90 @@ namespace ogdf
 {
 
 
-class OGDF_EXPORT VarEdgeInserterDynCore : public Timeouter
-{
-public:
-    VarEdgeInserterDynCore(
-        PlanRepLight &pr,
-        const EdgeArray<int>      *pCostOrig,
-        const EdgeArray<bool>     *pForbiddenOrig,
-        const EdgeArray<__uint32> *pEdgeSubgraphs)
-        : m_pr(pr), m_pCost(pCostOrig), m_pForbidden(pForbiddenOrig), m_pSubgraph(pEdgeSubgraphs) { }
-
-    virtual ~VarEdgeInserterDynCore() { }
-
-    Module::ReturnType call(
-        const Array<edge> &origEdges,
-        RemoveReinsertType rrPost,
-        double percentMostCrossed);
-
-    int runsPostprocessing() const
+    class OGDF_EXPORT VarEdgeInserterDynCore : public Timeouter
     {
-        return m_runsPostprocessing;
-    }
+    public:
+        VarEdgeInserterDynCore(
+            PlanRepLight & pr,
+            const EdgeArray<int>*      pCostOrig,
+            const EdgeArray<bool>*     pForbiddenOrig,
+            const EdgeArray<__uint32>* pEdgeSubgraphs)
+            : m_pr(pr), m_pCost(pCostOrig), m_pForbidden(pForbiddenOrig), m_pSubgraph(pEdgeSubgraphs) { }
 
-protected:
-    class BCandSPQRtrees;
-    class ExpandedGraph;
+        virtual ~VarEdgeInserterDynCore() { }
 
-    int costCrossed(edge eOrig) const;
+        Module::ReturnType call(
+            const Array<edge> & origEdges,
+            RemoveReinsertType rrPost,
+            double percentMostCrossed);
 
-    void insert(edge eOrig, SList<adjEntry> &eip);
-    void blockInsert(node s, node t, List<adjEntry> &L);
+        int runsPostprocessing() const
+        {
+            return m_runsPostprocessing;
+        }
 
-    virtual void storeTypeOfCurrentEdge(edge eOrig) { }
-    virtual BCandSPQRtrees *createBCandSPQRtrees();
-    virtual ExpandedGraph *createExpandedGraph(BCandSPQRtrees &BC);
+    protected:
+        class BCandSPQRtrees;
+        class ExpandedGraph;
 
-    virtual void buildSubpath(node v,
-                              node vPred,
-                              node vSucc,
-                              List<adjEntry> &L,
-                              ExpandedGraph &Exp,
-                              node s,
-                              node t);
+        int costCrossed(edge eOrig) const;
 
-    static const int c_bigM = 10000;
-    PlanRepLight    &m_pr;
+        void insert(edge eOrig, SList<adjEntry> & eip);
+        void blockInsert(node s, node t, List<adjEntry> & L);
 
-    const EdgeArray<int>        *m_pCost;
-    const EdgeArray<bool>       *m_pForbidden;
-    const EdgeArray<__uint32>   *m_pSubgraph;
+        virtual void storeTypeOfCurrentEdge(edge eOrig) { }
+        virtual BCandSPQRtrees* createBCandSPQRtrees();
+        virtual ExpandedGraph* createExpandedGraph(BCandSPQRtrees & BC);
 
-    BCandSPQRtrees *m_pBC;
+        virtual void buildSubpath(node v,
+                                  node vPred,
+                                  node vSucc,
+                                  List<adjEntry> & L,
+                                  ExpandedGraph & Exp,
+                                  node s,
+                                  node t);
 
-    int m_runsPostprocessing; //!< Runs of remove-reinsert method.
-};
+        static const int c_bigM = 10000;
+        PlanRepLight  &  m_pr;
+
+        const EdgeArray<int>*        m_pCost;
+        const EdgeArray<bool>*       m_pForbidden;
+        const EdgeArray<__uint32>*   m_pSubgraph;
+
+        BCandSPQRtrees* m_pBC;
+
+        int m_runsPostprocessing; //!< Runs of remove-reinsert method.
+    };
 
 
-class VarEdgeInserterDynUMLCore : public VarEdgeInserterDynCore
-{
-public:
-    VarEdgeInserterDynUMLCore(
-        PlanRepLight &pr,
-        const EdgeArray<int>      *pCostOrig,
-        const EdgeArray<__uint32> *pEdgeSubgraph) : VarEdgeInserterDynCore(pr, pCostOrig, 0, pEdgeSubgraph) { }
-
-protected:
-    class BCandSPQRtreesUML;
-    class ExpandedGraphUML;
-
-    void storeTypeOfCurrentEdge(edge eOrig)
+    class VarEdgeInserterDynUMLCore : public VarEdgeInserterDynCore
     {
-        m_typeOfCurrentEdge = m_pr.typeOrig(eOrig);
-    }
-    virtual BCandSPQRtrees *createBCandSPQRtrees();
-    virtual ExpandedGraph *createExpandedGraph(BCandSPQRtrees &BC);
-    virtual void buildSubpath(node v,
-                              node vPred,
-                              node vSucc,
-                              List<adjEntry> &L,
-                              ExpandedGraph &Exp,
-                              node s,
-                              node t);
+    public:
+        VarEdgeInserterDynUMLCore(
+            PlanRepLight & pr,
+            const EdgeArray<int>*      pCostOrig,
+            const EdgeArray<__uint32>* pEdgeSubgraph) : VarEdgeInserterDynCore(pr, pCostOrig, 0, pEdgeSubgraph) { }
 
-    Graph::EdgeType m_typeOfCurrentEdge;
-};
+    protected:
+        class BCandSPQRtreesUML;
+        class ExpandedGraphUML;
+
+        void storeTypeOfCurrentEdge(edge eOrig)
+        {
+            m_typeOfCurrentEdge = m_pr.typeOrig(eOrig);
+        }
+        virtual BCandSPQRtrees* createBCandSPQRtrees();
+        virtual ExpandedGraph* createExpandedGraph(BCandSPQRtrees & BC);
+        virtual void buildSubpath(node v,
+                                  node vPred,
+                                  node vSucc,
+                                  List<adjEntry> & L,
+                                  ExpandedGraph & Exp,
+                                  node s,
+                                  node t);
+
+        Graph::EdgeType m_typeOfCurrentEdge;
+    };
 
 
 }

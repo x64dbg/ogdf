@@ -30,19 +30,19 @@
  * This file contains functions related to CP process communication.
 \*===========================================================================*/
 
-void cp_process_message(cut_pool *cp, int r_bufid)
+void cp_process_message(cut_pool* cp, int r_bufid)
 {
     int s_bufid, bytes, new_tid;
     int size, i;
-    char *buf, *bufc;
-    cp_cut_data *cp_cut;
-    double tt= 0;
+    char* buf, *bufc;
+    cp_cut_data* cp_cut;
+    double tt = 0;
     static struct timeval tout = {10, 0};
     int termcode = 0;
 
     bufinfo(r_bufid, &bytes, &cp->msgtag, &cp->cur_sol.lp);
 
-    switch (cp->msgtag)
+    switch(cp->msgtag)
     {
     case LP_SOLUTION_USER:
         cp->cut_pool_time += used_time(&tt);
@@ -50,7 +50,7 @@ void cp_process_message(cut_pool *cp, int r_bufid)
         receive_int_array(&cp->cur_sol.xindex, 1);
         receive_int_array(&cp->cur_sol.xiter_num, 1);
         receive_dbl_array(&cp->cur_sol.lpetol, 1);
-        if ((termcode = receive_lp_solution_cp_u(cp)) < 0)
+        if((termcode = receive_lp_solution_cp_u(cp)) < 0)
         {
             printf("Warning: User error detected in cut pool\n\n");
         }
@@ -66,8 +66,8 @@ void cp_process_message(cut_pool *cp, int r_bufid)
         receive_dbl_array(&cp->cur_sol.lpetol, 1);
 
         receive_int_array(&cp->cur_sol.xlength, 1);
-        cp->cur_sol.xind = (int *) malloc(cp->cur_sol.xlength * ISIZE);
-        cp->cur_sol.xval = (double *) malloc(cp->cur_sol.xlength * DSIZE);
+        cp->cur_sol.xind = (int*) malloc(cp->cur_sol.xlength * ISIZE);
+        cp->cur_sol.xval = (double*) malloc(cp->cur_sol.xlength * DSIZE);
         receive_int_array(cp->cur_sol.xind, cp->cur_sol.xlength);
         receive_dbl_array(cp->cur_sol.xval, cp->cur_sol.xlength);
         break;
@@ -79,7 +79,7 @@ void cp_process_message(cut_pool *cp, int r_bufid)
 
     case WRITE_LOG_FILE:
         freebuf(r_bufid);
-        if (cp->par.logging)
+        if(cp->par.logging)
             write_cp_cut_list(cp, cp->par.log_file_name, FALSE);
         break;
 
@@ -89,15 +89,15 @@ void cp_process_message(cut_pool *cp, int r_bufid)
         receive_int_array(&new_tid, 1);
         freebuf(r_bufid);
         size = cp->cut_num * (int)sizeof(cp_cut_data);
-        for (i=0; i<cp->cut_num; i++)
+        for(i = 0; i < cp->cut_num; i++)
             size += cp->cuts[i]->cut.size;
-        buf = (char *) calloc(size, sizeof(char));
+        buf = (char*) calloc(size, sizeof(char));
 
         bufc = buf;
-        for (i=0; i<cp->cut_num; i++)
+        for(i = 0; i < cp->cut_num; i++)
         {
             cp_cut = cp->cuts[i];
-            memcpy(bufc, (char *)cp_cut, sizeof(cp_cut_data));
+            memcpy(bufc, (char*)cp_cut, sizeof(cp_cut_data));
             bufc += sizeof(cp_cut_data);
             memcpy(bufc, cp_cut->cut.coef, cp_cut->cut.size);
             bufc += cp_cut->cut.size;
@@ -117,7 +117,7 @@ void cp_process_message(cut_pool *cp, int r_bufid)
         cp->cut_pool_time += used_time(&tt);
         cp->total_cut_num += cp->cut_num;
         cp_close(cp);
-        if (cp->msgtag == YOU_CANNOT_DIE)
+        if(cp->msgtag == YOU_CANNOT_DIE)
             break;
         comm_exit();
         exit(1);
@@ -130,7 +130,7 @@ void cp_process_message(cut_pool *cp, int r_bufid)
 
         cp->cut_pool_time += used_time(&tt);
         cp->total_cut_num += cp->cut_num;
-        for (i = cp->cut_num - 1; i >= 0; i--)
+        for(i = cp->cut_num - 1; i >= 0; i--)
         {
             FREE(cp->cuts[i]->cut.coef);
             FREE(cp->cuts[i]);
@@ -139,37 +139,37 @@ void cp_process_message(cut_pool *cp, int r_bufid)
         do
         {
             treceive_msg(new_tid, CUTPOOL_COPY, &tout);
-            if (! r_bufid)
+            if(! r_bufid)
             {
-                if (pstat(new_tid) != PROCESS_OK)
+                if(pstat(new_tid) != PROCESS_OK)
                 {
                     printf("Other CP has died -- CP exiting\n\n");
                     exit(-602);
                 }
             }
         }
-        while (! r_bufid);
+        while(! r_bufid);
         receive_int_array(&cp->cut_num, 1);
         receive_int_array(&cp->size, 1);
-        buf = (char *) calloc(cp->size, sizeof(char));
+        buf = (char*) calloc(cp->size, sizeof(char));
         receive_char_array(buf, cp->size);
         freebuf(r_bufid);
 
-        if (cp->allocated_cut_num < cp->cut_num)
+        if(cp->allocated_cut_num < cp->cut_num)
         {
             cp->allocated_cut_num = cp->cut_num + cp->par.block_size;
             FREE(cp->cuts);
-            cp->cuts = (cp_cut_data **) malloc(cp->allocated_cut_num *
-                                               sizeof(cp_cut_data*));
+            cp->cuts = (cp_cut_data**) malloc(cp->allocated_cut_num *
+                                              sizeof(cp_cut_data*));
         }
         bufc = buf;
-        for (i=0; i<cp->cut_num; i++)
+        for(i = 0; i < cp->cut_num; i++)
         {
             cp_cut = cp->cuts[i] =
-                         (cp_cut_data *) malloc( sizeof(cp_cut_data));
+                         (cp_cut_data*) malloc(sizeof(cp_cut_data));
             memcpy(cp_cut, bufc, sizeof(cp_cut_data));
             bufc += sizeof(cp_cut_data);
-            cp_cut->cut.coef = (char *) malloc(cp_cut->cut.size * CSIZE);
+            cp_cut->cut.coef = (char*) malloc(cp_cut->cut.size * CSIZE);
             memcpy(cp_cut->cut.coef, bufc, cp_cut->cut.size);
             bufc += cp_cut->cut.size;
         }
@@ -188,17 +188,17 @@ void cp_process_message(cut_pool *cp, int r_bufid)
  * Send a packed cut to another process
 \*===========================================================================*/
 
-void cut_pool_send_cut(cut_pool *cp, cut_data *new_cut, int tid)
+void cut_pool_send_cut(cut_pool* cp, cut_data* new_cut, int tid)
 {
 #ifdef COMPILE_IN_CP
 
-    cut_data *tmp_cut;
+    cut_data* tmp_cut;
 
-    tmp_cut = (cut_data *) malloc (sizeof(cut_data));
-    memcpy((char *)tmp_cut, (char *)new_cut, sizeof(cut_data));
-    tmp_cut->coef = (char *) malloc (new_cut->size * sizeof(char));
+    tmp_cut = (cut_data*) malloc(sizeof(cut_data));
+    memcpy((char*)tmp_cut, (char*)new_cut, sizeof(cut_data));
+    tmp_cut->coef = (char*) malloc(new_cut->size * sizeof(char));
     memcpy(tmp_cut->coef, new_cut->coef, new_cut->size);
-    REALLOC(cp->cuts_to_add, cut_data *, cp->cuts_to_add_size,
+    REALLOC(cp->cuts_to_add, cut_data*, cp->cuts_to_add_size,
             cp->cuts_to_add_num + 1, BB_BUNCH);
     cp->cuts_to_add[cp->cuts_to_add_num++] = tmp_cut;
 
@@ -221,11 +221,11 @@ void cut_pool_send_cut(cut_pool *cp, cut_data *new_cut, int tid)
  *see of memory reallocation is necessary.
 \*==========================================================================*/
 
-void cut_pool_receive_cuts(cut_pool *cp, int bc_level)
+void cut_pool_receive_cuts(cut_pool* cp, int bc_level)
 {
     int i, cnt, level;
     int del_cuts = 0, deleted_duplicates = FALSE;
-    cp_cut_data *cp_cut;
+    cp_cut_data* cp_cut;
 
 #ifdef COMPILE_IN_CP
     cnt = cp->cuts_to_add_num;
@@ -233,7 +233,7 @@ void cut_pool_receive_cuts(cut_pool *cp, int bc_level)
     receive_int_array(&cnt, 1);
 #endif
 
-    if (cnt + cp->cut_num > cp->allocated_cut_num &&
+    if(cnt + cp->cut_num > cp->allocated_cut_num &&
             (cnt > cp->par.block_size ||
              cnt > cp->par.max_number_of_cuts - cp->par.cuts_to_check))
     {
@@ -241,49 +241,49 @@ void cut_pool_receive_cuts(cut_pool *cp, int bc_level)
         printf("  [ cnt: %i   bl_size: %i   max: %i ]\n\n",
                cnt, cp->par.block_size, cp->par.max_number_of_cuts);
 #ifdef COMPILE_IN_CP
-        for (i = cnt - 1; i >= 0; i--)
+        for(i = cnt - 1; i >= 0; i--)
             FREE(cp->cuts_to_add[i]);
         cp->cuts_to_add_num = 0;
 #endif
         return;
     }
 
-    while (TRUE)
+    while(TRUE)
     {
         /* This loop (despite its appearance) is not endless. In fact, it is
         entered at most four times. Check it out :-). */
-        if (cp->cut_num + cnt <= cp->allocated_cut_num)
+        if(cp->cut_num + cnt <= cp->allocated_cut_num)
             break;
 
-        if (cp->allocated_cut_num + cnt + cp->par.block_size <=
+        if(cp->allocated_cut_num + cnt + cp->par.block_size <=
                 cp->par.max_number_of_cuts)  /* be greedy */
         {
             cp->allocated_cut_num += cnt + cp->par.block_size;
-            cp->cuts = (cp_cut_data **) realloc
-                       (cp->cuts, cp->allocated_cut_num * sizeof(cp_cut_data *));
+            cp->cuts = (cp_cut_data**) realloc
+                       (cp->cuts, cp->allocated_cut_num * sizeof(cp_cut_data*));
             break;
         }
-        else if (cp->cut_num + cnt + cp->par.block_size <=
-                 cp->par.max_number_of_cuts)  /* be less greedy ... */
+        else if(cp->cut_num + cnt + cp->par.block_size <=
+                cp->par.max_number_of_cuts)  /* be less greedy ... */
         {
             cp->allocated_cut_num = cp->cut_num + cnt + cp->par.block_size;
-            cp->cuts = (cp_cut_data **) realloc
-                       (cp->cuts, cp->allocated_cut_num * sizeof(cp_cut_data *));
+            cp->cuts = (cp_cut_data**) realloc
+                       (cp->cuts, cp->allocated_cut_num * sizeof(cp_cut_data*));
             break;
         }
-        else if (cnt < cp->par.block_size &&
-                 cp->cut_num + cp->par.block_size<=cp->par.max_number_of_cuts)
+        else if(cnt < cp->par.block_size &&
+                cp->cut_num + cp->par.block_size <= cp->par.max_number_of_cuts)
         {
             cp->allocated_cut_num = cp->cut_num + cp->par.block_size;
-            cp->cuts = (cp_cut_data **) realloc
-                       (cp->cuts, cp->allocated_cut_num * sizeof(cp_cut_data *));
+            cp->cuts = (cp_cut_data**) realloc
+                       (cp->cuts, cp->allocated_cut_num * sizeof(cp_cut_data*));
             break;
         }
         else
         {
             /* If the maximum number of cuts allowed in the pool is exceeded,
                then the pool is purged to make room */
-            if (!deleted_duplicates)
+            if(!deleted_duplicates)
             {
                 del_cuts += delete_duplicate_cuts(cp);
                 deleted_duplicates = TRUE;
@@ -302,17 +302,17 @@ void cut_pool_receive_cuts(cut_pool *cp, int bc_level)
 #else
     receive_int_array(&level, 1);
 #endif
-    for (i = cnt - 1; i >= 0; i--, del_cuts = 0)
+    for(i = cnt - 1; i >= 0; i--, del_cuts = 0)
     {
-        cp_cut = (cp_cut_data *) malloc( sizeof(cp_cut_data));
+        cp_cut = (cp_cut_data*) malloc(sizeof(cp_cut_data));
 #ifdef COMPILE_IN_CP
-        memcpy((char *)(&cp_cut->cut), (char *)cp->cuts_to_add[i],
+        memcpy((char*)(&cp_cut->cut), (char*)cp->cuts_to_add[i],
                sizeof(cut_data));
-        if (cp_cut->cut.size >0)
+        if(cp_cut->cut.size > 0)
         {
-            cp_cut->cut.coef = (char *) ((int *)malloc (cp_cut->cut.size+ISIZE));
+            cp_cut->cut.coef = (char*)((int*)malloc(cp_cut->cut.size + ISIZE));
             memcpy(cp_cut->cut.coef, cp->cuts_to_add[i]->coef,
-                   cp->cuts_to_add[i]->size*sizeof(char));
+                   cp->cuts_to_add[i]->size * sizeof(char));
         }
         FREE(cp->cuts_to_add[i]->coef);
         FREE(cp->cuts_to_add[i]);
@@ -324,28 +324,28 @@ void cut_pool_receive_cuts(cut_pool *cp, int bc_level)
         cp_cut->touches = cp_cut->check_num = 0;
         cp_cut->quality = 0.0;
 #if 0
-        if (cp_cut->cut.rhs <= cp->lpetol)
+        if(cp_cut->cut.rhs <= cp->lpetol)
         {
             printf("cut_pool: cut arrived with 0 rhs... \n\n");
         }
 #endif
-        if (cp->size + cp_cut->cut.size + sizeof(cp_cut_data) >
+        if(cp->size + cp_cut->cut.size + sizeof(cp_cut_data) >
                 cp->par.max_size)
         {
             /* If the maximum size of the cut pool is exceeded, then we attempt
                to delete some cuts to make room */
-            if (!deleted_duplicates)
+            if(!deleted_duplicates)
             {
                 del_cuts += delete_duplicate_cuts(cp);
                 deleted_duplicates = TRUE;
             }
-            while (cp->size + cp_cut->cut.size + sizeof(cp_cut_data) >
+            while(cp->size + cp_cut->cut.size + sizeof(cp_cut_data) >
                     cp->par.max_size)
             {
                 del_cuts += delete_ineffective_cuts(cp);
             }
 
-            if (cp->par.verbosity > 4)
+            if(cp->par.verbosity > 4)
                 printf("Maximum CP size exceeded -- deleted %i cuts, leaving %i\n",
                        del_cuts, cp->cut_num);
         }

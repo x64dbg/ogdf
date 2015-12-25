@@ -57,218 +57,218 @@ namespace ogdf
 {
 
 
-//! The parameterized class \a QueuePure<E> implements list-based queues.
-/**
- * In contrast to Queue<E>, instances of \a QueuePure<E> do not store the
- * number of elements contained in the queue.
- *
- * @tparam E is the element type.
- */
-template<class E> class QueuePure : private SListPure<E>
-{
-public:
-    //! Constructs an empty queue.
-    QueuePure() { }
-
-    //! Constructs a queue that is a copy of \a Q.
-    QueuePure(const QueuePure<E> &Q) : SListPure<E>(Q) { }
-
-    // destruction
-    ~QueuePure() { }
-
-    //! Returns true iff the queue is empty.
-    bool empty() const
+    //! The parameterized class \a QueuePure<E> implements list-based queues.
+    /**
+     * In contrast to Queue<E>, instances of \a QueuePure<E> do not store the
+     * number of elements contained in the queue.
+     *
+     * @tparam E is the element type.
+     */
+    template<class E> class QueuePure : private SListPure<E>
     {
-        return SListPure<E>::empty();
+    public:
+        //! Constructs an empty queue.
+        QueuePure() { }
+
+        //! Constructs a queue that is a copy of \a Q.
+        QueuePure(const QueuePure<E> & Q) : SListPure<E>(Q) { }
+
+        // destruction
+        ~QueuePure() { }
+
+        //! Returns true iff the queue is empty.
+        bool empty() const
+        {
+            return SListPure<E>::empty();
+        }
+
+        //! Returns a reference to the front element.
+        const E & top() const
+        {
+            return SListPure<E>::front();
+        }
+
+        //! Returns a reference to the front element.
+        E & top()
+        {
+            return SListPure<E>::front();
+        }
+
+        //! Returns a reference to the back element.
+        const E & bottom() const
+        {
+            return SListPure<E>::back();
+        }
+
+        //! Returns a reference to the back element.
+        E & bottom()
+        {
+            return SListPure<E>::back();
+        }
+
+        //! Assignment operator.
+        QueuePure<E> & operator=(const QueuePure<E> & Q)
+        {
+            SListPure<E>::operator=(Q);
+            return *this;
+        }
+
+        //! Adds \a x at the end of queue.
+        SListIterator<E> append(const E & x)
+        {
+            return SListPure<E>::pushBack(x);
+        }
+
+        //! Removes front element and returns it.
+        E pop()
+        {
+            E x = top();
+            SListPure<E>::popFront();
+            return x;
+        }
+
+        //! Makes the queue empty.
+        void clear()
+        {
+            SListPure<E>::clear();
+        }
+
+        //! Conversion to const SListPure.
+        const SListPure<E> & getListPure() const
+        {
+            return *this;
+        }
+
+        OGDF_NEW_DELETE
+    }; // class QueuePure
+
+
+    //! The parameterized class \a Queue<E> implements list-based queues.
+    /**
+     * In contrast to QueuePure<E>, instances of \a Queue<E> store the
+     * number of elements contained in the queue.
+     *
+     * @tparam E is the element type.
+     */
+    template<class E> class Queue : private SList<E>
+    {
+    public:
+        //! Constructs an empty queue.
+        Queue() { }
+
+        //! Constructs a queue that is a copy of \a Q.
+        Queue(const Queue<E> & Q) : SList<E>(Q) { }
+
+        // destruction
+        ~Queue() { }
+
+        //! Returns true iff the queue is empty.
+        bool empty() const
+        {
+            return SList<E>::empty();
+        }
+
+        //! Returns the number of elements in the queue.
+        int size() const
+        {
+            return SList<E>::size();
+        }
+
+        //! Returns a reference to the front element.
+        const E & top() const
+        {
+            return SList<E>::front();
+        }
+
+        //! Returns a reference to the front element.
+        E & top()
+        {
+            return SList<E>::front();
+        }
+
+        //! Returns a reference to the back element.
+        const E & bottom() const
+        {
+            return SListPure<E>::back();
+        }
+
+        //! Returns a reference to the back element.
+        E & bottom()
+        {
+            return SListPure<E>::back();
+        }
+
+        //! Assignment operator.
+        Queue<E> & operator=(const Queue<E> & Q)
+        {
+            SList<E>::operator=(Q);
+            return *this;
+        }
+
+        //! Adds \a x at the end of queue.
+        SListIterator<E> append(const E & x)
+        {
+            return SList<E>::pushBack(x);
+        }
+
+        //! Removes front element and returns it.
+        E pop()
+        {
+            E x = top();
+            SList<E>::popFront();
+            return x;
+        }
+
+        //! Makes the queue empty.
+        void clear()
+        {
+            SList<E>::clear();
+        }
+
+        //! Conversion to const SList.
+        const SList<E> & getList() const
+        {
+            return *this;
+        }
+        //! Conversion to const SListPure.
+        const SListPure<E> & getListPure() const
+        {
+            return SList<E>::getListPure();
+        }
+
+        OGDF_NEW_DELETE
+    }; // class Queue
+
+
+    // prints queue to output stream os using delimiter delim
+    template<class E>
+    void print(ostream & os, const QueuePure<E> & Q, char delim = ' ')
+    {
+        print(os, Q.getListPure(), delim);
     }
 
-    //! Returns a reference to the front element.
-    const E &top() const
+    // prints queue to output stream os using delimiter delim
+    template<class E>
+    void print(ostream & os, const Queue<E> & Q, char delim = ' ')
     {
-        return SListPure<E>::front();
+        print(os, Q.getListPure(), delim);
     }
 
-    //! Returns a reference to the front element.
-    E &top()
+
+    // output operator
+    template<class E>
+    ostream & operator<<(ostream & os, const QueuePure<E> & Q)
     {
-        return SListPure<E>::front();
+        print(os, Q);
+        return os;
     }
 
-    //! Returns a reference to the back element.
-    const E &bottom() const
+    template<class E>
+    ostream & operator<<(ostream & os, const Queue<E> & Q)
     {
-        return SListPure<E>::back();
+        print(os, Q);
+        return os;
     }
-
-    //! Returns a reference to the back element.
-    E &bottom()
-    {
-        return SListPure<E>::back();
-    }
-
-    //! Assignment operator.
-    QueuePure<E> &operator=(const QueuePure<E> &Q)
-    {
-        SListPure<E>::operator=(Q);
-        return *this;
-    }
-
-    //! Adds \a x at the end of queue.
-    SListIterator<E> append(const E &x)
-    {
-        return SListPure<E>::pushBack(x);
-    }
-
-    //! Removes front element and returns it.
-    E pop()
-    {
-        E x = top();
-        SListPure<E>::popFront();
-        return x;
-    }
-
-    //! Makes the queue empty.
-    void clear()
-    {
-        SListPure<E>::clear();
-    }
-
-    //! Conversion to const SListPure.
-    const SListPure<E> &getListPure() const
-    {
-        return *this;
-    }
-
-    OGDF_NEW_DELETE
-}; // class QueuePure
-
-
-//! The parameterized class \a Queue<E> implements list-based queues.
-/**
- * In contrast to QueuePure<E>, instances of \a Queue<E> store the
- * number of elements contained in the queue.
- *
- * @tparam E is the element type.
- */
-template<class E> class Queue : private SList<E>
-{
-public:
-    //! Constructs an empty queue.
-    Queue() { }
-
-    //! Constructs a queue that is a copy of \a Q.
-    Queue(const Queue<E> &Q) : SList<E>(Q) { }
-
-    // destruction
-    ~Queue() { }
-
-    //! Returns true iff the queue is empty.
-    bool empty() const
-    {
-        return SList<E>::empty();
-    }
-
-    //! Returns the number of elements in the queue.
-    int size() const
-    {
-        return SList<E>::size();
-    }
-
-    //! Returns a reference to the front element.
-    const E &top() const
-    {
-        return SList<E>::front();
-    }
-
-    //! Returns a reference to the front element.
-    E &top()
-    {
-        return SList<E>::front();
-    }
-
-    //! Returns a reference to the back element.
-    const E &bottom() const
-    {
-        return SListPure<E>::back();
-    }
-
-    //! Returns a reference to the back element.
-    E &bottom()
-    {
-        return SListPure<E>::back();
-    }
-
-    //! Assignment operator.
-    Queue<E> &operator=(const Queue<E> &Q)
-    {
-        SList<E>::operator=(Q);
-        return *this;
-    }
-
-    //! Adds \a x at the end of queue.
-    SListIterator<E> append(const E &x)
-    {
-        return SList<E>::pushBack(x);
-    }
-
-    //! Removes front element and returns it.
-    E pop()
-    {
-        E x = top();
-        SList<E>::popFront();
-        return x;
-    }
-
-    //! Makes the queue empty.
-    void clear()
-    {
-        SList<E>::clear();
-    }
-
-    //! Conversion to const SList.
-    const SList<E> &getList() const
-    {
-        return *this;
-    }
-    //! Conversion to const SListPure.
-    const SListPure<E> &getListPure() const
-    {
-        return SList<E>::getListPure();
-    }
-
-    OGDF_NEW_DELETE
-}; // class Queue
-
-
-// prints queue to output stream os using delimiter delim
-template<class E>
-void print(ostream &os, const QueuePure<E> &Q, char delim = ' ')
-{
-    print(os,Q.getListPure(),delim);
-}
-
-// prints queue to output stream os using delimiter delim
-template<class E>
-void print(ostream &os, const Queue<E> &Q, char delim = ' ')
-{
-    print(os,Q.getListPure(),delim);
-}
-
-
-// output operator
-template<class E>
-ostream &operator<<(ostream &os, const QueuePure<E> &Q)
-{
-    print(os,Q);
-    return os;
-}
-
-template<class E>
-ostream &operator<<(ostream &os, const Queue<E> &Q)
-{
-    print(os,Q);
-    return os;
-}
 
 
 } // end namespace ogdf

@@ -28,7 +28,7 @@
 #include <iostream>
 //#############################################################################
 
-ClpInterior::ClpInterior () :
+ClpInterior::ClpInterior() :
 
     ClpModel(),
     largestPrimalError_(0.0),
@@ -114,10 +114,10 @@ ClpInterior::ClpInterior () :
 }
 
 // Subproblem constructor
-ClpInterior::ClpInterior ( const ClpModel * rhs,
-                           int numberRows, const int * whichRow,
-                           int numberColumns, const int * whichColumn,
-                           bool dropNames, bool dropIntegers)
+ClpInterior::ClpInterior(const ClpModel* rhs,
+                         int numberRows, const int* whichRow,
+                         int numberColumns, const int* whichColumn,
+                         bool dropNames, bool dropIntegers)
     : ClpModel(rhs, numberRows, whichRow,
                numberColumns, whichColumn, dropNames, dropIntegers),
     largestPrimalError_(0.0),
@@ -204,7 +204,7 @@ ClpInterior::ClpInterior ( const ClpModel * rhs,
 
 //-----------------------------------------------------------------------------
 
-ClpInterior::~ClpInterior ()
+ClpInterior::~ClpInterior()
 {
     gutsOfDelete();
 }
@@ -219,7 +219,7 @@ ClpInterior::housekeeping()
     return 0;
 }
 // Copy constructor.
-ClpInterior::ClpInterior(const ClpInterior &rhs) :
+ClpInterior::ClpInterior(const ClpInterior & rhs) :
     ClpModel(rhs),
     largestPrimalError_(0.0),
     largestDualError_(0.0),
@@ -271,7 +271,7 @@ ClpInterior::ClpInterior(const ClpInterior &rhs) :
     solveType_ = 3; // say interior based life form
 }
 // Copy constructor from model
-ClpInterior::ClpInterior(const ClpModel &rhs) :
+ClpInterior::ClpInterior(const ClpModel & rhs) :
     ClpModel(rhs),
     largestPrimalError_(0.0),
     largestDualError_(0.0),
@@ -358,7 +358,7 @@ ClpInterior::ClpInterior(const ClpModel &rhs) :
 ClpInterior &
 ClpInterior::operator=(const ClpInterior & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         gutsOfDelete();
         ClpModel::operator=(rhs);
@@ -531,7 +531,7 @@ ClpInterior::createWorkingData()
 {
     bool goodMatrix = true;
     //check matrix
-    if (!matrix_->allElementsInRange(this, 1.0e-12, 1.0e20))
+    if(!matrix_->allElementsInRange(this, 1.0e-12, 1.0e20))
     {
         problemStatus_ = 4;
         goodMatrix = false;
@@ -546,16 +546,16 @@ ClpInterior::createWorkingData()
     int i;
     CoinWorkDouble direction = optimizationDirection_ * objectiveScale_;
     // direction is actually scale out not scale in
-    if (direction)
+    if(direction)
         direction = 1.0 / direction;
-    const double * obj = objective();
-    for (i = 0; i < numberColumns_; i++)
+    const double* obj = objective();
+    for(i = 0; i < numberColumns_; i++)
         cost_[i] = direction * obj[i];
     memset(cost_ + numberColumns_, 0, numberRows_ * sizeof(CoinWorkDouble));
     // do scaling if needed
-    if (scalingFlag_ > 0 && !rowScale_)
+    if(scalingFlag_ > 0 && !rowScale_)
     {
-        if (matrix_->scale(this))
+        if(matrix_->scale(this))
             scalingFlag_ = -scalingFlag_; // not scaled after all
     }
     delete [] lower_;
@@ -571,125 +571,125 @@ ClpInterior::createWorkingData()
     CoinMemcpyN(columnLower_, numberColumns_, columnLowerWork_);
     CoinMemcpyN(columnUpper_, numberColumns_, columnUpperWork_);
     // clean up any mismatches on infinity
-    for (i = 0; i < numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
     {
-        if (columnLowerWork_[i] < -1.0e30)
+        if(columnLowerWork_[i] < -1.0e30)
             columnLowerWork_[i] = -COIN_DBL_MAX;
-        if (columnUpperWork_[i] > 1.0e30)
+        if(columnUpperWork_[i] > 1.0e30)
             columnUpperWork_[i] = COIN_DBL_MAX;
     }
     // clean up any mismatches on infinity
-    for (i = 0; i < numberRows_; i++)
+    for(i = 0; i < numberRows_; i++)
     {
-        if (rowLowerWork_[i] < -1.0e30)
+        if(rowLowerWork_[i] < -1.0e30)
             rowLowerWork_[i] = -COIN_DBL_MAX;
-        if (rowUpperWork_[i] > 1.0e30)
+        if(rowUpperWork_[i] > 1.0e30)
             rowUpperWork_[i] = COIN_DBL_MAX;
     }
     // check rim of problem okay
-    if (!sanityCheck())
+    if(!sanityCheck())
         goodMatrix = false;
     if(rowScale_)
     {
-        for (i = 0; i < numberColumns_; i++)
+        for(i = 0; i < numberColumns_; i++)
         {
             CoinWorkDouble multiplier = rhsScale_ / columnScale_[i];
             cost_[i] *= columnScale_[i];
-            if (columnLowerWork_[i] > -1.0e50)
+            if(columnLowerWork_[i] > -1.0e50)
                 columnLowerWork_[i] *= multiplier;
-            if (columnUpperWork_[i] < 1.0e50)
+            if(columnUpperWork_[i] < 1.0e50)
                 columnUpperWork_[i] *= multiplier;
 
         }
-        for (i = 0; i < numberRows_; i++)
+        for(i = 0; i < numberRows_; i++)
         {
             CoinWorkDouble multiplier = rhsScale_ * rowScale_[i];
-            if (rowLowerWork_[i] > -1.0e50)
+            if(rowLowerWork_[i] > -1.0e50)
                 rowLowerWork_[i] *= multiplier;
-            if (rowUpperWork_[i] < 1.0e50)
+            if(rowUpperWork_[i] < 1.0e50)
                 rowUpperWork_[i] *= multiplier;
         }
     }
-    else if (rhsScale_ != 1.0)
+    else if(rhsScale_ != 1.0)
     {
-        for (i = 0; i < numberColumns_ + numberRows_; i++)
+        for(i = 0; i < numberColumns_ + numberRows_; i++)
         {
-            if (lower_[i] > -1.0e50)
+            if(lower_[i] > -1.0e50)
                 lower_[i] *= rhsScale_;
-            if (upper_[i] < 1.0e50)
+            if(upper_[i] < 1.0e50)
                 upper_[i] *= rhsScale_;
 
         }
     }
-    assert (!errorRegion_);
+    assert(!errorRegion_);
     errorRegion_ = new CoinWorkDouble [numberRows_];
-    assert (!rhsFixRegion_);
+    assert(!rhsFixRegion_);
     rhsFixRegion_ = new CoinWorkDouble [numberRows_];
-    assert (!deltaY_);
+    assert(!deltaY_);
     deltaY_ = new CoinWorkDouble [numberRows_];
     CoinZeroN(deltaY_, numberRows_);
-    assert (!upperSlack_);
+    assert(!upperSlack_);
     upperSlack_ = new CoinWorkDouble [nTotal];
-    assert (!lowerSlack_);
+    assert(!lowerSlack_);
     lowerSlack_ = new CoinWorkDouble [nTotal];
-    assert (!diagonal_);
+    assert(!diagonal_);
     diagonal_ = new CoinWorkDouble [nTotal];
-    assert (!deltaX_);
+    assert(!deltaX_);
     deltaX_ = new CoinWorkDouble [nTotal];
     CoinZeroN(deltaX_, nTotal);
-    assert (!deltaZ_);
+    assert(!deltaZ_);
     deltaZ_ = new CoinWorkDouble [nTotal];
     CoinZeroN(deltaZ_, nTotal);
-    assert (!deltaW_);
+    assert(!deltaW_);
     deltaW_ = new CoinWorkDouble [nTotal];
     CoinZeroN(deltaW_, nTotal);
-    assert (!deltaSU_);
+    assert(!deltaSU_);
     deltaSU_ = new CoinWorkDouble [nTotal];
     CoinZeroN(deltaSU_, nTotal);
-    assert (!deltaSL_);
+    assert(!deltaSL_);
     deltaSL_ = new CoinWorkDouble [nTotal];
     CoinZeroN(deltaSL_, nTotal);
-    assert (!primalR_);
-    assert (!dualR_);
+    assert(!primalR_);
+    assert(!dualR_);
     // create arrays if we are doing KKT
-    if (cholesky_->type() >= 20)
+    if(cholesky_->type() >= 20)
     {
         primalR_ = new CoinWorkDouble [nTotal];
         CoinZeroN(primalR_, nTotal);
         dualR_ = new CoinWorkDouble [numberRows_];
         CoinZeroN(dualR_, numberRows_);
     }
-    assert (!rhsB_);
+    assert(!rhsB_);
     rhsB_ = new CoinWorkDouble [numberRows_];
     CoinZeroN(rhsB_, numberRows_);
-    assert (!rhsU_);
+    assert(!rhsU_);
     rhsU_ = new CoinWorkDouble [nTotal];
     CoinZeroN(rhsU_, nTotal);
-    assert (!rhsL_);
+    assert(!rhsL_);
     rhsL_ = new CoinWorkDouble [nTotal];
     CoinZeroN(rhsL_, nTotal);
-    assert (!rhsZ_);
+    assert(!rhsZ_);
     rhsZ_ = new CoinWorkDouble [nTotal];
     CoinZeroN(rhsZ_, nTotal);
-    assert (!rhsW_);
+    assert(!rhsW_);
     rhsW_ = new CoinWorkDouble [nTotal];
     CoinZeroN(rhsW_, nTotal);
-    assert (!rhsC_);
+    assert(!rhsC_);
     rhsC_ = new CoinWorkDouble [nTotal];
     CoinZeroN(rhsC_, nTotal);
-    assert (!workArray_);
+    assert(!workArray_);
     workArray_ = new CoinWorkDouble [nTotal];
     CoinZeroN(workArray_, nTotal);
-    assert (!zVec_);
+    assert(!zVec_);
     zVec_ = new CoinWorkDouble [nTotal];
     CoinZeroN(zVec_, nTotal);
-    assert (!wVec_);
+    assert(!wVec_);
     wVec_ = new CoinWorkDouble [nTotal];
     CoinZeroN(wVec_, nTotal);
-    assert (!dj_);
+    assert(!dj_);
     dj_ = new CoinWorkDouble [nTotal];
-    if (!status_)
-        status_ = new unsigned char [numberRows_+numberColumns_];
+    if(!status_)
+        status_ = new unsigned char [numberRows_ + numberColumns_];
     memset(status_, 0, numberRows_ + numberColumns_);
     return goodMatrix;
 }
@@ -697,19 +697,19 @@ void
 ClpInterior::deleteWorkingData()
 {
     int i;
-    if (optimizationDirection_ != 1.0 || objectiveScale_ != 1.0)
+    if(optimizationDirection_ != 1.0 || objectiveScale_ != 1.0)
     {
         CoinWorkDouble scaleC = optimizationDirection_ / objectiveScale_;
         // and modify all dual signs
-        for (i = 0; i < numberColumns_; i++)
+        for(i = 0; i < numberColumns_; i++)
             reducedCost_[i] = scaleC * dj_[i];
-        for (i = 0; i < numberRows_; i++)
+        for(i = 0; i < numberRows_; i++)
             dual_[i] *= scaleC;
     }
-    if (rowScale_)
+    if(rowScale_)
     {
         CoinWorkDouble scaleR = 1.0 / rhsScale_;
-        for (i = 0; i < numberColumns_; i++)
+        for(i = 0; i < numberColumns_; i++)
         {
             CoinWorkDouble scaleFactor = columnScale_[i];
             CoinWorkDouble valueScaled = columnActivity_[i];
@@ -717,7 +717,7 @@ ClpInterior::deleteWorkingData()
             CoinWorkDouble valueScaledDual = reducedCost_[i];
             reducedCost_[i] = valueScaledDual / scaleFactor;
         }
-        for (i = 0; i < numberRows_; i++)
+        for(i = 0; i < numberRows_; i++)
         {
             CoinWorkDouble scaleFactor = rowScale_[i];
             CoinWorkDouble valueScaled = rowActivity_[i];
@@ -726,15 +726,15 @@ ClpInterior::deleteWorkingData()
             dual_[i] = valueScaledDual * scaleFactor;
         }
     }
-    else if (rhsScale_ != 1.0)
+    else if(rhsScale_ != 1.0)
     {
         CoinWorkDouble scaleR = 1.0 / rhsScale_;
-        for (i = 0; i < numberColumns_; i++)
+        for(i = 0; i < numberColumns_; i++)
         {
             CoinWorkDouble valueScaled = columnActivity_[i];
             columnActivity_[i] = valueScaled * scaleR;
         }
-        for (i = 0; i < numberRows_; i++)
+        for(i = 0; i < numberRows_; i++)
         {
             CoinWorkDouble valueScaled = rowActivity_[i];
             rowActivity_[i] = valueScaled * scaleR;
@@ -776,7 +776,7 @@ bool
 ClpInterior::sanityCheck()
 {
     // bad if empty
-    if (!numberColumns_ || ((!numberRows_ || !matrix_->getNumElements()) && objective_->type() < 2))
+    if(!numberColumns_ || ((!numberRows_ || !matrix_->getNumElements()) && objective_->type() < 2))
     {
         problemStatus_ = emptyProblem();
         return false;
@@ -796,33 +796,33 @@ ClpInterior::sanityCheck()
     largestObj = 0.0;
     // If bounds are too close - fix
     CoinWorkDouble fixTolerance = 1.1 * primalTolerance();
-    for (i = numberColumns_; i < numberColumns_ + numberRows_; i++)
+    for(i = numberColumns_; i < numberColumns_ + numberRows_; i++)
     {
         CoinWorkDouble value;
         value = CoinAbs(cost_[i]);
-        if (value > 1.0e50)
+        if(value > 1.0e50)
         {
             numberBad++;
-            if (firstBad < 0)
+            if(firstBad < 0)
                 firstBad = i;
         }
-        else if (value)
+        else if(value)
         {
-            if (value > largestObj)
+            if(value > largestObj)
                 largestObj = value;
-            if (value < smallestObj)
+            if(value < smallestObj)
                 smallestObj = value;
         }
         value = upper_[i] - lower_[i];
-        if (value < -primalTolerance())
+        if(value < -primalTolerance())
         {
             numberBad++;
-            if (firstBad < 0)
+            if(firstBad < 0)
                 firstBad = i;
         }
-        else if (value <= fixTolerance)
+        else if(value <= fixTolerance)
         {
-            if (value)
+            if(value)
             {
                 // modify
                 upper_[i] = lower_[i];
@@ -831,27 +831,27 @@ ClpInterior::sanityCheck()
         }
         else
         {
-            if (value < minimumGap)
+            if(value < minimumGap)
                 minimumGap = value;
         }
-        if (lower_[i] > -1.0e100 && lower_[i])
+        if(lower_[i] > -1.0e100 && lower_[i])
         {
             value = CoinAbs(lower_[i]);
-            if (value > largestBound)
+            if(value > largestBound)
                 largestBound = value;
-            if (value < smallestBound)
+            if(value < smallestBound)
                 smallestBound = value;
         }
-        if (upper_[i] < 1.0e100 && upper_[i])
+        if(upper_[i] < 1.0e100 && upper_[i])
         {
             value = CoinAbs(upper_[i]);
-            if (value > largestBound)
+            if(value > largestBound)
                 largestBound = value;
-            if (value < smallestBound)
+            if(value < smallestBound)
                 smallestBound = value;
         }
     }
-    if (largestBound)
+    if(largestBound)
         handler_->message(CLP_RIMSTATISTICS3, messages_)
                 << static_cast<double>(smallestBound)
                 << static_cast<double>(largestBound)
@@ -860,33 +860,33 @@ ClpInterior::sanityCheck()
     minimumGap = 1.0e100;
     smallestBound = 1.0e100;
     largestBound = 0.0;
-    for (i = 0; i < numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
     {
         CoinWorkDouble value;
         value = CoinAbs(cost_[i]);
-        if (value > 1.0e50)
+        if(value > 1.0e50)
         {
             numberBad++;
-            if (firstBad < 0)
+            if(firstBad < 0)
                 firstBad = i;
         }
-        else if (value)
+        else if(value)
         {
-            if (value > largestObj)
+            if(value > largestObj)
                 largestObj = value;
-            if (value < smallestObj)
+            if(value < smallestObj)
                 smallestObj = value;
         }
         value = upper_[i] - lower_[i];
-        if (value < -primalTolerance())
+        if(value < -primalTolerance())
         {
             numberBad++;
-            if (firstBad < 0)
+            if(firstBad < 0)
                 firstBad = i;
         }
-        else if (value <= fixTolerance)
+        else if(value <= fixTolerance)
         {
-            if (value)
+            if(value)
             {
                 // modify
                 upper_[i] = lower_[i];
@@ -895,28 +895,28 @@ ClpInterior::sanityCheck()
         }
         else
         {
-            if (value < minimumGap)
+            if(value < minimumGap)
                 minimumGap = value;
         }
-        if (lower_[i] > -1.0e100 && lower_[i])
+        if(lower_[i] > -1.0e100 && lower_[i])
         {
             value = CoinAbs(lower_[i]);
-            if (value > largestBound)
+            if(value > largestBound)
                 largestBound = value;
-            if (value < smallestBound)
+            if(value < smallestBound)
                 smallestBound = value;
         }
-        if (upper_[i] < 1.0e100 && upper_[i])
+        if(upper_[i] < 1.0e100 && upper_[i])
         {
             value = CoinAbs(upper_[i]);
-            if (value > largestBound)
+            if(value > largestBound)
                 largestBound = value;
-            if (value < smallestBound)
+            if(value < smallestBound)
                 smallestBound = value;
         }
     }
     char rowcol[] = {'R', 'C'};
-    if (numberBad)
+    if(numberBad)
     {
         handler_->message(CLP_BAD_BOUNDS, messages_)
                 << numberBad
@@ -925,7 +925,7 @@ ClpInterior::sanityCheck()
         problemStatus_ = 4;
         return false;
     }
-    if (modifiedBounds)
+    if(modifiedBounds)
         handler_->message(CLP_MODIFIEDBOUNDS, messages_)
                 << modifiedBounds
                 << CoinMessageEol;
@@ -933,7 +933,7 @@ ClpInterior::sanityCheck()
             << static_cast<double>(smallestObj)
             << static_cast<double>(largestObj)
             << CoinMessageEol;
-    if (largestBound)
+    if(largestBound)
         handler_->message(CLP_RIMSTATISTICS2, messages_)
                 << static_cast<double>(smallestBound)
                 << static_cast<double>(largestBound)
@@ -953,21 +953,21 @@ ClpInterior::sanityCheck()
    </ul>
 */
 void
-ClpInterior::loadProblem (  const ClpMatrixBase& matrix,
-                            const double* collb, const double* colub,
-                            const double* obj,
-                            const double* rowlb, const double* rowub,
-                            const double * rowObjective)
+ClpInterior::loadProblem(const ClpMatrixBase & matrix,
+                         const double* collb, const double* colub,
+                         const double* obj,
+                         const double* rowlb, const double* rowub,
+                         const double* rowObjective)
 {
     ClpModel::loadProblem(matrix, collb, colub, obj, rowlb, rowub,
                           rowObjective);
 }
 void
-ClpInterior::loadProblem (  const CoinPackedMatrix& matrix,
-                            const double* collb, const double* colub,
-                            const double* obj,
-                            const double* rowlb, const double* rowub,
-                            const double * rowObjective)
+ClpInterior::loadProblem(const CoinPackedMatrix & matrix,
+                         const double* collb, const double* colub,
+                         const double* obj,
+                         const double* rowlb, const double* rowub,
+                         const double* rowObjective)
 {
     ClpModel::loadProblem(matrix, collb, colub, obj, rowlb, rowub,
                           rowObjective);
@@ -976,26 +976,26 @@ ClpInterior::loadProblem (  const CoinPackedMatrix& matrix,
 /* Just like the other loadProblem() method except that the matrix is
    given in a standard column major ordered format (without gaps). */
 void
-ClpInterior::loadProblem (  const int numcols, const int numrows,
-                            const CoinBigIndex* start, const int* index,
-                            const double* value,
-                            const double* collb, const double* colub,
-                            const double* obj,
-                            const double* rowlb, const double* rowub,
-                            const double * rowObjective)
+ClpInterior::loadProblem(const int numcols, const int numrows,
+                         const CoinBigIndex* start, const int* index,
+                         const double* value,
+                         const double* collb, const double* colub,
+                         const double* obj,
+                         const double* rowlb, const double* rowub,
+                         const double* rowObjective)
 {
     ClpModel::loadProblem(numcols, numrows, start, index, value,
                           collb, colub, obj, rowlb, rowub,
                           rowObjective);
 }
 void
-ClpInterior::loadProblem (  const int numcols, const int numrows,
-                            const CoinBigIndex* start, const int* index,
-                            const double* value, const int * length,
-                            const double* collb, const double* colub,
-                            const double* obj,
-                            const double* rowlb, const double* rowub,
-                            const double * rowObjective)
+ClpInterior::loadProblem(const int numcols, const int numrows,
+                         const CoinBigIndex* start, const int* index,
+                         const double* value, const int* length,
+                         const double* collb, const double* colub,
+                         const double* obj,
+                         const double* rowlb, const double* rowub,
+                         const double* rowObjective)
 {
     ClpModel::loadProblem(numcols, numrows, start, index, value, length,
                           collb, colub, obj, rowlb, rowub,
@@ -1003,7 +1003,7 @@ ClpInterior::loadProblem (  const int numcols, const int numrows,
 }
 // Read an mps file from the given filename
 int
-ClpInterior::readMps(const char *filename,
+ClpInterior::readMps(const char* filename,
                      bool keepNames,
                      bool ignoreErrors)
 {
@@ -1016,13 +1016,13 @@ ClpInterior::readMps(const char *filename,
 int
 ClpInterior::pdco()
 {
-    return ((ClpPdco *) this)->pdco();
+    return ((ClpPdco*) this)->pdco();
 }
 // ** Temporary version
 int
-ClpInterior::pdco( ClpPdcoBase * stuff, Options &options, Info &info, Outfo &outfo)
+ClpInterior::pdco(ClpPdcoBase* stuff, Options & options, Info & info, Outfo & outfo)
 {
-    return ((ClpPdco *) this)->pdco(stuff, options, info, outfo);
+    return ((ClpPdco*) this)->pdco(stuff, options, info, outfo);
 }
 #endif
 #include "ClpPredictorCorrector.hpp"
@@ -1030,15 +1030,15 @@ ClpInterior::pdco( ClpPdcoBase * stuff, Options &options, Info &info, Outfo &out
 int
 ClpInterior::primalDual()
 {
-    return (static_cast<ClpPredictorCorrector *> (this))->solve();
+    return (static_cast<ClpPredictorCorrector*>(this))->solve();
 }
 
 void
 ClpInterior::checkSolution()
 {
     int iRow, iColumn;
-    CoinWorkDouble * reducedCost = reinterpret_cast<CoinWorkDouble *>(reducedCost_);
-    CoinWorkDouble * dual = reinterpret_cast<CoinWorkDouble *>(dual_);
+    CoinWorkDouble* reducedCost = reinterpret_cast<CoinWorkDouble*>(reducedCost_);
+    CoinWorkDouble* dual = reinterpret_cast<CoinWorkDouble*>(dual_);
     CoinMemcpyN(cost_, numberColumns_, reducedCost);
     matrix_->transposeTimes(-1.0, dual, reducedCost);
     // Now modify reduced costs for quadratic
@@ -1057,57 +1057,57 @@ ClpInterior::checkSolution()
 
     // Done scaled - use permanent regions for output
     // but internal for bounds
-    const CoinWorkDouble * lower = lower_ + numberColumns_;
-    const CoinWorkDouble * upper = upper_ + numberColumns_;
-    for (iRow = 0; iRow < numberRows_; iRow++)
+    const CoinWorkDouble* lower = lower_ + numberColumns_;
+    const CoinWorkDouble* upper = upper_ + numberColumns_;
+    for(iRow = 0; iRow < numberRows_; iRow++)
     {
         CoinWorkDouble infeasibility = 0.0;
         CoinWorkDouble distanceUp = CoinMin(upper[iRow] -
                                             rowActivity_[iRow], static_cast<CoinWorkDouble>(1.0e10));
         CoinWorkDouble distanceDown = CoinMin(rowActivity_[iRow] -
                                               lower[iRow], static_cast<CoinWorkDouble>(1.0e10));
-        if (distanceUp > primalTolerance2)
+        if(distanceUp > primalTolerance2)
         {
             CoinWorkDouble value = dual[iRow];
             // should not be negative
-            if (value < -dualTolerance)
+            if(value < -dualTolerance)
             {
                 sumDualInfeasibilities_ += -dualTolerance - value;
                 value = - value * distanceUp;
-                if (value > worstComplementarity_)
+                if(value > worstComplementarity_)
                     worstComplementarity_ = value;
                 complementarityGap_ += value;
             }
         }
-        if (distanceDown > primalTolerance2)
+        if(distanceDown > primalTolerance2)
         {
             CoinWorkDouble value = dual[iRow];
             // should not be positive
-            if (value > dualTolerance)
+            if(value > dualTolerance)
             {
                 sumDualInfeasibilities_ += value - dualTolerance;
                 value =  value * distanceDown;
-                if (value > worstComplementarity_)
+                if(value > worstComplementarity_)
                     worstComplementarity_ = value;
                 complementarityGap_ += value;
             }
         }
-        if (rowActivity_[iRow] > upper[iRow])
+        if(rowActivity_[iRow] > upper[iRow])
         {
             infeasibility = rowActivity_[iRow] - upper[iRow];
         }
-        else if (rowActivity_[iRow] < lower[iRow])
+        else if(rowActivity_[iRow] < lower[iRow])
         {
             infeasibility = lower[iRow] - rowActivity_[iRow];
         }
-        if (infeasibility > primalTolerance)
+        if(infeasibility > primalTolerance)
         {
             sumPrimalInfeasibilities_ += infeasibility - primalTolerance;
         }
     }
     lower = lower_;
     upper = upper_;
-    for (iColumn = 0; iColumn < numberColumns_; iColumn++)
+    for(iColumn = 0; iColumn < numberColumns_; iColumn++)
     {
         CoinWorkDouble infeasibility = 0.0;
         objectiveValue_ += cost_[iColumn] * columnActivity_[iColumn];
@@ -1115,41 +1115,41 @@ ClpInterior::checkSolution()
                                             columnActivity_[iColumn], static_cast<CoinWorkDouble>(1.0e10));
         CoinWorkDouble distanceDown = CoinMin(columnActivity_[iColumn] -
                                               lower[iColumn], static_cast<CoinWorkDouble>(1.0e10));
-        if (distanceUp > primalTolerance2)
+        if(distanceUp > primalTolerance2)
         {
             CoinWorkDouble value = reducedCost[iColumn];
             // should not be negative
-            if (value < -dualTolerance)
+            if(value < -dualTolerance)
             {
                 sumDualInfeasibilities_ += -dualTolerance - value;
                 value = - value * distanceUp;
-                if (value > worstComplementarity_)
+                if(value > worstComplementarity_)
                     worstComplementarity_ = value;
                 complementarityGap_ += value;
             }
         }
-        if (distanceDown > primalTolerance2)
+        if(distanceDown > primalTolerance2)
         {
             CoinWorkDouble value = reducedCost[iColumn];
             // should not be positive
-            if (value > dualTolerance)
+            if(value > dualTolerance)
             {
                 sumDualInfeasibilities_ += value - dualTolerance;
                 value =  value * distanceDown;
-                if (value > worstComplementarity_)
+                if(value > worstComplementarity_)
                     worstComplementarity_ = value;
                 complementarityGap_ += value;
             }
         }
-        if (columnActivity_[iColumn] > upper[iColumn])
+        if(columnActivity_[iColumn] > upper[iColumn])
         {
             infeasibility = columnActivity_[iColumn] - upper[iColumn];
         }
-        else if (columnActivity_[iColumn] < lower[iColumn])
+        else if(columnActivity_[iColumn] < lower[iColumn])
         {
             infeasibility = lower[iColumn] - columnActivity_[iColumn];
         }
-        if (infeasibility > primalTolerance)
+        if(infeasibility > primalTolerance)
         {
             sumPrimalInfeasibilities_ += infeasibility - primalTolerance;
         }
@@ -1163,7 +1163,7 @@ ClpInterior::checkSolution()
 }
 // Set cholesky (and delete present one)
 void
-ClpInterior::setCholesky(ClpCholeskyBase * cholesky)
+ClpInterior::setCholesky(ClpCholeskyBase* cholesky)
 {
     delete cholesky_;
     cholesky_ = cholesky;
@@ -1189,24 +1189,24 @@ ClpInterior::numberFixed() const
 {
     int i;
     int nFixed = 0;
-    for (i = 0; i < numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
     {
-        if (columnUpper_[i] < 1.0e20 || columnLower_[i] > -1.0e20)
+        if(columnUpper_[i] < 1.0e20 || columnLower_[i] > -1.0e20)
         {
-            if (columnUpper_[i] > columnLower_[i])
+            if(columnUpper_[i] > columnLower_[i])
             {
-                if (fixedOrFree(i))
+                if(fixedOrFree(i))
                     nFixed++;
             }
         }
     }
-    for (i = 0; i < numberRows_; i++)
+    for(i = 0; i < numberRows_; i++)
     {
-        if (rowUpper_[i] < 1.0e20 || rowLower_[i] > -1.0e20)
+        if(rowUpper_[i] < 1.0e20 || rowLower_[i] > -1.0e20)
         {
-            if (rowUpper_[i] > rowLower_[i])
+            if(rowUpper_[i] > rowLower_[i])
             {
-                if (fixedOrFree(i + numberColumns_))
+                if(fixedOrFree(i + numberColumns_))
                     nFixed++;
             }
         }
@@ -1218,27 +1218,27 @@ void
 ClpInterior::fixFixed(bool reallyFix)
 {
     // Arrays for change in columns and rhs
-    CoinWorkDouble * columnChange = new CoinWorkDouble[numberColumns_];
-    CoinWorkDouble * rowChange = new CoinWorkDouble[numberRows_];
+    CoinWorkDouble* columnChange = new CoinWorkDouble[numberColumns_];
+    CoinWorkDouble* rowChange = new CoinWorkDouble[numberRows_];
     CoinZeroN(columnChange, numberColumns_);
     CoinZeroN(rowChange, numberRows_);
     matrix_->times(1.0, columnChange, rowChange);
     int i;
     CoinWorkDouble tolerance = primalTolerance();
-    for (i = 0; i < numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
     {
-        if (columnUpper_[i] < 1.0e20 || columnLower_[i] > -1.0e20)
+        if(columnUpper_[i] < 1.0e20 || columnLower_[i] > -1.0e20)
         {
-            if (columnUpper_[i] > columnLower_[i])
+            if(columnUpper_[i] > columnLower_[i])
             {
-                if (fixedOrFree(i))
+                if(fixedOrFree(i))
                 {
-                    if (columnActivity_[i] - columnLower_[i] < columnUpper_[i] - columnActivity_[i])
+                    if(columnActivity_[i] - columnLower_[i] < columnUpper_[i] - columnActivity_[i])
                     {
                         CoinWorkDouble change = columnLower_[i] - columnActivity_[i];
-                        if (CoinAbs(change) < tolerance)
+                        if(CoinAbs(change) < tolerance)
                         {
-                            if (reallyFix)
+                            if(reallyFix)
                                 columnUpper_[i] = columnLower_[i];
                             columnChange[i] = change;
                             columnActivity_[i] = columnLower_[i];
@@ -1247,9 +1247,9 @@ ClpInterior::fixFixed(bool reallyFix)
                     else
                     {
                         CoinWorkDouble change = columnUpper_[i] - columnActivity_[i];
-                        if (CoinAbs(change) < tolerance)
+                        if(CoinAbs(change) < tolerance)
                         {
-                            if (reallyFix)
+                            if(reallyFix)
                                 columnLower_[i] = columnUpper_[i];
                             columnChange[i] = change;
                             columnActivity_[i] = columnUpper_[i];
@@ -1263,40 +1263,40 @@ ClpInterior::fixFixed(bool reallyFix)
     matrix_->times(1.0, columnChange, rowChange);
     // If makes mess of things then don't do
     CoinWorkDouble newSum = 0.0;
-    for (i = 0; i < numberRows_; i++)
+    for(i = 0; i < numberRows_; i++)
     {
         CoinWorkDouble value = rowActivity_[i] + rowChange[i];
-        if (value > rowUpper_[i] + tolerance)
+        if(value > rowUpper_[i] + tolerance)
             newSum += value - rowUpper_[i] - tolerance;
-        else if (value < rowLower_[i] - tolerance)
+        else if(value < rowLower_[i] - tolerance)
             newSum -= value - rowLower_[i] + tolerance;
     }
-    if (newSum > 1.0e-5 + 1.5 * sumPrimalInfeasibilities_)
+    if(newSum > 1.0e-5 + 1.5 * sumPrimalInfeasibilities_)
     {
         // put back and skip changes
-        for (i = 0; i < numberColumns_; i++)
+        for(i = 0; i < numberColumns_; i++)
             columnActivity_[i] -= columnChange[i];
     }
     else
     {
         CoinZeroN(rowActivity_, numberRows_);
         matrix_->times(1.0, columnActivity_, rowActivity_);
-        if (reallyFix)
+        if(reallyFix)
         {
-            for (i = 0; i < numberRows_; i++)
+            for(i = 0; i < numberRows_; i++)
             {
-                if (rowUpper_[i] < 1.0e20 || rowLower_[i] > -1.0e20)
+                if(rowUpper_[i] < 1.0e20 || rowLower_[i] > -1.0e20)
                 {
-                    if (rowUpper_[i] > rowLower_[i])
+                    if(rowUpper_[i] > rowLower_[i])
                     {
-                        if (fixedOrFree(i + numberColumns_))
+                        if(fixedOrFree(i + numberColumns_))
                         {
-                            if (rowActivity_[i] - rowLower_[i] < rowUpper_[i] - rowActivity_[i])
+                            if(rowActivity_[i] - rowLower_[i] < rowUpper_[i] - rowActivity_[i])
                             {
                                 CoinWorkDouble change = rowLower_[i] - rowActivity_[i];
-                                if (CoinAbs(change) < tolerance)
+                                if(CoinAbs(change) < tolerance)
                                 {
-                                    if (reallyFix)
+                                    if(reallyFix)
                                         rowUpper_[i] = rowLower_[i];
                                     rowActivity_[i] = rowLower_[i];
                                 }
@@ -1304,9 +1304,9 @@ ClpInterior::fixFixed(bool reallyFix)
                             else
                             {
                                 CoinWorkDouble change = rowLower_[i] - rowActivity_[i];
-                                if (CoinAbs(change) < tolerance)
+                                if(CoinAbs(change) < tolerance)
                                 {
-                                    if (reallyFix)
+                                    if(reallyFix)
                                         rowLower_[i] = rowUpper_[i];
                                     rowActivity_[i] = rowUpper_[i];
                                 }
@@ -1323,29 +1323,29 @@ ClpInterior::fixFixed(bool reallyFix)
 /* Modifies djs to allow for quadratic.
    returns quadratic offset */
 CoinWorkDouble
-ClpInterior::quadraticDjs(CoinWorkDouble * djRegion, const CoinWorkDouble * solution,
+ClpInterior::quadraticDjs(CoinWorkDouble* djRegion, const CoinWorkDouble* solution,
                           CoinWorkDouble scaleFactor)
 {
     CoinWorkDouble quadraticOffset = 0.0;
 #ifndef NO_RTTI
-    ClpQuadraticObjective * quadraticObj = (dynamic_cast< ClpQuadraticObjective*>(objective_));
+    ClpQuadraticObjective* quadraticObj = (dynamic_cast<ClpQuadraticObjective*>(objective_));
 #else
-    ClpQuadraticObjective * quadraticObj = NULL;
-    if (objective_->type() == 2)
-        quadraticObj = (static_cast< ClpQuadraticObjective*>(objective_));
+    ClpQuadraticObjective* quadraticObj = NULL;
+    if(objective_->type() == 2)
+        quadraticObj = (static_cast<ClpQuadraticObjective*>(objective_));
 #endif
-    if (quadraticObj)
+    if(quadraticObj)
     {
-        CoinPackedMatrix * quadratic = quadraticObj->quadraticObjective();
-        const int * columnQuadratic = quadratic->getIndices();
-        const CoinBigIndex * columnQuadraticStart = quadratic->getVectorStarts();
-        const int * columnQuadraticLength = quadratic->getVectorLengths();
-        double * quadraticElement = quadratic->getMutableElements();
+        CoinPackedMatrix* quadratic = quadraticObj->quadraticObjective();
+        const int* columnQuadratic = quadratic->getIndices();
+        const CoinBigIndex* columnQuadraticStart = quadratic->getVectorStarts();
+        const int* columnQuadraticLength = quadratic->getVectorLengths();
+        double* quadraticElement = quadratic->getMutableElements();
         int numberColumns = quadratic->getNumCols();
-        for (int iColumn = 0; iColumn < numberColumns; iColumn++)
+        for(int iColumn = 0; iColumn < numberColumns; iColumn++)
         {
             CoinWorkDouble value = 0.0;
-            for (CoinBigIndex j = columnQuadraticStart[iColumn];
+            for(CoinBigIndex j = columnQuadraticStart[iColumn];
                     j < columnQuadraticStart[iColumn] + columnQuadraticLength[iColumn]; j++)
             {
                 int jColumn = columnQuadratic[j];

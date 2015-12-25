@@ -46,80 +46,80 @@
 
 namespace ogdf
 {
-//-------------------------------------------------------------------
-//                          SplitHeuristic
-//-------------------------------------------------------------------
+    //-------------------------------------------------------------------
+    //                          SplitHeuristic
+    //-------------------------------------------------------------------
 
-void SplitHeuristic::init (const HierarchyLevels &levels)
-{
-    m_cm = new CrossingsMatrix(levels);
-}
-
-void SplitHeuristic::cleanup()
-{
-    delete m_cm;
-}
-
-// ordinary call
-void SplitHeuristic::call(Level &L)
-{
-    m_cm->init(L);
-    buffer = Array<node>(L.size());
-
-    recCall(L, 0, L.size() - 1);
-
-    buffer = Array<node>(-1);
-}
-
-// SimDraw call
-void SplitHeuristic::call(Level &L, const EdgeArray<__uint32> *edgeSubGraphs)
-{
-    // only difference to call is the different calculation of the crossingsmatrix
-    m_cm->init(L, edgeSubGraphs);
-    buffer = Array<node>(L.size());
-
-    recCall(L, 0, L.size() - 1);
-
-    buffer = Array<node>(-1);
-}
-
-void SplitHeuristic::recCall(Level &L, int low, int high)
-{
-    if (high <= low) return;
-
-    const HierarchyLevels &levels = L.levels();
-    CrossingsMatrix &crossings = *m_cm;
-    int up = high, down = low;
-
-    // chooses L[low] as pivot
-    int i;
-    for (i = low+1; i <= high; i++)
+    void SplitHeuristic::init(const HierarchyLevels & levels)
     {
-        if (crossings(i,low) < crossings(low,i))
-            buffer[down++] = L[i];
+        m_cm = new CrossingsMatrix(levels);
     }
 
-    // use two for-loops in order to keep the number of swaps low
-    for (i = high; i >= low+1; i--)
+    void SplitHeuristic::cleanup()
     {
-        if (crossings(i,low) >= crossings(low,i))
-            buffer[up--] = L[i];
+        delete m_cm;
     }
 
-    buffer[down] = L[low];
-
-    for (i = low; i < high; i++)
+    // ordinary call
+    void SplitHeuristic::call(Level & L)
     {
-        int j = levels.pos(buffer[i]);
-        if (i != j)
+        m_cm->init(L);
+        buffer = Array<node>(L.size());
+
+        recCall(L, 0, L.size() - 1);
+
+        buffer = Array<node>(-1);
+    }
+
+    // SimDraw call
+    void SplitHeuristic::call(Level & L, const EdgeArray<__uint32>* edgeSubGraphs)
+    {
+        // only difference to call is the different calculation of the crossingsmatrix
+        m_cm->init(L, edgeSubGraphs);
+        buffer = Array<node>(L.size());
+
+        recCall(L, 0, L.size() - 1);
+
+        buffer = Array<node>(-1);
+    }
+
+    void SplitHeuristic::recCall(Level & L, int low, int high)
+    {
+        if(high <= low) return;
+
+        const HierarchyLevels & levels = L.levels();
+        CrossingsMatrix & crossings = *m_cm;
+        int up = high, down = low;
+
+        // chooses L[low] as pivot
+        int i;
+        for(i = low + 1; i <= high; i++)
         {
-            L.swap(i,j);
-            crossings.swap(i,j);
+            if(crossings(i, low) < crossings(low, i))
+                buffer[down++] = L[i];
         }
-    }
 
-    recCall(L,low,down-1);
-    recCall(L,up+1,high);
-}
+        // use two for-loops in order to keep the number of swaps low
+        for(i = high; i >= low + 1; i--)
+        {
+            if(crossings(i, low) >= crossings(low, i))
+                buffer[up--] = L[i];
+        }
+
+        buffer[down] = L[low];
+
+        for(i = low; i < high; i++)
+        {
+            int j = levels.pos(buffer[i]);
+            if(i != j)
+            {
+                L.swap(i, j);
+                crossings.swap(i, j);
+            }
+        }
+
+        recCall(L, low, down - 1);
+        recCall(L, up + 1, high);
+    }
 
 } // end namespace ogdf

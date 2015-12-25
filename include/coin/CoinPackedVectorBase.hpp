@@ -29,9 +29,9 @@ public:
     /// Get length of indices and elements vectors
     virtual int getNumElements() const = 0;
     /// Get indices of elements
-    virtual const int * getIndices() const = 0;
+    virtual const int* getIndices() const = 0;
     /// Get element values
-    virtual const double * getElements() const = 0;
+    virtual const double* getElements() const = 0;
     //@}
 
     /**@name Methods related to whether duplicate-index checking is performed.
@@ -68,8 +68,8 @@ public:
     /// Just sets test stuff false without a try etc
     inline void setTestsOff() const
     {
-        testForDuplicateIndex_=false;
-        testedDuplicateIndex_=false;
+        testForDuplicateIndex_ = false;
+        testedDuplicateIndex_ = false;
     }
     //@}
 
@@ -80,7 +80,7 @@ public:
         <strong>NOTE</strong>: The user needs to <code>delete[]</code> this
         pointer after it's not needed anymore.
     */
-    double * denseVector(int denseSize) const;
+    double* denseVector(int denseSize) const;
     /** Access the i'th element of the full storage vector.
         If the i'th is not stored, then zero is returned. The initial use of
         this method has some computational and storage overhead associated with
@@ -100,7 +100,7 @@ public:
 
     /// Throw an exception if there are duplicate indices
     void duplicateIndex(const char* methodName = NULL,
-                        const char * className = NULL) const;
+                        const char* className = NULL) const;
 
     /** Return true if the i'th element of the full storage vector exists in
         the packed storage vector.*/
@@ -125,7 +125,7 @@ public:
     /** Lexicographic comparisons of two packed vectors. Returns
         negative/0/positive depending on whether \c this is
         smaller/equal.greater than \c rhs */
-    int lexCompare(const CoinPackedVectorBase& rhs);
+    int lexCompare(const CoinPackedVectorBase & rhs);
 #endif
 
     /** This method establishes an ordering on packed vectors. It is complete
@@ -134,7 +134,7 @@ public:
         in a heap when all we care is to quickly check whether a particular
         vector is already in the heap or not. Returns negative/0/positive
         depending on whether \c this is smaller/equal.greater than \c rhs. */
-    int compare(const CoinPackedVectorBase& rhs) const;
+    int compare(const CoinPackedVectorBase & rhs) const;
 
     /** equivalent - If shallow packed vector A & B are equivalent, then they
         are still equivalent no matter how they are sorted.
@@ -144,37 +144,37 @@ public:
         sorts the two shallow packed vectors.
     */
     template <class FloatEqual> bool
-    isEquivalent(const CoinPackedVectorBase& rhs, const FloatEqual& eq) const
+    isEquivalent(const CoinPackedVectorBase & rhs, const FloatEqual & eq) const
     {
-        if (getNumElements() != rhs.getNumElements())
+        if(getNumElements() != rhs.getNumElements())
             return false;
 
         duplicateIndex("equivalent", "CoinPackedVector");
         rhs.duplicateIndex("equivalent", "CoinPackedVector");
 
-        std::map<int,double> mv;
-        const int * inds = getIndices();
-        const double * elems = getElements();
+        std::map<int, double> mv;
+        const int* inds = getIndices();
+        const double* elems = getElements();
         int i;
-        for ( i = getNumElements() - 1; i >= 0; --i)
+        for(i = getNumElements() - 1; i >= 0; --i)
         {
             mv.insert(std::make_pair(inds[i], elems[i]));
         }
 
-        std::map<int,double> mvRhs;
+        std::map<int, double> mvRhs;
         inds = rhs.getIndices();
         elems = rhs.getElements();
-        for ( i = getNumElements() - 1; i >= 0; --i)
+        for(i = getNumElements() - 1; i >= 0; --i)
         {
             mvRhs.insert(std::make_pair(inds[i], elems[i]));
         }
 
-        std::map<int,double>::const_iterator mvI = mv.begin();
-        std::map<int,double>::const_iterator mvIlast = mv.end();
-        std::map<int,double>::const_iterator mvIrhs = mvRhs.begin();
-        while (mvI != mvIlast)
+        std::map<int, double>::const_iterator mvI = mv.begin();
+        std::map<int, double>::const_iterator mvIlast = mv.end();
+        std::map<int, double>::const_iterator mvIrhs = mvRhs.begin();
+        while(mvI != mvIlast)
         {
-            if (mvI->first != mvIrhs->first || ! eq(mvI->second, mvIrhs->second))
+            if(mvI->first != mvIrhs->first || ! eq(mvI->second, mvIrhs->second))
                 return false;
             ++mvI;
             ++mvIrhs;
@@ -182,7 +182,7 @@ public:
         return true;
     }
 
-    bool isEquivalent(const CoinPackedVectorBase& rhs) const;
+    bool isEquivalent(const CoinPackedVectorBase & rhs) const;
     //@}
 
 
@@ -230,10 +230,10 @@ private:
         underlying class, it this one is constructed. However, at that point we
         don't know how much of the data members of this class we need to copy
         over. Therefore the copy constructor is not used. */
-    CoinPackedVectorBase(const CoinPackedVectorBase&);
+    CoinPackedVectorBase(const CoinPackedVectorBase &);
     /** This class provides <em>const</em> access to packed vectors, so there's
         no need to provide an assignment operator. */
-    CoinPackedVectorBase& operator=(const CoinPackedVectorBase&);
+    CoinPackedVectorBase & operator=(const CoinPackedVectorBase &);
     //@}
 
 protected:
@@ -244,8 +244,8 @@ protected:
     void findMaxMinIndices() const;
 
     /// Return indexSetPtr_ (create it if necessary).
-    std::set<int> * indexSet(const char* methodName = NULL,
-                             const char * className = NULL) const;
+    std::set<int>* indexSet(const char* methodName = NULL,
+                            const char* className = NULL) const;
 
     /// Delete the indexSet
     void clearIndexSet() const;
@@ -267,7 +267,7 @@ private:
     /** Store the indices in a set. This set is only created if it is needed.
         Its primary use is testing for duplicate indices.
      */
-    mutable std::set<int> * indexSetPtr_;
+    mutable std::set<int>* indexSetPtr_;
     /** True if the vector should be tested for duplicate indices when they can
         occur. */
     mutable bool testForDuplicateIndex_;

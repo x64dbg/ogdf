@@ -24,7 +24,7 @@ public:
         return dual_.size();
     }
     /// return a pointer to the array of duals
-    inline const double * dual() const
+    inline const double* dual() const
     {
         return dual_.values();
     }
@@ -32,20 +32,20 @@ public:
     /** Assign the dual vector to be the warmstart information. In this method
         the object assumes ownership of the pointer and upon return "dual" will
         be a NULL pointer. If copying is desirable use the constructor. */
-    inline void assignDual(int size, double *& dual)
+    inline void assignDual(int size, double* & dual)
     {
         dual_.assignVector(size, dual);
     }
 
     CoinWarmStartDual() {}
 
-    CoinWarmStartDual(int size, const double * dual) : dual_(size, dual) {}
+    CoinWarmStartDual(int size, const double* dual) : dual_(size, dual) {}
 
-    CoinWarmStartDual(const CoinWarmStartDual& rhs) : dual_(rhs.dual_) {}
+    CoinWarmStartDual(const CoinWarmStartDual & rhs) : dual_(rhs.dual_) {}
 
-    CoinWarmStartDual& operator=(const CoinWarmStartDual& rhs)
+    CoinWarmStartDual & operator=(const CoinWarmStartDual & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             dual_ = rhs.dual_;
         }
@@ -53,7 +53,7 @@ public:
     }
 
     /** `Virtual constructor' */
-    virtual CoinWarmStart *clone() const
+    virtual CoinWarmStart* clone() const
     {
         return new CoinWarmStartDual(*this);
     }
@@ -61,7 +61,7 @@ public:
     virtual ~CoinWarmStartDual() {}
 
     /*! \name Dual warm start `diff' methods */
-//@{
+    //@{
 
     /*! \brief Generate a `diff' that can convert the warm start passed as a
          parameter to the warm start specified by \c this.
@@ -71,7 +71,7 @@ public:
     */
 
     virtual CoinWarmStartDiff*
-    generateDiff (const CoinWarmStart *const oldCWS) const ;
+    generateDiff(const CoinWarmStart* const oldCWS) const ;
 
     /*! \brief Apply \p diff to this warm start.
 
@@ -79,17 +79,17 @@ public:
       allocated capacity of the warm start is sufficiently large.
     */
 
-    virtual void applyDiff (const CoinWarmStartDiff *const cwsdDiff) ;
+    virtual void applyDiff(const CoinWarmStartDiff* const cwsdDiff) ;
 
 #if 0
 protected:
-    inline const CoinWarmStartVector<double>& warmStartVector() const
+    inline const CoinWarmStartVector<double> & warmStartVector() const
     {
         return dual_;
     }
 #endif
 
-//@}
+    //@}
 
 private:
     ///@name Private data members
@@ -118,15 +118,15 @@ class CoinWarmStartDualDiff : public virtual CoinWarmStartDiff
 public:
 
     /*! \brief `Virtual constructor' */
-    virtual CoinWarmStartDiff *clone() const
+    virtual CoinWarmStartDiff* clone() const
     {
         return new CoinWarmStartDualDiff(*this) ;
     }
 
     /*! \brief Assignment */
-    virtual CoinWarmStartDualDiff &operator= (const CoinWarmStartDualDiff &rhs)
+    virtual CoinWarmStartDualDiff & operator= (const CoinWarmStartDualDiff & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             diff_ = rhs.diff_;
         }
@@ -144,7 +144,7 @@ protected:
       see it when they make <i>their</i> default constructor protected or
       private.
     */
-    CoinWarmStartDualDiff () : diff_() {}
+    CoinWarmStartDualDiff() : diff_() {}
 
     /*! \brief Copy constructor
 
@@ -156,19 +156,19 @@ protected:
       see it when the make <i>their</i> copy constructor protected or
       private.
     */
-    CoinWarmStartDualDiff (const CoinWarmStartDualDiff &rhs) :
+    CoinWarmStartDualDiff(const CoinWarmStartDualDiff & rhs) :
         diff_(rhs.diff_) {}
 
 private:
 
     friend CoinWarmStartDiff*
-    CoinWarmStartDual::generateDiff(const CoinWarmStart *const oldCWS) const ;
+    CoinWarmStartDual::generateDiff(const CoinWarmStart* const oldCWS) const ;
     friend void
-    CoinWarmStartDual::applyDiff(const CoinWarmStartDiff *const diff) ;
+    CoinWarmStartDual::applyDiff(const CoinWarmStartDiff* const diff) ;
 
     /*! \brief Standard constructor */
-    CoinWarmStartDualDiff (int sze, const unsigned int *const diffNdxs,
-                           const double *const diffVals) :
+    CoinWarmStartDualDiff(int sze, const unsigned int* const diffNdxs,
+                          const double* const diffVals) :
         diff_(sze, diffNdxs, diffVals) {}
 
     /*!

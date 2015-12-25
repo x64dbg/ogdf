@@ -13,8 +13,8 @@ class CoinWarmStartBasis;
 /** Gomory Cut Generator Class */
 class CglGomory : public CglCutGenerator
 {
-    friend void CglGomoryUnitTest(const OsiSolverInterface * siP,
-                                  const std::string mpdDir );
+    friend void CglGomoryUnitTest(const OsiSolverInterface* siP,
+                                  const std::string mpdDir);
 
 public:
 
@@ -32,31 +32,31 @@ public:
         We can also only look at 0-1 variables a certain distance
         from integer.
     */
-    virtual void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
-                               const CglTreeInfo info = CglTreeInfo()) const;
+    virtual void generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
+                              const CglTreeInfo info = CglTreeInfo()) const;
     /** Generates cuts given matrix and solution etc,
         returns number of cuts generated */
-    int generateCuts( const OsiRowCutDebugger * debugger,
-                      OsiCuts & cs,
-                      const CoinPackedMatrix & columnCopy,
-                      const CoinPackedMatrix & rowCopy,
-                      const double * colsol,
-                      const double * colLower, const double * colUpper,
-                      const double * rowLower, const double * rowUpper,
-                      const char * intVar ,
-                      const CoinWarmStartBasis* warm,
-                      const CglTreeInfo info = CglTreeInfo()) const;
+    int generateCuts(const OsiRowCutDebugger* debugger,
+                     OsiCuts & cs,
+                     const CoinPackedMatrix & columnCopy,
+                     const CoinPackedMatrix & rowCopy,
+                     const double* colsol,
+                     const double* colLower, const double* colUpper,
+                     const double* rowLower, const double* rowUpper,
+                     const char* intVar ,
+                     const CoinWarmStartBasis* warm,
+                     const CglTreeInfo info = CglTreeInfo()) const;
     /** Generates cuts given matrix and solution etc,
         returns number of cuts generated (no row copy passed in) */
-    int generateCuts( const OsiRowCutDebugger * debugger,
-                      OsiCuts & cs,
-                      const CoinPackedMatrix & columnCopy,
-                      const double * colsol,
-                      const double * colLower, const double * colUpper,
-                      const double * rowLower, const double * rowUpper,
-                      const char * intVar ,
-                      const CoinWarmStartBasis* warm,
-                      const CglTreeInfo info = CglTreeInfo()) const;
+    int generateCuts(const OsiRowCutDebugger* debugger,
+                     OsiCuts & cs,
+                     const CoinPackedMatrix & columnCopy,
+                     const double* colsol,
+                     const double* colLower, const double* colUpper,
+                     const double* rowLower, const double* rowUpper,
+                     const char* intVar ,
+                     const CoinWarmStartBasis* warm,
+                     const CglTreeInfo info = CglTreeInfo()) const;
 
     /// Return true if needs optimal basis to do cuts (will return true)
     virtual bool needsOptimalBasis() const;
@@ -65,16 +65,16 @@ public:
     /**@name Change way Gomory works */
     //@{
     /// Pass in a copy of original solver (clone it)
-    void passInOriginalSolver(OsiSolverInterface * solver);
+    void passInOriginalSolver(OsiSolverInterface* solver);
     /// Returns original solver
-    inline OsiSolverInterface * originalSolver() const
+    inline OsiSolverInterface* originalSolver() const
     {
         return originalSolver_;
     }
     /// Set type - 0 normal, 1 add original matrix one, 2 replace
     inline void setGomoryType(int type)
     {
-        gomoryType_=type;
+        gomoryType_ = type;
     }
     /// Return type
     inline int gomoryType() const
@@ -133,44 +133,44 @@ public:
     /**@name change factorization */
     //@{
     /// Set/unset alternative factorization
-    inline void useAlternativeFactorization(bool yes=true)
+    inline void useAlternativeFactorization(bool yes = true)
     {
-        alternateFactorization_= (yes) ? 1 : 0;
+        alternateFactorization_ = (yes) ? 1 : 0;
     }
     /// Get whether alternative factorization being used
     inline bool alternativeFactorization() const
     {
-        return (alternateFactorization_!=0);
+        return (alternateFactorization_ != 0);
     }
     //@}
 
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglGomory ();
+    CglGomory();
 
     /// Copy constructor
-    CglGomory (
+    CglGomory(
         const CglGomory &);
 
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
     CglGomory &
     operator=(
-        const CglGomory& rhs);
+        const CglGomory & rhs);
 
     /// Destructor
     virtual
-    ~CglGomory ();
+    ~CglGomory();
     /// Create C++ lines to get to current state
-    virtual std::string generateCpp( FILE * fp);
+    virtual std::string generateCpp(FILE* fp);
     //@}
 
 private:
 
-// Private member methods
+    // Private member methods
 
     // Private member data
 
@@ -185,7 +185,7 @@ private:
     /// Multiplier for largest factor cut relaxation
     double largestFactorMultiplier_;
     /// Original solver
-    mutable OsiSolverInterface * originalSolver_;
+    mutable OsiSolverInterface* originalSolver_;
     /// Limit - only generate if fewer than this in cut
     int limit_;
     /// Limit - only generate if fewer than this in cut (at root)
@@ -207,7 +207,7 @@ private:
     have to be compiled into the library. And that's a gain, because the
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
-void CglGomoryUnitTest(const OsiSolverInterface * siP,
-                       const std::string mpdDir );
+void CglGomoryUnitTest(const OsiSolverInterface* siP,
+                       const std::string mpdDir);
 
 #endif

@@ -28,14 +28,14 @@
 
 /*===========================================================================*/
 /*===========================================================================*/
-void sr_initialize(SRdesc **sr, int n)
+void sr_initialize(SRdesc** sr, int n)
 {
 
     int do_clean = FALSE;
 
     if(!(*sr))
     {
-        *sr = (SRdesc *)calloc(1, sizeof(SRdesc));
+        *sr = (SRdesc*)calloc(1, sizeof(SRdesc));
         do_clean = TRUE;
     }
 
@@ -52,10 +52,10 @@ void sr_initialize(SRdesc **sr, int n)
         (*sr)->sense = ' ';
         if((*sr)->obj_max)
         {
-            memset((*sr)->reversed_max, FALSE, CSIZE*n);
-            memset((*sr)->reversed_min, FALSE, CSIZE*n);
-            memset((*sr)->var_stat_max, SR_VAR_IN, ISIZE*n);
-            memset((*sr)->var_stat_min, SR_VAR_IN, ISIZE*n);
+            memset((*sr)->reversed_max, FALSE, CSIZE * n);
+            memset((*sr)->reversed_min, FALSE, CSIZE * n);
+            memset((*sr)->var_stat_max, SR_VAR_IN, ISIZE * n);
+            memset((*sr)->var_stat_min, SR_VAR_IN, ISIZE * n);
         }
     }
 }
@@ -65,36 +65,36 @@ void sr_initialize(SRdesc **sr, int n)
 /*===========================================================================*/
 /*===========================================================================*/
 
-void sr_allocate(SRdesc **sr, int n)
+void sr_allocate(SRdesc** sr, int n)
 {
 
     int k;
-    (*sr)->obj_max = (double *)malloc(DSIZE*n);
-    (*sr)->matval_max = (double *)malloc(DSIZE*n);
-    (*sr)->matind_max = (int *)malloc(ISIZE*n);
-    (*sr)->ratio_max = (double *)malloc(DSIZE*n);
-    (*sr)->reversed_max = (char *)malloc(CSIZE*n);
+    (*sr)->obj_max = (double*)malloc(DSIZE * n);
+    (*sr)->matval_max = (double*)malloc(DSIZE * n);
+    (*sr)->matind_max = (int*)malloc(ISIZE * n);
+    (*sr)->ratio_max = (double*)malloc(DSIZE * n);
+    (*sr)->reversed_max = (char*)malloc(CSIZE * n);
 
-    (*sr)->obj_min = (double *)malloc(DSIZE*n);
-    (*sr)->matval_min = (double *)malloc(DSIZE*n);
-    (*sr)->matind_min = (int *)malloc(ISIZE*n);
-    (*sr)->ratio_min = (double *)malloc(DSIZE*n);
-    (*sr)->reversed_min = (char *)malloc(CSIZE*n);
+    (*sr)->obj_min = (double*)malloc(DSIZE * n);
+    (*sr)->matval_min = (double*)malloc(DSIZE * n);
+    (*sr)->matind_min = (int*)malloc(ISIZE * n);
+    (*sr)->ratio_min = (double*)malloc(DSIZE * n);
+    (*sr)->reversed_min = (char*)malloc(CSIZE * n);
 
     /* for variable fixing, tightening etc... */
 
-    (*sr)->var_max_opt = (double *)malloc(n* DSIZE);
-    (*sr)->var_min_opt = (double *)malloc(n* DSIZE);
-    (*sr)->var_stat_max = (int *)malloc(ISIZE*n);
-    (*sr)->var_stat_min = (int *)malloc(n* ISIZE);
-    (*sr)->var_obj_max = (double *)malloc(n* DSIZE);
-    (*sr)->var_obj_min = (double *)malloc(n* DSIZE);
-    (*sr)->var_matval_max = (double *)malloc(n* DSIZE);
-    (*sr)->var_matval_min = (double *)malloc(n* DSIZE);
+    (*sr)->var_max_opt = (double*)malloc(n * DSIZE);
+    (*sr)->var_min_opt = (double*)malloc(n * DSIZE);
+    (*sr)->var_stat_max = (int*)malloc(ISIZE * n);
+    (*sr)->var_stat_min = (int*)malloc(n * ISIZE);
+    (*sr)->var_obj_max = (double*)malloc(n * DSIZE);
+    (*sr)->var_obj_min = (double*)malloc(n * DSIZE);
+    (*sr)->var_matval_max = (double*)malloc(n * DSIZE);
+    (*sr)->var_matval_min = (double*)malloc(n * DSIZE);
 
     /* debug, get something smart instead of these */
-    (*sr)->tmp_ind = (int *)malloc(ISIZE*n);
-    (*sr)->fixed_ind = (int *)malloc(ISIZE*n);
+    (*sr)->tmp_ind = (int*)malloc(ISIZE * n);
+    (*sr)->fixed_ind = (int*)malloc(ISIZE * n);
 
     for(k = 0; k < n; k++)
     {
@@ -104,31 +104,31 @@ void sr_allocate(SRdesc **sr, int n)
 
 /*===========================================================================*/
 /*===========================================================================*/
-int prep_solve_sr_rlx(PREPdesc *P, int row_cnt, int *row_indices)
+int prep_solve_sr_rlx(PREPdesc* P, int row_cnt, int* row_indices)
 {
 
     int i, j, k, l;
     int termcode = SR_NO_UPDATES;
 
-    MIPdesc * mip = P->mip;
+    MIPdesc* mip = P->mip;
     prep_params params = P->params;
-    MIPinfo *mip_inf = mip->mip_inf;
+    MIPinfo* mip_inf = mip->mip_inf;
 
-    COLinfo *cols = mip_inf->cols;
-    ROWinfo *rows = mip_inf->rows;
+    COLinfo* cols = mip_inf->cols;
+    ROWinfo* rows = mip_inf->rows;
 
     int n = mip->n, m = mip->m;
-    int *c_matbeg = mip->matbeg;
-    int *c_matind = mip->matind;
+    int* c_matbeg = mip->matbeg;
+    int* c_matind = mip->matind;
 
-    int * r_matbeg = mip->row_matbeg;
-    int * r_matind = mip->row_matind;
-    double * r_matval = mip->row_matval;
-    double *rhs = mip->rhs;
-    char *sense = mip->sense;
+    int* r_matbeg = mip->row_matbeg;
+    int* r_matind = mip->row_matind;
+    double* r_matval = mip->row_matval;
+    double* rhs = mip->rhs;
+    char* sense = mip->sense;
 
-    double *ub = mip->ub;
-    double *lb = mip->lb;
+    double* ub = mip->ub;
+    double* lb = mip->lb;
 
     int max_sr_cnt, max_aggr_cnt, verbosity; //max_aggr_row_num, verbosity;
     int p_level, do_sr_rlx, do_aggr_row_rlx;
@@ -149,14 +149,14 @@ int prep_solve_sr_rlx(PREPdesc *P, int row_cnt, int *row_indices)
     /* initialize arrays to be used for each subproblem*/
 
 
-    SRdesc * sr, *d_sr;
+    SRdesc* sr, *d_sr;
 
     if(!(P->rows_checked))
     {
-        P->rows_checked = (char *)malloc(m* CSIZE);
+        P->rows_checked = (char*)malloc(m * CSIZE);
     }
 
-    char *rows_checked = P->rows_checked;
+    char* rows_checked = P->rows_checked;
     double old_bound;
     //char no_upper, no_lower;
     int row_ind;// const_row_ind;
@@ -183,7 +183,7 @@ int prep_solve_sr_rlx(PREPdesc *P, int row_cnt, int *row_indices)
         rows[obj_ind].orig_ub = rows[obj_ind].sr_ub = rows[obj_ind].ub;
         rows[obj_ind].orig_lb = rows[obj_ind].sr_lb = rows[obj_ind].lb;
 
-        if(verbosity >=4)
+        if(verbosity >= 4)
         {
             printf("init bounds: row: %i", i);
             printf("\told_lb:");
@@ -209,7 +209,7 @@ int prep_solve_sr_rlx(PREPdesc *P, int row_cnt, int *row_indices)
 
 
         //     srows[i] = (SRrlx *)calloc(tot_sub_pr, sizeof(SRrlx));
-        memset(rows_checked, FALSE, CSIZE*m);
+        memset(rows_checked, FALSE, CSIZE * m);
         last_col_loc = r_matbeg[obj_ind];
         last_row_loc = c_matbeg[r_matind[last_col_loc]];
 
@@ -228,9 +228,9 @@ int prep_solve_sr_rlx(PREPdesc *P, int row_cnt, int *row_indices)
                 /*find a row that has the most common shared vars with this
                   one */
                 /*find a row to be used as a constraint*/
-                for(k = last_col_loc; k < r_matbeg[obj_ind+1]; k++)
+                for(k = last_col_loc; k < r_matbeg[obj_ind + 1]; k++)
                 {
-                    for(l = last_row_loc; l < c_matbeg[r_matind[k]+1];
+                    for(l = last_row_loc; l < c_matbeg[r_matind[k] + 1];
                             l++)
                     {
                         if(!rows[c_matind[l]].is_redundant &&
@@ -380,14 +380,14 @@ int prep_solve_sr_rlx(PREPdesc *P, int row_cnt, int *row_indices)
                                 termcode = SR_BOUNDS_UPDATED;
                             }
 
-                            if(verbosity >=5)
+                            if(verbosity >= 5)
                             {
                                 printf("lb improved, "
                                        "row: %i \told_lb:%f \tnew_lb:%f\n",
                                        obj_ind, old_bound <= -INF ? 1 : old_bound, sr->lb);
                             }
                         }
-                        else if (rows[obj_ind].orig_lb > sr->lb + etol)
+                        else if(rows[obj_ind].orig_lb > sr->lb + etol)
                         {
                             /* debug */
                             printf("error-lb, row: %i \told_lb:%f \tnew_lb:%f\n",
@@ -405,7 +405,7 @@ int prep_solve_sr_rlx(PREPdesc *P, int row_cnt, int *row_indices)
                             {
                                 termcode = SR_BOUNDS_UPDATED;
                             }
-                            if(verbosity >=5)
+                            if(verbosity >= 5)
                             {
                                 printf("ub improved, "
                                        "row: %i \told_ub:%f \tnew_ub:%f\n",
@@ -444,7 +444,7 @@ int prep_solve_sr_rlx(PREPdesc *P, int row_cnt, int *row_indices)
             break;
         }
 
-        if(verbosity >=4)
+        if(verbosity >= 4)
         {
             printf("finl bounds: row: %i", i);
             printf("\tnew_lb:");
@@ -476,16 +476,16 @@ int prep_solve_sr_rlx(PREPdesc *P, int row_cnt, int *row_indices)
 /*===========================================================================*/
 /*===========================================================================*/
 
-int sr_solve_bounded_prob(PREPdesc *P, SRdesc *sr, SRdesc *d_sr,
+int sr_solve_bounded_prob(PREPdesc* P, SRdesc* sr, SRdesc* d_sr,
                           int obj_ind, int row_ind,
-                          int *r_matbeg, int *r_matind, double *r_matval,
-                          COLinfo *cols, double *ub, double *lb, double etol)
+                          int* r_matbeg, int* r_matind, double* r_matval,
+                          COLinfo* cols, double* ub, double* lb, double etol)
 {
 
     int k, l, col_ind;
     double c_val, a_val;
 
-    for( k = r_matbeg[obj_ind], l = r_matbeg[row_ind];;)
+    for(k = r_matbeg[obj_ind], l = r_matbeg[row_ind];;)
     {
         if(k < r_matbeg[obj_ind + 1] &&
                 (r_matind[k] < r_matind[l] ||
@@ -500,7 +500,7 @@ int sr_solve_bounded_prob(PREPdesc *P, SRdesc *sr, SRdesc *d_sr,
         }
         else if(l < r_matbeg[row_ind + 1] &&
                 (r_matind[k] > r_matind[l] ||
-                 k >= r_matbeg[obj_ind+1]))
+                 k >= r_matbeg[obj_ind + 1]))
         {
             a_val = r_matval[l];
             col_ind = r_matind[l];
@@ -553,7 +553,7 @@ int sr_solve_bounded_prob(PREPdesc *P, SRdesc *sr, SRdesc *d_sr,
 
 
     int termcode = 0;
-    ROWinfo *rows = P->mip->mip_inf->rows;
+    ROWinfo* rows = P->mip->mip_inf->rows;
     double min_ub = sr->ub;
     double max_lb = sr->lb;
 
@@ -590,8 +590,8 @@ int sr_solve_bounded_prob(PREPdesc *P, SRdesc *sr, SRdesc *d_sr,
 /*===========================================================================*/
 /*===========================================================================*/
 
-int sr_find_opt_bounded(PREPdesc *P, SRdesc *sr, int obj_ind,
-                        double *ub, double *lb)
+int sr_find_opt_bounded(PREPdesc* P, SRdesc* sr, int obj_ind,
+                        double* ub, double* lb)
 
 {
     int i, last_ind, col_loc, col_ind, *var_stat; //,j, var_ind;
@@ -601,16 +601,16 @@ int sr_find_opt_bounded(PREPdesc *P, SRdesc *sr, int obj_ind,
        lb in max solved - check also a_vals)*/
     double bound;
 
-    int * tmp_ind = sr->tmp_ind;
+    int* tmp_ind = sr->tmp_ind;
     double etol = P->params.etol;
 
-    if(sr->sum_a_max < sr->rhs_max +etol || sr->max_n <= 0)
+    if(sr->sum_a_max < sr->rhs_max + etol || sr->max_n <= 0)
     {
         sr->ub += sr->sum_c_max + sr->ub_offset;
         max_solved = TRUE;
     }
 
-    if(sr->sum_a_min > sr->rhs_min - etol|| sr->min_n <= 0)
+    if(sr->sum_a_min > sr->rhs_min - etol || sr->min_n <= 0)
     {
         sr->lb += sr->sum_c_min + sr->lb_offset;
         min_solved = TRUE;
@@ -627,13 +627,13 @@ int sr_find_opt_bounded(PREPdesc *P, SRdesc *sr, int obj_ind,
     {
 
         var_stat = sr->var_stat_max;
-        memcpy(tmp_ind, sr->fixed_ind, ISIZE*sr->max_n);
+        memcpy(tmp_ind, sr->fixed_ind, ISIZE * sr->max_n);
         qsort_di(sr->ratio_max, tmp_ind, sr->max_n);
         //CoinSort_2(sr->ratio_max, sr->ratio_max + sr->max_n, tmp_ind);
 
         /* now fill in knapsack */
         lhs = 0;
-        for(i = sr->max_n - 1; i >=0; i--)
+        for(i = sr->max_n - 1; i >= 0; i--)
         {
             col_loc = tmp_ind[i];
             col_ind = sr->matind_max[col_loc];
@@ -656,7 +656,7 @@ int sr_find_opt_bounded(PREPdesc *P, SRdesc *sr, int obj_ind,
             else
             {
                 var_frac_val = sr->obj_max[col_loc] *
-                               (sr->rhs_max - lhs)/sr->matval_max[col_loc];
+                               (sr->rhs_max - lhs) / sr->matval_max[col_loc];
                 sr->ub += var_frac_val; //sr->obj_max[col_loc] * var_frac_val;
                 var_stat[col_ind] = SR_VAR_IN_FRAC;
                 last_ind = i;
@@ -668,7 +668,7 @@ int sr_find_opt_bounded(PREPdesc *P, SRdesc *sr, int obj_ind,
 
     if(!min_solved)  /* otherwise this row is redundant and useless */
     {
-        memcpy(tmp_ind, sr->fixed_ind, ISIZE*sr->min_n);
+        memcpy(tmp_ind, sr->fixed_ind, ISIZE * sr->min_n);
         qsort_di(sr->ratio_min, tmp_ind, sr->min_n);
         //CoinSort_2(sr->ratio_min, sr->ratio_min + sr->min_n, tmp_ind);
         /* now fill in knapsack */
@@ -697,7 +697,7 @@ int sr_find_opt_bounded(PREPdesc *P, SRdesc *sr, int obj_ind,
             {
                 //      ax = (sr->rhs_max - lhs)/sr->matval_max[col_loc];
                 sr->lb += sr->obj_min[col_loc] *
-                          (sr->rhs_min - lhs)/sr->matval_min[col_loc];
+                          (sr->rhs_min - lhs) / sr->matval_min[col_loc];
                 var_stat[col_ind] = SR_VAR_IN_FIXED_UB;
                 last_ind = i;
                 break;
@@ -715,7 +715,7 @@ int sr_find_opt_bounded(PREPdesc *P, SRdesc *sr, int obj_ind,
 
 /* will add the column to problem if necessary */
 
-int sr_add_new_col(SRdesc *sr, SRdesc *d_sr, double c_val, double a_val,
+int sr_add_new_col(SRdesc* sr, SRdesc* d_sr, double c_val, double a_val,
                    int col_ind, char var_type, double col_ub,
                    double col_lb, char sense,
                    int col_type, int col_bound_type)
@@ -824,7 +824,7 @@ int sr_add_new_col(SRdesc *sr, SRdesc *d_sr, double c_val, double a_val,
    the a_val has to be sent after being updated.
    For E, this function will be called twice each for max and min*/
 
-int sr_add_new_bounded_col(SRdesc *sr, double c_val, double a_val,
+int sr_add_new_bounded_col(SRdesc* sr, double c_val, double a_val,
                            int col_ind,
                            double rhs_ub_offset, double rhs_lb_offset,
                            double obj_ub_offset, double obj_lb_offset,
@@ -876,10 +876,10 @@ int sr_add_new_bounded_col(SRdesc *sr, double c_val, double a_val,
         }
     }
 
-    int *n, *matind, *var_stat;
-    double *obj, *matval, *rhs, *obj_offset, *sum, *obj_sum, *ratios;
-    double *var_matval, *var_obj;
-    char *is_reversed;
+    int* n, *matind, *var_stat;
+    double* obj, *matval, *rhs, *obj_offset, *sum, *obj_sum, *ratios;
+    double* var_matval, *var_obj;
+    char* is_reversed;
     if(obj_sense == SR_MAX)
     {
         n = &(sr->max_n);
@@ -926,7 +926,7 @@ int sr_add_new_bounded_col(SRdesc *sr, double c_val, double a_val,
         obj[*n] = c_val;
         matval[*n] = a_val;
         matind[*n] = col_ind;
-        ratios[*n] = c_val/a_val;
+        ratios[*n] = c_val / a_val;
         if(obj_sense == SR_MAX)
         {
             *sum += (rhs_ub_offset - rhs_lb_offset);
@@ -968,7 +968,7 @@ int sr_add_new_bounded_col(SRdesc *sr, double c_val, double a_val,
         obj[*n] = -c_val;
         matval[*n] = -a_val;
         matind[*n] = col_ind;
-        ratios[*n] = c_val/a_val;
+        ratios[*n] = c_val / a_val;
         is_reversed[*n] = TRUE;
         if(obj_sense == SR_MAX)
         {
@@ -993,10 +993,10 @@ int sr_add_new_bounded_col(SRdesc *sr, double c_val, double a_val,
 
 /* will modify the constraint to E and solve it */
 
-int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
-                       int row_ind, int *r_matbeg,
-                       int *r_matind, double *r_matval, COLinfo *cols,
-                       double *ub, double *lb, double etol)
+int sr_solve_open_prob(PREPdesc* P, SRdesc* sr, int obj_ind,
+                       int row_ind, int* r_matbeg,
+                       int* r_matind, double* r_matval, COLinfo* cols,
+                       double* ub, double* lb, double etol)
 {
 
     int l, k, col_ind;
@@ -1009,8 +1009,8 @@ int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
     char is_fixed_column = FALSE;
     char can_iterate = TRUE, prob_infeasible = FALSE, is_null_obj;
 
-    double *ub_offset = &(sr->ub_offset);
-    double *lb_offset = &(sr->lb_offset);
+    double* ub_offset = &(sr->ub_offset);
+    double* lb_offset = &(sr->lb_offset);
     double rhs = sr->rhs;
     char sense = sr->sense;
 
@@ -1020,7 +1020,7 @@ int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
 
     //  sr->prob_type = OPEN_PROB;
 
-    for( k = r_matbeg[obj_ind], l = r_matbeg[row_ind];;)
+    for(k = r_matbeg[obj_ind], l = r_matbeg[row_ind];;)
     {
         if(k < r_matbeg[obj_ind + 1] &&
                 (r_matind[k] < r_matind[l] ||
@@ -1051,7 +1051,7 @@ int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
                     }
                 }
             }
-            else if (r_matval[k] < 0.0)
+            else if(r_matval[k] < 0.0)
             {
                 if(!no_lower)
                 {
@@ -1082,7 +1082,7 @@ int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
         {
             if(l < r_matbeg[row_ind + 1] &&
                     (r_matind[k] > r_matind[l] ||
-                     k >= r_matbeg[obj_ind+1]))
+                     k >= r_matbeg[obj_ind + 1]))
             {
                 is_null_obj = TRUE;
                 obj_val = 0.0;
@@ -1124,7 +1124,7 @@ int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
                             *lb_offset += obj_lb_offset;
                         }
                     }
-                    rhs += -(a_val *lb[col_ind]);
+                    rhs += -(a_val * lb[col_ind]);
                     is_fixed_column = TRUE;
                 }
             }
@@ -1175,7 +1175,7 @@ int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
             {
                 if(a_val > 0.0 || a_val < 0.0)
                 {
-                    d_ratio = obj_val/a_val;
+                    d_ratio = obj_val / a_val;
                     if(a_val > 0.0)
                     {
                         if(d_ratio < min_dual_ub)
@@ -1317,7 +1317,7 @@ int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
             {
                 if(min_dual_lb > -INF)
                 {
-                    sr->lb = min_dual_lb *rhs;
+                    sr->lb = min_dual_lb * rhs;
                 }
                 else
                 {
@@ -1351,7 +1351,7 @@ int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
                 {
                     if(max_dual_lb > -INF)
                     {
-                        sr->ub = -(max_dual_lb *rhs);
+                        sr->ub = -(max_dual_lb * rhs);
                     }
                     else
                     {
@@ -1374,7 +1374,7 @@ int sr_solve_open_prob(PREPdesc *P, SRdesc *sr, int obj_ind,
 
 /*===========================================================================*/
 /*===========================================================================*/
-void free_sr_desc(SRdesc *sr)
+void free_sr_desc(SRdesc* sr)
 {
     if(sr)
     {

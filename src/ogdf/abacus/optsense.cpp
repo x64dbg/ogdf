@@ -40,20 +40,20 @@ namespace abacus
 {
 
 
-ostream &operator<<(ostream &out, const OptSense &rhs)
-{
-    switch (rhs.sense_)
+    ostream & operator<<(ostream & out, const OptSense & rhs)
     {
-    case OptSense::Min:
-        out << "minimize";
-        break;
-    case OptSense::Max:
-        out << "maximize";
-        break;
-    case OptSense::Unknown:
-        out << "unknown";
-        break;
+        switch(rhs.sense_)
+        {
+        case OptSense::Min:
+            out << "minimize";
+            break;
+        case OptSense::Max:
+            out << "maximize";
+            break;
+        case OptSense::Unknown:
+            out << "unknown";
+            break;
+        }
+        return out;
     }
-    return out;
-}
 } //namespace abacus

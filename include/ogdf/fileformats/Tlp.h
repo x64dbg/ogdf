@@ -55,26 +55,26 @@
 namespace ogdf
 {
 
-namespace tlp
-{
+    namespace tlp
+    {
 
 
-enum Attribute
-{
-    a_label,
-    a_color,
-    a_position,
-    a_size,
-    a_shape,
-    a_unknown
-};
+        enum Attribute
+        {
+            a_label,
+            a_color,
+            a_position,
+            a_size,
+            a_shape,
+            a_unknown
+        };
 
 
-std::string toString(const Attribute &attr);
-Attribute toAttribute(const std::string &str);
+        std::string toString(const Attribute & attr);
+        Attribute toAttribute(const std::string & str);
 
 
-} // end namespace tlp
+    } // end namespace tlp
 
 } // end namespace ogdf
 

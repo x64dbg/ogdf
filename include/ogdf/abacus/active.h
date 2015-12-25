@@ -43,204 +43,204 @@
 namespace abacus
 {
 
-class Master;
-class SparVec;
+    class Master;
+    class SparVec;
 
-template<class BaseType, class CoType> class PoolSlot;
-template<class BaseType, class CoType> class PoolSlotRef;
+    template<class BaseType, class CoType> class PoolSlot;
+    template<class BaseType, class CoType> class PoolSlotRef;
 
-template<class BaseType,class CoType>
-class Active;
+    template<class BaseType, class CoType>
+    class Active;
 
-template<class BaseType,class CoType>
-ostream&operator<< (ostream &out, const Active<BaseType, CoType> &rhs);
+    template<class BaseType, class CoType>
+    ostream & operator<< (ostream & out, const Active<BaseType, CoType> & rhs);
 
 
-//! Implements the sets of active constraints and variables which are associated with each subproblem.
-/**
- * This parameterized class implements the sets of active constraints and variables
- * which are associated with each subproblem. Note, also an inactive
- * subproblem can have an active set of constraints and variables, e.g.,
- * the sets with which its unprocessed sons in the enumeration tree
- * are initialized.
- *
- * If an active set of constraints is instantiated then the \a BaseType
- * should be Constraint and the \a CoType should be Variable,
- * for an active set of variables this is vice versa.
- */
-template <class BaseType, class CoType>
-class  Active : public AbacusRoot
-{
-public:
-
-    //! Creates an empty set of active items.
+    //! Implements the sets of active constraints and variables which are associated with each subproblem.
     /**
-     * \param master A pointer to the corresponding master of the optimization.
-     * \param max    The maximal number of active constraints/variables.
-     */
-    Active(Master *master, int max)
-        : master_(master), n_(0), active_(max), redundantAge_(0,max-1, 0)
-    { }
-
-    //! Creates a set of active items, initialized to at most \a max items from \a a.
-    /**
-     * \param master A pointer to the corresponding master of the optimization.
-     * \param a      At most \a max active constraints/variables are taken from this set.
-     * \param max    The maximal number of active constraints/variables.
-     */
-    Active(Master *master, Active *a, int max);
-
-    //! Copy constructor.
-    /**
-     * \param rhs The active set that is copied.
-     */
-    Active(const Active<BaseType, CoType> &rhs);
-
-    ~Active();
-
-    //! Output operator for active sets.
-    /**
-     * The output operator writes all active constraints and variables
-     * to an output stream.
+     * This parameterized class implements the sets of active constraints and variables
+     * which are associated with each subproblem. Note, also an inactive
+     * subproblem can have an active set of constraints and variables, e.g.,
+     * the sets with which its unprocessed sons in the enumeration tree
+     * are initialized.
      *
-     * If an associated pool slot is void, or the item
-     * is newer than the one we refer to, then <tt>"void"</tt> is written.
-     *
-     * \param out The output stream.
-     * \param rhs The active set being output.
-     *
-     * \return A reference to the output stream.
+     * If an active set of constraints is instantiated then the \a BaseType
+     * should be Constraint and the \a CoType should be Variable,
+     * for an active set of variables this is vice versa.
      */
-    friend ostream &operator<< <> (ostream &out, const Active<BaseType, CoType> &rhs);
-
-    //! Returns the current number of active items.
-    int number() const
+    template <class BaseType, class CoType>
+    class  Active : public AbacusRoot
     {
-        return n_;
-    }
+    public:
 
+        //! Creates an empty set of active items.
+        /**
+         * \param master A pointer to the corresponding master of the optimization.
+         * \param max    The maximal number of active constraints/variables.
+         */
+        Active(Master* master, int max)
+            : master_(master), n_(0), active_(max), redundantAge_(0, max - 1, 0)
+        { }
 
-    //! Returns the maximum number of storable active items (without reallocation).
-    int max() const
-    {
-        return active_.size();
-    }
+        //! Creates a set of active items, initialized to at most \a max items from \a a.
+        /**
+         * \param master A pointer to the corresponding master of the optimization.
+         * \param a      At most \a max active constraints/variables are taken from this set.
+         * \param max    The maximal number of active constraints/variables.
+         */
+        Active(Master* master, Active* a, int max);
 
+        //! Copy constructor.
+        /**
+         * \param rhs The active set that is copied.
+         */
+        Active(const Active<BaseType, CoType> & rhs);
 
-    //! Access to the <i>i</i>-th active item.
-    /**
-     * \param i The number of the active item.
-     *
-     * \return A pointer to the \a i-th active item, or 0 if this item has been removed in the meantime.
-     */
-    BaseType* operator[](int i)
-    {
-#ifdef OGDF_DEBUG
-        if (i > n_)
+        ~Active();
+
+        //! Output operator for active sets.
+        /**
+         * The output operator writes all active constraints and variables
+         * to an output stream.
+         *
+         * If an associated pool slot is void, or the item
+         * is newer than the one we refer to, then <tt>"void"</tt> is written.
+         *
+         * \param out The output stream.
+         * \param rhs The active set being output.
+         *
+         * \return A reference to the output stream.
+         */
+        friend ostream & operator<< <> (ostream & out, const Active<BaseType, CoType> & rhs);
+
+        //! Returns the current number of active items.
+        int number() const
         {
-            Logger::ifout() << "Active::operator[] : no active item in slot " << i << ".\n";
-            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcActive);
+            return n_;
         }
-#endif
-        return (active_[i]) ? active_[i]->conVar() : 0;
-    }
 
-    //! Access to the <i>i</i>-th active item.
-    /**
-     * \param i The number of the active item.
-     *
-     * \return A const pointer to the \a i-th active item, or 0 if this item has been removed in the meantime.
-     */
-    const BaseType* operator[](int i) const
-    {
-#ifdef OGDF_DEBUG
-        if (i > n_)
+
+        //! Returns the maximum number of storable active items (without reallocation).
+        int max() const
         {
-            Logger::ifout() << "Active::operator[] : no active item in slot " << i << ".\n";
-            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcActive);
+            return active_.size();
         }
+
+
+        //! Access to the <i>i</i>-th active item.
+        /**
+         * \param i The number of the active item.
+         *
+         * \return A pointer to the \a i-th active item, or 0 if this item has been removed in the meantime.
+         */
+        BaseType* operator[](int i)
+        {
+#ifdef OGDF_DEBUG
+            if(i > n_)
+            {
+                Logger::ifout() << "Active::operator[] : no active item in slot " << i << ".\n";
+                OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcActive);
+            }
 #endif
-        return (active_[i]) ? active_[i]->conVar() : 0;
-    }
+            return (active_[i]) ? active_[i]->conVar() : 0;
+        }
 
-    //! Returns the <i>i</i>-th entry in the Array \a active.
-    /**
-     * \param i The index of the active item.
-     */
-    PoolSlotRef<BaseType, CoType>* poolSlotRef(int i)
-    {
-        return active_[i];
-    }
+        //! Access to the <i>i</i>-th active item.
+        /**
+         * \param i The number of the active item.
+         *
+         * \return A const pointer to the \a i-th active item, or 0 if this item has been removed in the meantime.
+         */
+        const BaseType* operator[](int i) const
+        {
+#ifdef OGDF_DEBUG
+            if(i > n_)
+            {
+                Logger::ifout() << "Active::operator[] : no active item in slot " << i << ".\n";
+                OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcActive);
+            }
+#endif
+            return (active_[i]) ? active_[i]->conVar() : 0;
+        }
 
-    //! Returns the <i>i</i>-th entry in the Array \a active.
-    /**
-     * \param i The index of the active item.
-     */
-    const PoolSlotRef<BaseType, CoType>* poolSlotRef(int i) const
-    {
-        return active_[i];
-    }
+        //! Returns the <i>i</i>-th entry in the Array \a active.
+        /**
+         * \param i The index of the active item.
+         */
+        PoolSlotRef<BaseType, CoType>* poolSlotRef(int i)
+        {
+            return active_[i];
+        }
 
-    //! Adds a constraint/variable to the active items set.
-    /**
-     * \param ps The pool slot storing the constraint/variable being added.
-     */
-    void insert(PoolSlot<BaseType, CoType> *ps);
+        //! Returns the <i>i</i>-th entry in the Array \a active.
+        /**
+         * \param i The index of the active item.
+         */
+        const PoolSlotRef<BaseType, CoType>* poolSlotRef(int i) const
+        {
+            return active_[i];
+        }
 
-    //! Adds constraints/variables to the active items set.
-    /**
-     * \param ps The buffer storing the pool slots of all constraints/variables that are added.
-     */
-    void insert(ArrayBuffer<PoolSlot<BaseType, CoType> *> &ps);
+        //! Adds a constraint/variable to the active items set.
+        /**
+         * \param ps The pool slot storing the constraint/variable being added.
+         */
+        void insert(PoolSlot<BaseType, CoType>* ps);
 
-    //! Removes items from the list of active items.
-    /**
-     * \param del The numbers of the items that should be removed. These numbers must be upward sorted.
-     */
-    void remove(ArrayBuffer<int> &del);
+        //! Adds constraints/variables to the active items set.
+        /**
+         * \param ps The buffer storing the pool slots of all constraints/variables that are added.
+         */
+        void insert(ArrayBuffer<PoolSlot<BaseType, CoType> *> & ps);
 
-    //! Changes the maximum number of active items which can be stored.
-    /**
-     * \param newSize The new maximal number of active items.
-     */
-    void realloc(int newSize);
+        //! Removes items from the list of active items.
+        /**
+         * \param del The numbers of the items that should be removed. These numbers must be upward sorted.
+         */
+        void remove(ArrayBuffer<int> & del);
 
-    //! Returns the number of iterations a constraint/variable is already redundant.
-    int redundantAge(int i) const
-    {
-        return redundantAge_[i];
-    }
+        //! Changes the maximum number of active items which can be stored.
+        /**
+         * \param newSize The new maximal number of active items.
+         */
+        void realloc(int newSize);
 
-    //! Increments the number ofiterations the item \a i is already redundant by 1.
-    /**
-     * \param i The index of the constraint/variable.
-     */
-    void incrementRedundantAge(int i)
-    {
-        redundantAge_[i]++;
-    }
+        //! Returns the number of iterations a constraint/variable is already redundant.
+        int redundantAge(int i) const
+        {
+            return redundantAge_[i];
+        }
 
-    //! Sets the number of iterations item \a i is redundant to 0.
-    /**
-     * \param i The index of the constraint/variable.
-     */
-    void resetRedundantAge(int i)
-    {
-        redundantAge_[i] = 0;
-    }
+        //! Increments the number ofiterations the item \a i is already redundant by 1.
+        /**
+         * \param i The index of the constraint/variable.
+         */
+        void incrementRedundantAge(int i)
+        {
+            redundantAge_[i]++;
+        }
 
-private:
-    Master *master_;  //!< A pointer to corresponding master of the optimization.
+        //! Sets the number of iterations item \a i is redundant to 0.
+        /**
+         * \param i The index of the constraint/variable.
+         */
+        void resetRedundantAge(int i)
+        {
+            redundantAge_[i] = 0;
+        }
 
-    int n_;  //!< The number of active items.
-    Array<PoolSlotRef<BaseType, CoType> *>  active_;  //!< The array storing references to the pool slots of the active items.
-    Array<int> redundantAge_;  //!< The number of iterations a constraint is already redundant.
+    private:
+        Master* master_;  //!< A pointer to corresponding master of the optimization.
 
-    const Active<BaseType, CoType>
-    &operator=(const Active<BaseType, CoType> & rhs);
+        int n_;  //!< The number of active items.
+        Array<PoolSlotRef<BaseType, CoType> *>  active_;  //!< The array storing references to the pool slots of the active items.
+        Array<int> redundantAge_;  //!< The number of iterations a constraint is already redundant.
 
-    OGDF_NEW_DELETE
-};
+        const Active<BaseType, CoType>
+        & operator=(const Active<BaseType, CoType> & rhs);
+
+        OGDF_NEW_DELETE
+    };
 
 
 } //namespace abacus

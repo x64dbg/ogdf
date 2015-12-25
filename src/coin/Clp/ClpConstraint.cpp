@@ -14,7 +14,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpConstraint::ClpConstraint () :
+ClpConstraint::ClpConstraint() :
     lastGradient_(NULL),
     functionValue_(0.0),
     offset_(0.0),
@@ -27,7 +27,7 @@ ClpConstraint::ClpConstraint () :
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpConstraint::ClpConstraint (const ClpConstraint & source) :
+ClpConstraint::ClpConstraint(const ClpConstraint & source) :
     lastGradient_(NULL),
     functionValue_(source.functionValue_),
     offset_(source.offset_),
@@ -40,7 +40,7 @@ ClpConstraint::ClpConstraint (const ClpConstraint & source) :
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpConstraint::~ClpConstraint ()
+ClpConstraint::~ClpConstraint()
 {
     delete [] lastGradient_;
 
@@ -50,9 +50,9 @@ ClpConstraint::~ClpConstraint ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpConstraint &
-ClpConstraint::operator=(const ClpConstraint& rhs)
+ClpConstraint::operator=(const ClpConstraint & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         functionValue_ = rhs.functionValue_;
         offset_ = rhs.offset_;
@@ -65,15 +65,15 @@ ClpConstraint::operator=(const ClpConstraint& rhs)
 }
 // Constraint function value
 double
-ClpConstraint::functionValue (const ClpSimplex * model,
-                              const double * solution,
-                              bool useScaling,
-                              bool refresh) const
+ClpConstraint::functionValue(const ClpSimplex* model,
+                             const double* solution,
+                             bool useScaling,
+                             bool refresh) const
 {
     double offset;
     double value;
     int n = model->numberColumns();
-    double * grad = new double [n];
+    double* grad = new double [n];
     gradient(model, solution, grad, value, offset, useScaling, refresh);
     delete [] grad;
     return value;

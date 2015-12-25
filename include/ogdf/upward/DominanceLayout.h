@@ -66,75 +66,75 @@ namespace ogdf
 {
 
 
-class OGDF_EXPORT DominanceLayout : public LayoutModule
-{
-public:
-
-    DominanceLayout()
+    class OGDF_EXPORT DominanceLayout : public LayoutModule
     {
-        m_grid_dist = 1;
-        // set default module
-        m_upPlanarizer.set(new SubgraphUpwardPlanarizer());
+    public:
 
-        m_angle = 45.0 / 180.0 * Math::pi;
+        DominanceLayout()
+        {
+            m_grid_dist = 1;
+            // set default module
+            m_upPlanarizer.set(new SubgraphUpwardPlanarizer());
 
-    }
+            m_angle = 45.0 / 180.0 * Math::pi;
 
-    virtual void call(GraphAttributes &GA);
+        }
 
-    void layout(GraphAttributes &GA, const UpwardPlanRep &UPROrig);
+        virtual void call(GraphAttributes & GA);
 
-    void setUpwardPlanarizer(UpwardPlanarizerModule *upPlanarizer)
-    {
-        m_upPlanarizer.set(upPlanarizer);
-    }
+        void layout(GraphAttributes & GA, const UpwardPlanRep & UPROrig);
 
-    void setMinGridDistance(int dist)
-    {
-        m_grid_dist = dist;
-    }
+        void setUpwardPlanarizer(UpwardPlanarizerModule* upPlanarizer)
+        {
+            m_upPlanarizer.set(upPlanarizer);
+        }
 
-
-
-private:
-
-    double m_angle; //rotate angle to obtain an upward drawing; default is 45�
-
-    NodeArray<edge> firstout;
-    NodeArray<edge> lastout;
-    NodeArray<edge> firstin;
-    NodeArray<edge> lastin;
-
-    int m_R;
-    int m_L;
-
-    // list of nodes sorted by their x and y coordinate.
-    List<node> xNodes;
-    List<node> yNodes;
-
-    //coordinate in preliminary layout
-    NodeArray<int> xPreCoord;
-    NodeArray<int> yPreCoord;
-
-    //final coordinate  of the nodes of the UPR
-    NodeArray<int> xCoord;
-    NodeArray<int> yCoord;
+        void setMinGridDistance(int dist)
+        {
+            m_grid_dist = dist;
+        }
 
 
-    //min grid distance
-    int m_grid_dist;
 
-    ModuleOption<UpwardPlanarizerModule> m_upPlanarizer; // upward planarizer
+    private:
 
-    void labelX(const UpwardPlanRep &UPR, node v, int &count);
+        double m_angle; //rotate angle to obtain an upward drawing; default is 45�
 
-    void labelY(const UpwardPlanRep &UPR, node v, int &count);
+        NodeArray<edge> firstout;
+        NodeArray<edge> lastout;
+        NodeArray<edge> firstin;
+        NodeArray<edge> lastin;
 
-    void compact(const UpwardPlanRep &UPR, GraphAttributes &GA);
+        int m_R;
+        int m_L;
 
-    void findTransitiveEdges(const UpwardPlanRep &UPR, List<edge> &edges);
+        // list of nodes sorted by their x and y coordinate.
+        List<node> xNodes;
+        List<node> yNodes;
 
-};
+        //coordinate in preliminary layout
+        NodeArray<int> xPreCoord;
+        NodeArray<int> yPreCoord;
+
+        //final coordinate  of the nodes of the UPR
+        NodeArray<int> xCoord;
+        NodeArray<int> yCoord;
+
+
+        //min grid distance
+        int m_grid_dist;
+
+        ModuleOption<UpwardPlanarizerModule> m_upPlanarizer; // upward planarizer
+
+        void labelX(const UpwardPlanRep & UPR, node v, int & count);
+
+        void labelY(const UpwardPlanRep & UPR, node v, int & count);
+
+        void compact(const UpwardPlanRep & UPR, GraphAttributes & GA);
+
+        void findTransitiveEdges(const UpwardPlanRep & UPR, List<edge> & edges);
+
+    };
 
 
 }//namespace

@@ -3,7 +3,7 @@
 
 using namespace ogdf;
 
-const char *yn(bool b)
+const char* yn(bool b)
 {
     return (b ? "yes" : "no");
 }

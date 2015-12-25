@@ -47,19 +47,19 @@
 namespace ogdf
 {
 
-double LayoutStandards::s_defNodeWidth = 20.0;
-double LayoutStandards::s_defNodeHeight = 20.0;
-Shape  LayoutStandards::s_defNodeShape = shRect;
-Stroke LayoutStandards::s_defNodeStroke(Color::Black);
-Fill   LayoutStandards::s_defNodeFill(Color::White);
+    double LayoutStandards::s_defNodeWidth = 20.0;
+    double LayoutStandards::s_defNodeHeight = 20.0;
+    Shape  LayoutStandards::s_defNodeShape = shRect;
+    Stroke LayoutStandards::s_defNodeStroke(Color::Black);
+    Fill   LayoutStandards::s_defNodeFill(Color::White);
 
-Stroke    LayoutStandards::s_defEdgeStroke(Color::Black);
-EdgeArrow LayoutStandards::s_defEdgeArrow = eaLast;
+    Stroke    LayoutStandards::s_defEdgeStroke(Color::Black);
+    EdgeArrow LayoutStandards::s_defEdgeArrow = eaLast;
 
-Stroke LayoutStandards::s_defClusterStroke(Color::Gray);
-Fill   LayoutStandards::s_defClusterFill(Color::White, fpNone);
+    Stroke LayoutStandards::s_defClusterStroke(Color::Gray);
+    Fill   LayoutStandards::s_defClusterFill(Color::White, fpNone);
 
-double LayoutStandards::s_defNodeSeparation = 20.0;
-double LayoutStandards::s_defCCSeparation = 30.0;
+    double LayoutStandards::s_defNodeSeparation = 20.0;
+    double LayoutStandards::s_defCCSeparation = 30.0;
 
 } // end namespace ogdf

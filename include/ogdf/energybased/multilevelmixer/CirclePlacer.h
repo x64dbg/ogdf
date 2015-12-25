@@ -52,29 +52,29 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT CirclePlacer : public InitialPlacer
-{
-public:
-
-    enum NodeSelection
+    class OGDF_EXPORT CirclePlacer : public InitialPlacer
     {
-        nsNew,
-        nsOld,
-        nsAll
+    public:
+
+        enum NodeSelection
+        {
+            nsNew,
+            nsOld,
+            nsAll
+        };
+
+        CirclePlacer();
+        void setRadiusFixed(bool fixed);
+        void setCircleSize(float sizeIncrease);
+        void setNodeSelection(NodeSelection nodeSel);
+        void placeOneLevel(MultilevelGraph & MLG);
+
+    private:
+
+        float m_circleSize;
+        bool m_fixedRadius;
+        NodeSelection m_nodeSelection;
     };
-
-    CirclePlacer();
-    void setRadiusFixed(bool fixed);
-    void setCircleSize(float sizeIncrease);
-    void setNodeSelection(NodeSelection nodeSel);
-    void placeOneLevel(MultilevelGraph &MLG);
-
-private:
-
-    float m_circleSize;
-    bool m_fixedRadius;
-    NodeSelection m_nodeSelection;
-};
 
 } // namespace ogdf
 

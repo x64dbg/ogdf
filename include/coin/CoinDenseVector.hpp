@@ -72,7 +72,7 @@ private:
     /// Size of element vector
     int nElements_;
     ///Vector elements
-    T * elements_;
+    T* elements_;
     //@}
 
 public:
@@ -88,12 +88,12 @@ public:
         return nElements_;
     }
     /// Get element values
-    inline const T * getElements() const
+    inline const T* getElements() const
     {
         return elements_;
     }
     /// Get element values
-    inline T * getElements()
+    inline T* getElements()
     {
         return elements_;
     }
@@ -115,7 +115,7 @@ public:
         Size is the length of the elements vector.
         The element vector is copied into this class instance's
         member data. */
-    void setVector(int size, const T * elems);
+    void setVector(int size, const T* elems);
 
 
     /** Elements set to have the same scalar value */
@@ -129,7 +129,7 @@ public:
     /** Resize the dense vector to be the first newSize elements.
         If length is decreased, vector is truncated. If increased
         new entries, set to new default element */
-    void resize(int newSize, T fill=T());
+    void resize(int newSize, T fill = T());
 
     /** Append a dense vector to this dense vector */
     void append(const CoinDenseVector &);
@@ -141,7 +141,7 @@ public:
     inline T oneNorm() const
     {
         T norm = 0;
-        for (int i=0; i<nElements_; i++)
+        for(int i = 0; i < nElements_; i++)
             norm += CoinAbs(elements_[i]);
         return norm;
     }
@@ -149,7 +149,7 @@ public:
     inline double twoNorm() const
     {
         double norm = 0.;
-        for (int i=0; i<nElements_; i++)
+        for(int i = 0; i < nElements_; i++)
             norm += elements_[i] * elements_[i];
         // std namespace removed because it was causing a compile
         // problem with Microsoft Visual C++
@@ -159,7 +159,7 @@ public:
     inline T infNorm() const
     {
         T norm = 0;
-        for (int i=0; i<nElements_; i++)
+        for(int i = 0; i < nElements_; i++)
             norm = CoinMax(norm, CoinAbs(elements_[i]));
         return norm;
     }
@@ -167,14 +167,14 @@ public:
     inline T sum() const
     {
         T sume = 0;
-        for (int i=0; i<nElements_; i++)
+        for(int i = 0; i < nElements_; i++)
             sume += elements_[i];
         return sume;
     }
     /// scale vector elements
     inline void scale(T factor)
     {
-        for (int i=0; i<nElements_; i++)
+        for(int i = 0; i < nElements_; i++)
             elements_[i] *= factor;
         return;
     }
@@ -197,21 +197,21 @@ public:
     /** Default constructor */
     CoinDenseVector();
     /** Alternate Constructors - set elements to vector of Ts */
-    CoinDenseVector(int size, const T * elems);
+    CoinDenseVector(int size, const T* elems);
     /** Alternate Constructors - set elements to same scalar value */
-    CoinDenseVector(int size, T element=T());
+    CoinDenseVector(int size, T element = T());
     /** Copy constructors */
     CoinDenseVector(const CoinDenseVector &);
 
     /** Destructor */
-    ~CoinDenseVector ();
+    ~CoinDenseVector();
     //@}
 
 private:
     /**@name Private methods */
     //@{
     /// Copy internal data
-    void gutsOfSetVector(int size, const T * elems);
+    void gutsOfSetVector(int size, const T* elems);
     /// Set all elements to a given value
     void gutsOfSetConstant(int size, T value);
     //@}
@@ -228,32 +228,32 @@ private:
 //@{
 /// Return the sum of two dense vectors
 template <typename T> inline
-CoinDenseVector<T> operator+(const CoinDenseVector<T>& op1,
-                             const CoinDenseVector<T>& op2)
+CoinDenseVector<T> operator+(const CoinDenseVector<T> & op1,
+                             const CoinDenseVector<T> & op2)
 {
     assert(op1.size() == op2.size());
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    const T *elements2 = op2.getElements();
-    T *elements3 = op3.getElements();
-    for(int i=0; i<size; i++)
+    const T* elements1 = op1.getElements();
+    const T* elements2 = op2.getElements();
+    T* elements3 = op3.getElements();
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] + elements2[i];
     return op3;
 }
 
 /// Return the difference of two dense vectors
 template <typename T> inline
-CoinDenseVector<T> operator-(const CoinDenseVector<T>& op1,
-                             const CoinDenseVector<T>& op2)
+CoinDenseVector<T> operator-(const CoinDenseVector<T> & op1,
+                             const CoinDenseVector<T> & op2)
 {
     assert(op1.size() == op2.size());
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    const T *elements2 = op2.getElements();
-    T *elements3 = op3.getElements();
-    for(int i=0; i<size; i++)
+    const T* elements1 = op1.getElements();
+    const T* elements2 = op2.getElements();
+    T* elements3 = op3.getElements();
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] - elements2[i];
     return op3;
 }
@@ -261,32 +261,32 @@ CoinDenseVector<T> operator-(const CoinDenseVector<T>& op1,
 
 /// Return the element-wise product of two dense vectors
 template <typename T> inline
-CoinDenseVector<T> operator*(const CoinDenseVector<T>& op1,
-                             const CoinDenseVector<T>& op2)
+CoinDenseVector<T> operator*(const CoinDenseVector<T> & op1,
+                             const CoinDenseVector<T> & op2)
 {
     assert(op1.size() == op2.size());
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    const T *elements2 = op2.getElements();
-    T *elements3 = op3.getElements();
-    for(int i=0; i<size; i++)
+    const T* elements1 = op1.getElements();
+    const T* elements2 = op2.getElements();
+    T* elements3 = op3.getElements();
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] * elements2[i];
     return op3;
 }
 
 /// Return the element-wise ratio of two dense vectors
 template <typename T> inline
-CoinDenseVector<T> operator/(const CoinDenseVector<T>& op1,
-                             const CoinDenseVector<T>& op2)
+CoinDenseVector<T> operator/(const CoinDenseVector<T> & op1,
+                             const CoinDenseVector<T> & op2)
 {
     assert(op1.size() == op2.size());
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    const T *elements2 = op2.getElements();
-    T *elements3 = op3.getElements();
-    for(int i=0; i<size; i++)
+    const T* elements1 = op1.getElements();
+    const T* elements2 = op2.getElements();
+    T* elements3 = op3.getElements();
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] / elements2[i];
     return op3;
 }
@@ -299,112 +299,112 @@ CoinDenseVector<T> operator/(const CoinDenseVector<T>& op1,
 //@{
 /// Return the sum of a dense vector and a constant
 template <typename T> inline
-CoinDenseVector<T> operator+(const CoinDenseVector<T>& op1, T value)
+CoinDenseVector<T> operator+(const CoinDenseVector<T> & op1, T value)
 {
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    T *elements3 = op3.getElements();
+    const T* elements1 = op1.getElements();
+    T* elements3 = op3.getElements();
     double dvalue = value;
-    for(int i=0; i<size; i++)
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] + dvalue;
     return op3;
 }
 
 /// Return the difference of a dense vector and a constant
 template <typename T> inline
-CoinDenseVector<T> operator-(const CoinDenseVector<T>& op1, T value)
+CoinDenseVector<T> operator-(const CoinDenseVector<T> & op1, T value)
 {
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    T *elements3 = op3.getElements();
+    const T* elements1 = op1.getElements();
+    T* elements3 = op3.getElements();
     double dvalue = value;
-    for(int i=0; i<size; i++)
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] - dvalue;
     return op3;
 }
 
 /// Return the element-wise product of a dense vector and a constant
 template <typename T> inline
-CoinDenseVector<T> operator*(const CoinDenseVector<T>& op1, T value)
+CoinDenseVector<T> operator*(const CoinDenseVector<T> & op1, T value)
 {
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    T *elements3 = op3.getElements();
+    const T* elements1 = op1.getElements();
+    T* elements3 = op3.getElements();
     double dvalue = value;
-    for(int i=0; i<size; i++)
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] * dvalue;
     return op3;
 }
 
 /// Return the element-wise ratio of a dense vector and a constant
 template <typename T> inline
-CoinDenseVector<T> operator/(const CoinDenseVector<T>& op1, T value)
+CoinDenseVector<T> operator/(const CoinDenseVector<T> & op1, T value)
 {
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    T *elements3 = op3.getElements();
+    const T* elements1 = op1.getElements();
+    T* elements3 = op3.getElements();
     double dvalue = value;
-    for(int i=0; i<size; i++)
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] / dvalue;
     return op3;
 }
 
 /// Return the sum of a constant and a dense vector
 template <typename T> inline
-CoinDenseVector<T> operator+(T value, const CoinDenseVector<T>& op1)
+CoinDenseVector<T> operator+(T value, const CoinDenseVector<T> & op1)
 {
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    T *elements3 = op3.getElements();
+    const T* elements1 = op1.getElements();
+    T* elements3 = op3.getElements();
     double dvalue = value;
-    for(int i=0; i<size; i++)
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] + dvalue;
     return op3;
 }
 
 /// Return the difference of a constant and a dense vector
 template <typename T> inline
-CoinDenseVector<T> operator-(T value, const CoinDenseVector<T>& op1)
+CoinDenseVector<T> operator-(T value, const CoinDenseVector<T> & op1)
 {
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    T *elements3 = op3.getElements();
+    const T* elements1 = op1.getElements();
+    T* elements3 = op3.getElements();
     double dvalue = value;
-    for(int i=0; i<size; i++)
+    for(int i = 0; i < size; i++)
         elements3[i] = dvalue - elements1[i];
     return op3;
 }
 
 /// Return the element-wise product of a constant and a dense vector
 template <typename T> inline
-CoinDenseVector<T> operator*(T value, const CoinDenseVector<T>& op1)
+CoinDenseVector<T> operator*(T value, const CoinDenseVector<T> & op1)
 {
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    T *elements3 = op3.getElements();
+    const T* elements1 = op1.getElements();
+    T* elements3 = op3.getElements();
     double dvalue = value;
-    for(int i=0; i<size; i++)
+    for(int i = 0; i < size; i++)
         elements3[i] = elements1[i] * dvalue;
     return op3;
 }
 
 /// Return the element-wise ratio of a a constant and dense vector
 template <typename T> inline
-CoinDenseVector<T> operator/(T value, const CoinDenseVector<T>& op1)
+CoinDenseVector<T> operator/(T value, const CoinDenseVector<T> & op1)
 {
     int size = op1.size();
     CoinDenseVector<T> op3(size);
-    const T *elements1 = op1.getElements();
-    T *elements3 = op3.getElements();
+    const T* elements1 = op1.getElements();
+    T* elements3 = op3.getElements();
     double dvalue = value;
-    for(int i=0; i<size; i++)
+    for(int i = 0; i < size; i++)
         elements3[i] = dvalue / elements1[i];
     return op3;
 }

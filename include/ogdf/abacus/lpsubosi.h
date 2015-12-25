@@ -50,37 +50,37 @@ namespace abacus
 {
 
 
-class Master;
+    class Master;
 
 
-class  LpSubOsi :  public LpSub, public OsiIF
-{
-public:
-
-    //! The constructor.
-    /**
-     * Calls the function \a initialize() of the base
-     * classLpSub, which sets up the
-     * linear program and passes the data to the LP-solver.
-     *
-     * \param master A pointer to the corresponding master of the optimization.
-     * \param sub    The subproblem of which the LP-relaxation is solved.
-     */
-    LpSubOsi(Master *master, Sub *sub) :
-        LP(master),
-        LpSub(master, sub),
-        OsiIF(master)
+    class  LpSubOsi :  public LpSub, public OsiIF
     {
-        initialize();
-    }
+    public:
 
-    //! The destructor.
-    virtual ~LpSubOsi() { }
+        //! The constructor.
+        /**
+         * Calls the function \a initialize() of the base
+         * classLpSub, which sets up the
+         * linear program and passes the data to the LP-solver.
+         *
+         * \param master A pointer to the corresponding master of the optimization.
+         * \param sub    The subproblem of which the LP-relaxation is solved.
+         */
+        LpSubOsi(Master* master, Sub* sub) :
+            LP(master),
+            LpSub(master, sub),
+            OsiIF(master)
+        {
+            initialize();
+        }
 
-private:
-    LpSubOsi(const LpSubOsi &rhs);
-    const LpSubOsi &operator=(const LpSubOsi &rhs);
-};
+        //! The destructor.
+        virtual ~LpSubOsi() { }
+
+    private:
+        LpSubOsi(const LpSubOsi & rhs);
+        const LpSubOsi & operator=(const LpSubOsi & rhs);
+    };
 
 } //namespace abacus
 

@@ -29,9 +29,9 @@ public:
         Uses model for scaling
         Returns non-zero if gradient udefined at current solution
     */
-    virtual int gradient(const ClpSimplex * model,
-                         const double * solution,
-                         double * gradient,
+    virtual int gradient(const ClpSimplex* model,
+                         const double* solution,
+                         double* gradient,
                          double & functionValue ,
                          double & offset,
                          bool useScaling = false,
@@ -39,17 +39,17 @@ public:
     /// Resize constraint
     virtual void resize(int newNumberColumns) ;
     /// Delete columns in  constraint
-    virtual void deleteSome(int numberToDelete, const int * which) ;
+    virtual void deleteSome(int numberToDelete, const int* which) ;
     /// Scale constraint
-    virtual void reallyScale(const double * columnScale) ;
+    virtual void reallyScale(const double* columnScale) ;
     /** Given a zeroed array sets nonlinear columns to 1.
         Returns number of nonlinear columns
      */
-    virtual int markNonlinear(char * which) const ;
+    virtual int markNonlinear(char* which) const ;
     /** Given a zeroed array sets possible nonzero coefficients to 1.
         Returns number of nonzeros
      */
-    virtual int markNonzero(char * which) const;
+    virtual int markNonzero(char* which) const;
     //@}
 
 
@@ -60,20 +60,20 @@ public:
 
     /// Constructor from constraint
     ClpConstraintLinear(int row, int numberCoefficients, int numberColumns,
-                        const int * column, const double * element);
+                        const int* column, const double* element);
 
     /** Copy constructor .
     */
     ClpConstraintLinear(const ClpConstraintLinear & rhs);
 
     /// Assignment operator
-    ClpConstraintLinear & operator=(const ClpConstraintLinear& rhs);
+    ClpConstraintLinear & operator=(const ClpConstraintLinear & rhs);
 
     /// Destructor
-    virtual ~ClpConstraintLinear ();
+    virtual ~ClpConstraintLinear();
 
     /// Clone
-    virtual ClpConstraint * clone() const;
+    virtual ClpConstraint* clone() const;
     //@}
     ///@name Gets and sets
     //@{
@@ -85,12 +85,12 @@ public:
         return numberColumns_;
     }
     /// Columns
-    inline const int * column() const
+    inline const int* column() const
     {
         return column_;
     }
     /// Coefficients
-    inline const double * coefficient() const
+    inline const double* coefficient() const
     {
         return coefficient_;
     }
@@ -101,9 +101,9 @@ public:
 private:
     ///@name Private member data
     /// Column
-    int * column_;
+    int* column_;
     /// Coefficients
-    double * coefficient_;
+    double* coefficient_;
     /// Useful to have number of columns about
     int numberColumns_;
     /// Number of coefficients

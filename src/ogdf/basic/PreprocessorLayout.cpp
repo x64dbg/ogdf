@@ -45,97 +45,97 @@
 namespace ogdf
 {
 
-PreprocessorLayout::PreprocessorLayout()
-    : m_randomize(false)
-{
-
-}
-
-
-void PreprocessorLayout::call(GraphAttributes &GA)
-{
-    if (m_secondaryLayout.valid())
+    PreprocessorLayout::PreprocessorLayout()
+        : m_randomize(false)
     {
-        MultilevelGraph MLG(GA);
-        call(MLG);
-        MLG.exportAttributes(GA);
+
     }
-}
 
 
-void PreprocessorLayout::call(MultilevelGraph &MLG)
-{
-    m_deletedEdges.clear();
-    Graph * G = &(MLG.getGraph());
-
-    node v;
-
-    double sqrsize;
-    if (m_randomize) sqrsize = 2.0*sqrt((double)G->numberOfNodes())*MLG.averageRadius();
-
-    forall_nodes(v, *G)
+    void PreprocessorLayout::call(GraphAttributes & GA)
     {
-        if (MLG.radius(v) <= 0)
+        if(m_secondaryLayout.valid())
         {
-            MLG.radius(v, 1.0);
-        }
-        if (m_randomize)
-        {
-            MLG.x(v, randomDouble( -sqrsize, sqrsize ));//-5.0, 5.0));
-            MLG.y(v, randomDouble( -sqrsize, sqrsize ));
+            MultilevelGraph MLG(GA);
+            call(MLG);
+            MLG.exportAttributes(GA);
         }
     }
-    if (m_secondaryLayout.valid())
+
+
+    void PreprocessorLayout::call(MultilevelGraph & MLG)
     {
+        m_deletedEdges.clear();
+        Graph* G = &(MLG.getGraph());
 
-        call(*G, MLG);
+        node v;
 
-        m_secondaryLayout.get().call(MLG.getGraphAttributes());
-        MLG.updateReverseIndizes();
+        double sqrsize;
+        if(m_randomize) sqrsize = 2.0 * sqrt((double)G->numberOfNodes()) * MLG.averageRadius();
 
-        for(std::vector<EdgeData>::iterator i = m_deletedEdges.begin(); i != m_deletedEdges.end(); i++ )
+        forall_nodes(v, *G)
         {
-            int index = (*i).edgeIndex;
-            edge temp = G->newEdge(MLG.getNode((*i).sourceIndex), MLG.getNode((*i).targetIndex), index);
-            MLG.weight(temp, (float)(*i).weight);
-        }
-    }
-}
-
-
-void PreprocessorLayout::call(Graph &G, MultilevelGraph &MLG)
-{
-    std::vector<edge> deletedEdges;
-
-    edge e;
-    forall_edges(e, G)
-    {
-        int index = e->index();
-        if (e->source() == e->target())
-        {
-            deletedEdges.push_back(e);
-            m_deletedEdges.push_back(EdgeData(index, e->source()->index(), e->target()->index(), MLG.weight(e)));
-        }
-        else
-        {
-            adjEntry adj;
-            forall_adj(adj, e->source())
+            if(MLG.radius(v) <= 0)
             {
-                if (adj->theEdge()->index() < index && adj->twinNode() == e->target())
-                {
-                    deletedEdges.push_back(e);
-                    m_deletedEdges.push_back(EdgeData(index, e->source()->index(), e->target()->index(), MLG.weight(e)));
-                    break;
-                }
+                MLG.radius(v, 1.0);
+            }
+            if(m_randomize)
+            {
+                MLG.x(v, randomDouble(-sqrsize, sqrsize));  //-5.0, 5.0));
+                MLG.y(v, randomDouble(-sqrsize, sqrsize));
+            }
+        }
+        if(m_secondaryLayout.valid())
+        {
+
+            call(*G, MLG);
+
+            m_secondaryLayout.get().call(MLG.getGraphAttributes());
+            MLG.updateReverseIndizes();
+
+            for(std::vector<EdgeData>::iterator i = m_deletedEdges.begin(); i != m_deletedEdges.end(); i++)
+            {
+                int index = (*i).edgeIndex;
+                edge temp = G->newEdge(MLG.getNode((*i).sourceIndex), MLG.getNode((*i).targetIndex), index);
+                MLG.weight(temp, (float)(*i).weight);
             }
         }
     }
 
-    for (std::vector<edge>::iterator i = deletedEdges.begin(); i != deletedEdges.end(); i++)
+
+    void PreprocessorLayout::call(Graph & G, MultilevelGraph & MLG)
     {
-        G.delEdge(*i);
+        std::vector<edge> deletedEdges;
+
+        edge e;
+        forall_edges(e, G)
+        {
+            int index = e->index();
+            if(e->source() == e->target())
+            {
+                deletedEdges.push_back(e);
+                m_deletedEdges.push_back(EdgeData(index, e->source()->index(), e->target()->index(), MLG.weight(e)));
+            }
+            else
+            {
+                adjEntry adj;
+                forall_adj(adj, e->source())
+                {
+                    if(adj->theEdge()->index() < index && adj->twinNode() == e->target())
+                    {
+                        deletedEdges.push_back(e);
+                        m_deletedEdges.push_back(EdgeData(index, e->source()->index(), e->target()->index(), MLG.weight(e)));
+                        break;
+                    }
+                }
+            }
+        }
+
+        for(std::vector<edge>::iterator i = deletedEdges.begin(); i != deletedEdges.end(); i++)
+        {
+            G.delEdge(*i);
+        }
     }
-}
 
 
 } // namespace ogdf

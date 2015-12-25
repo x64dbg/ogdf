@@ -25,7 +25,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpDynamicExampleMatrix::ClpDynamicExampleMatrix ()
+ClpDynamicExampleMatrix::ClpDynamicExampleMatrix()
     : ClpDynamicMatrix(),
       numberColumns_(0),
       startColumnGen_(NULL),
@@ -44,7 +44,7 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix ()
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpDynamicExampleMatrix::ClpDynamicExampleMatrix (const ClpDynamicExampleMatrix & rhs)
+ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(const ClpDynamicExampleMatrix & rhs)
     : ClpDynamicMatrix(rhs)
 {
     numberColumns_ = rhs.numberColumns_;
@@ -61,15 +61,15 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix (const ClpDynamicExampleMatrix 
 }
 
 /* This is the real constructor*/
-ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberSets,
-        int numberGubColumns, const int * starts,
-        const double * lower, const double * upper,
-        const CoinBigIndex * startColumn, const int * row,
-        const double * element, const double * cost,
-        const double * columnLower, const double * columnUpper,
-        const unsigned char * status,
-        const unsigned char * dynamicStatus,
-        int numberIds, const int *ids)
+ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex* model, int numberSets,
+        int numberGubColumns, const int* starts,
+        const double* lower, const double* upper,
+        const CoinBigIndex* startColumn, const int* row,
+        const double* element, const double* cost,
+        const double* columnLower, const double* columnUpper,
+        const unsigned char* status,
+        const unsigned char* dynamicStatus,
+        int numberIds, const int* ids)
     : ClpDynamicMatrix(model, numberSets, 0, NULL, lower, upper, NULL, NULL, NULL, NULL, NULL, NULL,
                        NULL, NULL)
 {
@@ -95,7 +95,7 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     // and size correctly
     row_ = new int [maximumElements_];
     element_ = new double [maximumElements_];
-    startColumn_ = new CoinBigIndex [maximumGubColumns_+1];
+    startColumn_ = new CoinBigIndex [maximumGubColumns_ + 1];
     // say no columns yet
     numberGubColumns_ = 0;
     startColumn_[0] = 0;
@@ -103,18 +103,18 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     dynamicStatus_ = new unsigned char [maximumGubColumns_];
     memset(dynamicStatus_, 0, maximumGubColumns_);
     id_ = new int[maximumGubColumns_];
-    if (columnLower)
+    if(columnLower)
         columnLower_ = new double[maximumGubColumns_];
     else
         columnLower_ = NULL;
-    if (columnUpper)
+    if(columnUpper)
         columnUpper_ = new double[maximumGubColumns_];
     else
         columnUpper_ = NULL;
     // space for ids
     idGen_ = new int [maximumGubColumns_];
     int iSet;
-    for (iSet = 0; iSet < numberSets_; iSet++)
+    for(iSet = 0; iSet < numberSets_; iSet++)
         startSet_[iSet] = -1;
     // This starts code specific to this storage method
     CoinBigIndex i;
@@ -123,22 +123,22 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     CoinBigIndex numberElements = startColumnGen_[numberColumns_];
     rowGen_ = ClpCopyOfArray(row, numberElements);
     elementGen_ = new double[numberElements];
-    for (i = 0; i < numberElements; i++)
+    for(i = 0; i < numberElements; i++)
         elementGen_[i] = element[i];
     costGen_ = new double[numberColumns_];
-    for (i = 0; i < numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
     {
         costGen_[i] = cost[i];
         // I don't think I need sorted but ...
-        CoinSort_2(rowGen_ + startColumnGen_[i], rowGen_ + startColumnGen_[i+1], elementGen_ + startColumnGen_[i]);
+        CoinSort_2(rowGen_ + startColumnGen_[i], rowGen_ + startColumnGen_[i + 1], elementGen_ + startColumnGen_[i]);
     }
-    if (columnLower)
+    if(columnLower)
     {
         columnLowerGen_ = new double[numberColumns_];
-        for (i = 0; i < numberColumns_; i++)
+        for(i = 0; i < numberColumns_; i++)
         {
             columnLowerGen_[i] = columnLower[i];
-            if (columnLowerGen_[i])
+            if(columnLowerGen_[i])
             {
                 printf("Non-zero lower bounds not allowed - subtract from model\n");
                 abort();
@@ -149,10 +149,10 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     {
         columnLowerGen_ = NULL;
     }
-    if (columnUpper)
+    if(columnUpper)
     {
         columnUpperGen_ = new double[numberColumns_];
-        for (i = 0; i < numberColumns_; i++)
+        for(i = 0; i < numberColumns_; i++)
             columnUpperGen_[i] = columnUpper[i];
     }
     else
@@ -160,26 +160,26 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
         columnUpperGen_ = NULL;
     }
     // end specific coding
-    if (columnUpper_)
+    if(columnUpper_)
     {
         // set all upper bounds so we have enough space
-        double * columnUpper = model->columnUpper();
+        double* columnUpper = model->columnUpper();
         for(i = firstDynamic_; i < lastDynamic_; i++)
             columnUpper[i] = 1.0e10;
     }
-    if (status)
+    if(status)
     {
         status_ = ClpCopyOfArray(status, numberSets_);
-        assert (dynamicStatus);
+        assert(dynamicStatus);
         CoinMemcpyN(dynamicStatus, numberIds, dynamicStatus_);
-        assert (numberIds);
+        assert(numberIds);
     }
     else
     {
-        assert (!numberIds);
+        assert(!numberIds);
         status_ = new unsigned char [numberSets_];
         memset(status_, 0, numberSets_);
-        for (i = 0; i < numberSets_; i++)
+        for(i = 0; i < numberSets_; i++)
         {
             // make slack key
             setStatus(i, ClpSimplex::basic);
@@ -187,17 +187,17 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     }
     dynamicStatusGen_ = new unsigned char [numberColumns_];
     memset(dynamicStatusGen_, 0, numberColumns_); // for clarity
-    for (i = 0; i < numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
         setDynamicStatusGen(i, atLowerBound);
     // Populate with enough columns
-    if (!numberIds)
+    if(!numberIds)
     {
         // This could be made more sophisticated
-        for (iSet = 0; iSet < numberSets_; iSet++)
+        for(iSet = 0; iSet < numberSets_; iSet++)
         {
             int sequence = fullStartGen_[iSet];
             CoinBigIndex start = startColumnGen_[sequence];
-            addColumn(startColumnGen_[sequence+1] - start,
+            addColumn(startColumnGen_[sequence + 1] - start,
                       rowGen_ + start,
                       elementGen_ + start,
                       costGen_[sequence],
@@ -211,17 +211,17 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     else
     {
         // put back old ones
-        int * set = new int[numberColumns_];
-        for (iSet = 0; iSet < numberSets_; iSet++)
+        int* set = new int[numberColumns_];
+        for(iSet = 0; iSet < numberSets_; iSet++)
         {
-            for (CoinBigIndex j = fullStartGen_[iSet]; j < fullStartGen_[iSet+1]; j++)
+            for(CoinBigIndex j = fullStartGen_[iSet]; j < fullStartGen_[iSet + 1]; j++)
                 set[j] = iSet;
         }
-        for (int i = 0; i < numberIds; i++)
+        for(int i = 0; i < numberIds; i++)
         {
             int sequence = ids[i];
             CoinBigIndex start = startColumnGen_[sequence];
-            addColumn(startColumnGen_[sequence+1] - start,
+            addColumn(startColumnGen_[sequence + 1] - start,
                       rowGen_ + start,
                       elementGen_ + start,
                       costGen_[sequence],
@@ -233,7 +233,7 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
         }
         delete [] set;
     }
-    if (!status)
+    if(!status)
     {
         gubCrash();
     }
@@ -243,15 +243,15 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     }
 }
 // This constructor just takes over ownership
-ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberSets,
-        int numberGubColumns, int * starts,
-        const double * lower, const double * upper,
-        int * startColumn, int * row,
-        double * element, double * cost,
-        double * columnLower, double * columnUpper,
-        const unsigned char * status,
-        const unsigned char * dynamicStatus,
-        int numberIds, const int *ids)
+ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex* model, int numberSets,
+        int numberGubColumns, int* starts,
+        const double* lower, const double* upper,
+        int* startColumn, int* row,
+        double* element, double* cost,
+        double* columnLower, double* columnUpper,
+        const unsigned char* status,
+        const unsigned char* dynamicStatus,
+        int numberIds, const int* ids)
     : ClpDynamicMatrix(model, numberSets, 0, NULL, lower, upper, NULL, NULL, NULL, NULL, NULL, NULL,
                        NULL, NULL)
 {
@@ -277,7 +277,7 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     // and size correctly
     row_ = new int [maximumElements_];
     element_ = new double [maximumElements_];
-    startColumn_ = new CoinBigIndex [maximumGubColumns_+1];
+    startColumn_ = new CoinBigIndex [maximumGubColumns_ + 1];
     // say no columns yet
     numberGubColumns_ = 0;
     startColumn_[0] = 0;
@@ -285,18 +285,18 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     dynamicStatus_ = new unsigned char [maximumGubColumns_];
     memset(dynamicStatus_, 0, maximumGubColumns_);
     id_ = new int[maximumGubColumns_];
-    if (columnLower)
+    if(columnLower)
         columnLower_ = new double[maximumGubColumns_];
     else
         columnLower_ = NULL;
-    if (columnUpper)
+    if(columnUpper)
         columnUpper_ = new double[maximumGubColumns_];
     else
         columnUpper_ = NULL;
     // space for ids
     idGen_ = new int [maximumGubColumns_];
     int iSet;
-    for (iSet = 0; iSet < numberSets_; iSet++)
+    for(iSet = 0; iSet < numberSets_; iSet++)
         startSet_[iSet] = -1;
     // This starts code specific to this storage method
     CoinBigIndex i;
@@ -305,17 +305,17 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     rowGen_ = row;
     elementGen_ = element;
     costGen_ = cost;
-    for (i = 0; i < numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
     {
         // I don't think I need sorted but ...
-        CoinSort_2(rowGen_ + startColumnGen_[i], rowGen_ + startColumnGen_[i+1], elementGen_ + startColumnGen_[i]);
+        CoinSort_2(rowGen_ + startColumnGen_[i], rowGen_ + startColumnGen_[i + 1], elementGen_ + startColumnGen_[i]);
     }
-    if (columnLower)
+    if(columnLower)
     {
         columnLowerGen_ = columnLower;
-        for (i = 0; i < numberColumns_; i++)
+        for(i = 0; i < numberColumns_; i++)
         {
-            if (columnLowerGen_[i])
+            if(columnLowerGen_[i])
             {
                 printf("Non-zero lower bounds not allowed - subtract from model\n");
                 abort();
@@ -326,7 +326,7 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     {
         columnLowerGen_ = NULL;
     }
-    if (columnUpper)
+    if(columnUpper)
     {
         columnUpperGen_ = columnUpper;
     }
@@ -335,26 +335,26 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
         columnUpperGen_ = NULL;
     }
     // end specific coding
-    if (columnUpper_)
+    if(columnUpper_)
     {
         // set all upper bounds so we have enough space
-        double * columnUpper = model->columnUpper();
+        double* columnUpper = model->columnUpper();
         for(i = firstDynamic_; i < lastDynamic_; i++)
             columnUpper[i] = 1.0e10;
     }
-    if (status)
+    if(status)
     {
         status_ = ClpCopyOfArray(status, numberSets_);
-        assert (dynamicStatus);
+        assert(dynamicStatus);
         CoinMemcpyN(dynamicStatus, numberIds, dynamicStatus_);
-        assert (numberIds);
+        assert(numberIds);
     }
     else
     {
-        assert (!numberIds);
+        assert(!numberIds);
         status_ = new unsigned char [numberSets_];
         memset(status_, 0, numberSets_);
-        for (i = 0; i < numberSets_; i++)
+        for(i = 0; i < numberSets_; i++)
         {
             // make slack key
             setStatus(i, ClpSimplex::basic);
@@ -362,17 +362,17 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     }
     dynamicStatusGen_ = new unsigned char [numberColumns_];
     memset(dynamicStatusGen_, 0, numberColumns_); // for clarity
-    for (i = 0; i < numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
         setDynamicStatusGen(i, atLowerBound);
     // Populate with enough columns
-    if (!numberIds)
+    if(!numberIds)
     {
         // This could be made more sophisticated
-        for (iSet = 0; iSet < numberSets_; iSet++)
+        for(iSet = 0; iSet < numberSets_; iSet++)
         {
             int sequence = fullStartGen_[iSet];
             CoinBigIndex start = startColumnGen_[sequence];
-            addColumn(startColumnGen_[sequence+1] - start,
+            addColumn(startColumnGen_[sequence + 1] - start,
                       rowGen_ + start,
                       elementGen_ + start,
                       costGen_[sequence],
@@ -386,18 +386,18 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
     else
     {
         // put back old ones
-        int * set = new int[numberColumns_];
-        for (iSet = 0; iSet < numberSets_; iSet++)
+        int* set = new int[numberColumns_];
+        for(iSet = 0; iSet < numberSets_; iSet++)
         {
-            for (CoinBigIndex j = fullStartGen_[iSet]; j < fullStartGen_[iSet+1]; j++)
+            for(CoinBigIndex j = fullStartGen_[iSet]; j < fullStartGen_[iSet + 1]; j++)
                 set[j] = iSet;
         }
-        for (int i = 0; i < numberIds; i++)
+        for(int i = 0; i < numberIds; i++)
         {
             int sequence = ids[i];
             int iSet = set[sequence];
             CoinBigIndex start = startColumnGen_[sequence];
-            addColumn(startColumnGen_[sequence+1] - start,
+            addColumn(startColumnGen_[sequence + 1] - start,
                       rowGen_ + start,
                       elementGen_ + start,
                       costGen_[sequence],
@@ -409,7 +409,7 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
         }
         delete [] set;
     }
-    if (!status)
+    if(!status)
     {
         gubCrash();
     }
@@ -421,7 +421,7 @@ ClpDynamicExampleMatrix::ClpDynamicExampleMatrix(ClpSimplex * model, int numberS
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpDynamicExampleMatrix::~ClpDynamicExampleMatrix ()
+ClpDynamicExampleMatrix::~ClpDynamicExampleMatrix()
 {
     delete [] startColumnGen_;
     delete [] rowGen_;
@@ -438,9 +438,9 @@ ClpDynamicExampleMatrix::~ClpDynamicExampleMatrix ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpDynamicExampleMatrix &
-ClpDynamicExampleMatrix::operator=(const ClpDynamicExampleMatrix& rhs)
+ClpDynamicExampleMatrix::operator=(const ClpDynamicExampleMatrix & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         ClpDynamicMatrix::operator=(rhs);
         numberColumns_ = rhs.numberColumns_;
@@ -469,18 +469,18 @@ ClpDynamicExampleMatrix::operator=(const ClpDynamicExampleMatrix& rhs)
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-ClpMatrixBase * ClpDynamicExampleMatrix::clone() const
+ClpMatrixBase* ClpDynamicExampleMatrix::clone() const
 {
     return new ClpDynamicExampleMatrix(*this);
 }
 // Partial pricing
 void
-ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction, double endFraction,
+ClpDynamicExampleMatrix::partialPricing(ClpSimplex* model, double startFraction, double endFraction,
                                         int & bestSequence, int & numberWanted)
 {
     numberWanted = currentWanted_;
     assert(!model->rowScale());
-    if (!numberSets_)
+    if(!numberSets_)
     {
         // no gub
         ClpPackedMatrix::partialPricing(model, startFraction, endFraction, bestSequence, numberWanted);
@@ -488,14 +488,14 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
     else
     {
         // and do some proportion of full set
-        int startG2 = static_cast<int> (startFraction * numberSets_);
-        int endG2 = static_cast<int> (endFraction * numberSets_ + 0.1);
+        int startG2 = static_cast<int>(startFraction * numberSets_);
+        int endG2 = static_cast<int>(endFraction * numberSets_ + 0.1);
         endG2 = CoinMin(endG2, numberSets_);
         //printf("gub price - set start %d end %d\n",
         //   startG2,endG2);
         double tolerance = model->currentDualTolerance();
-        double * reducedCost = model->djRegion();
-        const double * duals = model->dualRowSolution();
+        double* reducedCost = model->djRegion();
+        const double* duals = model->dualRowSolution();
         double bestDj;
         int numberRows = model->numberRows();
         int slackOffset = lastDynamic_ + numberRows;
@@ -503,11 +503,11 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
         int structuralOffset2 = structuralOffset + maximumGubColumns_;
         // If nothing found yet can go all the way to end
         int endAll = endG2;
-        if (bestSequence < 0 && !startG2)
+        if(bestSequence < 0 && !startG2)
             endAll = numberSets_;
-        if (bestSequence >= 0)
+        if(bestSequence >= 0)
         {
-            if (bestSequence != savedBestSequence_)
+            if(bestSequence != savedBestSequence_)
                 bestDj = fabs(reducedCost[bestSequence]); // dj from slacks or permanent
             else
                 bestDj = savedBestDj_;
@@ -524,27 +524,27 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
         int bestSet = -1;
         int minSet = minimumObjectsScan_ < 0 ? 5 : minimumObjectsScan_;
         int minNeg = minimumGoodReducedCosts_ < 0 ? 5 : minimumGoodReducedCosts_;
-        for (int iSet = startG2; iSet < endAll; iSet++)
+        for(int iSet = startG2; iSet < endAll; iSet++)
         {
-            if (numberWanted + minNeg < originalWanted_ && iSet > startG2 + minSet)
+            if(numberWanted + minNeg < originalWanted_ && iSet > startG2 + minSet)
             {
                 // give up
                 numberWanted = 0;
                 break;
             }
-            else if (iSet == endG2 && bestSequence >= 0)
+            else if(iSet == endG2 && bestSequence >= 0)
             {
                 break;
             }
             int gubRow = toIndex_[iSet];
-            if (gubRow >= 0)
+            if(gubRow >= 0)
             {
-                djMod = duals[gubRow+numberStaticRows_]; // have I got sign right?
+                djMod = duals[gubRow + numberStaticRows_]; // have I got sign right?
             }
             else
             {
                 int iBasic = keyVariable_[iSet];
-                if (iBasic >= numberColumns_)
+                if(iBasic >= numberColumns_)
                 {
                     djMod = 0.0; // set not in
                 }
@@ -552,24 +552,24 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
                 {
                     // get dj without
                     djMod = 0.0;
-                    for (CoinBigIndex j = startColumn_[iBasic];
-                            j < startColumn_[iBasic+1]; j++)
+                    for(CoinBigIndex j = startColumn_[iBasic];
+                            j < startColumn_[iBasic + 1]; j++)
                     {
                         int jRow = row_[j];
                         djMod -= duals[jRow] * element_[j];
                     }
                     djMod += cost_[iBasic];
                     // See if gub slack possible - dj is djMod
-                    if (getStatus(iSet) == ClpSimplex::atLowerBound)
+                    if(getStatus(iSet) == ClpSimplex::atLowerBound)
                     {
                         double value = -djMod;
-                        if (value > tolerance)
+                        if(value > tolerance)
                         {
                             numberWanted--;
-                            if (value > bestDj)
+                            if(value > bestDj)
                             {
                                 // check flagged variable and correct dj
-                                if (!flagged(iSet))
+                                if(!flagged(iSet))
                                 {
                                     bestDj = value;
                                     bestSequence = slackOffset + iSet;
@@ -585,16 +585,16 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
                             }
                         }
                     }
-                    else if (getStatus(iSet) == ClpSimplex::atUpperBound)
+                    else if(getStatus(iSet) == ClpSimplex::atUpperBound)
                     {
                         double value = djMod;
-                        if (value > tolerance)
+                        if(value > tolerance)
                         {
                             numberWanted--;
-                            if (value > bestDj)
+                            if(value > bestDj)
                             {
                                 // check flagged variable and correct dj
-                                if (!flagged(iSet))
+                                if(!flagged(iSet))
                                 {
                                     bestDj = value;
                                     bestSequence = slackOffset + iSet;
@@ -614,28 +614,28 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
             }
             // do ones in small
             int iSequence = startSet_[iSet];
-            while (iSequence >= 0)
+            while(iSequence >= 0)
             {
                 DynamicStatus status = getDynamicStatus(iSequence);
-                if (status == atLowerBound || status == atUpperBound)
+                if(status == atLowerBound || status == atUpperBound)
                 {
                     double value = cost_[iSequence] - djMod;
-                    for (CoinBigIndex j = startColumn_[iSequence];
-                            j < startColumn_[iSequence+1]; j++)
+                    for(CoinBigIndex j = startColumn_[iSequence];
+                            j < startColumn_[iSequence + 1]; j++)
                     {
                         int jRow = row_[j];
                         value -= duals[jRow] * element_[j];
                     }
                     // change sign if at lower bound
-                    if (status == atLowerBound)
+                    if(status == atLowerBound)
                         value = -value;
-                    if (value > tolerance)
+                    if(value > tolerance)
                     {
                         numberWanted--;
-                        if (value > bestDj)
+                        if(value > bestDj)
                         {
                             // check flagged variable and correct dj
-                            if (!flagged(iSequence))
+                            if(!flagged(iSequence))
                             {
                                 bestDj = value;
                                 bestSequence = structuralOffset + iSequence;
@@ -654,28 +654,28 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
             }
             // and now get best by column generation
             // If no upper bounds we may not need status test
-            for (iSequence = fullStartGen_[iSet]; iSequence < fullStartGen_[iSet+1]; iSequence++)
+            for(iSequence = fullStartGen_[iSet]; iSequence < fullStartGen_[iSet + 1]; iSequence++)
             {
                 DynamicStatus status = getDynamicStatusGen(iSequence);
-                assert (status != atUpperBound && status != soloKey);
-                if (status == atLowerBound)
+                assert(status != atUpperBound && status != soloKey);
+                if(status == atLowerBound)
                 {
                     double value = costGen_[iSequence] - djMod;
-                    for (CoinBigIndex j = startColumnGen_[iSequence];
-                            j < startColumnGen_[iSequence+1]; j++)
+                    for(CoinBigIndex j = startColumnGen_[iSequence];
+                            j < startColumnGen_[iSequence + 1]; j++)
                     {
                         int jRow = rowGen_[j];
                         value -= duals[jRow] * elementGen_[j];
                     }
                     // change sign as at lower bound
                     value = -value;
-                    if (value > tolerance)
+                    if(value > tolerance)
                     {
                         numberWanted--;
-                        if (value > bestDj)
+                        if(value > bestDj)
                         {
                             // check flagged variable and correct dj
-                            if (!flaggedGen(iSequence))
+                            if(!flaggedGen(iSequence))
                             {
                                 bestDj = value;
                                 bestSequence = structuralOffset2 + iSequence;
@@ -691,13 +691,13 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
                     }
                 }
             }
-            if (numberWanted <= 0)
+            if(numberWanted <= 0)
             {
                 numberWanted = 0;
                 break;
             }
         }
-        if (bestSequence != saveSequence)
+        if(bestSequence != saveSequence)
         {
             savedBestGubDual_ = bestDjMod;
             savedBestDj_ = bestDj;
@@ -709,16 +709,16 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
         // Resize so just do to gub
         numberActiveColumns_ = firstDynamic_;
         int saveMinNeg = minimumGoodReducedCosts_;
-        if (bestSequence >= 0)
+        if(bestSequence >= 0)
             minimumGoodReducedCosts_ = -2;
         currentWanted_ = numberWanted;
         ClpPackedMatrix::partialPricing(model, startFraction, endFraction, bestSequence, numberWanted);
         numberActiveColumns_ = matrix_->getNumCols();
         minimumGoodReducedCosts_ = saveMinNeg;
         // See if may be finished
-        if (!startG2 && bestSequence < 0)
+        if(!startG2 && bestSequence < 0)
             infeasibilityWeight_ = model_->infeasibilityCost();
-        else if (bestSequence >= 0)
+        else if(bestSequence >= 0)
             infeasibilityWeight_ = -1.0;
         currentWanted_ = numberWanted;
     }
@@ -727,19 +727,19 @@ ClpDynamicExampleMatrix::partialPricing(ClpSimplex * model, double startFraction
    May update bestSequence.
 */
 void
-ClpDynamicExampleMatrix::createVariable(ClpSimplex * model, int & bestSequence)
+ClpDynamicExampleMatrix::createVariable(ClpSimplex* model, int & bestSequence)
 {
     int numberRows = model->numberRows();
     int slackOffset = lastDynamic_ + numberRows;
     int structuralOffset = slackOffset + numberSets_;
     int bestSequence2 = savedBestSequence_ - structuralOffset;
-    if (bestSequence2 >= 0)
+    if(bestSequence2 >= 0)
     {
         // See if needs new
-        if (bestSequence2 >= maximumGubColumns_)
+        if(bestSequence2 >= maximumGubColumns_)
         {
             bestSequence2 -= maximumGubColumns_;
-            int sequence = addColumn(startColumnGen_[bestSequence2+1] - startColumnGen_[bestSequence2],
+            int sequence = addColumn(startColumnGen_[bestSequence2 + 1] - startColumnGen_[bestSequence2],
                                      rowGen_ + startColumnGen_[bestSequence2],
                                      elementGen_ + startColumnGen_[bestSequence2],
                                      costGen_[bestSequence2],
@@ -760,16 +760,16 @@ ClpDynamicExampleMatrix::createVariable(ClpSimplex * model, int & bestSequence)
    Entries at upper bound (really nonzero) never go out (at present).
 */
 void
-ClpDynamicExampleMatrix::packDown(const int * in, int numberToPack)
+ClpDynamicExampleMatrix::packDown(const int* in, int numberToPack)
 {
     int put = 0;
-    for (int i = 0; i < numberToPack; i++)
+    for(int i = 0; i < numberToPack; i++)
     {
         int id = idGen_[i];
-        if (in[i] >= 0)
+        if(in[i] >= 0)
         {
             // stays in
-            assert (put == in[i]); // true for now
+            assert(put == in[i]);  // true for now
             idGen_[put++] = id;
         }
         else
@@ -778,5 +778,5 @@ ClpDynamicExampleMatrix::packDown(const int * in, int numberToPack)
             setDynamicStatusGen(id, atLowerBound);
         }
     }
-    assert (put == numberGubColumns_);
+    assert(put == numberGubColumns_);
 }

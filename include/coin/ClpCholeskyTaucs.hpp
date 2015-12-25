@@ -48,14 +48,14 @@ public:
     //@{
     /** Orders rows and saves pointer to matrix.and model.
      Returns non-zero if not enough memory */
-    virtual int order(ClpInterior * model) ;
+    virtual int order(ClpInterior* model) ;
     /// Dummy
     virtual int symbolic();
     /** Factorize - filling in rowsDropped and returning number dropped.
         If return code negative then out of memory */
-    virtual int factorize(const double * diagonal, int * rowsDropped) ;
+    virtual int factorize(const double* diagonal, int* rowsDropped) ;
     /** Uses factorization to solve. */
-    virtual void solve (double * region) ;
+    virtual void solve(double* region) ;
     //@}
 
 
@@ -66,11 +66,11 @@ public:
     /** Destructor  */
     virtual ~ClpCholeskyTaucs();
     // Copy
-    ClpCholeskyTaucs(const ClpCholeskyTaucs&);
+    ClpCholeskyTaucs(const ClpCholeskyTaucs &);
     // Assignment
-    ClpCholeskyTaucs& operator=(const ClpCholeskyTaucs&);
+    ClpCholeskyTaucs & operator=(const ClpCholeskyTaucs &);
     /// Clone
-    virtual ClpCholeskyBase * clone() const ;
+    virtual ClpCholeskyBase* clone() const ;
     //@}
 
 
@@ -78,19 +78,19 @@ private:
     /**@name Data members */
     //@{
     /// Taucs matrix (== sparseFactor etc)
-    taucs_ccs_matrix * matrix_;
+    taucs_ccs_matrix* matrix_;
     /// Taucs factor
-    void * factorization_;
+    void* factorization_;
     /// sparseFactor.
-    double * sparseFactorT_;
+    double* sparseFactorT_;
     /// choleskyStart
-    CoinBigIndex * choleskyStartT_;
+    CoinBigIndex* choleskyStartT_;
     /// choleskyRow
-    int * choleskyRowT_;
+    int* choleskyRowT_;
     /// sizeFactor.
     CoinBigIndex sizeFactorT_;
     /// Row copy of matrix
-    ClpMatrixBase * rowCopyT_;
+    ClpMatrixBase* rowCopyT_;
     //@}
 };
 

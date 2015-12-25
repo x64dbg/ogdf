@@ -112,17 +112,17 @@ protected:
 public:
     CglFlowVUB() : varInd_(-1), upper_(-1) {}
 
-    CglFlowVUB(const CglFlowVUB& source)
+    CglFlowVUB(const CglFlowVUB & source)
     {
-        varInd_= source.varInd_;
+        varInd_ = source.varInd_;
         upper_ = source.upper_;
     }
 
-    CglFlowVUB& operator=(const CglFlowVUB& rhs)
+    CglFlowVUB & operator=(const CglFlowVUB & rhs)
     {
-        if (this == &rhs)
+        if(this == &rhs)
             return *this;
-        varInd_= rhs.varInd_;
+        varInd_ = rhs.varInd_;
         upper_ = rhs.upper_;
         return *this;
     }
@@ -156,7 +156,7 @@ public:
 typedef CglFlowVUB CglFlowVLB;
 
 /** Overloaded operator<< for printing VUB and VLB.*/
-std::ostream& operator<<( std::ostream& os, const CglFlowVUB &v );
+std::ostream & operator<<(std::ostream & os, const CglFlowVUB & v);
 
 //=============================================================================
 
@@ -165,8 +165,8 @@ std::ostream& operator<<( std::ostream& os, const CglFlowVUB &v );
  */
 class CglFlowCover : public CglCutGenerator
 {
-    friend void CglFlowCoverUnitTest(const OsiSolverInterface * siP,
-                                     const std::string mpdDir );
+    friend void CglFlowCoverUnitTest(const OsiSolverInterface* siP,
+                                     const std::string mpdDir);
 
 public:
 
@@ -179,7 +179,7 @@ public:
      *  This function is called by
      *  <CODE>generateCuts(const OsiSolverInterface & si, OsiCuts & cs)</CODE>.
     */
-    void flowPreprocess(const OsiSolverInterface& si) const;
+    void flowPreprocess(const OsiSolverInterface & si) const;
 
     /**@name Generate Cuts */
     //@{
@@ -225,25 +225,25 @@ public:
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglFlowCover ();
+    CglFlowCover();
 
     /// Copy constructor
-    CglFlowCover (
+    CglFlowCover(
         const CglFlowCover &);
 
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
     CglFlowCover &
     operator=(
-        const CglFlowCover& rhs);
+        const CglFlowCover & rhs);
 
     /// Destructor
     virtual
-    ~CglFlowCover ();
+    ~CglFlowCover();
     /// Create C++ lines to get to current state
-    virtual std::string generateCpp( FILE * fp);
+    virtual std::string generateCpp(FILE* fp);
     //@}
 
 private:
@@ -253,47 +253,47 @@ private:
     /** Based a given row, a LP solution and other model data, this function
     tries to generate a violated lifted simple generalized flow cover.
     */
-    bool generateOneFlowCut( const OsiSolverInterface & si,
-                             const int rowLen,
-                             int* ind,
-                             double* coef,
-                             char sense,
-                             double rhs,
-                             OsiRowCut& flowCut,
-                             double& violation ) const;
+    bool generateOneFlowCut(const OsiSolverInterface & si,
+                            const int rowLen,
+                            int* ind,
+                            double* coef,
+                            char sense,
+                            double rhs,
+                            OsiRowCut & flowCut,
+                            double & violation) const;
 
 
     /** Transform a row from ">=" to "<=", and vice versa. */
-    void flipRow(int rowLen, double* coef, double& rhs) const;
+    void flipRow(int rowLen, double* coef, double & rhs) const;
 
     /** Transform a row from ">=" to "<=", and vice versa. Have 'sense'. */
-    void flipRow(int rowLen, double* coef, char& sen, double& rhs) const;
+    void flipRow(int rowLen, double* coef, char & sen, double & rhs) const;
 
     /** Determine the type of a given row. */
-    CglFlowRowType determineOneRowType(const OsiSolverInterface& si,
+    CglFlowRowType determineOneRowType(const OsiSolverInterface & si,
                                        int rowLen, int* ind,
                                        double* coef, char sen,
                                        double rhs) const;
     /** Lift functions */
-    void liftMinus(double &movement, /* Output */
+    void liftMinus(double & movement, /* Output */
                    int t,
                    int r,
                    double z,
                    double dPrimePrime,
                    double lambda,
                    double ml,
-                   double *M,
-                   double *rho) const;
+                   double* M,
+                   double* rho) const;
 
-    bool liftPlus(double &alpha,
-                  double &beta,
+    bool liftPlus(double & alpha,
+                  double & beta,
                   int r,
                   double m_j,
                   double lambda,
                   double y_j,
                   double x_j,
                   double dPrimePrime,
-                  double *M) const;
+                  double* M) const;
 
 
     //-------------------------------------------------------------------------
@@ -315,7 +315,7 @@ private:
     }
     inline void setRowTypes(const CglFlowRowType rt, const int i)
     {
-        if (rowTypes_ != 0)
+        if(rowTypes_ != 0)
             rowTypes_[i] = rt;
         else
         {
@@ -334,7 +334,7 @@ private:
     {
         return vubs_;
     }
-    inline const CglFlowVUB& getVubs(int i) const
+    inline const CglFlowVUB & getVubs(int i) const
     {
         return vubs_[i];
     }
@@ -344,9 +344,9 @@ private:
         vubs_ = vubs;
         vubs = 0;
     }
-    inline void setVubs(const CglFlowVUB& vub, int i)
+    inline void setVubs(const CglFlowVUB & vub, int i)
     {
-        if (vubs_ != 0)
+        if(vubs_ != 0)
             vubs_[i] = vub;
         else
         {
@@ -356,9 +356,9 @@ private:
                             "CglFlowCover");
         }
     }
-    inline void printVubs(std::ostream& os) const
+    inline void printVubs(std::ostream & os) const
     {
-        for (int i = 0; i < numCols_; ++i)
+        for(int i = 0; i < numCols_; ++i)
         {
             os << "ix: " << i << ", " << vubs_[i];
         }
@@ -372,7 +372,7 @@ private:
     {
         return vlbs_;
     }
-    inline const CglFlowVLB& getVlbs(int i) const
+    inline const CglFlowVLB & getVlbs(int i) const
     {
         return vlbs_[i];
     }
@@ -382,9 +382,9 @@ private:
         vlbs_ = vlbs;
         vlbs = 0;
     }
-    inline void setVlbs(const CglFlowVLB& vlb, int i)
+    inline void setVlbs(const CglFlowVLB & vlb, int i)
     {
-        if (vlbs_ != 0)
+        if(vlbs_ != 0)
             vlbs_[i] = vlb;
         else
         {
@@ -434,7 +434,7 @@ private:
     have to be compiled into the library. And that's a gain, because the
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
-void CglFlowCoverUnitTest(const OsiSolverInterface * siP,
-                          const std::string mpdDir );
+void CglFlowCoverUnitTest(const OsiSolverInterface* siP,
+                          const std::string mpdDir);
 
 #endif

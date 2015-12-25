@@ -61,19 +61,19 @@ public:
     CoinOneMessage();
     /** Normal constructor */
     CoinOneMessage(int externalNumber, char detail,
-                   const char * message);
+                   const char* message);
     /** Destructor */
     ~CoinOneMessage();
     /** The copy constructor */
-    CoinOneMessage(const CoinOneMessage&);
+    CoinOneMessage(const CoinOneMessage &);
     /** assignment operator. */
-    CoinOneMessage& operator=(const CoinOneMessage&);
+    CoinOneMessage & operator=(const CoinOneMessage &);
     //@}
 
     /**@name Useful stuff */
     //@{
     /// Replace message text (<i>e.g.</i>, text in a different language)
-    void replaceMessage(const char * message);
+    void replaceMessage(const char* message);
     //@}
 
     /**@name Get and set methods */
@@ -90,7 +90,7 @@ public:
     */
     inline void setExternalNumber(int number)
     {
-        externalNumber_=number;
+        externalNumber_ = number;
     }
     /// Severity
     inline char severity() const
@@ -100,7 +100,7 @@ public:
     /// Set detail level
     inline void setDetail(int level)
     {
-        detail_=static_cast<char> (level);
+        detail_ = static_cast<char>(level);
     }
     /// Get detail level
     inline int detail() const
@@ -108,7 +108,7 @@ public:
         return detail_;
     }
     /// Return the message text
-    inline char * message() const
+    inline char* message() const
     {
         return message_;
     }
@@ -153,13 +153,13 @@ public:
     /**@name Constructors etc */
     //@{
     /** Constructor with number of messages. */
-    CoinMessages(int numberMessages=0);
+    CoinMessages(int numberMessages = 0);
     /** Destructor */
     ~CoinMessages();
     /** The copy constructor */
-    CoinMessages(const CoinMessages&);
+    CoinMessages(const CoinMessages &);
     /** assignment operator. */
-    CoinMessages& operator=(const CoinMessages&);
+    CoinMessages & operator=(const CoinMessages &);
     //@}
 
     /**@name Useful stuff */
@@ -175,7 +175,7 @@ public:
       Any existing text is deleted and the specified text is copied into the
       specified message.
     */
-    void replaceMessage(int messageNumber, const char * message);
+    void replaceMessage(int messageNumber, const char* message);
     /** Language.  Need to think about iso codes */
     inline Language language() const
     {
@@ -196,7 +196,7 @@ public:
       is changed on all messages.
     */
     void setDetailMessages(int newLevel, int numberMessages,
-                           int * messageNumbers);
+                           int* messageNumbers);
     /** Change detail level for all messages with low <= ID number < high */
     void setDetailMessages(int newLevel, int low, int high);
 
@@ -226,7 +226,7 @@ public:
     */
     int lengthMessages_;
     /// Messages
-    CoinOneMessage ** message_;
+    CoinOneMessage** message_;
     //@}
 };
 
@@ -335,11 +335,11 @@ enum CoinMessageMarker
 class CoinMessageHandler
 {
 
-    friend bool CoinMessageHandlerUnitTest () ;
+    friend bool CoinMessageHandlerUnitTest() ;
 
 private:
     /** The body of the copy constructor and the assignment operator */
-    void gutsOfCopy(const CoinMessageHandler& rhs);
+    void gutsOfCopy(const CoinMessageHandler & rhs);
 
 public:
     /**@name Virtual methods that the derived classes may provide */
@@ -357,20 +357,20 @@ public:
     /// Constructor
     CoinMessageHandler();
     /// Constructor to put to file pointer (won't be closed)
-    CoinMessageHandler(FILE *fp);
+    CoinMessageHandler(FILE* fp);
     /** Destructor */
     virtual ~CoinMessageHandler();
     /** The copy constructor */
-    CoinMessageHandler(const CoinMessageHandler&);
+    CoinMessageHandler(const CoinMessageHandler &);
     /** Assignment operator. */
-    CoinMessageHandler& operator=(const CoinMessageHandler&);
+    CoinMessageHandler & operator=(const CoinMessageHandler &);
     /// Clone
-    virtual CoinMessageHandler * clone() const;
+    virtual CoinMessageHandler* clone() const;
     //@}
     /**@name Get and set methods */
     //@{
     /// Get detail level of a message.
-    inline int detail(int messageNumber, const CoinMessages &normalMessage) const
+    inline int detail(int messageNumber, const CoinMessages & normalMessage) const
     {
         return normalMessage.message_[messageNumber]->detail();
     }
@@ -500,7 +500,7 @@ public:
         return source_;
     }
     /// Output buffer
-    inline const char * messageBuffer() const
+    inline const char* messageBuffer() const
     {
         return messageBuffer_;
     }
@@ -510,12 +510,12 @@ public:
         return highestNumber_;
     }
     /// Get current file pointer
-    inline FILE * filePointer() const
+    inline FILE* filePointer() const
     {
         return fp_;
     }
     /// Set new file pointer
-    inline void setFilePointer(FILE * fp)
+    inline void setFilePointer(FILE* fp)
     {
         fp_ = fp;
     }
@@ -545,8 +545,8 @@ public:
        enabled), and \c msg is appended. Only the operator<<(CoinMessageMarker)
        operator can be used with a message started with this call.
     */
-    CoinMessageHandler & message(int externalNumber,const char * header,
-                                 const char * msg,char severity);
+    CoinMessageHandler & message(int externalNumber, const char* header,
+                                 const char* msg, char severity);
     /*! \brief Process an integer parameter value.
 
       The default format code is `%d'.
@@ -575,7 +575,7 @@ public:
 
       The default format code is `%g'.
     */
-    CoinMessageHandler & operator<< (const std::string& stringvalue);
+    CoinMessageHandler & operator<< (const std::string & stringvalue);
     /*! \brief Process a char parameter value.
 
       The default format code is `%s'.
@@ -585,7 +585,7 @@ public:
 
       The default format code is `%c'.
     */
-    CoinMessageHandler & operator<< (const char *stringvalue);
+    CoinMessageHandler & operator<< (const char* stringvalue);
     /*! \brief Process a marker.
 
       The default format code is `%s'.
@@ -611,7 +611,7 @@ public:
 
       Intended for internal use. Side effects modify the format string.
     */
-    char * nextPerCent(char * start , const bool initial=false);
+    char* nextPerCent(char* start , const bool initial = false);
     /*! \brief Internal printing function.
 
       Makes it easier to split up print into clean, print and check severity
@@ -628,7 +628,7 @@ public:
       - 3 - Cut generators
     */
 #define COIN_NUM_LOG 4
-/// Maximum length of constructed message (characters)
+    /// Maximum length of constructed message (characters)
 #define COIN_MESSAGE_HANDLER_MAX_BUFFER_SIZE 1000
 protected:
     /**@name Protected member data */
@@ -649,11 +649,11 @@ protected:
     /// Internal number for use with enums
     int internalNumber_;
     /// Format string for message (remainder)
-    char * format_;
+    char* format_;
     /// Output buffer
     char messageBuffer_[COIN_MESSAGE_HANDLER_MAX_BUFFER_SIZE];
     /// Position in output buffer
-    char * messageOut_;
+    char* messageOut_;
     /// Current source of message
     std::string source_;
     /** 0 - normal,
@@ -665,7 +665,7 @@ protected:
     /// Highest message number (indicates any errors)
     int highestNumber_;
     /// File pointer
-    FILE * fp_;
+    FILE* fp_;
     /// Current format for floating point numbers
     char g_format_[8];
     /// Current number of significant digits for floating point numbers

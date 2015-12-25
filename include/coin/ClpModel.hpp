@@ -46,7 +46,7 @@ public:
      */
     //@{
     /// Default constructor
-    ClpModel (bool emptyMessages = false  );
+    ClpModel(bool emptyMessages = false);
 
     /** Copy constructor. May scale depending on mode
         -1 leave mode as is
@@ -59,12 +59,12 @@ public:
         row and column lists given.  The new order is given by list order and
         duplicates are allowed.  Name and integer information can be dropped
     */
-    ClpModel (const ClpModel * wholeModel,
-              int numberRows, const int * whichRows,
-              int numberColumns, const int * whichColumns,
-              bool dropNames = true, bool dropIntegers = true);
+    ClpModel(const ClpModel* wholeModel,
+             int numberRows, const int* whichRows,
+             int numberColumns, const int* whichColumns,
+             bool dropNames = true, bool dropIntegers = true);
     /// Destructor
-    ~ClpModel (  );
+    ~ClpModel();
     //@}
 
     /**@name Load model - loads some stuff and initializes others */
@@ -80,58 +80,58 @@ public:
       <li> <code>obj</code>: all variables have 0 objective coefficient
         </ul>
     */
-    void loadProblem (  const ClpMatrixBase& matrix,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
-    void loadProblem (  const CoinPackedMatrix& matrix,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
+    void loadProblem(const ClpMatrixBase & matrix,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
+    void loadProblem(const CoinPackedMatrix & matrix,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
 
     /** Just like the other loadProblem() method except that the matrix is
       given in a standard column major ordered format (without gaps). */
-    void loadProblem (  const int numcols, const int numrows,
-                        const CoinBigIndex* start, const int* index,
-                        const double* value,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
+    void loadProblem(const int numcols, const int numrows,
+                     const CoinBigIndex* start, const int* index,
+                     const double* value,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
     /** This loads a model from a coinModel object - returns number of errors.
 
         modelObject not const as may be changed as part of process
         If tryPlusMinusOne then will try adding as +-1 matrix
     */
-    int loadProblem (  CoinModel & modelObject, bool tryPlusMinusOne = false);
+    int loadProblem(CoinModel & modelObject, bool tryPlusMinusOne = false);
     /// This one is for after presolve to save memory
-    void loadProblem (  const int numcols, const int numrows,
-                        const CoinBigIndex* start, const int* index,
-                        const double* value, const int * length,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
+    void loadProblem(const int numcols, const int numrows,
+                     const CoinBigIndex* start, const int* index,
+                     const double* value, const int* length,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
     /** Load up quadratic objective.  This is stored as a CoinPackedMatrix */
     void loadQuadraticObjective(const int numberColumns,
-                                const CoinBigIndex * start,
-                                const int * column, const double * element);
-    void loadQuadraticObjective (  const CoinPackedMatrix& matrix);
+                                const CoinBigIndex* start,
+                                const int* column, const double* element);
+    void loadQuadraticObjective(const CoinPackedMatrix & matrix);
     /// Get rid of quadratic objective
     void deleteQuadraticObjective();
     /// This just loads up a row objective
-    void setRowObjective(const double * rowObjective);
+    void setRowObjective(const double* rowObjective);
     /// Read an mps file from the given filename
-    int readMps(const char *filename,
+    int readMps(const char* filename,
                 bool keepNames = false,
                 bool ignoreErrors = false);
     /// Read GMPL files from the given filenames
-    int readGMPL(const char *filename, const char * dataName,
+    int readGMPL(const char* filename, const char* dataName,
                  bool keepNames = false);
     /// Copy in integer informations
-    void copyInIntegerInformation(const char * information);
+    void copyInIntegerInformation(const char* information);
     /// Drop integer informations
     void deleteIntegerInformation();
     /** Set the index-th variable to be a continuous variable */
@@ -141,28 +141,28 @@ public:
     /** Return true if the index-th variable is an integer variable */
     bool isInteger(int index) const;
     /// Resizes rim part of model
-    void resize (int newNumberRows, int newNumberColumns);
+    void resize(int newNumberRows, int newNumberColumns);
     /// Deletes rows
-    void deleteRows(int number, const int * which);
+    void deleteRows(int number, const int* which);
     /// Add one row
-    void addRow(int numberInRow, const int * columns,
-                const double * elements, double rowLower = -COIN_DBL_MAX,
+    void addRow(int numberInRow, const int* columns,
+                const double* elements, double rowLower = -COIN_DBL_MAX,
                 double rowUpper = COIN_DBL_MAX);
     /// Add rows
-    void addRows(int number, const double * rowLower,
-                 const double * rowUpper,
-                 const CoinBigIndex * rowStarts, const int * columns,
-                 const double * elements);
+    void addRows(int number, const double* rowLower,
+                 const double* rowUpper,
+                 const CoinBigIndex* rowStarts, const int* columns,
+                 const double* elements);
     /// Add rows
-    void addRows(int number, const double * rowLower,
-                 const double * rowUpper,
-                 const CoinBigIndex * rowStarts, const int * rowLengths,
-                 const int * columns,
-                 const double * elements);
+    void addRows(int number, const double* rowLower,
+                 const double* rowUpper,
+                 const CoinBigIndex* rowStarts, const int* rowLengths,
+                 const int* columns,
+                 const double* elements);
 #ifndef CLP_NO_VECTOR
-    void addRows(int number, const double * rowLower,
-                 const double * rowUpper,
-                 const CoinPackedVectorBase * const * rows);
+    void addRows(int number, const double* rowLower,
+                 const double* rowUpper,
+                 const CoinPackedVectorBase* const* rows);
 #endif
     /** Add rows from a build object.
         If tryPlusMinusOne then will try adding as +-1 matrix
@@ -183,31 +183,31 @@ public:
                 bool checkDuplicates = true);
 
     /// Deletes columns
-    void deleteColumns(int number, const int * which);
+    void deleteColumns(int number, const int* which);
     /// Add one column
     void addColumn(int numberInColumn,
-                   const int * rows,
-                   const double * elements,
+                   const int* rows,
+                   const double* elements,
                    double columnLower = 0.0,
                    double  columnUpper = COIN_DBL_MAX,
                    double  objective = 0.0);
     /// Add columns
-    void addColumns(int number, const double * columnLower,
-                    const double * columnUpper,
-                    const double * objective,
-                    const CoinBigIndex * columnStarts, const int * rows,
-                    const double * elements);
-    void addColumns(int number, const double * columnLower,
-                    const double * columnUpper,
-                    const double * objective,
-                    const CoinBigIndex * columnStarts, const int * columnLengths,
-                    const int * rows,
-                    const double * elements);
+    void addColumns(int number, const double* columnLower,
+                    const double* columnUpper,
+                    const double* objective,
+                    const CoinBigIndex* columnStarts, const int* rows,
+                    const double* elements);
+    void addColumns(int number, const double* columnLower,
+                    const double* columnUpper,
+                    const double* objective,
+                    const CoinBigIndex* columnStarts, const int* columnLengths,
+                    const int* rows,
+                    const double* elements);
 #ifndef CLP_NO_VECTOR
-    void addColumns(int number, const double * columnLower,
-                    const double * columnUpper,
-                    const double * objective,
-                    const CoinPackedVectorBase * const * columns);
+    void addColumns(int number, const double* columnLower,
+                    const double* columnUpper,
+                    const double* objective,
+                    const CoinPackedVectorBase* const* columns);
 #endif
     /** Add columns from a build object
         If tryPlusMinusOne then will try adding as +-1 matrix
@@ -232,15 +232,15 @@ public:
         matrix_->modifyCoefficient(row, column, newElement, keepZero);
     }
     /** Change row lower bounds */
-    void chgRowLower(const double * rowLower);
+    void chgRowLower(const double* rowLower);
     /** Change row upper bounds */
-    void chgRowUpper(const double * rowUpper);
+    void chgRowUpper(const double* rowUpper);
     /** Change column lower bounds */
-    void chgColumnLower(const double * columnLower);
+    void chgColumnLower(const double* columnLower);
     /** Change column upper bounds */
-    void chgColumnUpper(const double * columnUpper);
+    void chgColumnUpper(const double* columnUpper);
     /** Change objective coefficients */
-    void chgObjCoefficients(const double * objIn);
+    void chgObjCoefficients(const double* objIn);
     /** Borrow model.  This is so we don't have to copy large amounts
         of data around.  It assumes a derived class wants to overwrite
         an empty model with a real one - while it does an algorithm */
@@ -260,7 +260,7 @@ public:
     */
     int cleanMatrix(double threshold = 1.0e-20);
     /// Copy contents - resizing if necessary - otherwise re-use memory
-    void copy(const ClpMatrixBase * from, ClpMatrixBase * & to);
+    void copy(const ClpMatrixBase* from, ClpMatrixBase* & to);
 #ifndef CLP_NO_STD
     /// Drops names - makes lengthnames 0 and names empty
     void dropNames();
@@ -272,9 +272,9 @@ public:
     /// Copies in Column names - modifies names first .. last-1
     void copyColumnNames(const std::vector<std::string> & columnNames, int first, int last);
     /// Copies in Row names - modifies names first .. last-1
-    void copyRowNames(const char * const * rowNames, int first, int last);
+    void copyRowNames(const char* const* rowNames, int first, int last);
     /// Copies in Column names - modifies names first .. last-1
-    void copyColumnNames(const char * const * columnNames, int first, int last);
+    void copyColumnNames(const char* const* columnNames, int first, int last);
     /// Set name of row
     void setRowName(int rowIndex, std::string & name) ;
     /// Set name of col
@@ -287,10 +287,10 @@ public:
          1 in network with signs swapped
         Returns number of network rows
     */
-    int findNetwork(char * rotate, double fractionNeeded = 0.75);
+    int findNetwork(char* rotate, double fractionNeeded = 0.75);
     /** This creates a coinModel object
     */
-    CoinModel * createCoinModel() const;
+    CoinModel* createCoinModel() const;
 
     /** Write the problem in MPS format to the specified file.
 
@@ -304,7 +304,7 @@ public:
 
     Returns non-zero on I/O error
     */
-    int writeMps(const char *filename,
+    int writeMps(const char* filename,
                  int formatType = 0, int numberAcross = 2,
                  double objSense = 0.0) const ;
     //@}
@@ -333,13 +333,13 @@ public:
     {
         return dblParam_[ClpPrimalTolerance];
     }
-    void setPrimalTolerance( double value) ;
+    void setPrimalTolerance(double value) ;
     /// Dual tolerance to use
     inline double dualTolerance() const
     {
         return dblParam_[ClpDualTolerance];
     }
-    void setDualTolerance( double value) ;
+    void setDualTolerance(double value) ;
     /// Primal objective limit
     inline double primalObjectiveLimit() const
     {
@@ -489,42 +489,42 @@ public:
     }
     void setOptimizationDirection(double value);
     /// Primal row solution
-    inline double * primalRowSolution() const
+    inline double* primalRowSolution() const
     {
         return rowActivity_;
     }
-    inline const double * getRowActivity() const
+    inline const double* getRowActivity() const
     {
         return rowActivity_;
     }
     /// Primal column solution
-    inline double * primalColumnSolution() const
+    inline double* primalColumnSolution() const
     {
         return columnActivity_;
     }
-    inline const double * getColSolution() const
+    inline const double* getColSolution() const
     {
         return columnActivity_;
     }
-    inline void setColSolution(const double * input)
+    inline void setColSolution(const double* input)
     {
         memcpy(columnActivity_, input, numberColumns_ * sizeof(double));
     }
     /// Dual row solution
-    inline double * dualRowSolution() const
+    inline double* dualRowSolution() const
     {
         return dual_;
     }
-    inline const double * getRowPrice() const
+    inline const double* getRowPrice() const
     {
         return dual_;
     }
     /// Reduced costs
-    inline double * dualColumnSolution() const
+    inline double* dualColumnSolution() const
     {
         return reducedCost_;
     }
-    inline const double * getReducedCost() const
+    inline const double* getReducedCost() const
     {
         return reducedCost_;
     }
@@ -550,24 +550,24 @@ public:
     /**@name Changing bounds on variables and constraints */
     //@{
     /** Set an objective function coefficient */
-    void setObjectiveCoefficient( int elementIndex, double elementValue );
+    void setObjectiveCoefficient(int elementIndex, double elementValue);
     /** Set an objective function coefficient */
-    inline void setObjCoeff( int elementIndex, double elementValue )
+    inline void setObjCoeff(int elementIndex, double elementValue)
     {
-        setObjectiveCoefficient( elementIndex, elementValue);
+        setObjectiveCoefficient(elementIndex, elementValue);
     }
 
     /** Set a single column lower bound<br>
         Use -DBL_MAX for -infinity. */
-    void setColumnLower( int elementIndex, double elementValue );
+    void setColumnLower(int elementIndex, double elementValue);
 
     /** Set a single column upper bound<br>
         Use DBL_MAX for infinity. */
-    void setColumnUpper( int elementIndex, double elementValue );
+    void setColumnUpper(int elementIndex, double elementValue);
 
     /** Set a single column lower and upper bound */
-    void setColumnBounds( int elementIndex,
-                          double lower, double upper );
+    void setColumnBounds(int elementIndex,
+                         double lower, double upper);
 
     /** Set the bounds on a number of columns simultaneously<br>
         The default implementation just invokes setColLower() and
@@ -583,20 +583,20 @@ public:
 
     /** Set a single column lower bound<br>
         Use -DBL_MAX for -infinity. */
-    inline void setColLower( int elementIndex, double elementValue )
+    inline void setColLower(int elementIndex, double elementValue)
     {
         setColumnLower(elementIndex, elementValue);
     }
     /** Set a single column upper bound<br>
         Use DBL_MAX for infinity. */
-    inline void setColUpper( int elementIndex, double elementValue )
+    inline void setColUpper(int elementIndex, double elementValue)
     {
         setColumnUpper(elementIndex, elementValue);
     }
 
     /** Set a single column lower and upper bound */
-    inline void setColBounds( int elementIndex,
-                              double lower, double upper )
+    inline void setColBounds(int elementIndex,
+                             double lower, double upper)
     {
         setColumnBounds(elementIndex, lower, upper);
     }
@@ -616,15 +616,15 @@ public:
 
     /** Set a single row lower bound<br>
         Use -DBL_MAX for -infinity. */
-    void setRowLower( int elementIndex, double elementValue );
+    void setRowLower(int elementIndex, double elementValue);
 
     /** Set a single row upper bound<br>
         Use DBL_MAX for infinity. */
-    void setRowUpper( int elementIndex, double elementValue ) ;
+    void setRowUpper(int elementIndex, double elementValue) ;
 
     /** Set a single row lower and upper bound */
-    void setRowBounds( int elementIndex,
-                       double lower, double upper ) ;
+    void setRowBounds(int elementIndex,
+                      double lower, double upper) ;
 
     /** Set the bounds on a number of rows simultaneously<br>
         @param indexFirst,indexLast pointers to the beginning and after the
@@ -638,40 +638,40 @@ public:
 
     //@}
     /// Scaling
-    inline const double * rowScale() const
+    inline const double* rowScale() const
     {
         return rowScale_;
     }
-    inline const double * columnScale() const
+    inline const double* columnScale() const
     {
         return columnScale_;
     }
-    inline const double * inverseRowScale() const
+    inline const double* inverseRowScale() const
     {
         return inverseRowScale_;
     }
-    inline const double * inverseColumnScale() const
+    inline const double* inverseColumnScale() const
     {
         return inverseColumnScale_;
     }
-    inline double * mutableRowScale() const
+    inline double* mutableRowScale() const
     {
         return rowScale_;
     }
-    inline double * mutableColumnScale() const
+    inline double* mutableColumnScale() const
     {
         return columnScale_;
     }
-    inline double * mutableInverseRowScale() const
+    inline double* mutableInverseRowScale() const
     {
         return inverseRowScale_;
     }
-    inline double * mutableInverseColumnScale() const
+    inline double* mutableInverseColumnScale() const
     {
         return inverseColumnScale_;
     }
-    void setRowScale(double * scale) ;
-    void setColumnScale(double * scale);
+    void setRowScale(double* scale) ;
+    void setColumnScale(double* scale);
     /// Scaling of objective
     inline double objectiveScale() const
     {
@@ -701,9 +701,9 @@ public:
         return scalingFlag_;
     }
     /// Objective
-    inline double * objective() const
+    inline double* objective() const
     {
-        if (objective_)
+        if(objective_)
         {
             double offset;
             return objective_->gradient(NULL, NULL, offset, false);
@@ -713,10 +713,10 @@ public:
             return NULL;
         }
     }
-    inline double * objective(const double * solution, double & offset, bool refresh = true) const
+    inline double* objective(const double* solution, double & offset, bool refresh = true) const
     {
         offset = 0.0;
-        if (objective_)
+        if(objective_)
         {
             return objective_->gradient(NULL, solution, offset, refresh);
         }
@@ -725,9 +725,9 @@ public:
             return NULL;
         }
     }
-    inline const double * getObjCoefficients() const
+    inline const double* getObjCoefficients() const
     {
-        if (objective_)
+        if(objective_)
         {
             double offset;
             return objective_->gradient(NULL, NULL, offset, false);
@@ -738,36 +738,36 @@ public:
         }
     }
     /// Row Objective
-    inline double * rowObjective() const
+    inline double* rowObjective() const
     {
         return rowObjective_;
     }
-    inline const double * getRowObjCoefficients() const
+    inline const double* getRowObjCoefficients() const
     {
         return rowObjective_;
     }
     /// Column Lower
-    inline double * columnLower() const
+    inline double* columnLower() const
     {
         return columnLower_;
     }
-    inline const double * getColLower() const
+    inline const double* getColLower() const
     {
         return columnLower_;
     }
     /// Column Upper
-    inline double * columnUpper() const
+    inline double* columnUpper() const
     {
         return columnUpper_;
     }
-    inline const double * getColUpper() const
+    inline const double* getColUpper() const
     {
         return columnUpper_;
     }
     /// Matrix (if not ClpPackedmatrix be careful about memory leak
-    inline CoinPackedMatrix * matrix() const
+    inline CoinPackedMatrix* matrix() const
     {
-        if ( matrix_ == NULL ) return NULL;
+        if(matrix_ == NULL) return NULL;
         else return matrix_->getPackedMatrix();
     }
     /// Number of elements in matrix
@@ -786,24 +786,24 @@ public:
         smallElement_ = value;
     }
     /// Row Matrix
-    inline ClpMatrixBase * rowCopy() const
+    inline ClpMatrixBase* rowCopy() const
     {
         return rowCopy_;
     }
     /// Set new row matrix
-    void setNewRowCopy(ClpMatrixBase * newCopy);
+    void setNewRowCopy(ClpMatrixBase* newCopy);
     /// Clp Matrix
-    inline ClpMatrixBase * clpMatrix() const
+    inline ClpMatrixBase* clpMatrix() const
     {
         return matrix_;
     }
     /// Scaled ClpPackedMatrix
-    inline ClpPackedMatrix * clpScaledMatrix() const
+    inline ClpPackedMatrix* clpScaledMatrix() const
     {
         return scaledMatrix_;
     }
     /// Sets pointer to scaled ClpPackedMatrix
-    inline void setClpScaledMatrix(ClpPackedMatrix * scaledMatrix)
+    inline void setClpScaledMatrix(ClpPackedMatrix* scaledMatrix)
     {
         delete scaledMatrix_;
         scaledMatrix_ = scaledMatrix;
@@ -813,13 +813,13 @@ public:
         So up to user to delete current.  This was used where
         matrices were being rotated. ClpModel takes ownership.
     */
-    void replaceMatrix(ClpMatrixBase * matrix, bool deleteCurrent = false);
+    void replaceMatrix(ClpMatrixBase* matrix, bool deleteCurrent = false);
     /** Replace Clp Matrix (current is not deleted unless told to
         and new is used) So up to user to delete current.  This was used where
         matrices were being rotated.  This version changes CoinPackedMatrix
         to ClpPackedMatrix.  ClpModel takes ownership.
     */
-    inline void replaceMatrix(CoinPackedMatrix * newmatrix,
+    inline void replaceMatrix(CoinPackedMatrix* newmatrix,
                               bool deleteCurrent = false)
     {
         replaceMatrix(new ClpPackedMatrix(newmatrix), deleteCurrent);
@@ -838,24 +838,24 @@ public:
         return objectiveValue_ * optimizationDirection_ - dblParam_[ClpObjOffset];
     }
     /// Integer information
-    inline char * integerInformation() const
+    inline char* integerInformation() const
     {
         return integerType_;
     }
     /** Infeasibility/unbounded ray (NULL returned if none/wrong)
         Up to user to use delete [] on these arrays.  */
-    double * infeasibilityRay() const;
-    double * unboundedRay() const;
+    double* infeasibilityRay() const;
+    double* unboundedRay() const;
     /// just test if infeasibility or unbounded Ray exists
     inline bool rayExists() const
     {
-        return (ray_!=NULL);
+        return (ray_ != NULL);
     }
     /// just delete ray if exists
     inline void deleteRay()
     {
         delete [] ray_;
-        ray_=NULL;
+        ray_ = NULL;
     }
     /// See if status (i.e. basis) array exists (partly for OsiClp)
     inline bool statusExists() const
@@ -863,31 +863,31 @@ public:
         return (status_ != NULL);
     }
     /// Return address of status (i.e. basis) array (char[numberRows+numberColumns])
-    inline unsigned char *  statusArray() const
+    inline unsigned char*   statusArray() const
     {
         return status_;
     }
     /** Return copy of status (i.e. basis) array (char[numberRows+numberColumns]),
         use delete [] */
-    unsigned char *  statusCopy() const;
+    unsigned char*   statusCopy() const;
     /// Copy in status (basis) vector
-    void copyinStatus(const unsigned char * statusArray);
+    void copyinStatus(const unsigned char* statusArray);
 
     /// User pointer for whatever reason
-    inline void setUserPointer (void * pointer)
+    inline void setUserPointer(void* pointer)
     {
         userPointer_ = pointer;
     }
-    inline void * getUserPointer () const
+    inline void* getUserPointer() const
     {
         return userPointer_;
     }
     /// Trusted user pointer
-    inline void setTrustedUserPointer (ClpTrustedData * pointer)
+    inline void setTrustedUserPointer(ClpTrustedData* pointer)
     {
         trustedUserPointer_ = pointer;
     }
-    inline ClpTrustedData * getTrustedUserPointer () const
+    inline ClpTrustedData* getTrustedUserPointer() const
     {
         return trustedUserPointer_;
     }
@@ -913,12 +913,12 @@ public:
     /**@name Message handling */
     //@{
     /// Pass in Message handler (not deleted at end)
-    void passInMessageHandler(CoinMessageHandler * handler);
+    void passInMessageHandler(CoinMessageHandler* handler);
     /// Pass in Message handler (not deleted at end) and return current
-    CoinMessageHandler * pushMessageHandler(CoinMessageHandler * handler,
-                                            bool & oldDefault);
+    CoinMessageHandler* pushMessageHandler(CoinMessageHandler* handler,
+                                           bool & oldDefault);
     /// back to previous message handler
-    void popMessageHandler(CoinMessageHandler * oldHandler, bool oldDefault);
+    void popMessageHandler(CoinMessageHandler* oldHandler, bool oldDefault);
     /// Set language
     void newLanguage(CoinMessages::Language language);
     inline void setLanguage(CoinMessages::Language language)
@@ -926,7 +926,7 @@ public:
         newLanguage(language);
     }
     /// Return handler
-    inline CoinMessageHandler * messageHandler() const
+    inline CoinMessageHandler* messageHandler() const
     {
         return handler_;
     }
@@ -936,7 +936,7 @@ public:
         return messages_;
     }
     /// Return pointer to messages
-    inline CoinMessages * messagesPointer()
+    inline CoinMessages* messagesPointer()
     {
         return & messages_;
     }
@@ -946,7 +946,7 @@ public:
         return coinMessages_;
     }
     /// Return pointer to Coin messages
-    inline CoinMessages * coinMessagesPointer()
+    inline CoinMessages* coinMessagesPointer()
     {
         return & coinMessages_;
     }
@@ -972,14 +972,14 @@ public:
         return defaultHandler_;
     }
     /// Pass in Event handler (cloned and deleted at end)
-    void passInEventHandler(const ClpEventHandler * eventHandler);
+    void passInEventHandler(const ClpEventHandler* eventHandler);
     /// Event handler
-    inline ClpEventHandler * eventHandler() const
+    inline ClpEventHandler* eventHandler() const
     {
         return eventHandler_;
     }
     /// Thread specific random number generator
-    inline CoinThreadRandom * randomNumberGenerator()
+    inline CoinThreadRandom* randomNumberGenerator()
     {
         return &randomNumberGenerator_;
     }
@@ -1005,22 +1005,22 @@ public:
         lengthNames_ = value;
     }
     /// Row names
-    inline const std::vector<std::string> * rowNames() const
+    inline const std::vector<std::string>* rowNames() const
     {
         return &rowNames_;
     }
-    inline const std::string& rowName(int iRow) const
+    inline const std::string & rowName(int iRow) const
     {
         return rowNames_[iRow];
     }
     /// Return name or Rnnnnnnn
     std::string getRowName(int iRow) const;
     /// Column names
-    inline const std::vector<std::string> * columnNames() const
+    inline const std::vector<std::string>* columnNames() const
     {
         return &columnNames_;
     }
-    inline const std::string& columnName(int iColumn) const
+    inline const std::string & columnName(int iColumn) const
     {
         return columnNames_[iColumn];
     }
@@ -1028,18 +1028,18 @@ public:
     std::string getColumnName(int iColumn) const;
 #endif
     /// Objective methods
-    inline ClpObjective * objectiveAsObject() const
+    inline ClpObjective* objectiveAsObject() const
     {
         return objective_;
     }
-    void setObjective(ClpObjective * objective);
-    inline void setObjectivePointer(ClpObjective * newobjective)
+    void setObjective(ClpObjective* objective);
+    inline void setObjectivePointer(ClpObjective* newobjective)
     {
         objective_ = newobjective;
     }
     /** Solve a problem with no elements - return status and
         dual and primal infeasibilites */
-    int emptyProblem(int * infeasNumber = NULL, double * infeasSum = NULL, bool printMessage = true);
+    int emptyProblem(int* infeasNumber = NULL, double* infeasSum = NULL, bool printMessage = true);
 
     //@}
 
@@ -1052,12 +1052,12 @@ public:
         @pre <code>x</code> must be of size <code>numColumns()</code>
         @pre <code>y</code> must be of size <code>numRows()</code> */
     void times(double scalar,
-               const double * x, double * y) const;
+               const double* x, double* y) const;
     /** Return <code>y + x * scalar * A</code> in <code>y</code>.
         @pre <code>x</code> must be of size <code>numRows()</code>
         @pre <code>y</code> must be of size <code>numColumns()</code> */
     void transposeTimes(double scalar,
-                        const double * x, double * y) const ;
+                        const double* x, double* y) const ;
     //@}
 
 
@@ -1088,9 +1088,9 @@ public:
     bool setStrParam(ClpStrParam key, const std::string & value);
 #endif
     // Get an integer parameter
-    inline bool getIntParam(ClpIntParam key, int& value) const
+    inline bool getIntParam(ClpIntParam key, int & value) const
     {
-        if (key < ClpLastIntParam)
+        if(key < ClpLastIntParam)
         {
             value = intParam_[key];
             return true;
@@ -1101,9 +1101,9 @@ public:
         }
     }
     // Get an double parameter
-    inline bool getDblParam(ClpDblParam key, double& value) const
+    inline bool getDblParam(ClpDblParam key, double & value) const
     {
-        if (key < ClpLastDblParam)
+        if(key < ClpLastDblParam)
         {
             value = dblParam_[key];
             return true;
@@ -1115,9 +1115,9 @@ public:
     }
 #ifndef CLP_NO_STD
     // Get a string parameter
-    inline bool getStrParam(ClpStrParam key, std::string& value) const
+    inline bool getStrParam(ClpStrParam key, std::string & value) const
     {
-        if (key < ClpLastStrParam)
+        if(key < ClpLastStrParam)
         {
             value = strParam_[key];
             return true;
@@ -1129,7 +1129,7 @@ public:
     }
 #endif
     /// Create C++ lines to get to current state
-    void generateCpp( FILE * fp);
+    void generateCpp(FILE* fp);
     /** For advanced options
         1 - Don't keep changing infeasibility weight
         2 - Keep nonLinearCost round solves
@@ -1184,13 +1184,13 @@ protected:
         If -1 leaves as much as possible */
     void gutsOfCopy(const ClpModel & rhs, int trueCopy = 1);
     /// gets lower and upper bounds on rows
-    void getRowBound(int iRow, double& lower, double& upper) const;
+    void getRowBound(int iRow, double & lower, double & upper) const;
     /// puts in format I like - 4 array matrix - may make row copy
-    void gutsOfLoadModel ( int numberRows, int numberColumns,
-                           const double* collb, const double* colub,
-                           const double* obj,
-                           const double* rowlb, const double* rowub,
-                           const double * rowObjective = NULL);
+    void gutsOfLoadModel(int numberRows, int numberColumns,
+                         const double* collb, const double* colub,
+                         const double* obj,
+                         const double* rowlb, const double* rowub,
+                         const double* rowObjective = NULL);
     /// Does much of scaling
     void gutsOfScaling();
     /// Objective value - always minimize
@@ -1208,17 +1208,17 @@ protected:
     /// Stop using maximumRows_ and Columns_
     void stopPermanentArrays();
     /// Create row names as char **
-    const char * const * rowNamesAsChar() const;
+    const char* const* rowNamesAsChar() const;
     /// Create column names as char **
-    const char * const * columnNamesAsChar() const;
+    const char* const* columnNamesAsChar() const;
     /// Delete char * version of names
-    void deleteNamesAsChar(const char * const * names, int number) const;
+    void deleteNamesAsChar(const char* const* names, int number) const;
     /// On stopped - sets secondary status
     void onStopped();
     //@}
 
 
-////////////////// data //////////////////
+    ////////////////// data //////////////////
 protected:
 
     /**@name data */
@@ -1240,41 +1240,41 @@ protected:
     /// Number of columns
     int numberColumns_;
     /// Row activities
-    double * rowActivity_;
+    double* rowActivity_;
     /// Column activities
-    double * columnActivity_;
+    double* columnActivity_;
     /// Duals
-    double * dual_;
+    double* dual_;
     /// Reduced costs
-    double * reducedCost_;
+    double* reducedCost_;
     /// Row lower
     double* rowLower_;
     /// Row upper
     double* rowUpper_;
     /// Objective
-    ClpObjective * objective_;
+    ClpObjective* objective_;
     /// Row Objective (? sign)  - may be NULL
-    double * rowObjective_;
+    double* rowObjective_;
     /// Column Lower
-    double * columnLower_;
+    double* columnLower_;
     /// Column Upper
-    double * columnUpper_;
+    double* columnUpper_;
     /// Packed matrix
-    ClpMatrixBase * matrix_;
+    ClpMatrixBase* matrix_;
     /// Row copy if wanted
-    ClpMatrixBase * rowCopy_;
+    ClpMatrixBase* rowCopy_;
     /// Scaled packed matrix
-    ClpPackedMatrix * scaledMatrix_;
+    ClpPackedMatrix* scaledMatrix_;
     /// Infeasible/unbounded ray
-    double * ray_;
+    double* ray_;
     /// Row scale factors for matrix
-    double * rowScale_;
+    double* rowScale_;
     /// Column scale factors
-    double * columnScale_;
+    double* columnScale_;
     /// Inverse row scale factors for matrix (end of rowScale_)
-    double * inverseRowScale_;
+    double* inverseRowScale_;
     /// Inverse column scale factors for matrix (end of columnScale_)
-    double * inverseColumnScale_;
+    double* inverseColumnScale_;
     /** Scale flag, 0 none, 1 equilibrium, 2 geometric, 3, auto, 4 dynamic,
         5 geometric on rows */
     int scalingFlag_;
@@ -1285,13 +1285,13 @@ protected:
         bottom 3 bits (i.e. 0-7 numeric) for classic status).  This
         is number of columns + number of rows long (in that order).
     */
-    unsigned char * status_;
+    unsigned char* status_;
     /// Integer information
-    char * integerType_;
+    char* integerType_;
     /// User pointer for whatever reason
-    void * userPointer_;
+    void* userPointer_;
     /// Trusted user pointer e.g. for heuristics
-    ClpTrustedData * trustedUserPointer_;
+    ClpTrustedData* trustedUserPointer_;
     /// Array of integer parameters
     int intParam_[ClpLastIntParam];
     /// Number of iterations
@@ -1328,13 +1328,13 @@ protected:
     */
     unsigned int specialOptions_;
     /// Message handler
-    CoinMessageHandler * handler_;
+    CoinMessageHandler* handler_;
     /// Flag to say if default handler (so delete)
     bool defaultHandler_;
     /// Thread specific random number generator
     CoinThreadRandom randomNumberGenerator_;
     /// Event handler
-    ClpEventHandler * eventHandler_;
+    ClpEventHandler* eventHandler_;
 #ifndef CLP_NO_STD
     /// Row names
     std::vector<std::string> rowNames_;
@@ -1358,9 +1358,9 @@ protected:
     /// Base row copy
     CoinPackedMatrix baseRowCopy_;
     /// Saved row scale factors for matrix
-    double * savedRowScale_;
+    double* savedRowScale_;
     /// Saved column scale factors
-    double * savedColumnScale_;
+    double* savedColumnScale_;
 #ifndef CLP_NO_STD
     /// Array of string parameters
     std::string strParam_[ClpLastStrParam];
@@ -1377,18 +1377,18 @@ public:
      */
     //@{
     /// Default constructor
-    ClpDataSave (  );
+    ClpDataSave();
 
     /// Copy constructor.
     ClpDataSave(const ClpDataSave &);
     /// Assignment operator. This copies the data
     ClpDataSave & operator=(const ClpDataSave & rhs);
     /// Destructor
-    ~ClpDataSave (  );
+    ~ClpDataSave();
 
     //@}
 
-////////////////// data //////////////////
+    ////////////////// data //////////////////
 public:
 
     /**@name data - with same names as in other classes*/

@@ -47,10 +47,10 @@ public:
 
         When here - guaranteed optimal
     */
-    void dualRanging(int numberCheck, const int * which,
-                     double * costIncrease, int * sequenceIncrease,
-                     double * costDecrease, int * sequenceDecrease,
-                     double * valueIncrease = NULL, double * valueDecrease = NULL);
+    void dualRanging(int numberCheck, const int* which,
+                     double* costIncrease, int* sequenceIncrease,
+                     double* costDecrease, int* sequenceDecrease,
+                     double* valueIncrease = NULL, double* valueDecrease = NULL);
     /** Primal ranging.
         This computes increase/decrease in value for each given variable and corresponding
         sequence numbers which would change basis.  Sequence numbers are 0..numberColumns
@@ -65,9 +65,9 @@ public:
 
         When here - guaranteed optimal
     */
-    void primalRanging(int numberCheck, const int * which,
-                       double * valueIncrease, int * sequenceIncrease,
-                       double * valueDecrease, int * sequenceDecrease);
+    void primalRanging(int numberCheck, const int* which,
+                       double* valueIncrease, int* sequenceIncrease,
+                       double* valueDecrease, int* sequenceDecrease);
     /** Parametrics
         This is an initial slow version.
         The code uses current bounds + theta * change (if change array not NULL)
@@ -82,13 +82,13 @@ public:
         On exit endingTheta is maximum reached (can be used for next startingTheta)
     */
     int parametrics(double startingTheta, double & endingTheta, double reportIncrement,
-                    const double * changeLowerBound, const double * changeUpperBound,
-                    const double * changeLowerRhs, const double * changeUpperRhs,
-                    const double * changeObjective);
+                    const double* changeLowerBound, const double* changeUpperBound,
+                    const double* changeLowerRhs, const double* changeUpperRhs,
+                    const double* changeObjective);
     /** Version of parametrics which reads from file
     See CbcClpParam.cpp for details of format
     Returns -2 if unable to open file */
-    int parametrics(const char * dataFile);
+    int parametrics(const char* dataFile);
 
 private:
     /** Parametrics - inner loop
@@ -100,8 +100,8 @@ private:
         if event handler exists it may do more
     */
     int parametricsLoop(double startingTheta, double & endingTheta, double reportIncrement,
-                        const double * changeLower, const double * changeUpper,
-                        const double * changeObjective, ClpDataSave & data,
+                        const double* changeLower, const double* changeUpper,
+                        const double* changeObjective, ClpDataSave & data,
                         bool canTryQuick);
     /**  Refactorizes if necessary
          Checks if finished.  Updates status.
@@ -122,29 +122,29 @@ private:
         +3 max iterations
      */
     int whileIterating(double startingTheta, double & endingTheta, double reportIncrement,
-                       const double * changeLower, const double * changeUpper,
-                       const double * changeObjective);
+                       const double* changeLower, const double* changeUpper,
+                       const double* changeObjective);
     /** Computes next theta and says if objective or bounds (0= bounds, 1 objective, -1 none).
         theta is in theta_.
         type 1 bounds, 2 objective, 3 both.
     */
-    int nextTheta(int type, double maxTheta, double * primalChange, double * dualChange,
-                  const double * changeLower, const double * changeUpper,
-                  const double * changeObjective);
+    int nextTheta(int type, double maxTheta, double* primalChange, double* dualChange,
+                  const double* changeLower, const double* changeUpper,
+                  const double* changeObjective);
     /**
         Row array has row part of pivot row
         Column array has column part.
         This is used in dual ranging
     */
-    void checkDualRatios(CoinIndexedVector * rowArray,
-                         CoinIndexedVector * columnArray,
+    void checkDualRatios(CoinIndexedVector* rowArray,
+                         CoinIndexedVector* columnArray,
                          double & costIncrease, int & sequenceIncrease, double & alphaIncrease,
                          double & costDecrease, int & sequenceDecrease, double & alphaDecrease);
     /**
         Row array has pivot column
         This is used in primal ranging
     */
-    void checkPrimalRatios(CoinIndexedVector * rowArray,
+    void checkPrimalRatios(CoinIndexedVector* rowArray,
                            int direction);
     /// Returns new value of whichOther when whichIn enters basis
     double primalRanging1(int whichIn, int whichOther);
@@ -164,49 +164,49 @@ public:
 
     Returns non-zero on I/O error
     */
-    int writeBasis(const char *filename,
+    int writeBasis(const char* filename,
                    bool writeValues = false,
                    int formatType = 0) const;
     /// Read a basis from the given filename
-    int readBasis(const char *filename);
+    int readBasis(const char* filename);
     /** Creates dual of a problem if looks plausible
         (defaults will always create model)
         fractionRowRanges is fraction of rows allowed to have ranges
         fractionColumnRanges is fraction of columns allowed to have ranges
     */
-    ClpSimplex * dualOfModel(double fractionRowRanges = 1.0, double fractionColumnRanges = 1.0) const;
+    ClpSimplex* dualOfModel(double fractionRowRanges = 1.0, double fractionColumnRanges = 1.0) const;
     /** Restores solution from dualized problem
         non-zero return code indicates minor problems
     */
-    int restoreFromDual(const ClpSimplex * dualProblem);
+    int restoreFromDual(const ClpSimplex* dualProblem);
     /** Does very cursory presolve.
         rhs is numberRows, whichRows is 3*numberRows and whichColumns is 2*numberColumns.
     */
-    ClpSimplex * crunch(double * rhs, int * whichRows, int * whichColumns,
-                        int & nBound, bool moreBounds = false, bool tightenBounds = false);
+    ClpSimplex* crunch(double* rhs, int* whichRows, int* whichColumns,
+                       int & nBound, bool moreBounds = false, bool tightenBounds = false);
     /** After very cursory presolve.
         rhs is numberRows, whichRows is 3*numberRows and whichColumns is 2*numberColumns.
     */
     void afterCrunch(const ClpSimplex & small,
-                     const int * whichRows, const int * whichColumns,
+                     const int* whichRows, const int* whichColumns,
                      int nBound);
     /** Returns gub version of model or NULL
     whichRows has to be numberRows
     whichColumns has to be numberRows+numberColumns */
-    ClpSimplex * gubVersion(int * whichRows, int * whichColumns,
-                            int neededGub,
-                            int factorizationFrequency=50);
+    ClpSimplex* gubVersion(int* whichRows, int* whichColumns,
+                           int neededGub,
+                           int factorizationFrequency = 50);
     /// Sets basis from original
-    void setGubBasis(ClpSimplex &original,const int * whichRows,
-                     const int * whichColumns);
+    void setGubBasis(ClpSimplex & original, const int* whichRows,
+                     const int* whichColumns);
     /// Restores basis to original
-    void getGubBasis(ClpSimplex &original,const int * whichRows,
-                     const int * whichColumns) const;
+    void getGubBasis(ClpSimplex & original, const int* whichRows,
+                     const int* whichColumns) const;
     /// Quick try at cleaning up duals if postsolve gets wrong
     void cleanupAfterPostsolve();
     /** Tightens integer bounds - returns number tightened or -1 if infeasible
     */
-    int tightenIntegerBounds(double * rhsSpace);
+    int tightenIntegerBounds(double* rhsSpace);
     /** Expands out all possible combinations for a knapsack
         If buildObj NULL then just computes space needed - returns number elements
         On entry numberOutput is maximum allowed, on exit it is number needed or
@@ -218,8 +218,8 @@ public:
         in expanded knapsack.  Values in buildRow and buildElement;
     */
     int expandKnapsack(int knapsackRow, int & numberOutput,
-                       double * buildObj, CoinBigIndex * buildStart,
-                       int * buildRow, double * buildElement, int reConstruct = -1) const;
+                       double* buildObj, CoinBigIndex* buildStart,
+                       int* buildRow, double* buildElement, int reConstruct = -1) const;
     //@}
 };
 #endif

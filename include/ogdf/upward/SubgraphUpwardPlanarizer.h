@@ -61,80 +61,80 @@ namespace ogdf
 {
 
 
-class OGDF_EXPORT SubgraphUpwardPlanarizer : public UpwardPlanarizerModule
-{
-
-public:
-    //! Creates an instance of subgraph planarizer.
-    SubgraphUpwardPlanarizer()
+    class OGDF_EXPORT SubgraphUpwardPlanarizer : public UpwardPlanarizerModule
     {
-        m_runs = 1;
-        //set default module
-        m_subgraph.set(new FUPSSimple());
-        m_inserter.set(new FixedEmbeddingUpwardEdgeInserter());
-        m_acyclicMod.set(new GreedyCycleRemoval());
-    }
 
-    //! Sets the module option for the computation of the feasible upward planar subgraph.
-    void setSubgraph(FUPSModule *FUPS)
-    {
-        m_subgraph.set(FUPS);
-    }
+    public:
+        //! Creates an instance of subgraph planarizer.
+        SubgraphUpwardPlanarizer()
+        {
+            m_runs = 1;
+            //set default module
+            m_subgraph.set(new FUPSSimple());
+            m_inserter.set(new FixedEmbeddingUpwardEdgeInserter());
+            m_acyclicMod.set(new GreedyCycleRemoval());
+        }
 
-    //! Sets the module option for the edge insertion module.
-    void setInserter(UpwardEdgeInserterModule *pInserter)
-    {
-        m_inserter.set(pInserter);
-    }
+        //! Sets the module option for the computation of the feasible upward planar subgraph.
+        void setSubgraph(FUPSModule* FUPS)
+        {
+            m_subgraph.set(FUPS);
+        }
 
-    //! Sets the module option for acyclic subgraph module.
-    void setAcyclicSubgraphModule(AcyclicSubgraphModule *acyclicMod)
-    {
-        m_acyclicMod.set(acyclicMod);
-    }
+        //! Sets the module option for the edge insertion module.
+        void setInserter(UpwardEdgeInserterModule* pInserter)
+        {
+            m_inserter.set(pInserter);
+        }
 
-    int runs()
-    {
-        return m_runs;
-    }
-    void runs(int n)
-    {
-        m_runs = n;
-    }
+        //! Sets the module option for acyclic subgraph module.
+        void setAcyclicSubgraphModule(AcyclicSubgraphModule* acyclicMod)
+        {
+            m_acyclicMod.set(acyclicMod);
+        }
 
-protected:
+        int runs()
+        {
+            return m_runs;
+        }
+        void runs(int n)
+        {
+            m_runs = n;
+        }
 
-    virtual ReturnType doCall(UpwardPlanRep &UPR,
-                              const EdgeArray<int>  &cost,
-                              const EdgeArray<bool> &forbid);
+    protected:
 
-    ModuleOption<FUPSModule> m_subgraph; //!< The upward planar subgraph algorithm.
-    ModuleOption<UpwardEdgeInserterModule> m_inserter; //!< The edge insertion module.
-    ModuleOption<AcyclicSubgraphModule> m_acyclicMod; //!<The acyclic subgraph module.
-    int m_runs;
+        virtual ReturnType doCall(UpwardPlanRep & UPR,
+                                  const EdgeArray<int> & cost,
+                                  const EdgeArray<bool> & forbid);
 
-private:
+        ModuleOption<FUPSModule> m_subgraph; //!< The upward planar subgraph algorithm.
+        ModuleOption<UpwardEdgeInserterModule> m_inserter; //!< The edge insertion module.
+        ModuleOption<AcyclicSubgraphModule> m_acyclicMod; //!<The acyclic subgraph module.
+        int m_runs;
 
-    void constructComponentGraphs(BCTree &BC, NodeArray<GraphCopy> &biComps);
+    private:
 
-    //! traversion the BTree and merge the component to a common graph
-    void dfsMerge(const GraphCopy &GC,
-                  BCTree &BC,
-                  NodeArray<GraphCopy> &biComps,
-                  NodeArray<UpwardPlanRep> &uprs,
-                  UpwardPlanRep &UPR_res,
-                  node parent_BC,
-                  node current_BC,
-                  NodeArray<bool> &nodesDone);
+        void constructComponentGraphs(BCTree & BC, NodeArray<GraphCopy> & biComps);
+
+        //! traversion the BTree and merge the component to a common graph
+        void dfsMerge(const GraphCopy & GC,
+                      BCTree & BC,
+                      NodeArray<GraphCopy> & biComps,
+                      NodeArray<UpwardPlanRep> & uprs,
+                      UpwardPlanRep & UPR_res,
+                      node parent_BC,
+                      node current_BC,
+                      NodeArray<bool> & nodesDone);
 
 
-    //! add UPR to UPR_res.
-    void merge(const GraphCopy &GC,
-               UpwardPlanRep &UPR_res,
-               const GraphCopy &block,
-               UpwardPlanRep &UPR
-              );
-};
+        //! add UPR to UPR_res.
+        void merge(const GraphCopy & GC,
+                   UpwardPlanRep & UPR_res,
+                   const GraphCopy & block,
+                   UpwardPlanRep & UPR
+                  );
+    };
 
 }
 

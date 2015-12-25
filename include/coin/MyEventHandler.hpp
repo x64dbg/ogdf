@@ -29,15 +29,15 @@ public:
     /** Default constructor. */
     MyEventHandler();
     /// Constructor with pointer to model (redundant as setEventHandler does)
-    MyEventHandler(ClpSimplex * model);
+    MyEventHandler(ClpSimplex* model);
     /** Destructor */
     virtual ~MyEventHandler();
     /** The copy constructor. */
     MyEventHandler(const MyEventHandler & rhs);
     /// Assignment
-    MyEventHandler& operator=(const MyEventHandler & rhs);
+    MyEventHandler & operator=(const MyEventHandler & rhs);
     /// Clone
-    virtual ClpEventHandler * clone() const ;
+    virtual ClpEventHandler* clone() const ;
     //@}
 
 

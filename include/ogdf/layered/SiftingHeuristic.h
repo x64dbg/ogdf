@@ -57,54 +57,54 @@ namespace ogdf
 {
 
 
-//! The sifting heuristic for 2-layer crossing minimization.
-class OGDF_EXPORT SiftingHeuristic : public LayerByLayerSweep
-{
-public:
-    //! Creates a new instance of the sifting heuristic with default option settings.
-    SiftingHeuristic();
-
-    //! Creates a new instance of the sifting heuristic with the same option settings as \a crossMin.
-    SiftingHeuristic(const SiftingHeuristic &crossMin);
-
-    //! Returns a new instance of the sifting heuristic with the same option settings.
-    LayerByLayerSweep *clone() const
+    //! The sifting heuristic for 2-layer crossing minimization.
+    class OGDF_EXPORT SiftingHeuristic : public LayerByLayerSweep
     {
-        return new SiftingHeuristic(*this);
-    }
+    public:
+        //! Creates a new instance of the sifting heuristic with default option settings.
+        SiftingHeuristic();
 
-    //! Enumerates the different sifting strategies
-    enum Strategy { left_to_right, desc_degree, random };
+        //! Creates a new instance of the sifting heuristic with the same option settings as \a crossMin.
+        SiftingHeuristic(const SiftingHeuristic & crossMin);
 
-    //! Initializes crossing minimization for hierarchy \a H.
-    void init (const HierarchyLevels &levels);
+        //! Returns a new instance of the sifting heuristic with the same option settings.
+        LayerByLayerSweep* clone() const
+        {
+            return new SiftingHeuristic(*this);
+        }
 
-    //! Calls the sifting heuristic for level \a L.
-    void call (Level &L);
+        //! Enumerates the different sifting strategies
+        enum Strategy { left_to_right, desc_degree, random };
 
-    //! Does some clean-up after calls.
-    void cleanup ();
+        //! Initializes crossing minimization for hierarchy \a H.
+        void init(const HierarchyLevels & levels);
 
-    //! Get for \a Strategy.
-    Strategy strategy() const
-    {
-        return m_strategy;
-    }
+        //! Calls the sifting heuristic for level \a L.
+        void call(Level & L);
 
-    /**
-     * \brief Set for \a Strategy.
-     *
-     * @param strategy is the \a Strategy to be set
-     */
-    void strategy (Strategy strategy)
-    {
-        m_strategy = strategy;
-    }
+        //! Does some clean-up after calls.
+        void cleanup();
 
-private:
-    CrossingsMatrix *m_crossingMatrix;
-    Strategy m_strategy;
-};
+        //! Get for \a Strategy.
+        Strategy strategy() const
+        {
+            return m_strategy;
+        }
+
+        /**
+         * \brief Set for \a Strategy.
+         *
+         * @param strategy is the \a Strategy to be set
+         */
+        void strategy(Strategy strategy)
+        {
+            m_strategy = strategy;
+        }
+
+    private:
+        CrossingsMatrix* m_crossingMatrix;
+        Strategy m_strategy;
+    };
 
 
 } // end namespace ogdf

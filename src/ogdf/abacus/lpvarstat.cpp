@@ -41,32 +41,32 @@ namespace abacus
 {
 
 
-ostream &operator<<(ostream& out, const LPVARSTAT &rhs)
-{
-    switch (rhs.status_)
+    ostream & operator<<(ostream & out, const LPVARSTAT & rhs)
     {
-    case LPVARSTAT::AtLowerBound:
-        out << "AtLowerBound";
-        break;
-    case LPVARSTAT::Basic:
-        out << "Basic";
-        break;
-    case LPVARSTAT::AtUpperBound:
-        out << "AtUpperBound";
-        break;
-    case LPVARSTAT::NonBasicFree:
-        out << "NonBasicFree";
-        break;
-    case LPVARSTAT::Eliminated:
-        out << "Eliminated";
-        break;
-    case LPVARSTAT::Unknown:
-        out << "Unknown";
-        break;
-    default:
-        Logger::ifout() << "LPVARSTAT: unknonw status\n";
-        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpVarStat);
+        switch(rhs.status_)
+        {
+        case LPVARSTAT::AtLowerBound:
+            out << "AtLowerBound";
+            break;
+        case LPVARSTAT::Basic:
+            out << "Basic";
+            break;
+        case LPVARSTAT::AtUpperBound:
+            out << "AtUpperBound";
+            break;
+        case LPVARSTAT::NonBasicFree:
+            out << "NonBasicFree";
+            break;
+        case LPVARSTAT::Eliminated:
+            out << "Eliminated";
+            break;
+        case LPVARSTAT::Unknown:
+            out << "Unknown";
+            break;
+        default:
+            Logger::ifout() << "LPVARSTAT: unknonw status\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpVarStat);
+        }
+        return out;
     }
-    return out;
-}
 } //namespace abacus

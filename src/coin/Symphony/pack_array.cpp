@@ -21,43 +21,43 @@
 
 /*===========================================================================*/
 
-void pack_array_desc(array_desc *adesc)
+void pack_array_desc(array_desc* adesc)
 {
-    send_char_array((char *)adesc, sizeof(array_desc));
-    if (adesc->type != NO_DATA_STORED && adesc->size > 0)
+    send_char_array((char*)adesc, sizeof(array_desc));
+    if(adesc->type != NO_DATA_STORED && adesc->size > 0)
         send_int_array(adesc->list, adesc->size);
 }
 
 /*===========================================================================*/
 
-array_desc *unpack_array_desc(array_desc *padesc)
+array_desc* unpack_array_desc(array_desc* padesc)
 {
-    array_desc *adesc =
-        padesc ? padesc : (array_desc *) malloc( sizeof(array_desc) );
-    receive_char_array((char *)adesc, sizeof(array_desc));
-    if (adesc->type != NO_DATA_STORED && adesc->size > 0)
+    array_desc* adesc =
+        padesc ? padesc : (array_desc*) malloc(sizeof(array_desc));
+    receive_char_array((char*)adesc, sizeof(array_desc));
+    if(adesc->type != NO_DATA_STORED && adesc->size > 0)
     {
-        adesc->list = (int *) malloc(adesc->size * ISIZE);
+        adesc->list = (int*) malloc(adesc->size * ISIZE);
         receive_int_array(adesc->list, adesc->size);
     }
     else
     {
         adesc->list = NULL;
     }
-    if (adesc->type == EXPLICIT_LIST)
+    if(adesc->type == EXPLICIT_LIST)
         adesc->added = adesc->size;
     return(adesc);
 }
 
 /*===========================================================================*/
 
-void pack_double_array_desc(double_array_desc *dad, char explicit_packing)
+void pack_double_array_desc(double_array_desc* dad, char explicit_packing)
 {
     send_char_array(&dad->type, 1);
     send_int_array(&dad->size, 1);
-    if (dad->size > 0)
+    if(dad->size > 0)
     {
-        if (!explicit_packing && dad->type == WRT_PARENT)
+        if(!explicit_packing && dad->type == WRT_PARENT)
             send_int_array(dad->list, dad->size);
         send_int_array(dad->stat, dad->size);
     }
@@ -65,22 +65,22 @@ void pack_double_array_desc(double_array_desc *dad, char explicit_packing)
 
 /*===========================================================================*/
 
-void unpack_double_array_desc(double_array_desc *dad, char explicit_packing)
+void unpack_double_array_desc(double_array_desc* dad, char explicit_packing)
 {
     receive_char_array(&dad->type, 1);
     receive_int_array(&dad->size, 1);
-    if (dad->size > 0)
+    if(dad->size > 0)
     {
-        if (!explicit_packing && dad->type == WRT_PARENT)
+        if(!explicit_packing && dad->type == WRT_PARENT)
         {
-            dad->list = (int *) malloc(dad->size * ISIZE);
+            dad->list = (int*) malloc(dad->size * ISIZE);
             receive_int_array(dad->list, dad->size);
         }
         else
         {
             dad->list = NULL;
         }
-        dad->stat = (int *) malloc(dad->size * ISIZE);
+        dad->stat = (int*) malloc(dad->size * ISIZE);
         receive_int_array(dad->stat, dad->size);
     }
     else
@@ -92,10 +92,10 @@ void unpack_double_array_desc(double_array_desc *dad, char explicit_packing)
 
 /*===========================================================================*/
 
-void pack_basis(basis_desc *basis, char explicit_packing)
+void pack_basis(basis_desc* basis, char explicit_packing)
 {
     send_char_array(&basis->basis_exists, 1);
-    if (basis->basis_exists)
+    if(basis->basis_exists)
     {
         pack_double_array_desc(&basis->baserows, explicit_packing);
         pack_double_array_desc(&basis->extrarows, explicit_packing);
@@ -106,12 +106,12 @@ void pack_basis(basis_desc *basis, char explicit_packing)
 
 /*===========================================================================*/
 
-basis_desc *unpack_basis(basis_desc *pbasis, char explicit_packing)
+basis_desc* unpack_basis(basis_desc* pbasis, char explicit_packing)
 {
-    basis_desc *basis =
-        pbasis ? pbasis : (basis_desc *) calloc(1, sizeof(basis_desc) );
+    basis_desc* basis =
+        pbasis ? pbasis : (basis_desc*) calloc(1, sizeof(basis_desc));
     receive_char_array(&basis->basis_exists, 1);
-    if (basis->basis_exists)
+    if(basis->basis_exists)
     {
         unpack_double_array_desc(&basis->baserows, explicit_packing);
         unpack_double_array_desc(&basis->extrarows, explicit_packing);

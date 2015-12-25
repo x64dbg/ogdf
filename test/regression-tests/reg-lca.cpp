@@ -18,7 +18,7 @@ ancestor(node v)
     edge e;
     forall_adj_edges(e, v)
     {
-        if (e->target() == v)
+        if(e->target() == v)
         {
             return e->source();
         }
@@ -30,17 +30,17 @@ ancestor(node v)
 static bool
 checkLCA(node a, node v, node u)
 {
-    if (a == v && v == u)
+    if(a == v && v == u)
     {
         return true;
     }
     node vp = v, up = u; // initialization needed for the case that v == a or u == a
-    while (v && v != a)
+    while(v && v != a)
     {
         vp = v;
         v = ancestor(v);
     }
-    while (u && u != a)
+    while(u && u != a)
     {
         up = u;
         u = ancestor(u);
@@ -49,7 +49,7 @@ checkLCA(node a, node v, node u)
 }
 
 static bool
-testTree(int q, int n, __int64 &genTime, __int64 &evalTime, __int64 &checkTime, int maxDeg = 0, int maxWidth = 0)
+testTree(int q, int n, __int64 & genTime, __int64 & evalTime, __int64 & checkTime, int maxDeg = 0, int maxWidth = 0)
 {
     Graph G;
     randomTree(G, n, maxDeg, maxWidth);
@@ -60,7 +60,7 @@ testTree(int q, int n, __int64 &genTime, __int64 &evalTime, __int64 &checkTime, 
     LCA lca(G, root);
     genTime += System::usedRealTime(time);
 
-    while (q--)
+    while(q--)
     {
         node u = G.chooseNode();
         node v = G.chooseNode();
@@ -69,7 +69,7 @@ testTree(int q, int n, __int64 &genTime, __int64 &evalTime, __int64 &checkTime, 
         evalTime += System::usedRealTime(time);
         bool check = checkLCA(a, v, u);
         checkTime += System::usedRealTime(time);
-        if (!check)
+        if(!check)
         {
             return false;
         }
@@ -84,20 +84,20 @@ testTrees(const int q, const int n, int nodes, int maxDeg = 0, int maxWidth = 0)
     __int64 genTime(0), evalTime(0), checkTime(0), time;
 
     cout << "-> " << q << " LCA queries on " << n << " random trees with " << nodes << " nodes";
-    if (maxDeg > 0)
+    if(maxDeg > 0)
     {
         cout << ", maximum degree " << maxDeg;
     }
-    if (maxWidth > 0)
+    if(maxWidth > 0)
     {
         cout << " and maximum width " << maxWidth;
     }
     cout << "\n";
     int i = n;
     System::usedRealTime(time);
-    while (i--)
+    while(i--)
     {
-        if (!testTree(q, nodes, genTime, evalTime, checkTime, maxDeg, maxWidth))
+        if(!testTree(q, nodes, genTime, evalTime, checkTime, maxDeg, maxWidth))
         {
             return false;
         }

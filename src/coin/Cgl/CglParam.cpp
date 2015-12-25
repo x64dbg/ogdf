@@ -59,7 +59,7 @@ CglParam::CglParam(const double inf, const double eps, const double eps_c,
 {}
 
 /***********************************************************************/
-CglParam::CglParam(const CglParam &source) :
+CglParam::CglParam(const CglParam & source) :
     INFINIT(source.INFINIT),
     EPS(source.EPS),
     EPS_COEFF(source.EPS_COEFF),
@@ -73,7 +73,7 @@ CglParam* CglParam::clone() const
 }
 
 /***********************************************************************/
-CglParam& CglParam::operator=(const CglParam &rhs)
+CglParam & CglParam::operator=(const CglParam & rhs)
 {
     if(this != &rhs)
     {

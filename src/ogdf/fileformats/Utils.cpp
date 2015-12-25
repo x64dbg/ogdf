@@ -46,11 +46,11 @@ namespace ogdf
 {
 
 
-std::istream &operator >>(std::istream &is, TokenIgnorer token)
-{
-    is.ignore(std::numeric_limits<std::streamsize>::max(), token.m_c);
-    return is;
-}
+    std::istream & operator >>(std::istream & is, TokenIgnorer token)
+    {
+        is.ignore(std::numeric_limits<std::streamsize>::max(), token.m_c);
+        return is;
+    }
 
 
 } // end namespace ogdf

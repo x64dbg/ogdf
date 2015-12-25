@@ -60,145 +60,145 @@
 namespace ogdf
 {
 
-//---------------------------------------------------------
-// U m l D i a g r a m G r a p h
-//---------------------------------------------------------
-/** Contains the class UmlDiagramGraph which represents one
- *  particular diagram of the complete UML Model. Each diagram refers
- *  to the node and edge information of UmlModelGraph. Essentially
- *  a diagram contains selected nodes and edges of the model provides
- *  with additional geometric information.
- */
-class OGDF_EXPORT UmlDiagramGraph
-{
-
-    friend ostream &operator<<(ostream&, const UmlDiagramGraph &);
-
-public:
-
     //---------------------------------------------------------
-    // U m l D i a g r a m T y p e
+    // U m l D i a g r a m G r a p h
     //---------------------------------------------------------
-    /** This enum type represents the different diagram types of UML.
+    /** Contains the class UmlDiagramGraph which represents one
+     *  particular diagram of the complete UML Model. Each diagram refers
+     *  to the node and edge information of UmlModelGraph. Essentially
+     *  a diagram contains selected nodes and edges of the model provides
+     *  with additional geometric information.
      */
-    enum UmlDiagramType
+    class OGDF_EXPORT UmlDiagramGraph
     {
-        classDiagram,
-        moduleDiagram,
-        sequenceDiagram,
-        collaborationDiagram,
-        componentDiagram,
-        unknownDiagram
 
-    }; // enum UmlDiagramType
+        friend ostream & operator<<(ostream &, const UmlDiagramGraph &);
 
-private:
+    public:
 
-    /** Reference to the model graph. */
-    const UmlModelGraph &m_modelGraph;
+        //---------------------------------------------------------
+        // U m l D i a g r a m T y p e
+        //---------------------------------------------------------
+        /** This enum type represents the different diagram types of UML.
+         */
+        enum UmlDiagramType
+        {
+            classDiagram,
+            moduleDiagram,
+            sequenceDiagram,
+            collaborationDiagram,
+            componentDiagram,
+            unknownDiagram
 
-    /** The name of the diagram. */
-    string m_diagramName;
+        }; // enum UmlDiagramType
 
-    /** The type of diagram. */
-    UmlDiagramType m_diagramType;
+    private:
 
-    /** This list holds pointer to the nodes contained in
-     * the represented diagram.
-     */
-    SList<NodeElement*> m_containedNodes;
+        /** Reference to the model graph. */
+        const UmlModelGraph & m_modelGraph;
 
-    /** This list holds pointer to the edges contained in
-     * the represented diagram.
-     */
-    SList<EdgeElement*> m_containedEdges;
+        /** The name of the diagram. */
+        string m_diagramName;
 
-    /** This list contains the x-coordinates of the nodes
-     * contained in the represented diagram.
-     */
-    SList<double> m_x;
+        /** The type of diagram. */
+        UmlDiagramType m_diagramType;
 
-    /** This list contains the y-coordinates of the nodes
-     * contained in the represented diagram.
-     */
-    SList<double> m_y;
+        /** This list holds pointer to the nodes contained in
+         * the represented diagram.
+         */
+        SList<NodeElement*> m_containedNodes;
 
-    /** This list contains the width of the nodes
-     * contained in the represented diagram.
-     */
-    SList<double> m_w;
+        /** This list holds pointer to the edges contained in
+         * the represented diagram.
+         */
+        SList<EdgeElement*> m_containedEdges;
 
-    /** This list contains the height of the nodes
-     * contained in the represented diagram.
-     */
-    SList<double> m_h;
+        /** This list contains the x-coordinates of the nodes
+         * contained in the represented diagram.
+         */
+        SList<double> m_x;
 
-public:
+        /** This list contains the y-coordinates of the nodes
+         * contained in the represented diagram.
+         */
+        SList<double> m_y;
 
-    /** Constructor. */
-    UmlDiagramGraph(const UmlModelGraph &umlModelGraph,
-                    UmlDiagramType diagramType,
-                    const string &diagramName);
+        /** This list contains the width of the nodes
+         * contained in the represented diagram.
+         */
+        SList<double> m_w;
 
-    /** Destructor. */
-    ~UmlDiagramGraph();
+        /** This list contains the height of the nodes
+         * contained in the represented diagram.
+         */
+        SList<double> m_h;
 
-    /** Adds a node with the given coordinates. */
-    void addNodeWithGeometry(NodeElement* node,
-                             double x, double y, double w, double h);
+    public:
 
-    /** Adds an edge. */
-    void addEdge(EdgeElement* edge);
+        /** Constructor. */
+        UmlDiagramGraph(const UmlModelGraph & umlModelGraph,
+                        UmlDiagramType diagramType,
+                        const string & diagramName);
 
-    /** Returns the name of the diagram. */
-    const string &getDiagramName() const
-    {
-        return m_diagramName;
-    }
+        /** Destructor. */
+        ~UmlDiagramGraph();
 
-    /** Returns the type of the diagram as string. */
-    const char *getDiagramTypeString() const;
+        /** Adds a node with the given coordinates. */
+        void addNodeWithGeometry(NodeElement* node,
+                                 double x, double y, double w, double h);
 
-    /** Access to contained nodes. */
-    const SList<NodeElement*> &getNodes() const
-    {
-        return m_containedNodes;
-    }
+        /** Adds an edge. */
+        void addEdge(EdgeElement* edge);
 
-    /** Access to contained edges. */
-    const SList<EdgeElement*> &getEdges() const
-    {
-        return m_containedEdges;
-    }
+        /** Returns the name of the diagram. */
+        const string & getDiagramName() const
+        {
+            return m_diagramName;
+        }
 
-    /** Access to x-coordinates. */
-    const SList<double> &getX() const
-    {
-        return m_x;
-    }
+        /** Returns the type of the diagram as string. */
+        const char* getDiagramTypeString() const;
 
-    /** Access to y-coordinates. */
-    const SList<double> &getY() const
-    {
-        return m_y;
-    }
+        /** Access to contained nodes. */
+        const SList<NodeElement*> & getNodes() const
+        {
+            return m_containedNodes;
+        }
 
-    /** Access to width. */
-    const SList<double> &getWidth() const
-    {
-        return m_w;
-    }
+        /** Access to contained edges. */
+        const SList<EdgeElement*> & getEdges() const
+        {
+            return m_containedEdges;
+        }
 
-    /** Access to height. */
-    const SList<double> &getHeight() const
-    {
-        return m_h;
-    }
+        /** Access to x-coordinates. */
+        const SList<double> & getX() const
+        {
+            return m_x;
+        }
 
-}; // class UmlDiagramGraph
+        /** Access to y-coordinates. */
+        const SList<double> & getY() const
+        {
+            return m_y;
+        }
 
-/** Output operator for UmlDiagramGraph. */
-ostream &operator<<(ostream &os, const UmlDiagramGraph &diagramGraph);
+        /** Access to width. */
+        const SList<double> & getWidth() const
+        {
+            return m_w;
+        }
+
+        /** Access to height. */
+        const SList<double> & getHeight() const
+        {
+            return m_h;
+        }
+
+    }; // class UmlDiagramGraph
+
+    /** Output operator for UmlDiagramGraph. */
+    ostream & operator<<(ostream & os, const UmlDiagramGraph & diagramGraph);
 
 
 } // end namespace ogdf

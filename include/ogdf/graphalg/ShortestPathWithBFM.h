@@ -56,25 +56,25 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT ShortestPathWithBFM : public ShortestPathModule
-{
-public:
-    ShortestPathWithBFM() { }
+    class OGDF_EXPORT ShortestPathWithBFM : public ShortestPathModule
+    {
+    public:
+        ShortestPathWithBFM() { }
 
-    // computes shortest paths
-    // Precond.:
-    //
-    // returns false iff the graph contains a negative cycle
-    bool call(
-        const Graph &G,                   // directed graph
-        const node s,                     // source node
-        const EdgeArray<int> &length,     // length of an edge
-        NodeArray<int> &d,                // contains shortest path distances after call
-        NodeArray<edge> &pi
-    );
+        // computes shortest paths
+        // Precond.:
+        //
+        // returns false iff the graph contains a negative cycle
+        bool call(
+            const Graph & G,                  // directed graph
+            const node s,                     // source node
+            const EdgeArray<int> & length,    // length of an edge
+            NodeArray<int> & d,               // contains shortest path distances after call
+            NodeArray<edge> & pi
+        );
 
 
-};
+    };
 
 
 } // end namespace ogdf

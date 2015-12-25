@@ -55,31 +55,31 @@
 namespace ogdf
 {
 
-//! Planar graph embedding by using default planarEmbed.
-class OGDF_EXPORT SimpleEmbedder : public EmbedderModule
-{
-public:
-    // construction / destruction
-    SimpleEmbedder() { }
-    ~SimpleEmbedder() { }
+    //! Planar graph embedding by using default planarEmbed.
+    class OGDF_EXPORT SimpleEmbedder : public EmbedderModule
+    {
+    public:
+        // construction / destruction
+        SimpleEmbedder() { }
+        ~SimpleEmbedder() { }
 
-    /**
-     * \brief Call embedder algorithm.
-     * \param G is the original graph. Its adjacency list is changed by the embedder.
-     * \param adjExternal is an adjacency entry on the external face and is set by the embedder.
-     */
-    void call(Graph& G, adjEntry& adjExternal);
+        /**
+         * \brief Call embedder algorithm.
+         * \param G is the original graph. Its adjacency list is changed by the embedder.
+         * \param adjExternal is an adjacency entry on the external face and is set by the embedder.
+         */
+        void call(Graph & G, adjEntry & adjExternal);
 
-private:
-    /**
-     * \brief Find best suited external face according to certain criteria.
-     * \param PG is a planar representation of the original graph.
-     * \param E is a combinatorial embedding of the original graph.
-     * \return Best suited external face.
-     */
-    face findBestExternalFace(const PlanRep& PG, const CombinatorialEmbedding& E);
+    private:
+        /**
+         * \brief Find best suited external face according to certain criteria.
+         * \param PG is a planar representation of the original graph.
+         * \param E is a combinatorial embedding of the original graph.
+         * \return Best suited external face.
+         */
+        face findBestExternalFace(const PlanRep & PG, const CombinatorialEmbedding & E);
 
-};
+    };
 
 } // end namespace ogdf
 

@@ -32,25 +32,25 @@
 
 int register_process PROTO((void));
 int init_send PROTO((int data_packing));
-int send_char_array PROTO((char *array, int size));
-int send_int_array PROTO((int *array, int size));
-int send_dbl_array PROTO((double *array, int size));
-int send_float_array PROTO((float *array, int size));
-int send_str PROTO((char *str));
+int send_char_array PROTO((char* array, int size));
+int send_int_array PROTO((int* array, int size));
+int send_dbl_array PROTO((double* array, int size));
+int send_float_array PROTO((float* array, int size));
+int send_str PROTO((char* str));
 int send_msg PROTO((int recipient, int msgtag));
-int msend_msg PROTO((int *recipients, int number, int msgtag));
+int msend_msg PROTO((int* recipients, int number, int msgtag));
 int receive_msg PROTO((int who, int what));
-int treceive_msg PROTO((int who, int what, struct timeval *timeout));
+int treceive_msg PROTO((int who, int what, struct timeval* timeout));
 int nreceive_msg PROTO((int who, int what));
-int bufinfo PROTO((int r_bufid, int *bytes, int *msgtag, int *sender));
+int bufinfo PROTO((int r_bufid, int* bytes, int* msgtag, int* sender));
 int freebuf PROTO((int bufid));
-int receive_char_array PROTO((char *array, int size));
-int receive_int_array PROTO((int *array, int size));
-int receive_dbl_array PROTO((double *array, int size));
-int receive_float_array PROTO((float *array, int size));
-int receive_str PROTO((char *str));
-int spawn PROTO((char *task, char **argv, int flag, char *where, int ntask,
-                 int *tids));
+int receive_char_array PROTO((char* array, int size));
+int receive_int_array PROTO((int* array, int size));
+int receive_dbl_array PROTO((double* array, int size));
+int receive_float_array PROTO((float* array, int size));
+int receive_str PROTO((char* str));
+int spawn PROTO((char* task, char** argv, int flag, char* where, int ntask,
+                 int* tids));
 int pstat PROTO((int tid));
 void kill_proc PROTO((int tid));
 void comm_exit PROTO((void));

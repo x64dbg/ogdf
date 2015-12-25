@@ -56,25 +56,25 @@
 namespace ogdf
 {
 
-/**
- * \brief common base class for MMCBDoubleGrid and MMCBLocalStretch.
- *
- * MMCBBase contains the common functionality shared by the two Mixed-Model
- * crossings beautifier MMCBDoubleGrid and MMCBLocalStretch.
- */
-class OGDF_EXPORT MMCBBase : public MixedModelCrossingsBeautifierModule
-{
-public:
-    //! Constructor (does nothing).
-    MMCBBase() { }
+    /**
+     * \brief common base class for MMCBDoubleGrid and MMCBLocalStretch.
+     *
+     * MMCBBase contains the common functionality shared by the two Mixed-Model
+     * crossings beautifier MMCBDoubleGrid and MMCBLocalStretch.
+     */
+    class OGDF_EXPORT MMCBBase : public MixedModelCrossingsBeautifierModule
+    {
+    public:
+        //! Constructor (does nothing).
+        MMCBBase() { }
 
-    ~MMCBBase() { }
+        ~MMCBBase() { }
 
-protected:
-    static void insertBend(GridLayout &gl, edge e, node v, int x, int y);
-    static void copyOn(int old_a[] , int new_a[]);
-    static int workOn(GridLayout &gl, node v);
-};
+    protected:
+        static void insertBend(GridLayout & gl, edge e, node v, int x, int y);
+        static void copyOn(int old_a[] , int new_a[]);
+        static int workOn(GridLayout & gl, node v);
+    };
 
 
 } // end namespace ogdf

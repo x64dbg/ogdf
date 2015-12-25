@@ -83,42 +83,42 @@ void symusage(void)
 /*===========================================================================*/
 /*===========================================================================*/
 
-int parse_command_line(sym_environment *env, int argc, char **argv)
+int parse_command_line(sym_environment* env, int argc, char** argv)
 {
     int i, tmpi;
     double tmpd;
-    char line[MAX_LINE_LENGTH +1], tmp, c;
-    char key[MAX_LINE_LENGTH +1], value[MAX_LINE_LENGTH +1];
-    FILE *f = NULL, *f1 = NULL;
+    char line[MAX_LINE_LENGTH + 1], tmp, c;
+    char key[MAX_LINE_LENGTH + 1], value[MAX_LINE_LENGTH + 1];
+    FILE* f = NULL, *f1 = NULL;
     //   str_int colgen_str[COLGEN_STR_SIZE] = COLGEN_STR_ARRAY;
-    tm_params *tm_par = &env->par.tm_par;
-    lp_params *lp_par = &env->par.lp_par;
-    cg_params *cg_par = &env->par.cg_par;
-    cp_params *cp_par = &env->par.cp_par;
+    tm_params* tm_par = &env->par.tm_par;
+    lp_params* lp_par = &env->par.lp_par;
+    cg_params* cg_par = &env->par.cg_par;
+    cp_params* cp_par = &env->par.cp_par;
     //dg_params *dg_par = &env->par.dg_par;
 
-    if (argc < 2)
+    if(argc < 2)
     {
         symusage();
         exit(0);
     }
 
-    for (i = 0; i < argc; i++)
+    for(i = 0; i < argc; i++)
     {
-        if (!strcmp(argv[i], "-f"))
+        if(!strcmp(argv[i], "-f"))
             break;
     }
 
-    if (i == argc)
+    if(i == argc)
     {
         goto EXIT;
     }
     else
     {
-        strncpy(env->par.param_file, argv[i+1], MAX_FILE_NAME_LENGTH);
+        strncpy(env->par.param_file, argv[i + 1], MAX_FILE_NAME_LENGTH);
     }
 
-    if ((f = fopen(env->par.param_file, "r")) == NULL)
+    if((f = fopen(env->par.param_file, "r")) == NULL)
     {
         (void) fprintf(stderr, "Readparams: file '%s' can't be opened\n\n",
                        env->par.param_file);
@@ -127,36 +127,36 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
 
     printf("============= Other Parameter Settings =============\n\n");
 
-    while (NULL != fgets(line, MAX_LINE_LENGTH, f))   /* read in parameters */
+    while(NULL != fgets(line, MAX_LINE_LENGTH, f))    /* read in parameters */
     {
 
         set_param(env, line);
 
         printf("%s", line);
-        strcpy(key,"");
-        sscanf(line,"%s%s", key, value);
+        strcpy(key, "");
+        sscanf(line, "%s%s", key, value);
 
-        if (strcmp(key, "lp_mach_num") == 0 ||
+        if(strcmp(key, "lp_mach_num") == 0 ||
                 strcmp(key, "TM_lp_mach_num") == 0)
         {
-            if (tm_par->lp_mach_num)
+            if(tm_par->lp_mach_num)
             {
-                char *lp_machs = (char *) malloc
+                char* lp_machs = (char*) malloc
                                  (tm_par->lp_mach_num * (MACH_NAME_LENGTH + 1));
                 tm_par->lp_machs =
-                    (char **) malloc(tm_par->lp_mach_num * sizeof(char *));
-                for (i=0; i<tm_par->lp_mach_num; i++)
-                    tm_par->lp_machs[i] = lp_machs + i * (MACH_NAME_LENGTH+1);
-                for (i=0; i<tm_par->lp_mach_num; i++)
+                    (char**) malloc(tm_par->lp_mach_num * sizeof(char*));
+                for(i = 0; i < tm_par->lp_mach_num; i++)
+                    tm_par->lp_machs[i] = lp_machs + i * (MACH_NAME_LENGTH + 1);
+                for(i = 0; i < tm_par->lp_mach_num; i++)
                 {
-                    if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                    if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                     {
                         fprintf(stderr, "\nio: error reading lp_machine list\n\n");
                         return(ERROR__PARSING_PARAM_FILE);
                     }
                     strcpy(key, "");
                     sscanf(line, "%s%s", key, value);
-                    if (strcmp(key, "TM_lp_machine") != 0)
+                    if(strcmp(key, "TM_lp_machine") != 0)
                     {
                         fprintf(stderr, "\nio: error reading lp_machine list\n\n");
                         return(ERROR__PARSING_PARAM_FILE);
@@ -166,27 +166,27 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                 }
             }
         }
-        else if (strcmp(key, "cg_mach_num") == 0 ||
-                 strcmp(key, "TM_cg_mach_num") == 0)
+        else if(strcmp(key, "cg_mach_num") == 0 ||
+                strcmp(key, "TM_cg_mach_num") == 0)
         {
-            if (tm_par->cg_mach_num)
+            if(tm_par->cg_mach_num)
             {
-                char *cg_machs = (char *) malloc
+                char* cg_machs = (char*) malloc
                                  (tm_par->cg_mach_num * (MACH_NAME_LENGTH + 1));
                 tm_par->cg_machs =
-                    (char **) malloc(tm_par->cg_mach_num * sizeof(char *));
-                for (i=0; i<tm_par->cg_mach_num; i++)
-                    tm_par->cg_machs[i] = cg_machs + i * (MACH_NAME_LENGTH+1);
-                for (i=0; i<tm_par->cg_mach_num; i++)
+                    (char**) malloc(tm_par->cg_mach_num * sizeof(char*));
+                for(i = 0; i < tm_par->cg_mach_num; i++)
+                    tm_par->cg_machs[i] = cg_machs + i * (MACH_NAME_LENGTH + 1);
+                for(i = 0; i < tm_par->cg_mach_num; i++)
                 {
-                    if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                    if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                     {
                         fprintf(stderr, "\nio: error reading cg_machine list\n\n");
                         return(ERROR__PARSING_PARAM_FILE);
                     }
                     strcpy(key, "");
                     sscanf(line, "%s%s", key, value);
-                    if (strcmp(key, "TM_cg_machine") != 0)
+                    if(strcmp(key, "TM_cg_machine") != 0)
                     {
                         fprintf(stderr, "\nio: error reading cg_machine list\n\n");
                         return(ERROR__PARSING_PARAM_FILE);
@@ -196,27 +196,27 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                 }
             }
         }
-        else if (strcmp(key, "cp_mach_num") == 0 ||
-                 strcmp(key, "TM_cp_mach_num") == 0)
+        else if(strcmp(key, "cp_mach_num") == 0 ||
+                strcmp(key, "TM_cp_mach_num") == 0)
         {
-            if (tm_par->cp_mach_num)
+            if(tm_par->cp_mach_num)
             {
-                char *cp_machs = (char *) malloc
+                char* cp_machs = (char*) malloc
                                  (tm_par->cp_mach_num * (MACH_NAME_LENGTH + 1));
                 tm_par->cp_machs =
-                    (char **) malloc(tm_par->cp_mach_num * sizeof(char *));
-                for (i=0; i<tm_par->cp_mach_num; i++)
-                    tm_par->cp_machs[i] = cp_machs + i * (MACH_NAME_LENGTH+1);
-                for (i=0; i<tm_par->cp_mach_num; i++)
+                    (char**) malloc(tm_par->cp_mach_num * sizeof(char*));
+                for(i = 0; i < tm_par->cp_mach_num; i++)
+                    tm_par->cp_machs[i] = cp_machs + i * (MACH_NAME_LENGTH + 1);
+                for(i = 0; i < tm_par->cp_mach_num; i++)
                 {
-                    if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                    if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                     {
                         fprintf(stderr, "\nio: error reading cp_machine list\n\n");
                         return(ERROR__PARSING_PARAM_FILE);
                     }
                     strcpy(key, "");
                     sscanf(line, "%s%s", key, value);
-                    if (strcmp(key, "TM_cp_machine") != 0)
+                    if(strcmp(key, "TM_cp_machine") != 0)
                     {
                         fprintf(stderr, "\nio: error reading cp_machine list\n\n");
                         return(ERROR__PARSING_PARAM_FILE);
@@ -226,32 +226,32 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                 }
             }
         }
-        else if (strcmp(key, "keep_description_of_pruned") == 0 ||
-                 strcmp(key, "TM_keep_description_of_pruned") == 0)
+        else if(strcmp(key, "keep_description_of_pruned") == 0 ||
+                strcmp(key, "TM_keep_description_of_pruned") == 0)
         {
-            if (tm_par->keep_description_of_pruned == KEEP_ON_DISK_FULL ||
+            if(tm_par->keep_description_of_pruned == KEEP_ON_DISK_FULL ||
                     tm_par->keep_description_of_pruned == KEEP_ON_DISK_VBC_TOOL)
             {
-                if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                 {
                     printf("No pruned node file!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(key, "");
                 sscanf(line, "%s%s", key, value);
-                if (strcmp(key, "pruned_node_file_name") != 0)
+                if(strcmp(key, "pruned_node_file_name") != 0)
                 {
                     printf("Need pruned_node_file_name next!!!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(tm_par->pruned_node_file_name, value);
-                if (!(f1 = fopen(tm_par->pruned_node_file_name, "w")))
+                if(!(f1 = fopen(tm_par->pruned_node_file_name, "w")))
                 {
                     printf("\nError opening pruned node file\n\n");
                 }
                 else
                 {
-                    if (tm_par->keep_description_of_pruned == KEEP_ON_DISK_FULL)
+                    if(tm_par->keep_description_of_pruned == KEEP_ON_DISK_FULL)
                     {
                         fprintf(f1, "******* Pruned Node Log File *******\n\n");
                     }
@@ -267,32 +267,32 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                 }
             }
         }
-        else if (strcmp(key, "warm_start") == 0 ||
-                 strcmp(key, "TM_warm_start") == 0)
+        else if(strcmp(key, "warm_start") == 0 ||
+                strcmp(key, "TM_warm_start") == 0)
         {
-            if ((env->par.warm_start = tm_par->warm_start))
+            if((env->par.warm_start = tm_par->warm_start))
             {
-                if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                 {
                     printf("No warm start tree file!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(key, "");
                 sscanf(line, "%s%s", key, value);
-                if (strcmp(key, "warm_start_tree_file_name") != 0)
+                if(strcmp(key, "warm_start_tree_file_name") != 0)
                 {
                     printf("Need warm_start_tree_file_name next!!!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(tm_par->warm_start_tree_file_name, value);
-                if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                 {
                     printf("No warm start cut file!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(key, "");
                 sscanf(line, "%s%s", key, value);
-                if (strcmp(key, "warm_start_cut_file_name") != 0)
+                if(strcmp(key, "warm_start_cut_file_name") != 0)
                 {
                     printf("Need warm_start_cut_file_name next!!!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
@@ -300,26 +300,26 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                 strcpy(tm_par->warm_start_cut_file_name, value);
             }
         }
-        else if (strcmp(key, "vbc_emulation") == 0 ||
-                 strcmp(key, "TM_vbc_emulation") == 0)
+        else if(strcmp(key, "vbc_emulation") == 0 ||
+                strcmp(key, "TM_vbc_emulation") == 0)
         {
-            if (tm_par->vbc_emulation == VBC_EMULATION_FILE ||
+            if(tm_par->vbc_emulation == VBC_EMULATION_FILE ||
                     tm_par->vbc_emulation == VBC_EMULATION_FILE_NEW)
             {
-                if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                 {
                     printf("No vbc emulation file!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(key, "");
                 sscanf(line, "%s%s", key, value);
-                if (strcmp(key, "vbc_emulation_file_name") != 0)
+                if(strcmp(key, "vbc_emulation_file_name") != 0)
                 {
                     printf("Need vbc_emulation_file_name next!!!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(tm_par->vbc_emulation_file_name, value);
-                if (!(f1 = fopen(tm_par->vbc_emulation_file_name, "w")))
+                if(!(f1 = fopen(tm_par->vbc_emulation_file_name, "w")))
                 {
                     printf("\nError opening vbc emulation file\n\n");
                 }
@@ -330,7 +330,7 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                     fprintf(f1, "#BOUNDS: NONE\n");
                     fprintf(f1, "#INFORMATION: STANDARD\n");
                     fprintf(f1, "#NODE_NUMBER: NONE\n");
-                    if (tm_par->vbc_emulation == VBC_EMULATION_FILE_NEW)
+                    if(tm_par->vbc_emulation == VBC_EMULATION_FILE_NEW)
                     {
                         fprintf(f1, "# ");
                     }
@@ -338,7 +338,7 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                     fclose(f1);
                 }
             }
-            else if (tm_par->vbc_emulation == VBC_EMULATION_LIVE)
+            else if(tm_par->vbc_emulation == VBC_EMULATION_LIVE)
             {
                 printf("$#TYPE: COMPLETE TREE\n");
                 printf("$#TIME: SET\n");
@@ -348,34 +348,34 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                 printf("$N 0 1 %i\n", VBC_CAND_NODE);
             }
         }
-        else if (strcmp(key, "logging") == 0 ||
-                 strcmp(key, "TM_logging") == 0)
+        else if(strcmp(key, "logging") == 0 ||
+                strcmp(key, "TM_logging") == 0)
         {
-            if (tm_par->logging)
+            if(tm_par->logging)
             {
-                if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                 {
                     printf("No tree log file!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(key, "");
                 sscanf(line, "%s%s", key, value);
-                if (strcmp(key, "tree_log_file_name") != 0)
+                if(strcmp(key, "tree_log_file_name") != 0)
                 {
                     printf("tree_log_file_name next!!!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(tm_par->tree_log_file_name, value);
-                if (tm_par->logging != VBC_TOOL)
+                if(tm_par->logging != VBC_TOOL)
                 {
-                    if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                    if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                     {
                         printf("No cut log file!\n\n");
                         return(ERROR__PARSING_PARAM_FILE);
                     }
                     strcpy(key, "");
                     sscanf(line, "%s%s", key, value);
-                    if (strcmp(key, "cut_log_file_name") != 0)
+                    if(strcmp(key, "cut_log_file_name") != 0)
                     {
                         printf("Need cut_log_file_name next!!!\n\n");
                         return(ERROR__PARSING_PARAM_FILE);
@@ -384,19 +384,19 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                 }
             }
         }
-        else if (strcmp(key, "cp_warm_start") == 0 ||
-                 strcmp(key, "CP_warm_start") == 0)
+        else if(strcmp(key, "cp_warm_start") == 0 ||
+                strcmp(key, "CP_warm_start") == 0)
         {
-            if (cp_par->warm_start)
+            if(cp_par->warm_start)
             {
-                if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                 {
                     printf("No cut pool warm start file!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(key, "");
                 sscanf(line, "%s%s", key, value);
-                if (strcmp(key, "cp_warm_start_file_name") != 0)
+                if(strcmp(key, "cp_warm_start_file_name") != 0)
                 {
                     printf("Need cp_warm_start_file_name next!!!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
@@ -404,19 +404,19 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
                 strcpy(cp_par->warm_start_file_name, value);
             }
         }
-        else if (strcmp(key, "cp_logging") == 0 ||
-                 strcmp(key, "CP_logging") == 0)
+        else if(strcmp(key, "cp_logging") == 0 ||
+                strcmp(key, "CP_logging") == 0)
         {
-            if ((tm_par->cp_logging = cp_par->logging))
+            if((tm_par->cp_logging = cp_par->logging))
             {
-                if (fgets(line, MAX_LINE_LENGTH, f) == NULL)
+                if(fgets(line, MAX_LINE_LENGTH, f) == NULL)
                 {
                     printf("No cut pool log file!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
                 }
                 strcpy(key, "");
                 sscanf(line, "%s%s", key, value);
-                if (strcmp(key, "cp_log_file_name") != 0)
+                if(strcmp(key, "cp_log_file_name") != 0)
                 {
                     printf("Need cp_log_file_name next!!!\n\n");
                     return(ERROR__PARSING_PARAM_FILE);
@@ -430,32 +430,32 @@ int parse_command_line(sym_environment *env, int argc, char **argv)
 
 EXIT:
 
-    for (i = 1; i < argc; i++)
+    for(i = 1; i < argc; i++)
     {
         sscanf(argv[i], "%c %c", &tmp, &c);
-        if (tmp != '-')
+        if(tmp != '-')
             continue;
-        switch (c)
+        switch(c)
         {
         case '-':
-            if (!strcmp(argv[i], "--version"))
+            if(!strcmp(argv[i], "--version"))
             {
                 sym_version();
                 exit(0);
             }
-            if (!strcmp(argv[i], "--help"))
+            if(!strcmp(argv[i], "--help"))
             {
                 symusage();
                 exit(0);
             }
-            if (!strcmp(argv[i], "--args"))
+            if(!strcmp(argv[i], "--args"))
             {
                 printf("SYMPHONY was called with the following arguments:\n");
                 printf("%s ", argv[0]);
-                for (i = 1; i < argc; i++)
+                for(i = 1; i < argc; i++)
                 {
                     sscanf(argv[i], "%c", &tmp);
-                    if (tmp == '-')
+                    if(tmp == '-')
                         printf("\n");
                     printf("%s ", argv[i]);
                 }
@@ -493,9 +493,9 @@ EXIT:
             tm_par->price_in_root = TRUE;
             break;
         case 't':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%lf", &tmpd))
+                if(!sscanf(argv[i + 1], "%lf", &tmpd))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -508,16 +508,16 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'b':
             env->par.do_branch_and_cut = FALSE;
             break;
         case 'u':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%lf", &tmpd))
+                if(!sscanf(argv[i + 1], "%lf", &tmpd))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -531,13 +531,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'p':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -555,13 +555,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'n':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -574,13 +574,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'v':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -594,13 +594,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 's':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -615,13 +615,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'c':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -634,13 +634,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'k':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -653,13 +653,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'm':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -672,13 +672,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'e':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -691,13 +691,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'l':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -710,11 +710,11 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -727,13 +727,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'i':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -746,33 +746,33 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'f':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                sscanf(argv[i+1], "%c", &tmp);
-                if (tmp == '-')
+                sscanf(argv[i + 1], "%c", &tmp);
+                if(tmp == '-')
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
                 }
                 else
                 {
-                    strncpy(env->par.param_file, argv[i+1], MAX_FILE_NAME_LENGTH);
+                    strncpy(env->par.param_file, argv[i + 1], MAX_FILE_NAME_LENGTH);
                     i++;
                 }
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'j':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%i", &tmpi))
+                if(!sscanf(argv[i + 1], "%i", &tmpi))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -785,13 +785,13 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'z':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                if (!sscanf(argv[i+1], "%lf", &tmpd))
+                if(!sscanf(argv[i + 1], "%lf", &tmpd))
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
@@ -804,31 +804,31 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         case 'o':
-            if (i < argc - 1)
+            if(i < argc - 1)
             {
-                sscanf(argv[i+1], "%c", &tmp);
-                if (tmp== '-')
+                sscanf(argv[i + 1], "%c", &tmp);
+                if(tmp == '-')
                 {
                     printf("Warning: Missing argument to command-line switch -%c\n",
                            c);
                 }
                 else
                 {
-                    strncpy(tm_par->vbc_emulation_file_name, argv[i+1], MAX_FILE_NAME_LENGTH);
+                    strncpy(tm_par->vbc_emulation_file_name, argv[i + 1], MAX_FILE_NAME_LENGTH);
                     tm_par->vbc_emulation = VBC_EMULATION_FILE_NEW;
                     i++;
-                    FILE *f2;
-                    if (!(f2 = fopen(tm_par->vbc_emulation_file_name, "w")))
+                    FILE* f2;
+                    if(!(f2 = fopen(tm_par->vbc_emulation_file_name, "w")))
                     {
                         printf("\nError opening vbc emulation file\n\n");
                     }
                     else
                     {
-                        fprintf(f2,"# ");
+                        fprintf(f2, "# ");
                         fprintf(f2, "file created\n");
                         fclose(f2);
                     }
@@ -836,11 +836,11 @@ EXIT:
             }
             else
             {
-                printf("Warning: Missing argument to command-line switch -%c\n",c);
+                printf("Warning: Missing argument to command-line switch -%c\n", c);
             }
             break;
         default:
-            if (c < 'A')
+            if(c < 'A')
             {
                 printf("Warning: Ignoring unrecognized command-line switch -%c\n",
                        c);
@@ -851,13 +851,13 @@ EXIT:
 
     /*Sanity checks*/
 
-    if (cp_par->block_size >cp_par->max_number_of_cuts)
+    if(cp_par->block_size > cp_par->max_number_of_cuts)
     {
         printf("io: Cut pool block size is too big -- adjusting\n");
         cp_par->block_size = cp_par->max_number_of_cuts;
     }
 
-    if (cp_par->min_to_delete > cp_par->max_number_of_cuts -
+    if(cp_par->min_to_delete > cp_par->max_number_of_cuts -
             cp_par->cuts_to_check)
     {
         printf("io: Cut pool min to delete is too big -- adjusting\n");
@@ -874,7 +874,7 @@ EXIT:
               BEFORE_BRANCH__DO_NOT_GENERATE_COLS);
     }*/
 
-    if (f)
+    if(f)
         fclose(f);
 
     return(FUNCTION_TERMINATED_NORMALLY);
@@ -883,15 +883,15 @@ EXIT:
 /*===========================================================================*/
 /*===========================================================================*/
 
-void read_string(char *target, char *line, int maxlen)
+void read_string(char* target, char* line, int maxlen)
 {
-    char key[MAX_LINE_LENGTH +1], value[MAX_LINE_LENGTH +1], *quote1, *quote2;
+    char key[MAX_LINE_LENGTH + 1], value[MAX_LINE_LENGTH + 1], *quote1, *quote2;
     int len;
 
-    if (sscanf(line, "%s%s", key, value) != 2)
+    if(sscanf(line, "%s%s", key, value) != 2)
         READPAR_ERROR(key);
 
-    if (value[0] != '"')  /* the string is not quoted */
+    if(value[0] != '"')   /* the string is not quoted */
     {
         quote1 = value;
         len = (int)strlen(quote1);
@@ -899,30 +899,30 @@ void read_string(char *target, char *line, int maxlen)
     else   /* the string is quoted */
     {
         quote1 = strchr(line, '"');
-        quote2 = strrchr(line,'"');
-        if (quote1 == quote2)
+        quote2 = strrchr(line, '"');
+        if(quote1 == quote2)
             READPAR_ERROR(key);
         quote1++;
         len = (int)(quote2 - quote1);
     }
 
-    if (len > maxlen)
+    if(len > maxlen)
         READPAR_ERROR(key);
-    if (len > 0)
+    if(len > 0)
         strncpy(target, quote1, len);
     target[len] = 0;
-    if (strchr(target, '{') || strchr(target, '}'))
+    if(strchr(target, '{') || strchr(target, '}'))
         READPAR_ERROR(key);
 }
 
 /*===========================================================================*/
 /*===========================================================================*/
 
-void print_statistics(node_times *tim, problem_stat *stat,
-                      lp_stat_desc *lp_stat, double ub,
+void print_statistics(node_times* tim, problem_stat* stat,
+                      lp_stat_desc* lp_stat, double ub,
                       double lb, double initial_time, double start_time,
                       double finish_time, double obj_offset, char obj_sense,
-                      int has_ub, sp_desc *solpool)
+                      int has_ub, sp_desc* solpool)
 {
     double gap = 0.0;
 
@@ -980,7 +980,7 @@ void print_statistics(node_times *tim, problem_stat *stat,
     printf("Number of analyzed nodes:       %i\n", stat->analyzed);
     printf("Depth of tree:                  %i\n", stat->max_depth);
     printf("Size of the tree:               %i\n", stat->tree_size);
-    if (solpool)
+    if(solpool)
     {
         printf("Number of solutions found:      %i\n", solpool->total_num_sols_found);
         printf("Number of solutions in pool:    %i\n", solpool->num_solutions);
@@ -1000,9 +1000,9 @@ void print_statistics(node_times *tim, problem_stat *stat,
     printf("Number of Chains:               %i\n", stat->chains);
     printf("Number of Diving Halts:         %i\n", stat->diving_halts);
     printf("Number of cuts in cut pool:     %i\n", stat->cuts_in_pool);
-    if (stat->root_lb > -MAXDOUBLE)
+    if(stat->root_lb > -MAXDOUBLE)
     {
-        if (obj_sense == SYM_MAXIMIZE)
+        if(obj_sense == SYM_MAXIMIZE)
         {
             printf("Upper Bound in Root:            %.3f\n",
                    -stat->root_lb + obj_offset);
@@ -1014,157 +1014,157 @@ void print_statistics(node_times *tim, problem_stat *stat,
         }
     }
 
-    if (lp_stat)
+    if(lp_stat)
     {
-        printf ("\n======================= LP Solver =========================");
-        printf ("\n");
-        printf ("Number of times LP solver called:               "
-                "%i\n",lp_stat->lp_calls);
-        printf ("Number of calls from feasibility pump:          "
-                "%i\n",lp_stat->fp_lp_calls);
-        printf ("Number of calls from strong branching:          "
-                "%i\n",lp_stat->str_br_lp_calls);
-        printf ("Number of solutions found by LP solve:          "
-                "%i\n",lp_stat->lp_sols);
-        printf ("Number of bounds changed by strong branching:   "
-                "%i\n",lp_stat->str_br_bnd_changes);
-        printf ("Number of nodes pruned by strong branching:     "
-                "%i\n",lp_stat->str_br_nodes_pruned);
+        printf("\n======================= LP Solver =========================");
+        printf("\n");
+        printf("Number of times LP solver called:               "
+               "%i\n", lp_stat->lp_calls);
+        printf("Number of calls from feasibility pump:          "
+               "%i\n", lp_stat->fp_lp_calls);
+        printf("Number of calls from strong branching:          "
+               "%i\n", lp_stat->str_br_lp_calls);
+        printf("Number of solutions found by LP solve:          "
+               "%i\n", lp_stat->lp_sols);
+        printf("Number of bounds changed by strong branching:   "
+               "%i\n", lp_stat->str_br_bnd_changes);
+        printf("Number of nodes pruned by strong branching:     "
+               "%i\n", lp_stat->str_br_nodes_pruned);
 
-        printf ("\n==================== Feasibility Pump =====================");
-        printf ("\n");
-        printf ("Number of times feasibility pump called:        ");
+        printf("\n==================== Feasibility Pump =====================");
+        printf("\n");
+        printf("Number of times feasibility pump called:        ");
         printf("%i\n", lp_stat->fp_calls);
-        printf ("Number of solutions found by feasibility pump:  ");
+        printf("Number of solutions found by feasibility pump:  ");
         printf("%i\n", lp_stat->fp_num_sols);
-        printf ("Time spent in feasibility pump:                 %.2f\n",
-                tim->fp);
+        printf("Time spent in feasibility pump:                 %.2f\n",
+               tim->fp);
 
-        printf ("\n=========================== Cuts ==========================");
-        printf ("\n");
-        printf ("total cuts accepted:                   %d\n",
-                lp_stat->cuts_generated);
-        printf ("total cuts added to LPs:               %d\n",
-                lp_stat->cuts_added_to_lps);
-        printf ("total cuts deleted from LPs:           %d\n",
-                lp_stat->cuts_deleted_from_lps);
-        printf ("total gomory cuts generated:           %d\n",
-                lp_stat->gomory_cuts);
-        printf ("total knapsack cuts generated:         %d\n",
-                lp_stat->knapsack_cuts);
-        printf ("total oddhole cuts generated:          %d\n",
-                lp_stat->oddhole_cuts);
-        printf ("total clique cuts generated:           %d\n",
-                lp_stat->clique_cuts);
-        printf ("total probing cuts generated:          %d\n",
-                lp_stat->probing_cuts);
-        printf ("total mir cuts generated:              %d\n",
-                lp_stat->mir_cuts);
-        printf ("total twomir cuts generated:           %d\n",
-                lp_stat->twomir_cuts);
-        printf ("total flow and cover cuts generated:   %d\n",
-                lp_stat->flowcover_cuts);
-        printf ("total rounding cuts generated:         %d\n",
-                lp_stat->rounding_cuts);
-        printf ("total lift and project cuts generated: %d\n",
-                lp_stat->lift_and_project_cuts);
-        printf ("total landp cuts generated:            %d\n",
-                lp_stat->landp_cuts);
+        printf("\n=========================== Cuts ==========================");
+        printf("\n");
+        printf("total cuts accepted:                   %d\n",
+               lp_stat->cuts_generated);
+        printf("total cuts added to LPs:               %d\n",
+               lp_stat->cuts_added_to_lps);
+        printf("total cuts deleted from LPs:           %d\n",
+               lp_stat->cuts_deleted_from_lps);
+        printf("total gomory cuts generated:           %d\n",
+               lp_stat->gomory_cuts);
+        printf("total knapsack cuts generated:         %d\n",
+               lp_stat->knapsack_cuts);
+        printf("total oddhole cuts generated:          %d\n",
+               lp_stat->oddhole_cuts);
+        printf("total clique cuts generated:           %d\n",
+               lp_stat->clique_cuts);
+        printf("total probing cuts generated:          %d\n",
+               lp_stat->probing_cuts);
+        printf("total mir cuts generated:              %d\n",
+               lp_stat->mir_cuts);
+        printf("total twomir cuts generated:           %d\n",
+               lp_stat->twomir_cuts);
+        printf("total flow and cover cuts generated:   %d\n",
+               lp_stat->flowcover_cuts);
+        printf("total rounding cuts generated:         %d\n",
+               lp_stat->rounding_cuts);
+        printf("total lift and project cuts generated: %d\n",
+               lp_stat->lift_and_project_cuts);
+        printf("total landp cuts generated:            %d\n",
+               lp_stat->landp_cuts);
 
-        printf ("\n");
+        printf("\n");
 
-        printf ("cuts removed because of bad coeffs:    %d\n",
-                lp_stat->num_poor_cuts);
-        printf ("cuts removed because of duplicacy:     %d\n",
-                lp_stat->num_duplicate_cuts);
-        printf ("insufficiently violated cuts:          %d\n",
-                lp_stat->num_unviolated_cuts);
+        printf("cuts removed because of bad coeffs:    %d\n",
+               lp_stat->num_poor_cuts);
+        printf("cuts removed because of duplicacy:     %d\n",
+               lp_stat->num_duplicate_cuts);
+        printf("insufficiently violated cuts:          %d\n",
+               lp_stat->num_unviolated_cuts);
 
-        printf ("\n");
+        printf("\n");
 
-        printf ("cuts in root:                          %d\n",
-                lp_stat->cuts_root);
-        printf ("gomory cuts in root:                   %d\n",
-                lp_stat->gomory_cuts_root);
-        printf ("knapsack cuts in root:                 %d\n",
-                lp_stat->knapsack_cuts_root);
-        printf ("oddhole cuts in root:                  %d\n",
-                lp_stat->oddhole_cuts_root);
-        printf ("clique cuts in root:                   %d\n",
-                lp_stat->clique_cuts_root);
-        printf ("probing cuts in root:                  %d\n",
-                lp_stat->probing_cuts_root);
-        printf ("mir cuts in root:                      %d\n",
-                lp_stat->mir_cuts_root);
-        printf ("twomir cuts in root:                   %d\n",
-                lp_stat->twomir_cuts_root);
-        printf ("flow and cover cuts in root:           %d\n",
-                lp_stat->flowcover_cuts_root);
-        printf ("rounding cuts in root:                 %d\n",
-                lp_stat->rounding_cuts_root);
-        printf ("lift and project cuts in root:         %d\n",
-                lp_stat->lift_and_project_cuts_root);
-        printf ("landp cuts in root:                    %d\n",
-                lp_stat->landp_cuts_root);
+        printf("cuts in root:                          %d\n",
+               lp_stat->cuts_root);
+        printf("gomory cuts in root:                   %d\n",
+               lp_stat->gomory_cuts_root);
+        printf("knapsack cuts in root:                 %d\n",
+               lp_stat->knapsack_cuts_root);
+        printf("oddhole cuts in root:                  %d\n",
+               lp_stat->oddhole_cuts_root);
+        printf("clique cuts in root:                   %d\n",
+               lp_stat->clique_cuts_root);
+        printf("probing cuts in root:                  %d\n",
+               lp_stat->probing_cuts_root);
+        printf("mir cuts in root:                      %d\n",
+               lp_stat->mir_cuts_root);
+        printf("twomir cuts in root:                   %d\n",
+               lp_stat->twomir_cuts_root);
+        printf("flow and cover cuts in root:           %d\n",
+               lp_stat->flowcover_cuts_root);
+        printf("rounding cuts in root:                 %d\n",
+               lp_stat->rounding_cuts_root);
+        printf("lift and project cuts in root:         %d\n",
+               lp_stat->lift_and_project_cuts_root);
+        printf("landp cuts in root:                    %d\n",
+               lp_stat->landp_cuts_root);
 
-        printf ("\n");
+        printf("\n");
 
-        printf ("time in cut generation: %.2f\n", tim->cuts);
-        printf ("time in gomory cuts in %d calls: %.2f\n",
-                lp_stat->gomory_calls, tim->gomory_cuts);
-        printf ("time in knapsack cuts in %d calls: %.2f\n",
-                lp_stat->knapsack_calls, tim->knapsack_cuts);
-        printf ("time in oddhole cuts in %d calls: %.2f\n",
-                lp_stat->oddhole_calls, tim->oddhole_cuts);
-        printf ("time in clique cuts in %d calls: %.2f\n",
-                lp_stat->clique_calls, tim->clique_cuts);
-        printf ("time in probing cuts in %d calls: %.2f\n",
-                lp_stat->probing_calls, tim->probing_cuts);
-        printf ("time in mir cuts in %d calls: %.2f\n",
-                lp_stat->mir_calls, tim->mir_cuts);
-        printf ("time in twomir cuts in %d calls: %.2f\n",
-                lp_stat->twomir_calls, tim->twomir_cuts);
-        printf ("time in flow and cover cuts in %d calls: %.2f\n",
-                lp_stat->flowcover_calls, tim->flowcover_cuts);
-        printf ("time in rounding cuts in %d calls: %.2f\n",
-                lp_stat->rounding_calls, tim->rounding_cuts);
-        printf ("time in lift and project cuts in %d calls: %.2f\n",
-                lp_stat->lift_and_project_calls, tim->lift_and_project_cuts);
-        printf ("time in landp cuts in %d calls: %.2f\n",
-                lp_stat->landp_calls, tim->landp_cuts);
-        printf ("time in redsplit cuts in %d calls: %.2f\n",
-                lp_stat->redsplit_calls, tim->redsplit_cuts);
-        printf ("time in checking quality and adding: %.2f\n",
-                tim->dupes_and_bad_coeffs_in_cuts);
+        printf("time in cut generation: %.2f\n", tim->cuts);
+        printf("time in gomory cuts in %d calls: %.2f\n",
+               lp_stat->gomory_calls, tim->gomory_cuts);
+        printf("time in knapsack cuts in %d calls: %.2f\n",
+               lp_stat->knapsack_calls, tim->knapsack_cuts);
+        printf("time in oddhole cuts in %d calls: %.2f\n",
+               lp_stat->oddhole_calls, tim->oddhole_cuts);
+        printf("time in clique cuts in %d calls: %.2f\n",
+               lp_stat->clique_calls, tim->clique_cuts);
+        printf("time in probing cuts in %d calls: %.2f\n",
+               lp_stat->probing_calls, tim->probing_cuts);
+        printf("time in mir cuts in %d calls: %.2f\n",
+               lp_stat->mir_calls, tim->mir_cuts);
+        printf("time in twomir cuts in %d calls: %.2f\n",
+               lp_stat->twomir_calls, tim->twomir_cuts);
+        printf("time in flow and cover cuts in %d calls: %.2f\n",
+               lp_stat->flowcover_calls, tim->flowcover_cuts);
+        printf("time in rounding cuts in %d calls: %.2f\n",
+               lp_stat->rounding_calls, tim->rounding_cuts);
+        printf("time in lift and project cuts in %d calls: %.2f\n",
+               lp_stat->lift_and_project_calls, tim->lift_and_project_cuts);
+        printf("time in landp cuts in %d calls: %.2f\n",
+               lp_stat->landp_calls, tim->landp_cuts);
+        printf("time in redsplit cuts in %d calls: %.2f\n",
+               lp_stat->redsplit_calls, tim->redsplit_cuts);
+        printf("time in checking quality and adding: %.2f\n",
+               tim->dupes_and_bad_coeffs_in_cuts);
 
     }
-    if (has_ub)
+    if(has_ub)
     {
-        gap = fabs(100*(ub-lb)/ub);
+        gap = fabs(100 * (ub - lb) / ub);
     }
 
-    if (obj_sense == SYM_MAXIMIZE)
+    if(obj_sense == SYM_MAXIMIZE)
     {
-        if (gap > -1e-07 && gap < 0)
+        if(gap > -1e-07 && gap < 0)
         {
             printf("\nCurrent Lower Bound:         %.10f", -ub + obj_offset);
             printf("\nCurrent Upper Bound:         %.10f", -lb + obj_offset);
             printf("\nGap Percentage:              %.10f\n", -gap);
         }
-        else if (!has_ub)
+        else if(!has_ub)
         {
             printf("\nCurrent Upper Bound:         %.10f\n", -lb + obj_offset);
         }
     }
     else
     {
-        if (gap > 1e-07)
+        if(gap > 1e-07)
         {
             printf("\nCurrent Upper Bound:         %.10f", ub + obj_offset);
             printf("\nCurrent Lower Bound:         %.10f", lb + obj_offset);
             printf("\nGap Percentage:              %.3f\n", gap);
         }
-        else if (!has_ub)
+        else if(!has_ub)
         {
             printf("\nCurrent Lower Bound:         %.10f\n", lb + obj_offset);
         }

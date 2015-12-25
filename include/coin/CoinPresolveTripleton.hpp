@@ -36,33 +36,33 @@ public:
         double coeffy;
         double coeffz;
 
-        double *colel;
+        double* colel;
 
         int ncolx;
         int ncoly;
     };
 
     const int nactions_;
-    const action *const actions_;
+    const action* const actions_;
 
 private:
     tripleton_action(int nactions,
-                     const action *actions,
-                     const CoinPresolveAction *next) :
+                     const action* actions,
+                     const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions), actions_(actions)
     {}
 
 public:
-    const char *name() const
+    const char* name() const
     {
         return ("tripleton_action");
     }
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *,
-            const CoinPresolveAction *next);
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix*,
+            const CoinPresolveAction* next);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     ~tripleton_action();
 };

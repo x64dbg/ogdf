@@ -61,48 +61,48 @@
 namespace ogdf
 {
 
-namespace gexf
-{
+    namespace gexf
+    {
 
 
-class Parser
-{
-private:
-    XmlParser m_xml;
-    XmlTagObject *m_graphTag, *m_nodesTag, *m_edgesTag;
+        class Parser
+        {
+        private:
+            XmlParser m_xml;
+            XmlTagObject* m_graphTag, *m_nodesTag, *m_edgesTag;
 
-    HashArray<std::string, node> m_nodeId;
-    HashArray<std::string, cluster> m_clusterId;
+            HashArray<std::string, node> m_nodeId;
+            HashArray<std::string, cluster> m_clusterId;
 
-    HashArray<std::string, std::string> m_nodeAttr, m_edgeAttr;
+            HashArray<std::string, std::string> m_nodeAttr, m_edgeAttr;
 
-    bool init();
-    bool readNodes(Graph &G, GraphAttributes *GA);
-    bool readEdges(Graph &G, ClusterGraph *C, GraphAttributes *GA);
-    bool readCluster(
-        Graph &G, ClusterGraph &C, ClusterGraphAttributes *CA,
-        cluster rootCluster,
-        const XmlTagObject &rootTag);
-    bool readAttributes(
-        GraphAttributes &GA, node v,
-        const XmlTagObject &nodeTag);
-    bool readAttributes(
-        GraphAttributes &GA, edge e,
-        const XmlTagObject &edgeTag);
+            bool init();
+            bool readNodes(Graph & G, GraphAttributes* GA);
+            bool readEdges(Graph & G, ClusterGraph* C, GraphAttributes* GA);
+            bool readCluster(
+                Graph & G, ClusterGraph & C, ClusterGraphAttributes* CA,
+                cluster rootCluster,
+                const XmlTagObject & rootTag);
+            bool readAttributes(
+                GraphAttributes & GA, node v,
+                const XmlTagObject & nodeTag);
+            bool readAttributes(
+                GraphAttributes & GA, edge e,
+                const XmlTagObject & edgeTag);
 
-    static void error(const XmlTagObject &tag, const std::string msg);
+            static void error(const XmlTagObject & tag, const std::string msg);
 
-public:
-    Parser(std::istream &is);
+        public:
+            Parser(std::istream & is);
 
-    bool read(Graph &G);
-    bool read(Graph &G, GraphAttributes &GA);
-    bool read(Graph &G, ClusterGraph &C);
-    bool read(Graph &G, ClusterGraph &C, ClusterGraphAttributes &CA);
-};
+            bool read(Graph & G);
+            bool read(Graph & G, GraphAttributes & GA);
+            bool read(Graph & G, ClusterGraph & C);
+            bool read(Graph & G, ClusterGraph & C, ClusterGraphAttributes & CA);
+        };
 
 
-}
+    }
 
 } // end namespace ogdf
 

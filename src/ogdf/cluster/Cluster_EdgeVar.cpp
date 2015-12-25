@@ -51,20 +51,20 @@
 using namespace ogdf;
 using namespace abacus;
 
-EdgeVar::EdgeVar(Master *master, double obj, edgeType eType, node source, node target) :
-    Variable (master, 0, false, false, obj, eType==CONNECT ? 0.0 : (((MaxCPlanarMaster*)master)->getCheckCPlanar() ? 1.0 : 0.0), 1.0, eType==CONNECT ? VarType::Binary : (((MaxCPlanarMaster*)master)->getCheckCPlanar() ? VarType::Continuous : VarType::Binary)) // TODO-TESTING
+EdgeVar::EdgeVar(Master* master, double obj, edgeType eType, node source, node target) :
+    Variable(master, 0, false, false, obj, eType == CONNECT ? 0.0 : (((MaxCPlanarMaster*)master)->getCheckCPlanar() ? 1.0 : 0.0), 1.0, eType == CONNECT ? VarType::Binary : (((MaxCPlanarMaster*)master)->getCheckCPlanar() ? VarType::Continuous : VarType::Binary)) // TODO-TESTING
 {
     m_eType = eType;
     m_source = source;
     m_target = target;
-//  m_objCoeff = obj; // not necc.
-//TODO no searchedge!
-    if (eType == ORIGINAL) m_edge = ((MaxCPlanarMaster*)master)->getGraph()->searchEdge(source,target);
+    //  m_objCoeff = obj; // not necc.
+    //TODO no searchedge!
+    if(eType == ORIGINAL) m_edge = ((MaxCPlanarMaster*)master)->getGraph()->searchEdge(source, target);
     else m_edge = NULL;
 }
 
-EdgeVar::EdgeVar(Master *master, double obj, node source, node target) :
-    Variable (master, 0, false, false, obj, 0.0, 1.0, VarType::Binary)
+EdgeVar::EdgeVar(Master* master, double obj, node source, node target) :
+    Variable(master, 0, false, false, obj, 0.0, 1.0, VarType::Binary)
 {
     m_eType = CONNECT;
     m_source = source;
@@ -72,8 +72,8 @@ EdgeVar::EdgeVar(Master *master, double obj, node source, node target) :
     m_edge = NULL;
 }
 
-EdgeVar::EdgeVar(Master *master, double obj, double lbound, node source, node target) :
-    Variable (master, 0, false, false, obj, lbound, 1.0, VarType::Binary)
+EdgeVar::EdgeVar(Master* master, double obj, double lbound, node source, node target) :
+    Variable(master, 0, false, false, obj, lbound, 1.0, VarType::Binary)
 {
     m_eType = CONNECT;
     m_source = source;

@@ -29,15 +29,15 @@ public:
 
     /** Updates weights and returns pivot alpha.
         Also does FT update */
-    virtual double updateWeights(CoinIndexedVector * input,
-                                 CoinIndexedVector * spare,
-                                 CoinIndexedVector * spare2,
-                                 CoinIndexedVector * updatedColumn);
+    virtual double updateWeights(CoinIndexedVector* input,
+                                 CoinIndexedVector* spare,
+                                 CoinIndexedVector* spare2,
+                                 CoinIndexedVector* updatedColumn);
     /** Updates primal solution (and maybe list of candidates)
         Uses input vector which it deletes
         Computes change in objective function
     */
-    virtual void updatePrimalSolution(CoinIndexedVector * input,
+    virtual void updatePrimalSolution(CoinIndexedVector* input,
                                       double theta,
                                       double & changeInObjective);
     //@}
@@ -52,13 +52,13 @@ public:
     ClpDualRowDantzig(const ClpDualRowDantzig &);
 
     /// Assignment operator
-    ClpDualRowDantzig & operator=(const ClpDualRowDantzig& rhs);
+    ClpDualRowDantzig & operator=(const ClpDualRowDantzig & rhs);
 
     /// Destructor
-    virtual ~ClpDualRowDantzig ();
+    virtual ~ClpDualRowDantzig();
 
     /// Clone
-    virtual ClpDualRowPivot * clone(bool copyData = true) const;
+    virtual ClpDualRowPivot* clone(bool copyData = true) const;
 
     //@}
 

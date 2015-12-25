@@ -56,40 +56,40 @@ namespace ogdf
 {
 
 
-//! The split heuristic for 2-layer crossing minimization.
-class OGDF_EXPORT SplitHeuristic : public TwoLayerCrossMinSimDraw
-{
-public:
-    //! Creates a new instance of the split heuristic.
-    SplitHeuristic() { }
-
-    //! Creates a new instance of the split heuristic.
-    SplitHeuristic(const SplitHeuristic &crossMin) { }
-
-    //! Returns a new instance of the splitheurisitc with the same option settings.
-    TwoLayerCrossMinSimDraw *clone() const
+    //! The split heuristic for 2-layer crossing minimization.
+    class OGDF_EXPORT SplitHeuristic : public TwoLayerCrossMinSimDraw
     {
-        return new SplitHeuristic(*this);
-    }
+    public:
+        //! Creates a new instance of the split heuristic.
+        SplitHeuristic() { }
 
-    //! Initializes crossing minimization for hierarchy \a H.
-    void init (const HierarchyLevels &levels);
+        //! Creates a new instance of the split heuristic.
+        SplitHeuristic(const SplitHeuristic & crossMin) { }
 
-    //! Calls the split heuristic for level \a L.
-    void call (Level &L);
+        //! Returns a new instance of the splitheurisitc with the same option settings.
+        TwoLayerCrossMinSimDraw* clone() const
+        {
+            return new SplitHeuristic(*this);
+        }
 
-    //! Calls the median heuristic for level \a L (simultaneous drawing).
-    void call (Level &L, const EdgeArray<__uint32> *edgeSubGraphs);
+        //! Initializes crossing minimization for hierarchy \a H.
+        void init(const HierarchyLevels & levels);
 
-    //! Does some clean-up after calls.
-    void cleanup ();
+        //! Calls the split heuristic for level \a L.
+        void call(Level & L);
 
-private:
-    CrossingsMatrix *m_cm;
-    Array<node> buffer;
+        //! Calls the median heuristic for level \a L (simultaneous drawing).
+        void call(Level & L, const EdgeArray<__uint32>* edgeSubGraphs);
 
-    void recCall(Level&, int low, int high);
-};
+        //! Does some clean-up after calls.
+        void cleanup();
+
+    private:
+        CrossingsMatrix* m_cm;
+        Array<node> buffer;
+
+        void recCall(Level &, int low, int high);
+    };
 
 }// end namespace ogdf
 

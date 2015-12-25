@@ -23,32 +23,32 @@ class CoinWarmStartBasis;
 
 namespace LAP
 {
-enum LapMessagesTypes
-{
-    BEGIN_ROUND,
-    END_ROUND,
-    DURING_SEP,
-    CUT_REJECTED,
-    CUT_FAILED,
-    CUT_GAP,
-    LAP_CUT_FAILED_DO_MIG,
-    LAP_MESSAGES_DUMMY_END
-};
-/** Output messages for Cgl */
-class LapMessages : public CoinMessages
-{
-public:
-    /** Constructor */
-    LapMessages( );
-    /** destructor.*/
-    virtual ~LapMessages() {}
-};
-class CglLandPSimplex;
+    enum LapMessagesTypes
+    {
+        BEGIN_ROUND,
+        END_ROUND,
+        DURING_SEP,
+        CUT_REJECTED,
+        CUT_FAILED,
+        CUT_GAP,
+        LAP_CUT_FAILED_DO_MIG,
+        LAP_MESSAGES_DUMMY_END
+    };
+    /** Output messages for Cgl */
+    class LapMessages : public CoinMessages
+    {
+    public:
+        /** Constructor */
+        LapMessages();
+        /** destructor.*/
+        virtual ~LapMessages() {}
+    };
+    class CglLandPSimplex;
 }
 
 class CglLandP : public CglCutGenerator
 {
-    friend void CglLandPUnitTest(OsiSolverInterface *si, const std::string & mpsDir);
+    friend void CglLandPUnitTest(OsiSolverInterface* si, const std::string & mpsDir);
 
     friend class LAP::CglLandPSimplex;
     friend class CftCglp;
@@ -73,7 +73,7 @@ public:
     /** Space where cuts are optimized.*/
     enum SeparationSpaces
     {
-        Fractional=0 /** True fractional space.*/,
+        Fractional = 0 /** True fractional space.*/,
         Fractional_rc/** Use fractional space only for computing reduced costs.*/,
         Full /** Work in full space.*/
     };
@@ -110,9 +110,9 @@ public:
         /** Default constructor (with default values)*/
         Parameters();
         /** Copy constructor */
-        Parameters(const Parameters &other);
+        Parameters(const Parameters & other);
         /** Assignment opertator */
-        Parameters & operator=(const Parameters &other);
+        Parameters & operator=(const Parameters & other);
         /// @name integer parameters
         ///@{
 
@@ -175,16 +175,16 @@ public:
 
 
     /** Constructor for the class*/
-    CglLandP(const CglLandP::Parameters &params = CglLandP::Parameters(),
-             const LAP::Validator &validator = LAP::Validator());
+    CglLandP(const CglLandP::Parameters & params = CglLandP::Parameters(),
+             const LAP::Validator & validator = LAP::Validator());
     /** Destructor */
     ~CglLandP();
     /** Copy constructor */
-    CglLandP(const CglLandP &source);
+    CglLandP(const CglLandP & source);
     /** Assignment operator */
-    CglLandP& operator=(const CglLandP &rhs);
+    CglLandP & operator=(const CglLandP & rhs);
     /** Clone function */
-    CglCutGenerator * clone() const;
+    CglCutGenerator* clone() const;
 
     /**@name Generate Cuts */
     //@{
@@ -218,13 +218,13 @@ public:
     class NoBasisError : public CoinError
     {
     public:
-        NoBasisError(): CoinError("No basis available","LandP","") {}
+        NoBasisError(): CoinError("No basis available", "LandP", "") {}
     };
 
     class SimplexInterfaceError : public CoinError
     {
     public:
-        SimplexInterfaceError(): CoinError("Invalid conversion to simplex interface", "CglLandP","CglLandP") {}
+        SimplexInterfaceError(): CoinError("Invalid conversion to simplex interface", "CglLandP", "CglLandP") {}
     };
     Parameters & parameter()
     {
@@ -233,7 +233,7 @@ public:
 private:
 
 
-    void scanExtraCuts(OsiCuts& cs, const double * colsol) const;
+    void scanExtraCuts(OsiCuts & cs, const double* colsol) const;
 
     Parameters params_;
 
@@ -243,44 +243,44 @@ private:
         CachedData(int nBasics = 0 , int nNonBasics = 0);
         CachedData(const CachedData & source);
 
-        CachedData& operator=(const CachedData &source);
+        CachedData & operator=(const CachedData & source);
         /** Get the data from a problem */
-        void getData(const OsiSolverInterface &si);
+        void getData(const OsiSolverInterface & si);
 
         void clean();
 
         ~CachedData();
         /** Indices of basic variables in starting basis (ordered if variable basics_[i] s basic in row i)*/
-        int * basics_;
+        int* basics_;
         /** Indices of non-basic variables */
-        int *nonBasics_;
+        int* nonBasics_;
         /** number of basics variables */
         int nBasics_;
         /** number of non-basics */
         int nNonBasics_;
         /** Optimal basis */
-        CoinWarmStartBasis * basis_;
+        CoinWarmStartBasis* basis_;
         /** Stores the value of the solution to cut */
-        double * colsol_;
+        double* colsol_;
         /** Stores the values of the slacks */
-        double * slacks_;
+        double* slacks_;
         /** Stores wheter slacks are integer constrained */
-        bool * integers_;
+        bool* integers_;
     };
     /** Retrieve sorted integer variables which are fractional in the solution.
         Return the number of variables.*/
-    int getSortedFractionals(CoinPackedVector &xFrac,
+    int getSortedFractionals(CoinPackedVector & xFrac,
                              const CachedData & data,
-                             const CglLandP::Parameters& params) const;
+                             const CglLandP::Parameters & params) const;
     /** Retrieve sorted integer variables which are fractional in the solution.
         Return the number of variables.*/
-    void getSortedFractionalIndices(std::vector<int>& indices,
-                                    const CachedData &data,
+    void getSortedFractionalIndices(std::vector<int> & indices,
+                                    const CachedData & data,
                                     const CglLandP::Parameters & params) const;
     /** Cached informations about problem.*/
     mutable CachedData cached_;
     /** message handler */
-    CoinMessageHandler * handler_;
+    CoinMessageHandler* handler_;
     /** messages */
     CoinMessages messages_;
     /** cut validator */
@@ -290,15 +290,15 @@ private:
     /** number of columns in the original problems. */
     mutable int numcols_;
     /** Original lower bounds for the problem (for lifting cuts).*/
-    mutable double * originalColLower_;
+    mutable double* originalColLower_;
     /** Original upper bounds for the problem (for lifting cuts).*/
-    mutable double * originalColUpper_;
+    mutable double* originalColUpper_;
     /** Flag to say if cuts can be lifted.*/
     mutable bool canLift_;
     /** Store some extra cut which could be cheaply generated but do not cut current incumbent.*/
     mutable OsiCuts extraCuts_;
 };
-void CglLandPUnitTest(OsiSolverInterface *si, const std::string & mpsDir);
+void CglLandPUnitTest(OsiSolverInterface* si, const std::string & mpsDir);
 
 #endif
 

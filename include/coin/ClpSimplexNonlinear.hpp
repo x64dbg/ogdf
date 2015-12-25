@@ -49,7 +49,7 @@ public:
         This is in because I have it lying around
 
     */
-    int primalSLP(int numberConstraints, ClpConstraint ** constraints,
+    int primalSLP(int numberConstraints, ClpConstraint** constraints,
                   int numberPasses, double deltaTolerance);
 
     /** Creates direction vector.  note longArray is long enough
@@ -57,13 +57,13 @@ public:
         otherwise mode is ignored and those are used.
         Norms are only for those > 1.0e3*dualTolerance
         If mode is nonzero then just largest dj */
-    void directionVector (CoinIndexedVector * longArray,
-                          CoinIndexedVector * spare1, CoinIndexedVector * spare2,
-                          int mode,
-                          double & normFlagged, double & normUnflagged,
-                          int & numberNonBasic);
+    void directionVector(CoinIndexedVector* longArray,
+                         CoinIndexedVector* spare1, CoinIndexedVector* spare2,
+                         int mode,
+                         double & normFlagged, double & normUnflagged,
+                         int & numberNonBasic);
     /// Main part.
-    int whileIterating (int & pivotMode);
+    int whileIterating(int & pivotMode);
     /**
         longArray has direction
         pivotMode -
@@ -76,13 +76,13 @@ public:
         3 - if time to re-factorize
         If sequenceIn_ >=0 then that will be incoming variable
     */
-    int pivotColumn(CoinIndexedVector * longArray,
-                    CoinIndexedVector * rowArray,
-                    CoinIndexedVector * columnArray,
-                    CoinIndexedVector * spare,
+    int pivotColumn(CoinIndexedVector* longArray,
+                    CoinIndexedVector* rowArray,
+                    CoinIndexedVector* columnArray,
+                    CoinIndexedVector* spare,
                     int & pivotMode,
                     double & solutionError,
-                    double * array1);
+                    double* array1);
     /**  Refactorizes if necessary
          Checks if finished.  Updates status.
          lastCleaned refers to iteration at which some objective/feasibility
@@ -93,7 +93,7 @@ public:
           - 2 restoring from saved
     */
     void statusOfProblemInPrimal(int & lastCleaned, int type,
-                                 ClpSimplexProgress * progress,
+                                 ClpSimplexProgress* progress,
                                  bool doFactorization,
                                  double & bestObjectiveWhenFlagged);
     /** Do last half of an iteration.

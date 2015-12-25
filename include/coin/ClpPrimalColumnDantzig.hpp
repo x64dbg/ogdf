@@ -31,14 +31,14 @@ public:
         reduced cost from last iteration in pivot row
         Can just do full price if you really want to be slow
     */
-    virtual int pivotColumn(CoinIndexedVector * updates,
-                            CoinIndexedVector * spareRow1,
-                            CoinIndexedVector * spareRow2,
-                            CoinIndexedVector * spareColumn1,
-                            CoinIndexedVector * spareColumn2);
+    virtual int pivotColumn(CoinIndexedVector* updates,
+                            CoinIndexedVector* spareRow1,
+                            CoinIndexedVector* spareRow2,
+                            CoinIndexedVector* spareColumn1,
+                            CoinIndexedVector* spareColumn2);
 
     /// Just sets model
-    virtual void saveWeights(ClpSimplex * model, int)
+    virtual void saveWeights(ClpSimplex* model, int)
     {
         model_ = model;
     }
@@ -54,13 +54,13 @@ public:
     ClpPrimalColumnDantzig(const ClpPrimalColumnDantzig &);
 
     /// Assignment operator
-    ClpPrimalColumnDantzig & operator=(const ClpPrimalColumnDantzig& rhs);
+    ClpPrimalColumnDantzig & operator=(const ClpPrimalColumnDantzig & rhs);
 
     /// Destructor
-    virtual ~ClpPrimalColumnDantzig ();
+    virtual ~ClpPrimalColumnDantzig();
 
     /// Clone
-    virtual ClpPrimalColumnPivot * clone(bool copyData = true) const;
+    virtual ClpPrimalColumnPivot* clone(bool copyData = true) const;
 
     //@}
 

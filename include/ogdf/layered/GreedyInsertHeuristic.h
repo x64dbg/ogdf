@@ -58,35 +58,35 @@ namespace ogdf
 {
 
 
-//! The greedy-insert heuristic for 2-layer crossing minimization.
-class OGDF_EXPORT GreedyInsertHeuristic : public LayerByLayerSweep
-{
-public:
-    //! Creates a new instance of the greedy-insert heuristic.
-    GreedyInsertHeuristic() { }
-
-    //! Creates a new instance of the greedy-insert heuristic.
-    GreedyInsertHeuristic(const GreedyInsertHeuristic &crossMin) { }
-
-    //! Returns a new instance of the greed-insert heuristic with the same option settings.
-    LayerByLayerSweep *clone() const
+    //! The greedy-insert heuristic for 2-layer crossing minimization.
+    class OGDF_EXPORT GreedyInsertHeuristic : public LayerByLayerSweep
     {
-        return new GreedyInsertHeuristic(*this);
-    }
+    public:
+        //! Creates a new instance of the greedy-insert heuristic.
+        GreedyInsertHeuristic() { }
 
-    //! Initializes weights and crossing minimization for hierarchy \a H.
-    void init (const HierarchyLevels &levels);
+        //! Creates a new instance of the greedy-insert heuristic.
+        GreedyInsertHeuristic(const GreedyInsertHeuristic & crossMin) { }
 
-    //! Calls the greedy insert heuristic for level \a L.
-    void call (Level &L);
+        //! Returns a new instance of the greed-insert heuristic with the same option settings.
+        LayerByLayerSweep* clone() const
+        {
+            return new GreedyInsertHeuristic(*this);
+        }
 
-    //! Does some clean-up after calls.
-    void cleanup ();
+        //! Initializes weights and crossing minimization for hierarchy \a H.
+        void init(const HierarchyLevels & levels);
 
-private:
-    CrossingsMatrix *m_crossingMatrix;
-    NodeArray<double> m_weight;
-};
+        //! Calls the greedy insert heuristic for level \a L.
+        void call(Level & L);
+
+        //! Does some clean-up after calls.
+        void cleanup();
+
+    private:
+        CrossingsMatrix* m_crossingMatrix;
+        NodeArray<double> m_weight;
+    };
 
 
 } // end namespace ogdf

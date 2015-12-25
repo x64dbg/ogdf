@@ -31,16 +31,16 @@ public:
 
     /** Updates weights and returns pivot alpha.
         Also does FT update */
-    virtual double updateWeights(CoinIndexedVector * input,
-                                 CoinIndexedVector * spare,
-                                 CoinIndexedVector * spare2,
-                                 CoinIndexedVector * updatedColumn);
+    virtual double updateWeights(CoinIndexedVector* input,
+                                 CoinIndexedVector* spare,
+                                 CoinIndexedVector* spare2,
+                                 CoinIndexedVector* updatedColumn);
 
     /** Updates primal solution (and maybe list of candidates)
         Uses input vector which it deletes
         Computes change in objective function
     */
-    virtual void updatePrimalSolution(CoinIndexedVector * input,
+    virtual void updatePrimalSolution(CoinIndexedVector* input,
                                       double theta,
                                       double & changeInObjective);
 
@@ -54,7 +54,7 @@ public:
         4) as 2 but restore weights from previous snapshot
         5) for strong branching - initialize (uninitialized) , infeasibilities
     */
-    virtual void saveWeights(ClpSimplex * model, int mode);
+    virtual void saveWeights(ClpSimplex* model, int mode);
     /// Gets rid of last update
     virtual void unrollWeights();
     /// Gets rid of all arrays
@@ -88,16 +88,16 @@ public:
     ClpDualRowSteepest(const ClpDualRowSteepest &);
 
     /// Assignment operator
-    ClpDualRowSteepest & operator=(const ClpDualRowSteepest& rhs);
+    ClpDualRowSteepest & operator=(const ClpDualRowSteepest & rhs);
 
     /// Fill most values
-    void fill(const ClpDualRowSteepest& rhs);
+    void fill(const ClpDualRowSteepest & rhs);
 
     /// Destructor
-    virtual ~ClpDualRowSteepest ();
+    virtual ~ClpDualRowSteepest();
 
     /// Clone
-    virtual ClpDualRowPivot * clone(bool copyData = true) const;
+    virtual ClpDualRowPivot* clone(bool copyData = true) const;
 
     //@}
     /**@name gets and sets */
@@ -116,7 +116,7 @@ public:
     {
         return persistence_ ;
     }
-//@}
+    //@}
 
     //---------------------------------------------------------------------------
 
@@ -134,15 +134,15 @@ private:
     /// Life of weights
     Persistence persistence_;
     /// weight array
-    double * weights_;
+    double* weights_;
     /// square of infeasibility array (just for infeasible rows)
-    CoinIndexedVector * infeasible_;
+    CoinIndexedVector* infeasible_;
     /// alternate weight array (so we can unroll)
-    CoinIndexedVector * alternateWeights_;
+    CoinIndexedVector* alternateWeights_;
     /// save weight array (so we can use checkpoint)
-    CoinIndexedVector * savedWeights_;
+    CoinIndexedVector* savedWeights_;
     /// Dubious weights
-    int * dubiousWeights_;
+    int* dubiousWeights_;
     //@}
 };
 

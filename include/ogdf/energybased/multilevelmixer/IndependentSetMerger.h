@@ -52,24 +52,24 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT IndependentSetMerger : public MultilevelBuilder
-{
-private:
-    float m_base;
-
-    std::vector<node> prebuildLevel(const Graph &G, const std::vector<node> &oldLevelNodes, int level);
-    bool buildOneLevel(MultilevelGraph &MLG)
+    class OGDF_EXPORT IndependentSetMerger : public MultilevelBuilder
     {
-        return false;
-    }
-    bool buildOneLevel(MultilevelGraph &MLG, std::vector<node> &levelNodes);
+    private:
+        float m_base;
 
-public:
-    void buildAllLevels(MultilevelGraph &MLG);
-    void setSearchDepthBase(float base);
+        std::vector<node> prebuildLevel(const Graph & G, const std::vector<node> & oldLevelNodes, int level);
+        bool buildOneLevel(MultilevelGraph & MLG)
+        {
+            return false;
+        }
+        bool buildOneLevel(MultilevelGraph & MLG, std::vector<node> & levelNodes);
 
-    IndependentSetMerger();
-};
+    public:
+        void buildAllLevels(MultilevelGraph & MLG);
+        void setSearchDepthBase(float base);
+
+        IndependentSetMerger();
+    };
 
 } // namespace ogdf
 

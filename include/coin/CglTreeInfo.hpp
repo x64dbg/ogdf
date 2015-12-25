@@ -48,34 +48,34 @@ public:
 
         The calling function can then replace those rows.
     */
-    OsiRowCut ** strengthenRow;
+    OsiRowCut** strengthenRow;
     /// Optional pointer to thread specific random number generator
-    CoinThreadRandom * randomNumberGenerator;
+    CoinThreadRandom* randomNumberGenerator;
     /// Default constructor
-    CglTreeInfo ();
+    CglTreeInfo();
 
     /// Copy constructor
-    CglTreeInfo (
+    CglTreeInfo(
         const CglTreeInfo &);
     /// Clone
-    virtual CglTreeInfo * clone() const;
+    virtual CglTreeInfo* clone() const;
 
     /// Assignment operator
     CglTreeInfo &
     operator=(
-        const CglTreeInfo& rhs);
+        const CglTreeInfo & rhs);
 
     /// Destructor
     virtual
-    ~CglTreeInfo ();
+    ~CglTreeInfo();
     /// Take action if cut generator can fix a variable (toValue -1 for down, +1 for up)
-    virtual bool fixes(int , int , int ,bool)
+    virtual bool fixes(int , int , int , bool)
     {
         return false;
     }
     /** Initalizes fixing arrays etc - returns >0 if we want to save info
         0 if we don't and -1 if is to be used */
-    virtual int initializeFixing(const OsiSolverInterface * )
+    virtual int initializeFixing(const OsiSolverInterface*)
     {
         return 0;
     }
@@ -94,32 +94,32 @@ class CglTreeProbingInfo : public CglTreeInfo
 {
 public:
     /// Default constructor
-    CglTreeProbingInfo ();
+    CglTreeProbingInfo();
     /// Constructor from model
-    CglTreeProbingInfo (const OsiSolverInterface * model);
+    CglTreeProbingInfo(const OsiSolverInterface* model);
 
     /// Copy constructor
-    CglTreeProbingInfo (
+    CglTreeProbingInfo(
         const CglTreeProbingInfo &);
     /// Clone
-    virtual CglTreeInfo * clone() const;
+    virtual CglTreeInfo* clone() const;
 
     /// Assignment operator
     CglTreeProbingInfo &
     operator=(
-        const CglTreeProbingInfo& rhs);
+        const CglTreeProbingInfo & rhs);
 
     /// Destructor
     virtual
-    ~CglTreeProbingInfo ();
-    OsiSolverInterface * analyze(const OsiSolverInterface & si, int createSolver=0);
+    ~CglTreeProbingInfo();
+    OsiSolverInterface* analyze(const OsiSolverInterface & si, int createSolver = 0);
     /** Take action if cut generator can fix a variable
         (toValue -1 for down, +1 for up)
         Returns true if still room, false if not  */
-    virtual bool fixes(int variable, int toValue, int fixedVariable,bool fixedToLower);
+    virtual bool fixes(int variable, int toValue, int fixedVariable, bool fixedToLower);
     /** Initalizes fixing arrays etc - returns >0 if we want to save info
         0 if we don't and -1 if is to be used */
-    virtual int initializeFixing(const OsiSolverInterface * model) ;
+    virtual int initializeFixing(const OsiSolverInterface* model) ;
     /// Fix entries in a solver using implications
     int fixColumns(OsiSolverInterface & si) const;
     /// Fix entries in a solver using implications for one variable
@@ -130,30 +130,30 @@ public:
     void generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                       const CglTreeInfo info) const;
     /// Entries for fixing variables
-    inline cliqueEntry * fixEntries() const
+    inline cliqueEntry* fixEntries() const
     {
         convert();
         return fixEntry_;
     }
     /// Starts of integer variable going to zero
-    inline int * toZero() const
+    inline int* toZero() const
     {
         convert();
         return toZero_;
     }
     /// Starts of integer variable going to one
-    inline int * toOne() const
+    inline int* toOne() const
     {
         convert();
         return toOne_;
     }
     /// List of 0-1 integer variables
-    inline int * integerVariable() const
+    inline int* integerVariable() const
     {
         return integerVariable_;
     }
     /// Backward look up
-    inline int * backward() const
+    inline int* backward() const
     {
         return backward_;
     }
@@ -172,17 +172,17 @@ private:
     void convert() const;
 protected:
     /// Entries for fixing variables
-    mutable cliqueEntry * fixEntry_;
+    mutable cliqueEntry* fixEntry_;
     /// Starts of integer variable going to zero
-    mutable int * toZero_;
+    mutable int* toZero_;
     /// Starts of integer variable going to one
-    mutable int * toOne_;
+    mutable int* toOne_;
     /// List of 0-1 integer variables
-    int * integerVariable_;
+    int* integerVariable_;
     /// Backward look up
-    int * backward_;
+    int* backward_;
     /// Entries for fixing variable when collecting
-    mutable int * fixingEntry_;
+    mutable int* fixingEntry_;
     /// Number of variables
     int numberVariables_;
     /// Number of 0-1 variables
@@ -194,19 +194,19 @@ protected:
 };
 inline int sequenceInCliqueEntry(const cliqueEntry & cEntry)
 {
-    return cEntry.fixes&0x7fffffff;
+    return cEntry.fixes & 0x7fffffff;
 }
-inline void setSequenceInCliqueEntry(cliqueEntry & cEntry,int sequence)
+inline void setSequenceInCliqueEntry(cliqueEntry & cEntry, int sequence)
 {
-    cEntry.fixes = sequence|(cEntry.fixes&0x80000000);
+    cEntry.fixes = sequence | (cEntry.fixes & 0x80000000);
 }
 inline bool oneFixesInCliqueEntry(const cliqueEntry & cEntry)
 {
-    return (cEntry.fixes&0x80000000)!=0;
+    return (cEntry.fixes & 0x80000000) != 0;
 }
-inline void setOneFixesInCliqueEntry(cliqueEntry & cEntry,bool oneFixes)
+inline void setOneFixesInCliqueEntry(cliqueEntry & cEntry, bool oneFixes)
 {
-    cEntry.fixes = (oneFixes ? 0x80000000 : 0)|(cEntry.fixes&0x7fffffff);
+    cEntry.fixes = (oneFixes ? 0x80000000 : 0) | (cEntry.fixes & 0x7fffffff);
 }
 
 #endif

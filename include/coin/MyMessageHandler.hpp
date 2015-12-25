@@ -36,8 +36,8 @@ public:
     /**@name set and get */
     //@{
     /// Model
-    const ClpSimplex * model() const;
-    void setModel(ClpSimplex * model);
+    const ClpSimplex* model() const;
+    void setModel(ClpSimplex* model);
     /// Get queue of feasible extreme points
     const std::deque<StdVectorDouble> & getFeasibleExtremePoints() const;
     /// Empty queue of feasible extreme points
@@ -49,8 +49,8 @@ public:
     /** Default constructor. */
     MyMessageHandler();
     /// Constructor with pointer to model
-    MyMessageHandler(ClpSimplex * model,
-                     FILE * userPointer = NULL);
+    MyMessageHandler(ClpSimplex* model,
+                     FILE* userPointer = NULL);
     /** Destructor */
     virtual ~MyMessageHandler();
     //@}
@@ -58,13 +58,13 @@ public:
     /**@name Copy method */
     //@{
     /** The copy constructor. */
-    MyMessageHandler(const MyMessageHandler&);
+    MyMessageHandler(const MyMessageHandler &);
     /** The copy constructor from an CoinSimplexMessageHandler. */
-    MyMessageHandler(const CoinMessageHandler&);
+    MyMessageHandler(const CoinMessageHandler &);
 
-    MyMessageHandler& operator=(const MyMessageHandler&);
+    MyMessageHandler & operator=(const MyMessageHandler &);
     /// Clone
-    virtual CoinMessageHandler * clone() const ;
+    virtual CoinMessageHandler* clone() const ;
     //@}
 
 
@@ -73,7 +73,7 @@ protected:
        The data members are protected to allow access for derived classes. */
     //@{
     /// Pointer back to model
-    ClpSimplex * model_;
+    ClpSimplex* model_;
     /// Saved extreme points
     std::deque<StdVectorDouble> feasibleExtremePoints_;
     /// Iteration number so won't do same one twice

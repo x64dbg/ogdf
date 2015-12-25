@@ -35,18 +35,18 @@
 
 int main(void)
 {
-    lp_prob *p;
+    lp_prob* p;
     int r_bufid;
     double time, diff;
     struct timeval timeout = {10, 0};
     char first_node_rec = FALSE;
     int termcode;
 
-    p = (lp_prob *) calloc(1, sizeof(lp_prob));
+    p = (lp_prob*) calloc(1, sizeof(lp_prob));
 
     p->start_time = wall_clock(NULL);
 
-    if ((termcode = lp_initialize(p, 0)) < 0)
+    if((termcode = lp_initialize(p, 0)) < 0)
     {
         printf("LP initialization failed with error code %i\n\n", termcode);
         lp_exit(p);
@@ -58,7 +58,7 @@ int main(void)
     \*------------------------------------------------------------------------*/
 
     p->phase = 0;
-    while (TRUE)
+    while(TRUE)
     {
         p->lp_data->col_set_changed = TRUE;
         /*---------------------------------------------------------------------*\
@@ -71,9 +71,9 @@ int main(void)
         {
             r_bufid = treceive_msg(ANYONE, ANYTHING, &timeout);
         }
-        while (! process_message(p, r_bufid, NULL, NULL) );
+        while(! process_message(p, r_bufid, NULL, NULL));
         diff = wall_clock(NULL) - time;
-        if (first_node_rec)
+        if(first_node_rec)
         {
             p->comp_times.idle_node += diff;
         }
@@ -85,14 +85,14 @@ int main(void)
         do
         {
             r_bufid = nreceive_msg(ANYONE, ANYTHING);
-            if (r_bufid)
+            if(r_bufid)
                 process_message(p, r_bufid, NULL, NULL);
         }
-        while (r_bufid);
+        while(r_bufid);
 
         p->comp_times.communication += used_time(&p->tt);
 
-        if (process_chain(p) < 0)
+        if(process_chain(p) < 0)
         {
             printf("\nThere was an error in the LP process. Exiting now.\n\n");
             /* There was an error in the LP. Abandon node. */

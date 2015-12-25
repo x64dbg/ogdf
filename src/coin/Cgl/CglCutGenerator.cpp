@@ -19,7 +19,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-CglCutGenerator::CglCutGenerator ()
+CglCutGenerator::CglCutGenerator()
     : aggressive_(0)
 {
     // nothing to do here
@@ -28,7 +28,7 @@ CglCutGenerator::CglCutGenerator ()
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-CglCutGenerator::CglCutGenerator (
+CglCutGenerator::CglCutGenerator(
     const CglCutGenerator & source)
     : aggressive_(source.aggressive_)
 {
@@ -39,7 +39,7 @@ CglCutGenerator::CglCutGenerator (
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-CglCutGenerator::~CglCutGenerator ()
+CglCutGenerator::~CglCutGenerator()
 {
     // nothing to do here
 }
@@ -49,9 +49,9 @@ CglCutGenerator::~CglCutGenerator ()
 //-------------------------------------------------------------------
 CglCutGenerator &
 CglCutGenerator::operator=(
-    const CglCutGenerator& rhs)
+    const CglCutGenerator & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         aggressive_ = rhs.aggressive_;
     }

@@ -60,76 +60,76 @@ namespace ogdf
 {
 
 
-/**
- * \brief Interface for planar UML layout algorithms.
- *
- * \see PlanarizationLayout
- */
-class OGDF_EXPORT LayoutPlanRepUMLModule
-{
-public:
-    //! Initializes a UML planar layout module.
-    LayoutPlanRepUMLModule() { }
-
-    virtual ~LayoutPlanRepUMLModule() { }
-
-    /** \brief Computes a planar layout of \a PG in \a drawing.
+    /**
+     * \brief Interface for planar UML layout algorithms.
      *
-     * Must be overridden by derived classes.
-     * @param PG is the input planarized representation which may be modified.
-     * @param adjExternal is an adjacenty entry on the external face.
-     * @param drawing is the computed layout of \a PG.
+     * \see PlanarizationLayout
      */
-    virtual void call(PlanRepUML &PG,
-                      adjEntry adjExternal,
-                      Layout &drawing) = 0;
-
-    //! Computes a planar layout of \a PG in \a drawing.
-    void operator()(PlanRepUML &PG, adjEntry adjExternal, Layout &drawing)
+    class OGDF_EXPORT LayoutPlanRepUMLModule
     {
-        call(PG,adjExternal,drawing);
-    }
+    public:
+        //! Initializes a UML planar layout module.
+        LayoutPlanRepUMLModule() { }
 
-    //! Returns the bounding box of the computed layout.
-    const DPoint &getBoundingBox() const
-    {
-        return m_boundingBox;
-    }
+        virtual ~LayoutPlanRepUMLModule() { }
 
-    //! Sets the (generic) options; derived classes have to cope with the interpretation)
-    virtual void setOptions(int /* optionField */) { } //don't make it abstract
+        /** \brief Computes a planar layout of \a PG in \a drawing.
+         *
+         * Must be overridden by derived classes.
+         * @param PG is the input planarized representation which may be modified.
+         * @param adjExternal is an adjacenty entry on the external face.
+         * @param drawing is the computed layout of \a PG.
+         */
+        virtual void call(PlanRepUML & PG,
+                          adjEntry adjExternal,
+                          Layout & drawing) = 0;
 
-    //! Returns the (generic) options.
-    virtual int getOptions()
-    {
-        return 0;    //don't make it abstract
-    }
+        //! Computes a planar layout of \a PG in \a drawing.
+        void operator()(PlanRepUML & PG, adjEntry adjExternal, Layout & drawing)
+        {
+            call(PG, adjExternal, drawing);
+        }
 
-    //! Returns the minimal allowed distance between edges and vertices.
-    virtual double separation() const = 0;
+        //! Returns the bounding box of the computed layout.
+        const DPoint & getBoundingBox() const
+        {
+            return m_boundingBox;
+        }
 
-    //! Sets the minimal allowed distance between edges and vertices to \a sep.
-    virtual void separation(double sep) = 0;
+        //! Sets the (generic) options; derived classes have to cope with the interpretation)
+        virtual void setOptions(int /* optionField */) { } //don't make it abstract
 
-protected:
-    /**
-     * \brief Stores the bounding box of the computed layout.
-     * <b>Must be set by derived algorithms!</b>
-     */
-    DPoint m_boundingBox;
+        //! Returns the (generic) options.
+        virtual int getOptions()
+        {
+            return 0;    //don't make it abstract
+        }
 
-    /**
-     * \brief Computes and sets the bounding box variable \a m_boundingBox.
-     * An algorithm can call setBoundingBox() for setting the
-     * m_boundingBox variable if no faster implementation is available.
-     */
-    void setBoundingBox(PlanRep &PG, Layout &drawing)
-    {
-        m_boundingBox = drawing.computeBoundingBox(PG);
-    }
+        //! Returns the minimal allowed distance between edges and vertices.
+        virtual double separation() const = 0;
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        //! Sets the minimal allowed distance between edges and vertices to \a sep.
+        virtual void separation(double sep) = 0;
+
+    protected:
+        /**
+         * \brief Stores the bounding box of the computed layout.
+         * <b>Must be set by derived algorithms!</b>
+         */
+        DPoint m_boundingBox;
+
+        /**
+         * \brief Computes and sets the bounding box variable \a m_boundingBox.
+         * An algorithm can call setBoundingBox() for setting the
+         * m_boundingBox variable if no faster implementation is available.
+         */
+        void setBoundingBox(PlanRep & PG, Layout & drawing)
+        {
+            m_boundingBox = drawing.computeBoundingBox(PG);
+        }
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 
 } // end namespace ogdf

@@ -54,82 +54,82 @@
 namespace ogdf
 {
 
-/**
- * \brief The base class for graph augmentation algorithms.
- *
- * The class \a AugmentationModule is the base class for augmentation modules.
- * An augmentation module transforms an input graph \a G into an output
- * graph \a G' by adding edges, such that \a G' has a certain
- * property, e.g., biconnected.
- *
- * <H3>Implementation of Augmentation Algorithms</H3>
- * An implementation of an augmentation module must override
- * the protected method doCall(G,L), which gets as
- * input a graph reference \a G. It then adds the augmented edges
- * to \a G and returns the list of added edges in \a L.
- */
-
-class OGDF_EXPORT AugmentationModule
-{
-public:
-    //! Initializes an augmentation module.
-    AugmentationModule() { }
-    // destruction
-    virtual ~AugmentationModule() { }
-
-    //! Calls the augmentation module for graph \a G.
-    void call(Graph& G)
-    {
-        List<edge> L;
-        call(G,L);
-    }
-
-    //! Calls the augmentation module for graph \a G.
-    void operator()(Graph& G)
-    {
-        call(G);
-    }
-
     /**
-     * \brief Calls the augmentation module for graph \a G.
+     * \brief The base class for graph augmentation algorithms.
      *
-     * Returns the list of added edges in \a L.
-     */
-    void call(Graph& G, List<edge> &L)
-    {
-        doCall(G,L);
-        m_nAddedEdges = L.size();
-    }
-
-    /**
-     * \brief Calls the augmentation module for graph \a G.
+     * The class \a AugmentationModule is the base class for augmentation modules.
+     * An augmentation module transforms an input graph \a G into an output
+     * graph \a G' by adding edges, such that \a G' has a certain
+     * property, e.g., biconnected.
      *
-     * Returns the list of added edges in \a L.
+     * <H3>Implementation of Augmentation Algorithms</H3>
+     * An implementation of an augmentation module must override
+     * the protected method doCall(G,L), which gets as
+     * input a graph reference \a G. It then adds the augmented edges
+     * to \a G and returns the list of added edges in \a L.
      */
-    void operator()(Graph& G, List<edge> &L)
+
+    class OGDF_EXPORT AugmentationModule
     {
-        call(G,L);
-    }
+    public:
+        //! Initializes an augmentation module.
+        AugmentationModule() { }
+        // destruction
+        virtual ~AugmentationModule() { }
 
-    //! Returns the number of added edges.
-    int numberOfAddedEdges() const
-    {
-        return m_nAddedEdges;
-    }
+        //! Calls the augmentation module for graph \a G.
+        void call(Graph & G)
+        {
+            List<edge> L;
+            call(G, L);
+        }
 
-protected:
-    /**
-     * \brief Implements the augmentation algorithm for graph \a G.
-     *
-     * Returns the list of added edges in \a L.
-     */
-    virtual void doCall(Graph& G, List<edge> &L) = 0;
+        //! Calls the augmentation module for graph \a G.
+        void operator()(Graph & G)
+        {
+            call(G);
+        }
 
-private:
-    int m_nAddedEdges;
+        /**
+         * \brief Calls the augmentation module for graph \a G.
+         *
+         * Returns the list of added edges in \a L.
+         */
+        void call(Graph & G, List<edge> & L)
+        {
+            doCall(G, L);
+            m_nAddedEdges = L.size();
+        }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        /**
+         * \brief Calls the augmentation module for graph \a G.
+         *
+         * Returns the list of added edges in \a L.
+         */
+        void operator()(Graph & G, List<edge> & L)
+        {
+            call(G, L);
+        }
+
+        //! Returns the number of added edges.
+        int numberOfAddedEdges() const
+        {
+            return m_nAddedEdges;
+        }
+
+    protected:
+        /**
+         * \brief Implements the augmentation algorithm for graph \a G.
+         *
+         * Returns the list of added edges in \a L.
+         */
+        virtual void doCall(Graph & G, List<edge> & L) = 0;
+
+    private:
+        int m_nAddedEdges;
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 } // end namespace ogdf
 

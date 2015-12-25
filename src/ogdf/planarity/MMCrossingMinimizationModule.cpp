@@ -48,157 +48,157 @@ namespace ogdf
 {
 
 
-Module::ReturnType MMCrossingMinimizationModule::call(
-    const Graph &G,
-    const List<node> &splittableNodes,
-    int &cr,
-    const EdgeArray<bool> *forbid)
-{
-    cr = 0;
-    m_nodeSplits = 0;
-    m_splittedNodes = 0;
-
-    NodeArray<bool> splittable(G,false);
-    ListConstIterator<node> itV;
-    for(itV = splittableNodes.begin(); itV.valid(); ++itV)
-        splittable[*itV] = true;
-
-    EdgeArray<int> comp(G,-1);
-    int c = biconnectedComponents(G, comp);
-
-    Array<List<edge> > edges(c);
-    edge e;
-    forall_edges(e,G)
+    Module::ReturnType MMCrossingMinimizationModule::call(
+        const Graph & G,
+        const List<node> & splittableNodes,
+        int & cr,
+        const EdgeArray<bool>* forbid)
     {
-        edges[comp[e]].pushBack(e);
-    }
+        cr = 0;
+        m_nodeSplits = 0;
+        m_splittedNodes = 0;
 
-    NodeArray<node> map(G,0);
+        NodeArray<bool> splittable(G, false);
+        ListConstIterator<node> itV;
+        for(itV = splittableNodes.begin(); itV.valid(); ++itV)
+            splittable[*itV] = true;
 
-    for(int i = 0; i < c; ++i)
-    {
-        if(edges[i].size() < 9)
-            continue;
+        EdgeArray<int> comp(G, -1);
+        int c = biconnectedComponents(G, comp);
 
-        Graph B;
-        List<node> nodes;
-        List<node> splittableNodesB;
-
-        EdgeArray<bool> *forbidB = 0;
-        if(forbid) forbidB = new EdgeArray<bool>(B, false);
-
-        ListConstIterator<edge> it;
-        for(it = edges[i].begin(); it.valid(); ++it)
+        Array<List<edge>> edges(c);
+        edge e;
+        forall_edges(e, G)
         {
-            edge e = *it;
-            node v = e->source(), w = e->target();
-
-            if(map[v] == 0)
-            {
-                map[v] = B.newNode();
-                nodes.pushBack(v);
-                if(splittable[v])
-                    splittableNodesB.pushBack(map[v]);
-            }
-            if(map[w] == 0)
-            {
-                map[w] = B.newNode();
-                nodes.pushBack(w);
-                if(splittable[w])
-                    splittableNodesB.pushBack(map[w]);
-            }
-
-            edge eB = B.newEdge(map[v],map[w]);
-            if(forbidB)
-                (*forbidB)[eB] = (*forbid)[e];
+            edges[comp[e]].pushBack(e);
         }
 
-        PlanRepExpansion PG(B,splittableNodesB);
+        NodeArray<node> map(G, 0);
 
-        int crcc, numNS = 0, numSN = 0;
-        ReturnType ret = doCall(PG,0,forbidB,crcc,numNS,numSN);
-        delete forbidB;
-        if(isSolution(ret) == false)
-            return ret;
-        cr += crcc;
-        m_nodeSplits    += numNS;
-        m_splittedNodes += numSN;
-
-        ListConstIterator<node> itV;
-        for(itV = nodes.begin(); itV.valid(); ++itV)
-            map[*itV] = 0;
-    }
-
-    return retFeasible;
-}
-
-
-Module::ReturnType MMCrossingMinimizationModule::call(
-    const Graph &G,
-    int &cr,
-    const EdgeArray<bool> *forbid)
-{
-    cr = 0;
-    m_nodeSplits = 0;
-    m_splittedNodes = 0;
-
-    EdgeArray<int> comp(G,-1);
-    int c = biconnectedComponents(G, comp);
-
-    Array<List<edge> > edges(c);
-    edge e;
-    forall_edges(e,G)
-    {
-        edges[comp[e]].pushBack(e);
-    }
-
-    NodeArray<node> map(G,0);
-
-    for(int i = 0; i < c; ++i)
-    {
-        if(edges[i].size() < 9)
-            continue;
-
-        Graph B;
-        List<node> nodes;
-
-        ListConstIterator<edge> it;
-        for(it = edges[i].begin(); it.valid(); ++it)
+        for(int i = 0; i < c; ++i)
         {
-            edge e = *it;
-            node v = e->source(), w = e->target();
+            if(edges[i].size() < 9)
+                continue;
 
-            if(map[v] == 0)
+            Graph B;
+            List<node> nodes;
+            List<node> splittableNodesB;
+
+            EdgeArray<bool>* forbidB = 0;
+            if(forbid) forbidB = new EdgeArray<bool>(B, false);
+
+            ListConstIterator<edge> it;
+            for(it = edges[i].begin(); it.valid(); ++it)
             {
-                map[v] = B.newNode();
-                nodes.pushBack(v);
-            }
-            if(map[w] == 0)
-            {
-                map[w] = B.newNode();
-                nodes.pushBack(w);
+                edge e = *it;
+                node v = e->source(), w = e->target();
+
+                if(map[v] == 0)
+                {
+                    map[v] = B.newNode();
+                    nodes.pushBack(v);
+                    if(splittable[v])
+                        splittableNodesB.pushBack(map[v]);
+                }
+                if(map[w] == 0)
+                {
+                    map[w] = B.newNode();
+                    nodes.pushBack(w);
+                    if(splittable[w])
+                        splittableNodesB.pushBack(map[w]);
+                }
+
+                edge eB = B.newEdge(map[v], map[w]);
+                if(forbidB)
+                    (*forbidB)[eB] = (*forbid)[e];
             }
 
-            B.newEdge(map[v],map[w]);
+            PlanRepExpansion PG(B, splittableNodesB);
+
+            int crcc, numNS = 0, numSN = 0;
+            ReturnType ret = doCall(PG, 0, forbidB, crcc, numNS, numSN);
+            delete forbidB;
+            if(isSolution(ret) == false)
+                return ret;
+            cr += crcc;
+            m_nodeSplits    += numNS;
+            m_splittedNodes += numSN;
+
+            ListConstIterator<node> itV;
+            for(itV = nodes.begin(); itV.valid(); ++itV)
+                map[*itV] = 0;
         }
 
-        PlanRepExpansion PG(B);
-
-        int crcc, numNS = 0, numSN = 0;
-        ReturnType ret = doCall(PG,0,forbid,crcc,numNS,numSN);
-        if(isSolution(ret) == false)
-            return ret;
-        cr += crcc;
-        m_nodeSplits    += numNS;
-        m_splittedNodes += numSN;
-
-        ListConstIterator<node> itV;
-        for(itV = nodes.begin(); itV.valid(); ++itV)
-            map[*itV] = 0;
+        return retFeasible;
     }
 
-    return retFeasible;
-}
+
+    Module::ReturnType MMCrossingMinimizationModule::call(
+        const Graph & G,
+        int & cr,
+        const EdgeArray<bool>* forbid)
+    {
+        cr = 0;
+        m_nodeSplits = 0;
+        m_splittedNodes = 0;
+
+        EdgeArray<int> comp(G, -1);
+        int c = biconnectedComponents(G, comp);
+
+        Array<List<edge>> edges(c);
+        edge e;
+        forall_edges(e, G)
+        {
+            edges[comp[e]].pushBack(e);
+        }
+
+        NodeArray<node> map(G, 0);
+
+        for(int i = 0; i < c; ++i)
+        {
+            if(edges[i].size() < 9)
+                continue;
+
+            Graph B;
+            List<node> nodes;
+
+            ListConstIterator<edge> it;
+            for(it = edges[i].begin(); it.valid(); ++it)
+            {
+                edge e = *it;
+                node v = e->source(), w = e->target();
+
+                if(map[v] == 0)
+                {
+                    map[v] = B.newNode();
+                    nodes.pushBack(v);
+                }
+                if(map[w] == 0)
+                {
+                    map[w] = B.newNode();
+                    nodes.pushBack(w);
+                }
+
+                B.newEdge(map[v], map[w]);
+            }
+
+            PlanRepExpansion PG(B);
+
+            int crcc, numNS = 0, numSN = 0;
+            ReturnType ret = doCall(PG, 0, forbid, crcc, numNS, numSN);
+            if(isSolution(ret) == false)
+                return ret;
+            cr += crcc;
+            m_nodeSplits    += numNS;
+            m_splittedNodes += numSN;
+
+            ListConstIterator<node> itV;
+            for(itV = nodes.begin(); itV.valid(); ++itV)
+                map[*itV] = 0;
+        }
+
+        return retFeasible;
+    }
 
 
 } // namspace ogdf

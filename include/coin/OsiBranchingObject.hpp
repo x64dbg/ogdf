@@ -59,19 +59,19 @@ class OsiObject
 public:
 
     /// Default Constructor
-    OsiObject ();
+    OsiObject();
 
     /// Copy constructor
-    OsiObject ( const OsiObject &);
+    OsiObject(const OsiObject &);
 
     /// Assignment operator
-    OsiObject & operator=( const OsiObject& rhs);
+    OsiObject & operator=(const OsiObject & rhs);
 
     /// Clone
-    virtual OsiObject * clone() const=0;
+    virtual OsiObject* clone() const = 0;
 
     /// Destructor
-    virtual ~OsiObject ();
+    virtual ~OsiObject();
 
     /** Infeasibility of the object
 
@@ -94,34 +94,34 @@ public:
       NOTE - Convention says that an infeasibility of COIN_DBL_MAX means
       object has worked out it can't be satisfied!
     */
-    double infeasibility(const OsiSolverInterface * solver,int &whichWay) const ;
+    double infeasibility(const OsiSolverInterface* solver, int & whichWay) const ;
     // Faster version when more information available
-    virtual double infeasibility(const OsiBranchingInformation * info, int &whichWay) const =0;
+    virtual double infeasibility(const OsiBranchingInformation* info, int & whichWay) const = 0;
     // This does NOT set mutable stuff
-    virtual double checkInfeasibility(const OsiBranchingInformation * info) const;
+    virtual double checkInfeasibility(const OsiBranchingInformation* info) const;
 
     /** For the variable(s) referenced by the object,
         look at the current solution and set bounds to match the solution.
         Returns measure of how much it had to move solution to make feasible
     */
-    virtual double feasibleRegion(OsiSolverInterface * solver) const ;
+    virtual double feasibleRegion(OsiSolverInterface* solver) const ;
     /** For the variable(s) referenced by the object,
         look at the current solution and set bounds to match the solution.
         Returns measure of how much it had to move solution to make feasible
         Faster version
     */
-    virtual double feasibleRegion(OsiSolverInterface * solver, const OsiBranchingInformation * info) const =0;
+    virtual double feasibleRegion(OsiSolverInterface* solver, const OsiBranchingInformation* info) const = 0;
 
     /** Create a branching object and indicate which way to branch first.
 
         The branching object has to know how to create branches (fix
         variables, etc.)
     */
-    virtual OsiBranchingObject * createBranch(OsiSolverInterface * /*solver*/,
-            const OsiBranchingInformation * /*info*/,
+    virtual OsiBranchingObject* createBranch(OsiSolverInterface* /*solver*/,
+            const OsiBranchingInformation* /*info*/,
             int /*way*/) const
     {
-        throw CoinError("Need code","createBranch","OsiBranchingObject");
+        throw CoinError("Need code", "createBranch", "OsiBranchingObject");
         return NULL;
     }
 
@@ -206,14 +206,14 @@ public:
       Bounds may be tightened, so it may be good to be able to reset them to
       their original values.
      */
-    virtual void resetBounds(const OsiSolverInterface * ) {}
+    virtual void resetBounds(const OsiSolverInterface*) {}
     /**  Change column numbers after preprocessing
      */
-    virtual void resetSequenceEtc(int , const int * ) {}
+    virtual void resetSequenceEtc(int , const int*) {}
     /// Updates stuff like pseudocosts before threads
-    virtual void updateBefore(const OsiObject * ) {}
+    virtual void updateBefore(const OsiObject*) {}
     /// Updates stuff like pseudocosts after threads finished
-    virtual void updateAfter(const OsiObject * , const OsiObject * ) {}
+    virtual void updateAfter(const OsiObject*, const OsiObject*) {}
 
 protected:
     /// data
@@ -238,21 +238,21 @@ class OsiObject2 : public OsiObject
 public:
 
     /// Default Constructor
-    OsiObject2 ();
+    OsiObject2();
 
     /// Copy constructor
-    OsiObject2 ( const OsiObject2 &);
+    OsiObject2(const OsiObject2 &);
 
     /// Assignment operator
-    OsiObject2 & operator=( const OsiObject2& rhs);
+    OsiObject2 & operator=(const OsiObject2 & rhs);
 
     /// Destructor
-    virtual ~OsiObject2 ();
+    virtual ~OsiObject2();
 
     /// Set preferred way of branching - -1 off, 0 down, 1 up (for 2-way)
     inline void setPreferredWay(int value)
     {
-        preferredWay_=value;
+        preferredWay_ = value;
     }
 
     /// Get preferred way of branching - -1 off, 0 down, 1 up (for 2-way)
@@ -291,22 +291,22 @@ class OsiBranchingObject
 public:
 
     /// Default Constructor
-    OsiBranchingObject ();
+    OsiBranchingObject();
 
     /// Constructor
-    OsiBranchingObject (OsiSolverInterface * solver, double value);
+    OsiBranchingObject(OsiSolverInterface* solver, double value);
 
     /// Copy constructor
-    OsiBranchingObject ( const OsiBranchingObject &);
+    OsiBranchingObject(const OsiBranchingObject &);
 
     /// Assignment operator
-    OsiBranchingObject & operator=( const OsiBranchingObject& rhs);
+    OsiBranchingObject & operator=(const OsiBranchingObject & rhs);
 
     /// Clone
-    virtual OsiBranchingObject * clone() const=0;
+    virtual OsiBranchingObject* clone() const = 0;
 
     /// Destructor
-    virtual ~OsiBranchingObject ();
+    virtual ~OsiBranchingObject();
 
     /// The number of branch arms created for this branching object
     inline int numberBranches() const
@@ -317,7 +317,7 @@ public:
     /// The number of branch arms left for this branching object
     inline int numberBranchesLeft() const
     {
-        return numberBranches_-branchIndex_;
+        return numberBranches_ - branchIndex_;
     }
 
     /// Increment the number of branch arms left for this branching object
@@ -331,7 +331,7 @@ public:
     */
     inline void setNumberBranchesLeft(int /*value*/)
     {
-        /*assert (value==1&&!branchIndex_);*/ numberBranches_=1;
+        /*assert (value==1&&!branchIndex_);*/ numberBranches_ = 1;
     }
 
     /// Decrement the number of branch arms left for this branching object
@@ -345,7 +345,7 @@ public:
          state.
          Returns change in guessed objective on next branch
     */
-    virtual double branch(OsiSolverInterface * solver)=0;
+    virtual double branch(OsiSolverInterface* solver) = 0;
     /** \brief Execute the actions required to branch, as specified by the
          current state of the branching object, and advance the object's
          state.
@@ -383,24 +383,24 @@ public:
     }
 
     /// Return pointer back to object which created
-    inline const OsiObject * originalObject() const
+    inline const OsiObject* originalObject() const
     {
         return  originalObject_;
     }
     /// Set pointer back to object which created
-    inline void setOriginalObject(const OsiObject * object)
+    inline void setOriginalObject(const OsiObject* object)
     {
-        originalObject_=object;
+        originalObject_ = object;
     }
     /** Double checks in case node can change its mind!
         Returns objective value
         Can change objective etc */
-    virtual void checkIsCutoff(double ) {}
+    virtual void checkIsCutoff(double) {}
     /// For debug
     int columnNumber() const;
     /** \brief Print something about branch - only if log level high
     */
-    virtual void print(const OsiSolverInterface * =NULL) const {}
+    virtual void print(const OsiSolverInterface* = NULL) const {}
 
 protected:
 
@@ -408,7 +408,7 @@ protected:
     double value_;
 
     /// Pointer back to object which created
-    const OsiObject * originalObject_;
+    const OsiObject* originalObject_;
 
     /** Number of branches
     */
@@ -430,25 +430,25 @@ class OsiBranchingInformation
 public:
 
     /// Default Constructor
-    OsiBranchingInformation ();
+    OsiBranchingInformation();
 
     /** Useful Constructor
         (normalSolver true if has matrix etc etc)
         copySolution true if constructot should make a copy
     */
-    OsiBranchingInformation (const OsiSolverInterface * solver, bool normalSolver,bool copySolution=false);
+    OsiBranchingInformation(const OsiSolverInterface* solver, bool normalSolver, bool copySolution = false);
 
     /// Copy constructor
-    OsiBranchingInformation ( const OsiBranchingInformation &);
+    OsiBranchingInformation(const OsiBranchingInformation &);
 
     /// Assignment operator
-    OsiBranchingInformation & operator=( const OsiBranchingInformation& rhs);
+    OsiBranchingInformation & operator=(const OsiBranchingInformation & rhs);
 
     /// Clone
-    virtual OsiBranchingInformation * clone() const;
+    virtual OsiBranchingInformation* clone() const;
 
     /// Destructor
-    virtual ~OsiBranchingInformation ();
+    virtual ~OsiBranchingInformation();
 
     // Note public
 public:
@@ -476,43 +476,43 @@ public:
     /// Dual to use if row bound violated (if negative then pseudoShadowPrices off)
     double defaultDual_;
     /// Pointer to solver
-    mutable const OsiSolverInterface * solver_;
+    mutable const OsiSolverInterface* solver_;
     /// The number of columns
     int numberColumns_;
     /// Pointer to current lower bounds on columns
-    mutable const double * lower_;
+    mutable const double* lower_;
     /// Pointer to current solution
-    mutable const double * solution_;
+    mutable const double* solution_;
     /// Pointer to current upper bounds on columns
-    mutable const double * upper_;
+    mutable const double* upper_;
     /// Highly optional target (hot start) solution
-    const double * hotstartSolution_;
+    const double* hotstartSolution_;
     /// Pointer to duals
-    const double * pi_;
+    const double* pi_;
     /// Pointer to row activity
-    const double * rowActivity_;
+    const double* rowActivity_;
     /// Objective
-    const double * objective_;
+    const double* objective_;
     /// Pointer to current lower bounds on rows
-    const double * rowLower_;
+    const double* rowLower_;
     /// Pointer to current upper bounds on rows
-    const double * rowUpper_;
+    const double* rowUpper_;
     /// Elements in column copy of matrix
-    const double * elementByColumn_;
+    const double* elementByColumn_;
     /// Column starts
-    const CoinBigIndex * columnStart_;
+    const CoinBigIndex* columnStart_;
     /// Column lengths
-    const int * columnLength_;
+    const int* columnLength_;
     /// Row indices
-    const int * row_;
+    const int* row_;
     /** Useful region of length CoinMax(numberColumns,2*numberRows)
         This is allocated and deleted before OsiObject::infeasibility
         It is zeroed on entry and should be so on exit
         It only exists if defaultDual_>=0.0
     */
-    double * usefulRegion_;
+    double* usefulRegion_;
     /// Useful index region to go with usefulRegion_
-    int * indexRegion_;
+    int* indexRegion_;
     /// Number of solutions found
     int numberSolutions_;
     /// Number of branching solutions found (i.e. exclude heuristics)
@@ -531,7 +531,7 @@ class OsiTwoWayBranchingObject : public OsiBranchingObject
 public:
 
     /// Default constructor
-    OsiTwoWayBranchingObject ();
+    OsiTwoWayBranchingObject();
 
     /** Create a standard tw0-way branch object
 
@@ -539,17 +539,17 @@ public:
       Specify way = -1 to set the object state to perform the down arm first,
       way = 1 for the up arm.
     */
-    OsiTwoWayBranchingObject (OsiSolverInterface *solver,const OsiObject * originalObject,
-                              int way , double value) ;
+    OsiTwoWayBranchingObject(OsiSolverInterface* solver, const OsiObject* originalObject,
+                             int way , double value) ;
 
     /// Copy constructor
-    OsiTwoWayBranchingObject ( const OsiTwoWayBranchingObject &);
+    OsiTwoWayBranchingObject(const OsiTwoWayBranchingObject &);
 
     /// Assignment operator
-    OsiTwoWayBranchingObject & operator= (const OsiTwoWayBranchingObject& rhs);
+    OsiTwoWayBranchingObject & operator= (const OsiTwoWayBranchingObject & rhs);
 
     /// Destructor
-    virtual ~OsiTwoWayBranchingObject ();
+    virtual ~OsiTwoWayBranchingObject();
 
     using OsiBranchingObject::branch ;
     /** \brief Sets the bounds for the variable according to the current arm
@@ -557,7 +557,7 @@ public:
          state.
          Returns change in guessed objective on next branch
     */
-    virtual double branch(OsiSolverInterface * solver)=0;
+    virtual double branch(OsiSolverInterface* solver) = 0;
 
     inline int firstBranch() const
     {
@@ -581,29 +581,29 @@ class OsiSimpleInteger : public OsiObject2
 public:
 
     /// Default Constructor
-    OsiSimpleInteger ();
+    OsiSimpleInteger();
 
     /// Useful constructor - passed solver index
-    OsiSimpleInteger (const OsiSolverInterface * solver, int iColumn);
+    OsiSimpleInteger(const OsiSolverInterface* solver, int iColumn);
 
     /// Useful constructor - passed solver index and original bounds
-    OsiSimpleInteger (int iColumn, double lower, double upper);
+    OsiSimpleInteger(int iColumn, double lower, double upper);
 
     /// Copy constructor
-    OsiSimpleInteger ( const OsiSimpleInteger &);
+    OsiSimpleInteger(const OsiSimpleInteger &);
 
     /// Clone
-    virtual OsiObject * clone() const;
+    virtual OsiObject* clone() const;
 
     /// Assignment operator
-    OsiSimpleInteger & operator=( const OsiSimpleInteger& rhs);
+    OsiSimpleInteger & operator=(const OsiSimpleInteger & rhs);
 
     /// Destructor
-    virtual ~OsiSimpleInteger ();
+    virtual ~OsiSimpleInteger();
 
     using OsiObject::infeasibility ;
     /// Infeasibility - large is 0.5
-    virtual double infeasibility(const OsiBranchingInformation * info, int & whichWay) const;
+    virtual double infeasibility(const OsiBranchingInformation* info, int & whichWay) const;
 
     using OsiObject::feasibleRegion ;
     /** Set bounds to fix the variable at the current (integer) value.
@@ -611,19 +611,19 @@ public:
       Given an integer value, set the lower and upper bounds to fix the
       variable. Returns amount it had to move variable.
     */
-    virtual double feasibleRegion(OsiSolverInterface * solver, const OsiBranchingInformation * info) const;
+    virtual double feasibleRegion(OsiSolverInterface* solver, const OsiBranchingInformation* info) const;
 
     /** Creates a branching object
 
       The preferred direction is set by \p way, 0 for down, 1 for up.
     */
-    virtual OsiBranchingObject * createBranch(OsiSolverInterface * solver, const OsiBranchingInformation * info, int way) const;
+    virtual OsiBranchingObject* createBranch(OsiSolverInterface* solver, const OsiBranchingInformation* info, int way) const;
 
 
     /// Set solver column number
     inline void setColumnNumber(int value)
     {
-        columnNumber_=value;
+        columnNumber_ = value;
     }
 
     /** Column number if single column object -1 otherwise,
@@ -639,7 +639,7 @@ public:
     }
     inline void setOriginalLowerBound(double value)
     {
-        originalLower_=value;
+        originalLower_ = value;
     }
     inline double originalUpperBound() const
     {
@@ -647,16 +647,16 @@ public:
     }
     inline void setOriginalUpperBound(double value)
     {
-        originalUpper_=value;
+        originalUpper_ = value;
     }
     /** Reset variable bounds to their original values.
       Bounds may be tightened, so it may be good to be able to reset them to
       their original values.
      */
-    virtual void resetBounds(const OsiSolverInterface * solver) ;
+    virtual void resetBounds(const OsiSolverInterface* solver) ;
     /**  Change column numbers after preprocessing
      */
-    virtual void resetSequenceEtc(int numberColumns, const int * originalColumns);
+    virtual void resetSequenceEtc(int numberColumns, const int* originalColumns);
 
     /// Return "up" estimate (default 1.0e-5)
     virtual double upEstimate() const;
@@ -690,7 +690,7 @@ class OsiIntegerBranchingObject : public OsiTwoWayBranchingObject
 public:
 
     /// Default constructor
-    OsiIntegerBranchingObject ();
+    OsiIntegerBranchingObject();
 
     /** Create a standard floor/ceiling branch object
 
@@ -699,8 +699,8 @@ public:
       Specify way = -1 to set the object state to perform the down arm first,
       way = 1 for the up arm.
     */
-    OsiIntegerBranchingObject (OsiSolverInterface *solver,const OsiSimpleInteger * originalObject,
-                               int way , double value) ;
+    OsiIntegerBranchingObject(OsiSolverInterface* solver, const OsiSimpleInteger* originalObject,
+                              int way , double value) ;
     /** Create a standard floor/ceiling branch object
 
       Specifies a simple two-way branch in a more flexible way. One arm of the
@@ -708,20 +708,20 @@ public:
       Specify way = -1 to set the object state to perform the down arm first,
       way = 1 for the up arm.
     */
-    OsiIntegerBranchingObject (OsiSolverInterface *solver,const OsiSimpleInteger * originalObject,
-                               int way , double value, double downUpperBound, double upLowerBound) ;
+    OsiIntegerBranchingObject(OsiSolverInterface* solver, const OsiSimpleInteger* originalObject,
+                              int way , double value, double downUpperBound, double upLowerBound) ;
 
     /// Copy constructor
-    OsiIntegerBranchingObject ( const OsiIntegerBranchingObject &);
+    OsiIntegerBranchingObject(const OsiIntegerBranchingObject &);
 
     /// Assignment operator
-    OsiIntegerBranchingObject & operator= (const OsiIntegerBranchingObject& rhs);
+    OsiIntegerBranchingObject & operator= (const OsiIntegerBranchingObject & rhs);
 
     /// Clone
-    virtual OsiBranchingObject * clone() const;
+    virtual OsiBranchingObject* clone() const;
 
     /// Destructor
-    virtual ~OsiIntegerBranchingObject ();
+    virtual ~OsiIntegerBranchingObject();
 
     using OsiBranchingObject::branch ;
     /** \brief Sets the bounds for the variable according to the current arm
@@ -729,12 +729,12 @@ public:
          state.
          Returns change in guessed objective on next branch
     */
-    virtual double branch(OsiSolverInterface * solver);
+    virtual double branch(OsiSolverInterface* solver);
 
     using OsiBranchingObject::print ;
     /** \brief Print something about branch - only if log level high
     */
-    virtual void print(const OsiSolverInterface * solver=NULL);
+    virtual void print(const OsiSolverInterface* solver = NULL);
 
 protected:
     // Probably could get away with just value which is already stored
@@ -758,30 +758,30 @@ class OsiSOS : public OsiObject2
 public:
 
     // Default Constructor
-    OsiSOS ();
+    OsiSOS();
 
     /** Useful constructor - which are indices
         and  weights are also given.  If null then 0,1,2..
         type is SOS type
     */
-    OsiSOS (const OsiSolverInterface * solver, int numberMembers,
-            const int * which, const double * weights, int type=1);
+    OsiSOS(const OsiSolverInterface* solver, int numberMembers,
+           const int* which, const double* weights, int type = 1);
 
     // Copy constructor
-    OsiSOS ( const OsiSOS &);
+    OsiSOS(const OsiSOS &);
 
     /// Clone
-    virtual OsiObject * clone() const;
+    virtual OsiObject* clone() const;
 
     // Assignment operator
-    OsiSOS & operator=( const OsiSOS& rhs);
+    OsiSOS & operator=(const OsiSOS & rhs);
 
     // Destructor
-    virtual ~OsiSOS ();
+    virtual ~OsiSOS();
 
     using OsiObject::infeasibility ;
     /// Infeasibility - large is 0.5
-    virtual double infeasibility(const OsiBranchingInformation * info,int & whichWay) const;
+    virtual double infeasibility(const OsiBranchingInformation* info, int & whichWay) const;
 
     using OsiObject::feasibleRegion ;
     /** Set bounds to fix the variable at the current (integer) value.
@@ -789,20 +789,20 @@ public:
       Given an integer value, set the lower and upper bounds to fix the
       variable. Returns amount it had to move variable.
     */
-    virtual double feasibleRegion(OsiSolverInterface * solver, const OsiBranchingInformation * info) const;
+    virtual double feasibleRegion(OsiSolverInterface* solver, const OsiBranchingInformation* info) const;
 
     /** Creates a branching object
 
       The preferred direction is set by \p way, 0 for down, 1 for up.
     */
-    virtual OsiBranchingObject * createBranch(OsiSolverInterface * solver, const OsiBranchingInformation * info, int way) const;
+    virtual OsiBranchingObject* createBranch(OsiSolverInterface* solver, const OsiBranchingInformation* info, int way) const;
     /// Return "up" estimate (default 1.0e-5)
     virtual double upEstimate() const;
     /// Return "down" estimate (default 1.0e-5)
     virtual double downEstimate() const;
 
     /// Redoes data when sequence numbers change
-    virtual void resetSequenceEtc(int numberColumns, const int * originalColumns);
+    virtual void resetSequenceEtc(int numberColumns, const int* originalColumns);
 
     /// Number of members
     inline int numberMembers() const
@@ -811,7 +811,7 @@ public:
     }
 
     /// Members (indices in range 0 ... numberColumns-1)
-    inline const int * members() const
+    inline const int* members() const
     {
         return members_;
     }
@@ -829,7 +829,7 @@ public:
     }
 
     /** Array of weights */
-    inline const double * weights() const
+    inline const double* weights() const
     {
         return weights_;
     }
@@ -838,12 +838,12 @@ public:
     */
     virtual bool canDoHeuristics() const
     {
-        return (sosType_==1&&integerValued_);
+        return (sosType_ == 1 && integerValued_);
     }
     /// Set whether set is integer valued or not
     inline void setIntegerValued(bool yesNo)
     {
-        integerValued_=yesNo;
+        integerValued_ = yesNo;
     }
     /// Return true if knows how to deal with Pseudo Shadow Prices
     virtual bool canHandleShadowPrices() const
@@ -853,11 +853,11 @@ public:
     /// Set number of members
     inline void setNumberMembers(int value)
     {
-        numberMembers_=value;
+        numberMembers_ = value;
     }
 
     /// Members (indices in range 0 ... numberColumns-1)
-    inline int * mutableMembers() const
+    inline int* mutableMembers() const
     {
         return members_;
     }
@@ -865,11 +865,11 @@ public:
     /// Set SOS type
     inline void setSosType(int value)
     {
-        sosType_=value;
+        sosType_ = value;
     }
 
     /** Array of weights */
-    inline  double * mutableWeights() const
+    inline  double* mutableWeights() const
     {
         return weights_;
     }
@@ -877,9 +877,9 @@ protected:
     /// data
 
     /// Members (indices in range 0 ... numberColumns-1)
-    int * members_;
+    int* members_;
     /// Weights
-    double * weights_;
+    double* weights_;
 
     /// Number of members
     int numberMembers_;
@@ -898,33 +898,33 @@ class OsiSOSBranchingObject : public OsiTwoWayBranchingObject
 public:
 
     // Default Constructor
-    OsiSOSBranchingObject ();
+    OsiSOSBranchingObject();
 
     // Useful constructor
-    OsiSOSBranchingObject (OsiSolverInterface * solver,  const OsiSOS * originalObject,
-                           int way,
-                           double separator);
+    OsiSOSBranchingObject(OsiSolverInterface* solver,  const OsiSOS* originalObject,
+                          int way,
+                          double separator);
 
     // Copy constructor
-    OsiSOSBranchingObject ( const OsiSOSBranchingObject &);
+    OsiSOSBranchingObject(const OsiSOSBranchingObject &);
 
     // Assignment operator
-    OsiSOSBranchingObject & operator=( const OsiSOSBranchingObject& rhs);
+    OsiSOSBranchingObject & operator=(const OsiSOSBranchingObject & rhs);
 
     /// Clone
-    virtual OsiBranchingObject * clone() const;
+    virtual OsiBranchingObject* clone() const;
 
     // Destructor
-    virtual ~OsiSOSBranchingObject ();
+    virtual ~OsiSOSBranchingObject();
 
     using OsiBranchingObject::branch ;
     /// Does next branch and updates state
-    virtual double branch(OsiSolverInterface * solver);
+    virtual double branch(OsiSolverInterface* solver);
 
     using OsiBranchingObject::print ;
     /** \brief Print something about branch - only if log level high
     */
-    virtual void print(const OsiSolverInterface * solver=NULL);
+    virtual void print(const OsiSolverInterface* solver = NULL);
 private:
     /// data
 };
@@ -937,29 +937,29 @@ class OsiLotsize : public OsiObject2
 public:
 
     // Default Constructor
-    OsiLotsize ();
+    OsiLotsize();
 
     /* Useful constructor - passed model index.
        Also passed valid values - if range then pairs
     */
-    OsiLotsize (const OsiSolverInterface * solver, int iColumn,
-                int numberPoints, const double * points, bool range=false);
+    OsiLotsize(const OsiSolverInterface* solver, int iColumn,
+               int numberPoints, const double* points, bool range = false);
 
     // Copy constructor
-    OsiLotsize ( const OsiLotsize &);
+    OsiLotsize(const OsiLotsize &);
 
     /// Clone
-    virtual OsiObject * clone() const;
+    virtual OsiObject* clone() const;
 
     // Assignment operator
-    OsiLotsize & operator=( const OsiLotsize& rhs);
+    OsiLotsize & operator=(const OsiLotsize & rhs);
 
     // Destructor
-    ~OsiLotsize ();
+    ~OsiLotsize();
 
     using OsiObject::infeasibility ;
     /// Infeasibility - large is 0.5
-    virtual double infeasibility(const OsiBranchingInformation * info, int & whichWay) const;
+    virtual double infeasibility(const OsiBranchingInformation* info, int & whichWay) const;
 
     using OsiObject::feasibleRegion ;
     /** Set bounds to contain the current solution.
@@ -969,19 +969,19 @@ public:
       if required, then set the bounds to fix the variable at the integer
       nearest the solution value.  Returns amount it had to move variable.
     */
-    virtual double feasibleRegion(OsiSolverInterface * solver, const OsiBranchingInformation * info) const;
+    virtual double feasibleRegion(OsiSolverInterface* solver, const OsiBranchingInformation* info) const;
 
     /** Creates a branching object
 
       The preferred direction is set by \p way, 0 for down, 1 for up.
     */
-    virtual OsiBranchingObject * createBranch(OsiSolverInterface * solver, const OsiBranchingInformation * info, int way) const;
+    virtual OsiBranchingObject* createBranch(OsiSolverInterface* solver, const OsiBranchingInformation* info, int way) const;
 
 
     /// Set solver column number
     inline void setColumnNumber(int value)
     {
-        columnNumber_=value;
+        columnNumber_ = value;
     }
 
     /** Column number if single column object -1 otherwise,
@@ -994,7 +994,7 @@ public:
       Handy for updating bounds held in this object after bounds held in the
       solver have been tightened.
      */
-    virtual void resetBounds(const OsiSolverInterface * solver);
+    virtual void resetBounds(const OsiSolverInterface* solver);
 
     /** Finds range of interest so value is feasible in range range_ or infeasible
         between hi[range_] and lo[range_+1].  Returns true if feasible.
@@ -1013,7 +1013,7 @@ public:
     }
     inline double originalUpperBound() const
     {
-        return bound_[rangeType_*numberRanges_-1];
+        return bound_[rangeType_ * numberRanges_ - 1];
     }
     /// Type - 1 points, 2 ranges
     inline int rangeType() const
@@ -1026,13 +1026,13 @@ public:
         return numberRanges_;
     }
     /// Ranges
-    inline double * bound() const
+    inline double* bound() const
     {
         return bound_;
     }
     /**  Change column numbers after preprocessing
      */
-    virtual void resetSequenceEtc(int numberColumns, const int * originalColumns);
+    virtual void resetSequenceEtc(int numberColumns, const int* originalColumns);
 
     /// Return "up" estimate (default 1.0e-5)
     virtual double upEstimate() const;
@@ -1062,7 +1062,7 @@ private:
     // largest gap
     double largestGap_;
     /// Ranges
-    double * bound_;
+    double* bound_;
     /// Current range
     mutable int range_;
 };
@@ -1084,7 +1084,7 @@ class OsiLotsizeBranchingObject : public OsiTwoWayBranchingObject
 public:
 
     /// Default constructor
-    OsiLotsizeBranchingObject ();
+    OsiLotsizeBranchingObject();
 
     /** Create a lotsize floor/ceiling branch object
 
@@ -1093,20 +1093,20 @@ public:
       Specify way = -1 to set the object state to perform the down arm first,
       way = 1 for the up arm.
     */
-    OsiLotsizeBranchingObject (OsiSolverInterface *solver,const OsiLotsize * originalObject,
-                               int way , double value) ;
+    OsiLotsizeBranchingObject(OsiSolverInterface* solver, const OsiLotsize* originalObject,
+                              int way , double value) ;
 
     /// Copy constructor
-    OsiLotsizeBranchingObject ( const OsiLotsizeBranchingObject &);
+    OsiLotsizeBranchingObject(const OsiLotsizeBranchingObject &);
 
     /// Assignment operator
-    OsiLotsizeBranchingObject & operator= (const OsiLotsizeBranchingObject& rhs);
+    OsiLotsizeBranchingObject & operator= (const OsiLotsizeBranchingObject & rhs);
 
     /// Clone
-    virtual OsiBranchingObject * clone() const;
+    virtual OsiBranchingObject* clone() const;
 
     /// Destructor
-    virtual ~OsiLotsizeBranchingObject ();
+    virtual ~OsiLotsizeBranchingObject();
 
     using OsiBranchingObject::branch ;
     /** \brief Sets the bounds for the variable according to the current arm
@@ -1114,12 +1114,12 @@ public:
          state.
          Returns change in guessed objective on next branch
     */
-    virtual double branch(OsiSolverInterface * solver);
+    virtual double branch(OsiSolverInterface* solver);
 
     using OsiBranchingObject::print ;
     /** \brief Print something about branch - only if log level high
     */
-    virtual void print(const OsiSolverInterface * solver=NULL);
+    virtual void print(const OsiSolverInterface* solver = NULL);
 
 protected:
     /// Lower [0] and upper [1] bounds for the down arm (way_ = -1)

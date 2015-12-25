@@ -40,23 +40,23 @@ namespace abacus
 {
 
 
-ostream &operator<<(ostream &out, const SlackStat &rhs)
-{
-    switch (rhs.status_)
+    ostream & operator<<(ostream & out, const SlackStat & rhs)
     {
-    case SlackStat::Basic:
-        out << "Basic";
-        break;
-    case SlackStat::NonBasicZero:
-        out << "NonBasic Zero";
-        break;
-    case SlackStat::NonBasicNonZero:
-        out << "NonBasic NonZero";
-        break;
-    case SlackStat::Unknown:
-        out << "Unknown";
-        break;
+        switch(rhs.status_)
+        {
+        case SlackStat::Basic:
+            out << "Basic";
+            break;
+        case SlackStat::NonBasicZero:
+            out << "NonBasic Zero";
+            break;
+        case SlackStat::NonBasicNonZero:
+            out << "NonBasic NonZero";
+            break;
+        case SlackStat::Unknown:
+            out << "Unknown";
+            break;
+        }
+        return out;
     }
-    return out;
-}
 } //namespace abacus

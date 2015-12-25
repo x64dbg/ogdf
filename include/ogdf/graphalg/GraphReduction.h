@@ -56,58 +56,58 @@ namespace ogdf
 {
 
 
-//---------------------------------------------------------
-// GraphReduction
-// kick leaves & chains
-// GraphReduction is read-only !!!
-//---------------------------------------------------------
-class OGDF_EXPORT GraphReduction : public Graph
-{
-protected:
-
-    const Graph *m_pGraph; // original graph
-    NodeArray<node> m_vOrig; // corresponding node in original graph
-    EdgeArray<List<edge> > m_eOrig; // corresponding edge in original graph
-
-    NodeArray<node> m_vReduction; // corresponding node in graph copy
-    EdgeArray<edge> m_eReduction; // corresponding chain of edges in graph copy
-
-    GraphReduction() : m_vOrig(), m_eOrig(), m_vReduction(), m_eReduction() {}
-
-public:
-    // construction
-    GraphReduction(const Graph& G);
-    virtual ~GraphReduction() { }
-
-    // returns original graph
-    const Graph &original() const
+    //---------------------------------------------------------
+    // GraphReduction
+    // kick leaves & chains
+    // GraphReduction is read-only !!!
+    //---------------------------------------------------------
+    class OGDF_EXPORT GraphReduction : public Graph
     {
-        return *m_pGraph;
-    }
+    protected:
 
-    // returns original node
-    node original(node v) const
-    {
-        return m_vOrig[v];
-    }
-    // returns original edges
-    const List<edge> &original(edge e) const
-    {
-        return m_eOrig[e];
-    }
+        const Graph* m_pGraph; // original graph
+        NodeArray<node> m_vOrig; // corresponding node in original graph
+        EdgeArray<List<edge>> m_eOrig; // corresponding edge in original graph
 
-    // returns reduction of node v (0 if none)
-    node reduction(node v) const
-    {
-        return m_vReduction[v];
-    }
-    // returns reduction of edge e
-    edge reduction(edge e) const
-    {
-        return m_eReduction[e];
-    }
+        NodeArray<node> m_vReduction; // corresponding node in graph copy
+        EdgeArray<edge> m_eReduction; // corresponding chain of edges in graph copy
 
-}; // class GraphCopy
+        GraphReduction() : m_vOrig(), m_eOrig(), m_vReduction(), m_eReduction() {}
+
+    public:
+        // construction
+        GraphReduction(const Graph & G);
+        virtual ~GraphReduction() { }
+
+        // returns original graph
+        const Graph & original() const
+        {
+            return *m_pGraph;
+        }
+
+        // returns original node
+        node original(node v) const
+        {
+            return m_vOrig[v];
+        }
+        // returns original edges
+        const List<edge> & original(edge e) const
+        {
+            return m_eOrig[e];
+        }
+
+        // returns reduction of node v (0 if none)
+        node reduction(node v) const
+        {
+            return m_vReduction[v];
+        }
+        // returns reduction of edge e
+        edge reduction(edge e) const
+        {
+            return m_eReduction[e];
+        }
+
+    }; // class GraphCopy
 
 
 } // end namespace ogdf

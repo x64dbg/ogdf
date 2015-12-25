@@ -29,7 +29,7 @@ bool regPlanarLayout()
     const int max_n = 500;
     const int step_n = 50;
 
-    int totalGraphs = numGraphs * (1+(max_n-min_n)/step_n) * 3 * 3;
+    int totalGraphs = numGraphs * (1 + (max_n - min_n) / step_n) * 3 * 3;
 
     Graph G;
     GridLayout gl;
@@ -49,37 +49,37 @@ bool regPlanarLayout()
         cout << "\r" << n << flush;
         for(int i = 0; i < numGraphs; ++i)
         {
-            int m = 3*n/2;
+            int m = 3 * n / 2;
             planarBiconnectedGraph(G, n, m);
 
             System::usedRealTime(T);
-            psl.callGrid(G,gl);
-            pdl.callGrid(G,gl);
-            mml.callGrid(G,gl);
+            psl.callGrid(G, gl);
+            pdl.callGrid(G, gl);
+            mml.callGrid(G, gl);
             msec += System::usedRealTime(T);
 
-            m = 2*n;
+            m = 2 * n;
             planarBiconnectedGraph(G, n, m);
 
             System::usedRealTime(T);
-            psl.callGrid(G,gl);
-            pdl.callGrid(G,gl);
-            mml.callGrid(G,gl);
+            psl.callGrid(G, gl);
+            pdl.callGrid(G, gl);
+            mml.callGrid(G, gl);
             msec += System::usedRealTime(T);
 
-            m = 5*n/2;
+            m = 5 * n / 2;
             planarBiconnectedGraph(G, n, m);
 
             System::usedRealTime(T);
-            psl.callGrid(G,gl);
-            pdl.callGrid(G,gl);
-            mml.callGrid(G,gl);
+            psl.callGrid(G, gl);
+            pdl.callGrid(G, gl);
+            mml.callGrid(G, gl);
             msec += System::usedRealTime(T);
         }
     }
 
     cout.precision(3);
-    cout << "\r    " << std::fixed << 0.001*double(msec) << " seconds (avg. " <<
+    cout << "\r    " << std::fixed << 0.001 * double(msec) << " seconds (avg. " <<
          double(msec) / totalGraphs <<
          " ms per graph)" << endl;
 
@@ -97,36 +97,36 @@ bool regPlanarLayout()
         cout << "\r" << n << flush;
         for(int i = 0; i < numGraphs; ++i)
         {
-            int b = n/25;
+            int b = n / 25;
 
             planarCNBGraph(G, 25, 38, b);
 
             System::usedRealTime(T);
-            psl.callGrid(G,gl);
-            pdl.callGrid(G,gl);
-            mml.callGrid(G,gl);
+            psl.callGrid(G, gl);
+            pdl.callGrid(G, gl);
+            mml.callGrid(G, gl);
             msec += System::usedRealTime(T);
 
             planarCNBGraph(G, 25, 50, b);
 
             System::usedRealTime(T);
-            psl.callGrid(G,gl);
-            pdl.callGrid(G,gl);
-            mml.callGrid(G,gl);
+            psl.callGrid(G, gl);
+            pdl.callGrid(G, gl);
+            mml.callGrid(G, gl);
             msec += System::usedRealTime(T);
 
             planarCNBGraph(G, 25, 63, b);
 
             System::usedRealTime(T);
-            psl.callGrid(G,gl);
-            pdl.callGrid(G,gl);
-            mml.callGrid(G,gl);
+            psl.callGrid(G, gl);
+            pdl.callGrid(G, gl);
+            mml.callGrid(G, gl);
             msec += System::usedRealTime(T);
         }
     }
 
     cout.precision(3);
-    cout << "\r    " << std::fixed << 0.001*double(msec) << " seconds (avg. " <<
+    cout << "\r    " << std::fixed << 0.001 * double(msec) << " seconds (avg. " <<
          double(msec) / totalGraphs <<
          " ms per graph)" << endl;
 
@@ -144,37 +144,37 @@ bool regPlanarLayout()
         cout << "\r" << n << flush;
         for(int i = 0; i < numGraphs; ++i)
         {
-            int m = 3*n/2;
+            int m = 3 * n / 2;
             planarTriconnectedGraph(G, n, m);
 
             System::usedRealTime(T);
-            psl.callGrid(G,gl);
-            pdl.callGrid(G,gl);
-            mml.callGrid(G,gl);
+            psl.callGrid(G, gl);
+            pdl.callGrid(G, gl);
+            mml.callGrid(G, gl);
             msec += System::usedRealTime(T);
 
-            m = 2*n;
+            m = 2 * n;
             planarTriconnectedGraph(G, n, m);
 
             System::usedRealTime(T);
-            psl.callGrid(G,gl);
-            pdl.callGrid(G,gl);
-            mml.callGrid(G,gl);
+            psl.callGrid(G, gl);
+            pdl.callGrid(G, gl);
+            mml.callGrid(G, gl);
             msec += System::usedRealTime(T);
 
-            m = 5*n/2;
+            m = 5 * n / 2;
             planarTriconnectedGraph(G, n, m);
 
             System::usedRealTime(T);
-            psl.callGrid(G,gl);
-            pdl.callGrid(G,gl);
-            mml.callGrid(G,gl);
+            psl.callGrid(G, gl);
+            pdl.callGrid(G, gl);
+            mml.callGrid(G, gl);
             msec += System::usedRealTime(T);
         }
     }
 
     cout.precision(3);
-    cout << "\r    " << std::fixed << 0.001*double(msec) << " seconds (avg. " <<
+    cout << "\r    " << std::fixed << 0.001 * double(msec) << " seconds (avg. " <<
          double(msec) / totalGraphs <<
          " ms per graph)" << endl;
 
@@ -197,7 +197,7 @@ bool regPlanarLayout()
         msec = 0;
         for(int i = 0; i < numGraphs; ++i)
         {
-            planarBiconnectedGraph(G, n, 2*n);
+            planarBiconnectedGraph(G, n, 2 * n);
 
             planarEmbed(G);
 
@@ -208,8 +208,8 @@ bool regPlanarLayout()
             msec += System::usedRealTime(T);
         }
         cout.precision(3);
-        cout << n << ": \t" << std::fixed << 0.001*double(msec) << " seconds (avg. " <<
-             double(msec) / (3*numGraphs) << " ms per graph)" << endl;
+        cout << n << ": \t" << std::fixed << 0.001 * double(msec) << " seconds (avg. " <<
+             double(msec) / (3 * numGraphs) << " ms per graph)" << endl;
     }
 
     return true;

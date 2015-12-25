@@ -40,14 +40,14 @@ class remove_dual_action : public CoinPresolveAction
 public:
     remove_dual_action(int nactions,
                        //const action *actions,
-                       const CoinPresolveAction *next);
+                       const CoinPresolveAction* next);
     /*! \brief Attempt to fix variables by bounding reduced costs
 
       Always scans all variables. Propagates bounds on reduced costs until there's
       no change or until some set of variables can be fixed.
     */
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-            const CoinPresolveAction *next);
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            const CoinPresolveAction* next);
 };
 #endif
 

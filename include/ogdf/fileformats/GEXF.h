@@ -58,13 +58,13 @@
 namespace ogdf
 {
 
-namespace gexf
-{
+    namespace gexf
+    {
 
-std::string toString(const Shape &shape);
-Shape toShape(const std::string &str);
+        std::string toString(const Shape & shape);
+        Shape toShape(const std::string & str);
 
-} // end namespace gexf
+    } // end namespace gexf
 
 } // end namespace ogdf
 

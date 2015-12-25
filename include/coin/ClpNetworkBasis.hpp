@@ -31,20 +31,20 @@ public:
     /**@name Constructors and destructor and copy */
     //@{
     /// Default constructor
-    ClpNetworkBasis (  );
+    ClpNetworkBasis();
     /// Constructor from CoinFactorization
-    ClpNetworkBasis(const ClpSimplex * model,
-                    int numberRows, const CoinFactorizationDouble * pivotRegion,
-                    const int * permuteBack, const CoinBigIndex * startColumn,
-                    const int * numberInColumn,
-                    const int * indexRow, const CoinFactorizationDouble * element);
+    ClpNetworkBasis(const ClpSimplex* model,
+                    int numberRows, const CoinFactorizationDouble* pivotRegion,
+                    const int* permuteBack, const CoinBigIndex* startColumn,
+                    const int* numberInColumn,
+                    const int* indexRow, const CoinFactorizationDouble* element);
     /// Copy constructor
-    ClpNetworkBasis ( const ClpNetworkBasis &other);
+    ClpNetworkBasis(const ClpNetworkBasis & other);
 
     /// Destructor
-    ~ClpNetworkBasis (  );
+    ~ClpNetworkBasis();
     /// = copy
-    ClpNetworkBasis & operator = ( const ClpNetworkBasis & other );
+    ClpNetworkBasis & operator = (const ClpNetworkBasis & other);
     //@}
 
     /**@name Do factorization */
@@ -57,8 +57,8 @@ public:
     If status is singular, then basic variables have pivot row
     and ones thrown out have -1
     returns 0 -okay, -1 singular, -2 too many in basis */
-    int factorize ( const ClpMatrixBase * matrix,
-                    int rowIsBasic[], int columnIsBasic[]);
+    int factorize(const ClpMatrixBase* matrix,
+                  int rowIsBasic[], int columnIsBasic[]);
     //@}
 
     /**@name rank one updates which do exist */
@@ -67,8 +67,8 @@ public:
     /** Replaces one Column to basis,
      returns 0=OK, 1=Probably OK, 2=singular!!
     */
-    int replaceColumn ( CoinIndexedVector * column,
-                        int pivotRow);
+    int replaceColumn(CoinIndexedVector* column,
+                      int pivotRow);
     //@}
 
     /**@name various uses of factorization (return code number elements)
@@ -77,29 +77,29 @@ public:
     /** Updates one column (FTRAN) from region,
         Returns pivot value if "pivotRow" >=0
     */
-    double updateColumn ( CoinIndexedVector * regionSparse,
-                          CoinIndexedVector * regionSparse2,
-                          int pivotRow);
+    double updateColumn(CoinIndexedVector* regionSparse,
+                        CoinIndexedVector* regionSparse2,
+                        int pivotRow);
     /** Updates one column (FTRAN) to/from array
         ** For large problems you should ALWAYS know where the nonzeros
         are, so please try and migrate to previous method after you
         have got code working using this simple method - thank you!
         (the only exception is if you know input is dense e.g. rhs) */
-    int updateColumn (  CoinIndexedVector * regionSparse,
-                        double array[] ) const;
+    int updateColumn(CoinIndexedVector* regionSparse,
+                     double array[]) const;
     /** Updates one column transpose (BTRAN)
         ** For large problems you should ALWAYS know where the nonzeros
         are, so please try and migrate to previous method after you
         have got code working using this simple method - thank you!
         (the only exception is if you know input is dense e.g. dense objective)
         returns number of nonzeros */
-    int updateColumnTranspose (  CoinIndexedVector * regionSparse,
-                                 double array[] ) const;
+    int updateColumnTranspose(CoinIndexedVector* regionSparse,
+                              double array[]) const;
     /** Updates one column (BTRAN) from region2 */
-    int updateColumnTranspose (  CoinIndexedVector * regionSparse,
-                                 CoinIndexedVector * regionSparse2) const;
+    int updateColumnTranspose(CoinIndexedVector* regionSparse,
+                              CoinIndexedVector* regionSparse2) const;
     //@}
-////////////////// data //////////////////
+    ////////////////// data //////////////////
 private:
 
     // checks looks okay
@@ -117,31 +117,31 @@ private:
     /// Number of Columns in factorization
     int numberColumns_;
     /// model
-    const ClpSimplex * model_;
+    const ClpSimplex* model_;
     /// Parent for each column
-    int * parent_;
+    int* parent_;
     /// Descendant
-    int * descendant_;
+    int* descendant_;
     /// Pivot row
-    int * pivot_;
+    int* pivot_;
     /// Right sibling
-    int * rightSibling_;
+    int* rightSibling_;
     /// Left sibling
-    int * leftSibling_;
+    int* leftSibling_;
     /// Sign of pivot
-    double * sign_;
+    double* sign_;
     /// Stack
-    int * stack_;
+    int* stack_;
     /// Permute into array
-    int * permute_;
+    int* permute_;
     /// Permute back array
-    int * permuteBack_;
+    int* permuteBack_;
     /// Second stack
-    int * stack2_;
+    int* stack2_;
     /// Depth
-    int * depth_;
+    int* depth_;
     /// To mark rows
-    char * mark_;
+    char* mark_;
     //@}
 };
 #endif

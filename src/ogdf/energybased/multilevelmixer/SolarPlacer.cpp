@@ -45,54 +45,54 @@
 namespace ogdf
 {
 
-void SolarPlacer::placeOneLevel(MultilevelGraph &MLG)
-{
-    int level = MLG.getLevel();
-    while (MLG.getLevel() == level && MLG.getLastMerge() != 0)
+    void SolarPlacer::placeOneLevel(MultilevelGraph & MLG)
     {
-        placeOneNode(MLG);
-    }
-}
-
-
-void SolarPlacer::placeOneNode(MultilevelGraph &MLG)
-{
-    NodeMerge * lastNM = MLG.getLastMerge();
-    double x = 0.0;
-    double y = 0.0;
-    int i = 0;
-
-    node sun = MLG.getNode(lastNM->m_changedNodes.front());
-    std::vector< std::pair<int, double> > positions = lastNM->m_position;
-
-    node merged = MLG.undoLastMerge();
-
-    if (positions.size() > 0)
-    {
-        for (std::vector< std::pair<int, double> >::iterator j = positions.begin(); j != positions.end(); j++)
+        int level = MLG.getLevel();
+        while(MLG.getLevel() == level && MLG.getLastMerge() != 0)
         {
-            double factor = (*j).second;
-            node other_sun = MLG.getNode((*j).first);
-            i++;
-            x += MLG.x(sun) * factor + MLG.x(other_sun) * (1.0f-factor);
-            y += MLG.y(sun) * factor + MLG.y(other_sun) * (1.0f-factor);
+            placeOneNode(MLG);
         }
     }
-    else
-    {
-        i++;
-        x += MLG.x(sun);
-        y += MLG.y(sun);
-    }
 
-    OGDF_ASSERT(i > 0);
-    if (positions.size() == 0 || m_randomOffset)
+
+    void SolarPlacer::placeOneNode(MultilevelGraph & MLG)
     {
-        x += randomDouble(-1.0, 1.0);
-        y += randomDouble(-1.0, 1.0);
+        NodeMerge* lastNM = MLG.getLastMerge();
+        double x = 0.0;
+        double y = 0.0;
+        int i = 0;
+
+        node sun = MLG.getNode(lastNM->m_changedNodes.front());
+        std::vector<std::pair<int, double>> positions = lastNM->m_position;
+
+        node merged = MLG.undoLastMerge();
+
+        if(positions.size() > 0)
+        {
+            for(std::vector<std::pair<int, double>>::iterator j = positions.begin(); j != positions.end(); j++)
+            {
+                double factor = (*j).second;
+                node other_sun = MLG.getNode((*j).first);
+                i++;
+                x += MLG.x(sun) * factor + MLG.x(other_sun) * (1.0f - factor);
+                y += MLG.y(sun) * factor + MLG.y(other_sun) * (1.0f - factor);
+            }
+        }
+        else
+        {
+            i++;
+            x += MLG.x(sun);
+            y += MLG.y(sun);
+        }
+
+        OGDF_ASSERT(i > 0);
+        if(positions.size() == 0 || m_randomOffset)
+        {
+            x += randomDouble(-1.0, 1.0);
+            y += randomDouble(-1.0, 1.0);
+        }
+        MLG.x(merged, (x / static_cast<double>(i)));
+        MLG.y(merged, (y / static_cast<double>(i)));
     }
-    MLG.x(merged, (x / static_cast<double>(i)));
-    MLG.y(merged, (y / static_cast<double>(i)));
-}
 
 } // namespace ogdf

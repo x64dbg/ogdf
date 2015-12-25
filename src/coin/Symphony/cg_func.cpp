@@ -38,7 +38,7 @@
 \*===========================================================================*/
 
 
-void cg_initialize(cg_prob *p, int master_tid)
+void cg_initialize(cg_prob* p, int master_tid)
 {
 #ifndef COMPILE_IN_CG
     int bytes, msgtag;
@@ -65,7 +65,7 @@ void cg_initialize(cg_prob *p, int master_tid)
     /* pack_cg_data_u()*/
 
     /* set stdout to be line buffered */
-    setvbuf(stdout, (char *)NULL, _IOLBF, 0);
+    setvbuf(stdout, (char*)NULL, _IOLBF, 0);
 
     register_process();
 
@@ -101,50 +101,50 @@ void cg_initialize(cg_prob *p, int master_tid)
  * cg_add_user_cut() below.
 \*===========================================================================*/
 
-int cg_send_cut(cut_data *new_cut, int *num_cuts, int *alloc_cuts,
-                cut_data ***cuts)
+int cg_send_cut(cut_data* new_cut, int* num_cuts, int* alloc_cuts,
+                cut_data** *cuts)
 {
 #ifdef COMPILE_IN_CG
 
     int i;
-    cut_data *tmp_cut;
+    cut_data* tmp_cut;
 
-    for (i = 0; i < *num_cuts; i++)
+    for(i = 0; i < *num_cuts; i++)
     {
-        if (new_cut->type != (*cuts)[i]->type ||
+        if(new_cut->type != (*cuts)[i]->type ||
                 new_cut->size != (*cuts)[i]->size ||
                 new_cut->rhs != (*cuts)[i]->rhs)
         {
             continue;
         }
-        if (!new_cut->coef)
+        if(!new_cut->coef)
         {
             return(0);
         }
-        if (memcmp(new_cut->coef, (*cuts)[i]->coef,
-                   new_cut->size) == 0)
+        if(memcmp(new_cut->coef, (*cuts)[i]->coef,
+                  new_cut->size) == 0)
         {
             return(0);
         }
     }
-    if (new_cut->name != CUT__DO_NOT_SEND_TO_CP)
+    if(new_cut->name != CUT__DO_NOT_SEND_TO_CP)
         new_cut->name = CUT__SEND_TO_CP;
-    tmp_cut = (cut_data *) malloc (sizeof(cut_data));
-    memcpy((char *)tmp_cut, (char *)new_cut, sizeof(cut_data));
-    if (new_cut->size >0)
+    tmp_cut = (cut_data*) malloc(sizeof(cut_data));
+    memcpy((char*)tmp_cut, (char*)new_cut, sizeof(cut_data));
+    if(new_cut->size > 0)
     {
-        tmp_cut->coef = (char *) malloc (new_cut->size * sizeof(char));
-        memcpy((char *)tmp_cut->coef, (char *)new_cut->coef,
+        tmp_cut->coef = (char*) malloc(new_cut->size * sizeof(char));
+        memcpy((char*)tmp_cut->coef, (char*)new_cut->coef,
                new_cut->size * sizeof(char));
     }
-    REALLOC((*cuts), cut_data *, (*alloc_cuts), (*num_cuts + 1), BB_BUNCH);
+    REALLOC((*cuts), cut_data*, (*alloc_cuts), (*num_cuts + 1), BB_BUNCH);
     (*cuts)[(*num_cuts)++] = tmp_cut;
 
 #else
 
     int s_bufid;
 
-    if (new_cut->name != CUT__DO_NOT_SEND_TO_CP)
+    if(new_cut->name != CUT__DO_NOT_SEND_TO_CP)
         new_cut->name = CUT__SEND_TO_CP;
     s_bufid = init_send(DataInPlace);
     pack_cut(new_cut);
@@ -158,24 +158,24 @@ int cg_send_cut(cut_data *new_cut, int *num_cuts, int *alloc_cuts,
 
 /*===========================================================================*/
 
-cut_data *create_explicit_cut(int nzcnt, int *indices, double *values,
+cut_data* create_explicit_cut(int nzcnt, int* indices, double* values,
                               double rhs, double range, char sense,
                               char send_to_cp)
 {
-    cut_data *cut = (cut_data *) calloc(1, sizeof(cut_data));
+    cut_data* cut = (cut_data*) calloc(1, sizeof(cut_data));
 
     cut->type = EXPLICIT_ROW;
     cut->sense = sense;
     cut->rhs = rhs;
     cut->range = range;
     cut->size = (int)(DSIZE + nzcnt * (ISIZE + DSIZE));
-    cut->coef = (char *) malloc (cut->size);
-    ((double *) cut->coef)[0] = 0; // otherwise valgrind complains
-    ((int *) cut->coef)[0] = nzcnt;
+    cut->coef = (char*) malloc(cut->size);
+    ((double*) cut->coef)[0] = 0;  // otherwise valgrind complains
+    ((int*) cut->coef)[0] = nzcnt;
     //Here, we have to pad the initial int to avoid misalignment, so we
     //add DSIZE bytes to get to a double boundary
-    memcpy(cut->coef + DSIZE, (char *)values, nzcnt * DSIZE);
-    memcpy(cut->coef + (nzcnt + 1) * DSIZE, (char *)indices, nzcnt*ISIZE);
+    memcpy(cut->coef + DSIZE, (char*)values, nzcnt * DSIZE);
+    memcpy(cut->coef + (nzcnt + 1) * DSIZE, (char*)indices, nzcnt * ISIZE);
     cut->branch = DO_NOT_BRANCH_ON_THIS_ROW;
     cut->deletable = TRUE;
     cut->name = send_to_cp ? CUT__SEND_TO_CP : CUT__DO_NOT_SEND_TO_CP;
@@ -185,25 +185,25 @@ cut_data *create_explicit_cut(int nzcnt, int *indices, double *values,
 
 /*===========================================================================*/
 
-int cg_add_explicit_cut(int nzcnt, int *indices, double *values,
+int cg_add_explicit_cut(int nzcnt, int* indices, double* values,
                         double rhs, double range, char sense,
-                        char send_to_cp, int *num_cuts, int *alloc_cuts,
-                        cut_data ***cuts)
+                        char send_to_cp, int* num_cuts, int* alloc_cuts,
+                        cut_data** *cuts)
 {
-    cut_data *cut = (cut_data *) calloc(1, sizeof(cut_data));
+    cut_data* cut = (cut_data*) calloc(1, sizeof(cut_data));
 
     cut->type = EXPLICIT_ROW;
     cut->sense = sense;
     cut->rhs = rhs;
     cut->range = range;
     cut->size = (int)(DSIZE + nzcnt * (ISIZE + DSIZE));
-    cut->coef = (char *) malloc (cut->size);
-    ((double *) cut->coef)[0] = 0; // otherwise valgrind complains.
-    ((int *) cut->coef)[0] = nzcnt;
+    cut->coef = (char*) malloc(cut->size);
+    ((double*) cut->coef)[0] = 0;  // otherwise valgrind complains.
+    ((int*) cut->coef)[0] = nzcnt;
     //Here, we have to pad the initial int to avoid misalignment, so we
     //add DSIZE bytes to get to a double boundary
-    memcpy(cut->coef + DSIZE, (char *)values, nzcnt * DSIZE);
-    memcpy(cut->coef + (nzcnt + 1) * DSIZE, (char *)indices, nzcnt*ISIZE);
+    memcpy(cut->coef + DSIZE, (char*)values, nzcnt * DSIZE);
+    memcpy(cut->coef + (nzcnt + 1) * DSIZE, (char*)indices, nzcnt * ISIZE);
     cut->branch = DO_NOT_BRANCH_ON_THIS_ROW;
     cut->deletable = TRUE;
     cut->name = send_to_cp ? CUT__SEND_TO_CP : CUT__DO_NOT_SEND_TO_CP;
@@ -213,43 +213,43 @@ int cg_add_explicit_cut(int nzcnt, int *indices, double *values,
 
 /*===========================================================================*/
 
-int cg_add_user_cut(cut_data *new_cut, int *num_cuts, int *alloc_cuts,
-                    cut_data ***cuts)
+int cg_add_user_cut(cut_data* new_cut, int* num_cuts, int* alloc_cuts,
+                    cut_data** *cuts)
 {
 #ifdef COMPILE_IN_CG
 
     int i;
-    cut_data *tmp_cut;
+    cut_data* tmp_cut;
 
-    for (i = 0; i < *num_cuts; i++)
+    for(i = 0; i < *num_cuts; i++)
     {
-        if (new_cut->size != (*cuts)[i]->size)
+        if(new_cut->size != (*cuts)[i]->size)
         {
             continue;
         }
-        if (memcmp(new_cut->coef, (*cuts)[i]->coef, new_cut->size) == 0)
+        if(memcmp(new_cut->coef, (*cuts)[i]->coef, new_cut->size) == 0)
         {
             return(0);
         }
     }
-    if (new_cut->name != CUT__DO_NOT_SEND_TO_CP)
+    if(new_cut->name != CUT__DO_NOT_SEND_TO_CP)
         new_cut->name = CUT__SEND_TO_CP;
-    tmp_cut = (cut_data *) malloc (sizeof(cut_data));
-    memcpy((char *)tmp_cut, (char *)new_cut, sizeof(cut_data));
-    if (new_cut->size >0)
+    tmp_cut = (cut_data*) malloc(sizeof(cut_data));
+    memcpy((char*)tmp_cut, (char*)new_cut, sizeof(cut_data));
+    if(new_cut->size > 0)
     {
-        tmp_cut->coef = (char *) malloc (new_cut->size * sizeof(char));
-        memcpy((char *)tmp_cut->coef, (char *)new_cut->coef,
+        tmp_cut->coef = (char*) malloc(new_cut->size * sizeof(char));
+        memcpy((char*)tmp_cut->coef, (char*)new_cut->coef,
                new_cut->size * sizeof(char));
     }
-    REALLOC((*cuts), cut_data *, (*alloc_cuts), (*num_cuts + 1), BB_BUNCH);
+    REALLOC((*cuts), cut_data*, (*alloc_cuts), (*num_cuts + 1), BB_BUNCH);
     (*cuts)[(*num_cuts)++] = tmp_cut;
 
 #else
 
     int s_bufid;
 
-    if (new_cut->name != CUT__DO_NOT_SEND_TO_CP)
+    if(new_cut->name != CUT__DO_NOT_SEND_TO_CP)
         new_cut->name = CUT__SEND_TO_CP;
     s_bufid = init_send(DataInPlace);
     pack_cut(new_cut);
@@ -267,7 +267,7 @@ int cg_add_user_cut(cut_data *new_cut, int *num_cuts, int *alloc_cuts,
  * This function frees data structures
 \*===========================================================================*/
 
-void cg_close(cg_prob *p)
+void cg_close(cg_prob* p)
 {
     free_cg_u(p);
 }

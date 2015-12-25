@@ -59,50 +59,50 @@
 namespace ogdf
 {
 
-namespace gdf
-{
+    namespace gdf
+    {
 
 
-enum NodeAttribute
-{
-    // GDF standard
-    na_name = 0,
-    na_label,
-    na_x, na_y, na_z,
-    na_fillColor, na_strokeColor,
-    na_shape,
-    na_width, na_height,
-    // OGDF specific
-    na_template,
-    na_weight,
-    na_unknown
-};
+        enum NodeAttribute
+        {
+            // GDF standard
+            na_name = 0,
+            na_label,
+            na_x, na_y, na_z,
+            na_fillColor, na_strokeColor,
+            na_shape,
+            na_width, na_height,
+            // OGDF specific
+            na_template,
+            na_weight,
+            na_unknown
+        };
 
 
-enum EdgeAttribute
-{
-    // GDF standard
-    ea_label = 0,
-    ea_source, ea_target,
-    ea_weight,
-    ea_directed,
-    ea_color,
-    // OGDF specific
-    ea_bends,
-    ea_unknown
-};
+        enum EdgeAttribute
+        {
+            // GDF standard
+            ea_label = 0,
+            ea_source, ea_target,
+            ea_weight,
+            ea_directed,
+            ea_color,
+            // OGDF specific
+            ea_bends,
+            ea_unknown
+        };
 
 
-std::string toString(const NodeAttribute &attr);
-std::string toString(const EdgeAttribute &attr);
-std::string toString(const Shape &shape);
+        std::string toString(const NodeAttribute & attr);
+        std::string toString(const EdgeAttribute & attr);
+        std::string toString(const Shape & shape);
 
-NodeAttribute toNodeAttribute(const std::string &str);
-EdgeAttribute toEdgeAttribute(const std::string &str);
-Shape toShape(const std::string &str);
+        NodeAttribute toNodeAttribute(const std::string & str);
+        EdgeAttribute toEdgeAttribute(const std::string & str);
+        Shape toShape(const std::string & str);
 
 
-} // end namespace gdf
+    } // end namespace gdf
 
 } // end namespace ogdf
 

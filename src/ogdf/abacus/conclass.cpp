@@ -40,38 +40,38 @@ namespace abacus
 {
 
 
-ostream &operator<<(ostream &out, const ConClass &rhs)
-{
-    bool classified = false;
+    ostream & operator<<(ostream & out, const ConClass & rhs)
+    {
+        bool classified = false;
 
-    if (rhs.discrete_)
-    {
-        out << "discrete/";
-        classified = true;
-    }
-    if (rhs.allVarBinary_)
-    {
-        out << "allVarBinary/";
-        classified = true;
-    }
-    if (rhs.trivial_)
-    {
-        out << "trivial/";
-        classified = true;
-    }
-    if (rhs.bound_)
-    {
-        out << "bound/";
-        classified = true;
-    }
-    if (rhs.varBound_)
-    {
-        out << "variable bound/";
-        classified = true;
-    }
+        if(rhs.discrete_)
+        {
+            out << "discrete/";
+            classified = true;
+        }
+        if(rhs.allVarBinary_)
+        {
+            out << "allVarBinary/";
+            classified = true;
+        }
+        if(rhs.trivial_)
+        {
+            out << "trivial/";
+            classified = true;
+        }
+        if(rhs.bound_)
+        {
+            out << "bound/";
+            classified = true;
+        }
+        if(rhs.varBound_)
+        {
+            out << "variable bound/";
+            classified = true;
+        }
 
-    if (!classified) out << "no classification ";
+        if(!classified) out << "no classification ";
 
-    return out;
-}
+        return out;
+    }
 } //namespace abacus

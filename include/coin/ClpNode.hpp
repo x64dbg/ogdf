@@ -27,13 +27,13 @@ public:
         1 - tree bounds and basis etc
         2 - saved bounds and basis etc
     */
-    void applyNode(ClpSimplex * model, int doBoundsEtc );
+    void applyNode(ClpSimplex* model, int doBoundsEtc);
     /// Choose a new variable
-    void chooseVariable(ClpSimplex * model, ClpNodeStuff * info);
+    void chooseVariable(ClpSimplex* model, ClpNodeStuff* info);
     /// Fix on reduced costs
-    int fixOnReducedCosts(ClpSimplex * model);
+    int fixOnReducedCosts(ClpSimplex* model);
     /// Create odd arrays
-    void createArrays(ClpSimplex * model);
+    void createArrays(ClpSimplex* model);
     /// Clean up as crunch is different model
     void cleanUpForCrunch();
     //@}
@@ -51,12 +51,12 @@ public:
         objectiveValue_ = value;
     }
     /// Primal solution
-    inline const double * primalSolution() const
+    inline const double* primalSolution() const
     {
         return primalSolution_;
     }
     /// Dual solution
-    inline const double * dualSolution() const
+    inline const double* dualSolution() const
     {
         return dualSolution_;
     }
@@ -102,7 +102,7 @@ public:
         return lower_ != NULL;
     }
     /// Status array
-    inline const unsigned char * statusArray() const
+    inline const unsigned char* statusArray() const
     {
         return status_;
     }
@@ -113,9 +113,9 @@ public:
     /** Default constructor. */
     ClpNode();
     /// Constructor from model
-    ClpNode (ClpSimplex * model, const ClpNodeStuff * stuff, int depth);
+    ClpNode(ClpSimplex* model, const ClpNodeStuff* stuff, int depth);
     /// Does work of constructor (partly so gdb will work)
-    void gutsOfConstructor(ClpSimplex * model, const ClpNodeStuff * stuff,
+    void gutsOfConstructor(ClpSimplex* model, const ClpNodeStuff* stuff,
                            int arraysExist, int depth);
     /** Destructor */
     virtual ~ClpNode();
@@ -124,13 +124,13 @@ public:
     /**@name Copy methods (at present illegal - will abort) */
     //@{
     /** The copy constructor. */
-    ClpNode(const ClpNode&);
+    ClpNode(const ClpNode &);
     /// Operator =
-    ClpNode& operator=(const ClpNode&);
+    ClpNode & operator=(const ClpNode &);
     //@}
 
 protected:
-// For state of branch
+    // For state of branch
     typedef struct
     {
         unsigned int firstBranch: 1; //  nonzero if first branch on variable is up
@@ -148,23 +148,23 @@ protected:
     /// Estimated solution value
     double estimatedSolution_;
     /// Factorization
-    ClpFactorization * factorization_;
+    ClpFactorization* factorization_;
     /// Steepest edge weights
-    ClpDualRowSteepest * weights_;
+    ClpDualRowSteepest* weights_;
     /// Status vector
-    unsigned char * status_;
+    unsigned char* status_;
     /// Primal solution
-    double * primalSolution_;
+    double* primalSolution_;
     /// Dual solution
-    double * dualSolution_;
+    double* dualSolution_;
     /// Integer lower bounds (only used in fathomMany)
-    int * lower_;
+    int* lower_;
     /// Integer upper bounds (only used in fathomMany)
-    int * upper_;
+    int* upper_;
     /// Pivot variables for factorization
-    int * pivotVariables_;
+    int* pivotVariables_;
     /// Variables fixed by reduced costs (at end of branch) 0x10000000 added if fixed to UB
-    int * fixed_;
+    int* fixed_;
     /// State of branch
     branchState branchState_;
     /// Sequence number of integer variable (-1 if none)
@@ -202,9 +202,9 @@ public:
     /**@name Copy methods (only copies ints etc, nulls arrays) */
     //@{
     /** The copy constructor. */
-    ClpNodeStuff(const ClpNodeStuff&);
+    ClpNodeStuff(const ClpNodeStuff &);
     /// Operator =
-    ClpNodeStuff& operator=(const ClpNodeStuff&);
+    ClpNodeStuff & operator=(const ClpNodeStuff &);
     /// Zaps stuff 1 - arrays, 2 ints, 3 both
     void zap(int type);
     //@}
@@ -213,10 +213,10 @@ public:
     /**@name Fill methods */
     //@{
     /** Fill with pseudocosts */
-    void fillPseudoCosts(const double * down, const double * up,
-                         const int * priority,
-                         const int * numberDown, const int * numberUp,
-                         const int * numberDownInfeasible, const int * numberUpInfeasible,
+    void fillPseudoCosts(const double* down, const double* up,
+                         const int* priority,
+                         const int* numberDown, const int* numberUp,
+                         const int* numberDownInfeasible, const int* numberUpInfeasible,
                          int number);
     /// Update pseudo costs
     void update(int way, int sequence, double change, bool feasible);
@@ -236,32 +236,32 @@ public:
     /// Small change in branch
     double smallChange_;
     /// Down pseudo costs
-    double * downPseudo_;
+    double* downPseudo_;
     /// Up pseudo costs
-    double * upPseudo_;
+    double* upPseudo_;
     /// Priority
-    int * priority_;
+    int* priority_;
     /// Number of times down
-    int * numberDown_;
+    int* numberDown_;
     /// Number of times up
-    int * numberUp_;
+    int* numberUp_;
     /// Number of times down infeasible
-    int * numberDownInfeasible_;
+    int* numberDownInfeasible_;
     /// Number of times up infeasible
-    int * numberUpInfeasible_;
+    int* numberUpInfeasible_;
     /// Copy of costs (local)
-    double * saveCosts_;
+    double* saveCosts_;
     /// Array of ClpNodes
-    ClpNode ** nodeInfo_;
+    ClpNode** nodeInfo_;
     /// Large model if crunched
-    ClpSimplex * large_;
+    ClpSimplex* large_;
     /// Which rows in large model
-    int * whichRow_;
+    int* whichRow_;
     /// Which columns in large model
-    int * whichColumn_;
+    int* whichColumn_;
 #ifndef NO_FATHOM_PRINT
     /// Cbc's message handler
-    CoinMessageHandler * handler_;
+    CoinMessageHandler* handler_;
 #endif
     /// Number bounds in large model
     int nBound_;
@@ -322,7 +322,7 @@ public:
     /** Default constructor. */
     ClpHashValue();
     /** Useful constructor. */
-    ClpHashValue(ClpSimplex * model);
+    ClpHashValue(ClpSimplex* model);
     /** Destructor */
     virtual ~ClpHashValue();
     //@}
@@ -330,9 +330,9 @@ public:
     /**@name Copy method */
     //@{
     /** The copy constructor. */
-    ClpHashValue(const ClpHashValue&);
+    ClpHashValue(const ClpHashValue &);
     /// =
-    ClpHashValue& operator=(const ClpHashValue&);
+    ClpHashValue & operator=(const ClpHashValue &);
     //@}
 private:
     /**@name private stuff */
@@ -355,7 +355,7 @@ protected:
         int index, next;
     } CoinHashLink;
     /// Hash table
-    mutable CoinHashLink *hash_;
+    mutable CoinHashLink* hash_;
     /// Number of entries in hash table
     int numberHash_;
     /// Maximum number of entries in hash table i.e. size

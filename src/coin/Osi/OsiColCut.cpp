@@ -37,7 +37,7 @@ OsiColCut::OsiColCut(const OsiColCut & source) :
 //----------------------------------------------------------------
 // Clone
 //----------------------------------------------------------------
-OsiColCut * OsiColCut::clone() const
+OsiColCut* OsiColCut::clone() const
 {
     return (new OsiColCut(*this));
 }
@@ -45,7 +45,7 @@ OsiColCut * OsiColCut::clone() const
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-OsiColCut::~OsiColCut ()
+OsiColCut::~OsiColCut()
 {
     // Nothing to do here
 }
@@ -54,14 +54,14 @@ OsiColCut::~OsiColCut ()
 // Assignment operator
 //-------------------------------------------------------------------
 OsiColCut &
-OsiColCut::operator=(const OsiColCut& rhs)
+OsiColCut::operator=(const OsiColCut & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
 
         OsiCut::operator=(rhs);
-        lbs_=rhs.lbs_;
-        ubs_=rhs.ubs_;
+        lbs_ = rhs.lbs_;
+        ubs_ = rhs.ubs_;
     }
     return *this;
 }
@@ -75,55 +75,55 @@ OsiColCut::print() const
     const CoinPackedVector & cutLbs = lbs();
     const CoinPackedVector & cutUbs = ubs();
     int i;
-    std::cout<<"Column cut has "
-             <<cutLbs.getNumElements()
-             <<" lower bound cuts and "
-             <<cutUbs.getNumElements()
-             <<" upper bound cuts"
-             <<std::endl;
-    for ( i=0; i<cutLbs.getNumElements(); i++ )
+    std::cout << "Column cut has "
+              << cutLbs.getNumElements()
+              << " lower bound cuts and "
+              << cutUbs.getNumElements()
+              << " upper bound cuts"
+              << std::endl;
+    for(i = 0; i < cutLbs.getNumElements(); i++)
     {
         int colIndx = cutLbs.getIndices()[i];
-        double newLb= cutLbs.getElements()[i];
-        std::cout<<"[ x"<<colIndx<<" >= "<<newLb<<"] ";
+        double newLb = cutLbs.getElements()[i];
+        std::cout << "[ x" << colIndx << " >= " << newLb << "] ";
     }
-    for ( i=0; i<cutUbs.getNumElements(); i++ )
+    for(i = 0; i < cutUbs.getNumElements(); i++)
     {
         int colIndx = cutUbs.getIndices()[i];
-        double newUb= cutUbs.getElements()[i];
-        std::cout<<"[ x"<<colIndx<<" <= "<<newUb<<"] ";
+        double newUb = cutUbs.getElements()[i];
+        std::cout << "[ x" << colIndx << " <= " << newUb << "] ";
     }
-    std::cout<<std::endl;
+    std::cout << std::endl;
 }
 /* Returns infeasibility of the cut with respect to solution
     passed in i.e. is positive if cuts off that solution.
     solution is getNumCols() long..
 */
 double
-OsiColCut::violated(const double * solution) const
+OsiColCut::violated(const double* solution) const
 {
     const CoinPackedVector & cutLbs = lbs();
     const CoinPackedVector & cutUbs = ubs();
-    double sum=0.0;
+    double sum = 0.0;
     int i;
-    const int * column = cutLbs.getIndices();
+    const int* column = cutLbs.getIndices();
     int number = cutLbs.getNumElements();
-    const double * bound = cutLbs.getElements();
-    for ( i=0; i<number; i++ )
+    const double* bound = cutLbs.getElements();
+    for(i = 0; i < number; i++)
     {
         int colIndx = column[i];
         double newLb = bound[i];
-        if (newLb>solution[colIndx])
+        if(newLb > solution[colIndx])
             sum += newLb - solution[colIndx];
     }
     column = cutUbs.getIndices();
     number = cutUbs.getNumElements();
     bound = cutUbs.getElements();
-    for ( i=0; i<number; i++ )
+    for(i = 0; i < number; i++)
     {
         int colIndx = column[i];
         double newUb = bound[i];
-        if (newUb<solution[colIndx])
+        if(newUb < solution[colIndx])
             sum +=  solution[colIndx] - newUb;
     }
     return sum;

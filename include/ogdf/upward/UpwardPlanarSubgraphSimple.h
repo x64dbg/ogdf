@@ -60,38 +60,38 @@
 namespace ogdf
 {
 
-//---------------------------------------------------------
-// UpwardPlanarSubgraphSimple
-// implements a maximal planar subgraph algorithm using
-// planarity testing
-//---------------------------------------------------------
-class OGDF_EXPORT UpwardPlanarSubgraphSimple : public UpwardPlanarSubgraphModule
-{
-public:
-    // construction
-    UpwardPlanarSubgraphSimple() { }
-    // destruction
-    ~UpwardPlanarSubgraphSimple() { }
+    //---------------------------------------------------------
+    // UpwardPlanarSubgraphSimple
+    // implements a maximal planar subgraph algorithm using
+    // planarity testing
+    //---------------------------------------------------------
+    class OGDF_EXPORT UpwardPlanarSubgraphSimple : public UpwardPlanarSubgraphModule
+    {
+    public:
+        // construction
+        UpwardPlanarSubgraphSimple() { }
+        // destruction
+        ~UpwardPlanarSubgraphSimple() { }
 
-    // computes set of edges delEdges, which have to be deleted
-    // in order to get a planar subgraph; edges in preferedEdges
-    // should be contained in planar subgraph
-    void call(const Graph &G, List<edge> &delEdges);
+        // computes set of edges delEdges, which have to be deleted
+        // in order to get a planar subgraph; edges in preferedEdges
+        // should be contained in planar subgraph
+        void call(const Graph & G, List<edge> & delEdges);
 
-    void call(GraphCopy &GC, List<edge> &delEdges);
+        void call(GraphCopy & GC, List<edge> & delEdges);
 
 
-private:
-    bool checkAcyclic(
-        GraphCopySimple &graphAcyclicTest,
-        SList<Tuple2<node,node> > &tmpAugmented);
+    private:
+        bool checkAcyclic(
+            GraphCopySimple & graphAcyclicTest,
+            SList<Tuple2<node, node>> & tmpAugmented);
 
-    void dfsBuildSpanningTree(
-        node v,
-        SListPure<edge> &treeEdges,
-        NodeArray<bool> &visited);
+        void dfsBuildSpanningTree(
+            node v,
+            SListPure<edge> & treeEdges,
+            NodeArray<bool> & visited);
 
-};
+    };
 
 
 } // end namespace ogdf

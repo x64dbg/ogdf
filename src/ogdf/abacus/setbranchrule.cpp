@@ -42,42 +42,42 @@ namespace abacus
 {
 
 
-ostream &operator<<(ostream &out, const SetBranchRule &rhs)
-{
-    return out << "x" << rhs.variable_ << " = " << (int) rhs.status_;
-}
-
-
-int SetBranchRule::extract(Sub *sub)
-{
-    if (sub->fsVarStat(variable_)->contradiction(status_))
-        return 1;
-
-    sub->fsVarStat(variable_)->status(status_);
-    return 0;
-}
-
-
-void SetBranchRule::extract(LpSub *lp)
-{
-    if (status_ == FSVarStat::SetToLowerBound)
+    ostream & operator<<(ostream & out, const SetBranchRule & rhs)
     {
-        oldLpBound_ = lp->uBound(variable_);
-        lp->changeUBound(variable_, lp->lBound(variable_));
+        return out << "x" << rhs.variable_ << " = " << (int) rhs.status_;
     }
-    else
+
+
+    int SetBranchRule::extract(Sub* sub)
     {
-        oldLpBound_ = lp->lBound(variable_);
-        lp->changeLBound(variable_, lp->uBound(variable_));
+        if(sub->fsVarStat(variable_)->contradiction(status_))
+            return 1;
+
+        sub->fsVarStat(variable_)->status(status_);
+        return 0;
     }
-}
 
 
-void SetBranchRule::unExtract(LpSub *lp)
-{
-    if (status_ == FSVarStat::SetToLowerBound)
-        lp->changeUBound(variable_, oldLpBound_);
-    else
-        lp->changeLBound(variable_, oldLpBound_);
-}
+    void SetBranchRule::extract(LpSub* lp)
+    {
+        if(status_ == FSVarStat::SetToLowerBound)
+        {
+            oldLpBound_ = lp->uBound(variable_);
+            lp->changeUBound(variable_, lp->lBound(variable_));
+        }
+        else
+        {
+            oldLpBound_ = lp->lBound(variable_);
+            lp->changeLBound(variable_, lp->uBound(variable_));
+        }
+    }
+
+
+    void SetBranchRule::unExtract(LpSub* lp)
+    {
+        if(status_ == FSVarStat::SetToLowerBound)
+            lp->changeUBound(variable_, oldLpBound_);
+        else
+            lp->changeLBound(variable_, oldLpBound_);
+    }
 } //namespace abacus

@@ -44,104 +44,104 @@
 namespace abacus
 {
 
-class Master;
-class Sub;
-class FSVarStat;
-class Variable;
-class Constraint;
+    class Master;
+    class Sub;
+    class FSVarStat;
+    class Variable;
+    class Constraint;
 
-template<class BaseType, class CoType> class CutBuffer;
-template<class BaseType, class CoType> class PoolSlotRef;
+    template<class BaseType, class CoType> class CutBuffer;
+    template<class BaseType, class CoType> class PoolSlotRef;
 
 
-//! Candidates for fixing.
-/**
- * Variables can be only fixed according to the reduced costs and
- * statuses of variables of the root of the remaining branch-and-bound tree.
- * However, if we store these values, we can repeat the fixing process
- * also in any other node of the enumeration tree when we find
- * a better global lower bound.
- *
- * Possible candidates for fixing are all variables which have
- * the status \a AtLowerBound or \a AtUpperBound. We store all
- * these candidates together with their values in this class.
- *
- * If we try to fix variables according to reduced cost criteria
- * in nodes which are not the root of the remaining branch-and-cut tree,
- * we always have to take the candidates and values from this class.
- */
-class  FixCand :  public AbacusRoot
-{
-
-    friend class Sub;
-    friend class Master;
-
-public:
-
-    //! Creates an empty set of candidates for fixing.
+    //! Candidates for fixing.
     /**
-     * \param master A pointer to the corresponding master of the optimization.
+     * Variables can be only fixed according to the reduced costs and
+     * statuses of variables of the root of the remaining branch-and-bound tree.
+     * However, if we store these values, we can repeat the fixing process
+     * also in any other node of the enumeration tree when we find
+     * a better global lower bound.
+     *
+     * Possible candidates for fixing are all variables which have
+     * the status \a AtLowerBound or \a AtUpperBound. We store all
+     * these candidates together with their values in this class.
+     *
+     * If we try to fix variables according to reduced cost criteria
+     * in nodes which are not the root of the remaining branch-and-cut tree,
+     * we always have to take the candidates and values from this class.
      */
-    FixCand(Master *master) :
-        master_(master),
-        candidates_(0),
-        fsVarStat_(0),
-        lhs_(0)
-    { }
-
-    //! The destructor.
-    ~FixCand()
+    class  FixCand :  public AbacusRoot
     {
-        deleteAll();
-    }
 
-private:
+        friend class Sub;
+        friend class Master;
 
-    //! Memorizes suitable variables for fixing.
-    /**
-     * \param sub A pointer to the root node of the remaining branch-and-cut tree.
-     */
-    void saveCandidates(Sub *sub);
+    public:
 
-    //! Tries to fix as many candidates as possible.
-    /**
-     * The new variable status is both stored in the global variable status
-     * of the class Master and in the local variable status of Sub.
-     * Candidates which are fixed are removed from the candidate set.
-     *
-     * We do not used the function Master::primalViolated() for checking of a
-     * variable can be fixed, because here we also have to be careful for
-     * integer objective function.
-     *
-     * \param addVarBuffer Inactive variables which are fixed to a nonzero
-     *                     value are added to \a addVarBuffer to be activated
-     *                     in the next iteration.
-     *
-     * \return 1 If contradictions to the variables statuses of \a sub are detected; 0 otherwise.
-     */
-    void fixByRedCost(CutBuffer<Variable, Constraint> *addVarBuffer);
+        //! Creates an empty set of candidates for fixing.
+        /**
+         * \param master A pointer to the corresponding master of the optimization.
+         */
+        FixCand(Master* master) :
+            master_(master),
+            candidates_(0),
+            fsVarStat_(0),
+            lhs_(0)
+        { }
 
-    //! Deletes all allocated memory of members.
-    /**
-     * The member pointers are set to 0 that multiple deletion cannot cause any error.
-     */
-    void deleteAll();
+        //! The destructor.
+        ~FixCand()
+        {
+            deleteAll();
+        }
 
-    //! Allocates memory to store \a nCand candidates for fixing.
-    void allocate(int nCand);
+    private:
+
+        //! Memorizes suitable variables for fixing.
+        /**
+         * \param sub A pointer to the root node of the remaining branch-and-cut tree.
+         */
+        void saveCandidates(Sub* sub);
+
+        //! Tries to fix as many candidates as possible.
+        /**
+         * The new variable status is both stored in the global variable status
+         * of the class Master and in the local variable status of Sub.
+         * Candidates which are fixed are removed from the candidate set.
+         *
+         * We do not used the function Master::primalViolated() for checking of a
+         * variable can be fixed, because here we also have to be careful for
+         * integer objective function.
+         *
+         * \param addVarBuffer Inactive variables which are fixed to a nonzero
+         *                     value are added to \a addVarBuffer to be activated
+         *                     in the next iteration.
+         *
+         * \return 1 If contradictions to the variables statuses of \a sub are detected; 0 otherwise.
+         */
+        void fixByRedCost(CutBuffer<Variable, Constraint>* addVarBuffer);
+
+        //! Deletes all allocated memory of members.
+        /**
+         * The member pointers are set to 0 that multiple deletion cannot cause any error.
+         */
+        void deleteAll();
+
+        //! Allocates memory to store \a nCand candidates for fixing.
+        void allocate(int nCand);
 
 
-    Master *master_; //!< A pointer to the corresponding master of the optimization.
+        Master* master_; //!< A pointer to the corresponding master of the optimization.
 
-    ArrayBuffer<PoolSlotRef<Variable, Constraint>*> *candidates_; //!< The candidates for fixing.
+        ArrayBuffer<PoolSlotRef<Variable, Constraint>*>* candidates_; //!< The candidates for fixing.
 
-    ArrayBuffer<FSVarStat*> *fsVarStat_; //!< The fixing status of the candidates.
+        ArrayBuffer<FSVarStat*>* fsVarStat_; //!< The fixing status of the candidates.
 
-    ArrayBuffer<double> *lhs_; //!< The left hand side of the expression evaluated for fixing.
+        ArrayBuffer<double>* lhs_; //!< The left hand side of the expression evaluated for fixing.
 
-    FixCand(const FixCand &rhs);
-    const FixCand &operator=(const FixCand &rhs);
-};
+        FixCand(const FixCand & rhs);
+        const FixCand & operator=(const FixCand & rhs);
+    };
 
 } //namespace abacus
 

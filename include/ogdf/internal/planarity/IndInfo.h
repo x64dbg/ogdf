@@ -58,34 +58,34 @@ namespace ogdf
 {
 
 
-class IndInfo
-{
-    friend class EmbedPQTree;
-
-public:
-    IndInfo(node w)
+    class IndInfo
     {
-        v = w;
-        changeDir = false;
-    }
-    ~IndInfo() { }
+        friend class EmbedPQTree;
 
-    void resetAssociatedNode(node w)
-    {
-        v = w;
-    }
-    node getAssociatedNode()
-    {
-        return v;
-    }
+    public:
+        IndInfo(node w)
+        {
+            v = w;
+            changeDir = false;
+        }
+        ~IndInfo() { }
 
-private:
-    node v;
-    bool changeDir;
+        void resetAssociatedNode(node w)
+        {
+            v = w;
+        }
+        node getAssociatedNode()
+        {
+            return v;
+        }
+
+    private:
+        node v;
+        bool changeDir;
 
 
-    OGDF_NEW_DELETE
-};
+        OGDF_NEW_DELETE
+    };
 
 
 }

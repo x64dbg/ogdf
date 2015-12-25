@@ -56,25 +56,25 @@ namespace ogdf
 {
 
 
-/**
- * The class PQBasicKeyRoot is used as a base class of the class template
- * basicKey. Using the class PQBasicKeyRoot, a user may
- * refer to an information class without the class template structure.
- */
+    /**
+     * The class PQBasicKeyRoot is used as a base class of the class template
+     * basicKey. Using the class PQBasicKeyRoot, a user may
+     * refer to an information class without the class template structure.
+     */
 
-class PQBasicKeyRoot
-{
+    class PQBasicKeyRoot
+    {
 
-public:
+    public:
 
-    //Constructor
-    PQBasicKeyRoot() { }
+        //Constructor
+        PQBasicKeyRoot() { }
 
-    //Destructor
-    ~PQBasicKeyRoot() { }
+        //Destructor
+        ~PQBasicKeyRoot() { }
 
-    OGDF_NEW_DELETE
-};
+        OGDF_NEW_DELETE
+    };
 
 }
 

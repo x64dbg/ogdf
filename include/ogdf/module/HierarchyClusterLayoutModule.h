@@ -58,46 +58,46 @@ namespace ogdf
 {
 
 
-/**
- * \brief Interface of hierarchy layout algorithms for cluster graphs.
- *
- * \see SugiyamaLayout
- */
-class OGDF_EXPORT HierarchyClusterLayoutModule
-{
-public:
-    //! Initializes a hierarchy cluster layout module.
-    HierarchyClusterLayoutModule() { }
-
-    virtual ~HierarchyClusterLayoutModule() { }
-
     /**
-     * \brief Computes a hierarchy layout of a clustered hierarchy \a H in \a ACG.
-     * @param H is the input clustered hierarchy.
-     * @param ACG is assigned the cluster hierarchy layout.
+     * \brief Interface of hierarchy layout algorithms for cluster graphs.
+     *
+     * \see SugiyamaLayout
      */
-    void callCluster(const ExtendedNestingGraph& H, ClusterGraphAttributes &ACG)
+    class OGDF_EXPORT HierarchyClusterLayoutModule
     {
-        ClusterGraphCopyAttributes ACGC(H,ACG);
-        doCall(H,ACGC);
-        ACGC.transform();
-    }
+    public:
+        //! Initializes a hierarchy cluster layout module.
+        HierarchyClusterLayoutModule() { }
 
-protected:
-    /**
-     * \brief Implements the actual algorithm call.
-     *
-     * Must be implemented by derived classes.
-     *
-     * @param H is the input clustered hierarchy.
-     * @param ACGC has to be assigned the cluster hierarchy layout.
-     */
-    virtual void doCall(
-        const ExtendedNestingGraph& H,
-        ClusterGraphCopyAttributes &ACGC) = 0;
+        virtual ~HierarchyClusterLayoutModule() { }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        /**
+         * \brief Computes a hierarchy layout of a clustered hierarchy \a H in \a ACG.
+         * @param H is the input clustered hierarchy.
+         * @param ACG is assigned the cluster hierarchy layout.
+         */
+        void callCluster(const ExtendedNestingGraph & H, ClusterGraphAttributes & ACG)
+        {
+            ClusterGraphCopyAttributes ACGC(H, ACG);
+            doCall(H, ACGC);
+            ACGC.transform();
+        }
+
+    protected:
+        /**
+         * \brief Implements the actual algorithm call.
+         *
+         * Must be implemented by derived classes.
+         *
+         * @param H is the input clustered hierarchy.
+         * @param ACGC has to be assigned the cluster hierarchy layout.
+         */
+        virtual void doCall(
+            const ExtendedNestingGraph & H,
+            ClusterGraphCopyAttributes & ACGC) = 0;
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 
 } // end namespace ogdf

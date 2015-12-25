@@ -57,73 +57,73 @@ namespace ogdf
 {
 
 
-/** \brief The PreprocessorLayout removes multi-edges and self-loops.
- *
- * To draw a graph using the ModularMultilevelMixer or other layouts the
- * graph must be simple, i.e., contain neither multi-edges nor self-loops.
- * Edges that conflict with these rules are deleted in the PreprocessorLayout.
- * A secondary layout is then called that can work on the graph in required form.
- * After the layout has been computed, the edges are inserted back into the
- * graph, as they may have been relevant for the user.
- */
-class OGDF_EXPORT PreprocessorLayout : public MultilevelLayoutModule
-{
-private:
-    /** \brief Deleted Edges are stored in EdgeData
+    /** \brief The PreprocessorLayout removes multi-edges and self-loops.
      *
-     * EdgeData stores the deleted edges to allow restauration of the original
-     * graph after the layout has been computed.
+     * To draw a graph using the ModularMultilevelMixer or other layouts the
+     * graph must be simple, i.e., contain neither multi-edges nor self-loops.
+     * Edges that conflict with these rules are deleted in the PreprocessorLayout.
+     * A secondary layout is then called that can work on the graph in required form.
+     * After the layout has been computed, the edges are inserted back into the
+     * graph, as they may have been relevant for the user.
      */
-    struct EdgeData
+    class OGDF_EXPORT PreprocessorLayout : public MultilevelLayoutModule
     {
-        EdgeData(int edgeIndex, int sourceIndex, int targetIndex, double weight)
-            :edgeIndex(edgeIndex), sourceIndex(sourceIndex), targetIndex(targetIndex), weight(weight)
-        { }
+    private:
+        /** \brief Deleted Edges are stored in EdgeData
+         *
+         * EdgeData stores the deleted edges to allow restauration of the original
+         * graph after the layout has been computed.
+         */
+        struct EdgeData
+        {
+            EdgeData(int edgeIndex, int sourceIndex, int targetIndex, double weight)
+                : edgeIndex(edgeIndex), sourceIndex(sourceIndex), targetIndex(targetIndex), weight(weight)
+            { }
 
-        int edgeIndex;
-        int sourceIndex;
-        int targetIndex;
-        double weight;
+            int edgeIndex;
+            int sourceIndex;
+            int targetIndex;
+            double weight;
+        };
+
+        ModuleOption<LayoutModule> m_secondaryLayout;
+        std::vector<EdgeData> m_deletedEdges;
+        bool m_randomize;
+
+        void call(Graph & G, MultilevelGraph & MLG);
+
+    public:
+
+        //! Constructor
+        PreprocessorLayout();
+
+        //! Destructor
+        ~PreprocessorLayout() { }
+
+
+        //! Calculates a drawing for the Graph \a MLG.
+        void call(MultilevelGraph & MLG);
+
+        //! Calculates a drawing for the Graph \a GA.
+        void call(GraphAttributes & GA);
+
+        void call(GraphAttributes & GA, GraphConstraints & GC)
+        {
+            call(GA);
+        }
+
+        //! Sets the secondary layout.
+        void setLayoutModule(LayoutModule* layout)
+        {
+            m_secondaryLayout.set(layout);
+        }
+
+        //! Defines whether the positions of the node are randomized before the secondary layout call.
+        void setRandomizePositions(bool on)
+        {
+            m_randomize = on;
+        }
     };
-
-    ModuleOption<LayoutModule> m_secondaryLayout;
-    std::vector<EdgeData> m_deletedEdges;
-    bool m_randomize;
-
-    void call(Graph &G, MultilevelGraph &MLG);
-
-public:
-
-    //! Constructor
-    PreprocessorLayout();
-
-    //! Destructor
-    ~PreprocessorLayout() { }
-
-
-    //! Calculates a drawing for the Graph \a MLG.
-    void call(MultilevelGraph &MLG);
-
-    //! Calculates a drawing for the Graph \a GA.
-    void call(GraphAttributes &GA);
-
-    void call(GraphAttributes &GA, GraphConstraints & GC)
-    {
-        call(GA);
-    }
-
-    //! Sets the secondary layout.
-    void setLayoutModule(LayoutModule *layout)
-    {
-        m_secondaryLayout.set(layout);
-    }
-
-    //! Defines whether the positions of the node are randomized before the secondary layout call.
-    void setRandomizePositions(bool on)
-    {
-        m_randomize = on;
-    }
-};
 
 
 } // namespace ogdf

@@ -57,62 +57,62 @@ namespace ogdf
 {
 
 
-/**
- * \brief Base class for modules that compute a shelling order of a graph.
- *
- */
-class OGDF_EXPORT ShellingOrderModule
-{
-public:
-    //! Computes a shelling order of an embedded graph G such that \a adj lies on the external face.
     /**
-     * @param G is the input graph; \a G must represent a combinatorial embedding.
-     * @param order is assigned the shelling order.
-     * @param adj is an adjacency entry on the external face; if \a adj is 0, a suitable
-     *        external face is chosen.
+     * \brief Base class for modules that compute a shelling order of a graph.
+     *
      */
-    void call(const Graph &G, ShellingOrder &order, adjEntry adj = 0);
-
-    //! Computes a lefmost shelling order of an embedded graph G such that \a adj lies on the external face.
-    /**
-     * @param G is the input graph; \a G must represent a combinatorial embedding.
-     * @param order is assigned the shelling order.
-     * @param adj is an adjacency entry on the external face; if \a adj is 0, a suitable
-     *        external face is chosen.
-     */
-    void callLeftmost(const Graph &G, ShellingOrder &order, adjEntry adj = 0);
-
-    //! Sets the option <i>base ratio</i> to \a x.
-    void baseRatio(double x)
+    class OGDF_EXPORT ShellingOrderModule
     {
-        m_baseRatio = x;
-    }
+    public:
+        //! Computes a shelling order of an embedded graph G such that \a adj lies on the external face.
+        /**
+         * @param G is the input graph; \a G must represent a combinatorial embedding.
+         * @param order is assigned the shelling order.
+         * @param adj is an adjacency entry on the external face; if \a adj is 0, a suitable
+         *        external face is chosen.
+         */
+        void call(const Graph & G, ShellingOrder & order, adjEntry adj = 0);
 
-    //! Returns the current setting of the option <b>base ratio</b>.
-    double baseRatio() const
-    {
-        return m_baseRatio;
-    }
+        //! Computes a lefmost shelling order of an embedded graph G such that \a adj lies on the external face.
+        /**
+         * @param G is the input graph; \a G must represent a combinatorial embedding.
+         * @param order is assigned the shelling order.
+         * @param adj is an adjacency entry on the external face; if \a adj is 0, a suitable
+         *        external face is chosen.
+         */
+        void callLeftmost(const Graph & G, ShellingOrder & order, adjEntry adj = 0);
 
-    virtual ~ShellingOrderModule() { }
+        //! Sets the option <i>base ratio</i> to \a x.
+        void baseRatio(double x)
+        {
+            m_baseRatio = x;
+        }
 
-protected:
-    //! This pure virtual function does the actual computation.
-    /**
-     * A derived class must implement this method. It is called with the embedded graph
-     * and an adjacency entry describing the external face, and must return the
-     * computed order in \a partition.
-     * @param G is the embedded input graph.
-     * @param adj is an adjacency entry on the external face.
-     * @param partition returns the coputed shelling order.
-     */
-    virtual void doCall(const Graph &G,
-                        adjEntry adj,
-                        List<ShellingOrderSet> &partition) = 0;
+        //! Returns the current setting of the option <b>base ratio</b>.
+        double baseRatio() const
+        {
+            return m_baseRatio;
+        }
 
-    double m_baseRatio; //! The option <i>base ratio</i>.
+        virtual ~ShellingOrderModule() { }
 
-};
+    protected:
+        //! This pure virtual function does the actual computation.
+        /**
+         * A derived class must implement this method. It is called with the embedded graph
+         * and an adjacency entry describing the external face, and must return the
+         * computed order in \a partition.
+         * @param G is the embedded input graph.
+         * @param adj is an adjacency entry on the external face.
+         * @param partition returns the coputed shelling order.
+         */
+        virtual void doCall(const Graph & G,
+                            adjEntry adj,
+                            List<ShellingOrderSet> & partition) = 0;
+
+        double m_baseRatio; //! The option <i>base ratio</i>.
+
+    };
 
 
 } // end namespace ogdf

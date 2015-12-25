@@ -114,31 +114,31 @@ public:
         return nElements_;
     }
     /// Get indices of elements
-    inline const int * getIndices() const
+    inline const int* getIndices() const
     {
         return indices_;
     }
     /// Get element values
     // ** No longer supported virtual const double * getElements() const ;
     /// Get indices of elements
-    inline int * getIndices()
+    inline int* getIndices()
     {
         return indices_;
     }
     /** Get the vector as a dense vector. This is normal storage method.
         The user should not not delete [] this.
     */
-    inline double * denseVector() const
+    inline double* denseVector() const
     {
         return elements_;
     }
     /// For very temporary use when user needs to borrow a dense vector
-    inline void setDenseVector(double * array)
+    inline void setDenseVector(double* array)
     {
         elements_ = array;
     }
     /// For very temporary use when user needs to borrow an index vector
-    inline void setIndexVector(int * array)
+    inline void setIndexVector(int* array)
     {
         indices_ = array;
     }
@@ -157,7 +157,7 @@ public:
     inline void setNumElements(int value)
     {
         nElements_ = value;
-        if (!nElements_) packedMode_=false;
+        if(!nElements_) packedMode_ = false;
     }
     /// Reset the vector (as if were just created an empty vector).  This leaves arrays!
     void clear();
@@ -173,7 +173,7 @@ public:
     /** Copy the contents of one vector into another.  If multiplier is 1
         It is the equivalent of = but if vectors are same size does
         not re-allocate memory just clears and copies */
-    void copy(const CoinIndexedVector & rhs, double multiplier=1.0);
+    void copy(const CoinIndexedVector & rhs, double multiplier = 1.0);
 
     /** Borrow ownership of the arguments to this vector.
         Size is the length of the unpacked elements vector. */
@@ -188,19 +188,19 @@ public:
         NumberIndices is the length of both the indices and elements vectors.
         The indices and elements vectors are copied into this class instance's
         member data. Assumed to have no duplicates */
-    void setVector(int numberIndices, const int * inds, const double * elems);
+    void setVector(int numberIndices, const int* inds, const double* elems);
 
     /** Set vector size, indices, and elements.
         Size is the length of the unpacked elements vector.
         The indices and elements vectors are copied into this class instance's
         member data. We do not check for duplicate indices */
-    void setVector(int size, int numberIndices, const int * inds, const double * elems);
+    void setVector(int size, int numberIndices, const int* inds, const double* elems);
 
     /** Elements set to have the same scalar value */
-    void setConstant(int size, const int * inds, double elems);
+    void setConstant(int size, const int* inds, double elems);
 
     /** Indices are not specified and are taken to be 0,1,...,size-1 */
-    void setFull(int size, const double * elems);
+    void setFull(int size, const double* elems);
 
     /** Set an existing element in the indexed vector
         The first argument is the "index" into the elements() array
@@ -212,9 +212,9 @@ public:
     /// Insert a nonzero element into the vector
     inline void quickInsert(int index, double element)
     {
-        assert (!elements_[index]);
+        assert(!elements_[index]);
         indices_[nElements_++] = index;
-        assert (nElements_<=capacity_);
+        assert(nElements_ <= capacity_);
         elements_[index] = element;
     }
     /** Insert or if exists add an element into the vector
@@ -225,10 +225,10 @@ public:
         This version does no checking */
     inline void quickAdd(int index, double element)
     {
-        if (elements_[index])
+        if(elements_[index])
         {
             element += elements_[index];
-            if ((element > 0 ? element : -element) >= COIN_INDEXED_TINY_ELEMENT)
+            if((element > 0 ? element : -element) >= COIN_INDEXED_TINY_ELEMENT)
             {
                 elements_[index] = element;
             }
@@ -237,10 +237,10 @@ public:
                 elements_[index] = 1.0e-100;
             }
         }
-        else if ((element > 0 ? element : -element) >= COIN_INDEXED_TINY_ELEMENT)
+        else if((element > 0 ? element : -element) >= COIN_INDEXED_TINY_ELEMENT)
         {
             indices_[nElements_++] = index;
-            assert (nElements_<=capacity_);
+            assert(nElements_ <= capacity_);
             elements_[index] = element;
         }
     }
@@ -250,11 +250,11 @@ public:
         This version does no checking */
     inline void quickAddNonZero(int index, double element)
     {
-        assert (element);
-        if (elements_[index])
+        assert(element);
+        if(elements_[index])
         {
             element += elements_[index];
-            if (element)
+            if(element)
             {
                 elements_[index] = element;
             }
@@ -266,7 +266,7 @@ public:
         else
         {
             indices_[nElements_++] = index;
-            assert (nElements_<=capacity_);
+            assert(nElements_ <= capacity_);
             elements_[index] = element;
         }
     }
@@ -274,7 +274,7 @@ public:
         This version does no checking */
     inline void zero(int index)
     {
-        if (elements_[index])
+        if(elements_[index])
             elements_[index] = COIN_DBL_MIN;
     }
     /** set all small values to zero and return number remaining
@@ -312,8 +312,8 @@ public:
     int scanAndPack(double tolerance);
     int scanAndPack(int start, int end, double tolerance);
     /// Create packed array
-    void createPacked(int number, const int * indices,
-                      const double * elements);
+    void createPacked(int number, const int* indices,
+                      const double* elements);
     /// This is mainly for testing - goes from packed to indexed
     void expand();
 #ifndef CLP_NO_VECTOR
@@ -373,12 +373,12 @@ public:
     /** Sort the indexed storage vector (increasing indices). */
     void sort()
     {
-        std::sort(indices_,indices_+nElements_);
+        std::sort(indices_, indices_ + nElements_);
     }
 
     void sortIncrIndex()
     {
-        std::sort(indices_,indices_+nElements_);
+        std::sort(indices_, indices_ + nElements_);
     }
 
     void sortDecrIndex();
@@ -401,34 +401,34 @@ public:
      return a reference, though they could return a pointer...) they are
      <em>very</em> inefficient...
     */
-//@{
-/// Return the sum of two indexed vectors
+    //@{
+    /// Return the sum of two indexed vectors
     CoinIndexedVector operator+(
-        const CoinIndexedVector& op2);
+        const CoinIndexedVector & op2);
 
-/// Return the difference of two indexed vectors
+    /// Return the difference of two indexed vectors
     CoinIndexedVector operator-(
-        const CoinIndexedVector& op2);
+        const CoinIndexedVector & op2);
 
-/// Return the element-wise product of two indexed vectors
+    /// Return the element-wise product of two indexed vectors
     CoinIndexedVector operator*(
-        const CoinIndexedVector& op2);
+        const CoinIndexedVector & op2);
 
-/// Return the element-wise ratio of two indexed vectors (0.0/0.0 => 0.0) (0 vanishes)
+    /// Return the element-wise ratio of two indexed vectors (0.0/0.0 => 0.0) (0 vanishes)
     CoinIndexedVector operator/(
-        const CoinIndexedVector& op2);
-/// The sum of two indexed vectors
-    void operator+=(const CoinIndexedVector& op2);
+        const CoinIndexedVector & op2);
+    /// The sum of two indexed vectors
+    void operator+=(const CoinIndexedVector & op2);
 
-/// The difference of two indexed vectors
-    void operator-=( const CoinIndexedVector& op2);
+    /// The difference of two indexed vectors
+    void operator-=(const CoinIndexedVector & op2);
 
-/// The element-wise product of two indexed vectors
-    void operator*=(const CoinIndexedVector& op2);
+    /// The element-wise product of two indexed vectors
+    void operator*=(const CoinIndexedVector & op2);
 
-/// The element-wise ratio of two indexed vectors (0.0/0.0 => 0.0) (0 vanishes)
-    void operator/=(const CoinIndexedVector& op2);
-//@}
+    /// The element-wise ratio of two indexed vectors (0.0/0.0 => 0.0) (0 vanishes)
+    void operator/=(const CoinIndexedVector & op2);
+    //@}
 
     /**@name Memory usage */
     //@{
@@ -447,7 +447,7 @@ public:
     /// Sets packed mode
     inline void setPackedMode(bool yesNo)
     {
-        packedMode_=yesNo;
+        packedMode_ = yesNo;
     }
     /// Gets packed mode
     inline bool packedMode() const
@@ -461,24 +461,24 @@ public:
     /** Default constructor */
     CoinIndexedVector();
     /** Alternate Constructors - set elements to vector of doubles */
-    CoinIndexedVector(int size, const int * inds, const double * elems);
+    CoinIndexedVector(int size, const int* inds, const double* elems);
     /** Alternate Constructors - set elements to same scalar value */
-    CoinIndexedVector(int size, const int * inds, double element);
+    CoinIndexedVector(int size, const int* inds, double element);
     /** Alternate Constructors - construct full storage with indices 0 through
         size-1. */
-    CoinIndexedVector(int size, const double * elements);
+    CoinIndexedVector(int size, const double* elements);
     /** Alternate Constructors - just size */
     CoinIndexedVector(int size);
     /** Copy constructor. */
     CoinIndexedVector(const CoinIndexedVector &);
     /** Copy constructor.2 */
-    CoinIndexedVector(const CoinIndexedVector *);
+    CoinIndexedVector(const CoinIndexedVector*);
 #ifndef CLP_NO_VECTOR
     /** Copy constructor <em>from a PackedVectorBase</em>. */
     CoinIndexedVector(const CoinPackedVectorBase & rhs);
 #endif
     /** Destructor */
-    ~CoinIndexedVector ();
+    ~CoinIndexedVector();
     //@}
 
 private:
@@ -486,23 +486,23 @@ private:
     //@{
     /// Copy internal data
     void gutsOfSetVector(int size,
-                         const int * inds, const double * elems);
+                         const int* inds, const double* elems);
     void gutsOfSetVector(int size, int numberIndices,
-                         const int * inds, const double * elems);
+                         const int* inds, const double* elems);
     void gutsOfSetPackedVector(int size, int numberIndices,
-                               const int * inds, const double * elems);
+                               const int* inds, const double* elems);
     ///
     void gutsOfSetConstant(int size,
-                           const int * inds, double value);
+                           const int* inds, double value);
     //@}
 
 private:
     /**@name Private member data */
     //@{
     /// Vector indices
-    int * indices_;
+    int* indices_;
     ///Vector elements
-    double * elements_;
+    double* elements_;
     /// Size of indices and packed elements vectors
     int nElements_;
     /// Amount of memory allocated for indices_, and elements_.
@@ -557,22 +557,22 @@ public:
     /// See if persistence already on
     inline bool switchedOn() const
     {
-        return size_!=-1;
+        return size_ != -1;
     }
     /// Get the capacity
     inline int getCapacity() const
     {
-        return (size_>-2) ? size_ : (-size_)-2;
+        return (size_ > -2) ? size_ : (-size_) - 2;
     }
     /// Set the capacity to >=0 if <=-2
     inline void setCapacity()
     {
-        if (size_<=-2) size_ = (-size_)-2;
+        if(size_ <= -2) size_ = (-size_) - 2;
     }
     /// Get Array
-    inline const char * array() const
+    inline const char* array() const
     {
-        return (size_>-2) ? array_ : NULL;
+        return (size_ > -2) ? array_ : NULL;
     }
     //@}
 
@@ -589,7 +589,7 @@ public:
         size_ = -1;
     }
     /// Does what is needed to set persistence
-    void setPersistence(int flag,int currentLength);
+    void setPersistence(int flag, int currentLength);
     /// Zero out array
     void clear();
     /// Swaps memory between two members
@@ -601,7 +601,7 @@ public:
     /**@name Condition methods */
     //@{
     /// Conditionally gets new array
-    char * conditionalNew(long sizeWanted);
+    char* conditionalNew(long sizeWanted);
     /// Conditionally deletes
     void conditionalDelete();
     //@}
@@ -611,14 +611,14 @@ public:
     /** Default constructor - NULL*/
     inline CoinArrayWithLength()
     {
-        array_=NULL;
-        size_=-1;
+        array_ = NULL;
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes - size_ -1 */
     inline CoinArrayWithLength(int size)
     {
-        array_=new char [size];
-        size_=-1;
+        array_ = new char [size];
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes
         mode -  0 size_ set to size
@@ -627,21 +627,21 @@ public:
     inline CoinArrayWithLength(int size, int mode)
     {
         array_ = new char [size];
-        if (mode) memset(array_,0,size);
-        size_=size;
+        if(mode) memset(array_, 0, size);
+        size_ = size;
     }
     /** Copy constructor. */
     CoinArrayWithLength(const CoinArrayWithLength & rhs);
     /** Copy constructor.2 */
-    CoinArrayWithLength(const CoinArrayWithLength * rhs);
+    CoinArrayWithLength(const CoinArrayWithLength* rhs);
     /** Assignment operator. */
-    CoinArrayWithLength& operator=(const CoinArrayWithLength & rhs);
+    CoinArrayWithLength & operator=(const CoinArrayWithLength & rhs);
     /** Assignment with length (if -1 use internal length) */
-    void copy(const CoinArrayWithLength & rhs, int numberBytes=-1);
+    void copy(const CoinArrayWithLength & rhs, int numberBytes = -1);
     /** Assignment with length - does not copy */
     void allocate(const CoinArrayWithLength & rhs, int numberBytes);
     /** Destructor */
-    inline ~CoinArrayWithLength ()
+    inline ~CoinArrayWithLength()
     {
         delete [] array_;
     }
@@ -652,7 +652,7 @@ protected:
     /**@name Private member data */
     //@{
     /// Array
-    char * array_;
+    char* array_;
     /// Size of array in bytes
     int size_;
     //@}
@@ -668,12 +668,12 @@ public:
     /// Get the size
     inline int getSize() const
     {
-        return size_/CoinSizeofAsInt(double);
+        return size_ / CoinSizeofAsInt(double);
     }
     /// Get Array
-    inline double * array() const
+    inline double* array() const
     {
-        return reinterpret_cast<double *> ((size_>-2) ? array_ : NULL);
+        return reinterpret_cast<double*>((size_ > -2) ? array_ : NULL);
     }
     //@}
 
@@ -682,16 +682,16 @@ public:
     /// Set the size
     inline void setSize(int value)
     {
-        size_ = value*CoinSizeofAsInt(double);
+        size_ = value * CoinSizeofAsInt(double);
     }
     //@}
 
     /**@name Condition methods */
     //@{
     /// Conditionally gets new array
-    inline double * conditionalNew(int sizeWanted)
+    inline double* conditionalNew(int sizeWanted)
     {
-        return reinterpret_cast<double *> ( CoinArrayWithLength::conditionalNew(sizeWanted>=0 ? static_cast<long> ((sizeWanted)*CoinSizeofAsInt(double)) : -1));
+        return reinterpret_cast<double*>(CoinArrayWithLength::conditionalNew(sizeWanted >= 0 ? static_cast<long>((sizeWanted) * CoinSizeofAsInt(double)) : -1));
     }
     //@}
 
@@ -700,29 +700,29 @@ public:
     /** Default constructor - NULL*/
     inline CoinDoubleArrayWithLength()
     {
-        array_=NULL;
-        size_=-1;
+        array_ = NULL;
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes - size_ -1 */
     inline CoinDoubleArrayWithLength(int size)
     {
-        array_=new char [size*CoinSizeofAsInt(double)];
-        size_=-1;
+        array_ = new char [size * CoinSizeofAsInt(double)];
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes
         mode -  0 size_ set to size
         1 size_ set to size and zeroed
     */
     inline CoinDoubleArrayWithLength(int size, int mode)
-        : CoinArrayWithLength(size*CoinSizeofAsInt(double),mode) {}
+        : CoinArrayWithLength(size* CoinSizeofAsInt(double), mode) {}
     /** Copy constructor. */
     inline CoinDoubleArrayWithLength(const CoinDoubleArrayWithLength & rhs)
         : CoinArrayWithLength(rhs) {}
     /** Copy constructor.2 */
-    inline CoinDoubleArrayWithLength(const CoinDoubleArrayWithLength * rhs)
+    inline CoinDoubleArrayWithLength(const CoinDoubleArrayWithLength* rhs)
         : CoinArrayWithLength(rhs) {}
     /** Assignment operator. */
-    inline CoinDoubleArrayWithLength& operator=(const CoinDoubleArrayWithLength & rhs)
+    inline CoinDoubleArrayWithLength & operator=(const CoinDoubleArrayWithLength & rhs)
     {
         CoinArrayWithLength::operator=(rhs);
         return *this;
@@ -740,12 +740,12 @@ public:
     /// Get the size
     inline int getSize() const
     {
-        return size_/CoinSizeofAsInt(CoinFactorizationDouble);
+        return size_ / CoinSizeofAsInt(CoinFactorizationDouble);
     }
     /// Get Array
-    inline CoinFactorizationDouble * array() const
+    inline CoinFactorizationDouble* array() const
     {
-        return reinterpret_cast<CoinFactorizationDouble *> ((size_>-2) ? array_ : NULL);
+        return reinterpret_cast<CoinFactorizationDouble*>((size_ > -2) ? array_ : NULL);
     }
     //@}
 
@@ -754,16 +754,16 @@ public:
     /// Set the size
     inline void setSize(int value)
     {
-        size_ = value*CoinSizeofAsInt(CoinFactorizationDouble);
+        size_ = value * CoinSizeofAsInt(CoinFactorizationDouble);
     }
     //@}
 
     /**@name Condition methods */
     //@{
     /// Conditionally gets new array
-    inline CoinFactorizationDouble * conditionalNew(int sizeWanted)
+    inline CoinFactorizationDouble* conditionalNew(int sizeWanted)
     {
-        return reinterpret_cast<CoinFactorizationDouble *> (CoinArrayWithLength::conditionalNew(sizeWanted>=0 ? static_cast<long> (( sizeWanted)*CoinSizeofAsInt(CoinFactorizationDouble)) : -1));
+        return reinterpret_cast<CoinFactorizationDouble*>(CoinArrayWithLength::conditionalNew(sizeWanted >= 0 ? static_cast<long>((sizeWanted) * CoinSizeofAsInt(CoinFactorizationDouble)) : -1));
     }
     //@}
 
@@ -772,29 +772,29 @@ public:
     /** Default constructor - NULL*/
     inline CoinFactorizationDoubleArrayWithLength()
     {
-        array_=NULL;
-        size_=-1;
+        array_ = NULL;
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes - size_ -1 */
     inline CoinFactorizationDoubleArrayWithLength(int size)
     {
-        array_=new char [size*CoinSizeofAsInt(CoinFactorizationDouble)];
-        size_=-1;
+        array_ = new char [size * CoinSizeofAsInt(CoinFactorizationDouble)];
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes
         mode -  0 size_ set to size
         1 size_ set to size and zeroed
     */
     inline CoinFactorizationDoubleArrayWithLength(int size, int mode)
-        : CoinArrayWithLength(size*CoinSizeofAsInt(CoinFactorizationDouble),mode) {}
+        : CoinArrayWithLength(size* CoinSizeofAsInt(CoinFactorizationDouble), mode) {}
     /** Copy constructor. */
     inline CoinFactorizationDoubleArrayWithLength(const CoinFactorizationDoubleArrayWithLength & rhs)
         : CoinArrayWithLength(rhs) {}
     /** Copy constructor.2 */
-    inline CoinFactorizationDoubleArrayWithLength(const CoinFactorizationDoubleArrayWithLength * rhs)
+    inline CoinFactorizationDoubleArrayWithLength(const CoinFactorizationDoubleArrayWithLength* rhs)
         : CoinArrayWithLength(rhs) {}
     /** Assignment operator. */
-    inline CoinFactorizationDoubleArrayWithLength& operator=(const CoinFactorizationDoubleArrayWithLength & rhs)
+    inline CoinFactorizationDoubleArrayWithLength & operator=(const CoinFactorizationDoubleArrayWithLength & rhs)
     {
         CoinArrayWithLength::operator=(rhs);
         return *this;
@@ -812,12 +812,12 @@ public:
     /// Get the size
     inline int getSize() const
     {
-        return size_/CoinSizeofAsInt(int);
+        return size_ / CoinSizeofAsInt(int);
     }
     /// Get Array
-    inline int * array() const
+    inline int* array() const
     {
-        return reinterpret_cast<int *> ((size_>-2) ? array_ : NULL);
+        return reinterpret_cast<int*>((size_ > -2) ? array_ : NULL);
     }
     //@}
 
@@ -826,16 +826,16 @@ public:
     /// Set the size
     inline void setSize(int value)
     {
-        size_ = value*CoinSizeofAsInt(int);
+        size_ = value * CoinSizeofAsInt(int);
     }
     //@}
 
     /**@name Condition methods */
     //@{
     /// Conditionally gets new array
-    inline int * conditionalNew(int sizeWanted)
+    inline int* conditionalNew(int sizeWanted)
     {
-        return reinterpret_cast<int *> (CoinArrayWithLength::conditionalNew(sizeWanted>=0 ? static_cast<long> (( sizeWanted)*CoinSizeofAsInt(int)) : -1));
+        return reinterpret_cast<int*>(CoinArrayWithLength::conditionalNew(sizeWanted >= 0 ? static_cast<long>((sizeWanted) * CoinSizeofAsInt(int)) : -1));
     }
     //@}
 
@@ -844,29 +844,29 @@ public:
     /** Default constructor - NULL*/
     inline CoinIntArrayWithLength()
     {
-        array_=NULL;
-        size_=-1;
+        array_ = NULL;
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes - size_ -1 */
     inline CoinIntArrayWithLength(int size)
     {
-        array_=new char [size*CoinSizeofAsInt(int)];
-        size_=-1;
+        array_ = new char [size * CoinSizeofAsInt(int)];
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes
         mode -  0 size_ set to size
         1 size_ set to size and zeroed
     */
     inline CoinIntArrayWithLength(int size, int mode)
-        : CoinArrayWithLength(size*CoinSizeofAsInt(int),mode) {}
+        : CoinArrayWithLength(size* CoinSizeofAsInt(int), mode) {}
     /** Copy constructor. */
     inline CoinIntArrayWithLength(const CoinIntArrayWithLength & rhs)
         : CoinArrayWithLength(rhs) {}
     /** Copy constructor.2 */
-    inline CoinIntArrayWithLength(const CoinIntArrayWithLength * rhs)
+    inline CoinIntArrayWithLength(const CoinIntArrayWithLength* rhs)
         : CoinArrayWithLength(rhs) {}
     /** Assignment operator. */
-    inline CoinIntArrayWithLength& operator=(const CoinIntArrayWithLength & rhs)
+    inline CoinIntArrayWithLength & operator=(const CoinIntArrayWithLength & rhs)
     {
         CoinArrayWithLength::operator=(rhs);
         return *this;
@@ -884,12 +884,12 @@ public:
     /// Get the size
     inline int getSize() const
     {
-        return size_/CoinSizeofAsInt(CoinBigIndex);
+        return size_ / CoinSizeofAsInt(CoinBigIndex);
     }
     /// Get Array
-    inline CoinBigIndex * array() const
+    inline CoinBigIndex* array() const
     {
-        return reinterpret_cast<CoinBigIndex *> ((size_>-2) ? array_ : NULL);
+        return reinterpret_cast<CoinBigIndex*>((size_ > -2) ? array_ : NULL);
     }
     //@}
 
@@ -898,16 +898,16 @@ public:
     /// Set the size
     inline void setSize(int value)
     {
-        size_ = value*CoinSizeofAsInt(CoinBigIndex);
+        size_ = value * CoinSizeofAsInt(CoinBigIndex);
     }
     //@}
 
     /**@name Condition methods */
     //@{
     /// Conditionally gets new array
-    inline CoinBigIndex * conditionalNew(int sizeWanted)
+    inline CoinBigIndex* conditionalNew(int sizeWanted)
     {
-        return reinterpret_cast<CoinBigIndex *> (CoinArrayWithLength::conditionalNew(sizeWanted>=0 ? static_cast<long> (( sizeWanted)*CoinSizeofAsInt(CoinBigIndex)) : -1));
+        return reinterpret_cast<CoinBigIndex*>(CoinArrayWithLength::conditionalNew(sizeWanted >= 0 ? static_cast<long>((sizeWanted) * CoinSizeofAsInt(CoinBigIndex)) : -1));
     }
     //@}
 
@@ -916,29 +916,29 @@ public:
     /** Default constructor - NULL*/
     inline CoinBigIndexArrayWithLength()
     {
-        array_=NULL;
-        size_=-1;
+        array_ = NULL;
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes - size_ -1 */
     inline CoinBigIndexArrayWithLength(int size)
     {
-        array_=new char [size*CoinSizeofAsInt(CoinBigIndex)];
-        size_=-1;
+        array_ = new char [size * CoinSizeofAsInt(CoinBigIndex)];
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes
         mode -  0 size_ set to size
         1 size_ set to size and zeroed
     */
     inline CoinBigIndexArrayWithLength(int size, int mode)
-        : CoinArrayWithLength(size*CoinSizeofAsInt(CoinBigIndex),mode) {}
+        : CoinArrayWithLength(size* CoinSizeofAsInt(CoinBigIndex), mode) {}
     /** Copy constructor. */
     inline CoinBigIndexArrayWithLength(const CoinBigIndexArrayWithLength & rhs)
         : CoinArrayWithLength(rhs) {}
     /** Copy constructor.2 */
-    inline CoinBigIndexArrayWithLength(const CoinBigIndexArrayWithLength * rhs)
+    inline CoinBigIndexArrayWithLength(const CoinBigIndexArrayWithLength* rhs)
         : CoinArrayWithLength(rhs) {}
     /** Assignment operator. */
-    inline CoinBigIndexArrayWithLength& operator=(const CoinBigIndexArrayWithLength & rhs)
+    inline CoinBigIndexArrayWithLength & operator=(const CoinBigIndexArrayWithLength & rhs)
     {
         CoinArrayWithLength::operator=(rhs);
         return *this;
@@ -956,12 +956,12 @@ public:
     /// Get the size
     inline int getSize() const
     {
-        return size_/CoinSizeofAsInt(unsigned int);
+        return size_ / CoinSizeofAsInt(unsigned int);
     }
     /// Get Array
-    inline unsigned int * array() const
+    inline unsigned int* array() const
     {
-        return reinterpret_cast<unsigned int *> ((size_>-2) ? array_ : NULL);
+        return reinterpret_cast<unsigned int*>((size_ > -2) ? array_ : NULL);
     }
     //@}
 
@@ -970,16 +970,16 @@ public:
     /// Set the size
     inline void setSize(int value)
     {
-        size_ = value*CoinSizeofAsInt(unsigned int);
+        size_ = value * CoinSizeofAsInt(unsigned int);
     }
     //@}
 
     /**@name Condition methods */
     //@{
     /// Conditionally gets new array
-    inline unsigned int * conditionalNew(int sizeWanted)
+    inline unsigned int* conditionalNew(int sizeWanted)
     {
-        return reinterpret_cast<unsigned int *> (CoinArrayWithLength::conditionalNew(sizeWanted>=0 ? static_cast<long> (( sizeWanted)*CoinSizeofAsInt(unsigned int)) : -1));
+        return reinterpret_cast<unsigned int*>(CoinArrayWithLength::conditionalNew(sizeWanted >= 0 ? static_cast<long>((sizeWanted) * CoinSizeofAsInt(unsigned int)) : -1));
     }
     //@}
 
@@ -988,29 +988,29 @@ public:
     /** Default constructor - NULL*/
     inline CoinUnsignedIntArrayWithLength()
     {
-        array_=NULL;
-        size_=-1;
+        array_ = NULL;
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes - size_ -1 */
     inline CoinUnsignedIntArrayWithLength(int size)
     {
-        array_=new char [size*CoinSizeofAsInt(unsigned int)];
-        size_=-1;
+        array_ = new char [size * CoinSizeofAsInt(unsigned int)];
+        size_ = -1;
     }
     /** Alternate Constructor - length in bytes
         mode -  0 size_ set to size
         1 size_ set to size and zeroed
     */
     inline CoinUnsignedIntArrayWithLength(int size, int mode)
-        : CoinArrayWithLength(size*CoinSizeofAsInt(unsigned int),mode) {}
+        : CoinArrayWithLength(size* CoinSizeofAsInt(unsigned int), mode) {}
     /** Copy constructor. */
     inline CoinUnsignedIntArrayWithLength(const CoinUnsignedIntArrayWithLength & rhs)
         : CoinArrayWithLength(rhs) {}
     /** Copy constructor.2 */
-    inline CoinUnsignedIntArrayWithLength(const CoinUnsignedIntArrayWithLength * rhs)
+    inline CoinUnsignedIntArrayWithLength(const CoinUnsignedIntArrayWithLength* rhs)
         : CoinArrayWithLength(rhs) {}
     /** Assignment operator. */
-    inline CoinUnsignedIntArrayWithLength& operator=(const CoinUnsignedIntArrayWithLength & rhs)
+    inline CoinUnsignedIntArrayWithLength & operator=(const CoinUnsignedIntArrayWithLength & rhs)
     {
         CoinArrayWithLength::operator=(rhs);
         return *this;

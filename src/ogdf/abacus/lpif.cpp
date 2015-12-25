@@ -60,87 +60,87 @@
 namespace abacus
 {
 
-//! The function Sub::generateLp().
+    //! The function Sub::generateLp().
 
-LpSub *Sub::generateLp()
-{
-    switch (master_->defaultLpSolver())
+    LpSub* Sub::generateLp()
+    {
+        switch(master_->defaultLpSolver())
+        {
+#ifdef ABACUS_LP_OSI
+        case Master::Cbc:
+        case Master::Clp:
+        case Master::CPLEX:
+        case Master::DyLP:
+        case Master::FortMP:
+        case Master::GLPK:
+        case Master::MOSEK:
+        case Master::OSL:
+        case Master::SoPlex:
+        case Master::SYMPHONY:
+        case Master::XPRESS_MP:
+        case Master::Gurobi:
+        case Master::Csdp:
+            return new LpSubOsi(master_, this);
+#endif
+        default:
+            Logger::ifout() << "Error: ABACUS library not compiled for\nselected LP-Solver " << Master::OSISOLVER_[master_->defaultLpSolver()] << "\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpIf);
+        }
+    }
+
+
+    //! The function Master::_createLpMasters().
+
+    void Master::_createLpMasters()
     {
 #ifdef ABACUS_LP_OSI
-    case Master::Cbc:
-    case Master::Clp:
-    case Master::CPLEX:
-    case Master::DyLP:
-    case Master::FortMP:
-    case Master::GLPK:
-    case Master::MOSEK:
-    case Master::OSL:
-    case Master::SoPlex:
-    case Master::SYMPHONY:
-    case Master::XPRESS_MP:
-    case Master::Gurobi:
-    case Master::Csdp:
-        return new LpSubOsi(master_, this);
+        lpMasterOsi_ = new LpMasterOsi(this);
 #endif
-    default:
-        Logger::ifout() << "Error: ABACUS library not compiled for\nselected LP-Solver " << Master::OSISOLVER_[master_->defaultLpSolver()] << "\n";
-        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcLpIf);
     }
-}
 
+    //! The function Master::_deleteLpMasters().
 
-//! The function Master::_createLpMasters().
-
-void Master::_createLpMasters()
-{
+    void Master::_deleteLpMasters()
+    {
 #ifdef ABACUS_LP_OSI
-    lpMasterOsi_ = new LpMasterOsi(this);
+        delete lpMasterOsi_;
 #endif
-}
+    }
 
-//! The function Master::_deleteLpMasters().
+    //! The function Master::_initializeLpParameters().
 
-void Master::_deleteLpMasters()
-{
+    void Master::_initializeLpParameters()
+    {
 #ifdef ABACUS_LP_OSI
-    delete lpMasterOsi_;
+        lpMasterOsi_->initializeLpParameters();
 #endif
-}
+    }
 
-//! The function Master::_initializeLpParameters().
+    //! The function Master::_setDefaultLpParameters().
 
-void Master::_initializeLpParameters()
-{
+    void Master::_setDefaultLpParameters()
+    {
 #ifdef ABACUS_LP_OSI
-    lpMasterOsi_->initializeLpParameters();
+        lpMasterOsi_->setDefaultLpParameters();
 #endif
-}
+    }
 
-//! The function Master::_setDefaultLpParameters().
+    //! The function Master::_printLpParameters().
 
-void Master::_setDefaultLpParameters()
-{
+    void Master::_printLpParameters() const
+    {
 #ifdef ABACUS_LP_OSI
-    lpMasterOsi_->setDefaultLpParameters();
+        lpMasterOsi_->printLpParameters();
 #endif
-}
+    }
 
-//! The function Master::_printLpParameters().
+    //! The function Master::_outputLpStatistics().
 
-void Master::_printLpParameters() const
-{
+    void Master::_outputLpStatistics() const
+    {
 #ifdef ABACUS_LP_OSI
-    lpMasterOsi_->printLpParameters();
+        lpMasterOsi_->outputLpStatistics();
 #endif
-}
-
-//! The function Master::_outputLpStatistics().
-
-void Master::_outputLpStatistics() const
-{
-#ifdef ABACUS_LP_OSI
-    lpMasterOsi_->outputLpStatistics();
-#endif
-}
+    }
 } //namespace abacus
 

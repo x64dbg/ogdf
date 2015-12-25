@@ -56,57 +56,57 @@
 namespace ogdf
 {
 
-class Node
-{
-    friend int value(const Node& A)
+    class Node
     {
-        return A.value;
-    }
+        friend int value(const Node & A)
+        {
+            return A.value;
+        }
 
-    friend ostream &operator<< (ostream & output,const Node & A)
-    {
-        output <<"node index ";
-        if(A.vertex == NULL)
-            output<<"nil";
-        else
-            output<<A.vertex->index();
-        output<<" value "<< A.value;
-        return output;
-    }
+        friend ostream & operator<< (ostream & output, const Node & A)
+        {
+            output << "node index ";
+            if(A.vertex == NULL)
+                output << "nil";
+            else
+                output << A.vertex->index();
+            output << " value " << A.value;
+            return output;
+        }
 
-    friend istream &operator>> (istream & input,Node & A)
-    {
-        input >> A.value;
-        return input;
-    }
+        friend istream & operator>> (istream & input, Node & A)
+        {
+            input >> A.value;
+            return input;
+        }
 
-public:
-    Node()
-    {
-        vertex = NULL;    //constructor
-        value = 0;
-    }
-    ~Node() { }    //destructor
+    public:
+        Node()
+        {
+            vertex = NULL;    //constructor
+            value = 0;
+        }
+        ~Node() { }    //destructor
 
 
-    void set_Node(node v,int a)
-    {
-        vertex = v;
-        value = a;
-    }
-    int  get_value() const
-    {
-        return value;
-    }
-    node get_node() const
-    {
-        return vertex;
-    }
+        void set_Node(node v, int a)
+        {
+            vertex = v;
+            value = a;
+        }
+        int  get_value() const
+        {
+            return value;
+        }
+        node get_node() const
+        {
+            return vertex;
+        }
 
-private:
-    node vertex;
-    int value ;
-};
+    private:
+        node vertex;
+        int value ;
+    };
 
 }//namespace ogdf
 #endif

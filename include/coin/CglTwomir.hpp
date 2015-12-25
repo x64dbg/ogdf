@@ -15,8 +15,8 @@ typedef struct
 
     int nz;             /* current length of arrays index[] and coeff[] */
     int max_nz;         /* max length of arrays index[] and coeff[] */
-    double *coeff;      /* coefficient of each variable in the constraint */
-    int *index;         /* index of the variable (value in 0 ... nrow+ncol) */
+    double* coeff;      /* coefficient of each variable in the constraint */
+    int* index;         /* index of the variable (value in 0 ... nrow+ncol) */
     double rhs;         /* rhs of the constraint */
     char sense;         /* ?? is it necessary */
 
@@ -25,9 +25,9 @@ typedef struct
 typedef struct
 {
     int n;
-    DGG_constraint_t **c;
-    int *ctype;
-    double *alpha;
+    DGG_constraint_t** c;
+    int* ctype;
+    double* alpha;
 } DGG_list_t;
 
 /******************** BASIS INFORMATION ADTs **********************************/
@@ -52,12 +52,12 @@ typedef struct
         nbasic_row;  /* number of basic rows in the LP */
 
     /* the following arrays are all of size (ncol+nrow) */
-    int *info;       /* description of each variable (see below) */
-    double *lb;      /* specifies the lower bound (if any) of each variable */
-    double *ub;      /* specifies the upper bound (if any) of each variable */
-    double *x;       /* current solution */
-    double *rc;      /* current reduced cost */
-    double *opt_x;
+    int* info;       /* description of each variable (see below) */
+    double* lb;      /* specifies the lower bound (if any) of each variable */
+    double* ub;      /* specifies the upper bound (if any) of each variable */
+    double* x;       /* current solution */
+    double* rc;      /* current reduced cost */
+    double* opt_x;
 
     cutParams cparams;
 } DGG_data_t;
@@ -93,8 +93,8 @@ class CoinWarmStartBasis;
 class CglTwomir : public CglCutGenerator
 {
 
-    friend void CglTwomirUnitTest(const OsiSolverInterface * siP,
-                                  const std::string mpdDir );
+    friend void CglTwomirUnitTest(const OsiSolverInterface* siP,
+                                  const std::string mpdDir);
 
 
 public:
@@ -107,44 +107,44 @@ public:
     /** Generate Two step MIR cuts either from the tableau rows or from the
         formulation rows
     */
-    virtual void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
-                               const CglTreeInfo info = CglTreeInfo()) const;
+    virtual void generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
+                              const CglTreeInfo info = CglTreeInfo()) const;
     /// Return true if needs optimal basis to do cuts (will return true)
     virtual bool needsOptimalBasis() const;
 
     /**@name Change criterion on which scalings to use (default = 1,1,1,1) */
     //@{
     /// Set
-    void setMirScale (int tmin, int tmax)
+    void setMirScale(int tmin, int tmax)
     {
         t_min_ = tmin;
         t_max_ = tmax;
     }
-    void setTwomirScale (int qmin, int qmax)
+    void setTwomirScale(int qmin, int qmax)
     {
         q_min_ = qmin;
         q_max_ = qmax;
     }
-    void setAMax (int a)
+    void setAMax(int a)
     {
         a_max_ = a;
     }
-    void setMaxElements (int n)
+    void setMaxElements(int n)
     {
         max_elements_ = n;
     }
-    void setMaxElementsRoot (int n)
+    void setMaxElementsRoot(int n)
     {
         max_elements_root_ = n;
     }
-    void setCutTypes (bool mir, bool twomir, bool tab, bool form)
+    void setCutTypes(bool mir, bool twomir, bool tab, bool form)
     {
         do_mir_ = mir;
         do_2mir_ = twomir;
         do_tab_ = tab;
         do_form_ = form;
     }
-    void setFormulationRows (int n)
+    void setFormulationRows(int n)
     {
         form_nrows_ = n;
     }
@@ -218,21 +218,21 @@ public:
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglTwomir ();
+    CglTwomir();
 
     /// Copy constructor
-    CglTwomir (const CglTwomir &);
+    CglTwomir(const CglTwomir &);
 
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
-    CglTwomir & operator=(const CglTwomir& rhs);
+    CglTwomir & operator=(const CglTwomir & rhs);
 
     /// Destructor
-    virtual  ~CglTwomir ();
+    virtual  ~CglTwomir();
     /// Create C++ lines to get to current state
-    virtual std::string generateCpp( FILE * fp);
+    virtual std::string generateCpp(FILE* fp);
     //@}
 
 private:
@@ -460,22 +460,22 @@ int DGG_is_a_multiple_of_b(double a, double b);
 
 
 /* free function for DGG_data_t. Frees internal arrays and data structure */
-int DGG_freeData( DGG_data_t *data );
+int DGG_freeData(DGG_data_t* data);
 
 /******************** CONSTRAINT ADTs *****************************************/
 DGG_constraint_t* DGG_newConstraint(int max_arrays);
-void DGG_freeConstraint(DGG_constraint_t *c);
-DGG_constraint_t *DGG_copyConstraint(DGG_constraint_t *c);
-void DGG_scaleConstraint(DGG_constraint_t *c, int t);
+void DGG_freeConstraint(DGG_constraint_t* c);
+DGG_constraint_t* DGG_copyConstraint(DGG_constraint_t* c);
+void DGG_scaleConstraint(DGG_constraint_t* c, int t);
 
 /******************** CONFIGURATION *******************************************/
-void DGG_list_init (DGG_list_t *l);
-int DGG_list_addcut (DGG_list_t *l, DGG_constraint_t *cut, int ctype, double alpha);
-void DGG_list_delcut (DGG_list_t *l, int i);
-void DGG_list_free(DGG_list_t *l);
+void DGG_list_init(DGG_list_t* l);
+int DGG_list_addcut(DGG_list_t* l, DGG_constraint_t* cut, int ctype, double alpha);
+void DGG_list_delcut(DGG_list_t* l, int i);
+void DGG_list_free(DGG_list_t* l);
 
 /******************* SOLVER SPECIFIC METHODS **********************************/
-DGG_data_t *DGG_getData(const void *solver_ptr);
+DGG_data_t* DGG_getData(const void* solver_ptr);
 
 /******************* CONSTRAINT MANIPULATION **********************************/
 
@@ -489,108 +489,108 @@ the right hand side (simple substitution).
 
 2 - variables with non-zero lower bounds are shifted.            */
 
-int DGG_transformConstraint( DGG_data_t *data,
-                             double **x_out,
-                             double **rc_out,
-                             char **isint_out,
-                             DGG_constraint_t *constraint );
+int DGG_transformConstraint(DGG_data_t* data,
+                            double** x_out,
+                            double** rc_out,
+                            char** isint_out,
+                            DGG_constraint_t* constraint);
 
 /* DGG_unTransformConstraint :
 
 1 - Undoes step (1) of DGG_transformConstraint
 2 - Undoes step (2) of DGG_transformConstraint                  */
 
-int DGG_unTransformConstraint( DGG_data_t *data,
-                               DGG_constraint_t *constraint );
+int DGG_unTransformConstraint(DGG_data_t* data,
+                              DGG_constraint_t* constraint);
 
 /* substitutes each slack variable by the structural variables which
    define it. This function, hence, changes the constraint 'cut'.    */
 
-int DGG_substituteSlacks( const void *solver_ptr,
-                          DGG_data_t *data,
-                          DGG_constraint_t *cut );
+int DGG_substituteSlacks(const void* solver_ptr,
+                         DGG_data_t* data,
+                         DGG_constraint_t* cut);
 
-int DGG_nicefyConstraint( const void *solver_ptr,
-                          DGG_data_t *data,
-                          DGG_constraint_t *cut);
+int DGG_nicefyConstraint(const void* solver_ptr,
+                         DGG_data_t* data,
+                         DGG_constraint_t* cut);
 
 /******************* CUT GENERATION *******************************************/
-int DGG_getFormulaConstraint( int row_idx,
-                              const void *solver_ptr,
-                              DGG_data_t *data,
-                              DGG_constraint_t* row );
+int DGG_getFormulaConstraint(int row_idx,
+                             const void* solver_ptr,
+                             DGG_data_t* data,
+                             DGG_constraint_t* row);
 
-int DGG_getTableauConstraint( int index,
-                              const void *solver_ptr,
-                              DGG_data_t *data,
-                              DGG_constraint_t* tabrow,
-                              const int * colIsBasic,
-                              const int * rowIsBasic,
-                              CoinFactorization & factorization,
-                              int mode );
+int DGG_getTableauConstraint(int index,
+                             const void* solver_ptr,
+                             DGG_data_t* data,
+                             DGG_constraint_t* tabrow,
+                             const int* colIsBasic,
+                             const int* rowIsBasic,
+                             CoinFactorization & factorization,
+                             int mode);
 
-DGG_constraint_t* DGG_getSlackExpression(const void *solver_ptr, DGG_data_t* data, int row_index);
+DGG_constraint_t* DGG_getSlackExpression(const void* solver_ptr, DGG_data_t* data, int row_index);
 
-int DGG_generateTabRowCuts( DGG_list_t *list,
-                            DGG_data_t *data,
-                            const void *solver_ptr );
+int DGG_generateTabRowCuts(DGG_list_t* list,
+                           DGG_data_t* data,
+                           const void* solver_ptr);
 
-int DGG_generateFormulationCuts( DGG_list_t *list,
-                                 DGG_data_t *data,
-                                 const void *solver_ptr,
-                                 int nrows,
-                                 CoinThreadRandom & generator);
+int DGG_generateFormulationCuts(DGG_list_t* list,
+                                DGG_data_t* data,
+                                const void* solver_ptr,
+                                int nrows,
+                                CoinThreadRandom & generator);
 
 
-int DGG_generateFormulationCutsFromBase( DGG_constraint_t *base,
-        double slack,
-        DGG_list_t *list,
-        DGG_data_t *data,
-        const void *solver_ptr,
-        CoinThreadRandom & generator);
+int DGG_generateFormulationCutsFromBase(DGG_constraint_t* base,
+                                        double slack,
+                                        DGG_list_t* list,
+                                        DGG_data_t* data,
+                                        const void* solver_ptr,
+                                        CoinThreadRandom & generator);
 
-int DGG_generateCutsFromBase( DGG_constraint_t *base,
-                              DGG_list_t *list,
-                              DGG_data_t *data,
-                              const void *solver_ptr );
+int DGG_generateCutsFromBase(DGG_constraint_t* base,
+                             DGG_list_t* list,
+                             DGG_data_t* data,
+                             const void* solver_ptr);
 
-int DGG_buildMir( char *isint,
-                  DGG_constraint_t *base,
-                  DGG_constraint_t **cut_out );
+int DGG_buildMir(char* isint,
+                 DGG_constraint_t* base,
+                 DGG_constraint_t** cut_out);
 
-int DGG_build2step( double alpha,
-                    char *isint,
-                    DGG_constraint_t *base,
-                    DGG_constraint_t **cut_out );
+int DGG_build2step(double alpha,
+                   char* isint,
+                   DGG_constraint_t* base,
+                   DGG_constraint_t** cut_out);
 
-int DGG_addMirToList   ( DGG_constraint_t *base,
-                         char *isint,
-                         double *x,
-                         DGG_list_t *list,
-                         DGG_data_t *data,
-                         DGG_constraint_t *orig_base );
+int DGG_addMirToList(DGG_constraint_t* base,
+                     char* isint,
+                     double* x,
+                     DGG_list_t* list,
+                     DGG_data_t* data,
+                     DGG_constraint_t* orig_base);
 
-int DGG_add2stepToList ( DGG_constraint_t *base,
-                         char *isint,
-                         double *x,
-                         double *rc,
-                         DGG_list_t *list,
-                         DGG_data_t *data,
-                         DGG_constraint_t *orig_base );
+int DGG_add2stepToList(DGG_constraint_t* base,
+                       char* isint,
+                       double* x,
+                       double* rc,
+                       DGG_list_t* list,
+                       DGG_data_t* data,
+                       DGG_constraint_t* orig_base);
 
 /******************* CUT INFORMATION ******************************************/
 
-double DGG_cutLHS(DGG_constraint_t *c, double *x);
-int DGG_isCutDesirable(DGG_constraint_t *c, DGG_data_t *d);
+double DGG_cutLHS(DGG_constraint_t* c, double* x);
+int DGG_isCutDesirable(DGG_constraint_t* c, DGG_data_t* d);
 
 /******************* TEST / DEBUGGING ROUTINES ********************************/
 
-int DGG_isConstraintViolated(DGG_data_t *d, DGG_constraint_t *c);
+int DGG_isConstraintViolated(DGG_data_t* d, DGG_constraint_t* c);
 
-int DGG_isBaseTrivial(DGG_data_t *d, DGG_constraint_t* c);
+int DGG_isBaseTrivial(DGG_data_t* d, DGG_constraint_t* c);
 int DGG_is2stepValid(double alpha, double bht);
 
-int DGG_cutsOffPoint(double *x, DGG_constraint_t *cut);
+int DGG_cutsOffPoint(double* x, DGG_constraint_t* cut);
 
 //#############################################################################
 /** A function that tests the methods in the CglTwomir class. The
@@ -598,7 +598,7 @@ int DGG_cutsOffPoint(double *x, DGG_constraint_t *cut);
     have to be compiled into the library. And that's a gain, because the
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
-void CglTwomirUnitTest(const OsiSolverInterface * siP,
+void CglTwomirUnitTest(const OsiSolverInterface* siP,
                        const std::string mpdDir);
 
 

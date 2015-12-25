@@ -21,7 +21,7 @@
 
 //extern int getrusage(int who, struct rusage *x);
 
-double used_time(double *T)
+double used_time(double* T)
 {
 #ifdef _OPENMP
     double t, oldT =  T ? *T : 0;
@@ -31,15 +31,15 @@ double used_time(double *T)
     clock_t tp_clock;
     long tp_long;
     tp_clock = clock();
-    tp_long = (long) (tp_clock) / CLOCKS_PER_SEC;
+    tp_long = (long)(tp_clock) / CLOCKS_PER_SEC;
     tp.tv_sec = tp_long;
     tp.tv_usec = 0;
 #else
     (void) gettimeofday(&tp, NULL);
 #endif
 
-    t = (double)tp.tv_sec + ((double)tp.tv_usec)/1000000;
-    if (T) *T = t;
+    t = (double)tp.tv_sec + ((double)tp.tv_usec) / 1000000;
+    if(T) *T = t;
     return (t - oldT);
 #else
 
@@ -64,7 +64,7 @@ double used_time(double *T)
 #endif
 }
 
-double wall_clock(double *T)
+double wall_clock(double* T)
 {
     double t, oldT =  T ? *T : 0;
     struct timeval tp;
@@ -73,15 +73,15 @@ double wall_clock(double *T)
     clock_t tp_clock;
     long tp_long;
     tp_clock = clock();
-    tp_long = (long) (tp_clock) / CLOCKS_PER_SEC;
+    tp_long = (long)(tp_clock) / CLOCKS_PER_SEC;
     tp.tv_sec = tp_long;
     tp.tv_usec = 0;
 #else
     (void) gettimeofday(&tp, NULL);
 #endif
 
-    t = (double)tp.tv_sec + ((double)tp.tv_usec)/1000000;
-    if (T) *T = t;
+    t = (double)tp.tv_sec + ((double)tp.tv_usec) / 1000000;
+    if(T) *T = t;
     return (t - oldT);
 }
 
@@ -92,19 +92,19 @@ double wall_clock(double *T)
 void start_time(void)
 {
     struct itimerval value = {{0, 0}, {MAX_SEC, 0}};
-    struct itimerval ovalue = {{0, 0}, {0,0}};
+    struct itimerval ovalue = {{0, 0}, {0, 0}};
 
     setitimer(ITIMER_VIRTUAL, &value, &ovalue);
 }
 
-double used_time(double *T)
+double used_time(double* T)
 {
     static struct itimerval value;
 
     getitimer(ITIMER_VIRTUAL, &value);
-    return( ((double) MAX_SEC) -
-            ((double) value.it_value.tv_sec) -
-            ((double) value.it_value.tv_usec) / 1e6 - *T);
+    return(((double) MAX_SEC) -
+           ((double) value.it_value.tv_sec) -
+           ((double) value.it_value.tv_usec) / 1e6 - *T);
 }
 
 #endif

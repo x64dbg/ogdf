@@ -56,26 +56,26 @@
 namespace ogdf
 {
 
-//---------------------------------------------------------
-// Computation of a shelling order for a triconnected and
-// simple (no multi-edges, no self-loops) planar graph
-//---------------------------------------------------------
-class OGDF_EXPORT TriconnectedShellingOrder : public ShellingOrderModule
-{
-public:
-    TriconnectedShellingOrder()
+    //---------------------------------------------------------
+    // Computation of a shelling order for a triconnected and
+    // simple (no multi-edges, no self-loops) planar graph
+    //---------------------------------------------------------
+    class OGDF_EXPORT TriconnectedShellingOrder : public ShellingOrderModule
     {
-        m_baseRatio = 0.33;
-    }
+    public:
+        TriconnectedShellingOrder()
+        {
+            m_baseRatio = 0.33;
+        }
 
-protected:
-    // does the actual computation; must be overridden by derived classes
-    // the computed order is returned in partition
-    virtual void doCall(const Graph &G,
-                        adjEntry adj,
-                        List<ShellingOrderSet> &partition);
+    protected:
+        // does the actual computation; must be overridden by derived classes
+        // the computed order is returned in partition
+        virtual void doCall(const Graph & G,
+                            adjEntry adj,
+                            List<ShellingOrderSet> & partition);
 
-};
+    };
 
 
 } // end namespace ogdf

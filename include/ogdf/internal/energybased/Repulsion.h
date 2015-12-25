@@ -59,15 +59,15 @@
 namespace ogdf
 {
 
-class Repulsion: public NodePairEnergy
-{
-public:
-    //Initializes data structures to speed up later computations
-    Repulsion(GraphAttributes &AG);
-private:
-    //computes for two vertices an the given positions the repulsive energy
-    double computeCoordEnergy(node, node, const DPoint&, const DPoint&) const;
-};
+    class Repulsion: public NodePairEnergy
+    {
+    public:
+        //Initializes data structures to speed up later computations
+        Repulsion(GraphAttributes & AG);
+    private:
+        //computes for two vertices an the given positions the repulsive energy
+        double computeCoordEnergy(node, node, const DPoint &, const DPoint &) const;
+    };
 
 
 }// namespace ogdf

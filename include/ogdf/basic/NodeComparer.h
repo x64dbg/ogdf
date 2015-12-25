@@ -56,46 +56,46 @@
 namespace ogdf
 {
 
-template<class sorterType>
-class NodeComparer
-{
-public:
-    NodeComparer(NodeArray<sorterType> &valArray, bool ascending = true)
-        : m_valArray(&valArray)
+    template<class sorterType>
+    class NodeComparer
     {
-        if (ascending)
+    public:
+        NodeComparer(NodeArray<sorterType> & valArray, bool ascending = true)
+            : m_valArray(&valArray)
         {
-            m_smaller = -1;
-//              m_greater = 1;
-        }//if
-        else
+            if(ascending)
+            {
+                m_smaller = -1;
+                //              m_greater = 1;
+            }//if
+            else
+            {
+                m_smaller = 1;
+                //              m_greater = -1;
+            }
+
+        }//constructor
+
+        int compare(const node & v1, const node & v2) const
         {
-            m_smaller = 1;
-//              m_greater = -1;
+            if((*m_valArray)[v1] < (*m_valArray)[v2]) return m_smaller;
+            else if((*m_valArray)[v1] > (*m_valArray)[v2]) return -m_smaller; //m_greater;
+            else return 0;
         }
 
-    }//constructor
+        void init(NodeArray<sorterType> & valArray)
+        {
+            m_valArray = &valArray;
+        }
 
-    int compare(const node &v1, const node &v2) const
-    {
-        if ((*m_valArray)[v1] < (*m_valArray)[v2]) return m_smaller;
-        else if ((*m_valArray)[v1] > (*m_valArray)[v2]) return -m_smaller;//m_greater;
-        else return 0;
-    }
+        OGDF_AUGMENT_COMPARER(node)
 
-    void init(NodeArray<sorterType> &valArray)
-    {
-        m_valArray = &valArray;
-    }
+    private:
+        NodeArray<sorterType>* m_valArray;
+        int m_smaller;
+        //      int m_greater;
 
-    OGDF_AUGMENT_COMPARER(node)
-
-private:
-    NodeArray<sorterType> *m_valArray;
-    int m_smaller;
-//      int m_greater;
-
-};//NodeComparer
+    };//NodeComparer
 
 
 }//namespace

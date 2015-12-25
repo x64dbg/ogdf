@@ -45,58 +45,58 @@
 namespace ogdf
 {
 
-void BarycenterPlacer::placeOneLevel(MultilevelGraph &MLG)
-{
-    int level = MLG.getLevel();
-    while (MLG.getLevel() == level && MLG.getLastMerge() != 0)
+    void BarycenterPlacer::placeOneLevel(MultilevelGraph & MLG)
     {
-        placeOneNode(MLG);
-    }
-}
-
-
-void BarycenterPlacer::placeOneNode(MultilevelGraph &MLG)
-{
-    node merged = MLG.undoLastMerge();
-    double x = 0.0;
-    double y = 0.0;
-    double i = 0.0;
-    adjEntry adj;
-    forall_adj(adj, merged)
-    {
-        if(m_weightedPositions)
+        int level = MLG.getLevel();
+        while(MLG.getLevel() == level && MLG.getLastMerge() != 0)
         {
-            double weight = 1.0 / MLG.weight(adj->theEdge());
-            i = i + weight;
-            x += MLG.x(adj->twinNode()) * weight;
-            y += MLG.y(adj->twinNode()) * weight;
-        }
-        else
-        {
-            i = i + 1.f;
-            x += MLG.x(adj->twinNode());
-            y += MLG.y(adj->twinNode());
+            placeOneNode(MLG);
         }
     }
 
-    OGDF_ASSERT(i > 0);
-    x = x / i;
-    y = y / i;
 
-    MLG.x(merged, x + ((m_randomOffset)?(float)randomDouble(-1.0, 1.0):0.f));
-    MLG.y(merged, y + ((m_randomOffset)?(float)randomDouble(-1.0, 1.0):0.f));
-}
+    void BarycenterPlacer::placeOneNode(MultilevelGraph & MLG)
+    {
+        node merged = MLG.undoLastMerge();
+        double x = 0.0;
+        double y = 0.0;
+        double i = 0.0;
+        adjEntry adj;
+        forall_adj(adj, merged)
+        {
+            if(m_weightedPositions)
+            {
+                double weight = 1.0 / MLG.weight(adj->theEdge());
+                i = i + weight;
+                x += MLG.x(adj->twinNode()) * weight;
+                y += MLG.y(adj->twinNode()) * weight;
+            }
+            else
+            {
+                i = i + 1.f;
+                x += MLG.x(adj->twinNode());
+                y += MLG.y(adj->twinNode());
+            }
+        }
+
+        OGDF_ASSERT(i > 0);
+        x = x / i;
+        y = y / i;
+
+        MLG.x(merged, x + ((m_randomOffset) ? (float)randomDouble(-1.0, 1.0) : 0.f));
+        MLG.y(merged, y + ((m_randomOffset) ? (float)randomDouble(-1.0, 1.0) : 0.f));
+    }
 
 
-BarycenterPlacer::BarycenterPlacer()
-    :m_weightedPositions(false)
-{
-}
+    BarycenterPlacer::BarycenterPlacer()
+        : m_weightedPositions(false)
+    {
+    }
 
 
-void BarycenterPlacer::weightedPositionPriority( bool on )
-{
-    m_weightedPositions = on;
-}
+    void BarycenterPlacer::weightedPositionPriority(bool on)
+    {
+        m_weightedPositions = on;
+    }
 
 } // namespace ogdf

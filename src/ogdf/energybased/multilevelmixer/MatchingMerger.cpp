@@ -45,118 +45,118 @@
 namespace ogdf
 {
 
-MatchingMerger::MatchingMerger()
-    :m_selectByMass(false)
-{
-}
-
-bool MatchingMerger::buildOneLevel(MultilevelGraph &MLG)
-{
-    Graph &G = MLG.getGraph();
-    int level = MLG.getLevel() + 1;
-
-    int numNodes = G.numberOfNodes();
-
-    if (level == 1 && m_selectByMass)
+    MatchingMerger::MatchingMerger()
+        : m_selectByMass(false)
     {
-        m_mass.init(G, 1);
     }
 
-    if (numNodes <= 3)
+    bool MatchingMerger::buildOneLevel(MultilevelGraph & MLG)
     {
-        return false;
-    }
+        Graph & G = MLG.getGraph();
+        int level = MLG.getLevel() + 1;
 
-    NodeArray<bool> nodeMarks(G, false);
-    std::vector<edge> matching;
-    std::vector<node> candidates;
+        int numNodes = G.numberOfNodes();
 
-    node v;
-    forall_nodes(v, G)
-    {
-        candidates.push_back(v);
-    }
-
-    while (!candidates.empty())
-    {
-        int rndIndex = randomNumber(0, (int)candidates.size()-1);
-        node one = candidates[rndIndex];
-        candidates[rndIndex] = candidates.back();
-        candidates.pop_back();
-
-        if (nodeMarks[one])
+        if(level == 1 && m_selectByMass)
         {
-            continue;
+            m_mass.init(G, 1);
         }
-        nodeMarks[one] = true;
 
-        std::vector<node> candNeighbors;
-        std::vector<edge> candEdges;
-        adjEntry adj;
-        unsigned int minMass = numeric_limits<unsigned int>::max();
-        forall_adj(adj, one)
+        if(numNodes <= 3)
         {
-            node cand = adj->twinNode();
-            if (!nodeMarks[cand] && (!m_selectByMass || m_mass[cand] <= minMass))
+            return false;
+        }
+
+        NodeArray<bool> nodeMarks(G, false);
+        std::vector<edge> matching;
+        std::vector<node> candidates;
+
+        node v;
+        forall_nodes(v, G)
+        {
+            candidates.push_back(v);
+        }
+
+        while(!candidates.empty())
+        {
+            int rndIndex = randomNumber(0, (int)candidates.size() - 1);
+            node one = candidates[rndIndex];
+            candidates[rndIndex] = candidates.back();
+            candidates.pop_back();
+
+            if(nodeMarks[one])
             {
-                if (m_selectByMass && m_mass[cand] < minMass)
+                continue;
+            }
+            nodeMarks[one] = true;
+
+            std::vector<node> candNeighbors;
+            std::vector<edge> candEdges;
+            adjEntry adj;
+            unsigned int minMass = numeric_limits<unsigned int>::max();
+            forall_adj(adj, one)
+            {
+                node cand = adj->twinNode();
+                if(!nodeMarks[cand] && (!m_selectByMass || m_mass[cand] <= minMass))
                 {
-                    minMass = m_mass[cand];
-                    candNeighbors.clear();
-                    candEdges.clear();
+                    if(m_selectByMass && m_mass[cand] < minMass)
+                    {
+                        minMass = m_mass[cand];
+                        candNeighbors.clear();
+                        candEdges.clear();
+                    }
+                    candNeighbors.push_back(cand);
+                    candEdges.push_back(adj->theEdge());
                 }
-                candNeighbors.push_back(cand);
-                candEdges.push_back(adj->theEdge());
+            }
+            if(candNeighbors.empty())
+            {
+                continue;
+            }
+            int index = randomNumber(0, int(candNeighbors.size()) - 1);
+            nodeMarks[candNeighbors[index]] = true;
+            matching.push_back(candEdges[index]);
+        }
+
+        while(!matching.empty())
+        {
+            edge matchingEdge = matching.back();
+            matching.pop_back();
+
+            node mergeNode;
+            node parent;
+
+            // choose high degree node as parent!
+            mergeNode = matchingEdge->source();
+            parent = matchingEdge->target();
+            if(mergeNode->degree() > parent->degree())
+            {
+                mergeNode = matchingEdge->target();
+                parent = matchingEdge->source();
+            }
+
+            NodeMerge* NM = new NodeMerge(level);
+            bool ret = MLG.changeNode(NM, parent, MLG.radius(parent), mergeNode);
+            OGDF_ASSERT(ret);
+            if(m_selectByMass)
+            {
+                m_mass[parent] = m_mass[parent] + m_mass[mergeNode];
+            }
+            MLG.moveEdgesToParent(NM, mergeNode, parent, true, m_adjustEdgeLengths);
+            ret = MLG.postMerge(NM, mergeNode);
+            if(!ret)
+            {
+                delete NM;
             }
         }
-        if (candNeighbors.empty())
-        {
-            continue;
-        }
-        int index = randomNumber(0, int(candNeighbors.size())-1);
-        nodeMarks[candNeighbors[index]] = true;
-        matching.push_back(candEdges[index]);
+
+        return true;
     }
 
-    while (!matching.empty())
+
+    void MatchingMerger::selectByNodeMass(bool on)
     {
-        edge matchingEdge = matching.back();
-        matching.pop_back();
-
-        node mergeNode;
-        node parent;
-
-        // choose high degree node as parent!
-        mergeNode = matchingEdge->source();
-        parent = matchingEdge->target();
-        if (mergeNode->degree() > parent->degree())
-        {
-            mergeNode = matchingEdge->target();
-            parent = matchingEdge->source();
-        }
-
-        NodeMerge * NM = new NodeMerge(level);
-        bool ret = MLG.changeNode(NM, parent, MLG.radius(parent), mergeNode);
-        OGDF_ASSERT( ret );
-        if (m_selectByMass)
-        {
-            m_mass[parent] = m_mass[parent] + m_mass[mergeNode];
-        }
-        MLG.moveEdgesToParent(NM, mergeNode, parent, true, m_adjustEdgeLengths);
-        ret = MLG.postMerge(NM, mergeNode);
-        if( !ret )
-        {
-            delete NM;
-        }
+        m_selectByMass = on;
     }
-
-    return true;
-}
-
-
-void MatchingMerger::selectByNodeMass( bool on )
-{
-    m_selectByMass = on;
-}
 
 } // namespace ogdf

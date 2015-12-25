@@ -43,13 +43,13 @@
 
 
 #include "gtest/gtest.h"
-extern int regressionMain(int argc, char *const argv[]);
+extern int regressionMain(int argc, char* const argv[]);
 
 using namespace std;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-    if (argc < 2 || strlen(argv[1]) != 2 || argv[1][0] !=  '-')
+    if(argc < 2 || strlen(argv[1]) != 2 || argv[1][0] !=  '-')
     {
         cout
                 << "Usage: " << argv[0] << " -G [GTest options]\n"
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     }
     --argc;
     ++argv;
-    switch (argv[0][1])
+    switch(argv[0][1])
     {
     case 'G':
         ::testing::InitGoogleTest(&argc, argv);

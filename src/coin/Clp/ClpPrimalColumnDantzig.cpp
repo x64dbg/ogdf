@@ -21,7 +21,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpPrimalColumnDantzig::ClpPrimalColumnDantzig ()
+ClpPrimalColumnDantzig::ClpPrimalColumnDantzig()
     : ClpPrimalColumnPivot()
 {
     type_ = 1;
@@ -30,7 +30,7 @@ ClpPrimalColumnDantzig::ClpPrimalColumnDantzig ()
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpPrimalColumnDantzig::ClpPrimalColumnDantzig (const ClpPrimalColumnDantzig & source)
+ClpPrimalColumnDantzig::ClpPrimalColumnDantzig(const ClpPrimalColumnDantzig & source)
     : ClpPrimalColumnPivot(source)
 {
 
@@ -39,7 +39,7 @@ ClpPrimalColumnDantzig::ClpPrimalColumnDantzig (const ClpPrimalColumnDantzig & s
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpPrimalColumnDantzig::~ClpPrimalColumnDantzig ()
+ClpPrimalColumnDantzig::~ClpPrimalColumnDantzig()
 {
 
 }
@@ -48,9 +48,9 @@ ClpPrimalColumnDantzig::~ClpPrimalColumnDantzig ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpPrimalColumnDantzig &
-ClpPrimalColumnDantzig::operator=(const ClpPrimalColumnDantzig& rhs)
+ClpPrimalColumnDantzig::operator=(const ClpPrimalColumnDantzig & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         ClpPrimalColumnPivot::operator=(rhs);
     }
@@ -59,22 +59,22 @@ ClpPrimalColumnDantzig::operator=(const ClpPrimalColumnDantzig& rhs)
 
 // Returns pivot column, -1 if none
 int
-ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
-                                    CoinIndexedVector * /*spareRow1*/,
-                                    CoinIndexedVector * spareRow2,
-                                    CoinIndexedVector * spareColumn1,
-                                    CoinIndexedVector * spareColumn2)
+ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector* updates,
+                                    CoinIndexedVector* /*spareRow1*/,
+                                    CoinIndexedVector* spareRow2,
+                                    CoinIndexedVector* spareColumn1,
+                                    CoinIndexedVector* spareColumn2)
 {
     assert(model_);
     int iSection, j;
     int number;
-    int * index;
-    double * updateBy;
-    double * reducedCost;
+    int* index;
+    double* updateBy;
+    double* reducedCost;
 
     bool anyUpdates;
 
-    if (updates->getNumElements())
+    if(updates->getNumElements())
     {
         anyUpdates = true;
     }
@@ -83,18 +83,18 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
         // sub flip - nothing to do
         anyUpdates = false;
     }
-    if (anyUpdates)
+    if(anyUpdates)
     {
         model_->factorization()->updateColumnTranspose(spareRow2, updates);
         // put row of tableau in rowArray and columnArray
         model_->clpMatrix()->transposeTimes(model_, -1.0,
                                             updates, spareColumn2, spareColumn1);
-        for (iSection = 0; iSection < 2; iSection++)
+        for(iSection = 0; iSection < 2; iSection++)
         {
 
             reducedCost = model_->djRegion(iSection);
 
-            if (!iSection)
+            if(!iSection)
             {
                 number = updates->getNumElements();
                 index = updates->getIndices();
@@ -107,7 +107,7 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
                 updateBy = spareColumn1->denseVector();
             }
 
-            for (j = 0; j < number; j++)
+            for(j = 0; j < number; j++)
             {
                 int iSequence = index[j];
                 double value = reducedCost[iSequence];
@@ -126,7 +126,7 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
 
     double largest = model_->currentPrimalTolerance();
     // we can't really trust infeasibilities if there is primal error
-    if (model_->largestDualError() > 1.0e-8)
+    if(model_->largestDualError() > 1.0e-8)
         largest *= model_->largestDualError() / 1.0e-8;
 
 
@@ -142,10 +142,10 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
     reducedCost = model_->djRegion();
 
 #ifndef CLP_PRIMAL_SLACK_MULTIPLIER
-    for (iSequence = 0; iSequence < number; iSequence++)
+    for(iSequence = 0; iSequence < number; iSequence++)
     {
         // check flagged variable
-        if (!model_->flagged(iSequence))
+        if(!model_->flagged(iSequence))
         {
             double value = reducedCost[iSequence];
             ClpSimplex::Status status = model_->getStatus(iSequence);
@@ -158,21 +158,21 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
                 break;
             case ClpSimplex::isFree:
             case ClpSimplex::superBasic:
-                if (fabs(value) > bestFreeDj)
+                if(fabs(value) > bestFreeDj)
                 {
                     bestFreeDj = fabs(value);
                     bestFreeSequence = iSequence;
                 }
                 break;
             case ClpSimplex::atUpperBound:
-                if (value > bestDj)
+                if(value > bestDj)
                 {
                     bestDj = value;
                     bestSequence = iSequence;
                 }
                 break;
             case ClpSimplex::atLowerBound:
-                if (value < -bestDj)
+                if(value < -bestDj)
                 {
                     bestDj = -value;
                     bestSequence = iSequence;
@@ -183,10 +183,10 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
 #else
     // Columns
     int numberColumns = model_->numberColumns();
-    for (iSequence = 0; iSequence < numberColumns; iSequence++)
+    for(iSequence = 0; iSequence < numberColumns; iSequence++)
     {
         // check flagged variable
-        if (!model_->flagged(iSequence))
+        if(!model_->flagged(iSequence))
         {
             double value = reducedCost[iSequence];
             ClpSimplex::Status status = model_->getStatus(iSequence);
@@ -199,21 +199,21 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
                 break;
             case ClpSimplex::isFree:
             case ClpSimplex::superBasic:
-                if (fabs(value) > bestFreeDj)
+                if(fabs(value) > bestFreeDj)
                 {
                     bestFreeDj = fabs(value);
                     bestFreeSequence = iSequence;
                 }
                 break;
             case ClpSimplex::atUpperBound:
-                if (value > bestDj)
+                if(value > bestDj)
                 {
                     bestDj = value;
                     bestSequence = iSequence;
                 }
                 break;
             case ClpSimplex::atLowerBound:
-                if (value < -bestDj)
+                if(value < -bestDj)
                 {
                     bestDj = -value;
                     bestSequence = iSequence;
@@ -222,10 +222,10 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
         }
     }
     // Rows
-    for ( ; iSequence < number; iSequence++)
+    for(; iSequence < number; iSequence++)
     {
         // check flagged variable
-        if (!model_->flagged(iSequence))
+        if(!model_->flagged(iSequence))
         {
             double value = reducedCost[iSequence] * CLP_PRIMAL_SLACK_MULTIPLIER;
             ClpSimplex::Status status = model_->getStatus(iSequence);
@@ -238,21 +238,21 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
                 break;
             case ClpSimplex::isFree:
             case ClpSimplex::superBasic:
-                if (fabs(value) > bestFreeDj)
+                if(fabs(value) > bestFreeDj)
                 {
                     bestFreeDj = fabs(value);
                     bestFreeSequence = iSequence;
                 }
                 break;
             case ClpSimplex::atUpperBound:
-                if (value > bestDj)
+                if(value > bestDj)
                 {
                     bestDj = value;
                     bestSequence = iSequence;
                 }
                 break;
             case ClpSimplex::atLowerBound:
-                if (value < -bestDj)
+                if(value < -bestDj)
                 {
                     bestDj = -value;
                     bestSequence = iSequence;
@@ -262,7 +262,7 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
     }
 #endif
     // bias towards free
-    if (bestFreeSequence >= 0 && bestFreeDj > 0.1 * bestDj)
+    if(bestFreeSequence >= 0 && bestFreeDj > 0.1 * bestDj)
         bestSequence = bestFreeSequence;
     return bestSequence;
 }
@@ -270,9 +270,9 @@ ClpPrimalColumnDantzig::pivotColumn(CoinIndexedVector * updates,
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-ClpPrimalColumnPivot * ClpPrimalColumnDantzig::clone(bool CopyData) const
+ClpPrimalColumnPivot* ClpPrimalColumnDantzig::clone(bool CopyData) const
 {
-    if (CopyData)
+    if(CopyData)
     {
         return new ClpPrimalColumnDantzig(*this);
     }

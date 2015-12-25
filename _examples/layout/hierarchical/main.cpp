@@ -16,7 +16,7 @@ int main()
                        GraphAttributes::edgeStyle |
                        GraphAttributes::nodeStyle |
                        GraphAttributes::nodeTemplate);
-    if (!GraphIO::readGML(GA, G, "unix-history.gml") )
+    if(!GraphIO::readGML(GA, G, "unix-history.gml"))
     {
         cerr << "Could not load unix-history.gml" << endl;
         return 1;
@@ -26,7 +26,7 @@ int main()
     SL.setRanking(new OptimalRanking);
     SL.setCrossMin(new MedianHeuristic);
 
-    OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
+    OptimalHierarchyLayout* ohl = new OptimalHierarchyLayout;
     ohl->layerDistance(30.0);
     ohl->nodeDistance(25.0);
     ohl->weightBalancing(0.8);

@@ -60,141 +60,141 @@
 namespace ogdf
 {
 
-/***
- * Although most parts of the code are written with efficiency in mind,
- * this class is meant to be used in a static one-time analysis way,
- * not for dynamic checks over and over again.
- */
-class ClusterAnalysis
-{
-
-public:
-    static const int IsNotActiveBound;
-    static const int DefaultIndex; // Vertex index for independent bags, used to detect processing status.
-
-    //! Constructor. Performs all analyses and in case indyBags is
-    //! set to true, also computes a partition into independently
-    //! solvable subproblems for cluster planarization (if applicable).
-    ClusterAnalysis(const ClusterGraph &C, bool indyBags = false);
-    //! Additionally allows to forbid storing lists of outer active vertices.
-    ClusterAnalysis(const ClusterGraph &C, bool oalists, bool indyBags);
-    ~ClusterAnalysis();
-
-    // Quantitative
-    //! Returns number of outeractive vertices of cluster c.
-    // @param c is the cluster for which the active vertices are counted
-    int outerActive(cluster c);
-
-    //! Returns number of inneractive vertices of cluster c.
-    // @param c is the cluster for which the active vertices are counted
-    int innerActive(cluster c);
-
-    //! Returns the highest (smallest) level depth for which a vertex
-    //! is inner or outer active.
-    int minIOALevel(node v) const
+    /***
+     * Although most parts of the code are written with efficiency in mind,
+     * this class is meant to be used in a static one-time analysis way,
+     * not for dynamic checks over and over again.
+     */
+    class ClusterAnalysis
     {
-        return min(minIALevel(v), minOALevel(v));
-    }
-    //! Returns the highest (smallest) level depth for which a vertex
-    //! is inner active, only initialized if vertex is inner active.
-    int minIALevel(node v) const
-    {
-        return m_ialevel[v];
-    }
-    //! Returns the highest (smallest) level depth for which a vertex
-    //! is outer active, only initialized if vertex is outer active.
-    int minOALevel(node v) const
-    {
-        return m_oalevel[v];
-    }
 
-    // Qualitative
-    //! Returns outer activity status for vertex \a v wrt cluster \a c.
-    /**
-    *  @param c is the cluster for which vertex v's activity status is stored.
-    *  @param v is the vertex for which the activity status is returned.
-    */
-    bool isOuterActive(node v, cluster c);
-    bool isInnerActive(node v, cluster c);
+    public:
+        static const int IsNotActiveBound;
+        static const int DefaultIndex; // Vertex index for independent bags, used to detect processing status.
 
-    //! Returns list of edges for cluster c with lca c.
-    List<edge>& lcaEdges(cluster c);
+        //! Constructor. Performs all analyses and in case indyBags is
+        //! set to true, also computes a partition into independently
+        //! solvable subproblems for cluster planarization (if applicable).
+        ClusterAnalysis(const ClusterGraph & C, bool indyBags = false);
+        //! Additionally allows to forbid storing lists of outer active vertices.
+        ClusterAnalysis(const ClusterGraph & C, bool oalists, bool indyBags);
+        ~ClusterAnalysis();
 
-    //! Returns list of outeractive vertices for cluster \a c. The result
-    //! is only valid if lists are stored, i.e. m_storeoalists is true.
-    List<node>& oaNodes(cluster c);
+        // Quantitative
+        //! Returns number of outeractive vertices of cluster c.
+        // @param c is the cluster for which the active vertices are counted
+        int outerActive(cluster c);
 
-    //! Returns bag index number for a vertex \a v in cluster \a c.
-    int bagIndex(node v, cluster c);
+        //! Returns number of inneractive vertices of cluster c.
+        // @param c is the cluster for which the active vertices are counted
+        int innerActive(cluster c);
 
-    //! Returns number of bags for cluster \a c.
-    int numberOfBags(cluster c);
+        //! Returns the highest (smallest) level depth for which a vertex
+        //! is inner or outer active.
+        int minIOALevel(node v) const
+        {
+            return min(minIALevel(v), minOALevel(v));
+        }
+        //! Returns the highest (smallest) level depth for which a vertex
+        //! is inner active, only initialized if vertex is inner active.
+        int minIALevel(node v) const
+        {
+            return m_ialevel[v];
+        }
+        //! Returns the highest (smallest) level depth for which a vertex
+        //! is outer active, only initialized if vertex is outer active.
+        int minOALevel(node v) const
+        {
+            return m_oalevel[v];
+        }
 
-    //TODO
-    //void reInit(const ClusterGraph &C);
+        // Qualitative
+        //! Returns outer activity status for vertex \a v wrt cluster \a c.
+        /**
+        *  @param c is the cluster for which vertex v's activity status is stored.
+        *  @param v is the vertex for which the activity status is returned.
+        */
+        bool isOuterActive(node v, cluster c);
+        bool isInnerActive(node v, cluster c);
 
-    //! Returns independent bag index number for a vertex \a v.
-    //! @pre indyBags parameter in constructor was set to true, i.e. indyBags were computed.
-    int indyBagIndex(node v);
+        //! Returns list of edges for cluster c with lca c.
+        List<edge> & lcaEdges(cluster c);
 
-    //! Returns number of independent bags in clustergraph, -1 in case no independent bags
-    //! were computed. Ascending consecutive numbers are assigned, starting from 0.
-    int numberOfIndyBags()
-    {
-        return m_numIndyBags;
-    }
+        //! Returns list of outeractive vertices for cluster \a c. The result
+        //! is only valid if lists are stored, i.e. m_storeoalists is true.
+        List<node> & oaNodes(cluster c);
 
-    //! Returns root cluster of independent bag. Note that this
-    //! cluster either has direct vertex members or more than one child.
-    //! @param i is the independent bag number for which the root is returned.
-    cluster indyBagRoot(int i);
+        //! Returns bag index number for a vertex \a v in cluster \a c.
+        int bagIndex(node v, cluster c);
 
-protected:
-    void computeBags(); //!< Compute bags per cluster and store result as vertex-bag
-    //!< index in m_bagIndex.
-    void computeIndyBags(); //!< Compute independent bags per cluster and store result
-    //!< as vertex-indyBag index in m_indyBagNumber.
-private:
-    //! Runs through a list of vertices (starting with \a the one nodeIT points to)
-    //! which is expected to be a full list of cluster vertices in \a c. Depending on
-    //! outer activity and bag index number of the vertices, independent bags
-    //! are detected and a corresponding index is assigned accordingly for each vertex.
-    //! If omitChildBags is set to true, already processed vertices are skipped.
-    void partitionCluster(ListConstIterator<node> & nodeIt, cluster c,
-                          HashArray<int, List<node> > & bagNodes, HashArray<int, bool> & indyBag,
-                          Skiplist<int*> &indexNumbers, Array<cluster> & bagRoots);
-    void init(); //!< Initialize the structures, performs analyses.
-    void cleanUp(); //!< Deletes dynamically allocated structures.
-    const ClusterGraph* m_C;
-    //we keep data structures to save inner/outer activity status
-    //instead of computing them on the fly when needed
-    //keep number of activity defining adjacent edges
-    NodeArray< ClusterArray<int> *> m_iactive;
-    NodeArray< ClusterArray<int> *> m_oactive;
+        //! Returns number of bags for cluster \a c.
+        int numberOfBags(cluster c);
 
-    //! We store the bag affiliation of the vertices for each cluster.
-    //! A value of -1 indicates that the vertex is not a member of the cluster.
-    NodeArray< ClusterArray<int> *> m_bagindex;
+        //TODO
+        //void reInit(const ClusterGraph &C);
 
-    NodeArray<int> m_ialevel;
-    NodeArray<int> m_oalevel;
+        //! Returns independent bag index number for a vertex \a v.
+        //! @pre indyBags parameter in constructor was set to true, i.e. indyBags were computed.
+        int indyBagIndex(node v);
 
-    ClusterArray<int>* m_oanum; //!< Number of outer active vertices
-    ClusterArray<int>* m_ianum; //!< Number of inner active vertices
-    ClusterArray<int>* m_bags;  //!< Number of bags per cluster (stored even if vertex list is not stored)
-    ClusterArray<List<node> >* m_oalists;  //!< For each cluster we store the outeractive vertices.
-    //!< In case you want to save space, set m_storeoalists to false.
-    const bool m_storeoalists; //!< If set to true (default) lists of outeractive vertices are stored.
+        //! Returns number of independent bags in clustergraph, -1 in case no independent bags
+        //! were computed. Ascending consecutive numbers are assigned, starting from 0.
+        int numberOfIndyBags()
+        {
+            return m_numIndyBags;
+        }
 
-    ClusterArray<List<edge> >* m_lcaEdges; //!< For each cluster c we store the edges with lca c.
+        //! Returns root cluster of independent bag. Note that this
+        //! cluster either has direct vertex members or more than one child.
+        //! @param i is the independent bag number for which the root is returned.
+        cluster indyBagRoot(int i);
 
-    const bool m_indyBags; //!< If true, a node partition into independent bags is computed which can
-    //!< be used for dividing the input instance into smaller problems wrt cluster planarization.
-    NodeArray<int> m_indyBagNumber;  //!< Each independent bag has a different number.
-    int m_numIndyBags; //<! Number of independent bags in clustergraph
-    cluster* m_indyBagRoots; //<! Root clusters of independent bags (only when computed).
+    protected:
+        void computeBags(); //!< Compute bags per cluster and store result as vertex-bag
+        //!< index in m_bagIndex.
+        void computeIndyBags(); //!< Compute independent bags per cluster and store result
+        //!< as vertex-indyBag index in m_indyBagNumber.
+    private:
+        //! Runs through a list of vertices (starting with \a the one nodeIT points to)
+        //! which is expected to be a full list of cluster vertices in \a c. Depending on
+        //! outer activity and bag index number of the vertices, independent bags
+        //! are detected and a corresponding index is assigned accordingly for each vertex.
+        //! If omitChildBags is set to true, already processed vertices are skipped.
+        void partitionCluster(ListConstIterator<node> & nodeIt, cluster c,
+                              HashArray<int, List<node>> & bagNodes, HashArray<int, bool> & indyBag,
+                              Skiplist<int*> & indexNumbers, Array<cluster> & bagRoots);
+        void init(); //!< Initialize the structures, performs analyses.
+        void cleanUp(); //!< Deletes dynamically allocated structures.
+        const ClusterGraph* m_C;
+        //we keep data structures to save inner/outer activity status
+        //instead of computing them on the fly when needed
+        //keep number of activity defining adjacent edges
+        NodeArray<ClusterArray<int> *> m_iactive;
+        NodeArray<ClusterArray<int> *> m_oactive;
 
-};
+        //! We store the bag affiliation of the vertices for each cluster.
+        //! A value of -1 indicates that the vertex is not a member of the cluster.
+        NodeArray<ClusterArray<int> *> m_bagindex;
+
+        NodeArray<int> m_ialevel;
+        NodeArray<int> m_oalevel;
+
+        ClusterArray<int>* m_oanum; //!< Number of outer active vertices
+        ClusterArray<int>* m_ianum; //!< Number of inner active vertices
+        ClusterArray<int>* m_bags;  //!< Number of bags per cluster (stored even if vertex list is not stored)
+        ClusterArray<List<node>>* m_oalists;  //!< For each cluster we store the outeractive vertices.
+        //!< In case you want to save space, set m_storeoalists to false.
+        const bool m_storeoalists; //!< If set to true (default) lists of outeractive vertices are stored.
+
+        ClusterArray<List<edge>>* m_lcaEdges; //!< For each cluster c we store the edges with lca c.
+
+        const bool m_indyBags; //!< If true, a node partition into independent bags is computed which can
+        //!< be used for dividing the input instance into smaller problems wrt cluster planarization.
+        NodeArray<int> m_indyBagNumber;  //!< Each independent bag has a different number.
+        int m_numIndyBags; //<! Number of independent bags in clustergraph
+        cluster* m_indyBagRoots; //<! Root clusters of independent bags (only when computed).
+
+    };
 }
 
 #endif

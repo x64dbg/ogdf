@@ -14,21 +14,21 @@
 class CglClique : public CglCutGenerator
 {
 
-    friend void CglCliqueUnitTest(const OsiSolverInterface * siP,
-                                  const std::string mpdDir );
+    friend void CglCliqueUnitTest(const OsiSolverInterface* siP,
+                                  const std::string mpdDir);
 public:
     /// Copy constructor
-    CglClique(const CglClique& rhs);
+    CglClique(const CglClique & rhs);
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
-    CglClique& operator=(const CglClique& rhs);
+    CglClique & operator=(const CglClique & rhs);
 
 public:
 
     virtual void
-    generateCuts(const OsiSolverInterface& si, OsiCuts & cs,
+    generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                  const CglTreeInfo info = CglTreeInfo()) const;
 
     /**@name Constructors and destructors */
@@ -55,7 +55,7 @@ public:
     /// Destructor
     virtual ~CglClique() {}
     /// Create C++ lines to get to current state
-    virtual std::string generateCpp( FILE * fp);
+    virtual std::string generateCpp(FILE* fp);
 
     void considerRows(const int numRows, const int* rowInd);
 
@@ -120,10 +120,10 @@ private:
     struct fnode
     {
         /** pointer into all_nbr */
-        int          *nbrs;
+        int*          nbrs;
         /** 1-x_i-x_j, needed for odd holes, in the same order as the adj list,
             pointer into all_edgecost */
-        double       *edgecosts;
+        double*       edgecosts;
         /** degree of the node */
         int           degree;
         /** the fractional value of the variable corresponding to this node */
@@ -145,12 +145,12 @@ private:
         int    max_deg_node;
         int    max_degree;
         /** The array of the nodes in the graph */
-        fnode  *nodes;
+        fnode*  nodes;
         /** The array of all the neighbors. First the indices of the nodes
             adjacent to node 0 are listed, then those adjacent to node 1, etc. */
-        int    *all_nbr;
+        int*    all_nbr;
         /** The array of the costs of the edges going to the neighbors */
-        double *all_edgecost;
+        double* all_edgecost;
 
         frac_graph() :
             nodenum(0), edgenum(0), density(0),
@@ -238,14 +238,14 @@ protected:
 private:
     /** Scan through the variables and select those that are binary and are at
     a fractional level. */
-    void selectFractionalBinaries(const OsiSolverInterface& si) const;
+    void selectFractionalBinaries(const OsiSolverInterface & si) const;
     /** Scan through the variables and select those that are at a fractional
     level. We already know that everything is binary. */
-    void selectFractionals(const OsiSolverInterface& si) const;
+    void selectFractionals(const OsiSolverInterface & si) const;
     /**  */
-    void selectRowCliques(const OsiSolverInterface& si,int numOriginalRows) const;
+    void selectRowCliques(const OsiSolverInterface & si, int numOriginalRows) const;
     /**  */
-    void createSetPackingSubMatrix(const OsiSolverInterface& si) const;
+    void createSetPackingSubMatrix(const OsiSolverInterface & si) const;
     /**  */
     void createFractionalGraph() const;
     /**  */
@@ -255,24 +255,24 @@ private:
     /**  */
     void deleteFractionalGraph() const;
     /**  */
-    void find_scl(OsiCuts& cs) const;
+    void find_scl(OsiCuts & cs) const;
     /**  */
-    void find_rcl(OsiCuts& cs) const;
+    void find_rcl(OsiCuts & cs) const;
     /**  */
     int scl_choose_next_node(const int current_nodenum,
-                             const int *current_indices,
-                             const int *current_degrees,
-                             const double *current_values) const;
+                             const int* current_indices,
+                             const int* current_degrees,
+                             const double* current_values) const;
     /**  */
-    void scl_delete_node(const int del_ind, int& current_nodenum,
-                         int *current_indices, int *current_degrees,
-                         double *current_values) const;
+    void scl_delete_node(const int del_ind, int & current_nodenum,
+                         int* current_indices, int* current_degrees,
+                         double* current_values) const;
     /**  */
-    int enumerate_maximal_cliques(int& pos, bool* scl_label, OsiCuts& cs) const;
+    int enumerate_maximal_cliques(int & pos, bool* scl_label, OsiCuts & cs) const;
     /**  */
-    int greedy_maximal_clique(OsiCuts& cs) const;
+    int greedy_maximal_clique(OsiCuts & cs) const;
     /**  */
-    void recordClique(const int len, int* indices, OsiCuts& cs) const;
+    void recordClique(const int len, int* indices, OsiCuts & cs) const;
 };
 //#############################################################################
 /** A function that tests the methods in the CglClique class. The
@@ -280,7 +280,7 @@ private:
     have to be compiled into the library. And that's a gain, because the
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
-void CglCliqueUnitTest(const OsiSolverInterface * siP,
+void CglCliqueUnitTest(const OsiSolverInterface* siP,
                        const std::string mpdDir);
 /// This works on a fake solver i.e. invented rows
 class CglProbing;
@@ -289,15 +289,15 @@ class CglFakeClique : public CglClique
 
 public:
     /// Copy constructor
-    CglFakeClique(const CglFakeClique& rhs);
+    CglFakeClique(const CglFakeClique & rhs);
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
-    CglFakeClique& operator=(const CglFakeClique& rhs);
+    CglFakeClique & operator=(const CglFakeClique & rhs);
 
     virtual void
-    generateCuts(const OsiSolverInterface& si, OsiCuts & cs,
+    generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                  const CglTreeInfo info = CglTreeInfo()) const;
 
     /**@name Constructors and destructors */
@@ -319,16 +319,16 @@ public:
         If the user does not set the list of clique rows then CglFakeClique will
         start the generateCuts() methods by scanning the matrix for them.
     */
-    CglFakeClique(OsiSolverInterface * solver=NULL,bool setPacking = false);
+    CglFakeClique(OsiSolverInterface* solver = NULL, bool setPacking = false);
     /// Destructor
     virtual ~CglFakeClique();
     /// Assign solver (generator takes over ownership)
-    void assignSolver(OsiSolverInterface * fakeSolver);
+    void assignSolver(OsiSolverInterface* fakeSolver);
 protected:
     /// fake solver to use
-    mutable OsiSolverInterface * fakeSolver_;
+    mutable OsiSolverInterface* fakeSolver_;
     /// Probing object
-    mutable CglProbing * probing_;
+    mutable CglProbing* probing_;
 };
 
 #endif

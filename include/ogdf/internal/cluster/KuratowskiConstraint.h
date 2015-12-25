@@ -61,35 +61,35 @@ namespace ogdf
 {
 
 
-class ClusterKuratowskiConstraint : public abacus::Constraint
-{
-
-public:
-
-    ClusterKuratowskiConstraint(abacus::Master *master, int nEdges, SListPure<nodePair> &ks);
-
-    virtual ~ClusterKuratowskiConstraint();
-
-    // Computes and returns the coefficient for the given variable
-    virtual double coeff(const abacus::Variable *v) const;
-
-    void printMe(ostream& out) const
+    class ClusterKuratowskiConstraint : public abacus::Constraint
     {
-        out << "[KuraCon: ";
-        forall_listiterators(nodePair, it, m_subdivision)
+
+    public:
+
+        ClusterKuratowskiConstraint(abacus::Master* master, int nEdges, SListPure<nodePair> & ks);
+
+        virtual ~ClusterKuratowskiConstraint();
+
+        // Computes and returns the coefficient for the given variable
+        virtual double coeff(const abacus::Variable* v) const;
+
+        void printMe(ostream & out) const
         {
-            (*it).printMe(out);
-            out << ",";
+            out << "[KuraCon: ";
+            forall_listiterators(nodePair, it, m_subdivision)
+            {
+                (*it).printMe(out);
+                out << ",";
+            }
+            out << "]";
         }
-        out << "]";
-    }
 
-private:
+    private:
 
-    // The subdivision containing edges forming a SubGraph that is not planar
-    List<nodePair> m_subdivision;
+        // The subdivision containing edges forming a SubGraph that is not planar
+        List<nodePair> m_subdivision;
 
-};
+    };
 
 }
 

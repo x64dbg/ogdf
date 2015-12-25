@@ -45,35 +45,35 @@
 namespace ogdf
 {
 
-ZeroPlacer::ZeroPlacer()
-    :m_randomRange(1.0)
-{
-}
-
-
-void ZeroPlacer::setRandomRange(double range)
-{
-    m_randomRange = range;
-}
-
-
-void ZeroPlacer::placeOneLevel(MultilevelGraph &MLG)
-{
-    int level = MLG.getLevel();
-    while (MLG.getLevel() == level && MLG.getLastMerge() != 0)
+    ZeroPlacer::ZeroPlacer()
+        : m_randomRange(1.0)
     {
-        placeOneNode(MLG);
     }
-}
 
 
-void ZeroPlacer::placeOneNode(MultilevelGraph &MLG)
-{
-    NodeMerge * NM = MLG.getLastMerge();
-    node parent = MLG.getNode(NM->m_changedNodes[0]);
-    node merged = MLG.undoLastMerge();
-    MLG.x(merged, MLG.x(parent) + ((m_randomOffset)?(float)randomDouble(-m_randomRange, m_randomRange):0.f));
-    MLG.y(merged, MLG.y(parent) + ((m_randomOffset)?(float)randomDouble(-m_randomRange, m_randomRange):0.f));
-}
+    void ZeroPlacer::setRandomRange(double range)
+    {
+        m_randomRange = range;
+    }
+
+
+    void ZeroPlacer::placeOneLevel(MultilevelGraph & MLG)
+    {
+        int level = MLG.getLevel();
+        while(MLG.getLevel() == level && MLG.getLastMerge() != 0)
+        {
+            placeOneNode(MLG);
+        }
+    }
+
+
+    void ZeroPlacer::placeOneNode(MultilevelGraph & MLG)
+    {
+        NodeMerge* NM = MLG.getLastMerge();
+        node parent = MLG.getNode(NM->m_changedNodes[0]);
+        node merged = MLG.undoLastMerge();
+        MLG.x(merged, MLG.x(parent) + ((m_randomOffset) ? (float)randomDouble(-m_randomRange, m_randomRange) : 0.f));
+        MLG.y(merged, MLG.y(parent) + ((m_randomOffset) ? (float)randomDouble(-m_randomRange, m_randomRange) : 0.f));
+    }
 
 } // namespace ogdf

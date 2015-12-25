@@ -57,21 +57,21 @@ namespace ogdf
 {
 
 
-/**
- * \brief Crossings beautifier using a local stretch strategy.
- */
-class OGDF_EXPORT MMCBLocalStretch : public MMCBBase
-{
-public:
-    //! Creates an instance of the crossings beautifier.
-    MMCBLocalStretch() { }
+    /**
+     * \brief Crossings beautifier using a local stretch strategy.
+     */
+    class OGDF_EXPORT MMCBLocalStretch : public MMCBBase
+    {
+    public:
+        //! Creates an instance of the crossings beautifier.
+        MMCBLocalStretch() { }
 
-    ~MMCBLocalStretch() { }
+        ~MMCBLocalStretch() { }
 
-protected:
-    //! Implements the module call.
-    void doCall(const PlanRep &PG, GridLayout &gl, const List<node> &L);
-};
+    protected:
+        //! Implements the module call.
+        void doCall(const PlanRep & PG, GridLayout & gl, const List<node> & L);
+    };
 
 
 } // end namespace ogdf

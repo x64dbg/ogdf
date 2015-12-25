@@ -41,55 +41,55 @@ namespace abacus
 {
 
 
-void ConVar::_expand() const
-{
-    if(expanded_)
+    void ConVar::_expand() const
     {
-        Logger::ifout() << "WARNING: ConVar::_expand(): ";
-        Logger::ifout() << "constraint already expanded" << endl;
-        return;
+        if(expanded_)
+        {
+            Logger::ifout() << "WARNING: ConVar::_expand(): ";
+            Logger::ifout() << "constraint already expanded" << endl;
+            return;
+        }
+        expand();
+        expanded_ = true;
     }
-    expand();
-    expanded_ = true;
-}
 
 
-void ConVar::_compress() const
-{
-    if(!expanded_)
+    void ConVar::_compress() const
     {
-        Logger::ifout() << "WARNING: ConVar::_compress(): ";
-        Logger::ifout() << "constraint already compressed" << endl;
-        return;
+        if(!expanded_)
+        {
+            Logger::ifout() << "WARNING: ConVar::_compress(): ";
+            Logger::ifout() << "constraint already compressed" << endl;
+            return;
+        }
+        compress();
+        expanded_ = false;
     }
-    compress();
-    expanded_ = false;
-}
 
 
-void ConVar::print(ostream &out) const
-{
-    out << "ConVar::print() is only a dummy." << endl;
-}
+    void ConVar::print(ostream & out) const
+    {
+        out << "ConVar::print() is only a dummy." << endl;
+    }
 
 
-unsigned ConVar::hashKey() const
-{
-    Logger::ifout() << "ConVar::hashKey() must be defined in derived class.\n";
-    OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConvar);
-}
+    unsigned ConVar::hashKey() const
+    {
+        Logger::ifout() << "ConVar::hashKey() must be defined in derived class.\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConvar);
+    }
 
 
-const char *ConVar::name() const
-{
-    Logger::ifout() << "ConVar::name() must be defined in derived class.\n";
-    OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConvar);
-}
+    const char* ConVar::name() const
+    {
+        Logger::ifout() << "ConVar::name() must be defined in derived class.\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConvar);
+    }
 
 
-bool ConVar::equal(const ConVar * /* cv */) const
-{
-    Logger::ifout() << "ConVar::equal() must be defined in derived class.\n";
-    OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConvar);
-}
+    bool ConVar::equal(const ConVar* /* cv */) const
+    {
+        Logger::ifout() << "ConVar::equal() must be defined in derived class.\n";
+        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConvar);
+    }
 } //namespace abacus

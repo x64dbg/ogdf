@@ -44,38 +44,38 @@ namespace abacus
 {
 
 
-//! The OSI LP master.
-/**
- * An instance of the class LpMasterOsi is used to store all
- * OSI specific parameters and global data. The master instance of
- * Master keeps a pointer to an instance of this class.
- */
-class  LpMasterOsi :  public LpMaster
-{
-    friend class OsiIF;
-public:
-
-    //! The constructor.
+    //! The OSI LP master.
     /**
-     * \param master The master of the optimization.
+     * An instance of the class LpMasterOsi is used to store all
+     * OSI specific parameters and global data. The master instance of
+     * Master keeps a pointer to an instance of this class.
      */
-    LpMasterOsi(Master *master) : LpMaster(master) { }
+    class  LpMasterOsi :  public LpMaster
+    {
+        friend class OsiIF;
+    public:
 
-    //! The destructor.
-    virtual ~LpMasterOsi();
+        //! The constructor.
+        /**
+         * \param master The master of the optimization.
+         */
+        LpMasterOsi(Master* master) : LpMaster(master) { }
 
-    //! Initializes the LP solver specific Parameters.
-    virtual void initializeLpParameters();
+        //! The destructor.
+        virtual ~LpMasterOsi();
 
-    //! Sets default values of the LP solver specific Parameters.
-    virtual void setDefaultLpParameters() { }
+        //! Initializes the LP solver specific Parameters.
+        virtual void initializeLpParameters();
 
-    //! Prints the settings of the LP solver specific Parameters.
-    virtual void printLpParameters() const { }
+        //! Sets default values of the LP solver specific Parameters.
+        virtual void setDefaultLpParameters() { }
 
-    //! Prints LP solver specific Statistics.
-    virtual void outputLpStatistics() const { }
-};
+        //! Prints the settings of the LP solver specific Parameters.
+        virtual void printLpParameters() const { }
+
+        //! Prints LP solver specific Statistics.
+        virtual void outputLpStatistics() const { }
+    };
 
 } //namespace abacus
 

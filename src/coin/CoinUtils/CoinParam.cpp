@@ -20,7 +20,7 @@
 /*
   Default constructor.
 */
-CoinParam::CoinParam ()
+CoinParam::CoinParam()
     : type_(coinParamInvalid),
       name_(),
       lengthName_(0),
@@ -47,8 +47,8 @@ CoinParam::CoinParam ()
 /*
   Constructor for double parameter
 */
-CoinParam::CoinParam (std::string name, std::string help,
-                      double lower, double upper, double dflt, bool display)
+CoinParam::CoinParam(std::string name, std::string help,
+                     double lower, double upper, double dflt, bool display)
     : type_(coinParamDbl),
       name_(name),
       lengthName_(0),
@@ -74,8 +74,8 @@ CoinParam::CoinParam (std::string name, std::string help,
 /*
   Constructor for integer parameter
 */
-CoinParam::CoinParam (std::string name, std::string help,
-                      int lower, int upper, int dflt, bool display)
+CoinParam::CoinParam(std::string name, std::string help,
+                     int lower, int upper, int dflt, bool display)
     : type_(coinParamInt),
       name_(name),
       lengthName_(0),
@@ -101,8 +101,8 @@ CoinParam::CoinParam (std::string name, std::string help,
 /*
   Constructor for keyword parameter.
 */
-CoinParam::CoinParam (std::string name, std::string help,
-                      std::string firstValue, int dflt, bool display)
+CoinParam::CoinParam(std::string name, std::string help,
+                     std::string firstValue, int dflt, bool display)
     : type_(coinParamKwd),
       name_(name),
       lengthName_(0),
@@ -129,8 +129,8 @@ CoinParam::CoinParam (std::string name, std::string help,
 /*
   Constructor for string parameter.
 */
-CoinParam::CoinParam (std::string name, std::string help,
-                      std::string dflt, bool display)
+CoinParam::CoinParam(std::string name, std::string help,
+                     std::string dflt, bool display)
     : type_(coinParamStr),
       name_(name),
       lengthName_(0),
@@ -156,7 +156,7 @@ CoinParam::CoinParam (std::string name, std::string help,
 /*
   Constructor for action parameter.
 */
-CoinParam::CoinParam (std::string name, std::string help, bool display)
+CoinParam::CoinParam(std::string name, std::string help, bool display)
     : type_(coinParamAct),
       name_(name),
       lengthName_(0),
@@ -182,7 +182,7 @@ CoinParam::CoinParam (std::string name, std::string help, bool display)
 /*
   Copy constructor.
 */
-CoinParam::CoinParam (const CoinParam &orig)
+CoinParam::CoinParam(const CoinParam & orig)
     : type_(orig.type_),
       lengthName_(orig.lengthName_),
       lengthMatch_(orig.lengthMatch_),
@@ -208,14 +208,14 @@ CoinParam::CoinParam (const CoinParam &orig)
   Clone
 */
 
-CoinParam *CoinParam::clone ()
+CoinParam* CoinParam::clone()
 {
     return (new CoinParam(*this)) ;
 }
 
-CoinParam &CoinParam::operator= (const CoinParam &rhs)
+CoinParam & CoinParam::operator= (const CoinParam & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         type_ = rhs.type_ ;
         name_ = rhs.name_ ;
@@ -243,7 +243,7 @@ CoinParam &CoinParam::operator= (const CoinParam &rhs)
 /*
   Destructor
 */
-CoinParam::~CoinParam ()
+CoinParam::~CoinParam()
 {
     /* Nothing more to do */
 }
@@ -265,14 +265,14 @@ void CoinParam::processName()
 {
     std::string::size_type shriekPos = name_.find('!') ;
     lengthName_ = name_.length() ;
-    if (shriekPos == std::string::npos)
+    if(shriekPos == std::string::npos)
     {
         lengthMatch_ = lengthName_ ;
     }
     else
     {
         lengthMatch_ = shriekPos ;
-        name_ = name_.substr(0,shriekPos)+name_.substr(shriekPos+1) ;
+        name_ = name_.substr(0, shriekPos) + name_.substr(shriekPos + 1) ;
         lengthName_-- ;
     }
 
@@ -287,22 +287,22 @@ void CoinParam::processName()
 
   Returns: 0 for no match, 1 for a successful match, 2 if the match is short
 */
-int CoinParam::matches (std::string input) const
+int CoinParam::matches(std::string input) const
 {
     size_t inputLen = input.length() ;
-    if (inputLen <= lengthName_)
+    if(inputLen <= lengthName_)
     {
         size_t i ;
-        for (i = 0 ; i < inputLen ; i++)
+        for(i = 0 ; i < inputLen ; i++)
         {
-            if (tolower(name_[i]) != tolower(input[i]))
+            if(tolower(name_[i]) != tolower(input[i]))
                 break ;
         }
-        if (i < inputLen)
+        if(i < inputLen)
         {
             return (0) ;
         }
-        else if (i >= lengthMatch_)
+        else if(i >= lengthMatch_)
         {
             return (1) ;
         }
@@ -320,15 +320,15 @@ int CoinParam::matches (std::string input) const
   Return the parameter name, formatted to indicate how it'll be matched.
   E.g., some!Name will come back as some(Name).
 */
-std::string CoinParam::matchName () const
+std::string CoinParam::matchName() const
 {
-    if (lengthMatch_ == lengthName_)
+    if(lengthMatch_ == lengthName_)
     {
         return name_ ;
     }
     else
     {
-        return name_.substr(0,lengthMatch_)+"("+name_.substr(lengthMatch_)+")" ;
+        return name_.substr(0, lengthMatch_) + "(" + name_.substr(lengthMatch_) + ")" ;
     }
 }
 
@@ -338,11 +338,11 @@ std::string CoinParam::matchName () const
 */
 void CoinParam::printLongHelp() const
 {
-    if (longHelp_ != "")
+    if(longHelp_ != "")
     {
         CoinParamUtils::printIt(longHelp_.c_str()) ;
     }
-    else if (shortHelp_ != "")
+    else if(shortHelp_ != "")
     {
         CoinParamUtils::printIt(shortHelp_.c_str()) ;
     }
@@ -351,14 +351,14 @@ void CoinParam::printLongHelp() const
         CoinParamUtils::printIt("No help provided.") ;
     }
 
-    switch (type_)
+    switch(type_)
     {
     case coinParamDbl:
     {
         std::cout << "<Range of values is " << lowerDblValue_ << " to "
                   << upperDblValue_ << ";\n\tcurrent " << dblValue_ << ">"
                   << std::endl ;
-        assert (upperDblValue_>lowerDblValue_) ;
+        assert(upperDblValue_ > lowerDblValue_) ;
         break ;
     }
     case coinParamInt:
@@ -366,7 +366,7 @@ void CoinParam::printLongHelp() const
         std::cout << "<Range of values is " << lowerIntValue_ << " to "
                   << upperIntValue_ << ";\n\tcurrent " << intValue_ << ">"
                   << std::endl ;
-        assert (upperIntValue_>lowerIntValue_) ;
+        assert(upperIntValue_ > lowerIntValue_) ;
         break ;
     }
     case coinParamKwd:
@@ -377,7 +377,7 @@ void CoinParam::printLongHelp() const
     case coinParamStr:
     {
         std::cout << "<Current value is " ;
-        if (strValue_ == "")
+        if(strValue_ == "")
         {
             std::cout << "(unset)>" ;
         }
@@ -395,7 +395,7 @@ void CoinParam::printLongHelp() const
     default:
     {
         std::cout << "!! invalid parameter type !!" << std::endl ;
-        assert (false) ;
+        assert(false) ;
     }
     }
 }
@@ -412,9 +412,9 @@ void CoinParam::printLongHelp() const
 /*
   Add a keyword to the list for a keyword parameter.
 */
-void CoinParam::appendKwd (std::string kwd)
+void CoinParam::appendKwd(std::string kwd)
 {
-    assert (type_ == coinParamKwd) ;
+    assert(type_ == coinParamKwd) ;
 
     definedKwds_.push_back(kwd) ;
 }
@@ -423,13 +423,13 @@ void CoinParam::appendKwd (std::string kwd)
   Scan the keywords of a keyword parameter and return the integer index of
   the keyword matching the input, or -1 for no match.
 */
-int CoinParam::kwdIndex (std::string input) const
+int CoinParam::kwdIndex(std::string input) const
 {
-    assert (type_ == coinParamKwd) ;
+    assert(type_ == coinParamKwd) ;
 
     int whichItem = -1 ;
     size_t numberItems = definedKwds_.size() ;
-    if (numberItems > 0)
+    if(numberItems > 0)
     {
         size_t inputLen = input.length() ;
         size_t it ;
@@ -439,31 +439,31 @@ int CoinParam::kwdIndex (std::string input) const
           do the necessary preprocessing (record position and elide `!') before
           checking for a match of the required length.
         */
-        for (it = 0 ; it < numberItems ; it++)
+        for(it = 0 ; it < numberItems ; it++)
         {
             std::string kwd = definedKwds_[it] ;
             std::string::size_type shriekPos = kwd.find('!') ;
             size_t kwdLen = kwd.length() ;
             size_t matchLen = kwdLen ;
-            if (shriekPos != std::string::npos)
+            if(shriekPos != std::string::npos)
             {
                 matchLen = shriekPos ;
-                kwd = kwd.substr(0,shriekPos)+kwd.substr(shriekPos+1) ;
+                kwd = kwd.substr(0, shriekPos) + kwd.substr(shriekPos + 1) ;
                 kwdLen = kwd.length() ;
             }
             /*
               Match is possible only if input is shorter than the keyword. The entire input
               must match and the match must exceed the minimum length.
             */
-            if (inputLen <= kwdLen)
+            if(inputLen <= kwdLen)
             {
                 unsigned int i ;
-                for (i = 0 ; i < inputLen ; i++)
+                for(i = 0 ; i < inputLen ; i++)
                 {
-                    if (tolower(kwd[i]) != tolower(input[i]))
+                    if(tolower(kwd[i]) != tolower(input[i]))
                         break ;
                 }
-                if (i >= inputLen && i >= matchLen)
+                if(i >= inputLen && i >= matchLen)
                 {
                     whichItem = static_cast<int>(it) ;
                     break ;
@@ -478,12 +478,12 @@ int CoinParam::kwdIndex (std::string input) const
 /*
   Set current value for a keyword parameter using a string.
 */
-void CoinParam::setKwdVal (const std::string value)
+void CoinParam::setKwdVal(const std::string value)
 {
-    assert (type_ == coinParamKwd) ;
+    assert(type_ == coinParamKwd) ;
 
     int action = kwdIndex(value) ;
-    if (action >= 0)
+    if(action >= 0)
     {
         currentKwd_ = action ;
     }
@@ -493,12 +493,12 @@ void CoinParam::setKwdVal (const std::string value)
   Set current value for keyword parameter using an integer. Echo the new value
   to cout if requested.
 */
-void CoinParam::setKwdVal (int value, bool printIt)
+void CoinParam::setKwdVal(int value, bool printIt)
 {
-    assert (type_ == coinParamKwd) ;
-    assert (value >= 0 && unsigned(value) < definedKwds_.size()) ;
+    assert(type_ == coinParamKwd) ;
+    assert(value >= 0 && unsigned(value) < definedKwds_.size()) ;
 
-    if (printIt && value != currentKwd_)
+    if(printIt && value != currentKwd_)
     {
         std::cout << "Option for " << name_ << " changed from "
                   << definedKwds_[currentKwd_] << " to "
@@ -513,7 +513,7 @@ void CoinParam::setKwdVal (int value, bool printIt)
 */
 std::string CoinParam::kwdVal() const
 {
-    assert (type_ == coinParamKwd) ;
+    assert(type_ == coinParamKwd) ;
 
     return (definedKwds_[currentKwd_]) ;
 }
@@ -523,22 +523,22 @@ std::string CoinParam::kwdVal() const
   be matched. (E.g., some!Name prints as some(Name).). Follow with current
   value.
 */
-void CoinParam::printKwds () const
+void CoinParam::printKwds() const
 {
-    assert (type_ == coinParamKwd) ;
+    assert(type_ == coinParamKwd) ;
 
     std::cout << "Possible options for " << name_ << " are:" ;
     unsigned int it ;
     int maxAcross = 5 ;
-    for (it = 0 ; it < definedKwds_.size() ; it++)
+    for(it = 0 ; it < definedKwds_.size() ; it++)
     {
         std::string kwd = definedKwds_[it] ;
         std::string::size_type shriekPos = kwd.find('!') ;
-        if (shriekPos != std::string::npos)
+        if(shriekPos != std::string::npos)
         {
-            kwd = kwd.substr(0,shriekPos)+"("+kwd.substr(shriekPos+1)+")" ;
+            kwd = kwd.substr(0, shriekPos) + "(" + kwd.substr(shriekPos + 1) + ")" ;
         }
-        if (it%maxAcross == 0)
+        if(it % maxAcross == 0)
         {
             std::cout << std::endl ;
         }
@@ -546,14 +546,14 @@ void CoinParam::printKwds () const
     }
     std::cout << std::endl ;
 
-    assert (currentKwd_ >= 0 && unsigned(currentKwd_) < definedKwds_.size()) ;
+    assert(currentKwd_ >= 0 && unsigned(currentKwd_) < definedKwds_.size()) ;
 
     std::string current = definedKwds_[currentKwd_] ;
     std::string::size_type  shriekPos = current.find('!') ;
-    if (shriekPos != std::string::npos)
+    if(shriekPos != std::string::npos)
     {
-        current = current.substr(0,shriekPos)+
-                  "("+current.substr(shriekPos+1)+")" ;
+        current = current.substr(0, shriekPos) +
+                  "(" + current.substr(shriekPos + 1) + ")" ;
     }
     std::cout << "  <current: " << current << ">" << std::endl ;
 }
@@ -563,16 +563,16 @@ void CoinParam::printKwds () const
   Methods to manipulate the value of a string parameter.
 */
 
-void CoinParam::setStrVal (std::string value)
+void CoinParam::setStrVal(std::string value)
 {
-    assert (type_ == coinParamStr) ;
+    assert(type_ == coinParamStr) ;
 
     strValue_ = value ;
 }
 
-std::string CoinParam::strVal () const
+std::string CoinParam::strVal() const
 {
-    assert (type_ == coinParamStr) ;
+    assert(type_ == coinParamStr) ;
 
     return (strValue_) ;
 }
@@ -582,16 +582,16 @@ std::string CoinParam::strVal () const
   Methods to manipulate the value of a double parameter.
 */
 
-void CoinParam::setDblVal (double value)
+void CoinParam::setDblVal(double value)
 {
-    assert (type_ == coinParamDbl) ;
+    assert(type_ == coinParamDbl) ;
 
     dblValue_ = value ;
 }
 
-double CoinParam::dblVal () const
+double CoinParam::dblVal() const
 {
-    assert (type_ == coinParamDbl) ;
+    assert(type_ == coinParamDbl) ;
 
     return (dblValue_) ;
 }
@@ -601,16 +601,16 @@ double CoinParam::dblVal () const
   Methods to manipulate the value of an integer parameter.
 */
 
-void CoinParam::setIntVal (int value)
+void CoinParam::setIntVal(int value)
 {
-    assert (type_ == coinParamInt) ;
+    assert(type_ == coinParamInt) ;
 
     intValue_ = value ;
 }
 
-int CoinParam::intVal () const
+int CoinParam::intVal() const
 {
-    assert (type_ == coinParamInt) ;
+    assert(type_ == coinParamInt) ;
 
     return (intValue_) ;
 }
@@ -619,9 +619,9 @@ int CoinParam::intVal () const
   A print function (friend of the class)
 */
 
-std::ostream &operator<< (std::ostream &s, const CoinParam &param)
+std::ostream & operator<< (std::ostream & s, const CoinParam & param)
 {
-    switch (param.type())
+    switch(param.type())
     {
     case CoinParam::coinParamDbl:
     {

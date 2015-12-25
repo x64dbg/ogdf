@@ -53,17 +53,17 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT RandomPlacer : public InitialPlacer
-{
-    void placeOneNode(MultilevelGraph &MLG, DPoint center, double radius);
+    class OGDF_EXPORT RandomPlacer : public InitialPlacer
+    {
+        void placeOneNode(MultilevelGraph & MLG, DPoint center, double radius);
 
-    double m_circleSizeFactor;
+        double m_circleSizeFactor;
 
-public:
-    RandomPlacer();
-    void placeOneLevel(MultilevelGraph &MLG);
-    void setCircleSize(double factor);
-};
+    public:
+        RandomPlacer();
+        void placeOneLevel(MultilevelGraph & MLG);
+        void setCircleSize(double factor);
+    };
 
 } // namespace ogdf
 

@@ -45,80 +45,80 @@ namespace abacus
 {
 
 
-//! Solution histories.
-/**
- * This class implements the storage of the solution history. Each time
- * when a better feasible solution or globally valid dual bound
- * is found, it should be memorized in this class.
- */
-class  History :  public AbacusRoot
-{
-public:
-
-    //! Creates a history table with 100 possible entries.
+    //! Solution histories.
     /**
-     * If this number is exceeded an automatic reallocation is performed.
-     *
-     * \param master A pointer to the corresponding master of the optimization.
+     * This class implements the storage of the solution history. Each time
+     * when a better feasible solution or globally valid dual bound
+     * is found, it should be memorized in this class.
      */
-    History(Master *master) :
-        master_(master),
-        primalBound_(100),
-        dualBound_(100),
-        time_(100),
-        n_(0)
-    { }
-
-    virtual ~History() { }
-
-    //! The output operator.
-    /**
-     * \param out The output stream.
-     * \param rhs The solution history being output.
-     *
-     * \return A reference to the output stream.
-     */
-    friend ostream& operator<<(ostream& out, const History &rhs);
-
-    //! Adds an additional line to the history table.
-    /**
-     * Primal bound, dual bound, and the time are taken from the
-     * corresponding master object.
-     * The history table is automatically reallocated if necessary.
-     *
-     * Usually an explicit call to this function from an application class
-     * is not required since \a update() is automatically called if
-     * a new global primal or dual bound is found.
-     */
-    void update();
-
-private:
-
-    //! Returns the length of the history table.
-    int size() const
+    class  History :  public AbacusRoot
     {
-        return primalBound_.size();
-    }
+    public:
 
-    //! The function \a realloc() enlarges the history table by 100 components.
-    void realloc();
+        //! Creates a history table with 100 possible entries.
+        /**
+         * If this number is exceeded an automatic reallocation is performed.
+         *
+         * \param master A pointer to the corresponding master of the optimization.
+         */
+        History(Master* master) :
+            master_(master),
+            primalBound_(100),
+            dualBound_(100),
+            time_(100),
+            n_(0)
+        { }
+
+        virtual ~History() { }
+
+        //! The output operator.
+        /**
+         * \param out The output stream.
+         * \param rhs The solution history being output.
+         *
+         * \return A reference to the output stream.
+         */
+        friend ostream & operator<<(ostream & out, const History & rhs);
+
+        //! Adds an additional line to the history table.
+        /**
+         * Primal bound, dual bound, and the time are taken from the
+         * corresponding master object.
+         * The history table is automatically reallocated if necessary.
+         *
+         * Usually an explicit call to this function from an application class
+         * is not required since \a update() is automatically called if
+         * a new global primal or dual bound is found.
+         */
+        void update();
+
+    private:
+
+        //! Returns the length of the history table.
+        int size() const
+        {
+            return primalBound_.size();
+        }
+
+        //! The function \a realloc() enlarges the history table by 100 components.
+        void realloc();
 
 
-    //! A pointer to corresponding master of the optimization.
-    Master *master_;
+        //! A pointer to corresponding master of the optimization.
+        Master* master_;
 
-    //! The array storing the value of the best primal solution.
-    Array<double> primalBound_;
+        //! The array storing the value of the best primal solution.
+        Array<double> primalBound_;
 
-    //! The array storing the value of the best dual solution.
-    Array<double> dualBound_;
+        //! The array storing the value of the best dual solution.
+        Array<double> dualBound_;
 
-    //! The CPU time in seconds, when the entry in the table was made.
-    Array<__int64> time_;
+        //! The CPU time in seconds, when the entry in the table was made.
+        Array<__int64> time_;
 
-    //! The number of entries in the history table.
-    int n_;
-};
+        //! The number of entries in the history table.
+        int n_;
+    };
 
 } //namespace abacus
 

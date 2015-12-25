@@ -52,14 +52,14 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT MedianPlacer : public InitialPlacer
-{
-public:
-    void placeOneLevel(MultilevelGraph &MLG);
+    class OGDF_EXPORT MedianPlacer : public InitialPlacer
+    {
+    public:
+        void placeOneLevel(MultilevelGraph & MLG);
 
-private:
-    void placeOneNode(MultilevelGraph &MLG);
-};
+    private:
+        void placeOneNode(MultilevelGraph & MLG);
+    };
 
 } // namespace ogdf
 

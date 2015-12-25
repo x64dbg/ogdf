@@ -59,61 +59,61 @@ namespace ogdf
 {
 
 
-/**
- * \brief Interface of general layout algorithms.
- *
- */
-class OGDF_EXPORT ForceLayoutModule : public LayoutModule
-{
-    // holds index of the current level in multilevel hierarchy
-    int m_currentLevel;
-
-public:
-    //! Initializes a force layout module.
-    ForceLayoutModule() { }
-
-    virtual ~ForceLayoutModule() { }
-
-    virtual void call(GraphAttributes &GA) = 0;
-
     /**
-     * \brief Computes a layout of graph \a MLG.
+     * \brief Interface of general layout algorithms.
      *
-     * This method can be implemented optionally to allow a LayoutModule to modify the Graph.
-     * This allows some Layout Algorithms to save Memory, compared to a normal call(GA)
-     * DO NOT implement this if you are not sure whether this would save you Memory!
-     * This Method only helps if the Graph is already in the MultiLevelGraph Format
-     *   (or can be converted without creating a copy) AND the Layout would need a copy otherwise.
-     * All incremental Layouts (especially energy based) CAN be called by ModularMultilevelMixer.
-     * The standard implementation converts the MLG to GA and uses call(GA).
-     *
-     * If implemented, the following Implementation of call(GA) is advised
-     *   to ensure consistent behaviour of the two call Methods:
-     * void YourLayout::call(GraphAttributes &GA)
-     * {
-     *     MultilevelGraph MLG(GA);
-     *     call(MLG);
-     *     MLG.exportAttributes(GA);
-     * }
-     *
-     * @param MLG is the input graph and will also be assigned the layout information.
      */
-    virtual void call(MultilevelGraph &MLG)
+    class OGDF_EXPORT ForceLayoutModule : public LayoutModule
     {
-        m_currentLevel = MLG.getLevel();
-        GraphAttributes GA(MLG.getGraph());
-        MLG.exportAttributesSimple(GA);
-        call(GA);
-        MLG.importAttributesSimple(GA);
+        // holds index of the current level in multilevel hierarchy
+        int m_currentLevel;
+
+    public:
+        //! Initializes a force layout module.
+        ForceLayoutModule() { }
+
+        virtual ~ForceLayoutModule() { }
+
+        virtual void call(GraphAttributes & GA) = 0;
+
+        /**
+         * \brief Computes a layout of graph \a MLG.
+         *
+         * This method can be implemented optionally to allow a LayoutModule to modify the Graph.
+         * This allows some Layout Algorithms to save Memory, compared to a normal call(GA)
+         * DO NOT implement this if you are not sure whether this would save you Memory!
+         * This Method only helps if the Graph is already in the MultiLevelGraph Format
+         *   (or can be converted without creating a copy) AND the Layout would need a copy otherwise.
+         * All incremental Layouts (especially energy based) CAN be called by ModularMultilevelMixer.
+         * The standard implementation converts the MLG to GA and uses call(GA).
+         *
+         * If implemented, the following Implementation of call(GA) is advised
+         *   to ensure consistent behaviour of the two call Methods:
+         * void YourLayout::call(GraphAttributes &GA)
+         * {
+         *     MultilevelGraph MLG(GA);
+         *     call(MLG);
+         *     MLG.exportAttributes(GA);
+         * }
+         *
+         * @param MLG is the input graph and will also be assigned the layout information.
+         */
+        virtual void call(MultilevelGraph & MLG)
+        {
+            m_currentLevel = MLG.getLevel();
+            GraphAttributes GA(MLG.getGraph());
+            MLG.exportAttributesSimple(GA);
+            call(GA);
+            MLG.importAttributesSimple(GA);
+        };
+
+        void call(GraphAttributes & GA, GraphConstraints & GC)
+        {
+            call(GA);
+        }
+
+        OGDF_MALLOC_NEW_DELETE
     };
-
-    void call(GraphAttributes &GA, GraphConstraints & GC)
-    {
-        call(GA);
-    }
-
-    OGDF_MALLOC_NEW_DELETE
-};
 
 
 } // end namespace ogdf

@@ -52,18 +52,18 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT MatchingMerger : public MultilevelBuilder
-{
-private:
-    NodeArray<unsigned int> m_mass;
-    bool m_selectByMass;
+    class OGDF_EXPORT MatchingMerger : public MultilevelBuilder
+    {
+    private:
+        NodeArray<unsigned int> m_mass;
+        bool m_selectByMass;
 
-    bool buildOneLevel(MultilevelGraph &MLG);
+        bool buildOneLevel(MultilevelGraph & MLG);
 
-public:
-    MatchingMerger();
-    void selectByNodeMass(bool on);
-};
+    public:
+        MatchingMerger();
+        void selectByNodeMass(bool on);
+    };
 
 } // namespace ogdf
 

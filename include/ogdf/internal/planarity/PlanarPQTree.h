@@ -61,46 +61,46 @@
 namespace ogdf
 {
 
-class PlanarPQTree: public PQTree<edge,IndInfo*,bool>
-{
-
-public:
-
-    PlanarPQTree() : PQTree<edge,IndInfo*,bool>() { }
-
-    virtual ~PlanarPQTree() { }
-
-    //! Does a clean up after a reduction.
-    virtual void emptyAllPertinentNodes();
-
-    //! Initializes a new PQ-tree with a set of leaves.
-    virtual int Initialize(SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys);
-
-    int Initialize(SListPure<PQLeafKey<edge,IndInfo*,bool>*> &leafKeys)
+    class PlanarPQTree: public PQTree<edge, IndInfo*, bool>
     {
-        return PQTree<edge,IndInfo*,bool>::Initialize(leafKeys);
-    }
 
-    //! Replaces the pertinent subtree by a set of new leaves.
-    void ReplaceRoot(SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys);
+    public:
 
-    //! Reduces a set of leaves.
-    virtual bool Reduction(SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys);
+        PlanarPQTree() : PQTree<edge, IndInfo*, bool>() { }
 
-    bool Reduction(SListPure<PQLeafKey<edge,IndInfo*,bool>*> &leafKeys)
-    {
-        return PQTree<edge,IndInfo*,bool>::Reduction(leafKeys);
-    }
+        virtual ~PlanarPQTree() { }
 
-private:
+        //! Does a clean up after a reduction.
+        virtual void emptyAllPertinentNodes();
 
-    //! Replaces a pertinet subtree by a set of new leaves if the root is full.
-    void ReplaceFullRoot(SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys);
+        //! Initializes a new PQ-tree with a set of leaves.
+        virtual int Initialize(SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys);
 
-    //! Replaces a pertinet subtree by a set of new leaves if the root is partial.
-    void ReplacePartialRoot(SListPure<PlanarLeafKey<IndInfo*>*> &leafKeys);
+        int Initialize(SListPure<PQLeafKey<edge, IndInfo*, bool>*> & leafKeys)
+        {
+            return PQTree<edge, IndInfo*, bool>::Initialize(leafKeys);
+        }
 
-};
+        //! Replaces the pertinent subtree by a set of new leaves.
+        void ReplaceRoot(SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys);
+
+        //! Reduces a set of leaves.
+        virtual bool Reduction(SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys);
+
+        bool Reduction(SListPure<PQLeafKey<edge, IndInfo*, bool>*> & leafKeys)
+        {
+            return PQTree<edge, IndInfo*, bool>::Reduction(leafKeys);
+        }
+
+    private:
+
+        //! Replaces a pertinet subtree by a set of new leaves if the root is full.
+        void ReplaceFullRoot(SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys);
+
+        //! Replaces a pertinet subtree by a set of new leaves if the root is partial.
+        void ReplacePartialRoot(SListPure<PlanarLeafKey<IndInfo*>*> & leafKeys);
+
+    };
 
 }
 

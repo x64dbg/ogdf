@@ -52,351 +52,351 @@ namespace ogdf
 {
 
 
-//---------------------------------------------------------
-// PairCoordId
-// represents a pair of a coordinate (x or y) and the index
-// of a rectangle
-//---------------------------------------------------------
-struct OGDF_EXPORT NearestRectangleFinder::PairCoordId
-{
-    PairCoordId(double coord, int index)
+    //---------------------------------------------------------
+    // PairCoordId
+    // represents a pair of a coordinate (x or y) and the index
+    // of a rectangle
+    //---------------------------------------------------------
+    struct OGDF_EXPORT NearestRectangleFinder::PairCoordId
     {
-        m_coord = coord;
-        m_index = index;
-    }
-
-    PairCoordId() { }
-
-    friend ostream &operator<<(ostream &os, const PairCoordId &p)
-    {
-        os << "(" << p.m_coord << "," << p.m_index << ")";
-        return os;
-    }
-
-    double m_coord;
-    int m_index;
-};
-
-
-//---------------------------------------------------------
-// CoordComparer
-// comparer class for sorting PairCoordId according to
-// decreasing coordinate
-//---------------------------------------------------------
-class NearestRectangleFinder::CoordComparer
-{
-public:
-    bool less (const PairCoordId &x, const PairCoordId &y) const
-    {
-        return x.m_coord > y.m_coord;
-    }
-    bool leq  (const PairCoordId &x, const PairCoordId &y) const
-    {
-        return x.m_coord >= y.m_coord;
-    }
-    bool equal(const PairCoordId &x, const PairCoordId &y) const
-    {
-        return x.m_coord == y.m_coord;
-    }
-};
-
-
-//---------------------------------------------------------
-// YCoordComparer
-// comparer class for sorting points (given by index) by
-// decreasing y-coordinate
-//---------------------------------------------------------
-class NearestRectangleFinder::YCoordComparer
-{
-public:
-    YCoordComparer(const Array<DPoint> &point)
-    {
-        m_point = &point;
-    }
-
-    bool less (int x, int y) const
-    {
-        return (*m_point)[x].m_y > (*m_point)[y].m_y;
-    }
-    bool leq  (int x, int y) const
-    {
-        return (*m_point)[x].m_y >= (*m_point)[y].m_y;
-    }
-    bool equal(int x, int y) const
-    {
-        return (*m_point)[x].m_y == (*m_point)[y].m_y;
-    }
-
-private:
-    const Array<DPoint> *m_point;
-};
-
-
-
-//---------------------------------------------------------
-// NearestRectangleFinder
-//---------------------------------------------------------
-
-void NearestRectangleFinder::find(
-    const Array<RectRegion> &region,
-    const Array<DPoint> &point,
-    Array<List<PairRectDist> > &nearest)
-{
-    const int n = region.size();  // number of rectangles
-    const int m = point.size();   // number of points
-
-    List<PairCoordId> listTop;    // list of max. y-coord. of rectangles
-    List<PairCoordId> listBottom; // list of min. y-coord. of rectangles
-
-    // build lists listTop and listBottom ...
-    int i;
-    for(i = 0; i < n; ++i)
-    {
-        const RectRegion &rect = region[i];
-        listTop   .pushBack(PairCoordId(rect.m_y + rect.m_height/2.0, i));
-        listBottom.pushBack(PairCoordId(rect.m_y - rect.m_height/2.0, i));
-    }
-
-    // ... and sort them by decreasing coordinates
-    CoordComparer comparer;
-    listTop   .quicksort(comparer);
-    listBottom.quicksort(comparer);
-
-    // build array of point indices ...
-    Array<int> sortedPoints(m);
-    for(i = 0; i < m; ++i)
-        sortedPoints[i] = i;
-
-    // ... and sort them by decreasing y-coordinate
-    YCoordComparer yCoordComparer(point);
-    sortedPoints.quicksort(yCoordComparer);
-
-
-    ListPure<int> active;   // list of rectangles such that y-coord. of current
-    // point is contained y-projection of rectangle
-
-    // We traverse the lists listTop and listBottom from start to end such that
-    // the coord. of the current entry in listTop is the first entry below p.y
-    // and the coord. of the current entry in listBottom is the first entry
-    // equal or below p.y
-    ListIterator<PairCoordId> nextTop    = listTop   .begin();
-    ListIterator<PairCoordId> nextBottom = listBottom.begin();
-
-
-    // position of a rectangle in active
-    Array<ListIterator<int> > posInActive(n);
-    // list of rectangles visited for current point
-    BoundedStack<int> visitedRectangles(n);
-    // distance of rectangle to current point (if contained in visitedRectangles)
-    Array<double> distance(n);
-
-    // the maximal distance we have to explore
-    // (if a rectangle lies at distance m_maxAllowedDistance, it can get
-    // ambigous if there are rectangles with distance <= maxDistanceVisit)
-    double maxDistanceVisit = m_maxAllowedDistance + m_toleranceDistance;
-
-    // we iterate over all points by decreasing y-coordinate
-    for(i = 0; i < m; ++i)
-    {
-        const int     nextPoint = sortedPoints[i];
-        const DPoint &p         = point[nextPoint];
-
-        // update active list
-        while(nextTop.valid() && (*nextTop).m_coord >= p.m_y)
+        PairCoordId(double coord, int index)
         {
-            int index = (*nextTop).m_index;
-            posInActive[index] = active.pushBack(index);
-            ++nextTop;
+            m_coord = coord;
+            m_index = index;
         }
 
-        while(nextBottom.valid() && (*nextBottom).m_coord > p.m_y)
+        PairCoordId() { }
+
+        friend ostream & operator<<(ostream & os, const PairCoordId & p)
         {
-            active.del(posInActive[(*nextBottom).m_index]);
-            ++nextBottom;
+            os << "(" << p.m_coord << "," << p.m_index << ")";
+            return os;
         }
 
-        // the largest minDist value we have to consider
-        double minDist = maxDistanceVisit;
+        double m_coord;
+        int m_index;
+    };
 
-        // look for rectangles with minimal distance in active rectangles
-        // here the distance ist the distance in x-direction
-        ListIterator<int> itActive;
-        for(itActive = active.begin(); itActive.valid(); ++itActive)
+
+    //---------------------------------------------------------
+    // CoordComparer
+    // comparer class for sorting PairCoordId according to
+    // decreasing coordinate
+    //---------------------------------------------------------
+    class NearestRectangleFinder::CoordComparer
+    {
+    public:
+        bool less(const PairCoordId & x, const PairCoordId & y) const
         {
-            const RectRegion &rect = region[*itActive];
-            double left  = rect.m_x - rect.m_width/2.0;
-            double right = rect.m_x + rect.m_width/2.0;
+            return x.m_coord > y.m_coord;
+        }
+        bool leq(const PairCoordId & x, const PairCoordId & y) const
+        {
+            return x.m_coord >= y.m_coord;
+        }
+        bool equal(const PairCoordId & x, const PairCoordId & y) const
+        {
+            return x.m_coord == y.m_coord;
+        }
+    };
 
-            double xDist = 0.0;
-            if(p.m_x < left)
-                xDist = left - p.m_x;
-            else if (right < p.m_x)
-                xDist = p.m_x - right;
 
-            if(xDist < minDist)
+    //---------------------------------------------------------
+    // YCoordComparer
+    // comparer class for sorting points (given by index) by
+    // decreasing y-coordinate
+    //---------------------------------------------------------
+    class NearestRectangleFinder::YCoordComparer
+    {
+    public:
+        YCoordComparer(const Array<DPoint> & point)
+        {
+            m_point = &point;
+        }
+
+        bool less(int x, int y) const
+        {
+            return (*m_point)[x].m_y > (*m_point)[y].m_y;
+        }
+        bool leq(int x, int y) const
+        {
+            return (*m_point)[x].m_y >= (*m_point)[y].m_y;
+        }
+        bool equal(int x, int y) const
+        {
+            return (*m_point)[x].m_y == (*m_point)[y].m_y;
+        }
+
+    private:
+        const Array<DPoint>* m_point;
+    };
+
+
+
+    //---------------------------------------------------------
+    // NearestRectangleFinder
+    //---------------------------------------------------------
+
+    void NearestRectangleFinder::find(
+        const Array<RectRegion> & region,
+        const Array<DPoint> & point,
+        Array<List<PairRectDist>> & nearest)
+    {
+        const int n = region.size();  // number of rectangles
+        const int m = point.size();   // number of points
+
+        List<PairCoordId> listTop;    // list of max. y-coord. of rectangles
+        List<PairCoordId> listBottom; // list of min. y-coord. of rectangles
+
+        // build lists listTop and listBottom ...
+        int i;
+        for(i = 0; i < n; ++i)
+        {
+            const RectRegion & rect = region[i];
+            listTop   .pushBack(PairCoordId(rect.m_y + rect.m_height / 2.0, i));
+            listBottom.pushBack(PairCoordId(rect.m_y - rect.m_height / 2.0, i));
+        }
+
+        // ... and sort them by decreasing coordinates
+        CoordComparer comparer;
+        listTop   .quicksort(comparer);
+        listBottom.quicksort(comparer);
+
+        // build array of point indices ...
+        Array<int> sortedPoints(m);
+        for(i = 0; i < m; ++i)
+            sortedPoints[i] = i;
+
+        // ... and sort them by decreasing y-coordinate
+        YCoordComparer yCoordComparer(point);
+        sortedPoints.quicksort(yCoordComparer);
+
+
+        ListPure<int> active;   // list of rectangles such that y-coord. of current
+        // point is contained y-projection of rectangle
+
+        // We traverse the lists listTop and listBottom from start to end such that
+        // the coord. of the current entry in listTop is the first entry below p.y
+        // and the coord. of the current entry in listBottom is the first entry
+        // equal or below p.y
+        ListIterator<PairCoordId> nextTop    = listTop   .begin();
+        ListIterator<PairCoordId> nextBottom = listBottom.begin();
+
+
+        // position of a rectangle in active
+        Array<ListIterator<int>> posInActive(n);
+        // list of rectangles visited for current point
+        BoundedStack<int> visitedRectangles(n);
+        // distance of rectangle to current point (if contained in visitedRectangles)
+        Array<double> distance(n);
+
+        // the maximal distance we have to explore
+        // (if a rectangle lies at distance m_maxAllowedDistance, it can get
+        // ambigous if there are rectangles with distance <= maxDistanceVisit)
+        double maxDistanceVisit = m_maxAllowedDistance + m_toleranceDistance;
+
+        // we iterate over all points by decreasing y-coordinate
+        for(i = 0; i < m; ++i)
+        {
+            const int     nextPoint = sortedPoints[i];
+            const DPoint & p         = point[nextPoint];
+
+            // update active list
+            while(nextTop.valid() && (*nextTop).m_coord >= p.m_y)
             {
-                minDist = xDist;
+                int index = (*nextTop).m_index;
+                posInActive[index] = active.pushBack(index);
+                ++nextTop;
             }
 
-            visitedRectangles.push(*itActive);
-            distance[*itActive] = xDist;
-        }
-
-        // starting at p.y, we iterate simultaniously upward and downward.
-        // We go upward in listBottom since these rectangles lie completely
-        // above p, and downward in listTop since these rectangles lie
-        // completely below p
-        ListIterator<PairCoordId> itTop    = nextTop;
-        ListIterator<PairCoordId> itBottom =
-            (nextBottom.valid()) ? nextBottom.pred() : listBottom.rbegin();
-
-        while(itTop.valid() || itBottom.valid())
-        {
-            if(itTop.valid())
+            while(nextBottom.valid() && (*nextBottom).m_coord > p.m_y)
             {
-                if((*itTop).m_coord < p.m_y - minDist)
-                    itTop = ListIterator<PairCoordId>();
-                else
+                active.del(posInActive[(*nextBottom).m_index]);
+                ++nextBottom;
+            }
+
+            // the largest minDist value we have to consider
+            double minDist = maxDistanceVisit;
+
+            // look for rectangles with minimal distance in active rectangles
+            // here the distance ist the distance in x-direction
+            ListIterator<int> itActive;
+            for(itActive = active.begin(); itActive.valid(); ++itActive)
+            {
+                const RectRegion & rect = region[*itActive];
+                double left  = rect.m_x - rect.m_width / 2.0;
+                double right = rect.m_x + rect.m_width / 2.0;
+
+                double xDist = 0.0;
+                if(p.m_x < left)
+                    xDist = left - p.m_x;
+                else if(right < p.m_x)
+                    xDist = p.m_x - right;
+
+                if(xDist < minDist)
                 {
-                    // determine distance between *itTop and p
-                    const RectRegion &rect = region[(*itTop).m_index];
-                    double left  = rect.m_x - rect.m_width/2.0;
-                    double right = rect.m_x + rect.m_width/2.0;
+                    minDist = xDist;
+                }
 
-                    double xDist = 0.0;
-                    if(p.m_x < left)
-                        xDist = left - p.m_x;
-                    else if (right < p.m_x)
-                        xDist = p.m_x - right;
+                visitedRectangles.push(*itActive);
+                distance[*itActive] = xDist;
+            }
 
-                    double dist = xDist + (p.m_y - (*itTop).m_coord);
-                    OGDF_ASSERT(dist > 0);
+            // starting at p.y, we iterate simultaniously upward and downward.
+            // We go upward in listBottom since these rectangles lie completely
+            // above p, and downward in listTop since these rectangles lie
+            // completely below p
+            ListIterator<PairCoordId> itTop    = nextTop;
+            ListIterator<PairCoordId> itBottom =
+                (nextBottom.valid()) ? nextBottom.pred() : listBottom.rbegin();
 
-                    if(dist < minDist)
+            while(itTop.valid() || itBottom.valid())
+            {
+                if(itTop.valid())
+                {
+                    if((*itTop).m_coord < p.m_y - minDist)
+                        itTop = ListIterator<PairCoordId>();
+                    else
                     {
-                        minDist = dist;
+                        // determine distance between *itTop and p
+                        const RectRegion & rect = region[(*itTop).m_index];
+                        double left  = rect.m_x - rect.m_width / 2.0;
+                        double right = rect.m_x + rect.m_width / 2.0;
+
+                        double xDist = 0.0;
+                        if(p.m_x < left)
+                            xDist = left - p.m_x;
+                        else if(right < p.m_x)
+                            xDist = p.m_x - right;
+
+                        double dist = xDist + (p.m_y - (*itTop).m_coord);
+                        OGDF_ASSERT(dist > 0);
+
+                        if(dist < minDist)
+                        {
+                            minDist = dist;
+                        }
+
+                        // update visited rectangles
+                        visitedRectangles.push((*itTop).m_index);
+                        distance[(*itTop).m_index] = dist;
+
+                        ++itTop;
                     }
+                }
 
-                    // update visited rectangles
-                    visitedRectangles.push((*itTop).m_index);
-                    distance[(*itTop).m_index] = dist;
+                if(itBottom.valid())
+                {
+                    if((*itBottom).m_coord > p.m_y + minDist)
+                        itBottom = ListIterator<PairCoordId>();
+                    else
+                    {
+                        // determine distance between *itBottom and p
+                        const RectRegion & rect = region[(*itBottom).m_index];
+                        double left  = rect.m_x - rect.m_width / 2.0;
+                        double right = rect.m_x + rect.m_width / 2.0;
 
-                    ++itTop;
+                        double xDist = 0.0;
+                        if(p.m_x < left)
+                            xDist = left - p.m_x;
+                        else if(right < p.m_x)
+                            xDist = p.m_x - right;
+
+                        double dist = xDist + ((*itBottom).m_coord - p.m_y);
+                        OGDF_ASSERT(dist > 0);
+
+                        if(dist < minDist)
+                        {
+                            minDist = dist;
+                        }
+
+                        // update visited rectangles
+                        visitedRectangles.push((*itBottom).m_index);
+                        distance[(*itBottom).m_index] = dist;
+
+                        --itBottom;
+                    }
                 }
             }
 
-            if(itBottom.valid())
+            // if the minimum found distance is outside the allowed distance
+            // we return an empty list for p
+            if(minDist > m_maxAllowedDistance)
             {
-                if((*itBottom).m_coord > p.m_y + minDist)
-                    itBottom = ListIterator<PairCoordId>();
-                else
+                visitedRectangles.clear();
+
+            }
+            else
+            {
+                // otherwise we return all rectangles which are at most minimal
+                // distance plus tolerance away
+                double max = minDist + m_toleranceDistance;
+                while(!visitedRectangles.empty())
                 {
-                    // determine distance between *itBottom and p
-                    const RectRegion &rect = region[(*itBottom).m_index];
-                    double left  = rect.m_x - rect.m_width/2.0;
-                    double right = rect.m_x + rect.m_width/2.0;
-
-                    double xDist = 0.0;
-                    if(p.m_x < left)
-                        xDist = left - p.m_x;
-                    else if (right < p.m_x)
-                        xDist = p.m_x - right;
-
-                    double dist = xDist + ((*itBottom).m_coord - p.m_y);
-                    OGDF_ASSERT(dist > 0);
-
-                    if(dist < minDist)
-                    {
-                        minDist = dist;
-                    }
-
-                    // update visited rectangles
-                    visitedRectangles.push((*itBottom).m_index);
-                    distance[(*itBottom).m_index] = dist;
-
-                    --itBottom;
+                    int index = visitedRectangles.pop();
+                    if(distance[index] <= max)
+                        nearest[nextPoint].pushBack(PairRectDist(index, distance[index]));
                 }
             }
         }
-
-        // if the minimum found distance is outside the allowed distance
-        // we return an empty list for p
-        if(minDist > m_maxAllowedDistance)
-        {
-            visitedRectangles.clear();
-
-        }
-        else
-        {
-            // otherwise we return all rectangles which are at most minimal
-            // distance plus tolerance away
-            double max = minDist + m_toleranceDistance;
-            while(!visitedRectangles.empty())
-            {
-                int index = visitedRectangles.pop();
-                if(distance[index] <= max)
-                    nearest[nextPoint].pushBack(PairRectDist(index,distance[index]));
-            }
-        }
     }
-}
 
 
-// simple version of find() which is used for correction checking
-// this version only computes the nearest rectangle without considering
-// maxAllowedDistance and toleranceDistance.
-void NearestRectangleFinder::findSimple(
-    const Array<RectRegion> &region,
-    const Array<DPoint> &point,
-    Array<List<PairRectDist> > &nearest)
-{
-    const int n = region.size();
-    const int m = point.size();
-
-    for(int i = 0; i < m; ++i)
+    // simple version of find() which is used for correction checking
+    // this version only computes the nearest rectangle without considering
+    // maxAllowedDistance and toleranceDistance.
+    void NearestRectangleFinder::findSimple(
+        const Array<RectRegion> & region,
+        const Array<DPoint> & point,
+        Array<List<PairRectDist>> & nearest)
     {
-        const DPoint &p = point[i];
-        double minDist = numeric_limits<double>::max();
-        int minDistIndex = -1;
+        const int n = region.size();
+        const int m = point.size();
 
-        for(int j = 0; j < n; ++j)
+        for(int i = 0; i < m; ++i)
         {
-            const RectRegion &rect = region[j];
+            const DPoint & p = point[i];
+            double minDist = numeric_limits<double>::max();
+            int minDistIndex = -1;
 
-            double left  = rect.m_x - rect.m_width/2.0;
-            double right = rect.m_x + rect.m_width/2.0;
-
-            double xDist = 0.0;
-            if(p.m_x < left)
-                xDist = left - p.m_x;
-            else if (right < p.m_x)
-                xDist = p.m_x - right;
-            OGDF_ASSERT(xDist >= 0);
-
-            double bottom  = rect.m_y - rect.m_height/2.0;
-            double top = rect.m_y + rect.m_height/2.0;
-
-            double yDist = 0.0;
-            if(p.m_y < bottom)
-                yDist = bottom - p.m_y;
-            else if (top < p.m_y)
-                yDist = p.m_y - top;
-            OGDF_ASSERT(yDist >= 0);
-
-            double dist = xDist + yDist;
-
-            if(dist < minDist)
+            for(int j = 0; j < n; ++j)
             {
-                minDist = dist;
-                minDistIndex = j;
-            }
-        }
+                const RectRegion & rect = region[j];
 
-        //const RectRegion &rect = region[minDistIndex];
-        if(minDist <= m_maxAllowedDistance)
-            nearest[i].pushBack(PairRectDist(minDistIndex,minDist));
+                double left  = rect.m_x - rect.m_width / 2.0;
+                double right = rect.m_x + rect.m_width / 2.0;
+
+                double xDist = 0.0;
+                if(p.m_x < left)
+                    xDist = left - p.m_x;
+                else if(right < p.m_x)
+                    xDist = p.m_x - right;
+                OGDF_ASSERT(xDist >= 0);
+
+                double bottom  = rect.m_y - rect.m_height / 2.0;
+                double top = rect.m_y + rect.m_height / 2.0;
+
+                double yDist = 0.0;
+                if(p.m_y < bottom)
+                    yDist = bottom - p.m_y;
+                else if(top < p.m_y)
+                    yDist = p.m_y - top;
+                OGDF_ASSERT(yDist >= 0);
+
+                double dist = xDist + yDist;
+
+                if(dist < minDist)
+                {
+                    minDist = dist;
+                    minDistIndex = j;
+                }
+            }
+
+            //const RectRegion &rect = region[minDistIndex];
+            if(minDist <= m_maxAllowedDistance)
+                nearest[i].pushBack(PairRectDist(minDistIndex, minDist));
+        }
     }
-}
 
 
 

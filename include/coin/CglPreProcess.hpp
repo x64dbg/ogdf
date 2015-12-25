@@ -49,8 +49,8 @@ public:
         This version uses default strategy.  For more control copy and edit
         code from this function i.e. call preProcessNonDefault
     */
-    OsiSolverInterface * preProcess(OsiSolverInterface & model,
-                                    bool makeEquality=false, int numberPasses=5);
+    OsiSolverInterface* preProcess(OsiSolverInterface & model,
+                                   bool makeEquality = false, int numberPasses = 5);
     /** preProcess problem - returning new problem.
         If makeEquality true then <= cliques converted to ==.
         Presolve will be done numberPasses times.
@@ -62,11 +62,11 @@ public:
         If makeEquality is 1 add slacks to get cliques,
         if 2 add slacks to get sos (but only if looks plausible) and keep sos info
     */
-    OsiSolverInterface * preProcessNonDefault(OsiSolverInterface & model,
-            int makeEquality=0, int numberPasses=5,
-            int tuning=0);
+    OsiSolverInterface* preProcessNonDefault(OsiSolverInterface & model,
+            int makeEquality = 0, int numberPasses = 5,
+            int tuning = 0);
     /// Creates solution in original model
-    void postProcess(OsiSolverInterface &model);
+    void postProcess(OsiSolverInterface & model);
     /** Tightens primal bounds to make dual and branch and cutfaster.  Unless
         fixed or integral, bounds are slightly looser than they could be.
         Returns non-zero if problem infeasible
@@ -74,23 +74,23 @@ public:
         largest value (at continuous) - should improve stability
         in branch and bound on infeasible branches (0.0 is off)
     */
-    int tightenPrimalBounds(OsiSolverInterface & model,double factor=0.0);
+    int tightenPrimalBounds(OsiSolverInterface & model, double factor = 0.0);
     /** Fix some of problem - returning new problem.
         Uses reduced costs.
         Optional signed character array
         1 always keep, -1 always discard, 0 use djs
 
     */
-    OsiSolverInterface * someFixed(OsiSolverInterface & model,
-                                   double fractionToKeep=0.25,
-                                   bool fixContinuousAsWell=false,
-                                   char * keep=NULL) const;
+    OsiSolverInterface* someFixed(OsiSolverInterface & model,
+                                  double fractionToKeep = 0.25,
+                                  bool fixContinuousAsWell = false,
+                                  char* keep = NULL) const;
     /** Replace cliques by more maximal cliques
         Returns NULL if rows not reduced by greater than cliquesNeeded*rows
 
     */
-    OsiSolverInterface * cliqueIt(OsiSolverInterface & model,
-                                  double cliquesNeeded=0.0) const;
+    OsiSolverInterface* cliqueIt(OsiSolverInterface & model,
+                                 double cliquesNeeded = 0.0) const;
     /// If we have a cutoff - fix variables
     int reducedCostFix(OsiSolverInterface & model);
     //@}
@@ -116,68 +116,68 @@ public:
     /// Get the cutoff bound on the objective function - always as minimize
     double getCutoff() const;
     /// The original solver associated with this model.
-    inline OsiSolverInterface * originalModel() const
+    inline OsiSolverInterface* originalModel() const
     {
         return originalModel_;
     }
     /// Solver after making clique equalities (may == original)
-    inline OsiSolverInterface * startModel() const
+    inline OsiSolverInterface* startModel() const
     {
         return startModel_;
     }
     /// Copies of solver at various stages after presolve
-    inline OsiSolverInterface * modelAtPass(int iPass) const
+    inline OsiSolverInterface* modelAtPass(int iPass) const
     {
-        if (iPass>=0&&iPass<numberSolvers_) return model_[iPass];
+        if(iPass >= 0 && iPass < numberSolvers_) return model_[iPass];
         else return NULL;
     }
     /// Copies of solver at various stages after presolve after modifications
-    inline OsiSolverInterface * modifiedModel(int iPass) const
+    inline OsiSolverInterface* modifiedModel(int iPass) const
     {
-        if (iPass>=0&&iPass<numberSolvers_) return modifiedModel_[iPass];
+        if(iPass >= 0 && iPass < numberSolvers_) return modifiedModel_[iPass];
         else return NULL;
     }
     /// Matching presolve information
-    inline OsiPresolve * presolve(int iPass) const
+    inline OsiPresolve* presolve(int iPass) const
     {
-        if (iPass>=0&&iPass<numberSolvers_) return presolve_[iPass];
+        if(iPass >= 0 && iPass < numberSolvers_) return presolve_[iPass];
         else return NULL;
     }
     /** Return a pointer to the original columns (with possible  clique slacks)
         MUST be called before postProcess otherwise you just get 0,1,2.. */
-    const int * originalColumns() const;
+    const int* originalColumns() const;
     /** Return a pointer to the original rows
         MUST be called before postProcess otherwise you just get 0,1,2.. */
-    const int * originalRows() const;
+    const int* originalRows() const;
     /// Number of SOS if found
     inline int numberSOS() const
     {
         return numberSOS_;
     }
     /// Type of each SOS
-    inline const int * typeSOS() const
+    inline const int* typeSOS() const
     {
         return typeSOS_;
     }
     /// Start of each SOS
-    inline const int * startSOS() const
+    inline const int* startSOS() const
     {
         return startSOS_;
     }
     /// Columns in SOS
-    inline const int * whichSOS() const
+    inline const int* whichSOS() const
     {
         return whichSOS_;
     }
     /// Weights for each SOS column
-    inline const double * weightSOS() const
+    inline const double* weightSOS() const
     {
         return weightSOS_;
     }
     /// Pass in prohibited columns
-    void passInProhibited(const char * prohibited,int numberColumns);
+    void passInProhibited(const char* prohibited, int numberColumns);
     /// Updated prohibited columns
-    inline const char * prohibited()
+    inline const char* prohibited()
     {
         return prohibited_;
     }
@@ -197,14 +197,14 @@ public:
         At end of preprocess cut rows will be dropped
         and put into cuts
     */
-    void passInRowTypes(const char * rowTypes,int numberRows);
+    void passInRowTypes(const char* rowTypes, int numberRows);
     /** Updated row types - may be NULL
         Carried around and corresponds to existing rows
         -1 added by preprocess e.g. x+y=1
         0 normal
         1 cut rows - can be dropped if wanted
     */
-    inline const char * rowTypes()
+    inline const char* rowTypes()
     {
         return rowType_;
     }
@@ -214,16 +214,16 @@ public:
         return cuts_;
     }
     /// Return pointer to cuts from dropped rows
-    inline const CglStored * cutsPointer() const
+    inline const CglStored* cutsPointer() const
     {
         return &cuts_;
     }
     /// Update prohibited and rowType
-    void update(const OsiPresolve * pinfo,const OsiSolverInterface * solver);
+    void update(const OsiPresolve* pinfo, const OsiSolverInterface* solver);
     /// Set options
     inline void setOptions(int value)
     {
-        options_=value;
+        options_ = value;
     }
     //@}
 
@@ -235,19 +235,19 @@ public:
         return numberCutGenerators_;
     }
     /// Get the list of cut generators
-    inline CglCutGenerator ** cutGenerators() const
+    inline CglCutGenerator** cutGenerators() const
     {
         return generator_;
     }
     ///Get the specified cut generator
-    inline CglCutGenerator * cutGenerator(int i) const
+    inline CglCutGenerator* cutGenerator(int i) const
     {
         return generator_[i];
     }
     /** Add one generator - up to user to delete generators.
     */
-    void addCutGenerator(CglCutGenerator * generator);
-//@}
+    void addCutGenerator(CglCutGenerator* generator);
+    //@}
 
     /**@name Setting/Accessing application data */
     //@{
@@ -258,10 +258,10 @@ public:
     This field is available for the application to optionally
     define and use.
     */
-    void setApplicationData (void * appData);
+    void setApplicationData(void* appData);
 
     /// Get application data
-    void * getApplicationData() const;
+    void* getApplicationData() const;
     //@}
 
     //---------------------------------------------------------------------------
@@ -269,7 +269,7 @@ public:
     /**@name Message handling */
     //@{
     /// Pass in Message handler (not deleted at end)
-    void passInMessageHandler(CoinMessageHandler * handler);
+    void passInMessageHandler(CoinMessageHandler* handler);
     /// Set language
     void newLanguage(CoinMessages::Language language);
     inline void setLanguage(CoinMessages::Language language)
@@ -277,7 +277,7 @@ public:
         newLanguage(language);
     }
     /// Return handler
-    inline CoinMessageHandler * messageHandler() const
+    inline CoinMessageHandler* messageHandler() const
     {
         return handler_;
     }
@@ -287,7 +287,7 @@ public:
         return messages_;
     }
     /// Return pointer to messages
-    inline CoinMessages * messagesPointer()
+    inline CoinMessages* messagesPointer()
     {
         return &messages_;
     }
@@ -304,10 +304,10 @@ public:
     CglPreProcess(const CglPreProcess & rhs);
 
     /// Assignment operator
-    CglPreProcess & operator=(const CglPreProcess& rhs);
+    CglPreProcess & operator=(const CglPreProcess & rhs);
 
     /// Destructor
-    ~CglPreProcess ();
+    ~CglPreProcess();
 
     /// Clears out as much as possible
     void gutsOfDestructor();
@@ -320,38 +320,38 @@ private:
         If constraints true then adds any x+y=1 or x-y=0 constraints
         If NULL infeasible
     */
-    OsiSolverInterface * modified(OsiSolverInterface * model,
-                                  bool constraints,
-                                  int & numberChanges,
-                                  int iBigPass,
-                                  int numberPasses);
+    OsiSolverInterface* modified(OsiSolverInterface* model,
+                                 bool constraints,
+                                 int & numberChanges,
+                                 int iBigPass,
+                                 int numberPasses);
     /// create original columns and rows
     void createOriginalIndices() const;
     /// Make continuous variables integer
     void makeInteger();
     //@}
 
-//---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
 
 private:
     ///@name Private member data
     //@{
 
     /// The original solver associated with this model.
-    OsiSolverInterface * originalModel_;
+    OsiSolverInterface* originalModel_;
     /// Solver after making clique equalities (may == original)
-    OsiSolverInterface * startModel_;
+    OsiSolverInterface* startModel_;
     /// Number of solvers at various stages
     int numberSolvers_;
     /// Copies of solver at various stages after presolve
-    OsiSolverInterface ** model_;
+    OsiSolverInterface** model_;
     /// Copies of solver at various stages after presolve after modifications
-    OsiSolverInterface ** modifiedModel_;
+    OsiSolverInterface** modifiedModel_;
     /// Matching presolve information
-    OsiPresolve ** presolve_;
+    OsiPresolve** presolve_;
 
     /// Message handler
-    CoinMessageHandler * handler_;
+    CoinMessageHandler* handler_;
 
     /** Flag to say if handler_ is the default handler.
 
@@ -364,25 +364,25 @@ private:
     CoinMessages messages_;
 
     /// Pointer to user-defined data structure
-    void * appData_;
+    void* appData_;
     /// Original column numbers
-    mutable int * originalColumn_;
+    mutable int* originalColumn_;
     /// Original row numbers
-    mutable int * originalRow_;
+    mutable int* originalRow_;
     /// Number of cut generators
     int numberCutGenerators_;
     /// Cut generators
-    CglCutGenerator ** generator_;
+    CglCutGenerator** generator_;
     /// Number of SOS if found
     int numberSOS_;
     /// Type of each SOS
-    int * typeSOS_;
+    int* typeSOS_;
     /// Start of each SOS
-    int * startSOS_;
+    int* startSOS_;
     /// Columns in SOS
-    int * whichSOS_;
+    int* whichSOS_;
     /// Weights for each SOS column
-    double * weightSOS_;
+    double* weightSOS_;
     /// Number of columns in original prohibition set
     int numberProhibited_;
     /// Number of iterations done in PreProcessing
@@ -390,7 +390,7 @@ private:
     /// Number of iterations done in PostProcessing
     int numberIterationsPost_;
     /// Columns which should not be presolved e.g. SOS
-    char * prohibited_;
+    char* prohibited_;
     /// Number of rows in original row types
     int numberRowType_;
     /** Options
@@ -406,10 +406,10 @@ private:
         0 normal
         1 cut rows - can be dropped if wanted
     */
-    char * rowType_;
+    char* rowType_;
     /// Cuts from dropped rows
     CglStored cuts_;
-//@}
+    //@}
 };
 /// For Bron-Kerbosch
 class CglBK
@@ -422,7 +422,7 @@ public:
     /// For recursive Bron-Kerbosch
     void bronKerbosch();
     /// Creates strengthened smaller model
-    OsiSolverInterface * newSolver(const OsiSolverInterface & model);
+    OsiSolverInterface* newSolver(const OsiSolverInterface & model);
     //@}
 
     //---------------------------------------------------------------------------
@@ -447,41 +447,41 @@ public:
     CglBK();
 
     /// Useful constructor
-    CglBK(const OsiSolverInterface & model, const char * rowType,
+    CglBK(const OsiSolverInterface & model, const char* rowType,
           int numberElements);
 
     /// Copy constructor .
     CglBK(const CglBK & rhs);
 
     /// Assignment operator
-    CglBK & operator=(const CglBK& rhs);
+    CglBK & operator=(const CglBK & rhs);
 
     /// Destructor
-    ~CglBK ();
+    ~CglBK();
 
     //@}
 
-//---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
 
 private:
     ///@name Private member data
     //@{
     /// Current candidates (created at each level)
-    int * candidates_;
+    int* candidates_;
     /// Array to mark stuff
-    char * mark_;
+    char* mark_;
     /// Starts for graph (numberPossible+1)
-    int * start_;
+    int* start_;
     /// Other column/node
-    int * otherColumn_;
+    int* otherColumn_;
     /// Original row (in parallel with otherColumn_)
-    int * originalRow_;
+    int* originalRow_;
     /// How many times each original row dominated
-    int * dominated_;
+    int* dominated_;
     /// Clique entries
-    CoinPackedMatrix * cliqueMatrix_;
+    CoinPackedMatrix* cliqueMatrix_;
     /// points to row types
-    const char * rowType_;
+    const char* rowType_;
     /// Number of original columns
     int numberColumns_;
     /// Number of original rows
@@ -497,7 +497,7 @@ private:
     /// For acceleration
     int left_;
     int lastColumn_;
-//@}
+    //@}
 };
 
 #endif

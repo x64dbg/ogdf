@@ -52,16 +52,16 @@
 namespace ogdf
 {
 
-//! The postprocessing method for edge insertion algorithms.
-enum RemoveReinsertType
-{
-    rrNone,        //!< No postprocessing.
-    rrInserted,    //!< Postprocessing only with the edges that have to be inserted.
-    rrMostCrossed, //!< Postprocessing with the edges involved in the most crossings.
-    rrAll,         //!< Postproceesing with all edges.
-    rrIncremental, //!< Full postprocessing after each edge insertion.
-    rrIncInserted  //!< Postprocessing for (so far) inserted edges after each edge insertion.
-};
+    //! The postprocessing method for edge insertion algorithms.
+    enum RemoveReinsertType
+    {
+        rrNone,        //!< No postprocessing.
+        rrInserted,    //!< Postprocessing only with the edges that have to be inserted.
+        rrMostCrossed, //!< Postprocessing with the edges involved in the most crossings.
+        rrAll,         //!< Postproceesing with all edges.
+        rrIncremental, //!< Full postprocessing after each edge insertion.
+        rrIncInserted  //!< Postprocessing for (so far) inserted edges after each edge insertion.
+    };
 
 }
 

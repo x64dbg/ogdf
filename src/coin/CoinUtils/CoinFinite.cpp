@@ -33,7 +33,7 @@
 bool CoinFinite(double val)
 {
 #ifdef COIN_C_FINITE
-    return COIN_C_FINITE(val)!=0;
+    return COIN_C_FINITE(val) != 0;
 #else
     return val != DBL_MAX && val != -DBL_MAX;
 #endif
@@ -42,7 +42,7 @@ bool CoinFinite(double val)
 bool CoinIsnan(double val)
 {
 #ifdef COIN_C_ISNAN
-    return COIN_C_ISNAN(val)!=0;
+    return COIN_C_ISNAN(val) != 0;
 #else
     return false;
 #endif

@@ -36,32 +36,32 @@ typedef struct _EKKfactinfo
     double zpivlu;
     double zeroTolerance;
     double areaFactor;
-    int *xrsadr;
-    int *xcsadr;
-    int *xrnadr;
-    int *xcnadr;
-    int *krpadr;
-    int *kcpadr;
-    int *mpermu;
-    int *bitArray;
-    int * back;
-    char * nonzero;
-    double * trueStart;
-    mutable double *kadrpm;
-    int *R_etas_index;
-    int *R_etas_start;
-    double *R_etas_element;
+    int* xrsadr;
+    int* xcsadr;
+    int* xrnadr;
+    int* xcnadr;
+    int* krpadr;
+    int* kcpadr;
+    int* mpermu;
+    int* bitArray;
+    int* back;
+    char* nonzero;
+    double* trueStart;
+    mutable double* kadrpm;
+    int* R_etas_index;
+    int* R_etas_start;
+    double* R_etas_element;
 
-    int *xecadr;
-    int *xeradr;
-    double *xeeadr;
-    double *xe2adr;
-    EKKHlink * kp1adr;
-    EKKHlink * kp2adr;
-    double * kw1adr;
-    double * kw2adr;
-    double * kw3adr;
-    int * hpivcoR;
+    int* xecadr;
+    int* xeradr;
+    double* xeeadr;
+    double* xe2adr;
+    EKKHlink* kp1adr;
+    EKKHlink* kp2adr;
+    double* kw1adr;
+    double* kw2adr;
+    double* kw3adr;
+    int* hpivcoR;
     int nrow;
     int nrowmx;
     int firstDoRow;
@@ -109,45 +109,45 @@ typedef struct _EKKfactinfo
 
 class CoinOslFactorization : public CoinOtherFactorization
 {
-    friend void CoinOslFactorizationUnitTest( const std::string & mpsDir );
+    friend void CoinOslFactorizationUnitTest(const std::string & mpsDir);
 
 public:
 
     /**@name Constructors and destructor and copy */
     //@{
     /// Default constructor
-    CoinOslFactorization (  );
+    CoinOslFactorization();
     /// Copy constructor
-    CoinOslFactorization ( const CoinOslFactorization &other);
+    CoinOslFactorization(const CoinOslFactorization & other);
 
     /// Destructor
-    virtual ~CoinOslFactorization (  );
+    virtual ~CoinOslFactorization();
     /// = copy
-    CoinOslFactorization & operator = ( const CoinOslFactorization & other );
+    CoinOslFactorization & operator = (const CoinOslFactorization & other);
     /// Clone
-    virtual CoinOtherFactorization * clone() const ;
+    virtual CoinOtherFactorization* clone() const ;
     //@}
 
     /**@name Do factorization - public */
     //@{
     /// Gets space for a factorization
-    virtual void getAreas ( int numberRows,
-                            int numberColumns,
-                            CoinBigIndex maximumL,
-                            CoinBigIndex maximumU );
+    virtual void getAreas(int numberRows,
+                          int numberColumns,
+                          CoinBigIndex maximumL,
+                          CoinBigIndex maximumU);
 
     /// PreProcesses column ordered copy of basis
-    virtual void preProcess ( );
+    virtual void preProcess();
     /** Does most of factorization returning status
         0 - OK
         -99 - needs more memory
         -1 - singular - use numberGoodColumns and redo
     */
-    virtual int factor ( );
+    virtual int factor();
     /// Does post processing on valid factorization - putting variables on correct rows
-    virtual void postProcess(const int * sequence, int * pivotVariable);
+    virtual void postProcess(const int* sequence, int* pivotVariable);
     /// Makes a non-singular basis by replacing variables
-    virtual void makeNonSingular(int * sequence, int numberColumns);
+    virtual void makeNonSingular(int* sequence, int numberColumns);
     /** When part of LP - given by basic variables.
     Actually does factorization.
     Arrays passed in have non negative value to say basic.
@@ -155,43 +155,43 @@ public:
     If status is singular, then basic variables have pivot row
     and ones thrown out have -1
     returns 0 -okay, -1 singular, -2 too many in basis, -99 memory */
-    int factorize ( const CoinPackedMatrix & matrix,
-                    int rowIsBasic[], int columnIsBasic[] ,
-                    double areaFactor = 0.0 );
+    int factorize(const CoinPackedMatrix & matrix,
+                  int rowIsBasic[], int columnIsBasic[] ,
+                  double areaFactor = 0.0);
     //@}
 
     /**@name general stuff such as number of elements */
     //@{
     /// Total number of elements in factorization
-    virtual inline int numberElements (  ) const
+    virtual inline int numberElements() const
     {
-        return numberRows_*(numberColumns_+numberPivots_);
+        return numberRows_ * (numberColumns_ + numberPivots_);
     }
     /// Returns array to put basis elements in
-    virtual CoinFactorizationDouble * elements() const;
+    virtual CoinFactorizationDouble* elements() const;
     /// Returns pivot row
-    virtual int * pivotRow() const;
+    virtual int* pivotRow() const;
     /// Returns work area
-    virtual CoinFactorizationDouble * workArea() const;
+    virtual CoinFactorizationDouble* workArea() const;
     /// Returns int work area
-    virtual int * intWorkArea() const;
+    virtual int* intWorkArea() const;
     /// Number of entries in each row
-    virtual int * numberInRow() const;
+    virtual int* numberInRow() const;
     /// Number of entries in each column
-    virtual int * numberInColumn() const;
+    virtual int* numberInColumn() const;
     /// Returns array to put basis starts in
-    virtual CoinBigIndex * starts() const;
+    virtual CoinBigIndex* starts() const;
     /// Returns permute back
-    virtual int * permuteBack() const;
+    virtual int* permuteBack() const;
     /// Returns true if wants tableauColumn in replaceColumn
     virtual bool wantsTableauColumn() const;
     /** Useful information for factorization
         0 - iteration number
         whereFrom is 0 for factorize and 1 for replaceColumn
     */
-    virtual void setUsefulInformation(const int * info,int whereFrom);
+    virtual void setUsefulInformation(const int* info, int whereFrom);
     /// Set maximum pivots
-    virtual void maximumPivots (  int value );
+    virtual void maximumPivots(int value);
 
     /// Returns maximum absolute value in factorization
     double maximumCoefficient() const;
@@ -211,11 +211,11 @@ public:
         speed considerations.  You could just do this on first iteration
         after factorization and thereafter re-factorize
      partial update already in U */
-    virtual int replaceColumn ( CoinIndexedVector * regionSparse,
-                                int pivotRow,
-                                double pivotCheck ,
-                                bool checkBeforeModifying=false,
-                                double acceptablePivot=1.0e-8);
+    virtual int replaceColumn(CoinIndexedVector* regionSparse,
+                              int pivotRow,
+                              double pivotCheck ,
+                              bool checkBeforeModifying = false,
+                              double acceptablePivot = 1.0e-8);
     //@}
 
     /**@name various uses of factorization (return code number elements)
@@ -227,25 +227,25 @@ public:
         regionSparse starts as zero and is zero at end.
         Note - if regionSparse2 packed on input - will be packed on output
     */
-    virtual int updateColumnFT ( CoinIndexedVector * regionSparse,
-                                 CoinIndexedVector * regionSparse2,
-                                 bool noPermute=false);
+    virtual int updateColumnFT(CoinIndexedVector* regionSparse,
+                               CoinIndexedVector* regionSparse2,
+                               bool noPermute = false);
     /** This version has same effect as above with FTUpdate==false
         so number returned is always >=0 */
-    virtual int updateColumn ( CoinIndexedVector * regionSparse,
-                               CoinIndexedVector * regionSparse2,
-                               bool noPermute=false) const;
+    virtual int updateColumn(CoinIndexedVector* regionSparse,
+                             CoinIndexedVector* regionSparse2,
+                             bool noPermute = false) const;
     /// does FTRAN on two columns
-    virtual int updateTwoColumnsFT(CoinIndexedVector * regionSparse1,
-                                   CoinIndexedVector * regionSparse2,
-                                   CoinIndexedVector * regionSparse3,
-                                   bool noPermute=false);
+    virtual int updateTwoColumnsFT(CoinIndexedVector* regionSparse1,
+                                   CoinIndexedVector* regionSparse2,
+                                   CoinIndexedVector* regionSparse3,
+                                   bool noPermute = false);
     /** Updates one column (BTRAN) from regionSparse2
         regionSparse starts as zero and is zero at end
         Note - if regionSparse2 packed on input - will be packed on output
     */
-    virtual int updateColumnTranspose ( CoinIndexedVector * regionSparse,
-                                        CoinIndexedVector * regionSparse2) const;
+    virtual int updateColumnTranspose(CoinIndexedVector* regionSparse,
+                                      CoinIndexedVector* regionSparse2) const;
     //@}
     /// *** Below this user may not want to know about
 
@@ -256,27 +256,27 @@ public:
     //inline void clearArrays()
     //{ gutsOfDestructor();}
     /// Returns array to put basis indices in
-    virtual int * indices() const;
+    virtual int* indices() const;
     /// Returns permute in
-    virtual inline int * permute() const
+    virtual inline int* permute() const
     {
         return NULL;/*pivotRow_*/;
     }
     //@}
 
     /// The real work of desstructor
-    void gutsOfDestructor(bool clearFact=true);
+    void gutsOfDestructor(bool clearFact = true);
     /// The real work of constructor
-    void gutsOfInitialize(bool zapFact=true);
+    void gutsOfInitialize(bool zapFact = true);
     /// The real work of copy
-    void gutsOfCopy(const CoinOslFactorization &other);
+    void gutsOfCopy(const CoinOslFactorization & other);
 
     //@}
 protected:
     /** Returns accuracy status of replaceColumn
         returns 0=OK, 1=Probably OK, 2=singular */
     int checkPivot(double saveFromU, double oldPivot) const;
-////////////////// data //////////////////
+    ////////////////// data //////////////////
 protected:
 
     /**@name data */

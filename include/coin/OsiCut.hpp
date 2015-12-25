@@ -42,7 +42,7 @@ public:
     /**@name Effectiveness */
     //@{
     /// Set effectiveness
-    inline void setEffectiveness( double e );
+    inline void setEffectiveness(double e);
     /// Get effectiveness
     inline double effectiveness() const;
     //@}
@@ -50,27 +50,27 @@ public:
     /**@name GloballyValid */
     //@{
     /// Set globallyValid (nonzero true)
-    inline void setGloballyValid( bool trueFalse )
+    inline void setGloballyValid(bool trueFalse)
     {
-        globallyValid_=trueFalse ? 1 : 0;
+        globallyValid_ = trueFalse ? 1 : 0;
     }
-    inline void setGloballyValid( )
+    inline void setGloballyValid()
     {
-        globallyValid_=1;
+        globallyValid_ = 1;
     }
-    inline void setNotGloballyValid( )
+    inline void setNotGloballyValid()
     {
-        globallyValid_=0;
+        globallyValid_ = 0;
     }
     /// Get globallyValid
     inline bool globallyValid() const
     {
-        return globallyValid_!=0;
+        return globallyValid_ != 0;
     }
     /// Set globallyValid as integer (nonzero true)
-    inline void setGloballyValidAsInteger( int trueFalse )
+    inline void setGloballyValidAsInteger(int trueFalse)
     {
-        globallyValid_=trueFalse;
+        globallyValid_ = trueFalse;
     }
     /// Get globallyValid
     inline int globallyValidAsInteger() const
@@ -86,43 +86,43 @@ public:
     //@}
 
 #if 0
-    / **@name Times used */
-    / /@
+    /** @name Times used* /
+    / / @
     {
-        / // Set times used
-        inline void setTimesUsed( int t );
-        / // Increment times used
-        inline void incrementTimesUsed();
-        / // Get times used
-        inline int timesUsed() const;
-        / /@
+    / // Set times used
+    inline void setTimesUsed(int t);
+    / // Increment times used
+    inline void incrementTimesUsed();
+    / // Get times used
+    inline int timesUsed() const;
+    / / @
     }
 
-    / **@name Times tested */
-    / /@
+    /** @name Times tested* /
+    / / @
     {
-        / // Set times tested
-        inline void setTimesTested( int t );
-        / // Increment times tested
-        inline void incrementTimesTested();
-        / // Get times tested
-        inline int timesTested() const;
-        / /@
+    / // Set times tested
+    inline void setTimesTested(int t);
+    / // Increment times tested
+    inline void incrementTimesTested();
+    / // Get times tested
+    inline int timesTested() const;
+    / / @
     }
-#endif
+    #endif
 
     //----------------------------------------------------------------
 
     /**@name Comparison operators  */
     //@{
     ///equal. 2 cuts are equal if there effectiveness are equal
-    inline virtual bool operator==(const OsiCut& rhs) const;
+    inline virtual bool operator==(const OsiCut & rhs) const;
     /// not equal
-    inline virtual bool operator!=(const OsiCut& rhs) const;
+    inline virtual bool operator!=(const OsiCut & rhs) const;
     /// less than. True if this.effectiveness < rhs.effectiveness
-    inline virtual bool operator< (const OsiCut& rhs) const;
+    inline virtual bool operator< (const OsiCut & rhs) const;
     /// less than. True if this.effectiveness > rhs.effectiveness
-    inline virtual bool operator> (const OsiCut& rhs) const;
+    inline virtual bool operator> (const OsiCut & rhs) const;
     //@}
 
     //----------------------------------------------------------------
@@ -146,14 +146,14 @@ public:
         data in the model. For example, it might check to ensure
         that a column index is not negative.
     */
-    inline virtual bool consistent() const=0;
+    inline virtual bool consistent() const = 0;
 
     /** Returns true if cut is consistent when considering the solver
         interface's model.  For example, it might check to ensure
         that a column index is not greater than the number of columns
         in the model. Assumes consistent() is true.
     */
-    inline virtual bool consistent(const OsiSolverInterface& si) const=0;
+    inline virtual bool consistent(const OsiSolverInterface & si) const = 0;
 
     /** Returns true if the cut is infeasible "with respect to itself" and
         cannot be satisfied. This method does NOT check whether adding the
@@ -176,13 +176,13 @@ public:
         inform the solver interface that its detected infeasibility of the
         problem.
     */
-    inline virtual bool infeasible(const OsiSolverInterface &si) const=0;
+    inline virtual bool infeasible(const OsiSolverInterface & si) const = 0;
 
     /** Returns infeasibility of the cut with respect to solution
         passed in i.e. is positive if cuts off that solution.
         solution is getNumCols() long..
     */
-    virtual double violated(const double * solution) const=0;
+    virtual double violated(const double* solution) const = 0;
     //@}
 
 protected:
@@ -190,16 +190,16 @@ protected:
     /**@name Constructors and destructors */
     //@{
     /// Default Constructor
-    OsiCut ();
+    OsiCut();
 
     /// Copy constructor
-    OsiCut ( const OsiCut &);
+    OsiCut(const OsiCut &);
 
     /// Assignment operator
-    OsiCut & operator=( const OsiCut& rhs);
+    OsiCut & operator=(const OsiCut & rhs);
 
     /// Destructor
-    virtual ~OsiCut ();
+    virtual ~OsiCut();
     //@}
 
 private:
@@ -225,7 +225,7 @@ private:
 //-------------------------------------------------------------------
 void OsiCut::setEffectiveness(double e)
 {
-    effectiveness_=e;
+    effectiveness_ = e;
 }
 double OsiCut::effectiveness() const
 {
@@ -233,9 +233,9 @@ double OsiCut::effectiveness() const
 }
 
 #if 0
-void OsiCut::setTimesUsed( int t )
+void OsiCut::setTimesUsed(int t)
 {
-    timesUsed_=t;
+    timesUsed_ = t;
 }
 void OsiCut::incrementTimesUsed()
 {
@@ -246,9 +246,9 @@ int OsiCut::timesUsed() const
     return timesUsed_;
 }
 
-void OsiCut::setTimesTested( int t )
+void OsiCut::setTimesTested(int t)
 {
-    timesTested_=t;
+    timesTested_ = t;
 }
 void OsiCut::incrementTimesTested()
 {
@@ -264,23 +264,23 @@ int OsiCut::timesTested() const
 // == operator
 //-------------------------------------------------------------------
 bool
-OsiCut::operator==(const OsiCut& rhs) const
+OsiCut::operator==(const OsiCut & rhs) const
 {
-    return effectiveness()==rhs.effectiveness();
+    return effectiveness() == rhs.effectiveness();
 }
 bool
-OsiCut::operator!=(const OsiCut& rhs) const
+OsiCut::operator!=(const OsiCut & rhs) const
 {
-    return !( (*this)==rhs );
+    return !((*this) == rhs);
 }
 bool
-OsiCut::operator< (const OsiCut& rhs) const
+OsiCut::operator< (const OsiCut & rhs) const
 {
-    return effectiveness()<rhs.effectiveness();
+    return effectiveness() < rhs.effectiveness();
 }
 bool
-OsiCut::operator> (const OsiCut& rhs) const
+OsiCut::operator> (const OsiCut & rhs) const
 {
-    return effectiveness()>rhs.effectiveness();
+    return effectiveness() > rhs.effectiveness();
 }
 #endif

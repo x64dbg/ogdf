@@ -41,67 +41,67 @@ namespace abacus
 {
 
 
-CSense::CSense(char s)
-{
-    switch (s)
+    CSense::CSense(char s)
     {
-    case 'l':
-    case 'L':
-        sense_ = Less;
-        break;
-    case 'e':
-    case 'E':
-        sense_ = Equal;
-        break;
-    case 'g':
-    case 'G':
-        sense_ = Greater;
-        break;
-    default:
-        Logger::ifout() << "CSense::CSense(): unknown argument " << s << "\n";
-        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcCsense);
+        switch(s)
+        {
+        case 'l':
+        case 'L':
+            sense_ = Less;
+            break;
+        case 'e':
+        case 'E':
+            sense_ = Equal;
+            break;
+        case 'g':
+        case 'G':
+            sense_ = Greater;
+            break;
+        default:
+            Logger::ifout() << "CSense::CSense(): unknown argument " << s << "\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcCsense);
+        }
     }
-}
 
 
-ostream &operator<<(ostream &out, const CSense &rhs)
-{
-    switch (rhs.sense_)
+    ostream & operator<<(ostream & out, const CSense & rhs)
     {
-    case CSense::Less:
-        out << "<=";
-        break;
-    case CSense::Equal:
-        out << '=';
-        break;
-    case CSense::Greater:
-        out << ">=";
-        break;
+        switch(rhs.sense_)
+        {
+        case CSense::Less:
+            out << "<=";
+            break;
+        case CSense::Equal:
+            out << '=';
+            break;
+        case CSense::Greater:
+            out << ">=";
+            break;
+        }
+        return out;
     }
-    return out;
-}
 
 
-void CSense::sense(char s)
-{
-    switch (s)
+    void CSense::sense(char s)
     {
-    case 'l':
-    case 'L':
-        sense_ = Less;
-        break;
-    case 'e':
-    case 'E':
-        sense_ = Equal;
-        break;
-    case 'g':
-    case 'G':
-        sense_ = Greater;
-        break;
-    default:
-        Logger::ifout() << "CSense::sense(): unknown argument " << s << "\n";
-        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcCsense);
-        break;
+        switch(s)
+        {
+        case 'l':
+        case 'L':
+            sense_ = Less;
+            break;
+        case 'e':
+        case 'E':
+            sense_ = Equal;
+            break;
+        case 'g':
+        case 'G':
+            sense_ = Greater;
+            break;
+        default:
+            Logger::ifout() << "CSense::sense(): unknown argument " << s << "\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcCsense);
+            break;
+        }
     }
-}
 } //namespace abacus

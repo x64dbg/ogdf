@@ -17,37 +17,37 @@
   fractional level.
  *===========================================================================*/
 void
-CglClique::selectFractionalBinaries(const OsiSolverInterface& si) const
+CglClique::selectFractionalBinaries(const OsiSolverInterface & si) const
 {
     // extract the primal tolerance from the solver
     double lclPetol = 0.0;
     si.getDblParam(OsiPrimalTolerance, lclPetol);
 
     const int numcols = si.getNumCols();
-    if (petol<0.0)
+    if(petol < 0.0)
     {
         // do all if not too many
-        int n=0;
-        for (int i = 0; i < numcols; ++i)
+        int n = 0;
+        for(int i = 0; i < numcols; ++i)
         {
-            if (si.isBinary(i))
+            if(si.isBinary(i))
                 n++;
         }
-        if (n<5000)
-            lclPetol=-1.0e-5;
+        if(n < 5000)
+            lclPetol = -1.0e-5;
     }
     const double* x = si.getColSolution();
     std::vector<int> fracind;
     int i;
-    for (i = 0; i < numcols; ++i)
+    for(i = 0; i < numcols; ++i)
     {
-        if (si.isBinary(i) && x[i] > lclPetol && x[i] < 1-petol)
+        if(si.isBinary(i) && x[i] > lclPetol && x[i] < 1 - petol)
             fracind.push_back(i);
     }
     sp_numcols = static_cast<int>(fracind.size());
     sp_orig_col_ind = new int[sp_numcols];
     sp_colsol = new double[sp_numcols];
-    for (i = 0; i < sp_numcols; ++i)
+    for(i = 0; i < sp_numcols; ++i)
     {
         sp_orig_col_ind[i] = fracind[i];
         sp_colsol[i] = x[fracind[i]];
@@ -62,7 +62,7 @@ CglClique::selectFractionalBinaries(const OsiSolverInterface& si) const
  *===========================================================================*/
 
 void
-CglClique::selectFractionals(const OsiSolverInterface& si) const
+CglClique::selectFractionals(const OsiSolverInterface & si) const
 {
     // extract the primal tolerance from the solver
     double lclPetol = 0.0;
@@ -72,15 +72,15 @@ CglClique::selectFractionals(const OsiSolverInterface& si) const
     const double* x = si.getColSolution();
     std::vector<int> fracind;
     int i;
-    for (i = 0; i < numcols; ++i)
+    for(i = 0; i < numcols; ++i)
     {
-        if (x[i] > lclPetol && x[i] < 1-lclPetol)
+        if(x[i] > lclPetol && x[i] < 1 - lclPetol)
             fracind.push_back(i);
     }
     sp_numcols = static_cast<int>(fracind.size());
     sp_orig_col_ind = new int[sp_numcols];
     sp_colsol = new double[sp_numcols];
-    for (i = 0; i < sp_numcols; ++i)
+    for(i = 0; i < sp_numcols; ++i)
     {
         sp_orig_col_ind[i] = fracind[i];
         sp_colsol[i] = x[fracind[i]];
@@ -93,7 +93,7 @@ CglClique::selectFractionals(const OsiSolverInterface& si) const
  *===========================================================================*/
 
 void
-CglClique::selectRowCliques(const OsiSolverInterface& si,int numOriginalRows) const
+CglClique::selectRowCliques(const OsiSolverInterface & si, int numOriginalRows) const
 {
     const int numrows = si.getNumRows();
     std::vector<int> clique(numrows, 1);
@@ -102,15 +102,15 @@ CglClique::selectRowCliques(const OsiSolverInterface& si,int numOriginalRows) co
 
     // First scan through the binary fractional variables and see where do they
     // have a 1 coefficient
-    const CoinPackedMatrix& mcol = *si.getMatrixByCol();
-    for (j = 0; j < sp_numcols; ++j)
+    const CoinPackedMatrix & mcol = *si.getMatrixByCol();
+    for(j = 0; j < sp_numcols; ++j)
     {
-        const CoinShallowPackedVector& vec = mcol.getVector(sp_orig_col_ind[j]);
+        const CoinShallowPackedVector & vec = mcol.getVector(sp_orig_col_ind[j]);
         const int* ind = vec.getIndices();
         const double* elem = vec.getElements();
-        for (i = vec.getNumElements() - 1; i >= 0; --i)
+        for(i = vec.getNumElements() - 1; i >= 0; --i)
         {
-            if (elem[i] != 1.0)
+            if(elem[i] != 1.0)
             {
                 clique[ind[i]] = 0;
             }
@@ -119,22 +119,22 @@ CglClique::selectRowCliques(const OsiSolverInterface& si,int numOriginalRows) co
 
     // Now check the sense and rhs (by checking rowupper) and the rest of the
     // coefficients
-    const CoinPackedMatrix& mrow = *si.getMatrixByRow();
+    const CoinPackedMatrix & mrow = *si.getMatrixByRow();
     const double* rub = si.getRowUpper();
-    for (i = 0; i < numrows; ++i)
+    for(i = 0; i < numrows; ++i)
     {
-        if (rub[i] != 1.0||i>=numOriginalRows)
+        if(rub[i] != 1.0 || i >= numOriginalRows)
         {
             clique[i] = 0;
             continue;
         }
-        if (clique[i] == 1)
+        if(clique[i] == 1)
         {
-            const CoinShallowPackedVector& vec = mrow.getVector(i);
+            const CoinShallowPackedVector & vec = mrow.getVector(i);
             const double* elem = vec.getElements();
-            for (j = vec.getNumElements() - 1; j >= 0; --j)
+            for(j = vec.getNumElements() - 1; j >= 0; --j)
             {
-                if (elem[j] < 0)
+                if(elem[j] < 0)
                 {
                     clique[i] = 0;
                     break;
@@ -146,9 +146,9 @@ CglClique::selectRowCliques(const OsiSolverInterface& si,int numOriginalRows) co
     // Finally collect the still standing rows into sp_orig_row_ind
     sp_numrows = std::accumulate(clique.begin(), clique.end(), 0);
     sp_orig_row_ind = new int[sp_numrows];
-    for (i = 0, k = 0; i < numrows; ++i)
+    for(i = 0, k = 0; i < numrows; ++i)
     {
-        if (clique[i] == 1)
+        if(clique[i] == 1)
         {
             sp_orig_row_ind[k++] = i;
         }
@@ -161,29 +161,29 @@ CglClique::selectRowCliques(const OsiSolverInterface& si,int numOriginalRows) co
   Create the set packing submatrix
  *===========================================================================*/
 void
-CglClique::createSetPackingSubMatrix(const OsiSolverInterface& si) const
+CglClique::createSetPackingSubMatrix(const OsiSolverInterface & si) const
 {
-    sp_col_start = new int[sp_numcols+1];
-    sp_row_start = new int[sp_numrows+1];
-    std::fill(sp_col_start, sp_col_start + (sp_numcols+1), 0);
-    std::fill(sp_row_start, sp_row_start + (sp_numrows+1), 0);
+    sp_col_start = new int[sp_numcols + 1];
+    sp_row_start = new int[sp_numrows + 1];
+    std::fill(sp_col_start, sp_col_start + (sp_numcols + 1), 0);
+    std::fill(sp_row_start, sp_row_start + (sp_numrows + 1), 0);
 
     int i, j;
 
-    const CoinPackedMatrix& mcol = *si.getMatrixByCol();
+    const CoinPackedMatrix & mcol = *si.getMatrixByCol();
     const int numrows = si.getNumRows();
     int* clique = new int[numrows];
-    std::fill(clique, clique+numrows, -1);
-    for (i = 0; i < sp_numrows; ++i)
+    std::fill(clique, clique + numrows, -1);
+    for(i = 0; i < sp_numrows; ++i)
         clique[sp_orig_row_ind[i]] = i;
 
-    for (j = 0; j < sp_numcols; ++j)
+    for(j = 0; j < sp_numcols; ++j)
     {
-        const CoinShallowPackedVector& vec = mcol.getVector(sp_orig_col_ind[j]);
+        const CoinShallowPackedVector & vec = mcol.getVector(sp_orig_col_ind[j]);
         const int* ind = vec.getIndices();
-        for (i = vec.getNumElements() - 1; i >= 0; --i)
+        for(i = vec.getNumElements() - 1; i >= 0; --i)
         {
-            if (clique[ind[i]] >= 0)
+            if(clique[ind[i]] >= 0)
             {
                 ++sp_col_start[j];
                 ++sp_row_start[clique[ind[i]]];
@@ -191,12 +191,12 @@ CglClique::createSetPackingSubMatrix(const OsiSolverInterface& si) const
         }
     }
 
-    std::partial_sum(sp_col_start, sp_col_start+sp_numcols, sp_col_start);
-    std::rotate(sp_col_start, sp_col_start+sp_numcols,
-                sp_col_start + (sp_numcols+1));
-    std::partial_sum(sp_row_start, sp_row_start+sp_numrows, sp_row_start);
-    std::rotate(sp_row_start, sp_row_start+sp_numrows,
-                sp_row_start + (sp_numrows+1));
+    std::partial_sum(sp_col_start, sp_col_start + sp_numcols, sp_col_start);
+    std::rotate(sp_col_start, sp_col_start + sp_numcols,
+                sp_col_start + (sp_numcols + 1));
+    std::partial_sum(sp_row_start, sp_row_start + sp_numrows, sp_row_start);
+    std::rotate(sp_row_start, sp_row_start + sp_numrows,
+                sp_row_start + (sp_numrows + 1));
     const int nzcnt = sp_col_start[sp_numcols];
     assert(nzcnt == sp_row_start[sp_numrows]);
     /*
@@ -212,18 +212,18 @@ CglClique::createSetPackingSubMatrix(const OsiSolverInterface& si) const
     */
     sp_col_ind = new int[nzcnt];
     sp_row_ind = new int[nzcnt];
-    int last=0;
-    for (j = 0; j < sp_numcols; ++j)
+    int last = 0;
+    for(j = 0; j < sp_numcols; ++j)
     {
-        const CoinShallowPackedVector& vec = mcol.getVector(sp_orig_col_ind[j]);
+        const CoinShallowPackedVector & vec = mcol.getVector(sp_orig_col_ind[j]);
         const int len = vec.getNumElements();
         const int* ind = vec.getIndices();
-        if (ind[0] < ind[len-1])
+        if(ind[0] < ind[len - 1])
         {
-            for (i = 0; i < len; ++i)
+            for(i = 0; i < len; ++i)
             {
                 const int sp_row = clique[ind[i]];
-                if (sp_row >= 0)
+                if(sp_row >= 0)
                 {
                     sp_col_ind[sp_col_start[j]++] = sp_row;
                     sp_row_ind[sp_row_start[sp_row]++] = j;
@@ -232,10 +232,10 @@ CglClique::createSetPackingSubMatrix(const OsiSolverInterface& si) const
         }
         else
         {
-            for (i = len-1; i >= 0; --i)
+            for(i = len - 1; i >= 0; --i)
             {
                 const int sp_row = clique[ind[i]];
-                if (sp_row >= 0)
+                if(sp_row >= 0)
                 {
                     sp_col_ind[sp_col_start[j]++] = sp_row;
                     sp_row_ind[sp_row_start[sp_row]++] = j;
@@ -243,14 +243,14 @@ CglClique::createSetPackingSubMatrix(const OsiSolverInterface& si) const
             }
         }
         // sort
-        std::sort(sp_col_ind+last,sp_col_ind+sp_col_start[j]);
-        last=sp_col_start[j];
+        std::sort(sp_col_ind + last, sp_col_ind + sp_col_start[j]);
+        last = sp_col_start[j];
     }
-    std::rotate(sp_col_start, sp_col_start+sp_numcols,
-                sp_col_start + (sp_numcols+1));
+    std::rotate(sp_col_start, sp_col_start + sp_numcols,
+                sp_col_start + (sp_numcols + 1));
     sp_col_start[0] = 0;
-    std::rotate(sp_row_start, sp_row_start+sp_numrows,
-                sp_row_start + (sp_numrows+1));
+    std::rotate(sp_row_start, sp_row_start + sp_numrows,
+                sp_row_start + (sp_numrows + 1));
     sp_row_start[0] = 0;
 
     delete[] clique;
@@ -262,11 +262,11 @@ static inline bool
 CoinIsOrthogonal(const int* first0, const int* last0,
                  const int* first1, const int* last1)
 {
-    while (first0 != last0 && first1 != last1)
+    while(first0 != last0 && first1 != last1)
     {
-        if (*first0 == *first1)
+        if(*first0 == *first1)
             return false;
-        if (*first0 < *first1)
+        if(*first0 < *first1)
             ++first0;
         else
             ++first1;
@@ -283,11 +283,11 @@ CglClique::createFractionalGraph() const
 {
     // fgraph.edgenum is filled when createNodeNode is invoked
     fgraph.nodenum = sp_numcols;
-    fgraph.all_nbr = new int[2*fgraph.edgenum];
-    fgraph.nodes = new fnode[sp_numcols+1];
+    fgraph.all_nbr = new int[2 * fgraph.edgenum];
+    fgraph.nodes = new fnode[sp_numcols + 1];
 
-    int *all_nbr = fgraph.all_nbr;
-    fnode *nodes = fgraph.nodes;
+    int* all_nbr = fgraph.all_nbr;
+    fnode* nodes = fgraph.nodes;
     int min_degree, max_degree, min_deg_node, max_deg_node;
 
 #  ifdef ZEROFAULT
@@ -303,13 +303,13 @@ CglClique::createFractionalGraph() const
        non-orthogonal.
      *========================================================================*/
 
-    for ( i = 0, total_deg = 0; i < sp_numcols; i++ )
+    for(i = 0, total_deg = 0; i < sp_numcols; i++)
     {
         old_total = total_deg;
         const bool* node_node_i = node_node + i * sp_numcols;
-        for ( j = 0; j < sp_numcols; j++ )
+        for(j = 0; j < sp_numcols; j++)
         {
-            if ( node_node_i[j] )
+            if(node_node_i[j])
             {
                 all_nbr[total_deg++] = j;
             }
@@ -319,7 +319,7 @@ CglClique::createFractionalGraph() const
         nodes[i].nbrs = all_nbr + old_total;
     }
 
-    fgraph.density = static_cast<double> (total_deg) / (sp_numcols * (sp_numcols-1));
+    fgraph.density = static_cast<double>(total_deg) / (sp_numcols * (sp_numcols - 1));
 
     /*========================================================================*
       Compute the min and max degree.
@@ -327,14 +327,14 @@ CglClique::createFractionalGraph() const
     min_deg_node = 0;
     max_deg_node = 0;
     min_degree = max_degree = nodes[0].degree;
-    for ( i = 0; i < sp_numcols; i++ )
+    for(i = 0; i < sp_numcols; i++)
     {
-        if ( nodes[i].degree < min_degree )
+        if(nodes[i].degree < min_degree)
         {
             min_deg_node = i;
             min_degree = nodes[i].degree;
         }
-        if ( nodes[i].degree > max_degree )
+        if(nodes[i].degree > max_degree)
         {
             max_deg_node = i;
             max_degree = nodes[i].degree;
@@ -359,14 +359,14 @@ CglClique::createNodeNode() const
 
     int i, j;
     int edgenum = 0;
-    for (i = 0; i < sp_numcols; ++i)
+    for(i = 0; i < sp_numcols; ++i)
     {
-        for (j = i+1; j < sp_numcols; ++j)
+        for(j = i + 1; j < sp_numcols; ++j)
         {
-            if (! CoinIsOrthogonal(sp_col_ind + sp_col_start[i],
-                                   sp_col_ind + sp_col_start[i+1],
-                                   sp_col_ind + sp_col_start[j],
-                                   sp_col_ind + sp_col_start[j+1]) )
+            if(! CoinIsOrthogonal(sp_col_ind + sp_col_start[i],
+                                  sp_col_ind + sp_col_start[i + 1],
+                                  sp_col_ind + sp_col_start[j],
+                                  sp_col_ind + sp_col_start[j + 1]))
             {
                 node_node[i * sp_numcols + j] = true;
                 node_node[j * sp_numcols + i] = true;

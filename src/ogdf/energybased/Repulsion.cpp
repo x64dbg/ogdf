@@ -46,29 +46,29 @@
 namespace ogdf
 {
 
-Repulsion::Repulsion(GraphAttributes &AG) : NodePairEnergy("Repulsion",AG) { }
+    Repulsion::Repulsion(GraphAttributes & AG) : NodePairEnergy("Repulsion", AG) { }
 
 
-double Repulsion::computeCoordEnergy(
-    node v1,
-    node v2,
-    const DPoint &p1,
-    const DPoint &p2)
-const
-{
-    double energy = 0;
-    if(!adjacent(v1,v2))
+    double Repulsion::computeCoordEnergy(
+        node v1,
+        node v2,
+        const DPoint & p1,
+        const DPoint & p2)
+    const
     {
-        IntersectionRectangle i1 = shape(v1);
-        IntersectionRectangle i2 = shape(v2);
-        i1.move(p1);
-        i2.move(p2);
-        double dist = i1.distance(i2);
-        OGDF_ASSERT(dist >= 0.0);
-        double div = (dist+1.0)*(dist+1.0);
-        energy = 1.0/div;
+        double energy = 0;
+        if(!adjacent(v1, v2))
+        {
+            IntersectionRectangle i1 = shape(v1);
+            IntersectionRectangle i2 = shape(v2);
+            i1.move(p1);
+            i2.move(p2);
+            double dist = i1.distance(i2);
+            OGDF_ASSERT(dist >= 0.0);
+            double div = (dist + 1.0) * (dist + 1.0);
+            energy = 1.0 / div;
+        }
+        return energy;
     }
-    return energy;
-}
 
 } //namespace ogdf

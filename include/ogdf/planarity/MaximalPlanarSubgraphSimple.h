@@ -58,40 +58,40 @@
 namespace ogdf
 {
 
-//---------------------------------------------------------
-// MaximalPlanarSubgraphSimple
-// implements a maximal planar subgraph algorithm using
-// planarity testing
-//---------------------------------------------------------
-class OGDF_EXPORT MaximalPlanarSubgraphSimple : public PlanarSubgraphModule
-{
-public:
-    //! Creates an instance of the maximal planar subgraph simple algorithm with default settings.
-    MaximalPlanarSubgraphSimple();
+    //---------------------------------------------------------
+    // MaximalPlanarSubgraphSimple
+    // implements a maximal planar subgraph algorithm using
+    // planarity testing
+    //---------------------------------------------------------
+    class OGDF_EXPORT MaximalPlanarSubgraphSimple : public PlanarSubgraphModule
+    {
+    public:
+        //! Creates an instance of the maximal planar subgraph simple algorithm with default settings.
+        MaximalPlanarSubgraphSimple();
 
-    //! Creates an instance of the maximal planar subgraph simple algorithm with the same settings as \a mps.
-    MaximalPlanarSubgraphSimple(const MaximalPlanarSubgraphSimple &mps);
+        //! Creates an instance of the maximal planar subgraph simple algorithm with the same settings as \a mps.
+        MaximalPlanarSubgraphSimple(const MaximalPlanarSubgraphSimple & mps);
 
-    //! Destructor
-    ~MaximalPlanarSubgraphSimple() { }
+        //! Destructor
+        ~MaximalPlanarSubgraphSimple() { }
 
-    //! Returns a new instance of maximal planar subgraph simple with the same option settings.
-    virtual PlanarSubgraphModule *clone() const;
+        //! Returns a new instance of maximal planar subgraph simple with the same option settings.
+        virtual PlanarSubgraphModule* clone() const;
 
-    //! Assignment operator. Copies option settings only.
-    MaximalPlanarSubgraphSimple &operator=(const MaximalPlanarSubgraphSimple &mps);
+        //! Assignment operator. Copies option settings only.
+        MaximalPlanarSubgraphSimple & operator=(const MaximalPlanarSubgraphSimple & mps);
 
 
-protected:
-    // computes set of edges delEdges, which have to be deleted
-    // in order to get a planar subgraph; edges in preferedEdges
-    // should be contained in planar subgraph
-    ReturnType doCall(const Graph &G,
-                      const List<edge> &preferedEdges,
-                      List<edge> &delEdges,
-                      const EdgeArray<int>  *pCost,
-                      bool preferedImplyPlanar);
-};
+    protected:
+        // computes set of edges delEdges, which have to be deleted
+        // in order to get a planar subgraph; edges in preferedEdges
+        // should be contained in planar subgraph
+        ReturnType doCall(const Graph & G,
+                          const List<edge> & preferedEdges,
+                          List<edge> & delEdges,
+                          const EdgeArray<int>*  pCost,
+                          bool preferedImplyPlanar);
+    };
 
 
 } // end namespace ogdf

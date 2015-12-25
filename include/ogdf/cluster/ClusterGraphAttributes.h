@@ -58,281 +58,281 @@
 namespace ogdf
 {
 
-//! Stores information associated with a cluster.
-struct OGDF_EXPORT ClusterInfo
-{
-    double m_x, m_y;    //!< position of lower left corner
-    double m_w, m_h;    //!< width and height
-
-    string m_label;     //!< cluster label
-
-    Stroke m_stroke;    //!< stroke (style of boundary)
-    Fill   m_fill;      //!< fill (style of interior)
-
-    ClusterInfo()
-        : m_stroke(LayoutStandards::defaultClusterStroke()), m_fill(LayoutStandards::defaultClusterFill())
+    //! Stores information associated with a cluster.
+    struct OGDF_EXPORT ClusterInfo
     {
-        m_x = m_y = 0.0;
-        m_w = m_h = 0.0;
-    }
-};
+        double m_x, m_y;    //!< position of lower left corner
+        double m_w, m_h;    //!< width and height
+
+        string m_label;     //!< cluster label
+
+        Stroke m_stroke;    //!< stroke (style of boundary)
+        Fill   m_fill;      //!< fill (style of interior)
+
+        ClusterInfo()
+            : m_stroke(LayoutStandards::defaultClusterStroke()), m_fill(LayoutStandards::defaultClusterFill())
+        {
+            m_x = m_y = 0.0;
+            m_w = m_h = 0.0;
+        }
+    };
 
 
-//! Stores additional attributes of a clustered graph (like layout information).
-class OGDF_EXPORT ClusterGraphAttributes : public GraphAttributes
-{
-    const ClusterGraph* m_pClusterGraph;//!< Only points to existing graphs.
-
-private:
-    ClusterArray<ClusterInfo> m_clusterInfo;     //!< cluster attributes
-    ClusterArray<string>      m_clusterTemplate; //!< Name of cluster template.
-
-public:
-    // don't hide these inherited methods by overloading
-    using GraphAttributes::x;
-    using GraphAttributes::y;
-    using GraphAttributes::width;
-    using GraphAttributes::height;
-
-    using GraphAttributes::label;
-
-    using GraphAttributes::strokeType;
-    using GraphAttributes::setStrokeType;
-    using GraphAttributes::strokeColor;
-    using GraphAttributes::strokeWidth;
-
-    using GraphAttributes::fillPattern;
-    using GraphAttributes::setFillPattern;
-    using GraphAttributes::fillColor;
-    using GraphAttributes::fillBgColor;
-
-    /**
-     * @name Construction and management of attributes
-     */
-    //@{
-
-    //! Constructs cluster graph attributes for no associated graph.
-    ClusterGraphAttributes() : GraphAttributes(), m_pClusterGraph(0) { }
-
-    //! Constructs cluster graph attributes for cluster graph \a cg with attributes \a initAttributes.
-    /**
-     * \remark All attributes in ClusterElement are always available.
-     */
-    ClusterGraphAttributes(ClusterGraph& cg, long initAttributes = 0);
-
-    virtual ~ClusterGraphAttributes() { }
-
-    //! Initializes the cluster graph attributes for cluster graph \a cg with attributes \a initAttributes.
-    virtual void init(ClusterGraph &cg, long initAttributes = 0);
-
-    //! Forbidden initialization, use init(ClusterGraph &cg, long initAttributes) instead!
-    virtual void init(const Graph &, long)
+    //! Stores additional attributes of a clustered graph (like layout information).
+    class OGDF_EXPORT ClusterGraphAttributes : public GraphAttributes
     {
-        OGDF_THROW(Exception); // We need a cluster graph for initialization
-    }
+        const ClusterGraph* m_pClusterGraph;//!< Only points to existing graphs.
 
-    //! Initializes the attributes according to \a initAttributes.
-    virtual void initAtt(long initAttributes = 0)
-    {
-        GraphAttributes::initAttributes(initAttributes);
-    }
+    private:
+        ClusterArray<ClusterInfo> m_clusterInfo;     //!< cluster attributes
+        ClusterArray<string>      m_clusterTemplate; //!< Name of cluster template.
 
-    //! Returns the associated cluster graph.
-    const ClusterGraph& constClusterGraph() const
-    {
-        return *m_pClusterGraph;
-    }
+    public:
+        // don't hide these inherited methods by overloading
+        using GraphAttributes::x;
+        using GraphAttributes::y;
+        using GraphAttributes::width;
+        using GraphAttributes::height;
+
+        using GraphAttributes::label;
+
+        using GraphAttributes::strokeType;
+        using GraphAttributes::setStrokeType;
+        using GraphAttributes::strokeColor;
+        using GraphAttributes::strokeWidth;
+
+        using GraphAttributes::fillPattern;
+        using GraphAttributes::setFillPattern;
+        using GraphAttributes::fillColor;
+        using GraphAttributes::fillBgColor;
+
+        /**
+         * @name Construction and management of attributes
+         */
+        //@{
+
+        //! Constructs cluster graph attributes for no associated graph.
+        ClusterGraphAttributes() : GraphAttributes(), m_pClusterGraph(0) { }
+
+        //! Constructs cluster graph attributes for cluster graph \a cg with attributes \a initAttributes.
+        /**
+         * \remark All attributes in ClusterElement are always available.
+         */
+        ClusterGraphAttributes(ClusterGraph & cg, long initAttributes = 0);
+
+        virtual ~ClusterGraphAttributes() { }
+
+        //! Initializes the cluster graph attributes for cluster graph \a cg with attributes \a initAttributes.
+        virtual void init(ClusterGraph & cg, long initAttributes = 0);
+
+        //! Forbidden initialization, use init(ClusterGraph &cg, long initAttributes) instead!
+        virtual void init(const Graph &, long)
+        {
+            OGDF_THROW(Exception); // We need a cluster graph for initialization
+        }
+
+        //! Initializes the attributes according to \a initAttributes.
+        virtual void initAtt(long initAttributes = 0)
+        {
+            GraphAttributes::initAttributes(initAttributes);
+        }
+
+        //! Returns the associated cluster graph.
+        const ClusterGraph & constClusterGraph() const
+        {
+            return *m_pClusterGraph;
+        }
 
 
-    //@}
-    /**
-     * @name Cluster attributes
-     */
-    //@{
+        //@}
+        /**
+         * @name Cluster attributes
+         */
+        //@{
 
-    //! Returns the x-position of cluster \a c's cage (lower left corner).
-    double x(cluster c) const
-    {
-        return m_clusterInfo[c].m_x;
-    }
+        //! Returns the x-position of cluster \a c's cage (lower left corner).
+        double x(cluster c) const
+        {
+            return m_clusterInfo[c].m_x;
+        }
 
-    //! Returns the x-position of cluster \a c's cage (lower left corner).
-    double& x(cluster c)
-    {
-        return m_clusterInfo[c].m_x;
-    }
+        //! Returns the x-position of cluster \a c's cage (lower left corner).
+        double & x(cluster c)
+        {
+            return m_clusterInfo[c].m_x;
+        }
 
-    //! Returns the y-position of cluster \a c's cage (lower left corner).
-    double y(cluster c) const
-    {
-        return m_clusterInfo[c].m_y;
-    }
+        //! Returns the y-position of cluster \a c's cage (lower left corner).
+        double y(cluster c) const
+        {
+            return m_clusterInfo[c].m_y;
+        }
 
-    //! Returns the y-position of cluster \a c's cage (lower left corner).
-    double& y(cluster c)
-    {
-        return m_clusterInfo[c].m_y;
-    }
+        //! Returns the y-position of cluster \a c's cage (lower left corner).
+        double & y(cluster c)
+        {
+            return m_clusterInfo[c].m_y;
+        }
 
-    //! Returns the width of cluster \a c.
-    double width(cluster c) const
-    {
-        return m_clusterInfo[c].m_w;
-    }
+        //! Returns the width of cluster \a c.
+        double width(cluster c) const
+        {
+            return m_clusterInfo[c].m_w;
+        }
 
-    //! Returns the width of cluster \a c.
-    double& width(cluster c)
-    {
-        return m_clusterInfo[c].m_w;
-    }
+        //! Returns the width of cluster \a c.
+        double & width(cluster c)
+        {
+            return m_clusterInfo[c].m_w;
+        }
 
-    //! Returns the height of cluster \a c.
-    double height(cluster c) const
-    {
-        return m_clusterInfo[c].m_h;
-    }
+        //! Returns the height of cluster \a c.
+        double height(cluster c) const
+        {
+            return m_clusterInfo[c].m_h;
+        }
 
-    //! Returns the height of cluster \a c.
-    double& height(cluster c)
-    {
-        return m_clusterInfo[c].m_h;
-    }
+        //! Returns the height of cluster \a c.
+        double & height(cluster c)
+        {
+            return m_clusterInfo[c].m_h;
+        }
 
-    //! Returns the stroke type of cluster \a c.
-    StrokeType strokeType(cluster c) const
-    {
-        return m_clusterInfo[c].m_stroke.m_type;
-    }
+        //! Returns the stroke type of cluster \a c.
+        StrokeType strokeType(cluster c) const
+        {
+            return m_clusterInfo[c].m_stroke.m_type;
+        }
 
-    //! Sets the stroke type of cluster \a c to \a st.
-    void setStrokeType(cluster c, StrokeType st)
-    {
-        m_clusterInfo[c].m_stroke.m_type = st;
-    }
+        //! Sets the stroke type of cluster \a c to \a st.
+        void setStrokeType(cluster c, StrokeType st)
+        {
+            m_clusterInfo[c].m_stroke.m_type = st;
+        }
 
-    //! Returns the stroke color of cluster \a c.
-    const Color &strokeColor(cluster c) const
-    {
-        return m_clusterInfo[c].m_stroke.m_color;
-    }
+        //! Returns the stroke color of cluster \a c.
+        const Color & strokeColor(cluster c) const
+        {
+            return m_clusterInfo[c].m_stroke.m_color;
+        }
 
-    //! Returns the stroke color of cluster \a c.
-    Color &strokeColor(cluster c)
-    {
-        return m_clusterInfo[c].m_stroke.m_color;
-    }
+        //! Returns the stroke color of cluster \a c.
+        Color & strokeColor(cluster c)
+        {
+            return m_clusterInfo[c].m_stroke.m_color;
+        }
 
-    //! Returns the stroke width of cluster \a c.
-    const float &strokeWidth(cluster c) const
-    {
-        return m_clusterInfo[c].m_stroke.m_width;
-    }
+        //! Returns the stroke width of cluster \a c.
+        const float & strokeWidth(cluster c) const
+        {
+            return m_clusterInfo[c].m_stroke.m_width;
+        }
 
-    //! Returns the stroke width of cluster \a c.
-    float &strokeWidth(cluster c)
-    {
-        return m_clusterInfo[c].m_stroke.m_width;
-    }
+        //! Returns the stroke width of cluster \a c.
+        float & strokeWidth(cluster c)
+        {
+            return m_clusterInfo[c].m_stroke.m_width;
+        }
 
-    //! Returns the fill pattern of cluster \a c.
-    FillPattern fillPattern(cluster c) const
-    {
-        return m_clusterInfo[c].m_fill.m_pattern;
-    }
+        //! Returns the fill pattern of cluster \a c.
+        FillPattern fillPattern(cluster c) const
+        {
+            return m_clusterInfo[c].m_fill.m_pattern;
+        }
 
-    //! Sets the fill pattern of cluster \a c to \a fp.
-    void setFillPattern(cluster c, FillPattern fp)
-    {
-        m_clusterInfo[c].m_fill.m_pattern = fp;
-    }
+        //! Sets the fill pattern of cluster \a c to \a fp.
+        void setFillPattern(cluster c, FillPattern fp)
+        {
+            m_clusterInfo[c].m_fill.m_pattern = fp;
+        }
 
-    //! Returns the fill color of cluster \a c.
-    const Color &fillColor(cluster c) const
-    {
-        return m_clusterInfo[c].m_fill.m_color;
-    }
+        //! Returns the fill color of cluster \a c.
+        const Color & fillColor(cluster c) const
+        {
+            return m_clusterInfo[c].m_fill.m_color;
+        }
 
-    //! Returns the fill color of cluster \a c.
-    Color &fillColor(cluster c)
-    {
-        return m_clusterInfo[c].m_fill.m_color;
-    }
+        //! Returns the fill color of cluster \a c.
+        Color & fillColor(cluster c)
+        {
+            return m_clusterInfo[c].m_fill.m_color;
+        }
 
-    //! Returns the background color of fill patterns for cluster \a c.
-    const Color &fillBgColor(cluster c) const
-    {
-        return m_clusterInfo[c].m_fill.m_bgColor;
-    }
+        //! Returns the background color of fill patterns for cluster \a c.
+        const Color & fillBgColor(cluster c) const
+        {
+            return m_clusterInfo[c].m_fill.m_bgColor;
+        }
 
-    //! Returns the background color of fill patterns for cluster \a c.
-    Color &fillBgColor(cluster c)
-    {
-        return m_clusterInfo[c].m_fill.m_bgColor;
-    }
+        //! Returns the background color of fill patterns for cluster \a c.
+        Color & fillBgColor(cluster c)
+        {
+            return m_clusterInfo[c].m_fill.m_bgColor;
+        }
 
-    //! Returns the label of cluster \a c.
-    const string &label(cluster c) const
-    {
-        return m_clusterInfo[c].m_label;
-    }
+        //! Returns the label of cluster \a c.
+        const string & label(cluster c) const
+        {
+            return m_clusterInfo[c].m_label;
+        }
 
-    //! Returns the label of cluster \a c.
-    string &label(cluster c)
-    {
-        return m_clusterInfo[c].m_label;
-    }
+        //! Returns the label of cluster \a c.
+        string & label(cluster c)
+        {
+            return m_clusterInfo[c].m_label;
+        }
 
-    //! Returns the template of cluster \a c.
-    const string &templateCluster(cluster c) const
-    {
-        return m_clusterTemplate[c];
-    }
+        //! Returns the template of cluster \a c.
+        const string & templateCluster(cluster c) const
+        {
+            return m_clusterTemplate[c];
+        }
 
-    //! Returns the template of cluster \a c.
-    string &templateCluster(cluster c)
-    {
-        return m_clusterTemplate[c];
-    }
+        //! Returns the template of cluster \a c.
+        string & templateCluster(cluster c)
+        {
+            return m_clusterTemplate[c];
+        }
 
-    //! Returns the cluster info structure of cluster \a c.
-    const ClusterInfo& clusterInfo(cluster c) const
-    {
-        return m_clusterInfo[c];
-    }
+        //! Returns the cluster info structure of cluster \a c.
+        const ClusterInfo & clusterInfo(cluster c) const
+        {
+            return m_clusterInfo[c];
+        }
 
-    //! Returns the cluster info structure of cluster \a c.
-    ClusterInfo& clusterInfo(cluster c)
-    {
-        return m_clusterInfo[c];
-    }
+        //! Returns the cluster info structure of cluster \a c.
+        ClusterInfo & clusterInfo(cluster c)
+        {
+            return m_clusterInfo[c];
+        }
 
-    //@}
-    /**
-     * @name Utility functions
-     */
-    //@{
+        //@}
+        /**
+         * @name Utility functions
+         */
+        //@{
 
-    //! Returns the bounding box of the layout.
-    const DRect boundingBox() const;
+        //! Returns the bounding box of the layout.
+        const DRect boundingBox() const;
 
-    //! Returns the maximum cluster index used.
-    int maxClusterID() const
-    {
-        return m_pClusterGraph->clusterIdCount()-1;
-    }
+        //! Returns the maximum cluster index used.
+        int maxClusterID() const
+        {
+            return m_pClusterGraph->clusterIdCount() - 1;
+        }
 
-    //! Updates positions of cluster boundaries wrt to children and child clusters
-    void updateClusterPositions(double boundaryDist = 1.0);
+        //! Updates positions of cluster boundaries wrt to children and child clusters
+        void updateClusterPositions(double boundaryDist = 1.0);
 
-    //! Returns the parent cluster of node \a v.
-    cluster clusterOf(node v)
-    {
-        return m_pClusterGraph->clusterOf(v);
-    }
+        //! Returns the parent cluster of node \a v.
+        cluster clusterOf(node v)
+        {
+            return m_pClusterGraph->clusterOf(v);
+        }
 
-    //@}
+        //@}
 
-};
+    };
 
 
 } // end namespace ogdf

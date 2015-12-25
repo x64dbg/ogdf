@@ -34,35 +34,35 @@ class drop_zero_coefficients_action : public CoinPresolveAction
 {
 
     const int nzeros_;
-    const dropped_zero *const zeros_;
+    const dropped_zero* const zeros_;
 
     drop_zero_coefficients_action(int nzeros,
-                                  const dropped_zero *zeros,
-                                  const CoinPresolveAction *next) :
+                                  const dropped_zero* zeros,
+                                  const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nzeros_(nzeros), zeros_(zeros)
     {}
 
 public:
-    const char *name() const
+    const char* name() const
     {
         return ("drop_zero_coefficients_action");
     }
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-            int *checkcols,
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            int* checkcols,
             int ncheckcols,
-            const CoinPresolveAction *next);
+            const CoinPresolveAction* next);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     ~drop_zero_coefficients_action()
     {
-        deleteAction(zeros_,dropped_zero*);
+        deleteAction(zeros_, dropped_zero*);
     }
 };
 
-const CoinPresolveAction *drop_zero_coefficients(CoinPresolveMatrix *prob,
-        const CoinPresolveAction *next);
+const CoinPresolveAction* drop_zero_coefficients(CoinPresolveMatrix* prob,
+        const CoinPresolveAction* next);
 
 #endif

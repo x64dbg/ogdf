@@ -88,9 +88,9 @@ public:
     /// Column dimension of matrix
     int          ncols_;
     /// Pointer to Model object for this instance
-    ClpInterior        *model_;
+    ClpInterior*        model_;
     /// Diagonal array 1
-    double         *diag1_;
+    double*         diag1_;
     /// Constant diagonal 2
     double         diag2_;
     //@}
@@ -100,7 +100,7 @@ public:
     ClpLsqr();
 
     /** Constructor for use with Pdco model (note modified for pdco!!!!) */
-    ClpLsqr(ClpInterior *model);
+    ClpLsqr(ClpInterior* model);
     /// Copy constructor
     ClpLsqr(const ClpLsqr &);
     /// Assignment operator. This copies the data
@@ -112,18 +112,18 @@ public:
     /**@name Methods */
     //@{
     /// Set an int parameter
-    bool setParam(char *parmName, int parmValue);
+    bool setParam(char* parmName, int parmValue);
     /// Call the Lsqr algorithm
-    void do_lsqr( CoinDenseVector<double> &b,
-                  double damp, double atol, double btol, double conlim, int itnlim,
-                  bool show, Info info, CoinDenseVector<double> &x , int *istop,
-                  int *itn, Outfo *outfo, bool precon, CoinDenseVector<double> &Pr );
+    void do_lsqr(CoinDenseVector<double> & b,
+                 double damp, double atol, double btol, double conlim, int itnlim,
+                 bool show, Info info, CoinDenseVector<double> & x , int* istop,
+                 int* itn, Outfo* outfo, bool precon, CoinDenseVector<double> & Pr);
     /// Matrix-vector multiply - implemented by user
-    void matVecMult( int, CoinDenseVector<double> *, CoinDenseVector<double> *);
+    void matVecMult(int, CoinDenseVector<double>*, CoinDenseVector<double>*);
 
-    void matVecMult( int, CoinDenseVector<double> &, CoinDenseVector<double> &);
+    void matVecMult(int, CoinDenseVector<double> &, CoinDenseVector<double> &);
     /// diag1 - we just borrow as it is part of a CoinDenseVector<double>
-    void borrowDiag1(double * array)
+    void borrowDiag1(double* array)
     {
         diag1_ = array;
     };

@@ -217,7 +217,7 @@ public:
                      const double max_tab = 1e7);
 
     /// Constructor from CglParam
-    CglRedSplitParam(const CglParam &source,
+    CglRedSplitParam(const CglParam & source,
                      const double lub = 1000.0,
                      const double eps_elim = 1e-12,
                      const double eps_relax_abs = 1e-8,
@@ -234,13 +234,13 @@ public:
                      const double max_tab = 1e7);
 
     /// Copy constructor
-    CglRedSplitParam(const CglRedSplitParam &source);
+    CglRedSplitParam(const CglRedSplitParam & source);
 
     /// Clone
     virtual CglRedSplitParam* clone() const;
 
     /// Assignment operator
-    virtual CglRedSplitParam& operator=(const CglRedSplitParam &rhs);
+    virtual CglRedSplitParam & operator=(const CglRedSplitParam & rhs);
 
     /// Destructor
     virtual ~CglRedSplitParam();

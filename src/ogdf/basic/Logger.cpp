@@ -46,21 +46,21 @@
 namespace ogdf
 {
 
-// initializers
+    // initializers
 #ifdef OGDF_DEBUG
-Logger::Level Logger::m_globalloglevel = Logger::LL_DEFAULT;
-Logger::Level Logger::m_minimumloglevel = Logger::LL_MINOR;
-Logger::Level Logger::m_globallibraryloglevel = Logger::LL_DEFAULT;
+    Logger::Level Logger::m_globalloglevel = Logger::LL_DEFAULT;
+    Logger::Level Logger::m_minimumloglevel = Logger::LL_MINOR;
+    Logger::Level Logger::m_globallibraryloglevel = Logger::LL_DEFAULT;
 #else // RELEASE
-Logger::Level Logger::m_globalloglevel = Logger::LL_ALARM; // forbid anything except alarms and forced writes -> logging is off
-Logger::Level Logger::m_globallibraryloglevel = Logger::LL_ALARM;
-Logger::Level Logger::m_minimumloglevel = Logger::LL_MEDIUM;
+    Logger::Level Logger::m_globalloglevel = Logger::LL_ALARM; // forbid anything except alarms and forced writes -> logging is off
+    Logger::Level Logger::m_globallibraryloglevel = Logger::LL_ALARM;
+    Logger::Level Logger::m_minimumloglevel = Logger::LL_MEDIUM;
 #endif
 
-std::ostream* Logger::world = &std::cout;
-std::ostream Logger::nirvana(NULL);
+    std::ostream* Logger::world = &std::cout;
+    std::ostream Logger::nirvana(NULL);
 
-bool Logger::m_globalstatisticmode = false;
+    bool Logger::m_globalstatisticmode = false;
 
 }
 

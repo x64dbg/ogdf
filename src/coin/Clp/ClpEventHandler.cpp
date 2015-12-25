@@ -15,7 +15,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpEventHandler::ClpEventHandler (ClpSimplex * model) :
+ClpEventHandler::ClpEventHandler(ClpSimplex* model) :
     model_(model)
 {
 
@@ -24,7 +24,7 @@ ClpEventHandler::ClpEventHandler (ClpSimplex * model) :
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpEventHandler::ClpEventHandler (const ClpEventHandler & rhs)
+ClpEventHandler::ClpEventHandler(const ClpEventHandler & rhs)
     : model_(rhs.model_)
 {
 }
@@ -32,7 +32,7 @@ ClpEventHandler::ClpEventHandler (const ClpEventHandler & rhs)
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpEventHandler::~ClpEventHandler ()
+ClpEventHandler::~ClpEventHandler()
 {
 }
 
@@ -40,16 +40,16 @@ ClpEventHandler::~ClpEventHandler ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpEventHandler &
-ClpEventHandler::operator=(const ClpEventHandler& rhs)
+ClpEventHandler::operator=(const ClpEventHandler & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         model_ = rhs.model_;
     }
     return *this;
 }
 // Clone
-ClpEventHandler *
+ClpEventHandler*
 ClpEventHandler::clone() const
 {
     return new ClpEventHandler(*this);
@@ -58,14 +58,14 @@ ClpEventHandler::clone() const
 int
 ClpEventHandler::event(Event whichEvent)
 {
-    if (whichEvent != theta)
+    if(whichEvent != theta)
         return -1; // do nothing
     else
         return 0; // say normal exit
 }
 /* set model. */
 void
-ClpEventHandler::setSimplex(ClpSimplex * model)
+ClpEventHandler::setSimplex(ClpSimplex* model)
 {
     model_ = model;
 }
@@ -76,7 +76,7 @@ ClpEventHandler::setSimplex(ClpSimplex * model)
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpDisasterHandler::ClpDisasterHandler (ClpSimplex * model) :
+ClpDisasterHandler::ClpDisasterHandler(ClpSimplex* model) :
     model_(model)
 {
 
@@ -85,7 +85,7 @@ ClpDisasterHandler::ClpDisasterHandler (ClpSimplex * model) :
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpDisasterHandler::ClpDisasterHandler (const ClpDisasterHandler & rhs)
+ClpDisasterHandler::ClpDisasterHandler(const ClpDisasterHandler & rhs)
     : model_(rhs.model_)
 {
 }
@@ -93,7 +93,7 @@ ClpDisasterHandler::ClpDisasterHandler (const ClpDisasterHandler & rhs)
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpDisasterHandler::~ClpDisasterHandler ()
+ClpDisasterHandler::~ClpDisasterHandler()
 {
 }
 
@@ -101,9 +101,9 @@ ClpDisasterHandler::~ClpDisasterHandler ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpDisasterHandler &
-ClpDisasterHandler::operator=(const ClpDisasterHandler& rhs)
+ClpDisasterHandler::operator=(const ClpDisasterHandler & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         model_ = rhs.model_;
     }
@@ -111,7 +111,7 @@ ClpDisasterHandler::operator=(const ClpDisasterHandler& rhs)
 }
 /* set model. */
 void
-ClpDisasterHandler::setSimplex(ClpSimplex * model)
+ClpDisasterHandler::setSimplex(ClpSimplex* model)
 {
     model_ = model;
 }

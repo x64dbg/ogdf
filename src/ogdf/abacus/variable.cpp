@@ -41,110 +41,110 @@ namespace abacus
 {
 
 
-int Variable::genColumn(
-    Active<Constraint, Variable> *actCon,
-    Column &col) const
-{
-    double eps      = master_->machineEps();
-    double minusEps = -eps;
-    double co;
-    int    n        = actCon->number();
-
-    expand();
-
-    for (int i = 0; i < n; i++)
+    int Variable::genColumn(
+        Active<Constraint, Variable>* actCon,
+        Column & col) const
     {
-        co = (*actCon)[i]->coeff(this);
-        if (co > eps || co < minusEps) col.insert(i,co);
+        double eps      = master_->machineEps();
+        double minusEps = -eps;
+        double co;
+        int    n        = actCon->number();
+
+        expand();
+
+        for(int i = 0; i < n; i++)
+        {
+            co = (*actCon)[i]->coeff(this);
+            if(co > eps || co < minusEps) col.insert(i, co);
+        }
+
+        col.obj(obj());
+        col.lBound(lBound());
+        col.uBound(uBound());
+
+        compress();
+
+        return col.nnz();
+
     }
 
-    col.obj(obj());
-    col.lBound(lBound());
-    col.uBound(uBound());
 
-    compress();
-
-    return col.nnz();
-
-}
-
-
-bool Variable::violated(double rc) const
-{
-    if (master_->optSense()->max())
+    bool Variable::violated(double rc) const
     {
-        return rc > master_->eps();
-    }
-    else
-    {
-        return rc < -master_->eps();
-    }
-}
-
-
-bool Variable::violated(
-    Active<Constraint, Variable> *constraints,
-    double *y,
-    double *r) const
-{
-    double rc = redCost(constraints, y);
-
-    if (r) *r = rc;
-
-    return violated(rc);
-}
-
-
-double Variable::redCost(
-    Active<Constraint, Variable> *actCon,
-    double *y) const
-{
-    double c;
-    double eps = master_->machineEps();
-    double minusEps = -eps;
-    double rc = obj();
-    int    n  = actCon->number();
-
-    expand();
-
-    for (int i = 0; i < n; i++)
-    {
-        c = (*actCon)[i]->coeff(this);
-        if (c > eps || c < minusEps)
-            rc -= y[i] * c;
+        if(master_->optSense()->max())
+        {
+            return rc > master_->eps();
+        }
+        else
+        {
+            return rc < -master_->eps();
+        }
     }
 
-    compress();
 
-    return rc;
-}
+    bool Variable::violated(
+        Active<Constraint, Variable>* constraints,
+        double* y,
+        double* r) const
+    {
+        double rc = redCost(constraints, y);
 
+        if(r) *r = rc;
 
-bool Variable::useful(
-    Active<Constraint, Variable> *actCon,
-    double *y,
-    double lpVal) const
-{
-    if (!discrete()) return true;
-
-    double rc = redCost(actCon, y);
-
-    if (master_->optSense()->max())
-        return (lpVal + rc > master_->primalBound());
-    else
-        return (lpVal + rc < master_->primalBound());
-}
+        return violated(rc);
+    }
 
 
-void Variable::printCol(
-    ostream &out,
-    Active<Constraint, Variable> *constraints) const
-{
-    Column col(master_, constraints->number());
+    double Variable::redCost(
+        Active<Constraint, Variable>* actCon,
+        double* y) const
+    {
+        double c;
+        double eps = master_->machineEps();
+        double minusEps = -eps;
+        double rc = obj();
+        int    n  = actCon->number();
 
-    genColumn(constraints, col);
+        expand();
 
-    out << col;
-}
+        for(int i = 0; i < n; i++)
+        {
+            c = (*actCon)[i]->coeff(this);
+            if(c > eps || c < minusEps)
+                rc -= y[i] * c;
+        }
+
+        compress();
+
+        return rc;
+    }
+
+
+    bool Variable::useful(
+        Active<Constraint, Variable>* actCon,
+        double* y,
+        double lpVal) const
+    {
+        if(!discrete()) return true;
+
+        double rc = redCost(actCon, y);
+
+        if(master_->optSense()->max())
+            return (lpVal + rc > master_->primalBound());
+        else
+            return (lpVal + rc < master_->primalBound());
+    }
+
+
+    void Variable::printCol(
+        ostream & out,
+        Active<Constraint, Variable>* constraints) const
+    {
+        Column col(master_, constraints->number());
+
+        genColumn(constraints, col);
+
+        out << col;
+    }
 
 } //namespace abacus

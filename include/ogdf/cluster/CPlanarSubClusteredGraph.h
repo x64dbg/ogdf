@@ -55,38 +55,38 @@
 namespace ogdf
 {
 
-//! Constructs a c-planar subclustered graph of the input on base of a spanning tree
-class OGDF_EXPORT CPlanarSubClusteredGraph
-{
+    //! Constructs a c-planar subclustered graph of the input on base of a spanning tree
+    class OGDF_EXPORT CPlanarSubClusteredGraph
+    {
 
-public:
+    public:
 
-    CPlanarSubClusteredGraph() { }
+        CPlanarSubClusteredGraph() { }
 
-    virtual void call(const ClusterGraph& CG, EdgeArray<bool>& inSub);
+        virtual void call(const ClusterGraph & CG, EdgeArray<bool> & inSub);
 
-    virtual void call(
-        const ClusterGraph& CGO,
-        EdgeArray<bool>& inSub,
-        List<edge>& leftOver);
+        virtual void call(
+            const ClusterGraph & CGO,
+            EdgeArray<bool> & inSub,
+            List<edge> & leftOver);
 
-    //! Uses \a edgeWeight to compute clustered planar subgraph
-    virtual void call(
-        const ClusterGraph& CGO,
-        EdgeArray<bool>& inSub,
-        List<edge>& leftOver,
-        EdgeArray<double>& edgeWeight);
+        //! Uses \a edgeWeight to compute clustered planar subgraph
+        virtual void call(
+            const ClusterGraph & CGO,
+            EdgeArray<bool> & inSub,
+            List<edge> & leftOver,
+            EdgeArray<double> & edgeWeight);
 
-private:
+    private:
 
-    //****************************************************
-    //data fields
+        //****************************************************
+        //data fields
 
-    //store status of original edge: in subclustered graph?
-    //also used to check spanning tree
-    EdgeArray<int> m_edgeStatus;
+        //store status of original edge: in subclustered graph?
+        //also used to check spanning tree
+        EdgeArray<int> m_edgeStatus;
 
-};//cplanarsubclusteredgraph
+    };//cplanarsubclusteredgraph
 
 } // end namespace ogdf
 

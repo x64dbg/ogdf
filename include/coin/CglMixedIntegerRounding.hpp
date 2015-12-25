@@ -43,16 +43,16 @@ public:
     CglMixIntRoundVUB() : var_(-1), val_(-1) {}
 
     // Copy constructor
-    CglMixIntRoundVUB(const CglMixIntRoundVUB& source)
+    CglMixIntRoundVUB(const CglMixIntRoundVUB & source)
     {
         var_ = source.var_;
         val_ = source.val_;
     }
 
     // Assignment operator
-    CglMixIntRoundVUB& operator=(const CglMixIntRoundVUB& rhs)
+    CglMixIntRoundVUB & operator=(const CglMixIntRoundVUB & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             var_ = rhs.var_;
             val_ = rhs.val_;
@@ -101,7 +101,7 @@ typedef CglMixIntRoundVUB CglMixIntRoundVLB;
 class CglMixedIntegerRounding : public CglCutGenerator
 {
 
-    friend void CglMixedIntegerRoundingUnitTest(const OsiSolverInterface * siP,
+    friend void CglMixedIntegerRoundingUnitTest(const OsiSolverInterface* siP,
             const std::string mpdDir);
 
 
@@ -151,86 +151,86 @@ public:
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglMixedIntegerRounding ();
+    CglMixedIntegerRounding();
 
     /// Alternate Constructor
-    CglMixedIntegerRounding (const int maxaggr,
-                             const bool multiply,
-                             const int criterion,
-                             const int preproc = -1);
+    CglMixedIntegerRounding(const int maxaggr,
+                            const bool multiply,
+                            const int criterion,
+                            const int preproc = -1);
 
     /// Copy constructor
-    CglMixedIntegerRounding (
+    CglMixedIntegerRounding(
         const CglMixedIntegerRounding &);
 
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
     CglMixedIntegerRounding &
     operator=(
-        const CglMixedIntegerRounding& rhs);
+        const CglMixedIntegerRounding & rhs);
 
     /// Destructor
     virtual
-    ~CglMixedIntegerRounding ();
+    ~CglMixedIntegerRounding();
     /// This can be used to refresh any inforamtion
-    virtual void refreshSolver(OsiSolverInterface * solver);
+    virtual void refreshSolver(OsiSolverInterface* solver);
     /// Create C++ lines to get to current state
-    virtual std::string generateCpp( FILE * fp);
+    virtual std::string generateCpp(FILE* fp);
     //@}
 
     //---------------------------------------------------------------------------
     /**@name Set and get methods */
     //@{
     /// Set MAXAGGR_
-    inline void setMAXAGGR_ (int maxaggr)
+    inline void setMAXAGGR_(int maxaggr)
     {
-        if (maxaggr > 0)
+        if(maxaggr > 0)
         {
             MAXAGGR_ = maxaggr;
         }
         else
         {
             throw CoinError("Unallowable value. maxaggr must be > 0",
-                            "gutsOfConstruct","CglMixedIntegerRounding");
+                            "gutsOfConstruct", "CglMixedIntegerRounding");
         }
     }
 
     /// Get MAXAGGR_
-    inline int getMAXAGGR_ () const
+    inline int getMAXAGGR_() const
     {
         return MAXAGGR_;
     }
 
     /// Set MULTIPLY_
-    inline void setMULTIPLY_ (bool multiply)
+    inline void setMULTIPLY_(bool multiply)
     {
         MULTIPLY_ = multiply;
     }
 
     /// Get MULTIPLY_
-    inline bool getMULTIPLY_ () const
+    inline bool getMULTIPLY_() const
     {
         return MULTIPLY_;
     }
 
     /// Set CRITERION_
-    inline void setCRITERION_ (int criterion)
+    inline void setCRITERION_(int criterion)
     {
-        if ((criterion >= 1) && (criterion <= 3))
+        if((criterion >= 1) && (criterion <= 3))
         {
             CRITERION_ = criterion;
         }
         else
         {
             throw CoinError("Unallowable value. criterion must be 1, 2 or 3",
-                            "gutsOfConstruct","CglMixedIntegerRounding");
+                            "gutsOfConstruct", "CglMixedIntegerRounding");
         }
     }
 
     /// Get CRITERION_
-    inline int getCRITERION_ () const
+    inline int getCRITERION_() const
     {
         return CRITERION_;
     }
@@ -248,78 +248,78 @@ private:
     // Private member methods
 
     // Construct
-    void gutsOfConstruct (const int maxaggr,
-                          const bool multiply,
-                          const int criterion,
-                          const int preproc);
+    void gutsOfConstruct(const int maxaggr,
+                         const bool multiply,
+                         const int criterion,
+                         const int preproc);
 
     // Delete
     void gutsOfDelete();
 
     // Copy
-    void gutsOfCopy (const CglMixedIntegerRounding& rhs);
+    void gutsOfCopy(const CglMixedIntegerRounding & rhs);
 
     // Do preprocessing.
     // It determines the type of each row. It also identifies the variable
     // upper bounds and variable lower bounds.
     // It may change sense and RHS for ranged rows
-    void mixIntRoundPreprocess(const OsiSolverInterface& si) const;
+    void mixIntRoundPreprocess(const OsiSolverInterface & si) const;
 
     // Determine the type of a given row.
-    RowType determineRowType(const OsiSolverInterface& si,
+    RowType determineRowType(const OsiSolverInterface & si,
                              const int rowLen, const int* ind,
                              const double* coef, const char sense,
                              const double rhs) const;
 
     // Generate MIR cuts
-    void generateMirCuts( const OsiSolverInterface& si,
-                          const double* xlp,
-                          const double* colUpperBound,
-                          const double* colLowerBound,
-                          const CoinPackedMatrix& matrixByRow,
-                          const double* LHS,
-                          const double* coefByRow,
-                          const int* colInds,
-                          const int* rowStarts,
-                          const int* rowLengths,
-                          //const CoinPackedMatrix& matrixByCol,
-                          const double* coefByCol,
-                          const int* rowInds,
-                          const int* colStarts,
-                          const int* colLengths,
-                          OsiCuts& cs ) const;
+    void generateMirCuts(const OsiSolverInterface & si,
+                         const double* xlp,
+                         const double* colUpperBound,
+                         const double* colLowerBound,
+                         const CoinPackedMatrix & matrixByRow,
+                         const double* LHS,
+                         const double* coefByRow,
+                         const int* colInds,
+                         const int* rowStarts,
+                         const int* rowLengths,
+                         //const CoinPackedMatrix& matrixByCol,
+                         const double* coefByCol,
+                         const int* rowInds,
+                         const int* colStarts,
+                         const int* colLengths,
+                         OsiCuts & cs) const;
 
     // Copy row selected to CoinPackedVector
-    void copyRowSelected( const int iAggregate,
-                          const int rowSelected,
-                          std::set<int>& setRowsAggregated,
-                          int* listRowsAggregated,
-                          double* xlpExtra,
-                          const char sen,
-                          const double rhs,
-                          const double lhs,
-                          const CoinPackedMatrix& matrixByRow,
-                          CoinPackedVector& rowToAggregate,
-                          double& rhsToAggregate) const;
+    void copyRowSelected(const int iAggregate,
+                         const int rowSelected,
+                         std::set<int> & setRowsAggregated,
+                         int* listRowsAggregated,
+                         double* xlpExtra,
+                         const char sen,
+                         const double rhs,
+                         const double lhs,
+                         const CoinPackedMatrix & matrixByRow,
+                         CoinPackedVector & rowToAggregate,
+                         double & rhsToAggregate) const;
 
     // Select a row to aggregate
-    bool selectRowToAggregate( const OsiSolverInterface& si,
-                               const CoinPackedVector& rowAggregated,
-                               const double* colUpperBound,
-                               const double* colLowerBound,
-                               const std::set<int>& setRowsAggregated,
-                               const double* xlp, const double* coefByCol,
-                               const int* rowInds, const int* colStarts,
-                               const int* colLengths,
-                               int& rowSelected,
-                               int& colSelected ) const;
+    bool selectRowToAggregate(const OsiSolverInterface & si,
+                              const CoinPackedVector & rowAggregated,
+                              const double* colUpperBound,
+                              const double* colLowerBound,
+                              const std::set<int> & setRowsAggregated,
+                              const double* xlp, const double* coefByCol,
+                              const int* rowInds, const int* colStarts,
+                              const int* colLengths,
+                              int & rowSelected,
+                              int & colSelected) const;
 
     // Aggregation heuristic.
     // Combines one or more rows of the original matrix
-    void aggregateRow( const int colSelected,
-                       CoinPackedVector& rowToAggregate, double rhs,
-                       CoinPackedVector& rowAggregated,
-                       double& rhsAggregated ) const;
+    void aggregateRow(const int colSelected,
+                      CoinPackedVector & rowToAggregate, double rhs,
+                      CoinPackedVector & rowAggregated,
+                      double & rhsAggregated) const;
 
     // Choose the bound substitution based on the criteria defined by the user
     inline bool isLowerSubst(const double inf,
@@ -329,64 +329,64 @@ private:
                              const double UB) const;
 
     // Bound substitution heuristic
-    bool boundSubstitution( const OsiSolverInterface& si,
-                            const CoinPackedVector& rowAggregated,
-                            const double* xlp,
-                            const double* xlpExtra,
-                            const double* colUpperBound,
-                            const double* colLowerBound,
-                            CoinPackedVector& mixedKnapsack,
-                            double& rhsMixedKnapsack, double& sStar,
-                            CoinPackedVector& contVariablesInS ) const;
+    bool boundSubstitution(const OsiSolverInterface & si,
+                           const CoinPackedVector & rowAggregated,
+                           const double* xlp,
+                           const double* xlpExtra,
+                           const double* colUpperBound,
+                           const double* colLowerBound,
+                           CoinPackedVector & mixedKnapsack,
+                           double & rhsMixedKnapsack, double & sStar,
+                           CoinPackedVector & contVariablesInS) const;
 
     // c-MIR separation heuristic
-    bool cMirSeparation ( const OsiSolverInterface& si,
-                          const CoinPackedMatrix& matrixByRow,
-                          const CoinPackedVector& rowAggregated,
-                          const int* listRowsAggregated,
-                          const char* sense, const double* RHS,
-                          //const double* coefByRow,
-                          //const int* colInds, const int* rowStarts,
-                          //const int* rowLengths,
-                          const double* xlp, const double sStar,
-                          const double* colUpperBound,
-                          const double* colLowerBound,
-                          const CoinPackedVector& mixedKnapsack,
-                          const double& rhsMixedKnapsack,
-                          const CoinPackedVector& contVariablesInS,
-                          OsiRowCut& flowCut ) const;
+    bool cMirSeparation(const OsiSolverInterface & si,
+                        const CoinPackedMatrix & matrixByRow,
+                        const CoinPackedVector & rowAggregated,
+                        const int* listRowsAggregated,
+                        const char* sense, const double* RHS,
+                        //const double* coefByRow,
+                        //const int* colInds, const int* rowStarts,
+                        //const int* rowLengths,
+                        const double* xlp, const double sStar,
+                        const double* colUpperBound,
+                        const double* colLowerBound,
+                        const CoinPackedVector & mixedKnapsack,
+                        const double & rhsMixedKnapsack,
+                        const CoinPackedVector & contVariablesInS,
+                        OsiRowCut & flowCut) const;
 
     // function to create one c-MIR inequality
-    void cMirInequality( const int numInt,
-                         const double delta,
-                         const double numeratorBeta,
-                         const int *knapsackIndices,
-                         const double* knapsackElements,
-                         const double* xlp,
-                         const double sStar,
-                         const double* colUpperBound,
-                         const std::set<int>& setC,
-                         CoinPackedVector& cMIR,
-                         double& rhscMIR,
-                         double& sCoef,
-                         double& violation) const;
+    void cMirInequality(const int numInt,
+                        const double delta,
+                        const double numeratorBeta,
+                        const int* knapsackIndices,
+                        const double* knapsackElements,
+                        const double* xlp,
+                        const double sStar,
+                        const double* colUpperBound,
+                        const std::set<int> & setC,
+                        CoinPackedVector & cMIR,
+                        double & rhscMIR,
+                        double & sCoef,
+                        double & violation) const;
 
     // function to compute G
-    inline double functionG( const double d, const double f ) const;
+    inline double functionG(const double d, const double f) const;
 
     // function to print statistics (used only in debug mode)
     void printStats(
         std::ofstream & fout,
         const bool hasCut,
-        const OsiSolverInterface& si,
-        const CoinPackedVector& rowAggregated,
-        const double& rhsAggregated, const double* xlp,
+        const OsiSolverInterface & si,
+        const CoinPackedVector & rowAggregated,
+        const double & rhsAggregated, const double* xlp,
         const double* xlpExtra,
         const int* listRowsAggregated,
         const int* listColsSelected,
         const int level,
         const double* colUpperBound,
-        const double* colLowerBound ) const;
+        const double* colLowerBound) const;
 
 
 private:
@@ -446,9 +446,9 @@ private:
     // with variable upper or lower bound
     mutable int* indRowContVB_;
     // Sense of rows (modified if ranges)
-    mutable char * sense_;
+    mutable char* sense_;
     // RHS of rows (modified if ranges)
-    mutable double * RHS_;
+    mutable double* RHS_;
 
 };
 
@@ -458,7 +458,7 @@ private:
 // have to be compiled into the library. And that's a gain, because the
 // library should be compiled with optimization on, but this method should be
 // compiled with debugging.
-void CglMixedIntegerRoundingUnitTest(const OsiSolverInterface * siP,
+void CglMixedIntegerRoundingUnitTest(const OsiSolverInterface* siP,
                                      const std::string mpdDir);
 
 #endif

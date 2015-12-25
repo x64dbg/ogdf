@@ -25,26 +25,26 @@
 
 void
 CglLandPUnitTest(
-    OsiSolverInterface * si,
-    const std::string &mpsDir)
+    OsiSolverInterface* si,
+    const std::string & mpsDir)
 {
     CoinRelFltEq eq(1e-05);
     // Test default constructor
     {
         CglLandP aGenerator;
-        assert(aGenerator.parameter().pivotLimit==20);
-        assert(aGenerator.parameter().maxCutPerRound==5000);
-        assert(aGenerator.parameter().failedPivotLimit==1);
-        assert(aGenerator.parameter().degeneratePivotLimit==0);
+        assert(aGenerator.parameter().pivotLimit == 20);
+        assert(aGenerator.parameter().maxCutPerRound == 5000);
+        assert(aGenerator.parameter().failedPivotLimit == 1);
+        assert(aGenerator.parameter().degeneratePivotLimit == 0);
         assert(eq(aGenerator.parameter().pivotTol, 1e-04));
         assert(eq(aGenerator.parameter().away, 5e-04));
         assert(eq(aGenerator.parameter().timeLimit, COIN_DBL_MAX));
         assert(eq(aGenerator.parameter().singleCutTimeLimit, COIN_DBL_MAX));
-        assert(aGenerator.parameter().useTableauRow==true);
-        assert(aGenerator.parameter().modularize==false);
-        assert(aGenerator.parameter().strengthen==true);
-        assert(aGenerator.parameter().perturb==true);
-        assert(aGenerator.parameter().pivotSelection==CglLandP::mostNegativeRc);
+        assert(aGenerator.parameter().useTableauRow == true);
+        assert(aGenerator.parameter().modularize == false);
+        assert(aGenerator.parameter().strengthen == true);
+        assert(aGenerator.parameter().perturb == true);
+        assert(aGenerator.parameter().pivotSelection == CglLandP::mostNegativeRc);
     }
 
 
@@ -65,7 +65,7 @@ CglLandPUnitTest(
             b.parameter().modularize = true;
             b.parameter().strengthen = false;
             b.parameter().perturb = false;
-            b.parameter().pivotSelection=CglLandP::bestPivot;
+            b.parameter().pivotSelection = CglLandP::bestPivot;
             //Test Copy
             CglLandP c(b);
             assert(c.parameter().pivotLimit == 100);
@@ -81,7 +81,7 @@ CglLandPUnitTest(
             assert(c.parameter().strengthen == false);
             assert(c.parameter().perturb == false);
             assert(c.parameter().pivotSelection == CglLandP::bestPivot);
-            a=b;
+            a = b;
             assert(a.parameter().pivotLimit == 100);
             assert(a.parameter().maxCutPerRound == 100);
             assert(a.parameter().failedPivotLimit == 10);
@@ -121,24 +121,24 @@ CglLandPUnitTest(
         // Can be improved by first pivoting s2 in and s4 out, then s1 in and s3 out
         // to x2 <= 0.25
         {
-            int start[2] = {0,4};
-            int length[2] = {4,4};
-            int rows[8] = {0,1,2,3,0,1,2,3};
-            double elements[8] = {2.0,-2.0,7.0,-7.0,2.0,2.0,4.0,4.0};
-            CoinPackedMatrix  columnCopy(true,4,2,8,elements,rows,start,length);
+            int start[2] = {0, 4};
+            int length[2] = {4, 4};
+            int rows[8] = {0, 1, 2, 3, 0, 1, 2, 3};
+            double elements[8] = {2.0, -2.0, 7.0, -7.0, 2.0, 2.0, 4.0, 4.0};
+            CoinPackedMatrix  columnCopy(true, 4, 2, 8, elements, rows, start, length);
 
-            double rowLower[4]= {-COIN_DBL_MAX,-COIN_DBL_MAX,
-                                 -COIN_DBL_MAX,-COIN_DBL_MAX
-                                };
-            double rowUpper[4]= {3.,1.,8.,1.};
-            double colLower[2]= {0.0,0.0};
-            double colUpper[2]= {1.0,1.0};
-            double obj[2]= {-1,-1};
-            int intVar[2]= {0,1};
+            double rowLower[4] = { -COIN_DBL_MAX, -COIN_DBL_MAX,
+                                   -COIN_DBL_MAX, -COIN_DBL_MAX
+                                 };
+            double rowUpper[4] = {3., 1., 8., 1.};
+            double colLower[2] = {0.0, 0.0};
+            double colUpper[2] = {1.0, 1.0};
+            double obj[2] = { -1, -1};
+            int intVar[2] = {0, 1};
 
-            OsiSolverInterface  * siP = si->clone();
+            OsiSolverInterface*   siP = si->clone();
             siP->loadProblem(columnCopy, colLower, colUpper, obj, rowLower, rowUpper);
-            siP->setInteger(intVar,2);
+            siP->setInteger(intVar, 2);
             CglLandP test;
             test.setLogLevel(2);
             test.parameter().sepSpace = CglLandP::Full;
@@ -146,46 +146,46 @@ CglLandPUnitTest(
             // Test generateCuts method
             {
                 OsiCuts cuts;
-                test.generateCuts(*siP,cuts);
+                test.generateCuts(*siP, cuts);
                 cuts.printCuts();
-                assert(cuts.sizeRowCuts()==1);
+                assert(cuts.sizeRowCuts() == 1);
                 OsiRowCut aCut = cuts.rowCut(0);
                 assert(eq(aCut.lb(), -.0714286));
                 CoinPackedVector row = aCut.row();
-                if (row.getNumElements() == 1)
+                if(row.getNumElements() == 1)
                 {
-                    assert(row.getIndices()[0]==1);
-                    assert(eq(row.getElements()[0], -4*.0714286));
+                    assert(row.getIndices()[0] == 1);
+                    assert(eq(row.getElements()[0], -4 * .0714286));
                 }
-                else if (row.getNumElements() == 2)
+                else if(row.getNumElements() == 2)
                 {
-                    assert(row.getIndices()[0]==0);
+                    assert(row.getIndices()[0] == 0);
                     assert(eq(row.getElements()[0], 0.));
-                    assert(row.getIndices()[1]==1);
+                    assert(row.getIndices()[1] == 1);
                     assert(eq(row.getElements()[1], -1));
                 }
                 OsiSolverInterface::ApplyCutsReturnCode rc = siP->applyCuts(cuts);
 
                 siP->resolve();
             }
-            if (0)
+            if(0)
             {
                 OsiCuts cuts;
-                test.generateCuts(*siP,cuts);
+                test.generateCuts(*siP, cuts);
                 cuts.printCuts();
-                assert(cuts.sizeRowCuts()==1);
+                assert(cuts.sizeRowCuts() == 1);
                 OsiRowCut aCut = cuts.rowCut(0);
                 CoinPackedVector row = aCut.row();
-                if (row.getNumElements() == 1)
+                if(row.getNumElements() == 1)
                 {
-                    assert(row.getIndices()[0]==1);
+                    assert(row.getIndices()[0] == 1);
                     assert(eq(row.getElements()[0], -1));
                 }
-                else if (row.getNumElements() == 2)
+                else if(row.getNumElements() == 2)
                 {
-                    assert(row.getIndices()[0]==0);
+                    assert(row.getIndices()[0] == 0);
                     assert(eq(row.getElements()[0], 0.));
-                    assert(row.getIndices()[1]==1);
+                    assert(row.getIndices()[1] == 1);
                     assert(eq(row.getElements()[1], -1));
                 }
                 assert(eq(aCut.lb(), 0.));
@@ -197,127 +197,127 @@ CglLandPUnitTest(
         }
     }
 
-    if (1)  //Test on p0033
+    if(1)   //Test on p0033
     {
         // Setup
-        OsiSolverInterface  * siP = si->clone();
-        std::string fn(mpsDir+"p0033");
-        siP->readMps(fn.c_str(),"mps");
+        OsiSolverInterface*   siP = si->clone();
+        std::string fn(mpsDir + "p0033");
+        siP->readMps(fn.c_str(), "mps");
         siP->activateRowCutDebugger("p0033");
         CglLandP test;
 
         // Solve the LP relaxation of the model and
         // print out ofv for sake of comparison
         siP->initialSolve();
-        double lpRelaxBefore=siP->getObjValue();
-        assert( eq(lpRelaxBefore, 2520.5717391304347) );
+        double lpRelaxBefore = siP->getObjValue();
+        assert(eq(lpRelaxBefore, 2520.5717391304347));
 #ifdef CGL_DEBUG
-        printf("\n\nOrig LP min=%f\n",lpRelaxBefore);
+        printf("\n\nOrig LP min=%f\n", lpRelaxBefore);
 #endif
 
         OsiCuts cuts;
 
         // Test generateCuts method
-        test.generateCuts(*siP,cuts);
+        test.generateCuts(*siP, cuts);
         OsiSolverInterface::ApplyCutsReturnCode rc = siP->applyCuts(cuts);
 
         siP->resolve();
-        double lpRelaxAfter=siP->getObjValue();
+        double lpRelaxAfter = siP->getObjValue();
         //assert( eq(lpRelaxAfter, 2592.1908295194507) );
 
-        std::cout<<"Relaxation after "<<lpRelaxAfter<<std::endl;
-        assert( lpRelaxAfter> 2840. );
+        std::cout << "Relaxation after " << lpRelaxAfter << std::endl;
+        assert(lpRelaxAfter > 2840.);
 #ifdef CGL_DEBUG
-        printf("\n\nOrig LP min=%f\n",lpRelaxBefore);
-        printf("\n\nFinal LP min=%f\n",lpRelaxAfter);
+        printf("\n\nOrig LP min=%f\n", lpRelaxBefore);
+        printf("\n\nFinal LP min=%f\n", lpRelaxAfter);
 #endif
-        assert( lpRelaxBefore < lpRelaxAfter );
+        assert(lpRelaxBefore < lpRelaxAfter);
 
         delete siP;
     }
-    if (1)  //test again with modularization
+    if(1)   //test again with modularization
     {
         // Setup
-        OsiSolverInterface  * siP = si->clone();
-        std::string fn(mpsDir+"p0033");
-        siP->readMps(fn.c_str(),"mps");
+        OsiSolverInterface*   siP = si->clone();
+        std::string fn(mpsDir + "p0033");
+        siP->readMps(fn.c_str(), "mps");
         siP->activateRowCutDebugger("p0033");
         CglLandP test;
         test.parameter().modularize = true;
         // Solve the LP relaxation of the model and
         // print out ofv for sake of comparison
         siP->initialSolve();
-        double lpRelaxBefore=siP->getObjValue();
-        assert( eq(lpRelaxBefore, 2520.5717391304347) );
+        double lpRelaxBefore = siP->getObjValue();
+        assert(eq(lpRelaxBefore, 2520.5717391304347));
 #ifdef CGL_DEBUG
-        printf("\n\nOrig LP min=%f\n",lpRelaxBefore);
+        printf("\n\nOrig LP min=%f\n", lpRelaxBefore);
 #endif
 
         OsiCuts cuts;
 
         // Test generateCuts method
-        test.generateCuts(*siP,cuts);
+        test.generateCuts(*siP, cuts);
         OsiSolverInterface::ApplyCutsReturnCode rc = siP->applyCuts(cuts);
 
         siP->resolve();
-        double lpRelaxAfter=siP->getObjValue();
+        double lpRelaxAfter = siP->getObjValue();
         //assert( eq(lpRelaxAfter, 2592.1908295194507) );
 
-        std::cout<<"Relaxation after "<<lpRelaxAfter<<std::endl;
-        assert( lpRelaxAfter> 2840. );
+        std::cout << "Relaxation after " << lpRelaxAfter << std::endl;
+        assert(lpRelaxAfter > 2840.);
 #ifdef CGL_DEBUG
-        printf("\n\nOrig LP min=%f\n",lpRelaxBefore);
-        printf("\n\nFinal LP min=%f\n",lpRelaxAfter);
+        printf("\n\nOrig LP min=%f\n", lpRelaxBefore);
+        printf("\n\nFinal LP min=%f\n", lpRelaxAfter);
 #endif
-        assert( lpRelaxBefore < lpRelaxAfter );
+        assert(lpRelaxBefore < lpRelaxAfter);
 
         delete siP;
     }
-    if (1)  //test again with alternate pivoting rule
+    if(1)   //test again with alternate pivoting rule
     {
         // Setup
-        OsiSolverInterface  * siP = si->clone();
-        std::string fn(mpsDir+"p0033");
-        siP->readMps(fn.c_str(),"mps");
+        OsiSolverInterface*   siP = si->clone();
+        std::string fn(mpsDir + "p0033");
+        siP->readMps(fn.c_str(), "mps");
         siP->activateRowCutDebugger("p0033");
         CglLandP test;
         test.parameter().pivotSelection = CglLandP::bestPivot;
         // Solve the LP relaxation of the model and
         // print out ofv for sake of comparison
         siP->initialSolve();
-        double lpRelaxBefore=siP->getObjValue();
-        assert( eq(lpRelaxBefore, 2520.5717391304347) );
+        double lpRelaxBefore = siP->getObjValue();
+        assert(eq(lpRelaxBefore, 2520.5717391304347));
 #ifdef CGL_DEBUG
-        printf("\n\nOrig LP min=%f\n",lpRelaxBefore);
+        printf("\n\nOrig LP min=%f\n", lpRelaxBefore);
 #endif
 
         OsiCuts cuts;
 
         // Test generateCuts method
-        test.generateCuts(*siP,cuts);
+        test.generateCuts(*siP, cuts);
         OsiSolverInterface::ApplyCutsReturnCode rc = siP->applyCuts(cuts);
 
         siP->resolve();
-        double lpRelaxAfter=siP->getObjValue();
+        double lpRelaxAfter = siP->getObjValue();
         //assert( eq(lpRelaxAfter, 2592.1908295194507) );
 
-        std::cout<<"Relaxation after "<<lpRelaxAfter<<std::endl;
-        assert( lpRelaxAfter> 2840. );
+        std::cout << "Relaxation after " << lpRelaxAfter << std::endl;
+        assert(lpRelaxAfter > 2840.);
 #ifdef CGL_DEBUG
-        printf("\n\nOrig LP min=%f\n",lpRelaxBefore);
-        printf("\n\nFinal LP min=%f\n",lpRelaxAfter);
+        printf("\n\nOrig LP min=%f\n", lpRelaxBefore);
+        printf("\n\nFinal LP min=%f\n", lpRelaxAfter);
 #endif
-        assert( lpRelaxBefore < lpRelaxAfter );
+        assert(lpRelaxBefore < lpRelaxAfter);
 
         delete siP;
     }
 
-    if (1)  //Finally test code in documentation
+    if(1)   //Finally test code in documentation
     {
         // Setup
-        OsiSolverInterface  * siP = si->clone();
-        std::string fn(mpsDir+"p0033");
-        siP->readMps(fn.c_str(),"mps");
+        OsiSolverInterface*   siP = si->clone();
+        std::string fn(mpsDir + "p0033");
+        siP->readMps(fn.c_str(), "mps");
         siP->activateRowCutDebugger("p0033");
         CglLandP landpGen;
 
@@ -328,10 +328,10 @@ CglLandPUnitTest(
         // Solve the LP relaxation of the model and
         // print out ofv for sake of comparison
         siP->initialSolve();
-        double lpRelaxBefore=siP->getObjValue();
-        assert( eq(lpRelaxBefore, 2520.5717391304347) );
+        double lpRelaxBefore = siP->getObjValue();
+        assert(eq(lpRelaxBefore, 2520.5717391304347));
 #ifdef CGL_DEBUG
-        printf("\n\nOrig LP min=%f\n",lpRelaxBefore);
+        printf("\n\nOrig LP min=%f\n", lpRelaxBefore);
 #endif
 
         OsiCuts cuts;
@@ -341,16 +341,16 @@ CglLandPUnitTest(
         OsiSolverInterface::ApplyCutsReturnCode rc = siP->applyCuts(cuts);
 
         siP->resolve();
-        double lpRelaxAfter=siP->getObjValue();
+        double lpRelaxAfter = siP->getObjValue();
         //assert( eq(lpRelaxAfter, 2592.1908295194507) );
 
-        std::cout<<"Relaxation after "<<lpRelaxAfter<<std::endl;
-        assert( lpRelaxAfter> 2840. );
+        std::cout << "Relaxation after " << lpRelaxAfter << std::endl;
+        assert(lpRelaxAfter > 2840.);
 #ifdef CGL_DEBUG
-        printf("\n\nOrig LP min=%f\n",lpRelaxBefore);
-        printf("\n\nFinal LP min=%f\n",lpRelaxAfter);
+        printf("\n\nOrig LP min=%f\n", lpRelaxBefore);
+        printf("\n\nFinal LP min=%f\n", lpRelaxAfter);
 #endif
-        assert( lpRelaxBefore < lpRelaxAfter );
+        assert(lpRelaxBefore < lpRelaxAfter);
 
         delete siP;
     }

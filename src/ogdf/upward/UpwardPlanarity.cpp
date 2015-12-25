@@ -53,174 +53,174 @@
 namespace ogdf
 {
 
-//
-// General digraphs
-//
+    //
+    // General digraphs
+    //
 
-bool UpwardPlanarity::isUpwardPlanar_embedded(const Graph &G)
-{
-    if (G.representsCombEmbedding() && isAcyclic(G))
+    bool UpwardPlanarity::isUpwardPlanar_embedded(const Graph & G)
     {
-        UpwardPlanarityEmbeddedDigraph p(G);
-        return p.isUpwardPlanarEmbedded();
+        if(G.representsCombEmbedding() && isAcyclic(G))
+        {
+            UpwardPlanarityEmbeddedDigraph p(G);
+            return p.isUpwardPlanarEmbedded();
+        }
+        return false;
     }
-    return false;
-}
 
 
-bool UpwardPlanarity::isUpwardPlanar_embedded(const Graph &G, List<adjEntry> &possibleExternalFaces)
-{
-    if (G.representsCombEmbedding() && isAcyclic(G))
+    bool UpwardPlanarity::isUpwardPlanar_embedded(const Graph & G, List<adjEntry> & possibleExternalFaces)
     {
-        UpwardPlanarityEmbeddedDigraph p(G);
-        return p.isUpwardPlanarEmbedded(possibleExternalFaces);
+        if(G.representsCombEmbedding() && isAcyclic(G))
+        {
+            UpwardPlanarityEmbeddedDigraph p(G);
+            return p.isUpwardPlanarEmbedded(possibleExternalFaces);
+        }
+        return false;
     }
-    return false;
-}
 
 
-//
-// Triconnected digraphs
-//
+    //
+    // Triconnected digraphs
+    //
 
 
-bool UpwardPlanarity::isUpwardPlanar_triconnected(const Graph &G)
-{
-    if (isTriconnected(G) && isAcyclic(G))
+    bool UpwardPlanarity::isUpwardPlanar_triconnected(const Graph & G)
     {
-        Graph H(G);
-        BoyerMyrvold p;
-        if (!p.planarEmbed(H)) return false;
-        return isUpwardPlanar_embedded(H);
+        if(isTriconnected(G) && isAcyclic(G))
+        {
+            Graph H(G);
+            BoyerMyrvold p;
+            if(!p.planarEmbed(H)) return false;
+            return isUpwardPlanar_embedded(H);
+        }
+        return false;
     }
-    return false;
-}
 
 
-bool UpwardPlanarity::upwardPlanarEmbed_triconnected(Graph &G)
-{
-    if (isTriconnected(G) && isAcyclic(G))
+    bool UpwardPlanarity::upwardPlanarEmbed_triconnected(Graph & G)
     {
-        BoyerMyrvold p;
-        if (!p.planarEmbed(G)) return false;
-        return isUpwardPlanar_embedded(G);
+        if(isTriconnected(G) && isAcyclic(G))
+        {
+            BoyerMyrvold p;
+            if(!p.planarEmbed(G)) return false;
+            return isUpwardPlanar_embedded(G);
+        }
+        return false;
     }
-    return false;
-}
 
-//
-// Single-source digraphs
-//
+    //
+    // Single-source digraphs
+    //
 
-bool UpwardPlanarity::isUpwardPlanar_singleSource(const Graph &G)
-{
-    NodeArray<SListPure<adjEntry> > adjacentEdges;
-    return UpwardPlanaritySingleSource::testAndFindEmbedding(G, false, adjacentEdges);
-}
-
-
-bool UpwardPlanarity::upwardPlanarEmbed_singleSource(Graph &G)
-{
-    NodeArray<SListPure<adjEntry> > adjacentEdges(G);
-    if(UpwardPlanaritySingleSource::testAndFindEmbedding(G, true, adjacentEdges) == false)
-        return false;
-
-    node superSink;
-    SList<edge> augmentedEdges;
-    UpwardPlanaritySingleSource::embedAndAugment(G, adjacentEdges, false, superSink, augmentedEdges);
-
-    return true;
-}
-
-
-bool UpwardPlanarity::upwardPlanarAugment_singleSource(Graph &G)
-{
-    node superSink;
-    SList<edge> augmentedEdges;
-
-    return upwardPlanarAugment_singleSource(G, superSink, augmentedEdges);
-}
-
-
-bool UpwardPlanarity::upwardPlanarAugment_singleSource(
-    Graph &G,
-    node &superSink,
-    SList<edge> &augmentedEdges)
-{
-    NodeArray<SListPure<adjEntry> > adjacentEdges(G);
-    if(UpwardPlanaritySingleSource::testAndFindEmbedding(G, true, adjacentEdges) == false)
-        return false;
-
-    UpwardPlanaritySingleSource::embedAndAugment(G, adjacentEdges, true, superSink, augmentedEdges);
-    return true;
-}
-
-
-bool UpwardPlanarity::isUpwardPlanar_singleSource_embedded(
-    const ConstCombinatorialEmbedding &E,
-    SList<face> &externalFaces)
-{
-    const Graph &G = E;
-    OGDF_ASSERT(G.representsCombEmbedding());
-
-    externalFaces.clear();
-
-    // trivial cases
-    if(G.empty())
-        return true;
-
-    if(isAcyclic(G) == false)
-        return false;
-
-    // determine the single source in G
-    node s;
-    if(!hasSingleSource(G,s))
-        return false;
-
-    // construct face-sink graph anf find possible external faces
-    FaceSinkGraph F(E,s);
-    F.possibleExternalFaces(externalFaces);
-
-    return !externalFaces.empty();
-}
-
-
-bool UpwardPlanarity::upwardPlanarAugment_singleSource_embedded(
-    Graph &G,
-    node  &superSink,
-    SList<edge> &augmentedEdges)
-{
-    OGDF_ASSERT(G.representsCombEmbedding());
-
-    // trivial cases
-    if(G.empty())
-        return true;
-
-    if(isAcyclic(G) == false)
-        return false;
-
-    // determine the single source in G
-    node s;
-    if(!hasSingleSource(G,s))
-        return false;
-
-    // construct embedding represented by G and face-sink graph
-    ConstCombinatorialEmbedding E(G);
-    FaceSinkGraph F(E,s);
-
-    // find possible external faces
-    SList<face> externalFaces;
-    F.possibleExternalFaces(externalFaces);
-
-    if (externalFaces.empty())
-        return false;
-
-    else
+    bool UpwardPlanarity::isUpwardPlanar_singleSource(const Graph & G)
     {
-        F.stAugmentation(F.faceNodeOf(externalFaces.front()), G, superSink, augmentedEdges);
+        NodeArray<SListPure<adjEntry>> adjacentEdges;
+        return UpwardPlanaritySingleSource::testAndFindEmbedding(G, false, adjacentEdges);
+    }
+
+
+    bool UpwardPlanarity::upwardPlanarEmbed_singleSource(Graph & G)
+    {
+        NodeArray<SListPure<adjEntry>> adjacentEdges(G);
+        if(UpwardPlanaritySingleSource::testAndFindEmbedding(G, true, adjacentEdges) == false)
+            return false;
+
+        node superSink;
+        SList<edge> augmentedEdges;
+        UpwardPlanaritySingleSource::embedAndAugment(G, adjacentEdges, false, superSink, augmentedEdges);
+
         return true;
     }
-}
+
+
+    bool UpwardPlanarity::upwardPlanarAugment_singleSource(Graph & G)
+    {
+        node superSink;
+        SList<edge> augmentedEdges;
+
+        return upwardPlanarAugment_singleSource(G, superSink, augmentedEdges);
+    }
+
+
+    bool UpwardPlanarity::upwardPlanarAugment_singleSource(
+        Graph & G,
+        node & superSink,
+        SList<edge> & augmentedEdges)
+    {
+        NodeArray<SListPure<adjEntry>> adjacentEdges(G);
+        if(UpwardPlanaritySingleSource::testAndFindEmbedding(G, true, adjacentEdges) == false)
+            return false;
+
+        UpwardPlanaritySingleSource::embedAndAugment(G, adjacentEdges, true, superSink, augmentedEdges);
+        return true;
+    }
+
+
+    bool UpwardPlanarity::isUpwardPlanar_singleSource_embedded(
+        const ConstCombinatorialEmbedding & E,
+        SList<face> & externalFaces)
+    {
+        const Graph & G = E;
+        OGDF_ASSERT(G.representsCombEmbedding());
+
+        externalFaces.clear();
+
+        // trivial cases
+        if(G.empty())
+            return true;
+
+        if(isAcyclic(G) == false)
+            return false;
+
+        // determine the single source in G
+        node s;
+        if(!hasSingleSource(G, s))
+            return false;
+
+        // construct face-sink graph anf find possible external faces
+        FaceSinkGraph F(E, s);
+        F.possibleExternalFaces(externalFaces);
+
+        return !externalFaces.empty();
+    }
+
+
+    bool UpwardPlanarity::upwardPlanarAugment_singleSource_embedded(
+        Graph & G,
+        node & superSink,
+        SList<edge> & augmentedEdges)
+    {
+        OGDF_ASSERT(G.representsCombEmbedding());
+
+        // trivial cases
+        if(G.empty())
+            return true;
+
+        if(isAcyclic(G) == false)
+            return false;
+
+        // determine the single source in G
+        node s;
+        if(!hasSingleSource(G, s))
+            return false;
+
+        // construct embedding represented by G and face-sink graph
+        ConstCombinatorialEmbedding E(G);
+        FaceSinkGraph F(E, s);
+
+        // find possible external faces
+        SList<face> externalFaces;
+        F.possibleExternalFaces(externalFaces);
+
+        if(externalFaces.empty())
+            return false;
+
+        else
+        {
+            F.stAugmentation(F.faceNodeOf(externalFaces.front()), G, superSink, augmentedEdges);
+            return true;
+        }
+    }
 
 
 } // end namespace ogdf

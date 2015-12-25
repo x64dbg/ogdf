@@ -7,14 +7,14 @@ int main()
 {
     Graph G;
     GraphAttributes GA(G);
-    if (!GraphIO::readGML(G, "sierpinski_04.gml") )
+    if(!GraphIO::readGML(G, "sierpinski_04.gml"))
     {
         cerr << "Could not load sierpinski_04.gml" << endl;
         return 1;
     }
 
     node v;
-    forall_nodes(v,G)
+    forall_nodes(v, G)
     GA.width(v) = GA.height(v) = 10.0;
 
     FMMMLayout fmmm;

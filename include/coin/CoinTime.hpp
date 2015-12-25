@@ -46,7 +46,7 @@ inline double CoinGetTimeOfDay()
 
     GetSystemTimeAsFileTime(&ft);
     double t = ft.dwHighDateTime * TWO_TO_THE_THIRTYTWO + ft.dwLowDateTime;
-    t = t/10000000.0 - DELTA_EPOCH_IN_SECS;
+    t = t / 10000000.0 - DELTA_EPOCH_IN_SECS;
     return t;
 }
 #else
@@ -56,9 +56,9 @@ inline double CoinGetTimeOfDay()
 {
     struct _timeb timebuffer;
 #pragma warning(disable:4996)
-    _ftime( &timebuffer ); // C4996
+    _ftime(&timebuffer);   // C4996
 #pragma warning(default:4996)
-    return timebuffer.time + timebuffer.millitm/1000.0;
+    return timebuffer.time + timebuffer.millitm / 1000.0;
 }
 #endif
 
@@ -70,7 +70,7 @@ inline double CoinGetTimeOfDay()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    return static_cast<double>(tv.tv_sec) + static_cast<int>(tv.tv_usec)/1000000.0;
+    return static_cast<double>(tv.tv_sec) + static_cast<int>(tv.tv_usec) / 1000000.0;
 }
 
 #endif // _MSC_VER
@@ -114,11 +114,11 @@ static inline double CoinCpuTime()
     FILETIME user;
     GetProcessTimes(GetCurrentProcess(), &creation, &exit, &kernel, &user);
     double t = user.dwHighDateTime * TWO_TO_THE_THIRTYTWO + user.dwLowDateTime;
-    return t/10000000.0;
+    return t / 10000000.0;
 #else
     unsigned int ticksnow;        /* clock_t is same as int */
     ticksnow = (unsigned int)clock();
-    cpu_temp = (double)((double)ticksnow/CLOCKS_PER_SEC);
+    cpu_temp = (double)((double)ticksnow / CLOCKS_PER_SEC);
 #endif
 
 #else
@@ -127,9 +127,9 @@ static inline double CoinCpuTime()
     usage.ru_utime.tv_sec = 0 ;
     usage.ru_utime.tv_usec = 0 ;
 # endif
-    getrusage(RUSAGE_SELF,&usage);
+    getrusage(RUSAGE_SELF, &usage);
     cpu_temp = static_cast<double>(usage.ru_utime.tv_sec);
-    cpu_temp += 1.0e-6*(static_cast<double> (usage.ru_utime.tv_usec));
+    cpu_temp += 1.0e-6 * (static_cast<double>(usage.ru_utime.tv_usec));
 #endif
     return cpu_temp;
 }
@@ -149,9 +149,9 @@ static inline double CoinSysTime()
     usage.ru_utime.tv_sec = 0 ;
     usage.ru_utime.tv_usec = 0 ;
 # endif
-    getrusage(RUSAGE_SELF,&usage);
+    getrusage(RUSAGE_SELF, &usage);
     sys_temp = static_cast<double>(usage.ru_stime.tv_sec);
-    sys_temp += 1.0e-6*(static_cast<double> (usage.ru_stime.tv_usec));
+    sys_temp += 1.0e-6 * (static_cast<double>(usage.ru_stime.tv_usec));
 #endif
     return sys_temp;
 }
@@ -169,9 +169,9 @@ static inline double CoinCpuTimeJustChildren()
     usage.ru_utime.tv_sec = 0 ;
     usage.ru_utime.tv_usec = 0 ;
 # endif
-    getrusage(RUSAGE_CHILDREN,&usage);
+    getrusage(RUSAGE_CHILDREN, &usage);
     cpu_temp = static_cast<double>(usage.ru_utime.tv_sec);
-    cpu_temp += 1.0e-6*(static_cast<double> (usage.ru_utime.tv_usec));
+    cpu_temp += 1.0e-6 * (static_cast<double>(usage.ru_utime.tv_usec));
 #endif
     return cpu_temp;
 }
@@ -212,9 +212,9 @@ private:
     inline bool evaluate(bool b_tmp) const
     {
         int i_tmp = b_tmp;
-        if (stream)
+        if(stream)
         {
-            if (write_stream)
+            if(write_stream)
                 (*stream) << i_tmp << "\n";
             else
                 (*stream) >> i_tmp;
@@ -223,9 +223,9 @@ private:
     }
     inline double evaluate(double d_tmp) const
     {
-        if (stream)
+        if(stream)
         {
-            if (write_stream)
+            if(write_stream)
                 (*stream) << d_tmp << "\n";
             else
                 (*stream) >> d_tmp;
@@ -254,7 +254,7 @@ public:
 
     /// Create a timer with the given time limit and with no tracing
     CoinTimer(double lim) :
-        start(CoinCpuTime()), limit(lim), end(start+lim)
+        start(CoinCpuTime()), limit(lim), end(start + lim)
 #ifdef COIN_COMPILE_WITH_TRACING
         , stream(0), write_stream(true)
 #endif
@@ -270,15 +270,15 @@ public:
     /** Create a timer with the given time limit and with writing/reading the
         trace to/from the given stream, depending on the argument \c write. */
     CoinTimer(double lim, std::fstream* s, bool w) :
-        start(CoinCpuTime()), limit(lim), end(start+lim),
+        start(CoinCpuTime()), limit(lim), end(start + lim),
         stream(s), write_stream(w) {}
 #endif
 
     /// Restart the timer (keeping the same time limit)
     inline void restart()
     {
-        start=CoinCpuTime();
-        end=start+limit;
+        start = CoinCpuTime();
+        end = start + limit;
     }
     /// An alternate name for \c restart()
     inline void reset()
@@ -288,7 +288,7 @@ public:
     /// Reset (and restart) the timer and change its time limit
     inline void reset(double lim)
     {
-        limit=lim;
+        limit = lim;
         restart();
     }
 

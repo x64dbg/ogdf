@@ -32,8 +32,8 @@
 class dupcol_action : public CoinPresolveAction
 {
     dupcol_action();
-    dupcol_action(const dupcol_action& rhs);
-    dupcol_action& operator=(const dupcol_action& rhs);
+    dupcol_action(const dupcol_action & rhs);
+    dupcol_action & operator=(const dupcol_action & rhs);
 
     struct action
     {
@@ -44,27 +44,27 @@ class dupcol_action : public CoinPresolveAction
         int ithis;
         int ilast;
 
-        double *colels;
+        double* colels;
         int nincol;
     };
 
     const int nactions_;
     // actions_ is owned by the class and must be deleted at destruction
-    const action *const actions_;
+    const action* const actions_;
 
-    dupcol_action(int nactions, const action *actions,
-                  const CoinPresolveAction *next) :
+    dupcol_action(int nactions, const action* actions,
+                  const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions),
         actions_(actions) {}
 
 public:
-    const char *name() const;
+    const char* name() const;
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-            const CoinPresolveAction *next);
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            const CoinPresolveAction* next);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     ~dupcol_action();
 
@@ -96,22 +96,22 @@ class duprow_action : public CoinPresolveAction
     };
 
     const int nactions_;
-    const action *const actions_;
+    const action* const actions_;
 
-    duprow_action():CoinPresolveAction(NULL),nactions_(0),actions_(NULL) {}
+    duprow_action(): CoinPresolveAction(NULL), nactions_(0), actions_(NULL) {}
     duprow_action(int nactions,
-                  const action *actions,
-                  const CoinPresolveAction *next) :
+                  const action* actions,
+                  const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions), actions_(actions) {}
 
 public:
-    const char *name() const;
+    const char* name() const;
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-            const CoinPresolveAction *next);
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            const CoinPresolveAction* next);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     //~duprow_action() { delete[]actions_; }
 };
@@ -136,22 +136,22 @@ class gubrow_action : public CoinPresolveAction
     };
 
     const int nactions_;
-    const action *const actions_;
+    const action* const actions_;
 
-    gubrow_action():CoinPresolveAction(NULL),nactions_(0),actions_(NULL) {}
+    gubrow_action(): CoinPresolveAction(NULL), nactions_(0), actions_(NULL) {}
     gubrow_action(int nactions,
-                  const action *actions,
-                  const CoinPresolveAction *next) :
+                  const action* actions,
+                  const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions), actions_(actions) {}
 
 public:
-    const char *name() const;
+    const char* name() const;
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix *prob,
-            const CoinPresolveAction *next);
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            const CoinPresolveAction* next);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     //~gubrow_action() { delete[]actions_; }
 };

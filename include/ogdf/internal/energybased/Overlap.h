@@ -62,16 +62,16 @@ namespace ogdf
 {
 
 
-class Overlap: public NodePairEnergy
-{
-public:
-    //Initializes private data structures
-    Overlap(GraphAttributes &AG);
-    ~Overlap() { }
-private:
-    //computes for two vertices at the given position the overlap energy
-    double computeCoordEnergy(node,node, const DPoint&, const DPoint &) const;
-};
+    class Overlap: public NodePairEnergy
+    {
+    public:
+        //Initializes private data structures
+        Overlap(GraphAttributes & AG);
+        ~Overlap() { }
+    private:
+        //computes for two vertices at the given position the overlap energy
+        double computeCoordEnergy(node, node, const DPoint &, const DPoint &) const;
+    };
 
 
 }// namespace ogdf

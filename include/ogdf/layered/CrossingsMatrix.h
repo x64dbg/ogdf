@@ -56,45 +56,45 @@
 namespace ogdf
 {
 
-//---------------------------------------------------------
-// CrossingsMatrix
-// implements crossings matrix which is used by some
-// TwoLayerCrossingMinimization heuristics (e.g. split)
-//---------------------------------------------------------
-class OGDF_EXPORT CrossingsMatrix
-{
-public:
-    CrossingsMatrix() : matrix(0,0,0,0)
+    //---------------------------------------------------------
+    // CrossingsMatrix
+    // implements crossings matrix which is used by some
+    // TwoLayerCrossingMinimization heuristics (e.g. split)
+    //---------------------------------------------------------
+    class OGDF_EXPORT CrossingsMatrix
     {
-        m_bigM = 10000;
-    }
+    public:
+        CrossingsMatrix() : matrix(0, 0, 0, 0)
+        {
+            m_bigM = 10000;
+        }
 
-    CrossingsMatrix(const HierarchyLevels &levels);
+        CrossingsMatrix(const HierarchyLevels & levels);
 
-    ~CrossingsMatrix() { }
+        ~CrossingsMatrix() { }
 
-    int operator()(int i, int j) const
-    {
-        return matrix(map[i],map[j]);
-    }
+        int operator()(int i, int j) const
+        {
+            return matrix(map[i], map[j]);
+        }
 
-    void swap(int i, int j)
-    {
-        map.swap(i,j);
-    }
+        void swap(int i, int j)
+        {
+            map.swap(i, j);
+        }
 
-    //! ordinary init
-    void init(Level &L);
+        //! ordinary init
+        void init(Level & L);
 
-    //! SimDraw init
-    void init(Level &L, const EdgeArray<__uint32> *edgeSubGraphs);
+        //! SimDraw init
+        void init(Level & L, const EdgeArray<__uint32>* edgeSubGraphs);
 
-private:
-    Array<int> map;
-    Array2D<int> matrix;
-    //! need this for SimDraw to grant epsilon-crossings instead of zero-crossings
-    int m_bigM; // is set to some big number in both constructors
-};
+    private:
+        Array<int> map;
+        Array2D<int> matrix;
+        //! need this for SimDraw to grant epsilon-crossings instead of zero-crossings
+        int m_bigM; // is set to some big number in both constructors
+    };
 
 }// end namespace ogdf
 

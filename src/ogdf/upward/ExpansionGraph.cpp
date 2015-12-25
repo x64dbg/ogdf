@@ -50,145 +50,145 @@ namespace ogdf
 {
 
 
-// constructor
-// computes biconnected componets of original graph
-// does not create a copy graph
-ExpansionGraph::ExpansionGraph(const Graph &G) :
-    m_compNum(G), m_adjComponents(G), m_vCopy(G,0)
-{
-    m_vOrig.init(*this,0);
-    m_vRep .init(*this,0);
-    m_eOrig.init(*this,0);
-
-    // compute biconnected components
-    int numComp = biconnectedComponents(G,m_compNum);
-
-    // for each component, build list of contained edges
-    m_component.init(numComp);
-
-    edge e;
-    forall_edges(e,G)
-    m_component[m_compNum[e]].pushBack(e);
-
-    // for each vertex v, build list of components containing v
-    NodeSetSimple contained(G);
-    for(int i = 0; i < numComp; ++i)
+    // constructor
+    // computes biconnected componets of original graph
+    // does not create a copy graph
+    ExpansionGraph::ExpansionGraph(const Graph & G) :
+        m_compNum(G), m_adjComponents(G), m_vCopy(G, 0)
     {
+        m_vOrig.init(*this, 0);
+        m_vRep .init(*this, 0);
+        m_eOrig.init(*this, 0);
+
+        // compute biconnected components
+        int numComp = biconnectedComponents(G, m_compNum);
+
+        // for each component, build list of contained edges
+        m_component.init(numComp);
+
+        edge e;
+        forall_edges(e, G)
+        m_component[m_compNum[e]].pushBack(e);
+
+        // for each vertex v, build list of components containing v
+        NodeSetSimple contained(G);
+        for(int i = 0; i < numComp; ++i)
+        {
+            SListConstIterator<edge> it;
+            for(it = m_component[i].begin(); it.valid(); ++it)
+            {
+                e = *it;
+                node v = e->source();
+                if(contained.isMember(v) == false)
+                {
+                    contained.insert(v);
+                    m_adjComponents[v].pushBack(i);
+                }
+
+                v = e->target();
+                if(contained.isMember(v) == false)
+                {
+                    contained.insert(v);
+                    m_adjComponents[v].pushBack(i);
+                }
+            }
+
+            contained.clear();
+        }
+    }
+
+
+    // builds expansion graph of i-th biconnected component of the original graph
+    void ExpansionGraph::init(int i)
+    {
+        OGDF_ASSERT(0 <= i && i <= m_component.high());
+
+        // remove previous component
+        node v;
+        forall_nodes(v, *this)
+        {
+            node vOrig = m_vOrig[v];
+            if(vOrig)
+                m_vCopy[vOrig] = 0;
+        }
+        clear();
+
+
+        // create new component
         SListConstIterator<edge> it;
         for(it = m_component[i].begin(); it.valid(); ++it)
         {
-            e = *it;
-            node v = e->source();
-            if (contained.isMember(v) == false)
-            {
-                contained.insert(v);
-                m_adjComponents[v].pushBack(i);
-            }
+            edge e = *it;
 
-            v = e->target();
-            if (contained.isMember(v) == false)
-            {
-                contained.insert(v);
-                m_adjComponents[v].pushBack(i);
-            }
+            edge eCopy = newEdge(getCopy(e->source()), getCopy(e->target()));
+            m_eOrig[eCopy] = e;
         }
 
-        contained.clear();
-    }
-}
-
-
-// builds expansion graph of i-th biconnected component of the original graph
-void ExpansionGraph::init(int i)
-{
-    OGDF_ASSERT(0 <= i && i <= m_component.high());
-
-    // remove previous component
-    node v;
-    forall_nodes(v,*this)
-    {
-        node vOrig = m_vOrig[v];
-        if (vOrig)
-            m_vCopy[vOrig] = 0;
-    }
-    clear();
-
-
-    // create new component
-    SListConstIterator<edge> it;
-    for(it = m_component[i].begin(); it.valid(); ++it)
-    {
-        edge e = *it;
-
-        edge eCopy = newEdge(getCopy(e->source()),getCopy(e->target()));
-        m_eOrig[eCopy] = e;
-    }
-
-    // expand vertices
-    forall_nodes(v,*this)
-    {
-        if (original(v) && v->indeg() >= 1 && v->outdeg() >= 1)
+        // expand vertices
+        forall_nodes(v, *this)
         {
-            node vPrime = newNode();
-            m_vRep[vPrime] = m_vOrig[v];
+            if(original(v) && v->indeg() >= 1 && v->outdeg() >= 1)
+            {
+                node vPrime = newNode();
+                m_vRep[vPrime] = m_vOrig[v];
 
-            SListPure<edge> edges;
-            outEdges(v,edges);
+                SListPure<edge> edges;
+                outEdges(v, edges);
 
-            SListConstIterator<edge> it;
-            for(it = edges.begin(); it.valid(); ++it)
-                moveSource(*it,vPrime);
+                SListConstIterator<edge> it;
+                for(it = edges.begin(); it.valid(); ++it)
+                    moveSource(*it, vPrime);
 
-            newEdge(v,vPrime);
+                newEdge(v, vPrime);
+            }
         }
     }
-}
 
 
-// builds expansion graph of graph G
-// for debugging purposes only
-void ExpansionGraph::init(const Graph &G)
-{
-    // remove previous component
-    node v;
-    forall_nodes(v,*this)
+    // builds expansion graph of graph G
+    // for debugging purposes only
+    void ExpansionGraph::init(const Graph & G)
     {
-        node vOrig = m_vOrig[v];
-        if (vOrig)
-            m_vCopy[vOrig] = 0;
-    }
-    clear();
-
-
-    // create new component
-    forall_nodes(v,G)
-    getCopy(v);
-
-    edge e;
-    forall_edges(e,G)
-    {
-        edge eCopy = newEdge(getCopy(e->source()),getCopy(e->target()));
-        m_eOrig[eCopy] = e;
-    }
-
-    // expand vertices
-    forall_nodes(v,*this)
-    {
-        if (original(v) && v->indeg() >= 1 && v->outdeg() >= 1)
+        // remove previous component
+        node v;
+        forall_nodes(v, *this)
         {
-            node vPrime = newNode();
+            node vOrig = m_vOrig[v];
+            if(vOrig)
+                m_vCopy[vOrig] = 0;
+        }
+        clear();
 
-            SListPure<edge> edges;
-            outEdges(v,edges);
 
-            SListConstIterator<edge> it;
-            for(it = edges.begin(); it.valid(); ++it)
-                moveSource(*it,vPrime);
+        // create new component
+        forall_nodes(v, G)
+        getCopy(v);
 
-            newEdge(v,vPrime);
+        edge e;
+        forall_edges(e, G)
+        {
+            edge eCopy = newEdge(getCopy(e->source()), getCopy(e->target()));
+            m_eOrig[eCopy] = e;
+        }
+
+        // expand vertices
+        forall_nodes(v, *this)
+        {
+            if(original(v) && v->indeg() >= 1 && v->outdeg() >= 1)
+            {
+                node vPrime = newNode();
+
+                SListPure<edge> edges;
+                outEdges(v, edges);
+
+                SListConstIterator<edge> it;
+                for(it = edges.begin(); it.valid(); ++it)
+                    moveSource(*it, vPrime);
+
+                newEdge(v, vPrime);
+            }
         }
     }
-}
 
 
 } // end namespace ogdf

@@ -54,44 +54,44 @@
 namespace ogdf
 {
 
-// Provides a nicer syntax for reading formatted input through streams, e.g.
-// `stream >> a >> ';' >> y`.
-class TokenIgnorer
-{
-private:
-    char m_c;
-
-public:
-    TokenIgnorer(const char c): m_c(c) {};
-
-    friend std::istream &operator >>(std::istream &is, TokenIgnorer c);
-};
-
-
-std::istream &operator >>(std::istream &is, TokenIgnorer token);
-
-template <typename E>
-static inline E toEnum(
-    const std::string &str, // A string we want to convert.
-    Hashing<std::string, E> *&map, // A map to be lazily evaluated.
-    std::string toString(const E&),
-    const E first, const E last, const E def) // Enum informations.
-{
-    if(!map)
+    // Provides a nicer syntax for reading formatted input through streams, e.g.
+    // `stream >> a >> ';' >> y`.
+    class TokenIgnorer
     {
-        map = new Hashing<std::string, E>();
+    private:
+        char m_c;
 
-        // Iterating over enums is potentially unsafe... (fixable in C++11).
-        for(int it = last; it >= first; it--)
+    public:
+        TokenIgnorer(const char c): m_c(c) {};
+
+        friend std::istream & operator >>(std::istream & is, TokenIgnorer c);
+    };
+
+
+    std::istream & operator >>(std::istream & is, TokenIgnorer token);
+
+    template <typename E>
+    static inline E toEnum(
+        const std::string & str, // A string we want to convert.
+        Hashing<std::string, E>* & map, // A map to be lazily evaluated.
+        std::string toString(const E &),
+        const E first, const E last, const E def) // Enum informations.
+    {
+        if(!map)
         {
-            const E e = static_cast<E>(it);
-            map->insert(toString(e), e);
-        }
-    }
+            map = new Hashing<std::string, E>();
 
-    HashElement<std::string, E> *elem = map->lookup(str);
-    return elem ? elem->info() : def;
-}
+            // Iterating over enums is potentially unsafe... (fixable in C++11).
+            for(int it = last; it >= first; it--)
+            {
+                const E e = static_cast<E>(it);
+                map->insert(toString(e), e);
+            }
+        }
+
+        HashElement<std::string, E>* elem = map->lookup(str);
+        return elem ? elem->info() : def;
+    }
 
 
 } // end namespace ogdf

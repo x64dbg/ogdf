@@ -45,94 +45,94 @@
 namespace abacus
 {
 
-//! Bounded priority queues.
-/**
- * A priority queue is a data structure storing a set of elements.
- * Each element has a key which must be an ordered data type.
- * The most important operations are the insertion
- * of an element, the determination of the element having the minimal
- * key, and the deletion of the element having minimal key.
- *
- * Since the priority queue is implemented by a heap (class AbaBHeap)
- * the insertion of a new element and the deletion of the minimal
- * element require O(log n) time if n elements are
- * stored in the priority queue. The element having minimal key
- * can be determined in constant time.
- *
- * To provide an efficient implementation the priority queue is
- * bounded, i.e., the maximal number of elements is an argument
- * of the constructor. However, if required, later a reallocation
- * can be performed.
- */
-template<class Type, class Key>
-class  AbaPrioQueue :  public AbacusRoot
-{
-public:
-
-    //! The constructor of an empty priority queue.
+    //! Bounded priority queues.
     /**
-     * \param size The maximal number of elements the priority queue
-     *             can hold without reallocation.
-     */
-    AbaPrioQueue(int size);
-
-    //! Inserts an element in the priority queue.
-    /**
-     * \param elem The element being inserted.
-     * \param key  The key of the element.
-     */
-    void insert(Type elem, Key key);
-
-    //! Retrieves the element with minimal key from the priority queue.
-    /**
-     * \param min If the priority queue is non-empty the minimal element is
-     *            assigned to \a min.
+     * A priority queue is a data structure storing a set of elements.
+     * Each element has a key which must be an ordered data type.
+     * The most important operations are the insertion
+     * of an element, the determination of the element having the minimal
+     * key, and the deletion of the element having minimal key.
      *
-     * \return 0 If the priority queue is non-empty, 1 otherwise.
-     */
-    int getMin(Type &min) const;
-
-    //! Retrieves the key of the minimal element in the priority queue.
-    /**
-     * \param minKey Holds after the call the key of the minimal element in
-     *               the priority queue, if the queue is non-emtpy.
+     * Since the priority queue is implemented by a heap (class AbaBHeap)
+     * the insertion of a new element and the deletion of the minimal
+     * element require O(log n) time if n elements are
+     * stored in the priority queue. The element having minimal key
+     * can be determined in constant time.
      *
-     * \return 0 If the priority queue is non-empty, 1 otherwise.
+     * To provide an efficient implementation the priority queue is
+     * bounded, i.e., the maximal number of elements is an argument
+     * of the constructor. However, if required, later a reallocation
+     * can be performed.
      */
-    int getMinKey(Key &minKey) const;
+    template<class Type, class Key>
+    class  AbaPrioQueue :  public AbacusRoot
+    {
+    public:
 
-    //! Retrieves and removes the minimal element from the priority queue.
-    /**
-     * \return 0 If the priority queue is non-empty, 1 otherwise.
-     *
-     * \param min If the priority queue is non-empty the minimal element is
-     *            assigned to \a min.
-     */
-    int extractMin(Type &min);
+        //! The constructor of an empty priority queue.
+        /**
+         * \param size The maximal number of elements the priority queue
+         *             can hold without reallocation.
+         */
+        AbaPrioQueue(int size);
 
-    //! Makes the priority queue empty.
-    void clear();
+        //! Inserts an element in the priority queue.
+        /**
+         * \param elem The element being inserted.
+         * \param key  The key of the element.
+         */
+        void insert(Type elem, Key key);
 
-    //! Returns the maximal number of elements which can be stored in the priority queue.
-    int size() const;
+        //! Retrieves the element with minimal key from the priority queue.
+        /**
+         * \param min If the priority queue is non-empty the minimal element is
+         *            assigned to \a min.
+         *
+         * \return 0 If the priority queue is non-empty, 1 otherwise.
+         */
+        int getMin(Type & min) const;
 
-    //! Returns the number of elements stored in the priority queue.
-    int number() const;
+        //! Retrieves the key of the minimal element in the priority queue.
+        /**
+         * \param minKey Holds after the call the key of the minimal element in
+         *               the priority queue, if the queue is non-emtpy.
+         *
+         * \return 0 If the priority queue is non-empty, 1 otherwise.
+         */
+        int getMinKey(Key & minKey) const;
 
-    //! Increases the size of the priority queue.
-    /**
-     * It is not allowed to decrease the size of the priority queue.
-     * In this case an error message is output and the program stops.
-     *
-     * \param newSize The new size of the priority queue.
-     */
-    void realloc(int newSize);
+        //! Retrieves and removes the minimal element from the priority queue.
+        /**
+         * \return 0 If the priority queue is non-empty, 1 otherwise.
+         *
+         * \param min If the priority queue is non-empty the minimal element is
+         *            assigned to \a min.
+         */
+        int extractMin(Type & min);
 
-private:
+        //! Makes the priority queue empty.
+        void clear();
 
-    //! The heap implementing the priority queue.
-    AbaBHeap<Type, Key>  heap_;
-};
+        //! Returns the maximal number of elements which can be stored in the priority queue.
+        int size() const;
+
+        //! Returns the number of elements stored in the priority queue.
+        int number() const;
+
+        //! Increases the size of the priority queue.
+        /**
+         * It is not allowed to decrease the size of the priority queue.
+         * In this case an error message is output and the program stops.
+         *
+         * \param newSize The new size of the priority queue.
+         */
+        void realloc(int newSize);
+
+    private:
+
+        //! The heap implementing the priority queue.
+        AbaBHeap<Type, Key>  heap_;
+    };
 
 } //namespace abacus
 

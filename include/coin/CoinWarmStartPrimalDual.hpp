@@ -24,7 +24,7 @@ public:
         return dual_.size();
     }
     /// return a pointer to the array of duals
-    inline const double * dual() const
+    inline const double* dual() const
     {
         return dual_.values();
     }
@@ -35,7 +35,7 @@ public:
         return primal_.size();
     }
     /// return a pointer to the array of primals
-    inline const double * primal() const
+    inline const double* primal() const
     {
         return primal_.values();
     }
@@ -49,7 +49,7 @@ public:
         because they will be freed by delete[] upon the desructtion of this
         object...
     */
-    void assign(int primalSize, int dualSize, double*& primal, double *& dual)
+    void assign(int primalSize, int dualSize, double* & primal, double* & dual)
     {
         primal_.assignVector(primalSize, primal);
         dual_.assignVector(dualSize, dual);
@@ -58,15 +58,15 @@ public:
     CoinWarmStartPrimalDual() : primal_(), dual_() {}
 
     CoinWarmStartPrimalDual(int primalSize, int dualSize,
-                            const double* primal, const double * dual) :
+                            const double* primal, const double* dual) :
         primal_(primalSize, primal), dual_(dualSize, dual) {}
 
-    CoinWarmStartPrimalDual(const CoinWarmStartPrimalDual& rhs) :
+    CoinWarmStartPrimalDual(const CoinWarmStartPrimalDual & rhs) :
         primal_(rhs.primal_), dual_(rhs.dual_) {}
 
-    CoinWarmStartPrimalDual& operator=(const CoinWarmStartPrimalDual& rhs)
+    CoinWarmStartPrimalDual & operator=(const CoinWarmStartPrimalDual & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             primal_ = rhs.primal_;
             dual_ = rhs.dual_;
@@ -85,9 +85,9 @@ public:
         dual_.clear();
     }
 
-    inline void swap(CoinWarmStartPrimalDual& rhs)
+    inline void swap(CoinWarmStartPrimalDual & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             primal_.swap(rhs.primal_);
             dual_.swap(rhs.dual_);
@@ -95,7 +95,7 @@ public:
     }
 
     /** `Virtual constructor' */
-    virtual CoinWarmStart *clone() const
+    virtual CoinWarmStart* clone() const
     {
         return new CoinWarmStartPrimalDual(*this);
     }
@@ -113,7 +113,7 @@ public:
     */
 
     virtual CoinWarmStartDiff*
-    generateDiff (const CoinWarmStart *const oldCWS) const ;
+    generateDiff(const CoinWarmStart* const oldCWS) const ;
 
     /*! \brief Apply \p diff to this warm start.
 
@@ -121,17 +121,17 @@ public:
     allocated capacity of the warm start is sufficiently large.
     */
 
-    virtual void applyDiff (const CoinWarmStartDiff *const cwsdDiff) ;
+    virtual void applyDiff(const CoinWarmStartDiff* const cwsdDiff) ;
 
     //@}
 
 #if 0
 protected:
-    inline const CoinWarmStartVector<double>& primalWarmStartVector() const
+    inline const CoinWarmStartVector<double> & primalWarmStartVector() const
     {
         return primal_;
     }
-    inline const CoinWarmStartVector<double>& dualWarmStartVector() const
+    inline const CoinWarmStartVector<double> & dualWarmStartVector() const
     {
         return dual_;
     }
@@ -166,15 +166,15 @@ private:
 class CoinWarmStartPrimalDualDiff : public virtual CoinWarmStartDiff
 {
     friend CoinWarmStartDiff*
-    CoinWarmStartPrimalDual::generateDiff(const CoinWarmStart *const oldCWS) const;
+    CoinWarmStartPrimalDual::generateDiff(const CoinWarmStart* const oldCWS) const;
     friend void
-    CoinWarmStartPrimalDual::applyDiff(const CoinWarmStartDiff *const diff) ;
+    CoinWarmStartPrimalDual::applyDiff(const CoinWarmStartDiff* const diff) ;
 
 public:
 
     /*! \brief `Virtual constructor'. To be used when retaining polymorphism is
       important */
-    virtual CoinWarmStartDiff *clone() const
+    virtual CoinWarmStartDiff* clone() const
     {
         return new CoinWarmStartPrimalDualDiff(*this);
     }
@@ -190,7 +190,7 @@ protected:
     see it when they make <i>their</i> default constructor protected or
     private.
     */
-    CoinWarmStartPrimalDualDiff () : primalDiff_(), dualDiff_() {}
+    CoinWarmStartPrimalDualDiff() : primalDiff_(), dualDiff_() {}
 
     /*! \brief Copy constructor
 
@@ -202,7 +202,7 @@ protected:
     see it when the make <i>their</i> copy constructor protected or
     private.
     */
-    CoinWarmStartPrimalDualDiff (const CoinWarmStartPrimalDualDiff &rhs) :
+    CoinWarmStartPrimalDualDiff(const CoinWarmStartPrimalDualDiff & rhs) :
         primalDiff_(rhs.primalDiff_), dualDiff_(rhs.dualDiff_) {}
 
     /*! \brief Clear the data
@@ -216,9 +216,9 @@ protected:
         dualDiff_.clear();
     }
 
-    inline void swap(CoinWarmStartPrimalDualDiff& rhs)
+    inline void swap(CoinWarmStartPrimalDualDiff & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             primalDiff_.swap(rhs.primalDiff_);
             dualDiff_.swap(rhs.dualDiff_);

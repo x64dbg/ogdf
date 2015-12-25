@@ -18,7 +18,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-MyEventHandler::MyEventHandler ()
+MyEventHandler::MyEventHandler()
     : ClpEventHandler()
 {
 }
@@ -26,13 +26,13 @@ MyEventHandler::MyEventHandler ()
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-MyEventHandler::MyEventHandler (const MyEventHandler & rhs)
+MyEventHandler::MyEventHandler(const MyEventHandler & rhs)
     : ClpEventHandler(rhs)
 {
 }
 
 // Constructor with pointer to model
-MyEventHandler::MyEventHandler(ClpSimplex * model)
+MyEventHandler::MyEventHandler(ClpSimplex* model)
     : ClpEventHandler(model)
 {
 }
@@ -40,7 +40,7 @@ MyEventHandler::MyEventHandler(ClpSimplex * model)
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-MyEventHandler::~MyEventHandler ()
+MyEventHandler::~MyEventHandler()
 {
 }
 
@@ -48,9 +48,9 @@ MyEventHandler::~MyEventHandler ()
 // Assignment operator
 //-------------------------------------------------------------------
 MyEventHandler &
-MyEventHandler::operator=(const MyEventHandler& rhs)
+MyEventHandler::operator=(const MyEventHandler & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         ClpEventHandler::operator=(rhs);
     }
@@ -59,7 +59,7 @@ MyEventHandler::operator=(const MyEventHandler& rhs)
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-ClpEventHandler * MyEventHandler::clone() const
+ClpEventHandler* MyEventHandler::clone() const
 {
     return new MyEventHandler(*this);
 }
@@ -67,14 +67,14 @@ ClpEventHandler * MyEventHandler::clone() const
 int
 MyEventHandler::event(Event whichEvent)
 {
-    if (whichEvent == endOfValuesPass)
+    if(whichEvent == endOfValuesPass)
         return 0; // say optimal
     else
         return -1; // carry on
 
 #if 0
     // This is how one can get some progress information at the end of each iteration.
-    if (whichEvent == endOfIteration)
+    if(whichEvent == endOfIteration)
     {
         int numIter = model_->getIterationCount();
         double sumDualInfeas = model_->sumDualInfeasibilities();
@@ -84,7 +84,7 @@ MyEventHandler::event(Event whichEvent)
 
     // This is how one can tell CLP to stop now.
     // The value of cancelAsap needs to come from the application using CLP.
-    if ( cancelAsap ) return 5;
+    if(cancelAsap) return 5;
     else return -1;
 #endif
 

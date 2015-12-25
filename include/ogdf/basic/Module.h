@@ -55,41 +55,41 @@ namespace ogdf
 {
 
 
-/**
- * \brief Base class for modules.
- *
- * A module represents an algorithm that implements a certain interface.
- * There are various specific module types present in the OGDF, which all
- * inherit Module as a base class. These module types define the interface
- * implemented by the module.
- *
- * \sa ModuleOption
- */
-class OGDF_EXPORT Module
-{
-public:
-    //! The return type of a module.
-    enum ReturnType
+    /**
+     * \brief Base class for modules.
+     *
+     * A module represents an algorithm that implements a certain interface.
+     * There are various specific module types present in the OGDF, which all
+     * inherit Module as a base class. These module types define the interface
+     * implemented by the module.
+     *
+     * \sa ModuleOption
+     */
+    class OGDF_EXPORT Module
     {
-        retFeasible, //!< The solution is feasible.
-        retOptimal, //!< The solution is optimal
-        retNoFeasibleSolution, //!< There exists no feasible solution.
-        retTimeoutFeasible, //!< The solution is feasible, but there was a timeout.
-        retTimeoutInfeasible, //!< The solution is not feasible due to a timeout.
-        retError //! Computation was aborted due to an error.
+    public:
+        //! The return type of a module.
+        enum ReturnType
+        {
+            retFeasible, //!< The solution is feasible.
+            retOptimal, //!< The solution is optimal
+            retNoFeasibleSolution, //!< There exists no feasible solution.
+            retTimeoutFeasible, //!< The solution is feasible, but there was a timeout.
+            retTimeoutInfeasible, //!< The solution is not feasible due to a timeout.
+            retError //! Computation was aborted due to an error.
+        };
+
+        //! Initializes a module.
+        Module() { }
+
+        virtual ~Module() { }
+
+        //! Returns true iff \a retVal indicates that the module returned a feasible solution.
+        static bool isSolution(ReturnType ret)
+        {
+            return ret == retFeasible || ret == retOptimal || ret == retTimeoutFeasible;
+        }
     };
-
-    //! Initializes a module.
-    Module() { }
-
-    virtual ~Module() { }
-
-    //! Returns true iff \a retVal indicates that the module returned a feasible solution.
-    static bool isSolution(ReturnType ret)
-    {
-        return ret == retFeasible || ret == retOptimal || ret == retTimeoutFeasible;
-    }
-};
 
 
 } // end namespace ogdf

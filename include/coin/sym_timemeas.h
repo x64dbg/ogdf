@@ -102,7 +102,7 @@
      (tvp)->tv_usec = (int) floor(1000000 * (x - (tvp)->tv_sec));
 
 void start_time PROTO((void));
-double used_time PROTO((double *T));
-double wall_clock PROTO((double *T));
+double used_time PROTO((double* T));
+double wall_clock PROTO((double* T));
 
 #endif

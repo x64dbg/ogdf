@@ -61,138 +61,138 @@
 namespace ogdf
 {
 
-//Helper classes to code a clustering, used as an interface to applications that
-//need to build the clustergraph structure themselves
-class SimpleCluster
-{
-public:
-    SimpleCluster(SimpleCluster* parent = 0) : m_size(0), m_parent(parent), m_index(-1) { }
-
-    //insert vertices and children
-    void pushBackVertex(node v)
+    //Helper classes to code a clustering, used as an interface to applications that
+    //need to build the clustergraph structure themselves
+    class SimpleCluster
     {
-        m_nodes.pushBack(v);
-    }
-    void pushBackChild(SimpleCluster* s)
-    {
-        m_children.pushBack(s);
-    }
+    public:
+        SimpleCluster(SimpleCluster* parent = 0) : m_size(0), m_parent(parent), m_index(-1) { }
 
-    void setParent(SimpleCluster* parent)
-    {
-        m_parent = parent;
-    }
-    SimpleCluster* getParent()
-    {
-        return m_parent;
-    }
-
-    void setIndex(int index)
-    {
-        m_index = index;
-    }
-    int getIndex()
-    {
-        return m_index;
-    }
-
-    SList<node> &nodes()
-    {
-        return m_nodes;
-    }
-    SList<SimpleCluster*> &children()
-    {
-        return m_children;
-    }
-
-    int m_size; //preliminary: allowed to be inconsistent with real vertex number to
-    //allow lazy vertex addition (should therefore be local Array?)
-
-private:
-    SList<node> m_nodes;
-    SList<SimpleCluster*> m_children;
-    SimpleCluster* m_parent;
-    int m_index; //index of the constructed cluster
-
-};//class SimpleCluster
-
-/**
-* \brief Interface for algorithms that compute a clustering for a
-*      given graph
-*
-* The class ClustererModule is the base class for clustering
-* classes that allow  to compute some hierarchical clustering
-*/
-class OGDF_EXPORT ClustererModule
-{
-
-public:
-    //Constructor taking a graph G to be clustered
-    explicit ClustererModule(const Graph &G) : m_pGraph(&G)
-    {
-        OGDF_ASSERT(isConnected(G));
-    }
-    //! Default constructor, initializes a clustering module.
-    // Allows to cluster multiple
-    // graphs with the same instance of the Clusterer
-    ClustererModule() {}
-
-    /**
-     * \brief Sets the graph to be clustered
-     *
-     * @param G is the input graph
-     *
-     */
-    void setGraph(const Graph &G)
-    {
-        OGDF_ASSERT(isConnected(G));
-        m_pGraph = &G;
-    }
-    //! Returns the graph to be clustered
-    const Graph& getGraph() const
-    {
-        return *m_pGraph;
-    }
-
-    /**
-    * \brief compute some kind of clustering on the graph m_pGraph
-    *
-    * This is the algorithm call that has to be implemented by derived classes
-    *
-    * @param sl is the resulting list of clusters
-    */
-    virtual void computeClustering(SList<SimpleCluster*> &sl) = 0;
-
-    //! translate computed clustering into cluster hierarchy in cluster graph C
-    virtual void createClusterGraph(ClusterGraph &C) = 0;
-
-    //! compute a clustering index for each vertex
-    virtual double computeCIndex(const Graph & G, node v) = 0;
-    //! compute a clustering index for each vertex
-    virtual double computeCIndex(node v) = 0;
-    //! compute the average clustering index for the given graph
-    virtual double averageCIndex()
-    {
-        return averageCIndex(*m_pGraph);
-    }
-    virtual double averageCIndex(const Graph &G)
-    {
-        node v;
-        double ciSum = 0.0;
-        forall_nodes(v, G)
+        //insert vertices and children
+        void pushBackVertex(node v)
         {
-            ciSum += computeCIndex(G, v);
+            m_nodes.pushBack(v);
         }
-        return ciSum / (G.numberOfNodes());
-    }
+        void pushBackChild(SimpleCluster* s)
+        {
+            m_children.pushBack(s);
+        }
+
+        void setParent(SimpleCluster* parent)
+        {
+            m_parent = parent;
+        }
+        SimpleCluster* getParent()
+        {
+            return m_parent;
+        }
+
+        void setIndex(int index)
+        {
+            m_index = index;
+        }
+        int getIndex()
+        {
+            return m_index;
+        }
+
+        SList<node> & nodes()
+        {
+            return m_nodes;
+        }
+        SList<SimpleCluster*> & children()
+        {
+            return m_children;
+        }
+
+        int m_size; //preliminary: allowed to be inconsistent with real vertex number to
+        //allow lazy vertex addition (should therefore be local Array?)
+
+    private:
+        SList<node> m_nodes;
+        SList<SimpleCluster*> m_children;
+        SimpleCluster* m_parent;
+        int m_index; //index of the constructed cluster
+
+    };//class SimpleCluster
+
+    /**
+    * \brief Interface for algorithms that compute a clustering for a
+    *      given graph
+    *
+    * The class ClustererModule is the base class for clustering
+    * classes that allow  to compute some hierarchical clustering
+    */
+    class OGDF_EXPORT ClustererModule
+    {
+
+    public:
+        //Constructor taking a graph G to be clustered
+        explicit ClustererModule(const Graph & G) : m_pGraph(&G)
+        {
+            OGDF_ASSERT(isConnected(G));
+        }
+        //! Default constructor, initializes a clustering module.
+        // Allows to cluster multiple
+        // graphs with the same instance of the Clusterer
+        ClustererModule() {}
+
+        /**
+         * \brief Sets the graph to be clustered
+         *
+         * @param G is the input graph
+         *
+         */
+        void setGraph(const Graph & G)
+        {
+            OGDF_ASSERT(isConnected(G));
+            m_pGraph = &G;
+        }
+        //! Returns the graph to be clustered
+        const Graph & getGraph() const
+        {
+            return *m_pGraph;
+        }
+
+        /**
+        * \brief compute some kind of clustering on the graph m_pGraph
+        *
+        * This is the algorithm call that has to be implemented by derived classes
+        *
+        * @param sl is the resulting list of clusters
+        */
+        virtual void computeClustering(SList<SimpleCluster*> & sl) = 0;
+
+        //! translate computed clustering into cluster hierarchy in cluster graph C
+        virtual void createClusterGraph(ClusterGraph & C) = 0;
+
+        //! compute a clustering index for each vertex
+        virtual double computeCIndex(const Graph & G, node v) = 0;
+        //! compute a clustering index for each vertex
+        virtual double computeCIndex(node v) = 0;
+        //! compute the average clustering index for the given graph
+        virtual double averageCIndex()
+        {
+            return averageCIndex(*m_pGraph);
+        }
+        virtual double averageCIndex(const Graph & G)
+        {
+            node v;
+            double ciSum = 0.0;
+            forall_nodes(v, G)
+            {
+                ciSum += computeCIndex(G, v);
+            }
+            return ciSum / (G.numberOfNodes());
+        }
 
 
-protected:
-    const Graph* m_pGraph; //the graph to be clustered
+    protected:
+        const Graph* m_pGraph; //the graph to be clustered
 
-    OGDF_MALLOC_NEW_DELETE
+        OGDF_MALLOC_NEW_DELETE
 
-};//class ClustererModule
+    };//class ClustererModule
 
 
 

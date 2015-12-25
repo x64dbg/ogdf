@@ -64,72 +64,72 @@
 namespace ogdf
 {
 
-// Overriding the function doDestruction (see basic.h)
-// Allows deallocation of lists of PlanarLeafKey<whaInfo*>
-// and PQLeafKey<edge,IndInfo*,bool> in constant time using OGDF
-// memory management.
+    // Overriding the function doDestruction (see basic.h)
+    // Allows deallocation of lists of PlanarLeafKey<whaInfo*>
+    // and PQLeafKey<edge,IndInfo*,bool> in constant time using OGDF
+    // memory management.
 
 
-typedef PQLeafKey<edge,whaInfo*,bool> *PtrPQLeafKeyEWB;
+    typedef PQLeafKey<edge, whaInfo*, bool>* PtrPQLeafKeyEWB;
 
-template<>
-inline bool doDestruction<PtrPQLeafKeyEWB>(const PtrPQLeafKeyEWB*)
-{
-    return false;
-}
-
-typedef PlanarLeafKey<whaInfo*> *PtrPlanarLeafKeyW;
-
-template<>
-inline bool doDestruction<PtrPlanarLeafKeyW>(const PtrPlanarLeafKeyW*)
-{
-    return false;
-}
-
-
-
-class PlanarSubgraphPQTree: public MaxSequencePQTree<edge,bool>
-{
-
-public:
-
-    PlanarSubgraphPQTree() : MaxSequencePQTree<edge,bool>() { }
-
-    virtual ~PlanarSubgraphPQTree() { }
-
-    //! Initializes a new PQ-tree with a set of leaves.
-    virtual int Initialize(SListPure<PlanarLeafKey<whaInfo*>*> &leafKeys);
-
-    int Initialize(SListPure<PQLeafKey<edge,whaInfo*,bool>*> &leafKeys)
+    template<>
+    inline bool doDestruction<PtrPQLeafKeyEWB>(const PtrPQLeafKeyEWB*)
     {
-        return MaxSequencePQTree<edge,bool>::Initialize(leafKeys);
+        return false;
     }
 
-    //! Replaces the pertinent subtree by a set of new leaves.
-    void ReplaceRoot(SListPure<PlanarLeafKey<whaInfo*>*> &leafKeys);
+    typedef PlanarLeafKey<whaInfo*>* PtrPlanarLeafKeyW;
 
-    //! Reduces a set of leaves.
-    virtual bool Reduction(
-        SListPure<PlanarLeafKey<whaInfo*>*> &leafKeys,
-        SList<PQLeafKey<edge,whaInfo*,bool>*> &eliminatedKeys);
-
-    bool Reduction(SListPure<PQLeafKey<edge,whaInfo*,bool>*> &leafKeys)
+    template<>
+    inline bool doDestruction<PtrPlanarLeafKeyW>(const PtrPlanarLeafKeyW*)
     {
-        return MaxSequencePQTree<edge,bool>::Reduction(leafKeys);
+        return false;
     }
 
-private:
 
-    //! Replaces a pertinet subtree by a set of new leaves if the root is full.
-    void ReplaceFullRoot(SListPure<PlanarLeafKey<whaInfo*>*> &leafKeys);
 
-    //! Replaces a pertinet subtree by a set of new leaves if the root is partial.
-    void ReplacePartialRoot(SListPure<PlanarLeafKey<whaInfo*>*> &leafKeys);
+    class PlanarSubgraphPQTree: public MaxSequencePQTree<edge, bool>
+    {
 
-    //! Removes the leaves that have been marked for elimination from the PQ-tree.
-    void removeEliminatedLeaves(SList<PQLeafKey<edge,whaInfo*,bool>*> &eliminatedKeys);
+    public:
 
-};
+        PlanarSubgraphPQTree() : MaxSequencePQTree<edge, bool>() { }
+
+        virtual ~PlanarSubgraphPQTree() { }
+
+        //! Initializes a new PQ-tree with a set of leaves.
+        virtual int Initialize(SListPure<PlanarLeafKey<whaInfo*>*> & leafKeys);
+
+        int Initialize(SListPure<PQLeafKey<edge, whaInfo*, bool>*> & leafKeys)
+        {
+            return MaxSequencePQTree<edge, bool>::Initialize(leafKeys);
+        }
+
+        //! Replaces the pertinent subtree by a set of new leaves.
+        void ReplaceRoot(SListPure<PlanarLeafKey<whaInfo*>*> & leafKeys);
+
+        //! Reduces a set of leaves.
+        virtual bool Reduction(
+            SListPure<PlanarLeafKey<whaInfo*>*> & leafKeys,
+            SList<PQLeafKey<edge, whaInfo*, bool>*> & eliminatedKeys);
+
+        bool Reduction(SListPure<PQLeafKey<edge, whaInfo*, bool>*> & leafKeys)
+        {
+            return MaxSequencePQTree<edge, bool>::Reduction(leafKeys);
+        }
+
+    private:
+
+        //! Replaces a pertinet subtree by a set of new leaves if the root is full.
+        void ReplaceFullRoot(SListPure<PlanarLeafKey<whaInfo*>*> & leafKeys);
+
+        //! Replaces a pertinet subtree by a set of new leaves if the root is partial.
+        void ReplacePartialRoot(SListPure<PlanarLeafKey<whaInfo*>*> & leafKeys);
+
+        //! Removes the leaves that have been marked for elimination from the PQ-tree.
+        void removeEliminatedLeaves(SList<PQLeafKey<edge, whaInfo*, bool>*> & eliminatedKeys);
+
+    };
 
 }
 

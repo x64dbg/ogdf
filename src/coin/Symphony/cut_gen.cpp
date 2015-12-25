@@ -34,12 +34,12 @@
 int main(void)
 {
     int r_bufid = 0, s_bufid = 0;
-    cg_prob *p;
+    cg_prob* p;
     int num_cuts = 0;
     double elapsed;
     struct timeval tout = {15, 0};
 
-    p = (cg_prob *) calloc(1, sizeof(cg_prob));
+    p = (cg_prob*) calloc(1, sizeof(cg_prob));
 
     cg_initialize(p, 0);
 
@@ -47,44 +47,44 @@ int main(void)
      * The main loop -- executes continuously until the program exits
     \*------------------------------------------------------------------------*/
 
-    while (TRUE)
+    while(TRUE)
     {
         /* Wait until a message arrives */
         do
         {
             r_bufid = treceive_msg(ANYONE, ANYTHING, &tout);
-            if (!r_bufid)
+            if(!r_bufid)
             {
-                if (pstat(p->tree_manager) != PROCESS_OK)
+                if(pstat(p->tree_manager) != PROCESS_OK)
                 {
                     printf("TM has died -- CG exiting\n\n");
                     exit(-401);
                 }
             }
         }
-        while (!r_bufid);
-        if (cg_process_message(p, r_bufid) == USER_ERROR)
+        while(!r_bufid);
+        if(cg_process_message(p, r_bufid) == USER_ERROR)
             p->msgtag = USER_ERROR;
         /* If there is still something in the queue, process it */
         do
         {
             r_bufid = nreceive_msg(ANYONE, ANYTHING);
-            if (r_bufid > 0)
-                if (cg_process_message(p, r_bufid) == USER_ERROR)
+            if(r_bufid > 0)
+                if(cg_process_message(p, r_bufid) == USER_ERROR)
                     p->msgtag = USER_ERROR;
         }
-        while (r_bufid != 0);
+        while(r_bufid != 0);
 
         /*---------------------------------------------------------------------
          * Now the message queue is empty. If the last message was NOT some
          * kind of LP_SOLUTION then we can't generate solutions now.
          * Otherwise, generate solutions!
          *---------------------------------------------------------------------*/
-        if (p->msgtag == LP_SOLUTION_NONZEROS || p->msgtag == LP_SOLUTION_USER ||
+        if(p->msgtag == LP_SOLUTION_NONZEROS || p->msgtag == LP_SOLUTION_USER ||
                 p->msgtag == LP_SOLUTION_FRACTIONS)
         {
-            if (p->par.do_findcuts)
-                if ((termcode = find_cuts_u(p, NULL, &num_cuts)) < 0)
+            if(p->par.do_findcuts)
+                if((termcode = find_cuts_u(p, NULL, &num_cuts)) < 0)
                     printf("Warning: User error detected in cut generator\n\n");
             /*-- send signal back to the LP that the cut generator is done -----*/
             s_bufid = init_send(DataInPlace);

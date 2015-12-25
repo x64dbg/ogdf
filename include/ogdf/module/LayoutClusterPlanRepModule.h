@@ -59,72 +59,72 @@
 namespace ogdf
 {
 
-class NodePair;
+    class NodePair;
 
-/**
- * \brief Interface for planar cluster layout algorithms.
- *
- * \warning This interface is likely to change in future releases.
- * \see ClusterPlanarizationLayout
- */
-class OGDF_EXPORT LayoutClusterPlanRepModule
-{
-public:
-    //! Initializes a cluster planar layout module.
-    LayoutClusterPlanRepModule() { }
-
-    virtual ~LayoutClusterPlanRepModule() { }
-
-    /** \brief Computes a layout of \a PG in \a drawing.
-     *
-     * Must be overridden by derived classes.
-     * @param PG is the input cluster planarized representation which may be modified.
-     * @param adjExternal is an adjacenty entry on the external face.
-     * @param drawing is the computed layout of \a PG.
-     * @param npEdges are pairs of nodes in the original graph that shall be connected.
-     * @param newEdges are assigned the inserted edges.
-     * @param originalGraph must be the original graph of \a PG.
-     */
-    virtual void call(
-        ClusterPlanRep &PG,
-        adjEntry adjExternal,
-        Layout &drawing,
-        List<NodePair>& npEdges,
-        List<edge>& newEdges,
-        Graph& originalGraph) = 0;
-
-
-    //! Returns the bounding box of the computed layout.
-    const DPoint &getBoundingBox() const
-    {
-        return m_boundingBox;
-    }
-
-    //! Sets the (generic) options; derived classes have to cope with the interpretation)
-    virtual void setOptions(int /* optionField */) { } //don't make it abstract
-
-    //! Returns the (generic) options.
-    virtual int getOptions()
-    {
-        return 0;    //don't make it abstract
-    }
-
-    //! Returns the minimal allowed distance between edges and vertices.
-    virtual double separation() const = 0;
-
-    //! Sets the minimal allowed distance between edges and vertices to \a sep.
-    virtual void separation(double sep) = 0;
-
-protected:
     /**
-     * \brief Stores the bounding box of the computed layout.
-     * <b>Must be set by derived algorithms!</b>
+     * \brief Interface for planar cluster layout algorithms.
+     *
+     * \warning This interface is likely to change in future releases.
+     * \see ClusterPlanarizationLayout
      */
-    DPoint m_boundingBox;
+    class OGDF_EXPORT LayoutClusterPlanRepModule
+    {
+    public:
+        //! Initializes a cluster planar layout module.
+        LayoutClusterPlanRepModule() { }
+
+        virtual ~LayoutClusterPlanRepModule() { }
+
+        /** \brief Computes a layout of \a PG in \a drawing.
+         *
+         * Must be overridden by derived classes.
+         * @param PG is the input cluster planarized representation which may be modified.
+         * @param adjExternal is an adjacenty entry on the external face.
+         * @param drawing is the computed layout of \a PG.
+         * @param npEdges are pairs of nodes in the original graph that shall be connected.
+         * @param newEdges are assigned the inserted edges.
+         * @param originalGraph must be the original graph of \a PG.
+         */
+        virtual void call(
+            ClusterPlanRep & PG,
+            adjEntry adjExternal,
+            Layout & drawing,
+            List<NodePair> & npEdges,
+            List<edge> & newEdges,
+            Graph & originalGraph) = 0;
 
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        //! Returns the bounding box of the computed layout.
+        const DPoint & getBoundingBox() const
+        {
+            return m_boundingBox;
+        }
+
+        //! Sets the (generic) options; derived classes have to cope with the interpretation)
+        virtual void setOptions(int /* optionField */) { } //don't make it abstract
+
+        //! Returns the (generic) options.
+        virtual int getOptions()
+        {
+            return 0;    //don't make it abstract
+        }
+
+        //! Returns the minimal allowed distance between edges and vertices.
+        virtual double separation() const = 0;
+
+        //! Sets the minimal allowed distance between edges and vertices to \a sep.
+        virtual void separation(double sep) = 0;
+
+    protected:
+        /**
+         * \brief Stores the bounding box of the computed layout.
+         * <b>Must be set by derived algorithms!</b>
+         */
+        DPoint m_boundingBox;
+
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 
 } // end namespace ogdf

@@ -43,7 +43,7 @@ CglClique::CglClique(bool setPacking, bool justOriginalRows) :
     cl_del_length(0)
 {}
 // Copy constructor
-CglClique::CglClique(const CglClique& rhs)
+CglClique::CglClique(const CglClique & rhs)
     : CglCutGenerator(rhs),
       setPacking_(rhs.setPacking_),
       justOriginalRows_(rhs.justOriginalRows_),
@@ -79,25 +79,25 @@ CglClique::CglClique(const CglClique& rhs)
 /*****************************************************************************/
 
 void
-CglClique::generateCuts(const OsiSolverInterface& si, OsiCuts & cs,
+CglClique::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                         const CglTreeInfo info) const
 {
     int i;
     bool has_petol_set = petol != -1.0;
 
-    if (! has_petol_set)
+    if(! has_petol_set)
         si.getDblParam(OsiPrimalTolerance, petol);
     int numberOriginalRows = si.getNumRows();
-    if (info.inTree&&justOriginalRows_)
+    if(info.inTree && justOriginalRows_)
         numberOriginalRows = info.formulation_rows;
     int numberRowCutsBefore = cs.sizeRowCuts();
     // First select which rows/columns we are interested in.
-    if (!setPacking_)
+    if(!setPacking_)
     {
         selectFractionalBinaries(si);
-        if (!sp_orig_row_ind)
+        if(!sp_orig_row_ind)
         {
-            selectRowCliques(si,numberOriginalRows);
+            selectRowCliques(si, numberOriginalRows);
         }
     }
     else
@@ -107,12 +107,12 @@ CglClique::generateCuts(const OsiSolverInterface& si, OsiCuts & cs,
         sp_numrows = numberOriginalRows;
         //sp_numcols = si.getNumCols();
         sp_orig_row_ind = new int[sp_numrows];
-        for (i = 0; i < sp_numrows; ++i)
+        for(i = 0; i < sp_numrows; ++i)
             sp_orig_row_ind[i] = i;
     }
     // Just original rows
-    if (justOriginalRows_&&info.inTree)
-        sp_numrows = CoinMin(info.formulation_rows,sp_numrows);
+    if(justOriginalRows_ && info.inTree)
+        sp_numrows = CoinMin(info.formulation_rows, sp_numrows);
 
 
     createSetPackingSubMatrix(si);
@@ -122,14 +122,14 @@ CglClique::generateCuts(const OsiSolverInterface& si, OsiCuts & cs,
     cl_indices = new int[sp_numcols];
     cl_del_indices = new int[sp_numcols];
 
-    if (do_row_clique)
+    if(do_row_clique)
         find_rcl(cs);
-    if (do_star_clique)
+    if(do_star_clique)
         find_scl(cs);
-    if (!info.inTree&&((info.options&4)==4||((info.options&8)&&!info.pass)))
+    if(!info.inTree && ((info.options & 4) == 4 || ((info.options & 8) && !info.pass)))
     {
         int numberRowCutsAfter = cs.sizeRowCuts();
-        for (int i=numberRowCutsBefore; i<numberRowCutsAfter; i++)
+        for(int i = numberRowCutsBefore; i < numberRowCutsAfter; i++)
             cs.rowCutPtr(i)->setGloballyValid();
     }
 
@@ -143,7 +143,7 @@ CglClique::generateCuts(const OsiSolverInterface& si, OsiCuts & cs,
     node_node = 0;
     deleteSetPackingSubMatrix();
 
-    if (! has_petol_set)
+    if(! has_petol_set)
         petol = -1;
 }
 
@@ -160,17 +160,17 @@ CglClique::generateCuts(const OsiSolverInterface& si, OsiCuts & cs,
  *===========================================================================*/
 
 void
-CglClique::find_rcl(OsiCuts& cs) const
+CglClique::find_rcl(OsiCuts & cs) const
 {
     const int nodenum = fgraph.nodenum;
-    const fnode *nodes = fgraph.nodes;
+    const fnode* nodes = fgraph.nodes;
 
     /* A flag for each column that might be used to extend the current row
        clique */
-    bool *cand = new bool[nodenum];
+    bool* cand = new bool[nodenum];
     /* In cl_indices we'll list the indices of the 'true' entries in cand */
     /* The degree of each candidate (those listed in cl_indices) */
-    int *degrees = new int[nodenum];
+    int* degrees = new int[nodenum];
 
     /** An array used in the recursive complete enumeration of maximal cliques.
         The first cl_length entries are used. */
@@ -186,44 +186,44 @@ CglClique::find_rcl(OsiCuts& cs) const
     int largest_length = 0;
 
     /* for each row of the matrix */
-    for (j = 0; j < sp_numrows; j++)
+    for(j = 0; j < sp_numrows; j++)
     {
 
         /* if the row is of zero length, take the next row */
-        const int len = sp_row_start[j+1] - sp_row_start[j];
-        if (!len)
+        const int len = sp_row_start[j + 1] - sp_row_start[j];
+        if(!len)
             continue;
 
         /* the beginning of the row to be considered */
-        const int *row = sp_row_ind + sp_row_start[j];
+        const int* row = sp_row_ind + sp_row_start[j];
 
         /* copy the row of node_node corresponding to the first column in 'row'
         into cand, and take the AND of this vector with every row of
          node_node corresponding to the rest of the columns in 'row' to
          determine those columns that are non-orthog to every column in row */
-        std::copy(node_node + row[0]*nodenum, node_node + (row[0]+1)*nodenum,
+        std::copy(node_node + row[0]*nodenum, node_node + (row[0] + 1)*nodenum,
                   cand);
-        for (i = 1; i < len; i++)
+        for(i = 1; i < len; i++)
         {
             const bool* node_node_col = node_node + row[i] * nodenum;
-            for (k = 0; k < nodenum; k++)
+            for(k = 0; k < nodenum; k++)
                 cand[k] &= node_node_col[k];
         }
         cl_length = 0;
-        for (k = 0; k < nodenum; k++)
-            if (cand[k])
+        for(k = 0; k < nodenum; k++)
+            if(cand[k])
                 cl_indices[cl_length++] = k;
         largest_length = CoinMax(cl_length, largest_length);
 
         /* if there is anything in indices, enumerate (or greedily find)
         maximal cliques */
-        if (cl_length > 0)
+        if(cl_length > 0)
         {
             cl_perm_length = len;
             cl_perm_indices = row;
-            if (cl_length <= rcl_candidate_length_threshold)
+            if(cl_length <= rcl_candidate_length_threshold)
             {
-                for (i = 0; i < cl_length; i++)
+                for(i = 0; i < cl_length; i++)
                     label[i] = false;
                 int pos = 0;
                 clique_count += enumerate_maximal_cliques(pos, label, cs);
@@ -231,22 +231,22 @@ CglClique::find_rcl(OsiCuts& cs) const
             else
             {
                 /* order cl_indices into decreasing order of their degrees */
-                for (i = 0; i < cl_length; i++)
+                for(i = 0; i < cl_length; i++)
                     degrees[i] = nodes[cl_indices[i]].degree;
                 CoinSort_2(degrees, degrees + cl_length, cl_indices,
-                           CoinFirstGreater_2<int,int>());
+                           CoinFirstGreater_2<int, int>());
                 clique_count += greedy_maximal_clique(cs);
             }
         }
     }
 
-    if (rcl_report_result)
+    if(rcl_report_result)
     {
         printf("\nrcl Found %i new violated cliques with the row-clique method",
                clique_count);
         printf("\nrcl The largest admissible number was %i (threshold %i)\n",
                largest_length, rcl_candidate_length_threshold);
-        if (largest_length < rcl_candidate_length_threshold)
+        if(largest_length < rcl_candidate_length_threshold)
             printf("rcl    all row cliques have been enumerated\n");
         else
             printf("rcl    not all row cliques have been eliminated\n");
@@ -277,20 +277,20 @@ CglClique::find_rcl(OsiCuts& cs) const
  *===========================================================================*/
 
 void
-CglClique::find_scl(OsiCuts& cs) const
+CglClique::find_scl(OsiCuts & cs) const
 {
     const int nodenum = fgraph.nodenum;
-    const fnode *nodes = fgraph.nodes;
+    const fnode* nodes = fgraph.nodes;
 
     // Return at once if no nodes - otherwise we get invalid reads
-    if (!nodenum)
+    if(!nodenum)
         return;
-    int *current_indices = new int[nodenum];
-    int *current_degrees = new int[nodenum];
-    double *current_values = new double[nodenum];
+    int* current_indices = new int[nodenum];
+    int* current_degrees = new int[nodenum];
+    double* current_values = new double[nodenum];
 
-    int *star = cl_indices;
-    int *star_deg = new int[nodenum];
+    int* star = cl_indices;
+    int* star_deg = new int[nodenum];
 
     /** An array used in the recursive complete enumeration of maximal cliques.
         The first cl_length entries are used. */
@@ -305,7 +305,7 @@ CglClique::find_scl(OsiCuts& cs) const
 
     /* initialize current_nodes, current_degrees and current_values */
     int current_nodenum = nodenum;
-    for (i = 0; i < nodenum; i++)
+    for(i = 0; i < nodenum; i++)
     {
         current_indices[i] = i;
         current_degrees[i] = nodes[i].degree;
@@ -322,11 +322,11 @@ CglClique::find_scl(OsiCuts& cs) const
 
     /* while there are nodes left in the graph ... (more precisely, while
        there are at least 3 nodes in the graph) */
-    while (current_nodenum > 2)
+    while(current_nodenum > 2)
     {
 
         /* if the best node is of degree < 2 then it can be deleted */
-        if (v_deg < 2)
+        if(v_deg < 2)
         {
             cl_del_indices[cl_del_length++] = v;
             scl_delete_node(best_ind, current_nodenum,
@@ -342,13 +342,13 @@ CglClique::find_scl(OsiCuts& cs) const
 
         /* star will contain the indices of v's neighbors (but not v's index) */
         const bool* node_node_start = node_node + nodenum * v;
-        int& star_length = cl_length;
+        int & star_length = cl_length;
         star_length = 0;
         double star_val = v_val;
-        for (i = 0; i < current_nodenum; i++)
+        for(i = 0; i < current_nodenum; i++)
         {
             const int other_node = current_indices[i];
-            if (node_node_start[other_node])
+            if(node_node_start[other_node])
             {
                 star[star_length] = other_node;
                 star_deg[star_length++] = current_degrees[i];
@@ -358,7 +358,7 @@ CglClique::find_scl(OsiCuts& cs) const
 
         /* quick check: if sum of values for the star does not exceed 1 then
         there won't be a violated clique in the star */
-        if (star_val >= 1 + petol)
+        if(star_val >= 1 + petol)
         {
             /* node whose star we're evaluating is always in */
             cl_perm_length = 1;
@@ -370,10 +370,10 @@ CglClique::find_scl(OsiCuts& cs) const
                Note that star is the same as cl_indices and start_length is
                cl_length...
             */
-            if (v_deg < scl_candidate_length_threshold)   // par
+            if(v_deg < scl_candidate_length_threshold)    // par
             {
                 /* enumerate if v_deg is small enough */
-                for (i = 0; i < star_length; i++)
+                for(i = 0; i < star_length; i++)
                     label[i] = false;
                 int pos = 0;
                 clique_cnt_e += enumerate_maximal_cliques(pos, label, cs);
@@ -384,7 +384,7 @@ CglClique::find_scl(OsiCuts& cs) const
                 /* greedily find if v_deg is too big */
                 /* order nodes in *decreasing* order of their degrees in star */
                 CoinSort_2(star_deg, star_deg + star_length, star,
-                           CoinFirstGreater_2<int,int>());
+                           CoinFirstGreater_2<int, int>());
                 /* find maxl clique greedily, including v */
                 clique_cnt_g += greedy_maximal_clique(cs);
                 cnt2++;
@@ -408,7 +408,7 @@ CglClique::find_scl(OsiCuts& cs) const
 
     const int clique_cnt = clique_cnt_e + clique_cnt_g;
 
-    if (scl_report_result)
+    if(scl_report_result)
     {
         printf("\nscl Found %i new violated cliques with the star-clique method",
                clique_cnt);
@@ -421,7 +421,7 @@ CglClique::find_scl(OsiCuts& cs) const
         printf("scl Skipped a star b/c of small solution value %i times\n",
                cnt3);
 
-        if (cnt2 == 0)
+        if(cnt2 == 0)
             printf("scl    all cliques have been enumerated\n");
         else
             printf("scl    not all cliques have been eliminated\n");
@@ -442,44 +442,44 @@ CglClique::find_scl(OsiCuts& cs) const
 
 int
 CglClique::scl_choose_next_node(const int current_nodenum,
-                                const int * /* current_indices */,
-                                const int *current_degrees,
-                                const double *current_values) const
+                                const int* /* current_indices */,
+                                const int* current_degrees,
+                                const double* current_values) const
 {
     int best = 0;
     int best_deg = current_degrees[0];
     double best_val = current_values[0];
     int i;
 
-    switch (scl_next_node_rule)   // p->par.scl_which_node
+    switch(scl_next_node_rule)    // p->par.scl_which_node
     {
     case SCL_MIN_DEGREE: // NOTE: could use stl::min_element
-        for (i = 1; i < current_nodenum; i++)
-            if (current_degrees[i] < best_deg)
+        for(i = 1; i < current_nodenum; i++)
+            if(current_degrees[i] < best_deg)
             {
                 best = i;
                 best_deg = current_degrees[i];
             }
         break;
     case SCL_MAX_DEGREE: // NOTE: could use stl::max_element
-        for (i = 1; i < current_nodenum; i++)
-            if (current_degrees[i] > best_deg)
+        for(i = 1; i < current_nodenum; i++)
+            if(current_degrees[i] > best_deg)
             {
                 best = i;
                 best_deg = current_degrees[i];
             }
         break;
     case SCL_MAX_XJ_MAX_DEG:
-        for (i = 1; i < current_nodenum; i++)
+        for(i = 1; i < current_nodenum; i++)
         {
-            if (current_values[i] > best_val)
+            if(current_values[i] > best_val)
             {
                 best = i;
                 best_val = current_values[i];
                 best_deg = current_degrees[i];
             }
-            else if (current_values[i] == best_val &&
-                     current_degrees[i] > best_deg)
+            else if(current_values[i] == best_val &&
+                    current_degrees[i] > best_deg)
             {
                 best = i;
                 best_deg = current_degrees[i];
@@ -516,29 +516,29 @@ CglClique::scl_choose_next_node(const int current_nodenum,
  *===========================================================================*/
 
 void
-CglClique::scl_delete_node(const int del_ind, int& current_nodenum,
-                           int *current_indices, int *current_degrees,
-                           double *current_values) const
+CglClique::scl_delete_node(const int del_ind, int & current_nodenum,
+                           int* current_indices, int* current_degrees,
+                           double* current_values) const
 {
     const int v = current_indices[del_ind];
 
     /* delete the entry corresponding to del_ind from current_indices,
        current_degrees and current_values */
-    memmove(reinterpret_cast<char *>(current_indices + del_ind),
-            reinterpret_cast<char *>(current_indices + (del_ind+1)),
-            (current_nodenum-del_ind-1) * sizeof(int));
-    memmove(reinterpret_cast<char *>(current_degrees + del_ind),
-            reinterpret_cast<char *>(current_degrees + (del_ind+1)),
-            (current_nodenum-del_ind-1) * sizeof(int));
-    memmove(reinterpret_cast<char *>(current_values + del_ind),
-            reinterpret_cast<char *>(current_values + (del_ind+1)),
-            (current_nodenum-del_ind-1) * sizeof(double));
+    memmove(reinterpret_cast<char*>(current_indices + del_ind),
+            reinterpret_cast<char*>(current_indices + (del_ind + 1)),
+            (current_nodenum - del_ind - 1) * sizeof(int));
+    memmove(reinterpret_cast<char*>(current_degrees + del_ind),
+            reinterpret_cast<char*>(current_degrees + (del_ind + 1)),
+            (current_nodenum - del_ind - 1) * sizeof(int));
+    memmove(reinterpret_cast<char*>(current_values + del_ind),
+            reinterpret_cast<char*>(current_values + (del_ind + 1)),
+            (current_nodenum - del_ind - 1) * sizeof(double));
     current_nodenum--;
 
     /* decrease the degrees of v's neighbors by 1 */
     const bool* node_node_start = node_node + (fgraph.nodenum * v);
-    for (int i = 0; i < current_nodenum; ++i)
-        if (node_node_start[current_indices[i]])
+    for(int i = 0; i < current_nodenum; ++i)
+        if(node_node_start[current_indices[i]])
             current_degrees[i]--;
 }
 
@@ -571,26 +571,26 @@ CglClique::scl_delete_node(const int del_ind, int& current_nodenum,
  *===========================================================================*/
 
 int
-CglClique::enumerate_maximal_cliques(int& pos, bool* label, OsiCuts& cs) const
+CglClique::enumerate_maximal_cliques(int & pos, bool* label, OsiCuts & cs) const
 {
-    const fnode *nodes = fgraph.nodes;
+    const fnode* nodes = fgraph.nodes;
     const int nodenum = fgraph.nodenum;
 
     int i, j, k, cnt;
 
     /* starting from position pos, find the first node in cl_indices that
        can be added to the clique, and label it with true */
-    while (pos < cl_length)
+    while(pos < cl_length)
     {
         label[pos] = true;
         const bool* node_node_start = node_node + cl_indices[pos] * nodenum;
-        for (j = 0; j < pos; j++)
-            if (label[j] && ! node_node_start[cl_indices[j]])
+        for(j = 0; j < pos; j++)
+            if(label[j] && ! node_node_start[cl_indices[j]])
             {
                 label[pos] = false;
                 break;
             }
-        if (label[pos++] == true)
+        if(label[pos++] == true)
             break;
     }
 
@@ -601,10 +601,10 @@ CglClique::enumerate_maximal_cliques(int& pos, bool* label, OsiCuts& cs) const
     /* if not all nodes are labeled: recurse by setting the last node
        labeled true once to true and once to false;
        otherwise check whether the clique found is maximal and violated */
-    if (pos < cl_length)
+    if(pos < cl_length)
     {
         found += enumerate_maximal_cliques(pos, label, cs);
-        label[pos-1] = false;
+        label[pos - 1] = false;
         found += enumerate_maximal_cliques(pos, label, cs);
     }
     else
@@ -613,27 +613,27 @@ CglClique::enumerate_maximal_cliques(int& pos, bool* label, OsiCuts& cs) const
 
         /* copy indices of the clique into coef (not user inds, coef is a tmp) */
         int* coef = new int[cl_length + cl_perm_length];
-        for (j = cl_length - 1, cnt = 0; j >= 0; j--)
-            if (label[j])
+        for(j = cl_length - 1, cnt = 0; j >= 0; j--)
+            if(label[j])
                 coef[cnt++] = cl_indices[j];
-        if (!cnt)
+        if(!cnt)
         {
             delete[] coef;
             return(found);
         }
 
         /* check if the clique can be extended on cl_indices */
-        for (k = cl_length - 1; k >= 0; k--)
+        for(k = cl_length - 1; k >= 0; k--)
         {
-            if (!label[k])
+            if(!label[k])
             {
                 const bool* node_node_start = node_node + cl_indices[k] * nodenum;
-                for (i = cnt - 1; i >= 0; i--)
-                    if (!node_node_start[coef[i]])
+                for(i = cnt - 1; i >= 0; i--)
+                    if(!node_node_start[coef[i]])
                         break;
                 /* if k can be added to the clique, return (the clique is not
                    maximal, so it will be or was recorded) */
-                if (i < 0)
+                if(i < 0)
                 {
                     delete[] coef;
                     return(found);
@@ -643,14 +643,14 @@ CglClique::enumerate_maximal_cliques(int& pos, bool* label, OsiCuts& cs) const
 
         /* now the clique is maximal on cl_indices.
         fill relative indices into coef */
-        for (j = 0; j < cl_perm_length; j++)
+        for(j = 0; j < cl_perm_length; j++)
             coef[cnt++] = cl_perm_indices[j];
 
         /* check if clique is violated */
         double lhs = 0;
-        for (j = 0; j < cnt; j++)
+        for(j = 0; j < cnt; j++)
             lhs += nodes[coef[j]].val;
-        if (lhs < 1 + petol)
+        if(lhs < 1 + petol)
         {
             delete[] coef;
             return(found);
@@ -658,14 +658,14 @@ CglClique::enumerate_maximal_cliques(int& pos, bool* label, OsiCuts& cs) const
 
         /* if clique can be extended on cl_del_indices then it can be
         discarded (was already counted) */
-        for (i = 0; i < cl_del_length; i++)
+        for(i = 0; i < cl_del_length; i++)
         {
-            const bool* node_node_start = node_node + cl_del_indices[i]*nodenum;
-            for (j = cnt - 1; j >= 0; j--)
-                if (!node_node_start[coef[j]])
+            const bool* node_node_start = node_node + cl_del_indices[i] * nodenum;
+            for(j = cnt - 1; j >= 0; j--)
+                if(!node_node_start[coef[j]])
                     break;
             /* if cl_del_indices[i] can be added to the clique, return */
-            if (j < 0)
+            if(j < 0)
             {
                 delete[] coef;
                 return(found);
@@ -691,33 +691,33 @@ CglClique::enumerate_maximal_cliques(int& pos, bool* label, OsiCuts& cs) const
  *===========================================================================*/
 
 int
-CglClique::greedy_maximal_clique(OsiCuts& cs) const
+CglClique::greedy_maximal_clique(OsiCuts & cs) const
 {
     assert(cl_length > 0);
-    const fnode *nodes = fgraph.nodes;
+    const fnode* nodes = fgraph.nodes;
     const int nodenum = fgraph.nodenum;
     int i, j;
 
-    int * coef = new int[cl_length + cl_perm_length];
+    int* coef = new int[cl_length + cl_perm_length];
     coef[0] = cl_indices[0];
     int cnt = 1;
-    for (j = 1; j < cl_length; j++)
+    for(j = 1; j < cl_length; j++)
     {
         const int var = cl_indices[j];
         const bool* node_node_start = node_node + var * nodenum;
-        for (i = cnt-1; i >= 0; i--)
-            if (!node_node_start[coef[i]])
+        for(i = cnt - 1; i >= 0; i--)
+            if(!node_node_start[coef[i]])
                 break;
-        if (i < 0)
+        if(i < 0)
             coef[cnt++] = var;
     }
 
-    for (j = 0; j < cl_perm_length; j++)
+    for(j = 0; j < cl_perm_length; j++)
         coef[cnt++] = cl_perm_indices[j];
 
     /* now coef contains the clique */
     /* only cliques of size at least 3 are interesting */
-    if (cnt < 3)
+    if(cnt < 3)
     {
         delete[] coef;
         return(0);
@@ -725,10 +725,10 @@ CglClique::greedy_maximal_clique(OsiCuts& cs) const
 
     /* compute lhs */
     double lhs = 0;
-    for (j = 0; j < cnt; j++)
+    for(j = 0; j < cnt; j++)
         lhs += nodes[coef[j]].val;
 
-    if (lhs > 1 + petol)
+    if(lhs > 1 + petol)
     {
         recordClique(cnt, coef, cs);
         delete[] coef;
@@ -745,10 +745,10 @@ CglClique::greedy_maximal_clique(OsiCuts& cs) const
  *===========================================================================*/
 
 void
-CglClique::recordClique(const int len, int* indices, OsiCuts& cs) const
+CglClique::recordClique(const int len, int* indices, OsiCuts & cs) const
 {
     /* transform relative indices into user indices and order them */
-    for (int j = len - 1; j >= 0; j--)
+    for(int j = len - 1; j >= 0; j--)
         indices[j] = sp_orig_col_ind[indices[j]];
     std::sort(indices, indices + len);
     OsiRowCut rowcut;
@@ -757,14 +757,14 @@ CglClique::recordClique(const int len, int* indices, OsiCuts& cs) const
     rowcut.setRow(len, indices, coef);
     rowcut.setUb(1.0);
     CoinAbsFltEq equal(1.0e-12);
-    cs.insertIfNotDuplicate(rowcut,equal);
+    cs.insertIfNotDuplicate(rowcut, equal);
     delete[] coef;
 }
 
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CglCutGenerator *
+CglCutGenerator*
 CglClique::clone() const
 {
     return new CglClique(*this);
@@ -773,77 +773,77 @@ CglClique::clone() const
 /*****************************************************************************/
 // Create C++ lines to get to current state
 std::string
-CglClique::generateCpp( FILE * fp)
+CglClique::generateCpp(FILE* fp)
 {
     CglClique other;
-    fprintf(fp,"0#include \"CglClique.hpp\"\n");
-    fprintf(fp,"3  CglClique clique;\n");
-    std::string types[] = {"SCL_MIN_DEGREE","SCL_MAX_DEGREE",
+    fprintf(fp, "0#include \"CglClique.hpp\"\n");
+    fprintf(fp, "3  CglClique clique;\n");
+    std::string types[] = {"SCL_MIN_DEGREE", "SCL_MAX_DEGREE",
                            "SCL_MAX_XJ_MAX_DEG"
                           };
-    if (scl_next_node_rule!=other.scl_next_node_rule)
-        fprintf(fp,"3  clique.setStarCliqueNextNodeMethod(CglClique::%s);\n",
+    if(scl_next_node_rule != other.scl_next_node_rule)
+        fprintf(fp, "3  clique.setStarCliqueNextNodeMethod(CglClique::%s);\n",
                 types[scl_next_node_rule].c_str());
     else
-        fprintf(fp,"4  clique.setStarCliqueNextNodeMethod(CglClique::%s);\n",
+        fprintf(fp, "4  clique.setStarCliqueNextNodeMethod(CglClique::%s);\n",
                 types[scl_next_node_rule].c_str());
-    if (scl_candidate_length_threshold!=other.scl_candidate_length_threshold)
-        fprintf(fp,"3  clique.setStarCliqueCandidateLengthThreshold(%d);\n",
+    if(scl_candidate_length_threshold != other.scl_candidate_length_threshold)
+        fprintf(fp, "3  clique.setStarCliqueCandidateLengthThreshold(%d);\n",
                 scl_candidate_length_threshold);
     else
-        fprintf(fp,"4  clique.setStarCliqueCandidateLengthThreshold(%d);\n",
+        fprintf(fp, "4  clique.setStarCliqueCandidateLengthThreshold(%d);\n",
                 scl_candidate_length_threshold);
-    if (rcl_candidate_length_threshold!=other.rcl_candidate_length_threshold)
-        fprintf(fp,"3  clique.setRowCliqueCandidateLengthThreshold(%d);\n",
+    if(rcl_candidate_length_threshold != other.rcl_candidate_length_threshold)
+        fprintf(fp, "3  clique.setRowCliqueCandidateLengthThreshold(%d);\n",
                 rcl_candidate_length_threshold);
     else
-        fprintf(fp,"4  clique.setRowCliqueCandidateLengthThreshold(%d);\n",
+        fprintf(fp, "4  clique.setRowCliqueCandidateLengthThreshold(%d);\n",
                 rcl_candidate_length_threshold);
-    if (scl_report_result!=other.scl_report_result)
-        fprintf(fp,"3  clique.setStarCliqueReport(%s);\n",
+    if(scl_report_result != other.scl_report_result)
+        fprintf(fp, "3  clique.setStarCliqueReport(%s);\n",
                 scl_report_result ? "true" : "false");
     else
-        fprintf(fp,"4  clique.setStarCliqueReport(%s);\n",
+        fprintf(fp, "4  clique.setStarCliqueReport(%s);\n",
                 scl_report_result ? "true" : "false");
-    if (rcl_report_result!=other.rcl_report_result)
-        fprintf(fp,"3  clique.setRowCliqueReport(%s);\n",
+    if(rcl_report_result != other.rcl_report_result)
+        fprintf(fp, "3  clique.setRowCliqueReport(%s);\n",
                 rcl_report_result ? "true" : "false");
     else
-        fprintf(fp,"4  clique.setRowCliqueReport(%s);\n",
+        fprintf(fp, "4  clique.setRowCliqueReport(%s);\n",
                 rcl_report_result ? "true" : "false");
-    if (do_star_clique!=other.do_star_clique)
-        fprintf(fp,"3  clique.setDoStarClique(%s);\n",
+    if(do_star_clique != other.do_star_clique)
+        fprintf(fp, "3  clique.setDoStarClique(%s);\n",
                 do_star_clique ? "true" : "false");
     else
-        fprintf(fp,"4  clique.setDoStarClique(%s);\n",
+        fprintf(fp, "4  clique.setDoStarClique(%s);\n",
                 do_star_clique ? "true" : "false");
-    if (do_row_clique!=other.do_row_clique)
-        fprintf(fp,"3  clique.setDoRowClique(%s);\n",
+    if(do_row_clique != other.do_row_clique)
+        fprintf(fp, "3  clique.setDoRowClique(%s);\n",
                 do_row_clique ? "true" : "false");
     else
-        fprintf(fp,"4  clique.setDoRowClique(%s);\n",
+        fprintf(fp, "4  clique.setDoRowClique(%s);\n",
                 do_row_clique ? "true" : "false");
-    if (petol!=other.petol)
-        fprintf(fp,"3  clique.setMinViolation(%g);\n",petol);
+    if(petol != other.petol)
+        fprintf(fp, "3  clique.setMinViolation(%g);\n", petol);
     else
-        fprintf(fp,"4  clique.setMinViolation(%g);\n",petol);
-    if (getAggressiveness()!=other.getAggressiveness())
-        fprintf(fp,"3  clique.setAggressiveness(%d);\n",getAggressiveness());
+        fprintf(fp, "4  clique.setMinViolation(%g);\n", petol);
+    if(getAggressiveness() != other.getAggressiveness())
+        fprintf(fp, "3  clique.setAggressiveness(%d);\n", getAggressiveness());
     else
-        fprintf(fp,"4  clique.setAggressiveness(%d);\n",getAggressiveness());
+        fprintf(fp, "4  clique.setAggressiveness(%d);\n", getAggressiveness());
     return "clique";
 }
 /*****************************************************************************/
 
 #include "CglProbing.hpp"
-CglFakeClique::CglFakeClique(OsiSolverInterface * solver, bool setPacking) :
-    CglClique(setPacking,true)
+CglFakeClique::CglFakeClique(OsiSolverInterface* solver, bool setPacking) :
+    CglClique(setPacking, true)
 {
-    if (solver)
+    if(solver)
         fakeSolver_ = solver->clone();
     else
         fakeSolver_ = NULL;
-    if (fakeSolver_)
+    if(fakeSolver_)
     {
         probing_ = new CglProbing();
         probing_->refreshSolver(fakeSolver_);
@@ -855,10 +855,10 @@ CglFakeClique::CglFakeClique(OsiSolverInterface * solver, bool setPacking) :
 
 }
 // Copy constructor
-CglFakeClique::CglFakeClique(const CglFakeClique& rhs)
+CglFakeClique::CglFakeClique(const CglFakeClique & rhs)
     : CglClique(rhs)
 {
-    if (rhs.fakeSolver_)
+    if(rhs.fakeSolver_)
     {
         fakeSolver_ = rhs.fakeSolver_->clone();
         probing_ = new CglProbing(*rhs.probing_);
@@ -874,7 +874,7 @@ CglFakeClique::CglFakeClique(const CglFakeClique& rhs)
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CglCutGenerator *
+CglCutGenerator*
 CglFakeClique::clone() const
 {
     return new CglFakeClique(*this);
@@ -888,42 +888,42 @@ CglFakeClique::~CglFakeClique()
 }
 // Assign solver (generator takes over ownership)
 void
-CglFakeClique::assignSolver(OsiSolverInterface * fakeSolver)
+CglFakeClique::assignSolver(OsiSolverInterface* fakeSolver)
 {
     delete fakeSolver_;
     fakeSolver_ = fakeSolver;
-    if (fakeSolver_)
+    if(fakeSolver_)
     {
         delete [] sp_orig_row_ind;
-        sp_orig_row_ind=NULL;
+        sp_orig_row_ind = NULL;
     }
-    if (probing_)
+    if(probing_)
         probing_->refreshSolver(fakeSolver_);
 }
 // Generate cuts
 void
-CglFakeClique::generateCuts(const OsiSolverInterface& si, OsiCuts & cs,
+CglFakeClique::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                             const CglTreeInfo info) const
 {
-    if (fakeSolver_)
+    if(fakeSolver_)
     {
-        assert (si.getNumCols()==fakeSolver_->getNumCols());
+        assert(si.getNumCols() == fakeSolver_->getNumCols());
         fakeSolver_->setColLower(si.getColLower());
         fakeSolver_->setColSolution(si.getColSolution());
         fakeSolver_->setColUpper(si.getColUpper());
-        CglClique::generateCuts(*fakeSolver_,cs,info);
-        if (probing_)
+        CglClique::generateCuts(*fakeSolver_, cs, info);
+        if(probing_)
         {
             // get and set branch and bound cutoff
             double cutoff;
-            si.getDblParam(OsiDualObjectiveLimit,cutoff);
-            fakeSolver_->setDblParam(OsiDualObjectiveLimit,cutoff);
-            probing_->generateCuts(*fakeSolver_,cs,info);
+            si.getDblParam(OsiDualObjectiveLimit, cutoff);
+            fakeSolver_->setDblParam(OsiDualObjectiveLimit, cutoff);
+            probing_->generateCuts(*fakeSolver_, cs, info);
         }
     }
     else
     {
         // just use real solver
-        CglClique::generateCuts(si,cs,info);
+        CglClique::generateCuts(si, cs, info);
     }
 }

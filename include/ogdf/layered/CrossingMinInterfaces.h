@@ -54,71 +54,71 @@
 namespace ogdf
 {
 
-class Hierarchy;
+    class Hierarchy;
 
-// I am not good at naming things, so feel free to rename these interfaces as well as this file.
-
-
-//! Representation of levels in hierarchies.
-/**
- * \see Hierarchy, SugiyamaLayout
- */
-class LevelBase
-{
-public:
-    //  destruction
-    virtual ~LevelBase() { }
-
-    //! Returns the node at position \a i.
-    virtual const node &operator[](int i) const = 0;
-
-    //! Returns the node at position \a i.
-    virtual node &operator[](int i) = 0;
-
-    //! Returns the number of nodes on this level.
-    virtual int size() const = 0;
-
-    //! Returns the maximal array index (= size()-1).
-    virtual int high() const = 0;
-};
+    // I am not good at naming things, so feel free to rename these interfaces as well as this file.
 
 
-
-class OGDF_EXPORT HierarchyLevelsBase
-{
-
-public:
-    // destruction
-    virtual ~HierarchyLevelsBase() { }
-
-    enum TraversingDir { downward, upward };
-
-    //! Returns the <i>i</i>-th level.
-    virtual const LevelBase &operator[](int i) const = 0;
-
-    //! Returns the position of node \a v on its level.
-    virtual int pos(node v) const = 0;
-
-    //! Returns the number of levels.
-    virtual int size() const = 0;
-
-    //! Returns the maximal array index of a level (= size()-1).
-    virtual int high() const
+    //! Representation of levels in hierarchies.
+    /**
+     * \see Hierarchy, SugiyamaLayout
+     */
+    class LevelBase
     {
-        return size() - 1;
-    }
+    public:
+        //  destruction
+        virtual ~LevelBase() { }
 
-    virtual const Hierarchy &hierarchy() const = 0;
+        //! Returns the node at position \a i.
+        virtual const node & operator[](int i) const = 0;
 
-    //! Returns the adjacent nodes of \a v.
-    virtual const Array<node> &adjNodes(node v, TraversingDir dir) const = 0;
+        //! Returns the node at position \a i.
+        virtual node & operator[](int i) = 0;
 
-    //! Computes the number of crossings between level \a i and \a i+1.
-    int calculateCrossings(int i) const;
+        //! Returns the number of nodes on this level.
+        virtual int size() const = 0;
 
-    //! Computes the total number of crossings.
-    int calculateCrossings() const;
-};
+        //! Returns the maximal array index (= size()-1).
+        virtual int high() const = 0;
+    };
+
+
+
+    class OGDF_EXPORT HierarchyLevelsBase
+    {
+
+    public:
+        // destruction
+        virtual ~HierarchyLevelsBase() { }
+
+        enum TraversingDir { downward, upward };
+
+        //! Returns the <i>i</i>-th level.
+        virtual const LevelBase & operator[](int i) const = 0;
+
+        //! Returns the position of node \a v on its level.
+        virtual int pos(node v) const = 0;
+
+        //! Returns the number of levels.
+        virtual int size() const = 0;
+
+        //! Returns the maximal array index of a level (= size()-1).
+        virtual int high() const
+        {
+            return size() - 1;
+        }
+
+        virtual const Hierarchy & hierarchy() const = 0;
+
+        //! Returns the adjacent nodes of \a v.
+        virtual const Array<node> & adjNodes(node v, TraversingDir dir) const = 0;
+
+        //! Computes the number of crossings between level \a i and \a i+1.
+        int calculateCrossings(int i) const;
+
+        //! Computes the total number of crossings.
+        int calculateCrossings() const;
+    };
 
 }
 

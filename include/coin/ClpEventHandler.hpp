@@ -68,15 +68,15 @@ public:
 
     //@{
     /** Default constructor. */
-    ClpEventHandler(ClpSimplex * model = NULL);
+    ClpEventHandler(ClpSimplex* model = NULL);
     /** Destructor */
     virtual ~ClpEventHandler();
     // Copy
-    ClpEventHandler(const ClpEventHandler&);
+    ClpEventHandler(const ClpEventHandler &);
     // Assignment
-    ClpEventHandler& operator=(const ClpEventHandler&);
+    ClpEventHandler & operator=(const ClpEventHandler &);
     /// Clone
-    virtual ClpEventHandler * clone() const;
+    virtual ClpEventHandler* clone() const;
 
     //@}
 
@@ -84,9 +84,9 @@ public:
 
     //@{
     /** set model. */
-    void setSimplex(ClpSimplex * model);
+    void setSimplex(ClpSimplex* model);
     /// Get model
-    inline ClpSimplex * simplex() const
+    inline ClpSimplex* simplex() const
     {
         return model_;
     }
@@ -98,7 +98,7 @@ protected:
        The data members are protected to allow access for derived classes. */
     //@{
     /// Pointer to simplex
-    ClpSimplex * model_;
+    ClpSimplex* model_;
     //@}
 };
 /** Base class for Clp disaster handling
@@ -130,15 +130,15 @@ public:
 
     //@{
     /** Default constructor. */
-    ClpDisasterHandler(ClpSimplex * model = NULL);
+    ClpDisasterHandler(ClpSimplex* model = NULL);
     /** Destructor */
     virtual ~ClpDisasterHandler();
     // Copy
-    ClpDisasterHandler(const ClpDisasterHandler&);
+    ClpDisasterHandler(const ClpDisasterHandler &);
     // Assignment
-    ClpDisasterHandler& operator=(const ClpDisasterHandler&);
+    ClpDisasterHandler & operator=(const ClpDisasterHandler &);
     /// Clone
-    virtual ClpDisasterHandler * clone() const = 0;
+    virtual ClpDisasterHandler* clone() const = 0;
 
     //@}
 
@@ -146,9 +146,9 @@ public:
 
     //@{
     /** set model. */
-    void setSimplex(ClpSimplex * model);
+    void setSimplex(ClpSimplex* model);
     /// Get model
-    inline ClpSimplex * simplex() const
+    inline ClpSimplex* simplex() const
     {
         return model_;
     }
@@ -160,7 +160,7 @@ protected:
        The data members are protected to allow access for derived classes. */
     //@{
     /// Pointer to simplex
-    ClpSimplex * model_;
+    ClpSimplex* model_;
     //@}
 };
 #endif

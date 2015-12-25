@@ -35,14 +35,14 @@
  * succeeded, FALSE otherwise.
 \*===========================================================================*/
 
-int receive_cp_data_u(cut_pool *cp)
+int receive_cp_data_u(cut_pool* cp)
 {
     int r_bufid;
 
     r_bufid = receive_msg(cp->master, CP_DATA);
-    receive_char_array((char *)&cp->par, sizeof(cp_params));
+    receive_char_array((char*)&cp->par, sizeof(cp_params));
 #ifdef USE_SYM_APPLICATION
-    switch( user_receive_cp_data(&cp->user) )
+    switch(user_receive_cp_data(&cp->user))
     {
     case USER_SUCCESS:
     case USER_NO_PP:
@@ -65,27 +65,27 @@ int receive_cp_data_u(cut_pool *cp)
 
 /*===========================================================================*/
 
-int receive_lp_solution_cp_u(cut_pool *cp)
+int receive_lp_solution_cp_u(cut_pool* cp)
 {
     int termcode = 0;
 #ifdef USE_SYM_APPLICATION
-    CALL_USER_FUNCTION( user_receive_lp_solution_cp(&cp->user) );
+    CALL_USER_FUNCTION(user_receive_lp_solution_cp(&cp->user));
 #endif
     return(termcode);
 }
 
 /*===========================================================================*/
 
-int check_cuts_u(cut_pool *cp, lp_sol *cur_sol)
+int check_cuts_u(cut_pool* cp, lp_sol* cur_sol)
 {
     int num_cuts = 0, i, violated;
-    cp_cut_data **pcp_cut;
+    cp_cut_data** pcp_cut;
     double quality;
     int cuts_to_check = MIN(cp->cut_num, cp->par.cuts_to_check);
 
 #ifdef USE_SYM_APPLICATION
-    if (user_prepare_to_check_cuts(cp->user, cur_sol->xlength, cur_sol->xind,
-                                   cur_sol->xval) == USER_ERROR)
+    if(user_prepare_to_check_cuts(cp->user, cur_sol->xlength, cur_sol->xind,
+                                  cur_sol->xval) == USER_ERROR)
     {
         return(0);
     }
@@ -95,16 +95,16 @@ int check_cuts_u(cut_pool *cp, lp_sol *cur_sol)
     {
 
     case CHECK_ALL_CUTS: /* check all cuts in the pool */
-        for (i = 0, pcp_cut = cp->cuts; i < cuts_to_check; i++, pcp_cut++)
+        for(i = 0, pcp_cut = cp->cuts; i < cuts_to_check; i++, pcp_cut++)
         {
-            if (check_cut_u(cp, cur_sol, &(*pcp_cut)->cut,
-                            &violated, &quality) == USER_ERROR)
+            if(check_cut_u(cp, cur_sol, &(*pcp_cut)->cut,
+                           &violated, &quality) == USER_ERROR)
                 break;
             (*pcp_cut)->quality =
-                ((*pcp_cut)->quality*(double)((*pcp_cut)->check_num) + quality)/
-                (double)((*pcp_cut)->check_num+1);
+                ((*pcp_cut)->quality * (double)((*pcp_cut)->check_num) + quality) /
+                (double)((*pcp_cut)->check_num + 1);
             (*pcp_cut)->check_num++;
-            if ( violated )
+            if(violated)
             {
                 num_cuts++;
                 (*pcp_cut)->touches = 0;
@@ -121,18 +121,18 @@ int check_cuts_u(cut_pool *cp, lp_sol *cur_sol)
              than the current level. This prevents checking
              cuts generated in other parts of the tree which
              are not as likely to be violated */
-        for (i = 0, pcp_cut = cp->cuts; i < cuts_to_check; i++, pcp_cut++)
+        for(i = 0, pcp_cut = cp->cuts; i < cuts_to_check; i++, pcp_cut++)
         {
-            if ((*pcp_cut)->level >= cur_sol->xlevel)
+            if((*pcp_cut)->level >= cur_sol->xlevel)
                 continue;
-            if (check_cut_u(cp, cur_sol, &(*pcp_cut)->cut,
-                            &violated, &quality) == USER_ERROR)
+            if(check_cut_u(cp, cur_sol, &(*pcp_cut)->cut,
+                           &violated, &quality) == USER_ERROR)
                 break;
             (*pcp_cut)->quality =
-                ((*pcp_cut)->quality*(double)((*pcp_cut)->check_num) + quality)/
-                (double)((*pcp_cut)->check_num+1);
+                ((*pcp_cut)->quality * (double)((*pcp_cut)->check_num) + quality) /
+                (double)((*pcp_cut)->check_num + 1);
             (*pcp_cut)->check_num++;
-            if ( violated )
+            if(violated)
             {
                 num_cuts++;
                 (*pcp_cut)->touches = 0;
@@ -147,18 +147,18 @@ int check_cuts_u(cut_pool *cp, lp_sol *cur_sol)
 
     case CHECK_TOUCHES: /* only check cuts which have been recently
                violated */
-        for (i = 0, pcp_cut = cp->cuts; i < cuts_to_check; i++, pcp_cut++)
+        for(i = 0, pcp_cut = cp->cuts; i < cuts_to_check; i++, pcp_cut++)
         {
-            if ((*pcp_cut)->touches > cp->par.touches_until_deletion)
+            if((*pcp_cut)->touches > cp->par.touches_until_deletion)
                 continue;
-            if (check_cut_u(cp, cur_sol, &(*pcp_cut)->cut,
-                            &violated, &quality) == USER_ERROR)
+            if(check_cut_u(cp, cur_sol, &(*pcp_cut)->cut,
+                           &violated, &quality) == USER_ERROR)
                 break;
             (*pcp_cut)->quality =
-                ((*pcp_cut)->quality*(double)((*pcp_cut)->check_num) + quality)/
-                (double)((*pcp_cut)->check_num+1);
+                ((*pcp_cut)->quality * (double)((*pcp_cut)->check_num) + quality) /
+                (double)((*pcp_cut)->check_num + 1);
             (*pcp_cut)->check_num++;
-            if ( violated )
+            if(violated)
             {
                 num_cuts++;
                 (*pcp_cut)->touches = 0;
@@ -173,19 +173,19 @@ int check_cuts_u(cut_pool *cp, lp_sol *cur_sol)
 
     case CHECK_LEVEL_AND_TOUCHES: /* a combination of the above two
                      options */
-        for (i = 0, pcp_cut = cp->cuts; i < cuts_to_check; i++, pcp_cut++)
+        for(i = 0, pcp_cut = cp->cuts; i < cuts_to_check; i++, pcp_cut++)
         {
-            if ((*pcp_cut)->touches > cp->par.touches_until_deletion ||
+            if((*pcp_cut)->touches > cp->par.touches_until_deletion ||
                     (*pcp_cut)->level > cur_sol->xlevel)
                 continue;
-            if (check_cut_u(cp, cur_sol, &(*pcp_cut)->cut,
-                            &violated, &quality) == USER_ERROR)
+            if(check_cut_u(cp, cur_sol, &(*pcp_cut)->cut,
+                           &violated, &quality) == USER_ERROR)
                 break;
             (*pcp_cut)->quality =
-                ((*pcp_cut)->quality*(double)((*pcp_cut)->check_num) + quality)/
-                (double)((*pcp_cut)->check_num+1);
+                ((*pcp_cut)->quality * (double)((*pcp_cut)->check_num) + quality) /
+                (double)((*pcp_cut)->check_num + 1);
             (*pcp_cut)->check_num++;
-            if ( violated )
+            if(violated)
             {
                 num_cuts++;
                 (*pcp_cut)->touches = 0;
@@ -211,39 +211,39 @@ int check_cuts_u(cut_pool *cp, lp_sol *cur_sol)
 
 /*===========================================================================*/
 
-int check_cut_u(cut_pool *cp, lp_sol *cur_sol, cut_data *cut, int *is_violated,
-                double *quality)
+int check_cut_u(cut_pool* cp, lp_sol* cur_sol, cut_data* cut, int* is_violated,
+                double* quality)
 {
     int varnum = cur_sol->xlength, nzcnt;
-    int *indices = cur_sol->xind, *matind;
-    double *values = cur_sol->xval, *matval;
+    int* indices = cur_sol->xind, *matind;
+    double* values = cur_sol->xval, *matval;
     double lhs = 0, etol = cur_sol->lpetol;
     int i, j;
 
-    switch (cut->type)
+    switch(cut->type)
     {
 
     case EXPLICIT_ROW:
-        nzcnt = ((int *) (cut->coef))[0];
-        matval = (double *) (cut->coef + DSIZE);
-        matind = (int *) (cut->coef + (nzcnt+ 1) * DSIZE);
-        for (i = 0, j = 0; i < nzcnt && j < varnum; )
+        nzcnt = ((int*)(cut->coef))[0];
+        matval = (double*)(cut->coef + DSIZE);
+        matind = (int*)(cut->coef + (nzcnt + 1) * DSIZE);
+        for(i = 0, j = 0; i < nzcnt && j < varnum;)
         {
-            if (matind[i] == indices[j])
+            if(matind[i] == indices[j])
             {
-                lhs += matval[i++]*values[j++];
+                lhs += matval[i++] * values[j++];
             }
-            else if (matind[i] < indices[j])
+            else if(matind[i] < indices[j])
             {
                 i++;
             }
-            else if (matind[i] > indices[j])
+            else if(matind[i] > indices[j])
             {
                 j++;
             }
         }
 
-        switch (cut->sense)
+        switch(cut->sense)
         {
 
         case 'G':
@@ -258,7 +258,7 @@ int check_cut_u(cut_pool *cp, lp_sol *cur_sol, cut_data *cut, int *is_violated,
 
         case 'R':
 
-            if (cut->range > 0)
+            if(cut->range > 0)
             {
                 *is_violated = ((lhs < cut->rhs - etol) ||
                                 (lhs > cut->rhs + cut->range + etol));
@@ -288,13 +288,13 @@ int check_cut_u(cut_pool *cp, lp_sol *cur_sol, cut_data *cut, int *is_violated,
 
 /*===========================================================================*/
 
-void free_cut_pool_u(cut_pool *cp)
+void free_cut_pool_u(cut_pool* cp)
 {
     int i;
 #ifdef USE_SYM_APPLICATION
     user_free_cp(&cp->user);
 #endif
-    for (i = cp->cut_num - 1; i >= 0; i--)
+    for(i = cp->cut_num - 1; i >= 0; i--)
     {
         FREE(cp->cuts[i]->cut.coef);
         FREE(cp->cuts[i]);

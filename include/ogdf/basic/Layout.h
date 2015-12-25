@@ -55,159 +55,159 @@
 namespace ogdf
 {
 
-class GraphCopy;
-class PlanRep;
+    class GraphCopy;
+    class PlanRep;
 
-
-/**
- * \brief Stores a layout of a graph (coordinates of nodes, bend
- *        points of edges).
- *
- */
-class OGDF_EXPORT Layout
-{
-public:
-    /** @{
-     * \brief Creates a layout associated with no graph.
-     */
-    Layout() { }
 
     /**
-     * \brief Creates a layout associated with graph \a G.
+     * \brief Stores a layout of a graph (coordinates of nodes, bend
+     *        points of edges).
      *
-     * The layout is initialized such that all node positions are (0,0)
-     * and all bend point lists of edges are empty.
-     *
-     * @param G is the corresponding graph .
      */
-    Layout(const Graph &G) : m_x(G,0), m_y(G,0), m_bends(G) { }
-
-    // destruction
-    ~Layout() { }
-
-
-    /** @} @{
-     * \brief Returns a reference to the array storing x-coordinates of nodes.
-     */
-    const NodeArray<double> &x() const
+    class OGDF_EXPORT Layout
     {
-        return m_x;
-    }
+    public:
+        /** @{
+         * \brief Creates a layout associated with no graph.
+         */
+        Layout() { }
 
-    /**
-     * \brief Returns a reference to the array storing x-coordinates of nodes.
-     */
-    NodeArray<double> &x()
-    {
-        return m_x;
-    }
+        /**
+         * \brief Creates a layout associated with graph \a G.
+         *
+         * The layout is initialized such that all node positions are (0,0)
+         * and all bend point lists of edges are empty.
+         *
+         * @param G is the corresponding graph .
+         */
+        Layout(const Graph & G) : m_x(G, 0), m_y(G, 0), m_bends(G) { }
 
-    /** @} @{
-     * \brief Returns a reference to the array storing y-coordinates of nodes.
-     */
-    const NodeArray<double> &y() const
-    {
-        return m_y;
-    }
-
-    /**
-     * \brief Returns a reference to the array storing y-coordinates of nodes.
-     */
-    NodeArray<double> &y()
-    {
-        return m_y;
-    }
+        // destruction
+        ~Layout() { }
 
 
-    /** @} @{
-     * \brief Returns the x-coordinate of node \a v.
-     */
-    const double &x(node v) const
-    {
-        return m_x[v];
-    }
+        /** @} @{
+         * \brief Returns a reference to the array storing x-coordinates of nodes.
+         */
+        const NodeArray<double> & x() const
+        {
+            return m_x;
+        }
 
-    /**
-     * \brief Returns the x-coordinate of node \a v.
-     */
-    double &x(node v)
-    {
-        return m_x[v];
-    }
+        /**
+         * \brief Returns a reference to the array storing x-coordinates of nodes.
+         */
+        NodeArray<double> & x()
+        {
+            return m_x;
+        }
 
-    /** @} @{
-     * \brief Returns the y-coordinate of node \a v.
-     */
-    const double &y(node v) const
-    {
-        return m_y[v];
-    }
+        /** @} @{
+         * \brief Returns a reference to the array storing y-coordinates of nodes.
+         */
+        const NodeArray<double> & y() const
+        {
+            return m_y;
+        }
 
-    /**
-     * \brief Returns the y-coordinate of node \a v.
-     */
-    double &y(node v)
-    {
-        return m_y[v];
-    }
-
-    /** @} @{
-     * \brief Returns the bend point list of edge \a e.
-     */
-    const DPolyline &bends(edge e) const
-    {
-        return m_bends[e];
-    }
-
-    /**
-     * \brief Returns the bend point list of edge \a e.
-     */
-    DPolyline &bends(edge e)
-    {
-        return m_bends[e];
-    }
+        /**
+         * \brief Returns a reference to the array storing y-coordinates of nodes.
+         */
+        NodeArray<double> & y()
+        {
+            return m_y;
+        }
 
 
-    /** @} @{
-     * \brief Returns the polyline of edge \a eOrig in \a dpl.
-     *
-     * @param GC is the input graph copy; \a GC must also be the associated graph.
-     * @param eOrig is an edge in the original graph of \a GC.
-     * @param dpl is assigned the poyline of \a eOrig.
-     */
-    void computePolyline(GraphCopy &GC, edge eOrig, DPolyline &dpl) const;
+        /** @} @{
+         * \brief Returns the x-coordinate of node \a v.
+         */
+        const double & x(node v) const
+        {
+            return m_x[v];
+        }
 
-    /**
-     * \brief Returns the polyline of edge \a eOrig in \a dpl and clears the
-     *        bend points of the copies.
-     *
-     * The bend point lists of all edges in the edge path corresponding to \a eOrig are
-     * empty afterwards! This is a faster version of computePolyline().
-     *
-     * @param PG is the input graph copy; \a PG must also be the associated graph.
-     *        of this layout.
-     * @param eOrig is an edge in the original graph of \a GC.
-     * @param dpl is assigned the poyline of \a eOrig.
-     */
-    void computePolylineClear(PlanRep &PG, edge eOrig, DPolyline &dpl);
+        /**
+         * \brief Returns the x-coordinate of node \a v.
+         */
+        double & x(node v)
+        {
+            return m_x[v];
+        }
 
-    //! Computes the bounding box of the layout, which is a drawing of \a PG.
-    /**
-     * @param PG must be the planarized representation associated with this layout.
-     * @return a point representing the with and height of this layout, respecting the sizes
-     *         of nodes as stored in \a PG.
-     */
-    DPoint computeBoundingBox(PlanRep &PG) const;
+        /** @} @{
+         * \brief Returns the y-coordinate of node \a v.
+         */
+        const double & y(node v) const
+        {
+            return m_y[v];
+        }
 
-    /** @} */
+        /**
+         * \brief Returns the y-coordinate of node \a v.
+         */
+        double & y(node v)
+        {
+            return m_y[v];
+        }
 
-private:
-    NodeArray<double> m_x;        //!< The x-coordinates of nodes.
-    NodeArray<double> m_y;        //!< The y-coordinates of nodes.
-    EdgeArray<DPolyline> m_bends; //!< The bend points of edges.
+        /** @} @{
+         * \brief Returns the bend point list of edge \a e.
+         */
+        const DPolyline & bends(edge e) const
+        {
+            return m_bends[e];
+        }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        /**
+         * \brief Returns the bend point list of edge \a e.
+         */
+        DPolyline & bends(edge e)
+        {
+            return m_bends[e];
+        }
+
+
+        /** @} @{
+         * \brief Returns the polyline of edge \a eOrig in \a dpl.
+         *
+         * @param GC is the input graph copy; \a GC must also be the associated graph.
+         * @param eOrig is an edge in the original graph of \a GC.
+         * @param dpl is assigned the poyline of \a eOrig.
+         */
+        void computePolyline(GraphCopy & GC, edge eOrig, DPolyline & dpl) const;
+
+        /**
+         * \brief Returns the polyline of edge \a eOrig in \a dpl and clears the
+         *        bend points of the copies.
+         *
+         * The bend point lists of all edges in the edge path corresponding to \a eOrig are
+         * empty afterwards! This is a faster version of computePolyline().
+         *
+         * @param PG is the input graph copy; \a PG must also be the associated graph.
+         *        of this layout.
+         * @param eOrig is an edge in the original graph of \a GC.
+         * @param dpl is assigned the poyline of \a eOrig.
+         */
+        void computePolylineClear(PlanRep & PG, edge eOrig, DPolyline & dpl);
+
+        //! Computes the bounding box of the layout, which is a drawing of \a PG.
+        /**
+         * @param PG must be the planarized representation associated with this layout.
+         * @return a point representing the with and height of this layout, respecting the sizes
+         *         of nodes as stored in \a PG.
+         */
+        DPoint computeBoundingBox(PlanRep & PG) const;
+
+        /** @} */
+
+    private:
+        NodeArray<double> m_x;        //!< The x-coordinates of nodes.
+        NodeArray<double> m_y;        //!< The y-coordinates of nodes.
+        EdgeArray<DPolyline> m_bends; //!< The bend points of edges.
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 
 } // end namespace ogdf

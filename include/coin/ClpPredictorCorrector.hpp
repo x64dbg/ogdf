@@ -57,7 +57,7 @@ public:
     //phase  - 0 predictor
     //         1 corrector
     //         2 primal dual
-    CoinWorkDouble findStepLength( int phase);
+    CoinWorkDouble findStepLength(int phase);
     /// findDirectionVector.
     CoinWorkDouble findDirectionVector(const int phase);
     /// createSolution.  Creates solution from scratch (- code if no memory)
@@ -70,9 +70,9 @@ public:
     //phase 0=affine , 1 = corrector , 2 = primal-dual
     void setupForSolve(const int phase);
     /** Does solve. region1 is for deltaX (columns+rows), region2 for deltaPi (rows) */
-    void solveSystem(CoinWorkDouble * region1, CoinWorkDouble * region2,
-                     const CoinWorkDouble * region1In, const CoinWorkDouble * region2In,
-                     const CoinWorkDouble * saveRegion1, const CoinWorkDouble * saveRegion2,
+    void solveSystem(CoinWorkDouble* region1, CoinWorkDouble* region2,
+                     const CoinWorkDouble* region1In, const CoinWorkDouble* region2In,
+                     const CoinWorkDouble* saveRegion1, const CoinWorkDouble* saveRegion2,
                      bool gentleRefine);
     /// sees if looks plausible change in complementarity
     bool checkGoodMove(const bool doCorrector, CoinWorkDouble & bestNextGap,

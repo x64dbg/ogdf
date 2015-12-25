@@ -55,87 +55,87 @@
 namespace ogdf
 {
 
-//---------------------------------------------------------
-// U m l M o d e l G r a p h
-//---------------------------------------------------------
-/** This class represents the complete UML Model in a graph-
- *  like data structure.
- */
-class OGDF_EXPORT UmlModelGraph : public Graph
-{
-
-private:
-
-    /** The name of the model. */
-    string m_modelName;
-
-    /** The label of the contained nodes. */
-    NodeArray<string> m_nodeLabel;
-
-    /** The types of the contained edges.
-     *  Types are association or generalization.
+    //---------------------------------------------------------
+    // U m l M o d e l G r a p h
+    //---------------------------------------------------------
+    /** This class represents the complete UML Model in a graph-
+     *  like data structure.
      */
-    EdgeArray<Graph::EdgeType> m_eType;
-
-    /** The types of the contained nodes.
-     *  Types are vertex, dummy, generalizationMerger
-     */
-    NodeArray<Graph::NodeType> m_vType;
-
-public:
-
-    /** Constructor. */
-    UmlModelGraph();
-
-    /** Destructor. */
-    ~UmlModelGraph();
-
-    /** Sets the name of the model. */
-    void setModelName(const string &name)
+    class OGDF_EXPORT UmlModelGraph : public Graph
     {
-        m_modelName = name;
-    }
 
-    /** Returns a const reference to the label of the given node. */
-    const string &getNodeLabel(node v) const
-    {
-        return m_nodeLabel[v];
-    }
+    private:
 
-    /** Returns a reference to the label of the given node. */
-    string &label(node v)
-    {
-        return m_nodeLabel[v];
-    }
+        /** The name of the model. */
+        string m_modelName;
 
-    /** Returns a const reference to the type of the given edge. */
-    const Graph::EdgeType &type(edge e) const
-    {
-        return m_eType[e];
-    }
+        /** The label of the contained nodes. */
+        NodeArray<string> m_nodeLabel;
 
-    /** Returns a reference to the type of the given edge. */
-    Graph::EdgeType &type(edge e)
-    {
-        return m_eType[e];
-    }
+        /** The types of the contained edges.
+         *  Types are association or generalization.
+         */
+        EdgeArray<Graph::EdgeType> m_eType;
 
-    /** Returns a const reference to the type of the given node. */
-    const Graph::NodeType &type(node v) const
-    {
-        return m_vType[v];
-    }
+        /** The types of the contained nodes.
+         *  Types are vertex, dummy, generalizationMerger
+         */
+        NodeArray<Graph::NodeType> m_vType;
 
-    /** Returns a reference to the type of the given node. */
-    Graph::NodeType &type(node v)
-    {
-        return m_vType[v];
-    }
+    public:
 
-}; // class UmlModelGraph
+        /** Constructor. */
+        UmlModelGraph();
 
-/** Output operator for UmlModelGraph. */
-ostream &operator<<(ostream &os, const UmlModelGraph &modelGraph);
+        /** Destructor. */
+        ~UmlModelGraph();
+
+        /** Sets the name of the model. */
+        void setModelName(const string & name)
+        {
+            m_modelName = name;
+        }
+
+        /** Returns a const reference to the label of the given node. */
+        const string & getNodeLabel(node v) const
+        {
+            return m_nodeLabel[v];
+        }
+
+        /** Returns a reference to the label of the given node. */
+        string & label(node v)
+        {
+            return m_nodeLabel[v];
+        }
+
+        /** Returns a const reference to the type of the given edge. */
+        const Graph::EdgeType & type(edge e) const
+        {
+            return m_eType[e];
+        }
+
+        /** Returns a reference to the type of the given edge. */
+        Graph::EdgeType & type(edge e)
+        {
+            return m_eType[e];
+        }
+
+        /** Returns a const reference to the type of the given node. */
+        const Graph::NodeType & type(node v) const
+        {
+            return m_vType[v];
+        }
+
+        /** Returns a reference to the type of the given node. */
+        Graph::NodeType & type(node v)
+        {
+            return m_vType[v];
+        }
+
+    }; // class UmlModelGraph
+
+    /** Output operator for UmlModelGraph. */
+    ostream & operator<<(ostream & os, const UmlModelGraph & modelGraph);
 
 } // end namespace ogdf
 

@@ -58,68 +58,68 @@ namespace ogdf
 {
 
 
-/**
- * \brief Interface of general layout algorithms that also allow
- * a MultilevelGraph as call parameter, extending the interface
- * of a simple LayoutModule.
- *
- */
-class OGDF_EXPORT MultilevelLayoutModule : public LayoutModule
-{
-public:
-    //! Initializes a multilevel layout module.
-    MultilevelLayoutModule() { }
-
-    virtual ~MultilevelLayoutModule() { }
-
     /**
-     * \brief Computes a layout of graph \a GA.
+     * \brief Interface of general layout algorithms that also allow
+     * a MultilevelGraph as call parameter, extending the interface
+     * of a simple LayoutModule.
      *
-     * This method is the actual algorithm call and must be implemented by
-     * derived classes.
-     * @param GA is the input graph and will also be assigned the layout information.
      */
-    virtual void call(GraphAttributes &GA) = 0;
-
-    virtual void call(GraphAttributes &GA, GraphConstraints & GC)
+    class OGDF_EXPORT MultilevelLayoutModule : public LayoutModule
     {
-        call(GA);
-    }
+    public:
+        //! Initializes a multilevel layout module.
+        MultilevelLayoutModule() { }
+
+        virtual ~MultilevelLayoutModule() { }
+
+        /**
+         * \brief Computes a layout of graph \a GA.
+         *
+         * This method is the actual algorithm call and must be implemented by
+         * derived classes.
+         * @param GA is the input graph and will also be assigned the layout information.
+         */
+        virtual void call(GraphAttributes & GA) = 0;
+
+        virtual void call(GraphAttributes & GA, GraphConstraints & GC)
+        {
+            call(GA);
+        }
 
 
-    /**
-     * \brief Computes a layout of graph \a MLG.
-     *
-     * This method can be implemented optionally to allow a LayoutModule to modify the Graph.
-     * This allows some Layout Algorithms to save Memory, compared to a normal call(GA)
-     * DO NOT implement this if you are not sure whether this would save you Memory!
-     * This method only helps if the Graph is already in the MultiLevelGraph Format
-     *   (or can be converted without creating a copy) AND the layout would need a copy otherwise.
-     * All Incremental Layouts (especially energy based) CAN be called by ModularMultilevelMixer.
-     * The standard implementation converts the MLG to GA and uses call(GA).
-     *
-     * If implemented, the following Implementation of call(GA) is advised
-     *   to ensure consistent behaviour of the two call Methods:
-     * void YourLayout::call(GraphAttributes &GA)
-     * {
-     *     MultilevelGraph MLG(GA);
-     *     call(MLG);
-     *     MLG.exportAttributes(GA);
-     * }
-     *
-     * @param MLG is the input graph and will also be assigned the layout information.
-     */
-    virtual void call(MultilevelGraph &MLG)
-    {
-        GraphAttributes GA(MLG.getGraph());
-        MLG.exportAttributesSimple(GA);
-        call(GA);
-        MLG.importAttributesSimple(GA);
+        /**
+         * \brief Computes a layout of graph \a MLG.
+         *
+         * This method can be implemented optionally to allow a LayoutModule to modify the Graph.
+         * This allows some Layout Algorithms to save Memory, compared to a normal call(GA)
+         * DO NOT implement this if you are not sure whether this would save you Memory!
+         * This method only helps if the Graph is already in the MultiLevelGraph Format
+         *   (or can be converted without creating a copy) AND the layout would need a copy otherwise.
+         * All Incremental Layouts (especially energy based) CAN be called by ModularMultilevelMixer.
+         * The standard implementation converts the MLG to GA and uses call(GA).
+         *
+         * If implemented, the following Implementation of call(GA) is advised
+         *   to ensure consistent behaviour of the two call Methods:
+         * void YourLayout::call(GraphAttributes &GA)
+         * {
+         *     MultilevelGraph MLG(GA);
+         *     call(MLG);
+         *     MLG.exportAttributes(GA);
+         * }
+         *
+         * @param MLG is the input graph and will also be assigned the layout information.
+         */
+        virtual void call(MultilevelGraph & MLG)
+        {
+            GraphAttributes GA(MLG.getGraph());
+            MLG.exportAttributesSimple(GA);
+            call(GA);
+            MLG.importAttributesSimple(GA);
+        };
+
+
+        OGDF_MALLOC_NEW_DELETE
     };
-
-
-    OGDF_MALLOC_NEW_DELETE
-};
 
 
 } // end namespace ogdf

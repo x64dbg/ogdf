@@ -18,7 +18,7 @@
 
 
 void
-CglResidualCapacityUnitTest(const OsiSolverInterface *baseSiP,
+CglResidualCapacityUnitTest(const OsiSolverInterface* baseSiP,
                             const std::string mpsDir)
 {
     // Test default constructor
@@ -32,7 +32,7 @@ CglResidualCapacityUnitTest(const OsiSolverInterface *baseSiP,
         {
             CglResidualCapacity bGenerator;
             CglResidualCapacity cGenerator(bGenerator);
-            rhs=bGenerator;
+            rhs = bGenerator;
         }
     }
 
@@ -60,18 +60,18 @@ CglResidualCapacityUnitTest(const OsiSolverInterface *baseSiP,
     // Test generateCuts
     {
         CglResidualCapacity gct;
-        OsiSolverInterface  *siP = baseSiP->clone();
-        std::string fn = mpsDir+"capPlan1";
-        std::string fn2 = mpsDir+"capPlan1.mps";
-        FILE *in_f = fopen(fn2.c_str(), "r");
+        OsiSolverInterface*  siP = baseSiP->clone();
+        std::string fn = mpsDir + "capPlan1";
+        std::string fn2 = mpsDir + "capPlan1.mps";
+        FILE* in_f = fopen(fn2.c_str(), "r");
         if(in_f == NULL)
         {
-            std::cout<<"Can not open file "<<fn2<<std::endl<<"Skip test of CglResidualCapacity::generateCuts()"<<std::endl;
+            std::cout << "Can not open file " << fn2 << std::endl << "Skip test of CglResidualCapacity::generateCuts()" << std::endl;
         }
         else
         {
             fclose(in_f);
-            siP->readMps(fn.c_str(),"mps");
+            siP->readMps(fn.c_str(), "mps");
 
             siP->initialSolve();
             double lpRelax = siP->getObjValue();
@@ -80,16 +80,16 @@ CglResidualCapacityUnitTest(const OsiSolverInterface *baseSiP,
             gct.setDoPreproc(1); // Needed for DyLP
             gct.generateCuts(*siP, cs);
             int nRowCuts = cs.sizeRowCuts();
-            std::cout<<"There are "<<nRowCuts<<" Residual Capacity cuts"<<std::endl;
+            std::cout << "There are " << nRowCuts << " Residual Capacity cuts" << std::endl;
             assert(cs.sizeRowCuts() > 0);
             OsiSolverInterface::ApplyCutsReturnCode rc = siP->applyCuts(cs);
 
             siP->resolve();
 
-            double lpRelaxAfter= siP->getObjValue();
-            std::cout<<"Initial LP value: "<<lpRelax<<std::endl;
-            std::cout<<"LP value with cuts: "<<lpRelaxAfter<<std::endl;
-            assert( lpRelax < lpRelaxAfter );
+            double lpRelaxAfter = siP->getObjValue();
+            std::cout << "Initial LP value: " << lpRelax << std::endl;
+            std::cout << "LP value with cuts: " << lpRelaxAfter << std::endl;
+            assert(lpRelax < lpRelaxAfter);
             assert(lpRelaxAfter < 964);
         }
         delete siP;

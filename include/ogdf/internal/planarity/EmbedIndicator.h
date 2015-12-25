@@ -62,60 +62,60 @@ namespace ogdf
 {
 
 
-class EmbedIndicator : public PQNode<edge,IndInfo*,bool>
-{
-public:
-
-    EmbedIndicator(int count, PQNodeKey<edge,IndInfo*,bool>* infoPtr)
-        : PQNode<edge,IndInfo*,bool>(count,infoPtr) { }
-
-    virtual ~EmbedIndicator()
+    class EmbedIndicator : public PQNode<edge, IndInfo*, bool>
     {
-        delete getNodeInfo()->userStructInfo();
-        delete getNodeInfo();
-    }
+    public:
 
-    PQNodeType  type() const
-    {
-        return leaf;
-    }
+        EmbedIndicator(int count, PQNodeKey<edge, IndInfo*, bool>* infoPtr)
+            : PQNode<edge, IndInfo*, bool>(count, infoPtr) { }
 
-    void type(PQNodeType) { }
+        virtual ~EmbedIndicator()
+        {
+            delete getNodeInfo()->userStructInfo();
+            delete getNodeInfo();
+        }
 
-    PQNodeStatus  status() const
-    {
-        return PQNodeRoot::INDICATOR;
-    }
+        PQNodeType  type() const
+        {
+            return leaf;
+        }
 
-    void status(PQNodeStatus) { }
+        void type(PQNodeType) { }
 
-    PQNodeMark  mark() const
-    {
-        return UNMARKED;
-    }
+        PQNodeStatus  status() const
+        {
+            return PQNodeRoot::INDICATOR;
+        }
 
-    void mark(PQNodeMark) { }
+        void status(PQNodeStatus) { }
 
-    PQLeafKey<edge,IndInfo*,bool>* getKey() const
-    {
-        return 0;
-    }
+        PQNodeMark  mark() const
+        {
+            return UNMARKED;
+        }
 
-    bool setKey(PQLeafKey<edge,IndInfo*,bool>* pointerToKey)
-    {
-        return (pointerToKey == 0);
-    }
+        void mark(PQNodeMark) { }
 
-    PQInternalKey<edge,IndInfo*,bool>* getInternal() const
-    {
-        return 0;
-    }
+        PQLeafKey<edge, IndInfo*, bool>* getKey() const
+        {
+            return 0;
+        }
 
-    bool setInternal(PQInternalKey<edge,IndInfo*,bool>* pointerToInternal)
-    {
-        return (pointerToInternal == 0);
-    }
-};
+        bool setKey(PQLeafKey<edge, IndInfo*, bool>* pointerToKey)
+        {
+            return (pointerToKey == 0);
+        }
+
+        PQInternalKey<edge, IndInfo*, bool>* getInternal() const
+        {
+            return 0;
+        }
+
+        bool setInternal(PQInternalKey<edge, IndInfo*, bool>* pointerToInternal)
+        {
+            return (pointerToInternal == 0);
+        }
+    };
 
 
 }

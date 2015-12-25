@@ -58,48 +58,48 @@
 namespace ogdf
 {
 
-//! BFS to compute shortest path all pairs. The costs for
-//! traversing an edge corresponds to /a edgeCosts.
-OGDF_EXPORT
-void bfs_SPAP(const Graph& G, NodeArray<NodeArray<double> >& distance,
-              double edgeCosts);
+    //! BFS to compute shortest path all pairs. The costs for
+    //! traversing an edge corresponds to /a edgeCosts.
+    OGDF_EXPORT
+    void bfs_SPAP(const Graph & G, NodeArray<NodeArray<double>> & distance,
+                  double edgeCosts);
 
-//! BFS to compute shortest path single source. The costs for
-//! traversing an edge corresponds to /a edgeCosts.
-OGDF_EXPORT
-void bfs_SPSS(const node& v, const Graph& G, NodeArray<double> & distanceArray,
-              double edgeCosts);
+    //! BFS to compute shortest path single source. The costs for
+    //! traversing an edge corresponds to /a edgeCosts.
+    OGDF_EXPORT
+    void bfs_SPSS(const node & v, const Graph & G, NodeArray<double> & distanceArray,
+                  double edgeCosts);
 
-//! Dijkstra algorithm to compute shortest path all pairs. The costs for traversing edge e
-//! corresponds to \a GA.doubleWeight(e)
-/**
- * @return returns the average edge costs
- */
-OGDF_EXPORT
-double dijkstra_SPAP(const GraphAttributes& GA,
-                     NodeArray<NodeArray<double> >& shortestPathMatrix);
+    //! Dijkstra algorithm to compute shortest path all pairs. The costs for traversing edge e
+    //! corresponds to \a GA.doubleWeight(e)
+    /**
+     * @return returns the average edge costs
+     */
+    OGDF_EXPORT
+    double dijkstra_SPAP(const GraphAttributes & GA,
+                         NodeArray<NodeArray<double>> & shortestPathMatrix);
 
-//! Dijkstra algorithm to compute shortest path all pairs. The costs for traversing edge e
-//! corresponds to \a edgeCosts[e]
-OGDF_EXPORT
-void dijkstra_SPAP(const Graph& G,
-                   NodeArray<NodeArray<double> >& shortestPathMatrix,
-                   const EdgeArray<double>& edgeCosts);
+    //! Dijkstra algorithm to compute shortest path all pairs. The costs for traversing edge e
+    //! corresponds to \a edgeCosts[e]
+    OGDF_EXPORT
+    void dijkstra_SPAP(const Graph & G,
+                       NodeArray<NodeArray<double>> & shortestPathMatrix,
+                       const EdgeArray<double> & edgeCosts);
 
-//! Dijkstra algorithm to compute shortest path single source. The costs for traversing edge e
-//! corresponds to \a edgeCosts[e]. Note this algorithm equals Dijkstra<T>::call, though it does not
-//! compute the predecessors on the path and is not inlined.
-OGDF_EXPORT
-void dijkstra_SPSS(node v, const Graph& G,
-                   NodeArray<double>& shortestPathMatrix,
-                   const EdgeArray<double>& edgeCosts);
+    //! Dijkstra algorithm to compute shortest path single source. The costs for traversing edge e
+    //! corresponds to \a edgeCosts[e]. Note this algorithm equals Dijkstra<T>::call, though it does not
+    //! compute the predecessors on the path and is not inlined.
+    OGDF_EXPORT
+    void dijkstra_SPSS(node v, const Graph & G,
+                       NodeArray<double> & shortestPathMatrix,
+                       const EdgeArray<double> & edgeCosts);
 
-//! Floyd-Wharshall algorithm to compute shortest path all pairs given a weighted graph.
-//! Note the shortestPathMatrix has to be initialized and all entries positive. The costs
-//! non-adjacent nodes should be set to std::numeric_limits<double>::infinity().
-OGDF_EXPORT
-void floydWarshall_SPAP(NodeArray<NodeArray<double> >& shortestPathMatrix,
-                        const Graph& G);
+    //! Floyd-Wharshall algorithm to compute shortest path all pairs given a weighted graph.
+    //! Note the shortestPathMatrix has to be initialized and all entries positive. The costs
+    //! non-adjacent nodes should be set to std::numeric_limits<double>::infinity().
+    OGDF_EXPORT
+    void floydWarshall_SPAP(NodeArray<NodeArray<double>> & shortestPathMatrix,
+                            const Graph & G);
 
 } /* namespace ogdf */
 #endif /* SHORTESTPATHALGORITHMS_H_ */

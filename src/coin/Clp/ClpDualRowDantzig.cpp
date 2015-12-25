@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpDualRowDantzig::ClpDualRowDantzig ()
+ClpDualRowDantzig::ClpDualRowDantzig()
     : ClpDualRowPivot()
 {
     type_ = 1;
@@ -29,7 +29,7 @@ ClpDualRowDantzig::ClpDualRowDantzig ()
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpDualRowDantzig::ClpDualRowDantzig (const ClpDualRowDantzig & source)
+ClpDualRowDantzig::ClpDualRowDantzig(const ClpDualRowDantzig & source)
     : ClpDualRowPivot(source)
 {
 
@@ -38,7 +38,7 @@ ClpDualRowDantzig::ClpDualRowDantzig (const ClpDualRowDantzig & source)
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpDualRowDantzig::~ClpDualRowDantzig ()
+ClpDualRowDantzig::~ClpDualRowDantzig()
 {
 
 }
@@ -47,9 +47,9 @@ ClpDualRowDantzig::~ClpDualRowDantzig ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpDualRowDantzig &
-ClpDualRowDantzig::operator=(const ClpDualRowDantzig& rhs)
+ClpDualRowDantzig::operator=(const ClpDualRowDantzig & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         ClpDualRowPivot::operator=(rhs);
     }
@@ -62,10 +62,10 @@ ClpDualRowDantzig::pivotRow()
 {
     assert(model_);
     int iRow;
-    const int * pivotVariable = model_->pivotVariable();
+    const int* pivotVariable = model_->pivotVariable();
     double tolerance = model_->currentPrimalTolerance();
     // we can't really trust infeasibilities if there is primal error
-    if (model_->largestPrimalError() > 1.0e-8)
+    if(model_->largestPrimalError() > 1.0e-8)
         tolerance *= model_->largestPrimalError() / 1.0e-8;
     double largest = 0.0;
     int chosenRow = -1;
@@ -73,22 +73,22 @@ ClpDualRowDantzig::pivotRow()
 #ifdef CLP_DUAL_COLUMN_MULTIPLIER
     int numberColumns = model_->numberColumns();
 #endif
-    for (iRow = 0; iRow < numberRows; iRow++)
+    for(iRow = 0; iRow < numberRows; iRow++)
     {
         int iSequence = pivotVariable[iRow];
         double value = model_->solution(iSequence);
         double lower = model_->lower(iSequence);
         double upper = model_->upper(iSequence);
         double infeas = CoinMax(value - upper , lower - value);
-        if (infeas > tolerance)
+        if(infeas > tolerance)
         {
 #ifdef CLP_DUAL_COLUMN_MULTIPLIER
-            if (iSequence < numberColumns)
+            if(iSequence < numberColumns)
                 infeas *= CLP_DUAL_COLUMN_MULTIPLIER;
 #endif
-            if (infeas > largest)
+            if(infeas > largest)
             {
-                if (!model_->flagged(iSequence))
+                if(!model_->flagged(iSequence))
                 {
                     chosenRow = iRow;
                     largest = infeas;
@@ -100,28 +100,28 @@ ClpDualRowDantzig::pivotRow()
 }
 // FT update and returns pivot alpha
 double
-ClpDualRowDantzig::updateWeights(CoinIndexedVector * /*input*/,
-                                 CoinIndexedVector * spare,
-                                 CoinIndexedVector * /*spare2*/,
-                                 CoinIndexedVector * updatedColumn)
+ClpDualRowDantzig::updateWeights(CoinIndexedVector* /*input*/,
+                                 CoinIndexedVector* spare,
+                                 CoinIndexedVector* /*spare2*/,
+                                 CoinIndexedVector* updatedColumn)
 {
     // Do FT update
     model_->factorization()->updateColumnFT(spare, updatedColumn);
     // pivot element
     double alpha = 0.0;
     // look at updated column
-    double * work = updatedColumn->denseVector();
+    double* work = updatedColumn->denseVector();
     int number = updatedColumn->getNumElements();
-    int * which = updatedColumn->getIndices();
+    int* which = updatedColumn->getIndices();
     int i;
     int pivotRow = model_->pivotRow();
 
-    if (updatedColumn->packedMode())
+    if(updatedColumn->packedMode())
     {
-        for (i = 0; i < number; i++)
+        for(i = 0; i < number; i++)
         {
             int iRow = which[i];
-            if (iRow == pivotRow)
+            if(iRow == pivotRow)
             {
                 alpha = work[i];
                 break;
@@ -140,19 +140,19 @@ ClpDualRowDantzig::updateWeights(CoinIndexedVector * /*input*/,
    Computes change in objective function
 */
 void
-ClpDualRowDantzig::updatePrimalSolution(CoinIndexedVector * primalUpdate,
+ClpDualRowDantzig::updatePrimalSolution(CoinIndexedVector* primalUpdate,
                                         double primalRatio,
                                         double & objectiveChange)
 {
-    double * work = primalUpdate->denseVector();
+    double* work = primalUpdate->denseVector();
     int number = primalUpdate->getNumElements();
-    int * which = primalUpdate->getIndices();
+    int* which = primalUpdate->getIndices();
     int i;
     double changeObj = 0.0;
-    const int * pivotVariable = model_->pivotVariable();
-    if (primalUpdate->packedMode())
+    const int* pivotVariable = model_->pivotVariable();
+    if(primalUpdate->packedMode())
     {
-        for (i = 0; i < number; i++)
+        for(i = 0; i < number; i++)
         {
             int iRow = which[i];
             int iPivot = pivotVariable[iRow];
@@ -166,7 +166,7 @@ ClpDualRowDantzig::updatePrimalSolution(CoinIndexedVector * primalUpdate,
     }
     else
     {
-        for (i = 0; i < number; i++)
+        for(i = 0; i < number; i++)
         {
             int iRow = which[i];
             int iPivot = pivotVariable[iRow];
@@ -184,9 +184,9 @@ ClpDualRowDantzig::updatePrimalSolution(CoinIndexedVector * primalUpdate,
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-ClpDualRowPivot * ClpDualRowDantzig::clone(bool CopyData) const
+ClpDualRowPivot* ClpDualRowDantzig::clone(bool CopyData) const
 {
-    if (CopyData)
+    if(CopyData)
     {
         return new ClpDualRowDantzig(*this);
     }

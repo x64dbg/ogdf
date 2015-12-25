@@ -44,19 +44,19 @@ public:
     /**@name Constructors and destructor and copy */
     //@{
     /// Default constructor
-    ClpSolve (  );
+    ClpSolve();
     /// Constructor when you really know what you are doing
-    ClpSolve ( SolveType method, PresolveType presolveType,
-               int numberPasses, int options[6],
-               int extraInfo[6], int independentOptions[3]);
+    ClpSolve(SolveType method, PresolveType presolveType,
+             int numberPasses, int options[6],
+             int extraInfo[6], int independentOptions[3]);
     /// Generates code for above constructor
-    void generateCpp(FILE * fp);
+    void generateCpp(FILE* fp);
     /// Copy constructor.
     ClpSolve(const ClpSolve &);
     /// Assignment operator. This copies the data
     ClpSolve & operator=(const ClpSolve & rhs);
     /// Destructor
-    ~ClpSolve (  );
+    ~ClpSolve();
     //@}
 
     /**@name Functions most useful to user */
@@ -130,7 +130,7 @@ public:
     }
     inline void setDoDual(bool doDual_)
     {
-        if (doDual_) independentOptions_[1]  &= ~1;
+        if(doDual_) independentOptions_[1]  &= ~1;
         else independentOptions_[1] |= 1;
     }
     /// Whether we want to do singleton part of presolve
@@ -140,7 +140,7 @@ public:
     }
     inline void setDoSingleton(bool doSingleton_)
     {
-        if (doSingleton_) independentOptions_[1]  &= ~2;
+        if(doSingleton_) independentOptions_[1]  &= ~2;
         else independentOptions_[1] |= 2;
     }
     /// Whether we want to do doubleton part of presolve
@@ -150,7 +150,7 @@ public:
     }
     inline void setDoDoubleton(bool doDoubleton_)
     {
-        if (doDoubleton_) independentOptions_[1]  &= ~4;
+        if(doDoubleton_) independentOptions_[1]  &= ~4;
         else independentOptions_[1] |= 4;
     }
     /// Whether we want to do tripleton part of presolve
@@ -160,7 +160,7 @@ public:
     }
     inline void setDoTripleton(bool doTripleton_)
     {
-        if (doTripleton_) independentOptions_[1]  &= ~8;
+        if(doTripleton_) independentOptions_[1]  &= ~8;
         else independentOptions_[1] |= 8;
     }
     /// Whether we want to do tighten part of presolve
@@ -170,7 +170,7 @@ public:
     }
     inline void setDoTighten(bool doTighten_)
     {
-        if (doTighten_) independentOptions_[1]  &= ~16;
+        if(doTighten_) independentOptions_[1]  &= ~16;
         else independentOptions_[1] |= 16;
     }
     /// Whether we want to do forcing part of presolve
@@ -180,7 +180,7 @@ public:
     }
     inline void setDoForcing(bool doForcing_)
     {
-        if (doForcing_) independentOptions_[1]  &= ~32;
+        if(doForcing_) independentOptions_[1]  &= ~32;
         else independentOptions_[1] |= 32;
     }
     /// Whether we want to do impliedfree part of presolve
@@ -190,7 +190,7 @@ public:
     }
     inline void setDoImpliedFree(bool doImpliedfree)
     {
-        if (doImpliedfree) independentOptions_[1]  &= ~64;
+        if(doImpliedfree) independentOptions_[1]  &= ~64;
         else independentOptions_[1] |= 64;
     }
     /// Whether we want to do dupcol part of presolve
@@ -200,7 +200,7 @@ public:
     }
     inline void setDoDupcol(bool doDupcol_)
     {
-        if (doDupcol_) independentOptions_[1]  &= ~128;
+        if(doDupcol_) independentOptions_[1]  &= ~128;
         else independentOptions_[1] |= 128;
     }
     /// Whether we want to do duprow part of presolve
@@ -210,7 +210,7 @@ public:
     }
     inline void setDoDuprow(bool doDuprow_)
     {
-        if (doDuprow_) independentOptions_[1]  &= ~256;
+        if(doDuprow_) independentOptions_[1]  &= ~256;
         else independentOptions_[1] |= 256;
     }
     /// Whether we want to do singleton column part of presolve
@@ -220,7 +220,7 @@ public:
     }
     inline void setDoSingletonColumn(bool doSingleton_)
     {
-        if (doSingleton_) independentOptions_[1]  &= ~512;
+        if(doSingleton_) independentOptions_[1]  &= ~512;
         else independentOptions_[1] |= 512;
     }
     /// Set whole group
@@ -243,7 +243,7 @@ public:
     }
     //@}
 
-////////////////// data //////////////////
+    ////////////////// data //////////////////
 private:
 
     /**@name data.
@@ -278,10 +278,10 @@ public:
     /**@name Constructors and destructor and copy */
     //@{
     /// Default constructor
-    ClpSimplexProgress (  );
+    ClpSimplexProgress();
 
     /// Constructor from model
-    ClpSimplexProgress ( ClpSimplex * model );
+    ClpSimplexProgress(ClpSimplex* model);
 
     /// Copy constructor.
     ClpSimplexProgress(const ClpSimplexProgress &);
@@ -289,11 +289,11 @@ public:
     /// Assignment operator. This copies the data
     ClpSimplexProgress & operator=(const ClpSimplexProgress & rhs);
     /// Destructor
-    ~ClpSimplexProgress (  );
+    ~ClpSimplexProgress();
     /// Resets as much as possible
     void reset();
     /// Fill from model
-    void fillFromModel ( ClpSimplex * model );
+    void fillFromModel(ClpSimplex* model);
 
     //@}
 
@@ -302,7 +302,7 @@ public:
     /** Returns -1 if okay, -n+1 (n number of times bad) if bad but action taken,
         >=0 if give up and use as problem status
     */
-    int looping (  );
+    int looping();
     /// Start check at beginning of whileIterating
     void startCheck();
     /// Returns cycle length in whileIterating
@@ -401,7 +401,7 @@ public:
     int out_[CLP_CYCLE];
     char way_[CLP_CYCLE];
     /// Pointer back to model so we can get information
-    ClpSimplex * model_;
+    ClpSimplex* model_;
     /// Number of infeasibilities
     int numberInfeasibilities_[CLP_PROGRESS];
     /// Iteration number at which occurred

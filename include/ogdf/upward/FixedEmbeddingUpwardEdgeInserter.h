@@ -61,116 +61,116 @@ namespace ogdf
 
 
 
-//! Edge insertion module that inserts each edge optimally into a fixed embedding.
-class OGDF_EXPORT FixedEmbeddingUpwardEdgeInserter : public UpwardEdgeInserterModule
-{
-public:
-    //! Creates an instance of fixed-embedding edge inserter.
-    FixedEmbeddingUpwardEdgeInserter() {}
-
-    ~FixedEmbeddingUpwardEdgeInserter() { }
-
-
-private:
-
-    bool isUpwardPlanar(Graph &G)
+    //! Edge insertion module that inserts each edge optimally into a fixed embedding.
+    class OGDF_EXPORT FixedEmbeddingUpwardEdgeInserter : public UpwardEdgeInserterModule
     {
-        return UpwardPlanarity::isUpwardPlanar_singleSource(G);
-    }
+    public:
+        //! Creates an instance of fixed-embedding edge inserter.
+        FixedEmbeddingUpwardEdgeInserter() {}
 
-    /**
-     * @param UPR is the input upward planarized representation of a FUPS and will also receive the result.
-     * @param origEdges is the list of original edges (edges in the original graph
-     *        of \a UPR) that have to be inserted.
-     * @param costOrig points to an edge array containing the costs of original edges; edges in
-     *        \a UPR without an original edge have zero costs.
-     * @param forbiddenEdgeOrig points to an edge array indicating if an original edge is
-     *        forbidden to be crossed.
-     */
-    virtual ReturnType doCall(UpwardPlanRep &UPR,
-                              const List<edge> &origEdges,
-                              const EdgeArray<int>  *costOrig = 0,
-                              const EdgeArray<bool> *forbiddenEdgeOrig = 0
-                             );
+        ~FixedEmbeddingUpwardEdgeInserter() { }
 
 
-    ReturnType insertAll(UpwardPlanRep &UPR,
-                         List<edge> &toInsert,
-                         EdgeArray<int>  &cost);
+    private:
+
+        bool isUpwardPlanar(Graph & G)
+        {
+            return UpwardPlanarity::isUpwardPlanar_singleSource(G);
+        }
+
+        /**
+         * @param UPR is the input upward planarized representation of a FUPS and will also receive the result.
+         * @param origEdges is the list of original edges (edges in the original graph
+         *        of \a UPR) that have to be inserted.
+         * @param costOrig points to an edge array containing the costs of original edges; edges in
+         *        \a UPR without an original edge have zero costs.
+         * @param forbiddenEdgeOrig points to an edge array indicating if an original edge is
+         *        forbidden to be crossed.
+         */
+        virtual ReturnType doCall(UpwardPlanRep & UPR,
+                                  const List<edge> & origEdges,
+                                  const EdgeArray<int>*  costOrig = 0,
+                                  const EdgeArray<bool>* forbiddenEdgeOrig = 0
+                                 );
 
 
-    //! compute a list of static locked edges, i.e. eges which a priory cannot included in a feasible insertion path.
-    void staticLock(UpwardPlanRep &UPR, EdgeArray<bool> &locked, const List<edge> &origEdges, edge e_orig);
-
-    //! compute a list of dynamic locked edges
-    void dynamicLock(UpwardPlanRep &UPR, EdgeArray<bool> &locked, face f, adjEntry e_cur);
-
-    void nextFeasibleEdges(UpwardPlanRep &UPR, List<adjEntry> &nextEdges, face f, adjEntry e_cur, EdgeArray<bool> &locked, bool heuristic);
-
-    //! compute the minimal feasible insertion path
-    void minFIP(UpwardPlanRep &UPR,
-                List<edge> &origEdges,
-                EdgeArray<int> &cost,
-                edge e_orig,
-                SList<adjEntry> &path)
-    {
-        getPath(UPR, origEdges, cost, e_orig, path, false);
-    }
+        ReturnType insertAll(UpwardPlanRep & UPR,
+                             List<edge> & toInsert,
+                             EdgeArray<int> & cost);
 
 
+        //! compute a list of static locked edges, i.e. eges which a priory cannot included in a feasible insertion path.
+        void staticLock(UpwardPlanRep & UPR, EdgeArray<bool> & locked, const List<edge> & origEdges, edge e_orig);
 
-    //! compute a constraint feasible insertion path usig heuristic.
-    void constraintFIP(UpwardPlanRep &UPR,
-                       List<edge> &origEdges,
-                       EdgeArray<int> &cost,
-                       edge e_orig,
-                       SList<adjEntry> &path)
-    {
-        getPath(UPR, origEdges, cost, e_orig, path, true);
-    }
+        //! compute a list of dynamic locked edges
+        void dynamicLock(UpwardPlanRep & UPR, EdgeArray<bool> & locked, face f, adjEntry e_cur);
 
-    //! compute an insertion path
-    void getPath(UpwardPlanRep &UPR,
-                 List<edge> &origEdges,
-                 EdgeArray<int> &cost,
-                 edge e_orig,
-                 SList<adjEntry> &path,
-                 bool heuristic);
+        void nextFeasibleEdges(UpwardPlanRep & UPR, List<adjEntry> & nextEdges, face f, adjEntry e_cur, EdgeArray<bool> & locked, bool heuristic);
 
-
-    //! mark the edges which are dominates by node v
-    void markUp(const Graph &G, node v, EdgeArray<bool> &markedEdges);
+        //! compute the minimal feasible insertion path
+        void minFIP(UpwardPlanRep & UPR,
+                    List<edge> & origEdges,
+                    EdgeArray<int> & cost,
+                    edge e_orig,
+                    SList<adjEntry> & path)
+        {
+            getPath(UPR, origEdges, cost, e_orig, path, false);
+        }
 
 
-    //! mark the edges which dominate node v
-    void markDown(const Graph &G, node v, EdgeArray<bool> &markedEdges);
 
-    //! compute the feasible edges of the face f with respect to e
-    void feasibleEdges(UpwardPlanRep &UPR,
-                       face f, // current face
-                       adjEntry adj, // current adjEntry, right face muss be f
-                       EdgeArray<bool> &locked, // we compute the dyn. locked edges on the fly with respect to e
-                       List<adjEntry> &feasible, // the list of feasible edges in f with respect to e
-                       bool heuristic);
+        //! compute a constraint feasible insertion path usig heuristic.
+        void constraintFIP(UpwardPlanRep & UPR,
+                           List<edge> & origEdges,
+                           EdgeArray<int> & cost,
+                           edge e_orig,
+                           SList<adjEntry> & path)
+        {
+            getPath(UPR, origEdges, cost, e_orig, path, true);
+        }
 
-    //! return true if current insertion path is contraint feasible
-    bool isConstraintFeasible(UpwardPlanRep &UPR,
-                              const List<edge> &orig_edges,
-                              edge e_orig,
-                              adjEntry adjCurrent,
-                              adjEntry adjNext, // the next adjEntry of the current insertion path
-                              EdgeArray<adjEntry> &predAdj //Array to reconstruction the insertion path
-                             );
-
-
-    //! return true if current insertion path is contraint feasible
-    bool isConstraintFeasible(UpwardPlanRep &UPR,
-                              List<edge> &origEdges,
-                              edge e_orig,
-                              SList<adjEntry> &path);
+        //! compute an insertion path
+        void getPath(UpwardPlanRep & UPR,
+                     List<edge> & origEdges,
+                     EdgeArray<int> & cost,
+                     edge e_orig,
+                     SList<adjEntry> & path,
+                     bool heuristic);
 
 
-};
+        //! mark the edges which are dominates by node v
+        void markUp(const Graph & G, node v, EdgeArray<bool> & markedEdges);
+
+
+        //! mark the edges which dominate node v
+        void markDown(const Graph & G, node v, EdgeArray<bool> & markedEdges);
+
+        //! compute the feasible edges of the face f with respect to e
+        void feasibleEdges(UpwardPlanRep & UPR,
+                           face f, // current face
+                           adjEntry adj, // current adjEntry, right face muss be f
+                           EdgeArray<bool> & locked, // we compute the dyn. locked edges on the fly with respect to e
+                           List<adjEntry> & feasible, // the list of feasible edges in f with respect to e
+                           bool heuristic);
+
+        //! return true if current insertion path is contraint feasible
+        bool isConstraintFeasible(UpwardPlanRep & UPR,
+                                  const List<edge> & orig_edges,
+                                  edge e_orig,
+                                  adjEntry adjCurrent,
+                                  adjEntry adjNext, // the next adjEntry of the current insertion path
+                                  EdgeArray<adjEntry> & predAdj //Array to reconstruction the insertion path
+                                 );
+
+
+        //! return true if current insertion path is contraint feasible
+        bool isConstraintFeasible(UpwardPlanRep & UPR,
+                                  List<edge> & origEdges,
+                                  edge e_orig,
+                                  SList<adjEntry> & path);
+
+
+    };
 
 } // end namespace ogdf
 

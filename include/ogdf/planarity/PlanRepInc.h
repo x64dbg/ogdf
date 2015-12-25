@@ -68,137 +68,137 @@ namespace ogdf
 {
 
 
-//===============================================
-//main function(s):
-//
-//      this class is only an adaption of PlanRep
-//      for the special incremental drawing case
-//      As incremental layout only makes sense with
-//      a given layout, this PlanRepInc copes with
-//      layout information and embedding
-//===============================================
+    //===============================================
+    //main function(s):
+    //
+    //      this class is only an adaption of PlanRep
+    //      for the special incremental drawing case
+    //      As incremental layout only makes sense with
+    //      a given layout, this PlanRepInc copes with
+    //      layout information and embedding
+    //===============================================
 
-class OGDF_EXPORT PlanRepInc : public PlanRepUML, public GraphObserver
-{
-public:
-    //construction
-    //constructor for interactive updates (parts added step by step)
-    PlanRepInc(const UMLGraph& UG);
-    //constructor for incremental updates (whole graph already given)
-    //part to stay fixed has fixed value set to true
-    PlanRepInc(const UMLGraph& UG, const NodeArray<bool> &fixed);
-
-    //init a CC only with active elements
-    void initActiveCC(int i);
-    //but with at least one active node, makes a node active if necessary
-    //and returns it. returns 0 otherwise
-    node initMinActiveCC(int i);
-
-    //in the case that the underlying incremental structure
-    //changes, we update this copy
-    virtual void nodeDeleted(node v);
-    virtual void nodeAdded(node v);
-    virtual void edgeDeleted(edge e);
-    virtual void edgeAdded(edge e);
-    virtual void reInit();
-    virtual void cleared();//Graph cleared
-
-    //sets activity status to true and updates the structures
-    //node activation activates all adjacent edges
-    void activateNode(node v);
-    //TODO: auch deaktivieren
-    //void activateNode(node v, bool b);
-    void activateEdge(edge e);
-
-    //handles copies of original CCs that are split into
-    //unconnected parts of active nodes by connecting them
-    //tree-like adding necessary edges at "external" nodes
-    //of the partial CCs. Note that this only makes sense
-    //when the CC parts are already correctly embedded
-    bool makeTreeConnected(adjEntry adjExternal);
-    //delete an edge again
-    void deleteTreeConnection(int i, int j);
-    void deleteTreeConnection(int i, int j, CombinatorialEmbedding &E);
-    //sets a list of adjentries on "external" faces of
-    //unconnected active parts of the current CC
-    void getExtAdjs(List<adjEntry> &extAdjs);
-    adjEntry getExtAdj(GraphCopy &GC, CombinatorialEmbedding &E);
-
-    //component number
-    int& componentNumber(node v)
+    class OGDF_EXPORT PlanRepInc : public PlanRepUML, public GraphObserver
     {
-        return m_component[v];
-    }
+    public:
+        //construction
+        //constructor for interactive updates (parts added step by step)
+        PlanRepInc(const UMLGraph & UG);
+        //constructor for incremental updates (whole graph already given)
+        //part to stay fixed has fixed value set to true
+        PlanRepInc(const UMLGraph & UG, const NodeArray<bool> & fixed);
 
-    bool& treeEdge(edge e)
-    {
-        return m_treeEdge[e];
-    }
-    //only valid if m_eTreeArray initialized, should be replaced later
-    edge treeEdge(int i, int j) const
-    {
-        if (m_treeInit)
+        //init a CC only with active elements
+        void initActiveCC(int i);
+        //but with at least one active node, makes a node active if necessary
+        //and returns it. returns 0 otherwise
+        node initMinActiveCC(int i);
+
+        //in the case that the underlying incremental structure
+        //changes, we update this copy
+        virtual void nodeDeleted(node v);
+        virtual void nodeAdded(node v);
+        virtual void edgeDeleted(edge e);
+        virtual void edgeAdded(edge e);
+        virtual void reInit();
+        virtual void cleared();//Graph cleared
+
+        //sets activity status to true and updates the structures
+        //node activation activates all adjacent edges
+        void activateNode(node v);
+        //TODO: auch deaktivieren
+        //void activateNode(node v, bool b);
+        void activateEdge(edge e);
+
+        //handles copies of original CCs that are split into
+        //unconnected parts of active nodes by connecting them
+        //tree-like adding necessary edges at "external" nodes
+        //of the partial CCs. Note that this only makes sense
+        //when the CC parts are already correctly embedded
+        bool makeTreeConnected(adjEntry adjExternal);
+        //delete an edge again
+        void deleteTreeConnection(int i, int j);
+        void deleteTreeConnection(int i, int j, CombinatorialEmbedding & E);
+        //sets a list of adjentries on "external" faces of
+        //unconnected active parts of the current CC
+        void getExtAdjs(List<adjEntry> & extAdjs);
+        adjEntry getExtAdj(GraphCopy & GC, CombinatorialEmbedding & E);
+
+        //component number
+        int & componentNumber(node v)
         {
-            return m_eTreeArray(i, j);
+            return m_component[v];
         }
-        return 0;
-    }
-    bool treeInit()
-    {
-        return m_treeInit;
-    }
 
-    //
-    // extension of methods defined by GraphCopy/PlanRep
-    //
+        bool & treeEdge(edge e)
+        {
+            return m_treeEdge[e];
+        }
+        //only valid if m_eTreeArray initialized, should be replaced later
+        edge treeEdge(int i, int j) const
+        {
+            if(m_treeInit)
+            {
+                return m_eTreeArray(i, j);
+            }
+            return 0;
+        }
+        bool treeInit()
+        {
+            return m_treeInit;
+        }
 
-    // splits edge e, can be removed when edge status in edgetype
-    // m_treedge can be removed afterwards
-    virtual edge split(edge e)
-    {
+        //
+        // extension of methods defined by GraphCopy/PlanRep
+        //
 
-        edge eNew = PlanRepUML::split(e);
-        if (m_treeEdge[e]) m_treeEdge[eNew] = true;
+        // splits edge e, can be removed when edge status in edgetype
+        // m_treedge can be removed afterwards
+        virtual edge split(edge e)
+        {
 
-        return eNew;
+            edge eNew = PlanRepUML::split(e);
+            if(m_treeEdge[e]) m_treeEdge[eNew] = true;
 
-    }//split
+            return eNew;
 
-    //debug output
+        }//split
+
+        //debug output
 #ifdef OGDF_DEBUG
-    void writeGML(const char *fileName)
-    {
-        const GraphAttributes &AG = getUMLGraph();
-        ofstream os(fileName);
-        PlanRepInc::writeGML(os, AG);//getUMLGraph());//l);
-    }
-    void writeGML(const char *fileName, const Layout &drawing)
-    {
-        ofstream os(fileName);
-        writeGML(os, drawing);
-    }
+        void writeGML(const char* fileName)
+        {
+            const GraphAttributes & AG = getUMLGraph();
+            ofstream os(fileName);
+            PlanRepInc::writeGML(os, AG);//getUMLGraph());//l);
+        }
+        void writeGML(const char* fileName, const Layout & drawing)
+        {
+            ofstream os(fileName);
+            writeGML(os, drawing);
+        }
 
-    void writeGML(ostream &os, const GraphAttributes &AG);
-    void writeGML(ostream &os, const Layout &drawing, bool colorEmbed = true);
-    void writeGML(const char *fileName, GraphAttributes &AG, bool colorEmbed = true);
+        void writeGML(ostream & os, const GraphAttributes & AG);
+        void writeGML(ostream & os, const Layout & drawing, bool colorEmbed = true);
+        void writeGML(const char* fileName, GraphAttributes & AG, bool colorEmbed = true);
 
-    //outputs a drawing if genus != 0
-    int genusLayout(Layout &drawing) const;
+        //outputs a drawing if genus != 0
+        int genusLayout(Layout & drawing) const;
 #endif
 
-protected:
-    void initMembers(const UMLGraph &UG);
-    //initialize CC with active nodes (minNode ? at least one node)
-    node initActiveCCGen(int i, bool minNode);
+    protected:
+        void initMembers(const UMLGraph & UG);
+        //initialize CC with active nodes (minNode ? at least one node)
+        node initActiveCCGen(int i, bool minNode);
 
-private:
-    NodeArray<bool> m_activeNodes; //stores the status of the nodes
-    EdgeArray<bool> m_treeEdge; //edge inserted for connnectivity
-    NodeArray<int> m_component; //number of partial component in current CC
-    //used for treeConnection
-    Array2D<edge> m_eTreeArray;    //used for treeConnection
-    bool m_treeInit;           //check if the tree edge Array2D was initialized
-};//PlanrepInc
+    private:
+        NodeArray<bool> m_activeNodes; //stores the status of the nodes
+        EdgeArray<bool> m_treeEdge; //edge inserted for connnectivity
+        NodeArray<int> m_component; //number of partial component in current CC
+        //used for treeConnection
+        Array2D<edge> m_eTreeArray;    //used for treeConnection
+        bool m_treeInit;           //check if the tree edge Array2D was initialized
+    };//PlanrepInc
 
 
 }//namespace ogdf

@@ -56,16 +56,16 @@ public:
      */
     //@{
     /// Default constructor
-    Idiot (  );
+    Idiot();
     /// Constructor with model
-    Idiot ( OsiSolverInterface & model );
+    Idiot(OsiSolverInterface & model);
 
     /// Copy constructor.
     Idiot(const Idiot &);
     /// Assignment operator. This copies the data
     Idiot & operator=(const Idiot & rhs);
     /// Destructor
-    ~Idiot (  );
+    ~Idiot();
     //@}
 
 
@@ -75,8 +75,8 @@ public:
     /// Get an approximate solution with the idiot code
     void solve();
     /// Lightweight "crash"
-    void crash(int numberPass, CoinMessageHandler * handler,
-               const CoinMessages * messages, bool doCrossover = true);
+    void crash(int numberPass, CoinMessageHandler* handler,
+               const CoinMessages* messages, bool doCrossover = true);
     /** Use simplex to get an optimal solution
         mode is how many steps the simplex crossover should take to
         arrive to an extreme point:
@@ -237,48 +237,48 @@ public:
     //@}
 
 
-/// Stuff for internal use
+    /// Stuff for internal use
 private:
 
     /// Does actual work
     // allow public!
 public:
-    void solve2(CoinMessageHandler * handler, const CoinMessages *messages);
+    void solve2(CoinMessageHandler* handler, const CoinMessages* messages);
 private:
     IdiotResult IdiSolve(
-        int nrows, int ncols, double * rowsol , double * colsol,
-        double * pi, double * djs, const double * origcost ,
-        double * rowlower,
-        double * rowupper, const double * lower,
-        const double * upper, const double * element,
-        const int * row, const CoinBigIndex * colcc,
-        const int * length, double * lambda,
+        int nrows, int ncols, double* rowsol , double* colsol,
+        double* pi, double* djs, const double* origcost ,
+        double* rowlower,
+        double* rowupper, const double* lower,
+        const double* upper, const double* element,
+        const int* row, const CoinBigIndex* colcc,
+        const int* length, double* lambda,
         int maxIts, double mu, double drop,
         double maxmin, double offset,
         int strategy, double djTol, double djExit, double djFlag,
-        CoinThreadRandom * randomNumberGenerator);
+        CoinThreadRandom* randomNumberGenerator);
     int dropping(IdiotResult result,
                  double tolerance,
                  double small,
-                 int *nbad);
-    IdiotResult objval(int nrows, int ncols, double * rowsol , double * colsol,
-                       double * pi, double * djs, const double * cost ,
-                       const double * rowlower,
-                       const double * rowupper, const double * lower,
-                       const double * upper, const double * elemnt,
-                       const int * row, const CoinBigIndex * columnStart,
-                       const int * length, int extraBlock, int * rowExtra,
-                       double * solExtra, double * elemExtra, double * upperExtra,
-                       double * costExtra, double weight);
+                 int* nbad);
+    IdiotResult objval(int nrows, int ncols, double* rowsol , double* colsol,
+                       double* pi, double* djs, const double* cost ,
+                       const double* rowlower,
+                       const double* rowupper, const double* lower,
+                       const double* upper, const double* elemnt,
+                       const int* row, const CoinBigIndex* columnStart,
+                       const int* length, int extraBlock, int* rowExtra,
+                       double* solExtra, double* elemExtra, double* upperExtra,
+                       double* costExtra, double weight);
     // Deals with whenUsed and slacks
     int cleanIteration(int iteration, int ordinaryStart, int ordinaryEnd,
-                       double * colsol, const double * lower, const double * upper,
-                       const double * rowLower, const double * rowUpper,
-                       const double * cost, const double * element, double fixTolerance, double & objChange,
+                       double* colsol, const double* lower, const double* upper,
+                       const double* rowLower, const double* rowUpper,
+                       const double* cost, const double* element, double fixTolerance, double & objChange,
                        double & infChange);
 private:
     /// Underlying model
-    OsiSolverInterface * model_;
+    OsiSolverInterface* model_;
 
     double djTolerance_;
     double mu_;  /* starting mu */
@@ -292,7 +292,7 @@ private:
     double exitFeasibility_; /* exit if infeasibility less than this */
     double dropEnoughFeasibility_; /* okay if feasibility drop this factor */
     double dropEnoughWeighted_; /* okay if weighted obj drop this factor */
-    int * whenUsed_; /* array to say what was used */
+    int* whenUsed_;  /* array to say what was used */
     int maxBigIts_; /* always reduce mu after this */
     int maxIts_; /* do this many iterations on first go */
     int majorIterations_;

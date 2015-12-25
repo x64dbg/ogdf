@@ -52,18 +52,18 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT ZeroPlacer : public InitialPlacer
-{
-    void placeOneNode(MultilevelGraph &MLG);
+    class OGDF_EXPORT ZeroPlacer : public InitialPlacer
+    {
+        void placeOneNode(MultilevelGraph & MLG);
 
-    double m_randomRange;
+        double m_randomRange;
 
-public:
+    public:
 
-    void placeOneLevel(MultilevelGraph &MLG);
-    ZeroPlacer();
-    void setRandomRange(double range);
-};
+        void placeOneLevel(MultilevelGraph & MLG);
+        ZeroPlacer();
+        void setRandomRange(double range);
+    };
 
 } // namespace ogdf
 

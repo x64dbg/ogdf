@@ -46,29 +46,29 @@
 namespace abacus
 {
 
-class Master;
+    class Master;
 
 
-//! The LP master.
-/**
- * The class LpMaster is an abstract base class. An LP solver
- * specific master class has to be derived from this class.
- */
-class  LpMaster :  public AbacusRoot
-{
-public:
-    LpMaster(Master *master) : master_(master) { }
+    //! The LP master.
+    /**
+     * The class LpMaster is an abstract base class. An LP solver
+     * specific master class has to be derived from this class.
+     */
+    class  LpMaster :  public AbacusRoot
+    {
+    public:
+        LpMaster(Master* master) : master_(master) { }
 
-    virtual ~LpMaster() { }
+        virtual ~LpMaster() { }
 
-    virtual void initializeLpParameters() = 0;
-    virtual void setDefaultLpParameters() = 0;
-    virtual void printLpParameters() const = 0;
-    virtual void outputLpStatistics() const = 0;
+        virtual void initializeLpParameters() = 0;
+        virtual void setDefaultLpParameters() = 0;
+        virtual void printLpParameters() const = 0;
+        virtual void outputLpStatistics() const = 0;
 
-protected:
-    Master *master_;
-};
+    protected:
+        Master* master_;
+    };
 
 } //namespace abacus
 

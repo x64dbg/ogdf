@@ -16,7 +16,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpConstraintLinear::ClpConstraintLinear ()
+ClpConstraintLinear::ClpConstraintLinear()
     : ClpConstraint()
 {
     type_ = 0;
@@ -29,9 +29,9 @@ ClpConstraintLinear::ClpConstraintLinear ()
 //-------------------------------------------------------------------
 // Useful Constructor
 //-------------------------------------------------------------------
-ClpConstraintLinear::ClpConstraintLinear (int row, int numberCoefficents ,
+ClpConstraintLinear::ClpConstraintLinear(int row, int numberCoefficents ,
         int numberColumns,
-        const int * column, const double * coefficient)
+        const int* column, const double* coefficient)
     : ClpConstraint()
 {
     type_ = 0;
@@ -46,7 +46,7 @@ ClpConstraintLinear::ClpConstraintLinear (int row, int numberCoefficents ,
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpConstraintLinear::ClpConstraintLinear (const ClpConstraintLinear & rhs)
+ClpConstraintLinear::ClpConstraintLinear(const ClpConstraintLinear & rhs)
     : ClpConstraint(rhs)
 {
     numberColumns_ = rhs.numberColumns_;
@@ -59,7 +59,7 @@ ClpConstraintLinear::ClpConstraintLinear (const ClpConstraintLinear & rhs)
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpConstraintLinear::~ClpConstraintLinear ()
+ClpConstraintLinear::~ClpConstraintLinear()
 {
     delete [] column_;
     delete [] coefficient_;
@@ -69,9 +69,9 @@ ClpConstraintLinear::~ClpConstraintLinear ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpConstraintLinear &
-ClpConstraintLinear::operator=(const ClpConstraintLinear& rhs)
+ClpConstraintLinear::operator=(const ClpConstraintLinear & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         delete [] column_;
         delete [] coefficient_;
@@ -85,31 +85,31 @@ ClpConstraintLinear::operator=(const ClpConstraintLinear& rhs)
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-ClpConstraint * ClpConstraintLinear::clone() const
+ClpConstraint* ClpConstraintLinear::clone() const
 {
     return new ClpConstraintLinear(*this);
 }
 
 // Returns gradient
 int
-ClpConstraintLinear::gradient(const ClpSimplex * model,
-                              const double * solution,
-                              double * gradient,
+ClpConstraintLinear::gradient(const ClpSimplex* model,
+                              const double* solution,
+                              double* gradient,
                               double & functionValue,
                               double & offset,
                               bool useScaling,
                               bool refresh) const
 {
-    if (refresh || !lastGradient_)
+    if(refresh || !lastGradient_)
     {
         functionValue_ = 0.0;
-        if (!lastGradient_)
+        if(!lastGradient_)
             lastGradient_ = new double[numberColumns_];
         CoinZeroN(lastGradient_, numberColumns_);
         bool scaling = (model && model->rowScale() && useScaling);
-        if (!scaling)
+        if(!scaling)
         {
-            for (int i = 0; i < numberCoefficients_; i++)
+            for(int i = 0; i < numberCoefficients_; i++)
             {
                 int iColumn = column_[i];
                 double value = solution[iColumn];
@@ -121,8 +121,8 @@ ClpConstraintLinear::gradient(const ClpSimplex * model,
         else
         {
             // do scaling
-            const double * columnScale = model->columnScale();
-            for (int i = 0; i < numberCoefficients_; i++)
+            const double* columnScale = model->columnScale();
+            for(int i = 0; i < numberCoefficients_; i++)
             {
                 int iColumn = column_[i];
                 double value = solution[iColumn]; // already scaled
@@ -141,12 +141,12 @@ ClpConstraintLinear::gradient(const ClpSimplex * model,
 void
 ClpConstraintLinear::resize(int newNumberColumns)
 {
-    if (numberColumns_ != newNumberColumns)
+    if(numberColumns_ != newNumberColumns)
     {
 #ifndef NDEBUG
-        int lastColumn = column_[numberCoefficients_-1];
+        int lastColumn = column_[numberCoefficients_ - 1];
 #endif
-        assert (newNumberColumns > lastColumn);
+        assert(newNumberColumns > lastColumn);
         delete [] lastGradient_;
         lastGradient_ = NULL;
         numberColumns_ = newNumberColumns;
@@ -154,26 +154,26 @@ ClpConstraintLinear::resize(int newNumberColumns)
 }
 // Delete columns in  constraint
 void
-ClpConstraintLinear::deleteSome(int numberToDelete, const int * which)
+ClpConstraintLinear::deleteSome(int numberToDelete, const int* which)
 {
-    if (numberToDelete)
+    if(numberToDelete)
     {
         int i ;
-        char * deleted = new char[numberColumns_];
+        char* deleted = new char[numberColumns_];
         memset(deleted, 0, numberColumns_ * sizeof(char));
-        for (i = 0; i < numberToDelete; i++)
+        for(i = 0; i < numberToDelete; i++)
         {
             int j = which[i];
-            if (j >= 0 && j < numberColumns_ && !deleted[j])
+            if(j >= 0 && j < numberColumns_ && !deleted[j])
             {
                 deleted[j] = 1;
             }
         }
         int n = 0;
-        for (i = 0; i < numberCoefficients_; i++)
+        for(i = 0; i < numberCoefficients_; i++)
         {
             int iColumn = column_[i];
-            if (!deleted[iColumn])
+            if(!deleted[iColumn])
             {
                 column_[n] = iColumn;
                 coefficient_[n++] = coefficient_[i];
@@ -184,9 +184,9 @@ ClpConstraintLinear::deleteSome(int numberToDelete, const int * which)
 }
 // Scale constraint
 void
-ClpConstraintLinear::reallyScale(const double * columnScale)
+ClpConstraintLinear::reallyScale(const double* columnScale)
 {
-    for (int i = 0; i < numberCoefficients_; i++)
+    for(int i = 0; i < numberCoefficients_; i++)
     {
         int iColumn = column_[i];
         coefficient_[i] *= columnScale[iColumn];
@@ -196,7 +196,7 @@ ClpConstraintLinear::reallyScale(const double * columnScale)
    Returns number of nonlinear columns
 */
 int
-ClpConstraintLinear::markNonlinear(char *) const
+ClpConstraintLinear::markNonlinear(char*) const
 {
     return 0;
 }
@@ -204,9 +204,9 @@ ClpConstraintLinear::markNonlinear(char *) const
    Returns number of nonzeros
 */
 int
-ClpConstraintLinear::markNonzero(char * which) const
+ClpConstraintLinear::markNonzero(char* which) const
 {
-    for (int i = 0; i < numberCoefficients_; i++)
+    for(int i = 0; i < numberCoefficients_; i++)
     {
         int iColumn = column_[i];
         which[iColumn] = 1;

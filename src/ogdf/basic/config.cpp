@@ -46,109 +46,109 @@
 namespace ogdf
 {
 
-static string system_str[Configuration::sysSTOP+1] =
-{
-    "unknown", "Windows", "Unix/linux", "Apple OSX", "STOP"
-};
+    static string system_str[Configuration::sysSTOP + 1] =
+    {
+        "unknown", "Windows", "Unix/linux", "Apple OSX", "STOP"
+    };
 
-static string lpsolver_str[Configuration::lpsSTOP+1] =
-{
-    "N/A", "COIN-OR LP (Clp)", "Symphony", "CPLEX", "Gurobi", "STOP"
-};
+    static string lpsolver_str[Configuration::lpsSTOP + 1] =
+    {
+        "N/A", "COIN-OR LP (Clp)", "Symphony", "CPLEX", "Gurobi", "STOP"
+    };
 
-static string mm_str[Configuration::mmSTOP+1] =
-{
-    "pool allocator (thread-safe)", "pool allocator (not thread-safe)", "malloc", "STOP"
-};
-
-
-const string &Configuration::toString(System sys)
-{
-    return system_str[(sys < sysSTOP) ? sys : sysSTOP];
-}
-
-const string &Configuration::toString(LPSolver lps)
-{
-    return lpsolver_str[(lps < lpsSTOP) ? lps : lpsSTOP];
-}
-
-const string &Configuration::toString(MemoryManager mm)
-{
-    return mm_str[(mm < mmSTOP) ? mm : mmSTOP];
-}
+    static string mm_str[Configuration::mmSTOP + 1] =
+    {
+        "pool allocator (thread-safe)", "pool allocator (not thread-safe)", "malloc", "STOP"
+    };
 
 
-Configuration::System Configuration::whichSystem()
-{
+    const string & Configuration::toString(System sys)
+    {
+        return system_str[(sys < sysSTOP) ? sys : sysSTOP];
+    }
+
+    const string & Configuration::toString(LPSolver lps)
+    {
+        return lpsolver_str[(lps < lpsSTOP) ? lps : lpsSTOP];
+    }
+
+    const string & Configuration::toString(MemoryManager mm)
+    {
+        return mm_str[(mm < mmSTOP) ? mm : mmSTOP];
+    }
+
+
+    Configuration::System Configuration::whichSystem()
+    {
 #ifdef OGDF_SYSTEM_WINDOWS
-    return sysWindows;
+        return sysWindows;
 #elif defined(OGDF_SYSTEM_OSX)
-    return sysOSX;
+        return sysOSX;
 #elif defined(OGDF_SYSTEM_UNIX)
-    return sysUnix;
+        return sysUnix;
 #else
-    return sysUnknown
+        return sysUnknown
 #endif
-}
+    }
 
 
-bool Configuration::haveLPSolver()
-{
+    bool Configuration::haveLPSolver()
+    {
 #ifdef OGDF_LP_SOLVER
-    return true;
+        return true;
 #else
-    return false;
+        return false;
 #endif
-}
+    }
 
 
-Configuration::LPSolver Configuration::whichLPSolver()
-{
+    Configuration::LPSolver Configuration::whichLPSolver()
+    {
 #if defined(COIN_OSI_CLP)
-    return lpsClp;
+        return lpsClp;
 #elif defined(COIN_OSI_SYM)
-    return lpsSymphony;
+        return lpsSymphony;
 #elif defined(COIN_OSI_CPX)
-    return lpsCPLEX;
+        return lpsCPLEX;
 #elif defined(COIN_OSI_GRB)
-    return lpsGurobi;
+        return lpsGurobi;
 #else
-    return lpsNone;
+        return lpsNone;
 #endif
-}
+    }
 
 
-bool Configuration::haveCoin()
-{
+    bool Configuration::haveCoin()
+    {
 #ifdef USE_COIN
-    return true;
+        return true;
 #else
-    return false;
+        return false;
 #endif
-}
+    }
 
 
-bool Configuration::haveAbacus()
-{
+    bool Configuration::haveAbacus()
+    {
 #ifdef USE_ABACUS
-    return true;
+        return true;
 #else
-    return false;
+        return false;
 #endif
-}
+    }
 
 
-Configuration::MemoryManager Configuration::whichMemoryManager()
-{
+    Configuration::MemoryManager Configuration::whichMemoryManager()
+    {
 #ifdef OGDF_MEMORY_POOL_TS
-    return mmPoolTS;
+        return mmPoolTS;
 #elif defined(OGDF_MEMORY_POOL_NTS)
-    return mmPoolNTS;
+        return mmPoolNTS;
 #elif defined(OGDF_MEMORY_MALLOC_TS)
-    return mmMalloc;
+        return mmMalloc;
 #else
-    return sysSTOP
+        return sysSTOP
 #endif
-}
+    }
 
 }

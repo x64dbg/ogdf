@@ -46,8 +46,8 @@
 namespace ogdf
 {
 
-const char *linkOptionNames[] = {"Naive Link","Link by Index","Link by Size","Link by Rank"};
-const char *compressionOptionNames[] = {"Path Compression","Path Splitting","Path Halving","Reversal of Type 0","Reversal of Type 1","Collapsing","No Compression"};
-const char *interleavingOptionNames[] = {"No Interleavintg","Rem Splicing","Tarjan and van Leeuwen","Interleaved Reversal of Type 0", "Interleaved Path Splitting Path Compression"};
+    const char* linkOptionNames[] = {"Naive Link", "Link by Index", "Link by Size", "Link by Rank"};
+    const char* compressionOptionNames[] = {"Path Compression", "Path Splitting", "Path Halving", "Reversal of Type 0", "Reversal of Type 1", "Collapsing", "No Compression"};
+    const char* interleavingOptionNames[] = {"No Interleavintg", "Rem Splicing", "Tarjan and van Leeuwen", "Interleaved Reversal of Type 0", "Interleaved Path Splitting Path Compression"};
 
 }  // end namespace ogdf

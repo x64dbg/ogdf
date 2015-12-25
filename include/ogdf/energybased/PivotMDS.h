@@ -56,121 +56,121 @@ namespace ogdf
 {
 
 #ifndef isnan
-template<typename T>
-inline bool isnan(T value)
-{
-    return value != value;
-}
+    template<typename T>
+    inline bool isnan(T value)
+    {
+        return value != value;
+    }
 #endif
 
 
 #ifndef isinf
-// requires #include <limits>
-template<typename T>
-inline bool isinf(T value)
-{
-    return std::numeric_limits<T>::has_infinity &&
-           value == std::numeric_limits<T>::infinity();
-}
+    // requires #include <limits>
+    template<typename T>
+    inline bool isinf(T value)
+    {
+        return std::numeric_limits<T>::has_infinity &&
+               value == std::numeric_limits<T>::infinity();
+    }
 #endif
 
 
-class OGDF_EXPORT PivotMDS : public LayoutModule
-{
-public:
-    PivotMDS() : m_numberOfPivots(250), m_edgeCosts(100), m_hasEdgeCostsAttribute(false) { }
-
-    virtual ~PivotMDS() { }
-
-    //! Sets the number of pivots. If the new value is smaller or equal 0
-    //! the default value (250) is used.
-    void setNumberOfPivots(int numberOfPivots)
+    class OGDF_EXPORT PivotMDS : public LayoutModule
     {
-        m_numberOfPivots = (numberOfPivots < DIMENSION_COUNT) ? DIMENSION_COUNT : numberOfPivots;
-    }
+    public:
+        PivotMDS() : m_numberOfPivots(250), m_edgeCosts(100), m_hasEdgeCostsAttribute(false) { }
 
-    //! Sets the desired distance between adjacent nodes. If the new value is smaller or equal
-    //! 0 the default value (100) is used.
-    void setEdgeCosts(double edgeCosts)
-    {
-        m_edgeCosts = edgeCosts;
-    }
+        virtual ~PivotMDS() { }
 
-    //! Calls the layout algorithm for graph attributes \a GA.
-    void call(GraphAttributes& GA);
+        //! Sets the number of pivots. If the new value is smaller or equal 0
+        //! the default value (250) is used.
+        void setNumberOfPivots(int numberOfPivots)
+        {
+            m_numberOfPivots = (numberOfPivots < DIMENSION_COUNT) ? DIMENSION_COUNT : numberOfPivots;
+        }
 
-    void useEdgeCostsAttribute(bool useEdgeCostsAttribute)
-    {
-        m_hasEdgeCostsAttribute = useEdgeCostsAttribute;
-    }
+        //! Sets the desired distance between adjacent nodes. If the new value is smaller or equal
+        //! 0 the default value (100) is used.
+        void setEdgeCosts(double edgeCosts)
+        {
+            m_edgeCosts = edgeCosts;
+        }
 
-private:
+        //! Calls the layout algorithm for graph attributes \a GA.
+        void call(GraphAttributes & GA);
 
-    //! The dimension count determines the number of evecs that
-    //! will be computed. Nevertheless PivotMDS only takes the first two
-    //! with the highest eigenwert into account.
-    const static int DIMENSION_COUNT = 2;
+        void useEdgeCostsAttribute(bool useEdgeCostsAttribute)
+        {
+            m_hasEdgeCostsAttribute = useEdgeCostsAttribute;
+        }
 
-    //! Convergence factor used for power iteration.
-    const static double EPSILON;
+    private:
 
-    //! Factor used to center the pivot matrix.
-    const static double FACTOR;
+        //! The dimension count determines the number of evecs that
+        //! will be computed. Nevertheless PivotMDS only takes the first two
+        //! with the highest eigenwert into account.
+        const static int DIMENSION_COUNT = 2;
 
-    //! Seed of the random number generator.
-    const static unsigned int SEED = 0;
+        //! Convergence factor used for power iteration.
+        const static double EPSILON;
 
-    //! The number of pivots.
-    int m_numberOfPivots;
+        //! Factor used to center the pivot matrix.
+        const static double FACTOR;
 
-    //! The costs to traverse an edge.
-    double m_edgeCosts;
+        //! Seed of the random number generator.
+        const static unsigned int SEED = 0;
 
-    //! Tells whether the pivot mds is based on uniform edge costs or a
-    //! edge costs attribute
-    bool m_hasEdgeCostsAttribute;
+        //! The number of pivots.
+        int m_numberOfPivots;
 
-    //! Centers the pivot matrix.
-    void centerPivotmatrix(Array<Array<double> >& pivotMatrix);
+        //! The costs to traverse an edge.
+        double m_edgeCosts;
 
-    //! Computes the pivot mds layout of the given connected graph of \a GA.
-    void pivotMDSLayout(GraphAttributes& GA);
+        //! Tells whether the pivot mds is based on uniform edge costs or a
+        //! edge costs attribute
+        bool m_hasEdgeCostsAttribute;
 
-    void copySPSS(Array<double>& copyTo, NodeArray<double>& copyFrom);
+        //! Centers the pivot matrix.
+        void centerPivotmatrix(Array<Array<double>> & pivotMatrix);
 
-    //! Computes the layout of a path.
-    void doPathLayout(GraphAttributes& GA, const node& v);
+        //! Computes the pivot mds layout of the given connected graph of \a GA.
+        void pivotMDSLayout(GraphAttributes & GA);
 
-    //! Computes the eigen value decomposition based on power iteration.
-    void eigenValueDecomposition(
-        Array<Array<double> >& K,
-        Array<Array<double> >& eVecs,
-        Array<double>& eValues);
+        void copySPSS(Array<double> & copyTo, NodeArray<double> & copyFrom);
 
-    //! Computes the pivot distance matrix based on the maxmin strategy
-    void getPivotDistanceMatrix(const GraphAttributes& GA, Array<Array<double> >& pivDistMatrix);
+        //! Computes the layout of a path.
+        void doPathLayout(GraphAttributes & GA, const node & v);
 
-    //! Checks whether the given graph is a path or not. Only works if no size 2 cycles exist
-    node getRootedPath(const Graph& G);
+        //! Computes the eigen value decomposition based on power iteration.
+        void eigenValueDecomposition(
+            Array<Array<double>> & K,
+            Array<Array<double>> & eVecs,
+            Array<double> & eValues);
 
-    //! Normalizes the vector \a x.
-    double normalize(Array<double>& x);
+        //! Computes the pivot distance matrix based on the maxmin strategy
+        void getPivotDistanceMatrix(const GraphAttributes & GA, Array<Array<double>> & pivDistMatrix);
 
-    //! Computes the product of two vectors \a x and \a y.
-    double prod(const Array<double>& x, const Array<double>& y);
+        //! Checks whether the given graph is a path or not. Only works if no size 2 cycles exist
+        node getRootedPath(const Graph & G);
 
-    //! Fills the given \a matrix with random doubles d 0 <= d <= 1.
-    void randomize(Array<Array<double> >& matrix);
+        //! Normalizes the vector \a x.
+        double normalize(Array<double> & x);
 
-    //! Computes the self product of \a d.
-    void selfProduct(const Array<Array<double> >&d, Array<Array<double> >& result);
+        //! Computes the product of two vectors \a x and \a y.
+        double prod(const Array<double> & x, const Array<double> & y);
 
-    //! Computes the singular value decomposition of matrix \a K.
-    void singularValueDecomposition(
-        Array<Array<double> >& K,
-        Array<Array<double> >& eVecs,
-        Array<double>& eVals);
-};
+        //! Fills the given \a matrix with random doubles d 0 <= d <= 1.
+        void randomize(Array<Array<double>> & matrix);
+
+        //! Computes the self product of \a d.
+        void selfProduct(const Array<Array<double>> & d, Array<Array<double>> & result);
+
+        //! Computes the singular value decomposition of matrix \a K.
+        void singularValueDecomposition(
+            Array<Array<double>> & K,
+            Array<Array<double>> & eVecs,
+            Array<double> & eVals);
+    };
 
 
 } // end namespace ogdf

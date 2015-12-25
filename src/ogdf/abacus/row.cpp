@@ -40,42 +40,42 @@ namespace abacus
 {
 
 
-ostream &operator<<(ostream& out, const Row &rhs)
-{
-    double eps = rhs.glob_->machineEps();
-    const int rhsNnz = rhs.nnz();
-
-    for (int i = 0; i < rhsNnz; i++)
+    ostream & operator<<(ostream & out, const Row & rhs)
     {
-        int    s = rhs.support(i);
-        double c = rhs.coeff(i);
+        double eps = rhs.glob_->machineEps();
+        const int rhsNnz = rhs.nnz();
 
-        char sign;
-        if (c < 0.0)
+        for(int i = 0; i < rhsNnz; i++)
         {
-            sign = '-';
-            c = -c;
+            int    s = rhs.support(i);
+            double c = rhs.coeff(i);
+
+            char sign;
+            if(c < 0.0)
+            {
+                sign = '-';
+                c = -c;
+            }
+            else sign = '+';
+
+            if(i > 0 || sign == '-')   // do not print first \a '+' of row
+                out << sign << ' ';
+            if(c < 1.0 - eps || 1.0 + eps < c)   // do not print coefficient 1
+                out << c << ' ';
+            out << 'x' << s << ' ';
+
+            if(i && !(i % 10)) out << endl;
         }
-        else sign = '+';
 
-        if (i > 0 || sign == '-')  // do not print first \a '+' of row
-            out << sign << ' ';
-        if (c < 1.0 - eps || 1.0 + eps < c)  // do not print coefficient 1
-            out << c << ' ';
-        out << 'x' << s << ' ';
-
-        if (i && !(i % 10)) out << endl;
+        return out << rhs.sense_ << ' ' << rhs.rhs();
     }
 
-    return out << rhs.sense_ << ' ' << rhs.rhs();
-}
 
+    void Row::copy(const Row & row)
+    {
+        sense_ = row.sense_;
+        rhs_   = row.rhs_;
 
-void Row::copy(const Row &row)
-{
-    sense_ = row.sense_;
-    rhs_   = row.rhs_;
-
-    SparVec::copy(row);
-}
+        SparVec::copy(row);
+    }
 } //namespace abacus

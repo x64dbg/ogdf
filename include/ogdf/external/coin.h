@@ -62,7 +62,7 @@
 
 namespace ogdf
 {
-class CoinCallbacks {};
+    class CoinCallbacks {};
 }
 
 #else // USE_COIN
@@ -75,51 +75,51 @@ class CoinCallbacks {};
 namespace ogdf
 {
 
-class OGDF_EXPORT CoinCallbacks
-{
-    friend class OGDF_EXPORT CoinManager;
-public:
-    enum CallbackType { CT_Cut = 1, CT_Heuristic = 2, CT_Incumbent = 4, CT_Branch  = 8 };
-    enum CutReturn { CR_Error, CR_SolutionValid, CR_AddCuts, CR_DontAddCuts, CR_NoCutsFound };
-    enum HeuristicReturn { HR_Error, HR_Ignore, HR_Update };
-    enum IncumbentReturn { IR_Error, IR_Ignore, IR_Update };
-//          enum BranchReturn { BR_Error, ... };
-    virtual CutReturn cutCallback(const double /* objValue */, const double* /* fracSolution */, OsiCuts* /* addThese */)
+    class OGDF_EXPORT CoinCallbacks
     {
-        OGDF_THROW_NO_CALLBACK_EXCEPTION;
-        return CR_Error;
-    }
-    virtual HeuristicReturn heuristicCallback(double& /* objValue */, double* /* solution */)
-    {
-        OGDF_THROW_NO_CALLBACK_EXCEPTION;
-        return HR_Error;
-    }
-    virtual IncumbentReturn incumbentCallback(const double /* objValue */, const double* /* solution */)
-    {
-        OGDF_THROW_NO_CALLBACK_EXCEPTION;
-        return IR_Error;
-    }
-//          virtual BranchReturn branchCallback() { OGDF_THROW_NO_CALLBACK_EXCEPTION; return BR_Error; };
+        friend class OGDF_EXPORT CoinManager;
+    public:
+        enum CallbackType { CT_Cut = 1, CT_Heuristic = 2, CT_Incumbent = 4, CT_Branch  = 8 };
+        enum CutReturn { CR_Error, CR_SolutionValid, CR_AddCuts, CR_DontAddCuts, CR_NoCutsFound };
+        enum HeuristicReturn { HR_Error, HR_Ignore, HR_Update };
+        enum IncumbentReturn { IR_Error, IR_Ignore, IR_Update };
+        //          enum BranchReturn { BR_Error, ... };
+        virtual CutReturn cutCallback(const double /* objValue */, const double* /* fracSolution */, OsiCuts* /* addThese */)
+        {
+            OGDF_THROW_NO_CALLBACK_EXCEPTION;
+            return CR_Error;
+        }
+        virtual HeuristicReturn heuristicCallback(double & /* objValue */, double* /* solution */)
+        {
+            OGDF_THROW_NO_CALLBACK_EXCEPTION;
+            return HR_Error;
+        }
+        virtual IncumbentReturn incumbentCallback(const double /* objValue */, const double* /* solution */)
+        {
+            OGDF_THROW_NO_CALLBACK_EXCEPTION;
+            return IR_Error;
+        }
+        //          virtual BranchReturn branchCallback() { OGDF_THROW_NO_CALLBACK_EXCEPTION; return BR_Error; };
 
-    virtual ~CoinCallbacks() {}
-private:
-    bool registerCallbacks(OsiSolverInterface* _posi, int callbackTypes);
-};
+        virtual ~CoinCallbacks() {}
+    private:
+        bool registerCallbacks(OsiSolverInterface* _posi, int callbackTypes);
+    };
 
-class OGDF_EXPORT CoinManager
-{
-public:
-    static OsiSolverInterface* createCorrectOsiSolverInterface();
-    static OsiSolverInterface* createCorrectOsiSolverInterface(CoinCallbacks* ccc, int callbackTypes)
+    class OGDF_EXPORT CoinManager
     {
-        OsiSolverInterface* posi = createCorrectOsiSolverInterface();
-        if(ccc->registerCallbacks(posi, callbackTypes))
-            return posi;
-        delete posi;
-        return NULL;
-    }
-    static void logging(OsiSolverInterface* osi, bool logMe);
-};
+    public:
+        static OsiSolverInterface* createCorrectOsiSolverInterface();
+        static OsiSolverInterface* createCorrectOsiSolverInterface(CoinCallbacks* ccc, int callbackTypes)
+        {
+            OsiSolverInterface* posi = createCorrectOsiSolverInterface();
+            if(ccc->registerCallbacks(posi, callbackTypes))
+                return posi;
+            delete posi;
+            return NULL;
+        }
+        static void logging(OsiSolverInterface* osi, bool logMe);
+    };
 
 }
 

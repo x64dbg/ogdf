@@ -27,13 +27,13 @@
 class forcing_constraint_action : public CoinPresolveAction
 {
     forcing_constraint_action();
-    forcing_constraint_action(const forcing_constraint_action& rhs);
-    forcing_constraint_action& operator=(const forcing_constraint_action& rhs);
+    forcing_constraint_action(const forcing_constraint_action & rhs);
+    forcing_constraint_action & operator=(const forcing_constraint_action & rhs);
 public:
     struct action
     {
-        const int *rowcols;
-        const double *bounds;
+        const int* rowcols;
+        const double* bounds;
         int row;
         int nlo;
         int nup;
@@ -41,21 +41,21 @@ public:
 private:
     const int nactions_;
     // actions_ is owned by the class and must be deleted at destruction
-    const action *const actions_;
+    const action* const actions_;
 
 public:
     forcing_constraint_action(int nactions,
-                              const action *actions,
-                              const CoinPresolveAction *next) :
+                              const action* actions,
+                              const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions), actions_(actions) {}
 
-    const char *name() const;
+    const char* name() const;
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix * prob,
-            const CoinPresolveAction *next);
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            const CoinPresolveAction* next);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     ~forcing_constraint_action();
 };

@@ -45,84 +45,84 @@
 namespace ogdf
 {
 
-// Computes combinatorial embedding of dual graph
-// Precondition: CE must be combinatorial embedding of connected planar graph
-DualGraph::DualGraph(CombinatorialEmbedding &CE)
-{
-    m_primalEmbedding = &CE;
-    Graph &primalGraph = CE.getGraph();
-    init(*(new Graph));
-    Graph &dualGraph = getGraph();
-
-    m_dualNode.init(CE);
-    m_dualEdge.init(primalGraph);
-    m_dualFace.init(primalGraph);
-    m_primalNode.init(*this);
-    m_primalFace.init(dualGraph);
-    m_primalEdge.init(dualGraph);
-
-    // create dual nodes
-    face f;
-    forall_faces(f, CE)
+    // Computes combinatorial embedding of dual graph
+    // Precondition: CE must be combinatorial embedding of connected planar graph
+    DualGraph::DualGraph(CombinatorialEmbedding & CE)
     {
-        node vDual = dualGraph.newNode();
-        m_dualNode[f] = vDual;
-        m_primalFace[vDual] = f;
-    }
+        m_primalEmbedding = &CE;
+        Graph & primalGraph = CE.getGraph();
+        init(*(new Graph));
+        Graph & dualGraph = getGraph();
 
-    // create dual edges
-    edge e;
-    forall_edges(e, primalGraph)
-    {
-        adjEntry aE = e->adjSource();
-        node vDualSource = m_dualNode[CE.rightFace(aE)];
-        node vDualTarget = m_dualNode[CE.leftFace(aE)];
-        edge eDual = dualGraph.newEdge(vDualSource, vDualTarget);
-        m_primalEdge[eDual] = e;
-        m_dualEdge[e] = eDual;
-    }
+        m_dualNode.init(CE);
+        m_dualEdge.init(primalGraph);
+        m_dualFace.init(primalGraph);
+        m_primalNode.init(*this);
+        m_primalFace.init(dualGraph);
+        m_primalEdge.init(dualGraph);
 
-    // sort adjElements of every dual node corresponding to dual embedding
-    EdgeArray<bool> visited(dualGraph, false);   // needed for self-loops
-    forall_faces(f, CE)
-    {
-        node vDual = m_dualNode[f];
-        adjEntry aePrimal = f->firstAdj();
-        List<adjEntry> aeList;
-        do
+        // create dual nodes
+        face f;
+        forall_faces(f, CE)
         {
-            edge eDual = m_dualEdge[aePrimal->theEdge()];
-            adjEntry aeDual = eDual->adjSource();
-            if((aeDual->theNode()!=vDual) || (eDual->isSelfLoop() && visited[eDual]))
-                aeDual = eDual->adjTarget();
-            aeList.pushBack( aeDual );
-            visited[eDual] = true; // only needed for self-loops
-            aePrimal = aePrimal->faceCycleSucc();
+            node vDual = dualGraph.newNode();
+            m_dualNode[f] = vDual;
+            m_primalFace[vDual] = f;
         }
-        while(aePrimal != f->firstAdj());
-        dualGraph.sort(vDual, aeList);
+
+        // create dual edges
+        edge e;
+        forall_edges(e, primalGraph)
+        {
+            adjEntry aE = e->adjSource();
+            node vDualSource = m_dualNode[CE.rightFace(aE)];
+            node vDualTarget = m_dualNode[CE.leftFace(aE)];
+            edge eDual = dualGraph.newEdge(vDualSource, vDualTarget);
+            m_primalEdge[eDual] = e;
+            m_dualEdge[e] = eDual;
+        }
+
+        // sort adjElements of every dual node corresponding to dual embedding
+        EdgeArray<bool> visited(dualGraph, false);   // needed for self-loops
+        forall_faces(f, CE)
+        {
+            node vDual = m_dualNode[f];
+            adjEntry aePrimal = f->firstAdj();
+            List<adjEntry> aeList;
+            do
+            {
+                edge eDual = m_dualEdge[aePrimal->theEdge()];
+                adjEntry aeDual = eDual->adjSource();
+                if((aeDual->theNode() != vDual) || (eDual->isSelfLoop() && visited[eDual]))
+                    aeDual = eDual->adjTarget();
+                aeList.pushBack(aeDual);
+                visited[eDual] = true; // only needed for self-loops
+                aePrimal = aePrimal->faceCycleSucc();
+            }
+            while(aePrimal != f->firstAdj());
+            dualGraph.sort(vDual, aeList);
+        }
+
+        // calculate dual faces and links to corresponding primal nodes
+        computeFaces();
+        node v;
+        forall_nodes(v, primalGraph)
+        {
+            edge ePrimal = v->firstAdj()->theEdge();
+            edge eDual = m_dualEdge[ePrimal];
+            face fDual = rightFace(eDual->adjSource());
+            if(ePrimal->source() == v)
+                fDual = leftFace(eDual->adjSource());
+            m_dualFace[v] = fDual;
+            m_primalNode[fDual] = v;
+        }
     }
 
-    // calculate dual faces and links to corresponding primal nodes
-    computeFaces();
-    node v;
-    forall_nodes(v, primalGraph)
+    // Destructor
+    DualGraph::~DualGraph()
     {
-        edge ePrimal = v->firstAdj()->theEdge();
-        edge eDual = m_dualEdge[ePrimal];
-        face fDual = rightFace(eDual->adjSource());
-        if(ePrimal->source()==v)
-            fDual = leftFace(eDual->adjSource());
-        m_dualFace[v] = fDual;
-        m_primalNode[fDual] = v;
+        clear();
+        delete m_cpGraph;
     }
-}
-
-// Destructor
-DualGraph::~DualGraph()
-{
-    clear();
-    delete m_cpGraph;
-}
 
 }

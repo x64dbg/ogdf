@@ -45,60 +45,60 @@
 namespace ogdf
 {
 
-const double Attraction::MULTIPLIER = 2.0;
+    const double Attraction::MULTIPLIER = 2.0;
 
 
-//initializes internal data, like name and layout
-Attraction::Attraction(GraphAttributes &AG) : NodePairEnergy("Attraction", AG)
-{
-
-    reinitializeEdgeLength(MULTIPLIER);
-}
-
-
-//computes preferred edge length as the average of all widths and heights of the vertices
-//multiplied by the multiplier
-void Attraction::reinitializeEdgeLength(double multi)
-{
-    double lengthSum(0.0);
-    node v;
-    forall_nodes(v,m_G)
+    //initializes internal data, like name and layout
+    Attraction::Attraction(GraphAttributes & AG) : NodePairEnergy("Attraction", AG)
     {
-        const IntersectionRectangle &i = shape(v);
-        lengthSum += i.width();
-        lengthSum += i.height();
+
+        reinitializeEdgeLength(MULTIPLIER);
     }
-    lengthSum /= (2*m_G.numberOfNodes());
-    // lengthSum is now the average of all lengths and widths
-    m_preferredEdgeLength = multi * lengthSum;
-
-}//reinitializeEdgeLength
 
 
-//the energy of a pair of vertices is computed as the square of the difference between the
-//actual distance and the preferred edge length
-double Attraction::computeCoordEnergy(node v1, node v2, const DPoint &p1, const DPoint &p2)
-const
-{
-    double energy = 0.0;
-    if(adjacent(v1,v2))
+    //computes preferred edge length as the average of all widths and heights of the vertices
+    //multiplied by the multiplier
+    void Attraction::reinitializeEdgeLength(double multi)
     {
-        IntersectionRectangle i1(shape(v1)), i2(shape(v2));
-        i1.move(p1);
-        i2.move(p2);
-        energy = i1.distance(i2) - m_preferredEdgeLength;
-        energy *= energy;
+        double lengthSum(0.0);
+        node v;
+        forall_nodes(v, m_G)
+        {
+            const IntersectionRectangle & i = shape(v);
+            lengthSum += i.width();
+            lengthSum += i.height();
+        }
+        lengthSum /= (2 * m_G.numberOfNodes());
+        // lengthSum is now the average of all lengths and widths
+        m_preferredEdgeLength = multi * lengthSum;
+
+    }//reinitializeEdgeLength
+
+
+    //the energy of a pair of vertices is computed as the square of the difference between the
+    //actual distance and the preferred edge length
+    double Attraction::computeCoordEnergy(node v1, node v2, const DPoint & p1, const DPoint & p2)
+    const
+    {
+        double energy = 0.0;
+        if(adjacent(v1, v2))
+        {
+            IntersectionRectangle i1(shape(v1)), i2(shape(v2));
+            i1.move(p1);
+            i2.move(p2);
+            energy = i1.distance(i2) - m_preferredEdgeLength;
+            energy *= energy;
+        }
+        return energy;
     }
-    return energy;
-}
 
 
 #ifdef OGDF_DEBUG
-void Attraction::printInternalData() const
-{
-    NodePairEnergy::printInternalData();
-    cout << "\nPreferred edge length: " << m_preferredEdgeLength;
-}
+    void Attraction::printInternalData() const
+    {
+        NodePairEnergy::printInternalData();
+        cout << "\nPreferred edge length: " << m_preferredEdgeLength;
+    }
 #endif
 
 }// namespace ogdf

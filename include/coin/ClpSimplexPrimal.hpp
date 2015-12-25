@@ -170,7 +170,7 @@ public:
         Returns number of infeasibilities.
         After rowArray will have cost changes for use next iteration
     */
-    int updatePrimalsInPrimal(CoinIndexedVector * rowArray,
+    int updatePrimalsInPrimal(CoinIndexedVector* rowArray,
                               double theta,
                               double & objectiveChange,
                               int valuesPass);
@@ -182,9 +182,9 @@ public:
         variables go through bounds
         If valuesPass non-zero then compute dj for direction
     */
-    void primalRow(CoinIndexedVector * rowArray,
-                   CoinIndexedVector * rhsArray,
-                   CoinIndexedVector * spareArray,
+    void primalRow(CoinIndexedVector* rowArray,
+                   CoinIndexedVector* rhsArray,
+                   CoinIndexedVector* spareArray,
                    int valuesPass);
     /**
         Chooses primal pivot column
@@ -193,15 +193,15 @@ public:
         and will have this (with square of infeasibility) when steepest
         For easy problems we can just choose one of the first columns we look at
     */
-    void primalColumn(CoinIndexedVector * updateArray,
-                      CoinIndexedVector * spareRow1,
-                      CoinIndexedVector * spareRow2,
-                      CoinIndexedVector * spareColumn1,
-                      CoinIndexedVector * spareColumn2);
+    void primalColumn(CoinIndexedVector* updateArray,
+                      CoinIndexedVector* spareRow1,
+                      CoinIndexedVector* spareRow2,
+                      CoinIndexedVector* spareColumn1,
+                      CoinIndexedVector* spareColumn2);
 
     /** Checks if tentative optimal actually means unbounded in primal
         Returns -3 if not, 2 if is unbounded */
-    int checkUnbounded(CoinIndexedVector * ray, CoinIndexedVector * spare,
+    int checkUnbounded(CoinIndexedVector* ray, CoinIndexedVector* spare,
                        double changeCost);
     /**  Refactorizes if necessary
          Checks if finished.  Updates status.
@@ -214,10 +214,10 @@ public:
          saveModel is normally NULL but may not be if doing Sprint
     */
     void statusOfProblemInPrimal(int & lastCleaned, int type,
-                                 ClpSimplexProgress * progress,
+                                 ClpSimplexProgress* progress,
                                  bool doFactorization,
                                  int ifValuesPass,
-                                 ClpSimplex * saveModel = NULL);
+                                 ClpSimplex* saveModel = NULL);
     /// Perturbs problem (method depends on perturbation())
     void perturb(int type);
     /// Take off effect of perturbation and say whether to try dual
@@ -229,10 +229,10 @@ public:
         If type is 3 then initializes sorted list
         if 2 uses list.
     */
-    int nextSuperBasic(int superBasicType, CoinIndexedVector * columnArray);
+    int nextSuperBasic(int superBasicType, CoinIndexedVector* columnArray);
 
     /// Create primal ray
-    void primalRay(CoinIndexedVector * rowArray);
+    void primalRay(CoinIndexedVector* rowArray);
     /// Clears all bits and clears rowArray[1] etc
     void clearAll();
 

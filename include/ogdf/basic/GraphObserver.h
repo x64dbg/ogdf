@@ -60,90 +60,90 @@
 namespace ogdf
 {
 
-//
-// in embedded graphs, adjacency lists are given in clockwise order.
-//
+    //
+    // in embedded graphs, adjacency lists are given in clockwise order.
+    //
 
 
-//----------------------------------------------------------
-// GraphObserver
-//----------------------------------------------------------
-/**
- * \brief Abstract Base class for classes that need to keep track
- * of changes in the graph like addition/deletion of nodes
- * or edges.
- * derived classes have to overload nodeDeleted, nodeAdded
- * edgeDeleted, edgeAdded
- * these functions should be called by Graph before (delete)
- *
- */
-
-class OGDF_EXPORT GraphObserver
-{
-    friend class Graph;
-
-public:
-    //! Constructs instance of GraphObserver class
-    GraphObserver() : m_pGraph(0) { }
-
+    //----------------------------------------------------------
+    // GraphObserver
+    //----------------------------------------------------------
     /**
-     *\brief Constructs instance of GraphObserver class
-     * \param G is the graph to be watched
+     * \brief Abstract Base class for classes that need to keep track
+     * of changes in the graph like addition/deletion of nodes
+     * or edges.
+     * derived classes have to overload nodeDeleted, nodeAdded
+     * edgeDeleted, edgeAdded
+     * these functions should be called by Graph before (delete)
+     *
      */
-    GraphObserver(const Graph* G) : m_pGraph(G)
+
+    class OGDF_EXPORT GraphObserver
     {
-        m_itGList = G->registerStructure(this);
-    }//constructor
+        friend class Graph;
 
-    //! Destroys the instance, unregisters it from watched graph
-    virtual ~GraphObserver()
-    {
-        if (m_pGraph) m_pGraph->unregisterStructure(m_itGList);
-    }//destructor
+    public:
+        //! Constructs instance of GraphObserver class
+        GraphObserver() : m_pGraph(0) { }
 
-    //! Associates observer instance with graph \a G
-    void reregister(const Graph *pG)
-    {
-        //small speedup: check if == m_pGraph
-        if (m_pGraph) m_pGraph->unregisterStructure(m_itGList);
-        if ((m_pGraph = pG) != 0) m_itGList = pG->registerStructure(this);
-    }
+        /**
+         *\brief Constructs instance of GraphObserver class
+         * \param G is the graph to be watched
+         */
+        GraphObserver(const Graph* G) : m_pGraph(G)
+        {
+            m_itGList = G->registerStructure(this);
+        }//constructor
 
-    //! Called by watched graph when a node is deleted
-    //! Has to be implemented by derived classes
-    virtual void nodeDeleted(node v) = 0;
+        //! Destroys the instance, unregisters it from watched graph
+        virtual ~GraphObserver()
+        {
+            if(m_pGraph) m_pGraph->unregisterStructure(m_itGList);
+        }//destructor
 
-    //! Called by watched graph when a node is added
-    //! Has to be implemented by derived classes
-    virtual void nodeAdded(node v)   = 0;
+        //! Associates observer instance with graph \a G
+        void reregister(const Graph* pG)
+        {
+            //small speedup: check if == m_pGraph
+            if(m_pGraph) m_pGraph->unregisterStructure(m_itGList);
+            if((m_pGraph = pG) != 0) m_itGList = pG->registerStructure(this);
+        }
 
-    //! Called by watched graph when an edge is deleted
-    //! Has to be implemented by derived classes
-    virtual void edgeDeleted(edge e) = 0;
+        //! Called by watched graph when a node is deleted
+        //! Has to be implemented by derived classes
+        virtual void nodeDeleted(node v) = 0;
 
-    //! Called by watched graph when an edge is added
-    //! Has to be implemented by derived classes
-    virtual void edgeAdded(edge e)   = 0;
+        //! Called by watched graph when a node is added
+        //! Has to be implemented by derived classes
+        virtual void nodeAdded(node v)   = 0;
 
-    //! Called by watched graph when it is reinitialized
-    //! Has to be implemented by derived classes
-    virtual void reInit()            = 0;
+        //! Called by watched graph when an edge is deleted
+        //! Has to be implemented by derived classes
+        virtual void edgeDeleted(edge e) = 0;
 
-    //! Called by watched graph when its clear function is called
-    //! Has to be implemented by derived classes
-    virtual void cleared()           = 0;
+        //! Called by watched graph when an edge is added
+        //! Has to be implemented by derived classes
+        virtual void edgeAdded(edge e)   = 0;
 
-    const Graph*  getGraph() const
-    {
-        return m_pGraph;
-    }
+        //! Called by watched graph when it is reinitialized
+        //! Has to be implemented by derived classes
+        virtual void reInit()            = 0;
 
-protected:
-    const Graph* m_pGraph; //! watched graph
-    ListIterator<GraphObserver*> m_itGList; //! List entry in graphs list of all registered graphobservers
+        //! Called by watched graph when its clear function is called
+        //! Has to be implemented by derived classes
+        virtual void cleared()           = 0;
+
+        const Graph*  getGraph() const
+        {
+            return m_pGraph;
+        }
+
+    protected:
+        const Graph* m_pGraph; //! watched graph
+        ListIterator<GraphObserver*> m_itGList; //! List entry in graphs list of all registered graphobservers
 
 
-};
+    };
 
 } //end namespace ogdf
 

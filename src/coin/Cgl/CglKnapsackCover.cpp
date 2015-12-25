@@ -26,12 +26,12 @@
 //-----------------------------------------------------------------------------
 // Generate knapsack cover cuts
 //-------------------------------------------------------------------
-void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
+void CglKnapsackCover::generateCuts(const OsiSolverInterface & si, OsiCuts & cs,
                                     const CglTreeInfo info) const
 {
     // Get basic problem information
-    int nRows=si.getNumRows();
-    int nCols=si.getNumCols();
+    int nRows = si.getNumRows();
+    int nCols = si.getNumCols();
 
     // Create working space for "canonical" knapsack inequality
     // - krow will contain the coefficients and indices of the
@@ -40,151 +40,151 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
     // - complement[i] is 1 if the index i in krow refers to the complement
     // of the variable, and 0 otherwise.
     CoinPackedVector krow;
-    double b=0.0;
+    double b = 0.0;
     int numberRowCutsBefore = cs.sizeRowCuts();
-    int * complement= new int[nCols];
+    int* complement = new int[nCols];
     complement_ = complement;
 #if GUBCOVER==1
-    elements_=new double [2*nCols];
-    CoinZeroN(elements_,2*nCols);
+    elements_ = new double [2 * nCols];
+    CoinZeroN(elements_, 2 * nCols);
 #elif GUBCOVER==2
-    int size1=4*nCols+2*numberCliques_;
-    int size2=2*nCols+5*numberCliques_+5;
-    elements_=reinterpret_cast<double *>(new int [size2+size1*sizeof(double)/sizeof(int)]);
-    CoinZeroN(elements_,2*nCols+2*numberCliques_);
-    int * restInd = reinterpret_cast<int *> (elements_+size1);
-    CoinFillN(restInd,nCols,-2);
+    int size1 = 4 * nCols + 2 * numberCliques_;
+    int size2 = 2 * nCols + 5 * numberCliques_ + 5;
+    elements_ = reinterpret_cast<double*>(new int [size2 + size1 * sizeof(double) / sizeof(int)]);
+    CoinZeroN(elements_, 2 * nCols + 2 * numberCliques_);
+    int* restInd = reinterpret_cast<int*>(elements_ + size1);
+    CoinFillN(restInd, nCols, -2);
 #endif
 
     // Create a local copy of the column solution (colsol), call it xstar, and
     // inititalize it.
     // Assumes the lp-relaxation has been solved, and the solver interface
     // has a meaningful colsol.
-    double * xstar= new double[nCols];
+    double* xstar = new double[nCols];
     solver_ = &si;
 
     // To allow for vub knapsacks
-    int * thisColumnIndex = new int [nCols];
-    double * thisElement = new double[nCols];
-    int * back = new int[nCols];
+    int* thisColumnIndex = new int [nCols];
+    double* thisElement = new double[nCols];
+    int* back = new int[nCols];
 
-    const double *colsol = si.getColSolution();
+    const double* colsol = si.getColSolution();
     int k;
     // For each row point to vub variable
     // -1 if no vub
     // -2 if can skip row for knapsacks
 
-    int * vub = new int [nRows];
+    int* vub = new int [nRows];
 
     // Now vubValue are for positive coefficients and vlbValue for negative
     // when L row
     // For each column point to vub row
-    int * vubRow = new int [nCols];
-    double * vubValue = new double [nRows];
+    int* vubRow = new int [nCols];
+    double* vubValue = new double [nRows];
 
     // For each column point to vlb row
-    int * vlbRow = new int [nCols];
-    double * vlbValue = new double [nRows];
+    int* vlbRow = new int [nCols];
+    double* vlbValue = new double [nRows];
 
     // Take out all fixed
-    double * effectiveUpper = new double [nRows];
-    double * effectiveLower = new double [nRows];
-    const double * colUpper = si.getColUpper();
-    const double * colLower = si.getColLower();
-    for (k=0; k<nCols; k++)
+    double* effectiveUpper = new double [nRows];
+    double* effectiveLower = new double [nRows];
+    const double* colUpper = si.getColUpper();
+    const double* colLower = si.getColLower();
+    for(k = 0; k < nCols; k++)
     {
-        back[k]=-1;
-        xstar[k]=colsol[k];
-        if (xstar[k]>colUpper[k])
-            xstar[k]=colUpper[k];
-        else if (xstar[k]<colLower[k])
-            xstar[k]=colLower[k];
-        complement[k]=0;
-        vubRow[k]=-1;
-        vlbRow[k]=-1;
-        if (si.isBinary(k))
+        back[k] = -1;
+        xstar[k] = colsol[k];
+        if(xstar[k] > colUpper[k])
+            xstar[k] = colUpper[k];
+        else if(xstar[k] < colLower[k])
+            xstar[k] = colLower[k];
+        complement[k] = 0;
+        vubRow[k] = -1;
+        vlbRow[k] = -1;
+        if(si.isBinary(k))
         {
-            if (si.isFreeBinary(k))
+            if(si.isFreeBinary(k))
             {
-                vubRow[k]=-2;
-                vlbRow[k]=-2;
+                vubRow[k] = -2;
+                vlbRow[k] = -2;
             }
             else
             {
-                vubRow[k]=-10;
-                vlbRow[k]=-10;
+                vubRow[k] = -10;
+                vlbRow[k] = -10;
             }
         }
-        else if (colUpper[k]==colLower[k])
+        else if(colUpper[k] == colLower[k])
         {
-            vubRow[k]=-10; // fixed
-            vlbRow[k]=-10; // fixed
+            vubRow[k] = -10; // fixed
+            vlbRow[k] = -10; // fixed
         }
     }
 
     int rowIndex;
-    int numberVub=0;
+    int numberVub = 0;
 
-    const CoinPackedMatrix * matrixByRow = si.getMatrixByRow();
-    const double * elementByRow = matrixByRow->getElements();
-    const int * column = matrixByRow->getIndices();
-    const CoinBigIndex * rowStart = matrixByRow->getVectorStarts();
-    const int * rowLength = matrixByRow->getVectorLengths();
-    const double * rowUpper = si.getRowUpper();
-    const double * rowLower = si.getRowLower();
+    const CoinPackedMatrix* matrixByRow = si.getMatrixByRow();
+    const double* elementByRow = matrixByRow->getElements();
+    const int* column = matrixByRow->getIndices();
+    const CoinBigIndex* rowStart = matrixByRow->getVectorStarts();
+    const int* rowLength = matrixByRow->getVectorLengths();
+    const double* rowUpper = si.getRowUpper();
+    const double* rowLower = si.getRowLower();
 
     // Scan all rows looking for possibles
 
-    for (rowIndex=0; rowIndex<nRows; rowIndex++)
+    for(rowIndex = 0; rowIndex < nRows; rowIndex++)
     {
-        vub[rowIndex]=-1;
+        vub[rowIndex] = -1;
         int start = rowStart[rowIndex];
         int end = start + rowLength[rowIndex];
         double upRhs = rowUpper[rowIndex];
         double loRhs = rowLower[rowIndex];
-        double multiplier=0.0;
-        if (upRhs>1.0e20)
-            multiplier=-1.0;
-        else if (loRhs<-1.0e20)
-            multiplier=1.0;
-        int numberContinuous=0;
-        int numberBinary=0;
-        int iCont=-1;
+        double multiplier = 0.0;
+        if(upRhs > 1.0e20)
+            multiplier = -1.0;
+        else if(loRhs < -1.0e20)
+            multiplier = 1.0;
+        int numberContinuous = 0;
+        int numberBinary = 0;
+        int iCont = -1;
         double sum = 0.0;
-        double valueContinuous=0.0;
-        double valueBinary=0.0;
-        int iBinary=-1;
+        double valueContinuous = 0.0;
+        double valueBinary = 0.0;
+        int iBinary = -1;
         int j;
-        for (j=start; j<end; j++)
+        for(j = start; j < end; j++)
         {
-            int iColumn=column[j];
+            int iColumn = column[j];
             double value = elementByRow[j];
-            if (colUpper[iColumn]>colLower[iColumn])
+            if(colUpper[iColumn] > colLower[iColumn])
             {
-                sum += xstar[iColumn]*value;
-                if (vubRow[iColumn]==-2&&value*multiplier>0.0)
+                sum += xstar[iColumn] * value;
+                if(vubRow[iColumn] == -2 && value * multiplier > 0.0)
                 {
                     // binary
                     numberBinary++;
-                    valueBinary=value;
-                    iBinary=iColumn;
+                    valueBinary = value;
+                    iBinary = iColumn;
                 }
-                else if (vlbRow[iColumn]==-2&&value*multiplier<0.0)
+                else if(vlbRow[iColumn] == -2 && value * multiplier < 0.0)
                 {
                     // binary
                     numberBinary++;
-                    valueBinary=value;
-                    iBinary=iColumn;
+                    valueBinary = value;
+                    iBinary = iColumn;
                 }
-                else if (vubRow[iColumn]==-1)
+                else if(vubRow[iColumn] == -1)
                 {
                     // only use if not at bound
                     //      if (colsol[iColumn]<colUpper[iColumn]-1.0e-6&&
                     //  colsol[iColumn]>colLower[iColumn]+1.0e-6) {
                     // possible
-                    iCont=iColumn;
+                    iCont = iColumn;
                     numberContinuous++;
-                    valueContinuous=value;
+                    valueContinuous = value;
                     //} else {
                     //// ** needs more thought
                     //numberContinuous ++;
@@ -195,7 +195,7 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
                 {
                     // ** needs more thought
                     numberContinuous ++;
-                    iCont=-1;
+                    iCont = -1;
                     //if (colsol[iColumn]<colUpper[iColumn]-1.0e-6&&
                     //  colsol[iColumn]>colLower[iColumn]+1.0e-6) {
                     //// already assigned
@@ -207,75 +207,75 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
             else
             {
                 // fixed
-                upRhs -= colLower[iColumn]*value;
-                loRhs -= colLower[iColumn]*value;
+                upRhs -= colLower[iColumn] * value;
+                loRhs -= colLower[iColumn] * value;
             }
         }
         // see if binding
         effectiveUpper[rowIndex] = upRhs;
         effectiveLower[rowIndex] = loRhs;
         bool possible = false;
-        if (fabs(sum-upRhs)<1.0e-5)
+        if(fabs(sum - upRhs) < 1.0e-5)
         {
-            possible=true;
+            possible = true;
         }
         else
         {
-            effectiveUpper[rowIndex]=COIN_DBL_MAX;
+            effectiveUpper[rowIndex] = COIN_DBL_MAX;
         }
-        if (fabs(sum-loRhs)<1.0e-5)
+        if(fabs(sum - loRhs) < 1.0e-5)
         {
-            possible=true;
+            possible = true;
         }
         else
         {
-            effectiveLower[rowIndex]=-COIN_DBL_MAX;
+            effectiveLower[rowIndex] = -COIN_DBL_MAX;
         }
-        if (possible&&numberBinary&&numberBinary+numberContinuous<=maxInKnapsack_)
+        if(possible && numberBinary && numberBinary + numberContinuous <= maxInKnapsack_)
         {
             // binding with binary
-            if(numberContinuous==1&&iCont>=0&&numberBinary==1)
+            if(numberContinuous == 1 && iCont >= 0 && numberBinary == 1)
             {
                 // vub
 #ifdef PRINT_DEBUG
                 printf("vub/vlb (by row %d) %g <= 0-1 %g * %d + %g * %d <= %g\n",
-                       rowIndex,effectiveLower[rowIndex],valueBinary,iBinary,
-                       valueContinuous,iCont,effectiveUpper[rowIndex]);
+                       rowIndex, effectiveLower[rowIndex], valueBinary, iBinary,
+                       valueContinuous, iCont, effectiveUpper[rowIndex]);
 #endif
-                if (multiplier*valueContinuous>0.0)
+                if(multiplier * valueContinuous > 0.0)
                 {
                     vubValue[rowIndex] = valueContinuous;
-                    vubRow[iCont]=rowIndex;
+                    vubRow[iCont] = rowIndex;
                 }
                 else
                 {
                     vlbValue[rowIndex] = valueContinuous;
-                    vlbRow[iCont]=rowIndex;
+                    vlbRow[iCont] = rowIndex;
                 }
-                vub[rowIndex]=iCont;
+                vub[rowIndex] = iCont;
                 numberVub++;
             }
-            else if (numberBinary>1)
+            else if(numberBinary > 1)
             {
                 // could be knapsack
-                vub[rowIndex]=-1;
+                vub[rowIndex] = -1;
             }
             else
             {
                 // no point looking at this row
-                vub[rowIndex]=-2;
+                vub[rowIndex] = -2;
             }
         }
         else
         {
-            if (!possible||numberBinary+numberContinuous>maxInKnapsack_)
-                vub[rowIndex]=-2;      // no point looking at this row
+            if(!possible || numberBinary + numberContinuous > maxInKnapsack_)
+                vub[rowIndex] = -2;    // no point looking at this row
         }
     }
     // Main loop
     int numCheck = 0;
     int* toCheck = 0;
-    if (!rowsToCheck_)
+    if(!rowsToCheck_)
     {
         toCheck = new int[nRows];
         CoinIotaN(toCheck, nRows, 0);
@@ -287,31 +287,31 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
         toCheck = rowsToCheck_;
     }
     // Long row
-    int longRow =20; //15;
-    int longRow2 =20; //15;
-    if (!info.inTree)
+    int longRow = 20; //15;
+    int longRow2 = 20; //15;
+    if(!info.inTree)
     {
-        longRow=25;
+        longRow = 25;
         //longRow2=20;
-        if (!info.pass)
-            longRow=30;
+        if(!info.pass)
+            longRow = 30;
     }
 
     // Set up number of tries for each row
     int ntry;
-    if (numberVub)
-        ntry=4;
+    if(numberVub)
+        ntry = 4;
     else
-        ntry=2;
+        ntry = 2;
     //ntry=2; // switch off
-    for (int ii=0; ii < numCheck; ++ii)
+    for(int ii = 0; ii < numCheck; ++ii)
     {
         rowIndex = toCheck[ii];
-        if (rowIndex < 0 || rowIndex >= nRows)
+        if(rowIndex < 0 || rowIndex >= nRows)
             continue;
-        if (vub[rowIndex]==-2)
+        if(vub[rowIndex] == -2)
             continue;
-        whichRow_=ii;
+        whichRow_ = ii;
 
 #ifdef PRINT_DEBUG
         std::cout << "CGL: Processing row " << rowIndex << std::endl;
@@ -337,145 +337,145 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
 #endif
         double effectiveRhs[4];
         double rhs[4];
-        double sign[]= {0.0,0.0,-1.0,1.0};
-        bool rowType[] = {false,true,false,true};
+        double sign[] = {0.0, 0.0, -1.0, 1.0};
+        bool rowType[] = {false, true, false, true};
         effectiveRhs[0] = effectiveLower[rowIndex];
-        rhs[0]=rowLower[rowIndex];
+        rhs[0] = rowLower[rowIndex];
         effectiveRhs[2] = effectiveRhs[0];
-        rhs[2]= effectiveRhs[0];
+        rhs[2] = effectiveRhs[0];
         effectiveRhs[1] = effectiveUpper[rowIndex];
-        rhs[1]=rowUpper[rowIndex];
+        rhs[1] = rowUpper[rowIndex];
         effectiveRhs[3] = effectiveRhs[1];
-        rhs[3]= effectiveRhs[1];
+        rhs[3] = effectiveRhs[1];
         int itry;
 #ifdef CGL_DEBUG
         int kcuts[4];
-        memset(kcuts,0,4*sizeof(int));
+        memset(kcuts, 0, 4 * sizeof(int));
 #endif
-        for (itry=0; itry<ntry; itry++)
+        for(itry = 0; itry < ntry; itry++)
         {
 #ifdef CGL_DEBUG
-            int nlast=cs.sizeRowCuts();
+            int nlast = cs.sizeRowCuts();
 #endif
             // see if to skip
-            if (fabs(effectiveRhs[itry])>1.0e20)
+            if(fabs(effectiveRhs[itry]) > 1.0e20)
                 continue;
             int length = rowLength[rowIndex];
-            memcpy(thisColumnIndex,column+rowStart[rowIndex],length*sizeof(int));
-            memcpy(thisElement,elementByRow+rowStart[rowIndex],
-                   length*sizeof(double));
-            b=rhs[itry];
-            if (itry>1)
+            memcpy(thisColumnIndex, column + rowStart[rowIndex], length * sizeof(int));
+            memcpy(thisElement, elementByRow + rowStart[rowIndex],
+                   length * sizeof(double));
+            b = rhs[itry];
+            if(itry > 1)
             {
                 // see if we would be better off relaxing
                 int i;
                 // mark columns
-                int length2=length; // for new length
-                int numberReplaced=0;
-                for (i=0; i<length; i++)
+                int length2 = length; // for new length
+                int numberReplaced = 0;
+                for(i = 0; i < length; i++)
                 {
                     int iColumn = thisColumnIndex[i];
-                    back[thisColumnIndex[i]]=i;
-                    if (vubRow[iColumn]==-10)
+                    back[thisColumnIndex[i]] = i;
+                    if(vubRow[iColumn] == -10)
                     {
                         // fixed - take out
-                        thisElement[i]=0.0;
+                        thisElement[i] = 0.0;
                     }
                 }
                 double dSign = sign[itry];
-                for (i=0; i<length; i++)
+                for(i = 0; i < length; i++)
                 {
                     int iColumn = thisColumnIndex[i];
-                    int iRow=-1;
-                    double vubCoefficient=0.0;
-                    double thisCoefficient=thisElement[i];
+                    int iRow = -1;
+                    double vubCoefficient = 0.0;
+                    double thisCoefficient = thisElement[i];
                     int replace = 0;
-                    if (vubRow[iColumn]>=0)
+                    if(vubRow[iColumn] >= 0)
                     {
                         iRow = vubRow[iColumn];
-                        if (vub[iRow]==iColumn&&iRow!=rowIndex)
+                        if(vub[iRow] == iColumn && iRow != rowIndex)
                         {
                             vubCoefficient = vubValue[iRow];
                             // break it out - may be able to do better
-                            if (dSign*thisCoefficient>0.0)
+                            if(dSign * thisCoefficient > 0.0)
                             {
                                 // we want valid lower bound on continuous
-                                if (effectiveLower[iRow]>-1.0e20&&vubCoefficient>0.0)
-                                    replace=-1;
-                                else if (effectiveUpper[iRow]<1.0e20&&vubCoefficient<0.0)
-                                    replace=1;
+                                if(effectiveLower[iRow] > -1.0e20 && vubCoefficient > 0.0)
+                                    replace = -1;
+                                else if(effectiveUpper[iRow] < 1.0e20 && vubCoefficient < 0.0)
+                                    replace = 1;
                                 // q assert (replace!=-1);
                                 // q assert (replace!=1);
                             }
                             else
                             {
                                 // we want valid upper bound on continuous
-                                if (effectiveLower[iRow]>-1.0e20&&vubCoefficient<0.0)
-                                    replace=-1;
-                                else if (effectiveUpper[iRow]<1.0e20&&vubCoefficient>0.0)
-                                    replace=1;
+                                if(effectiveLower[iRow] > -1.0e20 && vubCoefficient < 0.0)
+                                    replace = -1;
+                                else if(effectiveUpper[iRow] < 1.0e20 && vubCoefficient > 0.0)
+                                    replace = 1;
                                 //assert (replace!=-1);
                             }
                         }
                     }
-                    if (vlbRow[iColumn]>=0)
+                    if(vlbRow[iColumn] >= 0)
                     {
                         iRow = vlbRow[iColumn];
-                        if (vub[iRow]==iColumn&&iRow!=rowIndex)
+                        if(vub[iRow] == iColumn && iRow != rowIndex)
                         {
                             vubCoefficient = vlbValue[iRow];
                             // break it out - may be able to do better
-                            if (dSign*thisCoefficient>0.0)
+                            if(dSign * thisCoefficient > 0.0)
                             {
                                 // we want valid lower bound on continuous
-                                if (effectiveLower[iRow]>-1.0e20&&vubCoefficient>0.0)
-                                    replace=-1;
-                                else if (effectiveUpper[iRow]<1.0e20&&vubCoefficient<0.0)
-                                    replace=1;
+                                if(effectiveLower[iRow] > -1.0e20 && vubCoefficient > 0.0)
+                                    replace = -1;
+                                else if(effectiveUpper[iRow] < 1.0e20 && vubCoefficient < 0.0)
+                                    replace = 1;
                                 //assert (replace!=1);
                             }
                             else
                             {
                                 // we want valid upper bound on continuous
-                                if (effectiveLower[iRow]>-1.0e20&&vubCoefficient<0.0)
-                                    replace=-1;
-                                else if (effectiveUpper[iRow]<1.0e20&&vubCoefficient>0.0)
-                                    replace=1;
+                                if(effectiveLower[iRow] > -1.0e20 && vubCoefficient < 0.0)
+                                    replace = -1;
+                                else if(effectiveUpper[iRow] < 1.0e20 && vubCoefficient > 0.0)
+                                    replace = 1;
                                 //q assert (replace!=-1);
                                 //assert (replace!=1);
                             }
                         }
                     }
-                    if (replace)
+                    if(replace)
                     {
-                        double useRhs=0.0;
+                        double useRhs = 0.0;
                         numberReplaced++;
-                        if (replace<0)
+                        if(replace < 0)
                             useRhs = effectiveLower[iRow];
                         else
                             useRhs = effectiveUpper[iRow];
                         // now replace (just using vubRow==-2)
                         // delete continuous
-                        thisElement[i]=0.0;
-                        double scale = thisCoefficient/vubCoefficient;
+                        thisElement[i] = 0.0;
+                        double scale = thisCoefficient / vubCoefficient;
                         // modify rhs
-                        b -= scale*useRhs;
+                        b -= scale * useRhs;
                         int start = rowStart[iRow];
-                        int end = start+rowLength[iRow];
+                        int end = start + rowLength[iRow];
                         int j;
-                        for (j=start; j<end; j++)
+                        for(j = start; j < end; j++)
                         {
                             int iColumn = column[j];
-                            if (vubRow[iColumn]==-2)
+                            if(vubRow[iColumn] == -2)
                             {
-                                double change = scale*elementByRow[j];
+                                double change = scale * elementByRow[j];
                                 int iBack = back[iColumn];
-                                if (iBack<0)
+                                if(iBack < 0)
                                 {
                                     // element does not exist
-                                    back[iColumn]=length2;
-                                    thisElement[length2]=-change;
-                                    thisColumnIndex[length2++]=iColumn;
+                                    back[iColumn] = length2;
+                                    thisElement[length2] = -change;
+                                    thisColumnIndex[length2++] = iColumn;
                                 }
                                 else
                                 {
@@ -486,62 +486,62 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
                         }
                     }
                 }
-                if (numberReplaced)
+                if(numberReplaced)
                 {
-                    length=0;
-                    for (i=0; i<length2; i++)
+                    length = 0;
+                    for(i = 0; i < length2; i++)
                     {
                         int iColumn = thisColumnIndex[i];
-                        back[iColumn]=-1; // un mark
-                        if (thisElement[i])
+                        back[iColumn] = -1; // un mark
+                        if(thisElement[i])
                         {
-                            thisElement[length]=thisElement[i];
-                            thisColumnIndex[length++]=iColumn;
+                            thisElement[length] = thisElement[i];
+                            thisColumnIndex[length++] = iColumn;
                         }
                     }
-                    if (length>maxInKnapsack_)
+                    if(length > maxInKnapsack_)
                         continue; // too long
                 }
                 else
                 {
-                    for (i=0; i<length; i++)
+                    for(i = 0; i < length; i++)
                     {
                         int iColumn = thisColumnIndex[i];
-                        back[iColumn]=-1; // un mark
+                        back[iColumn] = -1; // un mark
                     }
                     continue; // no good
                 }
             }
-            if (!deriveAKnapsack(si, cs, krow, rowType[itry], b, complement,
-                                 xstar, rowIndex,
-                                 length,thisColumnIndex,thisElement))
+            if(!deriveAKnapsack(si, cs, krow, rowType[itry], b, complement,
+                                xstar, rowIndex,
+                                length, thisColumnIndex, thisElement))
             {
 
                 // Reset local data and continue to the next iteration
                 // of the rowIndex-loop
-                for(k=0; k<krow.getNumElements(); k++)
+                for(k = 0; k < krow.getNumElements(); k++)
                 {
-                    if (complement[krow.getIndices()[k]])
+                    if(complement[krow.getIndices()[k]])
                     {
-                        xstar[krow.getIndices()[k]]= 1.0-xstar[krow.getIndices()[k]];
-                        complement[krow.getIndices()[k]]=0;
+                        xstar[krow.getIndices()[k]] = 1.0 - xstar[krow.getIndices()[k]];
+                        complement[krow.getIndices()[k]] = 0;
                     }
                 }
-                krow.setVector(0,NULL,NULL);
+                krow.setVector(0, NULL, NULL);
                 continue;
             }
 #ifdef PRINT_DEBUG
             {
                 // Get the sense of the row
                 int i;
-                printf("rhs sense %c rhs %g\n",si.getRowSense()[rowIndex],
+                printf("rhs sense %c rhs %g\n", si.getRowSense()[rowIndex],
                        si.getRightHandSide()[rowIndex]);
-                const int * indices = si.getMatrixByRow()->getVector(rowIndex).getIndices();
-                const double * elements = si.getMatrixByRow()->getVector(rowIndex).getElements();
+                const int* indices = si.getMatrixByRow()->getVector(rowIndex).getIndices();
+                const double* elements = si.getMatrixByRow()->getVector(rowIndex).getElements();
                 // for every variable in the constraint
-                for (i=0; i<si.getMatrixByRow()->getVector(rowIndex).getNumElements(); i++)
+                for(i = 0; i < si.getMatrixByRow()->getVector(rowIndex).getNumElements(); i++)
                 {
-                    printf("%d (s=%g) %g, ",indices[i],colsol[indices[i]],elements[i]);
+                    printf("%d (s=%g) %g, ", indices[i], colsol[indices[i]], elements[i]);
                 }
                 printf("\n");
             }
@@ -566,26 +566,26 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
             CoinPackedVector cover, remainder;
 
 
-            if (findGreedyCover(rowIndex, krow, b, xstar, cover, remainder) == 1)
+            if(findGreedyCover(rowIndex, krow, b, xstar, cover, remainder) == 1)
             {
 
                 // Lift cover inequality and add to cut set
-                if (!liftAndUncomplementAndAdd(rowUpper[rowIndex], krow, b,
-                                               complement, rowIndex, cover,
-                                               remainder, cs))
+                if(!liftAndUncomplementAndAdd(rowUpper[rowIndex], krow, b,
+                                              complement, rowIndex, cover,
+                                              remainder, cs))
                 {
                     // Reset local data and continue to the next iteration
                     // of the rowIndex-loop
                     // I am not sure this is needed but I am just being careful
-                    for(k=0; k<krow.getNumElements(); k++)
+                    for(k = 0; k < krow.getNumElements(); k++)
                     {
-                        if (complement[krow.getIndices()[k]])
+                        if(complement[krow.getIndices()[k]])
                         {
-                            xstar[krow.getIndices()[k]]= 1.0-xstar[krow.getIndices()[k]];
-                            complement[krow.getIndices()[k]]=0;
+                            xstar[krow.getIndices()[k]] = 1.0 - xstar[krow.getIndices()[k]];
+                            complement[krow.getIndices()[k]] = 0;
                         }
                     }
-                    krow.setVector(0,NULL,NULL);
+                    krow.setVector(0, NULL, NULL);
                     continue;
                 }
             }
@@ -597,26 +597,26 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
             //////////////////////////////////////////////////////
 
             // Reset the cover and remainder
-            cover.setVector(0,NULL,NULL);
-            remainder.setVector(0,NULL,NULL);
+            cover.setVector(0, NULL, NULL);
+            remainder.setVector(0, NULL, NULL);
 
-            if (findPseudoJohnAndEllisCover(rowIndex, krow, b,
-                                            xstar, cover, remainder) == 1)
+            if(findPseudoJohnAndEllisCover(rowIndex, krow, b,
+                                           xstar, cover, remainder) == 1)
             {
                 int n = krow.getNumElements();
-                bool possible = (n<=longRow);
-                if (possible)
+                bool possible = (n <= longRow);
+                if(possible)
                 {
                     // Calculate the sum of the knapsack coefficients of the cover variables
                     double sum = cover.sum();
 
                     // Define lambda to be the "cover excess".
                     // By definition, lambda > 0. If this is not the case, something's screwy. Exit gracefully.
-                    double lambda = sum-b;
-                    if (lambda < epsilon_)
+                    double lambda = sum - b;
+                    if(lambda < epsilon_)
                     {
 #ifdef CGL_DEBUG
-                        if (lambda < -epsilon_)
+                        if(lambda < -epsilon_)
                         {
                             printf("lambda < epsilon....aborting. \n");
                             std::cout << "lambda " << lambda << " epsilon " << epsilon_ << std::endl;
@@ -625,27 +625,27 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
                         else
                         {
 #endif
-                            possible=false;
+                            possible = false;
 #ifdef CGL_DEBUG
                         }
 #endif
                     }
                 }
-                if (possible)
+                if(possible)
                 {
                     CoinPackedVector atOnes;
                     CoinPackedVector fracCover; // different than cover
                     int nInCover = cover.getNumElements();
-                    const int * ind = cover.getIndices();
-                    const double * elsIn = cover.getElements();
-                    for (int i=0; i<nInCover; i++)
+                    const int* ind = cover.getIndices();
+                    const double* elsIn = cover.getElements();
+                    for(int i = 0; i < nInCover; i++)
                     {
                         int iColumn = ind[i];
                         double value = elsIn[i];
-                        if (xstar[iColumn]<1.0)
-                            fracCover.insert(iColumn,value);
+                        if(xstar[iColumn] < 1.0)
+                            fracCover.insert(iColumn, value);
                         else
-                            atOnes.insert(iColumn,value);
+                            atOnes.insert(iColumn, value);
                     }
                     liftUpDownAndUncomplementAndAdd(nCols, xstar, complement, rowIndex,
                                                     n, b, fracCover,
@@ -655,22 +655,22 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
                 else
                 {
                     // (Sequence Independent) Lift cover inequality and add to cut set
-                    if (!liftAndUncomplementAndAdd(rowUpper[rowIndex], krow, b,
-                                                   complement, rowIndex, cover,
-                                                   remainder, cs))
+                    if(!liftAndUncomplementAndAdd(rowUpper[rowIndex], krow, b,
+                                                  complement, rowIndex, cover,
+                                                  remainder, cs))
                     {
                         // Reset local data and continue to the next iteration
                         // of the rowIndex-loop
                         // I am not sure this is needed but I am just being careful
-                        for(k=0; k<krow.getNumElements(); k++)
+                        for(k = 0; k < krow.getNumElements(); k++)
                         {
-                            if (complement[krow.getIndices()[k]])
+                            if(complement[krow.getIndices()[k]])
                             {
-                                xstar[krow.getIndices()[k]]= 1.0-xstar[krow.getIndices()[k]];
-                                complement[krow.getIndices()[k]]=0;
+                                xstar[krow.getIndices()[k]] = 1.0 - xstar[krow.getIndices()[k]];
+                                complement[krow.getIndices()[k]] = 0;
                             }
                         }
-                        krow.setVector(0,NULL,NULL);
+                        krow.setVector(0, NULL, NULL);
                         continue;
                     }
 #endif
@@ -696,12 +696,12 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
             CoinPackedVector fracCover; // different than cover
 
             // reset the remainder
-            remainder.setVector(0,NULL,NULL);
+            remainder.setVector(0, NULL, NULL);
 
-            if (expensiveCuts_||krow.getNumElements()<=longRow)
+            if(expensiveCuts_ || krow.getNumElements() <= longRow)
             {
-                if (findJohnAndEllisCover(rowIndex, krow, b,
-                                          xstar, fracCover, atOnes, remainder) == 1)
+                if(findJohnAndEllisCover(rowIndex, krow, b,
+                                         xstar, fracCover, atOnes, remainder) == 1)
                 {
 
                     // experimenting here...
@@ -721,63 +721,63 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
 
 
             // reset cover and remainder
-            cover.setVector(0,NULL,NULL);
-            remainder.setVector(0,NULL,NULL);
+            cover.setVector(0, NULL, NULL);
+            remainder.setVector(0, NULL, NULL);
 
             // if the size of the krow is "small",
             //    use an exact algorithm to find the most violated (minimal) cover,
             // else,
             //    use an lp-relaxation to find the most violated (minimal) cover.
-            if(krow.getNumElements()<=longRow2)
+            if(krow.getNumElements() <= longRow2)
             {
-                if (findExactMostViolatedMinCover(nCols, rowIndex, krow, b,
-                                                  xstar, cover, remainder) == 1)
+                if(findExactMostViolatedMinCover(nCols, rowIndex, krow, b,
+                                                 xstar, cover, remainder) == 1)
                 {
 
                     // Lift cover inequality and add to cut set
-                    if (!liftAndUncomplementAndAdd(rowUpper[rowIndex], krow, b,
-                                                   complement, rowIndex, cover, remainder,
-                                                   cs))
+                    if(!liftAndUncomplementAndAdd(rowUpper[rowIndex], krow, b,
+                                                  complement, rowIndex, cover, remainder,
+                                                  cs))
                     {
                         // Reset local data and continue to the next iteration
                         // of the rowIndex-loop
                         // I am not sure this is needed but I am just being careful
-                        for(k=0; k<krow.getNumElements(); k++)
+                        for(k = 0; k < krow.getNumElements(); k++)
                         {
-                            if (complement[krow.getIndices()[k]])
+                            if(complement[krow.getIndices()[k]])
                             {
-                                xstar[krow.getIndices()[k]]= 1.0-xstar[krow.getIndices()[k]];
-                                complement[krow.getIndices()[k]]=0;
+                                xstar[krow.getIndices()[k]] = 1.0 - xstar[krow.getIndices()[k]];
+                                complement[krow.getIndices()[k]] = 0;
                             }
                         }
-                        krow.setVector(0,NULL,NULL);
+                        krow.setVector(0, NULL, NULL);
                         continue;
                     }
                 }
             }
             else
             {
-                if (findLPMostViolatedMinCover(nCols, rowIndex, krow, b,
-                                               xstar, cover, remainder) == 1)
+                if(findLPMostViolatedMinCover(nCols, rowIndex, krow, b,
+                                              xstar, cover, remainder) == 1)
                 {
 
                     // Lift cover inequality and add to cut set
-                    if (!liftAndUncomplementAndAdd(rowUpper[rowIndex], krow, b,
-                                                   complement, rowIndex, cover, remainder,
-                                                   cs))
+                    if(!liftAndUncomplementAndAdd(rowUpper[rowIndex], krow, b,
+                                                  complement, rowIndex, cover, remainder,
+                                                  cs))
                     {
                         // Reset local data and continue to the next iteration
                         // of the rowIndex-loop
                         // I am not sure this is needed but I am just being careful
-                        for(k=0; k<krow.getNumElements(); k++)
+                        for(k = 0; k < krow.getNumElements(); k++)
                         {
-                            if (complement[krow.getIndices()[k]])
+                            if(complement[krow.getIndices()[k]])
                             {
-                                xstar[krow.getIndices()[k]]= 1.0-xstar[krow.getIndices()[k]];
-                                complement[krow.getIndices()[k]]=0;
+                                xstar[krow.getIndices()[k]] = 1.0 - xstar[krow.getIndices()[k]];
+                                complement[krow.getIndices()[k]] = 0;
                             }
                         }
-                        krow.setVector(0,NULL,NULL);
+                        krow.setVector(0, NULL, NULL);
                         continue;
                     }
                 }
@@ -788,56 +788,56 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
             // Reset xstar and complement to their initialized values for the next
             // go-around
             int k;
-            if (fabs(b-rowUpper[rowIndex]) > epsilon_)
+            if(fabs(b - rowUpper[rowIndex]) > epsilon_)
             {
-                for(k=0; k<krow.getNumElements(); k++)
+                for(k = 0; k < krow.getNumElements(); k++)
                 {
-                    if (complement[krow.getIndices()[k]])
+                    if(complement[krow.getIndices()[k]])
                     {
-                        xstar[krow.getIndices()[k]]= 1.0-xstar[krow.getIndices()[k]];
-                        complement[krow.getIndices()[k]]=0;
+                        xstar[krow.getIndices()[k]] = 1.0 - xstar[krow.getIndices()[k]];
+                        complement[krow.getIndices()[k]] = 0;
                     }
                 }
             }
-            krow.setVector(0,NULL,NULL);
+            krow.setVector(0, NULL, NULL);
 #ifdef CGL_DEBUG
             int nnow = cs.sizeRowCuts();
-            if (nnow>nlast)
+            if(nnow > nlast)
             {
-                const OsiRowCutDebugger * debugger = si.getRowCutDebugger();
-                if (debugger&&debugger->onOptimalPath(si))
+                const OsiRowCutDebugger* debugger = si.getRowCutDebugger();
+                if(debugger && debugger->onOptimalPath(si))
                 {
                     // check cuts okay
                     int k;
-                    for (k=nlast; k<nnow; k++)
+                    for(k = nlast; k < nnow; k++)
                     {
-                        OsiRowCut rc=cs.rowCut(k);
+                        OsiRowCut rc = cs.rowCut(k);
                         if(debugger->invalidCut(rc))
                         {
-                            printf("itry %d, rhs %g, length %d\n",itry,rhs[itry],length);
+                            printf("itry %d, rhs %g, length %d\n", itry, rhs[itry], length);
                             int i;
-                            for (i=0; i<length; i++)
+                            for(i = 0; i < length; i++)
                             {
                                 int iColumn = thisColumnIndex[i];
-                                printf("column %d, coefficient %g, value %g, bounds %g %g\n",iColumn,
-                                       thisElement[i],colsol[iColumn],colLower[iColumn],
+                                printf("column %d, coefficient %g, value %g, bounds %g %g\n", iColumn,
+                                       thisElement[i], colsol[iColumn], colLower[iColumn],
                                        colUpper[iColumn]);
                             }
-                            if (itry>1)
+                            if(itry > 1)
                             {
                                 int length = rowLength[rowIndex];
-                                memcpy(thisColumnIndex,column+rowStart[rowIndex],
-                                       length*sizeof(int));
-                                memcpy(thisElement,elementByRow+rowStart[rowIndex],
-                                       length*sizeof(double));
+                                memcpy(thisColumnIndex, column + rowStart[rowIndex],
+                                       length * sizeof(int));
+                                memcpy(thisElement, elementByRow + rowStart[rowIndex],
+                                       length * sizeof(double));
                                 printf("Original row had rhs %g and length %d\n",
-                                       (itry==2 ? rowLower[rowIndex] :rowUpper[rowIndex]),
+                                       (itry == 2 ? rowLower[rowIndex] : rowUpper[rowIndex]),
                                        length);
-                                for (i=0; i<length; i++)
+                                for(i = 0; i < length; i++)
                                 {
                                     int iColumn = thisColumnIndex[i];
-                                    printf("column %d, coefficient %g, value %g, bounds %g %g\n",iColumn,
-                                           thisElement[i],colsol[iColumn],colLower[iColumn],
+                                    printf("column %d, coefficient %g, value %g, bounds %g %g\n", iColumn,
+                                           thisElement[i], colsol[iColumn], colLower[iColumn],
                                            colUpper[iColumn]);
                                 }
                             }
@@ -845,25 +845,25 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
                         }
                     }
                 }
-                if (itry>1&&nnow-nlast>kcuts[itry-2])
+                if(itry > 1 && nnow - nlast > kcuts[itry - 2])
                 {
                     printf("itry %d gave %d cuts as against %d for itry %d\n",
-                           itry,nnow-nlast,kcuts[itry-2],itry-2);
+                           itry, nnow - nlast, kcuts[itry - 2], itry - 2);
                 }
-                kcuts[itry]=nnow-nlast;
-                nlast=nnow;
+                kcuts[itry] = nnow - nlast;
+                nlast = nnow;
             }
 #endif
         }
     }
-    if (!info.inTree&&((info.options&4)==4||((info.options&8)&&!info.pass)))
+    if(!info.inTree && ((info.options & 4) == 4 || ((info.options & 8) && !info.pass)))
     {
         int numberRowCutsAfter = cs.sizeRowCuts();
-        for (int i=numberRowCutsBefore; i<numberRowCutsAfter; i++)
+        for(int i = numberRowCutsBefore; i < numberRowCutsAfter; i++)
             cs.rowCutPtr(i)->setGloballyValid();
     }
     // Clean up: free allocated memory
-    if (toCheck != rowsToCheck_)
+    if(toCheck != rowsToCheck_)
         delete[] toCheck;
     delete[] xstar;
     delete[] complement;
@@ -885,10 +885,10 @@ void CglKnapsackCover::generateCuts(const OsiSolverInterface& si, OsiCuts& cs,
 void
 CglKnapsackCover::setTestedRowIndices(int num, const int* ind)
 {
-    if (rowsToCheck_)
+    if(rowsToCheck_)
         delete[] rowsToCheck_;
     numRowsToCheck_ = num;
-    if (num > 0)
+    if(num > 0)
     {
         rowsToCheck_ = new int[num];
         CoinCopyN(ind, num, rowsToCheck_);
@@ -903,43 +903,43 @@ CglKnapsackCover::liftAndUncomplementAndAdd(
     double /*rowub*/,
     CoinPackedVector & krow,
     double & b,
-    int * complement,
+    int* complement,
     int /*row*/,
     CoinPackedVector & cover,
     CoinPackedVector & remainder,
-    OsiCuts & cs ) const
+    OsiCuts & cs) const
 {
     CoinPackedVector cut;
     double cutRhs = cover.getNumElements() - 1.0;
-    int goodCut=1;
+    int goodCut = 1;
 
-    if (remainder.getNumElements() > 0)
+    if(remainder.getNumElements() > 0)
     {
         // Construct lifted cover cut
-        if (!liftCoverCut(
+        if(!liftCoverCut(
                     b, krow.getNumElements(),
                     cover, remainder,
-                    cut ))
-            goodCut= 0; // no cut
+                    cut))
+            goodCut = 0; // no cut
     }
     // The cover consists of every variable in the knapsack.
     // There is nothing to lift, so just add cut
     else
     {
         cut.reserve(cover.getNumElements());
-        cut.setConstant(cover.getNumElements(),cover.getIndices(),1.0);
+        cut.setConstant(cover.getNumElements(), cover.getIndices(), 1.0);
     }
 
-    if (goodCut)
+    if(goodCut)
     {
         // Uncomplement the complemented variables in the cut
         int k;
         //if (fabs(b-rowub)> epsilon_) {
-        double * elements = cut.getElements();
-        int * indices = cut.getIndices();
-        for (k=0; k<cut.getNumElements(); k++)
+        double* elements = cut.getElements();
+        int* indices = cut.getIndices();
+        for(k = 0; k < cut.getNumElements(); k++)
         {
-            if (complement[indices[k]])
+            if(complement[indices[k]])
             {
                 // Negate the k'th element in packedVector cut
                 // and correspondingly adjust the rhs
@@ -953,14 +953,14 @@ CglKnapsackCover::liftAndUncomplementAndAdd(
         rc.setRow(cut);
 #ifdef CGL_DEBUG
         {
-            double * elements = cut.getElements();
-            int * indices = cut.getIndices();
-            int n=cut.getNumElements();
-            for (k=0; k<n; k++)
+            double* elements = cut.getElements();
+            int* indices = cut.getIndices();
+            int n = cut.getNumElements();
+            for(k = 0; k < n; k++)
             {
-                assert(indices[k]>=0);
+                assert(indices[k] >= 0);
                 assert(elements[k]);
-                assert (fabs(elements[k])>1.0e-12);
+                assert(fabs(elements[k]) > 1.0e-12);
             }
         }
 #endif
@@ -973,12 +973,12 @@ CglKnapsackCover::liftAndUncomplementAndAdd(
 #ifdef PRINT_DEBUG
         {
             int k;
-            printf("cutrhs %g %d elements\n",cutRhs,cut.getNumElements());
-            double * elements = cut.getElements();
-            int * indices = cut.getIndices();
-            for (k=0; k<cut.getNumElements(); k++)
+            printf("cutrhs %g %d elements\n", cutRhs, cut.getNumElements());
+            double* elements = cut.getElements();
+            int* indices = cut.getIndices();
+            for(k = 0; k < cut.getNumElements(); k++)
             {
-                printf("%d %g\n",indices[k],elements[k]);
+                printf("%d %g\n", indices[k], elements[k]);
             }
         }
 #endif
@@ -1007,18 +1007,18 @@ CglKnapsackCover::deriveAKnapsack(
     CoinPackedVector & krow,
     bool treatAsLRow,
     double & b,
-    int *  complement,
-    double *  xstar,
+    int*   complement,
+    double*   xstar,
     int /*rowIndex*/,
     int numberElements,
-    const int * index,
-    const double * element) const
+    const int* index,
+    const double* element) const
 {
 
     // Fix to https://projects.coin-or.org/Cbc/ticket/30
     {
         // On investiagtion looks as if it can happen without being a bug
-        if (numberElements==0) return 0;
+        if(numberElements == 0) return 0;
     }
 
     int i;
@@ -1029,20 +1029,20 @@ CglKnapsackCover::deriveAKnapsack(
     //     leMatrixRow == -matrixRow  // otherwise
     //     leMatrixRow == matrixRow.
 
-    CoinPackedVector leMatrixRow(numberElements,index,element);
+    CoinPackedVector leMatrixRow(numberElements, index, element);
 
     double maxKrowElement = -COIN_DBL_MAX;
     double minKrowElement = COIN_DBL_MAX;
 
 
-    if (treatAsLRow)
+    if(treatAsLRow)
     {
         // treat as if L row
     }
     else
     {
         // treat as if G row
-        b=-b;
+        b = -b;
         std::transform(leMatrixRow.getElements(),
                        leMatrixRow.getElements() + leMatrixRow.getNumElements(),
                        leMatrixRow.getElements(),
@@ -1051,9 +1051,9 @@ CglKnapsackCover::deriveAKnapsack(
 
     // nBinUnsat is a counter for the number of unsatisfied
     // (i.e. fractional) binary vars
-    int nBinUnsat =0;
-    const double * colupper = si.getColUpper();
-    const double * collower = si.getColLower();
+    int nBinUnsat = 0;
+    const double* colupper = si.getColUpper();
+    const double* collower = si.getColLower();
 
     // At this point, leMatrixRow and b represent a le inequality in general
     // variables.
@@ -1062,22 +1062,22 @@ CglKnapsackCover::deriveAKnapsack(
     // If the non-free-binary variables can be appropriately bounded,
     // net them out of the constraint, otherwise abandon this row and return 0.
 
-    const int * indices = leMatrixRow.getIndices();
-    const double * elements = leMatrixRow.getElements();
+    const int* indices = leMatrixRow.getIndices();
+    const double* elements = leMatrixRow.getElements();
     // for every variable in the constraint
-    for (i=0; i<leMatrixRow.getNumElements(); i++)
+    for(i = 0; i < leMatrixRow.getNumElements(); i++)
     {
         // if the variable is not a free binary var
-        if ( !si.isFreeBinary(indices[i]) )
+        if(!si.isFreeBinary(indices[i]))
         {
             // and the coefficient is strictly negative
-            if(elements[i]<-epsilon_)
+            if(elements[i] < -epsilon_)
             {
                 // and the variable has a finite upper bound
-                if (colupper[indices[i]] < si.getInfinity())
+                if(colupper[indices[i]] < si.getInfinity())
                 {
                     // then replace the variable with its upper bound.
-                    b=b-elements[i]*colupper[indices[i]];
+                    b = b - elements[i] * colupper[indices[i]];
                 }
                 else
                 {
@@ -1085,13 +1085,13 @@ CglKnapsackCover::deriveAKnapsack(
                 }
             }
             // if the coefficient is strictly positive
-            else if(elements[i]>epsilon_)
+            else if(elements[i] > epsilon_)
             {
                 // and the variable has a finite lower bound
-                if (collower[indices[i]] > -si.getInfinity())
+                if(collower[indices[i]] > -si.getInfinity())
                 {
                     // then replace the variable with its lower bound.
-                    b=b-elements[i]*collower[indices[i]];
+                    b = b - elements[i] * collower[indices[i]];
                 }
                 else
                 {
@@ -1118,9 +1118,9 @@ CglKnapsackCover::deriveAKnapsack(
             // (the idea is if there is not a lot of variation in the knapsack
             // coefficients, it is unlikely we will find a violated minimal
             // cover from this knapsack so don't even bother trying)
-            if (fabs(elements[i]) > maxKrowElement)
+            if(fabs(elements[i]) > maxKrowElement)
                 maxKrowElement = fabs(elements[i]);
-            if (fabs(elements[i]) < minKrowElement)
+            if(fabs(elements[i]) < minKrowElement)
                 minKrowElement = fabs(elements[i]);
         }
     }
@@ -1131,25 +1131,25 @@ CglKnapsackCover::deriveAKnapsack(
     // ToDo: but why return if 2 binary? ...there was some assumption in the
     // findVioMinCover..(?)
     // Anyway probing will probably find something
-    if (krow.getNumElements() < 3 ||
+    if(krow.getNumElements() < 3 ||
             nBinUnsat == 0 ||
-            maxKrowElement-minKrowElement < 1.0e-3*maxKrowElement )
+            maxKrowElement - minKrowElement < 1.0e-3 * maxKrowElement)
     {
         return 0;
     }
 
     // However if we do decide to do when count is two - look carefully
-    if (krow.getNumElements()==2)
+    if(krow.getNumElements() == 2)
     {
-        const int * indices = krow.getIndices();
-        double * elements = krow.getElements();
-        double sum=0.0;
-        for(i=0; i<2; i++)
+        const int* indices = krow.getIndices();
+        double* elements = krow.getElements();
+        double sum = 0.0;
+        for(i = 0; i < 2; i++)
         {
             int iColumn = indices[i];
-            sum += elements[i]*xstar[iColumn];
+            sum += elements[i] * xstar[iColumn];
         }
-        if (sum<b-1.0e-4)
+        if(sum < b - 1.0e-4)
         {
             return 0;
         }
@@ -1158,14 +1158,14 @@ CglKnapsackCover::deriveAKnapsack(
 
 #ifdef PRINT_DEBUG
             printf("*** Doubleton Row is ");
-            for(i=0; i<2; i++)
+            for(i = 0; i < 2; i++)
             {
                 int iColumn = indices[i];
-                sum += elements[i]*xstar[iColumn];
-                printf("%d (coeff = %g, value = %g} ",indices[i],
-                       elements[i],xstar[iColumn]);
+                sum += elements[i] * xstar[iColumn];
+                printf("%d (coeff = %g, value = %g} ", indices[i],
+                       elements[i], xstar[iColumn]);
             }
-            printf("<= %g - go for it\n",b);
+            printf("<= %g - go for it\n", b);
 #endif
 
         }
@@ -1179,16 +1179,16 @@ CglKnapsackCover::deriveAKnapsack(
     // solution vector.
     {
         const int s = krow.getNumElements();
-        const int * indices = krow.getIndices();
-        double * elements = krow.getElements();
-        for(i=0; i<s; i++)
+        const int* indices = krow.getIndices();
+        double* elements = krow.getElements();
+        for(i = 0; i < s; i++)
         {
-            if (elements[i] < -epsilon_)
+            if(elements[i] < -epsilon_)
             {
-                complement[indices[i]]= 1;
+                complement[indices[i]] = 1;
                 elements[i] *= -1;
-                b+=elements[i];
-                xstar[indices[i]]=1.0-xstar[indices[i]];
+                b += elements[i];
+                xstar[indices[i]] = 1.0 - xstar[indices[i]];
             }
         }
     }
@@ -1197,17 +1197,17 @@ CglKnapsackCover::deriveAKnapsack(
     // If the problem is infeasible, add an infeasible col cut to cut set
     // e.g. one that has lb > ub.
     // TODO: test this scenario in BCP
-    if (b < 0 )
+    if(b < 0)
     {
         OsiColCut cc;
         int index = krow.getIndices()[0];
         const double fakeLb = colupper[index] + 1.0;;  // yes, colupper.
 #ifdef CGL_DEBUG
         const double fakeUb = collower[index];
-        assert( fakeUb < fakeLb );
+        assert(fakeUb < fakeLb);
 #endif
-        cc.setLbs( 1, &index, &fakeLb);
-        cc.setUbs( 1, &index, &fakeLb);
+        cc.setLbs(1, &index, &fakeLb);
+        cc.setUbs(1, &index, &fakeLb);
         cc.setEffectiveness(COIN_DBL_MAX);
         cs.insert(cc);
 #ifdef PRINT_DEBUG
@@ -1221,14 +1221,14 @@ CglKnapsackCover::deriveAKnapsack(
     // If any complemented var has coef a_j > b, then x_j = 1, return 0
     int fixed = 0;
     CoinPackedVector fixedBnd;
-    for(i=0; i<krow.getNumElements(); i++)
+    for(i = 0; i < krow.getNumElements(); i++)
     {
-        if (krow.getElements()[i]> b)
+        if(krow.getElements()[i] > b)
         {
-            fixedBnd.insert(krow.getIndices()[i],complement[krow.getIndices()[i]]);
+            fixedBnd.insert(krow.getIndices()[i], complement[krow.getIndices()[i]]);
 #ifdef PRINT_DEBUG
             printf("Variable %i being fixed to %i due to row %i.\n",
-                   krow.getIndices()[i],complement[krow.getIndices()[i]],rowIndex);
+                   krow.getIndices()[i], complement[krow.getIndices()[i]], rowIndex);
 #endif
             fixed = 1;
         }
@@ -1236,7 +1236,7 @@ CglKnapsackCover::deriveAKnapsack(
 
     // After all possible variables are fixed by adding a column cut with
     // equivalent lower and upper bounds, return
-    if (fixed)
+    if(fixed)
     {
         OsiColCut cc;
         cc.setLbs(fixedBnd);
@@ -1263,27 +1263,27 @@ CglKnapsackCover::deriveAKnapsack(
     OsiCuts & cs,
     CoinPackedVector & krow,
     double & b,
-    int *  complement,
-    double *  xstar,
+    int*   complement,
+    double*   xstar,
     int rowIndex,
-    const CoinPackedVectorBase & matrixRow ) const
+    const CoinPackedVectorBase & matrixRow) const
 {
     // Get the sense of the row
     const char  rowsense = si.getRowSense()[rowIndex];
 
     // Skip equality and unbounded rows
-    if  (rowsense=='E' || rowsense=='N')
+    if(rowsense == 'E' || rowsense == 'N')
     {
         return 0;
     }
 
-    bool treatAsLRow =  (rowsense=='L');
-    const int * indices = matrixRow.getIndices();
-    const double * elements = matrixRow.getElements();
+    bool treatAsLRow = (rowsense == 'L');
+    const int* indices = matrixRow.getIndices();
+    const double* elements = matrixRow.getElements();
     int numberElements = matrixRow.getNumElements();
-    return deriveAKnapsack( si, cs, krow, treatAsLRow, b, complement,
-                            xstar, rowIndex, numberElements, indices,
-                            elements);
+    return deriveAKnapsack(si, cs, krow, treatAsLRow, b, complement,
+                           xstar, rowIndex, numberElements, indices,
+                           elements);
 }
 
 //--------------------------------------------------
@@ -1299,7 +1299,7 @@ CglKnapsackCover::findLPMostViolatedMinCover(
     int /*row*/,
     CoinPackedVector & krow,
     double & b,
-    double * xstar,
+    double* xstar,
     CoinPackedVector & cover,
     CoinPackedVector & remainder) const
 {
@@ -1345,7 +1345,7 @@ CglKnapsackCover::findLPMostViolatedMinCover(
 
     // Redundant/useless adjusted rows should have been trapped in the
     // transformation to the canonical form of knapsack inequality
-    if (elementSum < b + epsilon_)
+    if(elementSum < b + epsilon_)
     {
         return -1;
     }
@@ -1353,16 +1353,16 @@ CglKnapsackCover::findLPMostViolatedMinCover(
     // Order krow in nonincreasing order of coefObj_j/a_j.
     // (1-xstar_1)/a_1 >= (1-xstar_2)/a_2 >= ... >= (1-xstar_n)/a_n
     // by defining this full-storage array "ratio" to be the external sort key.
-    double * ratio= new double[nCols];
-    memset(ratio, 0, (nCols*sizeof(double)));
+    double* ratio = new double[nCols];
+    memset(ratio, 0, (nCols * sizeof(double)));
 
     int i;
-    for (i=0; i<krow.getNumElements(); i++)
+    for(i = 0; i < krow.getNumElements(); i++)
     {
-        if (fabs(krow.getElements()[i])> epsilon_ )
+        if(fabs(krow.getElements()[i]) > epsilon_)
         {
-            ratio[krow.getIndices()[i]]=
-                (1.0-xstar[krow.getIndices()[i]]) / (krow.getElements()[i]);
+            ratio[krow.getIndices()[i]] =
+                (1.0 - xstar[krow.getIndices()[i]]) / (krow.getElements()[i]);
         }
         else
         {
@@ -1377,7 +1377,7 @@ CglKnapsackCover::findLPMostViolatedMinCover(
     // Find the "critical" element index "r" in the knapsack lp solution
     int r = 0;
     double sum = krow.getElements()[0];
-    while ( sum <= (elementSum - b - epsilon_ ) )
+    while(sum <= (elementSum - b - epsilon_))
     {
         r++;
         sum += krow.getElements()[r];
@@ -1403,15 +1403,15 @@ CglKnapsackCover::findLPMostViolatedMinCover(
     // if oofv to the lp knap >= 1, then no violated min cover is possible
     int nCover;
 
-    double lpoofv=0.0;
-    for (i=r+1; i<krow.getNumElements(); i++)
+    double lpoofv = 0.0;
+    for(i = r + 1; i < krow.getNumElements(); i++)
     {
-        lpoofv += (1-xstar[krow.getIndices()[i]]);
+        lpoofv += (1 - xstar[krow.getIndices()[i]]);
     }
-    double ipofv = lpoofv + (1-xstar[krow.getIndices()[r]]);
+    double ipofv = lpoofv + (1 - xstar[krow.getIndices()[r]]);
 
     // Couldn't find an lp violated min cover inequality
-    if (ipofv > 1.0 - epsilon_)
+    if(ipofv > 1.0 - epsilon_)
     {
         delete [] ratio;
         return -1;
@@ -1421,24 +1421,24 @@ CglKnapsackCover::findLPMostViolatedMinCover(
         // Partition knapsack into cover and noncover (i.e. remainder)
         // pieces
         nCover = krow.getNumElements() - r;
-        double coverSum =0.0;
+        double coverSum = 0.0;
         cover.reserve(nCover);
         remainder.reserve(r);
 
-        for (i=r; i<krow.getNumElements(); i++)
+        for(i = r; i < krow.getNumElements(); i++)
         {
-            cover.insert(krow.getIndices()[i],krow.getElements()[i]);
+            cover.insert(krow.getIndices()[i], krow.getElements()[i]);
             coverSum += krow.getElements()[i];
         }
-        for (i=0; i<r; i++)
+        for(i = 0; i < r; i++)
         {
-            remainder.insert(krow.getIndices()[i],krow.getElements()[i]);
+            remainder.insert(krow.getIndices()[i], krow.getElements()[i]);
         }
 
-        if (coverSum <= b+1.0e-8*(1.0+fabs(b)))
+        if(coverSum <= b + 1.0e-8 * (1.0 + fabs(b)))
         {
 #ifdef PRINT_DEBUG
-            if (coverSum <= b)
+            if(coverSum <= b)
             {
                 printf("The identified cover is NOT a cover\n");
                 abort();
@@ -1456,18 +1456,18 @@ CglKnapsackCover::findLPMostViolatedMinCover(
         // Construct a -minimal- violated cover
         // by testing and potentially tossing smallest
         // elements
-        double oneLessCoverSum = coverSum - cover.getElements()[nCover-1];
-        while (oneLessCoverSum > b+1.0e-12)
+        double oneLessCoverSum = coverSum - cover.getElements()[nCover - 1];
+        while(oneLessCoverSum > b + 1.0e-12)
         {
             // move the excess cover member into the set of remainders
-            remainder.insert(cover.getIndices()[nCover-1],
-                             cover.getElements()[nCover-1]);
-            cover.truncate(nCover-1);
+            remainder.insert(cover.getIndices()[nCover - 1],
+                             cover.getElements()[nCover - 1]);
+            cover.truncate(nCover - 1);
             nCover--;
-            oneLessCoverSum -= cover.getElements()[nCover-1];
+            oneLessCoverSum -= cover.getElements()[nCover - 1];
         }
 
-        if (nCover<2)
+        if(nCover < 2)
         {
 #ifdef PRINT_DEBUG
             printf("nCover < 2...aborting\n");
@@ -1480,28 +1480,28 @@ CglKnapsackCover::findLPMostViolatedMinCover(
 #ifdef PRINT_DEBUG   /* debug */
         printf("\
 Lp relax of most violated minimal cover: row %i has cover of size %i.\n",
-               row,nCover);
+               row, nCover);
         //double sumCover = 0.0;
-        for (i=0; i<cover.getNumElements(); i++)
+        for(i = 0; i < cover.getNumElements(); i++)
         {
             printf("index %i, element %g, xstar value % g \n",
-                   cover.getIndices()[i],cover.getElements()[i],
+                   cover.getIndices()[i], cover.getElements()[i],
                    xstar[cover.getIndices()[i]]);
             //sumCover += cover.getElements()[i];
         }
         printf("The b = %.18g, and the cover element sum is %.18g (%.18g)\n\n",
-               b,cover.sum(),coverSum);
+               b, cover.sum(), coverSum);
         printf("The b = %g, and the cover sum is %g\n\n", b, cover.sum());
 #endif
 
 #ifdef P0201
-        double ppsum=0.0;
-        for (i=0; i<nCover; i++)
+        double ppsum = 0.0;
+        for(i = 0; i < nCover; i++)
         {
             ppsum += p0201[krow.getIndices()[i]];
         }
 
-        if (ppsum > nCover-1)
+        if(ppsum > nCover - 1)
         {
             printf("\
 \nBad cover from lp relax of most violated cover..aborting\n");
@@ -1528,7 +1528,7 @@ CglKnapsackCover::findExactMostViolatedMinCover(
     int /*row*/,
     CoinPackedVector & krow,
     double b,
-    double *  xstar,
+    double*   xstar,
     CoinPackedVector & cover,
     CoinPackedVector & remainder) const
 {
@@ -1565,7 +1565,7 @@ CglKnapsackCover::findExactMostViolatedMinCover(
 
     // Redundant/useless adjusted rows should have been trapped in
     // transformation to canonical form of knapsack inequality
-    if (elementSum < b + epsilon_)
+    if(elementSum < b + epsilon_)
     {
 #ifdef PRINT_DEBUG
         printf("Redundant/useless adjusted row\n");
@@ -1576,18 +1576,18 @@ CglKnapsackCover::findExactMostViolatedMinCover(
     // Order krow in nonincreasing order of coefObj_j/a_j.
     // (1-xstar_1)/a_1 >= (1-xstar_2)/a_2 >= ... >= (1-xstar_n)/a_n
     // by defining this full-storage array "ratio" to be the external sort key.
-    double * ratio= new double[nCols];
-    memset(ratio, 0, (nCols*sizeof(double)));
+    double* ratio = new double[nCols];
+    memset(ratio, 0, (nCols * sizeof(double)));
 
     int i;
     {
-        const int * indices = krow.getIndices();
-        const double * elements = krow.getElements();
-        for (i=0; i<krow.getNumElements(); i++)
+        const int* indices = krow.getIndices();
+        const double* elements = krow.getElements();
+        for(i = 0; i < krow.getNumElements(); i++)
         {
-            if (fabs(elements[i])> epsilon_ )
+            if(fabs(elements[i]) > epsilon_)
             {
-                ratio[indices[i]]= (1.0-xstar[indices[i]]) / elements[i];
+                ratio[indices[i]] = (1.0 - xstar[indices[i]]) / elements[i];
             }
             else
             {
@@ -1602,11 +1602,11 @@ CglKnapsackCover::findExactMostViolatedMinCover(
 
 #ifdef CGL_DEBUG
     // sanity check
-    for ( i=1; i<krow.getNumElements(); i++ )
+    for(i = 1; i < krow.getNumElements(); i++)
     {
-        double ratioim1 =  ratio[krow.getIndices()[i-1]];
-        double ratioi= ratio[krow.getIndices()[i]];
-        assert( ratioim1 >= ratioi );
+        double ratioim1 =  ratio[krow.getIndices()[i - 1]];
+        double ratioi = ratio[krow.getIndices()[i]];
+        assert(ratioim1 >= ratioi);
     }
 #endif
 
@@ -1617,22 +1617,22 @@ CglKnapsackCover::findExactMostViolatedMinCover(
 
     double objConst = 0.0;
     double exactOptVal = -1.0;
-    int * exactOptSol = new int[krow.getNumElements()];
-    double * p = new double[krow.getNumElements()];
-    double * w = new double[krow.getNumElements()];
+    int* exactOptSol = new int[krow.getNumElements()];
+    double* p = new double[krow.getNumElements()];
+    double* w = new double[krow.getNumElements()];
     int kk;
-    for (kk=0; kk<krow.getNumElements(); kk++)
+    for(kk = 0; kk < krow.getNumElements(); kk++)
     {
-        p[kk]=1.0-xstar[krow.getIndices()[kk]];
-        w[kk]=krow.getElements()[kk];
-        objConst+=p[kk];
+        p[kk] = 1.0 - xstar[krow.getIndices()[kk]];
+        w[kk] = krow.getElements()[kk];
+        objConst += p[kk];
     }
 
     // vectors are indexed in ratioSortIndex order
-    exactSolveKnapsack(krow.getNumElements(), (elementSum-b-epsilon_), p, w,
+    exactSolveKnapsack(krow.getNumElements(), (elementSum - b - epsilon_), p, w,
                        exactOptVal, exactOptSol);
 
-    if(objConst-exactOptVal < 1)
+    if(objConst - exactOptVal < 1)
     {
         cover.reserve(krow.getNumElements());
         remainder.reserve(krow.getNumElements());
@@ -1640,16 +1640,16 @@ CglKnapsackCover::findExactMostViolatedMinCover(
         // Partition the krow into the cover and the remainder.
         // The cover is complement of solution.
         double coverElementSum = 0;
-        for(kk=0; kk<krow.getNumElements(); kk++)
+        for(kk = 0; kk < krow.getNumElements(); kk++)
         {
-            if(exactOptSol[kk]==0)
+            if(exactOptSol[kk] == 0)
             {
-                cover.insert(krow.getIndices()[kk],krow.getElements()[kk]);
+                cover.insert(krow.getIndices()[kk], krow.getElements()[kk]);
                 coverElementSum += krow.getElements()[kk];
             }
             else
             {
-                remainder.insert(krow.getIndices()[kk],krow.getElements()[kk]);
+                remainder.insert(krow.getIndices()[kk], krow.getElements()[kk]);
             }
         }
 
@@ -1660,28 +1660,28 @@ CglKnapsackCover::findExactMostViolatedMinCover(
         // by testing and potentially tossing smallest
         // elements
         double oneLessCoverElementSum =
-            coverElementSum - cover.getElements()[cover.getNumElements()-1];
-        while (oneLessCoverElementSum > b)
+            coverElementSum - cover.getElements()[cover.getNumElements() - 1];
+        while(oneLessCoverElementSum > b)
         {
             // move the excess cover member into the set of remainders
-            remainder.insert(cover.getIndices()[cover.getNumElements()-1],
-                             cover.getElements()[cover.getNumElements()-1]);
-            cover.truncate(cover.getNumElements()-1);
-            oneLessCoverElementSum -= cover.getElements()[cover.getNumElements()-1];
+            remainder.insert(cover.getIndices()[cover.getNumElements() - 1],
+                             cover.getElements()[cover.getNumElements() - 1]);
+            cover.truncate(cover.getNumElements() - 1);
+            oneLessCoverElementSum -= cover.getElements()[cover.getNumElements() - 1];
         }
 
 #ifdef PRINT_DEBUG
         printf("Exact Most Violated Cover: row %i has cover of size %i.\n",
-               row,cover.getNumElements());
+               row, cover.getNumElements());
         //double sumCover = 0.0;
-        for (i=0; i<cover.getNumElements(); i++)
+        for(i = 0; i < cover.getNumElements(); i++)
         {
             printf("index %i, element %g, xstar value % g \n",
                    cover.getIndices()[i], cover.getElements()[i],
                    xstar[cover.getIndices()[i]]);
             //sumCover += cover.getElements()[i];
         }
-        printf("The b = %g, and the cover sum is %g\n\n", b, cover.sum() );
+        printf("The b = %g, and the cover sum is %g\n\n", b, cover.sum());
 #endif
 
         // local clean up
@@ -1713,7 +1713,7 @@ CglKnapsackCover::findPseudoJohnAndEllisCover(
     int /*row*/,
     CoinPackedVector & krow,
     double & b,
-    double * xstar,
+    double* xstar,
     CoinPackedVector & cover,
     CoinPackedVector & remainder) const
 
@@ -1779,21 +1779,21 @@ CglKnapsackCover::findPseudoJohnAndEllisCover(
     // Note: continuous and integer vars have already been netted out
     // to derive the canonical knapsack form
     int i;
-    for (i=0; i<krow.getNumElements(); i++)
+    for(i = 0; i < krow.getNumElements(); i++)
     {
 
-        if (xstar[krow.getIndices()[i]] > onetol_)
+        if(xstar[krow.getIndices()[i]] > onetol_)
         {
-            atOne.insert(krow.getIndices()[i],krow.getElements()[i]);
+            atOne.insert(krow.getIndices()[i], krow.getElements()[i]);
             unsatRhs -= krow.getElements()[i];
         }
-        else if (xstar[krow.getIndices()[i]] >= epsilon_)
+        else if(xstar[krow.getIndices()[i]] >= epsilon_)
         {
-            unsat.insert(krow.getIndices()[i],krow.getElements()[i]) ;
+            unsat.insert(krow.getIndices()[i], krow.getElements()[i]) ;
         }
         else
         {
-            remainder.insert(krow.getIndices()[i],krow.getElements()[i]);
+            remainder.insert(krow.getIndices()[i], krow.getElements()[i]);
         }
     }
 
@@ -1803,21 +1803,21 @@ CglKnapsackCover::findPseudoJohnAndEllisCover(
 
 #ifdef CGL_DEBUG
     // sanity check
-    for (i=1; i<unsat.getNumElements(); i++)
+    for(i = 1; i < unsat.getNumElements(); i++)
     {
-        double xstarim1= xstar[unsat.getIndices()[i-1]];
-        double xstari= xstar[unsat.getIndices()[i]];
-        assert( xstarim1 >= xstari );
+        double xstarim1 = xstar[unsat.getIndices()[i - 1]];
+        double xstari = xstar[unsat.getIndices()[i]];
+        assert(xstarim1 >= xstari);
     }
 #endif
 
     // get the largest coefficient among the unsatisfied variables
-    double bigCoef= 0.0;
+    double bigCoef = 0.0;
     // double temp;
     int bigIndex = 0;
-    for (i=0; i<unsat.getNumElements(); i++)
+    for(i = 0; i < unsat.getNumElements(); i++)
     {
-        if (unsat.getElements()[i]>bigCoef)
+        if(unsat.getElements()[i] > bigCoef)
         {
             bigCoef = unsat.getElements()[i];
             bigIndex = i;
@@ -1825,26 +1825,26 @@ CglKnapsackCover::findPseudoJohnAndEllisCover(
     }
 
     // initialize
-    i=0;
+    i = 0;
     double margin = unsatRhs;
-    int gotCover=0;
+    int gotCover = 0;
     int j;
 
     // look in order through the unsatisfied vars which along with the
     // the max element defines a cover
-    while (i<unsat.getNumElements() && !gotCover)
+    while(i < unsat.getNumElements() && !gotCover)
     {
         margin -= unsat.getElements()[i];
 
         // get the biggest row coef downstream in the given order
-        if (i == bigIndex)
+        if(i == bigIndex)
         {
             bigCoef = 0.0;
             bigIndex = 0;
-            for (j=i+1; j<unsat.getNumElements(); j++)
+            for(j = i + 1; j < unsat.getNumElements(); j++)
             {
                 double temp = unsat.getElements()[j];
-                if (temp > bigCoef )
+                if(temp > bigCoef)
                 {
                     bigCoef = temp;
                     bigIndex = j;
@@ -1852,22 +1852,22 @@ CglKnapsackCover::findPseudoJohnAndEllisCover(
             }
         }
 
-        if (bigCoef > margin+epsilon2_) gotCover = 1;
+        if(bigCoef > margin + epsilon2_) gotCover = 1;
         i++;
     }
 
     // J&E approach; get first single one element that fills the margin
     if(gotCover)
     {
-        j=i;
-        if (j<unsat.getNumElements())  // need this "if" incase nUnsat=1
+        j = i;
+        if(j < unsat.getNumElements()) // need this "if" incase nUnsat=1
         {
-            while (unsat.getElements()[j]< margin)
+            while(unsat.getElements()[j] < margin)
             {
                 j++;
             }
             // switch members so that first nUnsat define the cover
-            unsat.swap(i,j);
+            unsat.swap(i, j);
             i++;
         }
 
@@ -1877,7 +1877,7 @@ CglKnapsackCover::findPseudoJohnAndEllisCover(
         double coverElementSum = 0.0;
         double coverXstarSum = 0.0;
         int k;
-        for (k=0; k<nCover; k++)
+        for(k = 0; k < nCover; k++)
         {
             coverElementSum += unsat.getElements()[k];
             coverXstarSum +=  xstar[unsat.getIndices()[k]];
@@ -1888,27 +1888,27 @@ CglKnapsackCover::findPseudoJohnAndEllisCover(
         // remainders. Variables atOne belong to the cover
 
         // Test if the detected cover is violated
-        if (coverXstarSum > (nCover-1) && coverElementSum > unsatRhs+epsilon2_)
+        if(coverXstarSum > (nCover - 1) && coverElementSum > unsatRhs + epsilon2_)
         {
-            for (i=nCover; i<unsat.getNumElements(); i++)
+            for(i = nCover; i < unsat.getNumElements(); i++)
             {
-                remainder.insert(unsat.getIndices()[i],unsat.getElements()[i]);
+                remainder.insert(unsat.getIndices()[i], unsat.getElements()[i]);
             }
             unsat.truncate(nCover);
             cover = unsat;
             cover.append(atOne);
 
-            for (k=nCover; k<cover.getNumElements(); k++)
+            for(k = nCover; k < cover.getNumElements(); k++)
             {
-                coverElementSum+=cover.getElements()[k];
-                coverXstarSum+=xstar[cover.getIndices()[k]];
+                coverElementSum += cover.getElements()[k];
+                coverXstarSum += xstar[cover.getIndices()[k]];
             }
 
 #ifdef CGL_DEBUG
             // Sanity check
             int size = cover.getNumElements() + remainder.getNumElements();
             int krowsize = krow.getNumElements();
-            assert( size == krowsize );
+            assert(size == krowsize);
 #endif
 
             // Sort cover in terms of knapsack row coefficients
@@ -1920,30 +1920,30 @@ CglKnapsackCover::findPseudoJohnAndEllisCover(
             // by testing and potentially tossing smallest
             // elements
             double oneLessCoverElementSum =
-                coverElementSum - cover.getElements()[cover.getNumElements()-1];
-            while (oneLessCoverElementSum > b)
+                coverElementSum - cover.getElements()[cover.getNumElements() - 1];
+            while(oneLessCoverElementSum > b)
             {
                 // move the excess cover member into the set of remainders
-                remainder.insert(cover.getIndices()[cover.getNumElements()-1],
-                                 cover.getElements()[cover.getNumElements()-1]);
-                cover.truncate(cover.getNumElements()-1);
-                oneLessCoverElementSum -= cover.getElements()[cover.getNumElements()-1];
+                remainder.insert(cover.getIndices()[cover.getNumElements() - 1],
+                                 cover.getElements()[cover.getNumElements() - 1]);
+                cover.truncate(cover.getNumElements() - 1);
+                oneLessCoverElementSum -= cover.getElements()[cover.getNumElements() - 1];
             }
 
 #ifdef PRINT_DEBUG
-            if (coverXstarSum > (nCover-1) && coverElementSum > b)
+            if(coverXstarSum > (nCover - 1) && coverElementSum > b)
             {
                 printf("John and Ellis: row %i has cover of size %i.\n",
-                       row,cover.getNumElements());
+                       row, cover.getNumElements());
                 //double sumCover = 0.0;
-                for (i=0; i<cover.getNumElements(); i++)
+                for(i = 0; i < cover.getNumElements(); i++)
                 {
                     printf("index %i, element %g, xstar value % g \n",
                            cover.getIndices()[i], cover.getElements()[i],
                            xstar[cover.getIndices()[i]]);
                 }
                 printf("The b = %.18g, and the cover element sum is %.18g (%.18g)\n\n",
-                       b,cover.sum(),coverElementSum);
+                       b, cover.sum(), coverElementSum);
             }
 #endif
 
@@ -1951,13 +1951,13 @@ CglKnapsackCover::findPseudoJohnAndEllisCover(
         // if minimal cover is not violated, turn gotCover off
         else
         {
-//    printf("heuristically found minimal cover is NOT violated by current lp solution");
+            //    printf("heuristically found minimal cover is NOT violated by current lp solution");
             gotCover = 0;
         }
     }
 
     // If no minimal cover was found, pack it in
-    if (!gotCover || cover.getNumElements() < 2)
+    if(!gotCover || cover.getNumElements() < 2)
     {
         return -1;
     }
@@ -1983,7 +1983,7 @@ CglKnapsackCover::findJohnAndEllisCover(
     int /*row*/,
     CoinPackedVector & krow,
     double & b,
-    double * xstar,
+    double* xstar,
     CoinPackedVector & fracCover,
     CoinPackedVector & atOne,
     CoinPackedVector & remainder) const
@@ -2047,21 +2047,21 @@ CglKnapsackCover::findJohnAndEllisCover(
     // binary values have already been netted out
     // in deriving the canonical knapsack form
     int i;
-    for (i=0; i<krow.getNumElements(); i++)
+    for(i = 0; i < krow.getNumElements(); i++)
     {
 
-        if (xstar[krow.getIndices()[i]] > onetol_)
+        if(xstar[krow.getIndices()[i]] > onetol_)
         {
-            atOne.insert(krow.getIndices()[i],krow.getElements()[i]);
+            atOne.insert(krow.getIndices()[i], krow.getElements()[i]);
             unsatRhs -= krow.getElements()[i];
         }
-        else if (xstar[krow.getIndices()[i]] >= epsilon_)
+        else if(xstar[krow.getIndices()[i]] >= epsilon_)
         {
-            unsat.insert(krow.getIndices()[i],krow.getElements()[i]) ;
+            unsat.insert(krow.getIndices()[i], krow.getElements()[i]) ;
         }
         else
         {
-            remainder.insert(krow.getIndices()[i],krow.getElements()[i]);
+            remainder.insert(krow.getIndices()[i], krow.getElements()[i]);
         }
     }
 
@@ -2071,21 +2071,21 @@ CglKnapsackCover::findJohnAndEllisCover(
 
 #ifdef CGL_DEBUG
     // sanity check
-    for (i=1; i<unsat.getNumElements(); i++)
+    for(i = 1; i < unsat.getNumElements(); i++)
     {
-        double xstarim1 = xstar[unsat.getIndices()[i-1]];
-        double xstari=  xstar[unsat.getIndices()[i]];
-        assert( xstarim1 >= xstari );
+        double xstarim1 = xstar[unsat.getIndices()[i - 1]];
+        double xstari =  xstar[unsat.getIndices()[i]];
+        assert(xstarim1 >= xstari);
     }
 #endif
 
     // get the largest coefficient among the unsatisfied variables
-    double bigCoef= 0.0;
+    double bigCoef = 0.0;
     // double temp;
     int bigIndex = 0;
-    for (i=0; i<unsat.getNumElements(); i++)
+    for(i = 0; i < unsat.getNumElements(); i++)
     {
-        if (unsat.getElements()[i]>bigCoef)
+        if(unsat.getElements()[i] > bigCoef)
         {
             bigCoef = unsat.getElements()[i];
             bigIndex = i;
@@ -2093,26 +2093,26 @@ CglKnapsackCover::findJohnAndEllisCover(
     }
 
     // initialize
-    i=0;
+    i = 0;
     double margin = unsatRhs;
-    int gotCover=0;
+    int gotCover = 0;
     int j;
 
     // look in order through the unsatisfied vars which along with the
     // the max element defines a cover
-    while (i<unsat.getNumElements() && !gotCover)
+    while(i < unsat.getNumElements() && !gotCover)
     {
         margin -= unsat.getElements()[i];
 
         // get the biggest row coef downstream in the given order
-        if (i == bigIndex)
+        if(i == bigIndex)
         {
             bigCoef = 0.0;
             bigIndex = 0;
-            for (j=i+1; j<unsat.getNumElements(); j++)
+            for(j = i + 1; j < unsat.getNumElements(); j++)
             {
                 double temp = unsat.getElements()[j];
-                if (temp > bigCoef )
+                if(temp > bigCoef)
                 {
                     bigCoef = temp;
                     bigIndex = j;
@@ -2120,22 +2120,22 @@ CglKnapsackCover::findJohnAndEllisCover(
             }
         }
 
-        if (bigCoef > margin+epsilon2_) gotCover = 1;
+        if(bigCoef > margin + epsilon2_) gotCover = 1;
         i++;
     }
 
     // J&E approach; get first single one element that fills the margin
     if(gotCover)
     {
-        j=i;
-        if (j<unsat.getNumElements())  // need this "if" incase nUnsat=1
+        j = i;
+        if(j < unsat.getNumElements()) // need this "if" incase nUnsat=1
         {
-            while (unsat.getElements()[j]< margin)
+            while(unsat.getElements()[j] < margin)
             {
                 j++;
             }
             // switch members so that first nUnsat define the cover
-            unsat.swap(i,j);
+            unsat.swap(i, j);
             i++;
         }
 
@@ -2144,7 +2144,7 @@ CglKnapsackCover::findJohnAndEllisCover(
         int nCover = i;
         double coverElementSum = 0.0;
         int k;
-        for (k=0; k<nCover; k++)
+        for(k = 0; k < nCover; k++)
         {
             coverElementSum += unsat.getElements()[k];
         }
@@ -2155,11 +2155,11 @@ CglKnapsackCover::findJohnAndEllisCover(
 
 
         // Test if the detected cover is violated
-        if (coverElementSum > unsatRhs+epsilon2_)
+        if(coverElementSum > unsatRhs + epsilon2_)
         {
-            for (i=nCover; i<unsat.getNumElements(); i++)
+            for(i = nCover; i < unsat.getNumElements(); i++)
             {
-                remainder.insert(unsat.getIndices()[i],unsat.getElements()[i]);
+                remainder.insert(unsat.getIndices()[i], unsat.getElements()[i]);
             }
             unsat.truncate(nCover);
             fracCover = unsat;
@@ -2170,7 +2170,7 @@ CglKnapsackCover::findJohnAndEllisCover(
             int size = (fracCover.getNumElements() + remainder.getNumElements() +
                         atOne.getNumElements());
             int krowsize =  krow.getNumElements();
-            assert( size == krowsize );
+            assert(size == krowsize);
 #endif
 
             // Sort cover in terms of knapsack row coefficients
@@ -2182,36 +2182,36 @@ CglKnapsackCover::findJohnAndEllisCover(
 #if 0
 
             double oneLessCoverElementSum =
-                coverElementSum-fracCover.getElements()[fracCover.getNumElements()-1];
-            while (oneLessCoverElementSum > b)
+                coverElementSum - fracCover.getElements()[fracCover.getNumElements() - 1];
+            while(oneLessCoverElementSum > b)
             {
                 // move the excess cover member into the set of remainders
-                remainder.insert(fracCover.getIndices()[fracCover.getNumElements()-1],
-                                 fracCover.getElements()[fracCover.getNumElements()-1]);
-                fracCover.truncate(fracCover.getNumElements()-1);
+                remainder.insert(fracCover.getIndices()[fracCover.getNumElements() - 1],
+                                 fracCover.getElements()[fracCover.getNumElements() - 1]);
+                fracCover.truncate(fracCover.getNumElements() - 1);
                 oneLessCoverElementSum -=
-                    fracCover.getElements()[fracCover.getNumElements()-1];
+                    fracCover.getElements()[fracCover.getNumElements() - 1];
             }
 #endif
 
 #ifdef PRINT_DEBUG
             printf("More Exactly John and Ellis:");
             printf(" row %i has -reduced--fractional- cover of size %i.\n",
-                   row,fracCover.getNumElements());
+                   row, fracCover.getNumElements());
             double sumFracCover = 0.0;
-            for (i=0; i<fracCover.getNumElements(); i++)
+            for(i = 0; i < fracCover.getNumElements(); i++)
             {
                 printf("index %i, element %g, xstar value % g \n",
-                       fracCover.getIndices()[i],fracCover.getElements()[i],
+                       fracCover.getIndices()[i], fracCover.getElements()[i],
                        xstar[fracCover.getIndices()[i]]);
                 sumFracCover += fracCover.getElements()[i];
             }
             double sumAtOne = 0.0;
-            printf("There are %i variables at one:\n",atOne.getNumElements());
-            for (i=0; i<atOne.getNumElements(); i++)
+            printf("There are %i variables at one:\n", atOne.getNumElements());
+            for(i = 0; i < atOne.getNumElements(); i++)
             {
                 printf("index %i, element %g, xstar value % g \n",
-                       atOne.getIndices()[i],atOne.getElements()[i],
+                       atOne.getIndices()[i], atOne.getElements()[i],
                        xstar[atOne.getIndices()[i]]);
                 sumAtOne += atOne.getElements()[i];
             }
@@ -2224,13 +2224,13 @@ CglKnapsackCover::findJohnAndEllisCover(
         // if minimal cover is not violated, turn gotCover off
         else
         {
-//    printf("heuristically found minimal cover is NOT violated by current lp solution");
+            //    printf("heuristically found minimal cover is NOT violated by current lp solution");
             gotCover = 0;
         }
     }
 
     // If no minimal cover was found, pack it in
-    if (!gotCover || fracCover.getNumElements() < 2)
+    if(!gotCover || fracCover.getNumElements() < 2)
     {
         return -1;
     }
@@ -2251,7 +2251,7 @@ CglKnapsackCover::findGreedyCover(
     int /*row*/,
     CoinPackedVector & krow,
     double & b,
-    double * xstar,
+    double* xstar,
     CoinPackedVector & cover,
     CoinPackedVector & remainder
 ) const
@@ -2261,7 +2261,7 @@ CglKnapsackCover::findGreedyCover(
 
 {
     int i;
-    int gotCover =0;
+    int gotCover = 0;
 
     cover.reserve(krow.getNumElements());
     remainder.reserve(krow.getNumElements());
@@ -2274,36 +2274,36 @@ CglKnapsackCover::findGreedyCover(
     double greedyElementSum = 0.0;
     double greedyXstarSum = 0.0;
 
-    for (i=0; i<krow.getNumElements(); i++)
+    for(i = 0; i < krow.getNumElements(); i++)
     {
         // if xstar fractional && no cover yet, consider it for the cover
-        if (xstar[krow.getIndices()[i]] >= epsilon_ &&
+        if(xstar[krow.getIndices()[i]] >= epsilon_ &&
                 xstar[krow.getIndices()[i]] <= onetol_ &&
                 !gotCover)
         {
             greedyElementSum += krow.getElements()[i];
             greedyXstarSum += xstar[krow.getIndices()[i]];
-            cover.insert(krow.getIndices()[i],krow.getElements()[i]);
-            if (greedyElementSum > b+epsilon2_)
+            cover.insert(krow.getIndices()[i], krow.getElements()[i]);
+            if(greedyElementSum > b + epsilon2_)
             {
                 gotCover = 1;
             }
         }
         else
         {
-            remainder.insert(krow.getIndices()[i],krow.getElements()[i]);
+            remainder.insert(krow.getIndices()[i], krow.getElements()[i]);
         }
     }
 
 #ifdef CGL_DEBUG
     // sanity check
-    int size =  remainder.getNumElements()+cover.getNumElements();
+    int size =  remainder.getNumElements() + cover.getNumElements();
     int krowsize = krow.getNumElements();
-    assert( size==krowsize );
+    assert(size == krowsize);
 #endif
 
     // if no violated minimal cover was found, pack it in
-    if ( (greedyXstarSum<=(cover.getNumElements()-1)+epsilon2_) ||
+    if((greedyXstarSum <= (cover.getNumElements() - 1) + epsilon2_) ||
             (!gotCover) ||
             (cover.getNumElements() < 2))
     {
@@ -2312,8 +2312,8 @@ CglKnapsackCover::findGreedyCover(
 
 #ifdef PRINT_DEBUG
     printf("Greedy cover: row %i has cover of size %i\n",
-           row,cover.getNumElements());
-    for (i=0; i<cover.getNumElements(); i++)
+           row, cover.getNumElements());
+    for(i = 0; i < cover.getNumElements(); i++)
     {
         printf("index %i, element %g, xstar value % g \n",
                cover.getIndices()[i], cover.getElements()[i],
@@ -2346,14 +2346,14 @@ CglKnapsackCover::findGreedyCover(
 //
 //-------------------------------------------------------------------
 #if 0 //def CLP_INVESTIGATE
-static int nTry=0;
-static int howMany[5]= {0,0,0,0,0};
+static int nTry = 0;
+static int howMany[5] = {0, 0, 0, 0, 0};
 #endif
 void
 CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
     int nCols,
-    double * xstar,
-    int * complement,
+    double* xstar,
+    int* complement,
     int /*row*/,
     int nRowElem,
     double & b,
@@ -2367,7 +2367,7 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
     CoinPackedVector & atOne,
     // and together with fracCover form minimal (?) cover.
     CoinPackedVector & remainder,
-    OsiCuts & cs ) const
+    OsiCuts & cs) const
 {
     CoinPackedVector cut;
 
@@ -2375,38 +2375,38 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
     cut.reserve(nRowElem);
 
     // the cut coefficent for the members of the cover is 1.0
-    cut.setConstant(fracCover.getNumElements(),fracCover.getIndices(),1.0);
+    cut.setConstant(fracCover.getNumElements(), fracCover.getIndices(), 1.0);
 
     // Preserve the cutRhs which is |C|-1, where |C| is the size of the
     // fracCover.
-    double cutRhs=fracCover.getNumElements()-1;
+    double cutRhs = fracCover.getNumElements() - 1;
 
     // local variables
     // unsatRhs is the rhs for the reduced krow
     double unsatRhs = 0, sumAtOne = 0;
     int i;
-    for (i=0; i<atOne.getNumElements(); i++)
+    for(i = 0; i < atOne.getNumElements(); i++)
     {
         sumAtOne += atOne.getElements()[i];
     }
-    unsatRhs=b-sumAtOne;
+    unsatRhs = b - sumAtOne;
 
 #ifdef PRINT_DEBUG
     int firstFrac = fracCover.getIndices()[0];
-    if (unsatRhs<=0.0&&fabs(xstar[firstFrac])>epsilon2_)
+    if(unsatRhs <= 0.0 && fabs(xstar[firstFrac]) > epsilon2_)
     {
-        printf("At one %d\n",atOne.getNumElements());
-        for (i=0; i<atOne.getNumElements(); i++)
+        printf("At one %d\n", atOne.getNumElements());
+        for(i = 0; i < atOne.getNumElements(); i++)
         {
             int iColumn = atOne.getIndices()[i];
-            printf("%d %g %g\n",atOne.getIndices()[i],atOne.getElements()[i],
+            printf("%d %g %g\n", atOne.getIndices()[i], atOne.getElements()[i],
                    xstar[iColumn]);
         }
-        printf("frac %d\n",fracCover.getNumElements());
-        for (i=0; i<fracCover.getNumElements(); i++)
+        printf("frac %d\n", fracCover.getNumElements());
+        for(i = 0; i < fracCover.getNumElements(); i++)
         {
             int iColumn = fracCover.getIndices()[i];
-            printf("%d %g %g\n",fracCover.getIndices()[i],fracCover.getElements()[i],
+            printf("%d %g %g\n", fracCover.getIndices()[i], fracCover.getElements()[i],
                    xstar[iColumn]);
         }
     }
@@ -2415,7 +2415,7 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
     //assert ( unsatRhs > 0 );
 
     // If there is something to lift, then calculate the lifted coefficients
-    if (unsatRhs>0.0&&(remainder.getNumElements()+atOne.getNumElements())> 0)
+    if(unsatRhs > 0.0 && (remainder.getNumElements() + atOne.getNumElements()) > 0)
     {
 
         // What order to lift?
@@ -2428,71 +2428,71 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
         remainder.sort(dso1);
 
 #if GUBCOVER==2
-        int nClique=0;
-        double * weightClique2 = NULL;
-        int * indices = NULL;
-        int * starts = NULL;
-        if (numberCliques_)
+        int nClique = 0;
+        double* weightClique2 = NULL;
+        int* indices = NULL;
+        int* starts = NULL;
+        if(numberCliques_)
         {
             int nInCover = fracCover.getNumElements();
             int nRest = remainder.getNumElements();
-            const CoinPackedMatrix * matrixByRow = solver_->getMatrixByRow();
+            const CoinPackedMatrix* matrixByRow = solver_->getMatrixByRow();
 #ifdef PRINT_DEBUG
-            const double * elementByRow = matrixByRow->getElements();
+            const double* elementByRow = matrixByRow->getElements();
 #endif
-            const int * column = matrixByRow->getIndices();
-            const CoinBigIndex * rowStart = matrixByRow->getVectorStarts();
-            const int * rowLength = matrixByRow->getVectorLengths();
+            const int* column = matrixByRow->getIndices();
+            const CoinBigIndex* rowStart = matrixByRow->getVectorStarts();
+            const int* rowLength = matrixByRow->getVectorLengths();
 #ifdef PRINT_DEBUG
-            const double * rowUpper = solver_->getRowUpper();
-            const double * rowLower = solver_->getRowLower();
+            const double* rowUpper = solver_->getRowUpper();
+            const double* rowLower = solver_->getRowLower();
 #endif
             int numberColumns = solver_->getNumCols();
-            double * els = elements_;
-            double * els2 = els+numberColumns;
-            double * weightClique = els2+numberColumns;
-            weightClique2 = weightClique+numberCliques_;
-            double * temp = weightClique2+2*numberColumns;
-            int * count = reinterpret_cast<int *>(temp);
-            indices = reinterpret_cast<int *> (temp+numberCliques_);
-            int * whichClique = indices+numberColumns;
-            for (i=rowStart[whichRow_]; i<rowStart[whichRow_]+rowLength[whichRow_]; i++)
+            double* els = elements_;
+            double* els2 = els + numberColumns;
+            double* weightClique = els2 + numberColumns;
+            weightClique2 = weightClique + numberCliques_;
+            double* temp = weightClique2 + 2 * numberColumns;
+            int* count = reinterpret_cast<int*>(temp);
+            indices = reinterpret_cast<int*>(temp + numberCliques_);
+            int* whichClique = indices + numberColumns;
+            for(i = rowStart[whichRow_]; i < rowStart[whichRow_] + rowLength[whichRow_]; i++)
             {
                 int iColumn = column[i];
-                indices[iColumn]=-1;
+                indices[iColumn] = -1;
 #ifdef PRINT_DEBUG
-                els2[iColumn]=elementByRow[i];
+                els2[iColumn] = elementByRow[i];
 #endif
             }
-            const int * ind;
+            const int* ind;
             ind = fracCover.getIndices();
 #ifdef PRINT_DEBUG
-            const double * elsIn;
+            const double* elsIn;
             elsIn = fracCover.getElements();
 #endif
             // Deal with complemented and cliques later
-            for (i=0; i<nInCover; i++)
+            for(i = 0; i < nInCover; i++)
             {
                 int iColumn = ind[i];
 #ifdef PRINT_DEBUG
-                els[iColumn]=elsIn[i];
+                els[iColumn] = elsIn[i];
 #endif
-                if (oneFixStart_[iColumn]>=0&&!complement_[iColumn])
+                if(oneFixStart_[iColumn] >= 0 && !complement_[iColumn])
                 {
                     //printf("Cover column %d, xstar %g ",iColumn,xstar[iColumn]);
-                    for (int j=oneFixStart_[iColumn]; j<zeroFixStart_[iColumn]; j++)
+                    for(int j = oneFixStart_[iColumn]; j < zeroFixStart_[iColumn]; j++)
                     {
                         int iClique = whichClique_[j];
                         //printf("(clique %d %g => ",iClique,weightClique[iClique]);
-                        double value=weightClique[iClique];
-                        if (!value)
+                        double value = weightClique[iClique];
+                        if(!value)
                         {
-                            whichClique[nClique++] =iClique;
-                            count[iClique]=0;
+                            whichClique[nClique++] = iClique;
+                            count[iClique] = 0;
                         }
                         count[iClique]++;
                         value += 3.0;
-                        weightClique[iClique]=value;
+                        weightClique[iClique] = value;
                         //printf("%g) ",weightClique[iClique]);
                     }
                     //printf("\n");
@@ -2502,32 +2502,32 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
 #ifdef PRINT_DEBUG
             elsIn = remainder.getElements();
 #endif
-            for (i=0; i<nRest; i++)
+            for(i = 0; i < nRest; i++)
             {
                 int iColumn = ind[i];
 #ifdef PRINT_DEBUG
-                els[iColumn]=elsIn[i];
+                els[iColumn] = elsIn[i];
 #endif
                 double value = xstar[iColumn];
-                if (fabs(value-floor(value+0.5))>1.0e-5)
-                    value=3.0;
+                if(fabs(value - floor(value + 0.5)) > 1.0e-5)
+                    value = 3.0;
                 else
-                    value=0.99;
-                if (oneFixStart_[iColumn]>=0&&!complement_[iColumn])
+                    value = 0.99;
+                if(oneFixStart_[iColumn] >= 0 && !complement_[iColumn])
                 {
                     //printf("Column %d, xstar %g ",iColumn,xstar[iColumn]);
-                    for (int j=oneFixStart_[iColumn]; j<zeroFixStart_[iColumn]; j++)
+                    for(int j = oneFixStart_[iColumn]; j < zeroFixStart_[iColumn]; j++)
                     {
                         int iClique = whichClique_[j];
-                        double oldValue=weightClique[iClique];
-                        if (!oldValue)
+                        double oldValue = weightClique[iClique];
+                        if(!oldValue)
                         {
-                            whichClique[nClique++] =iClique;
-                            count[iClique]=0;
+                            whichClique[nClique++] = iClique;
+                            count[iClique] = 0;
                         }
                         count[iClique]++;
                         value += oldValue;
-                        weightClique[iClique]=value;
+                        weightClique[iClique] = value;
                         //printf("(clique %d %g => ",iClique,weightClique[iClique]);
                         //printf("%g) ",weightClique[iClique]);
                     }
@@ -2535,169 +2535,169 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
                 }
             }
             // But only look at cliques with more than one entry
-            int nnClique=0;
-            for (i=0; i<nClique; i++)
+            int nnClique = 0;
+            for(i = 0; i < nClique; i++)
             {
-                int iClique=whichClique[i];
-                if (count[iClique]>1)
-                    whichClique[nnClique++]=iClique;
+                int iClique = whichClique[i];
+                if(count[iClique] > 1)
+                    whichClique[nnClique++] = iClique;
                 else
-                    weightClique[iClique]=0.0;
+                    weightClique[iClique] = 0.0;
             }
-            nClique=nnClique;
+            nClique = nnClique;
             ind = fracCover.getIndices();
-            for (i=0; i<nInCover; i++)
+            for(i = 0; i < nInCover; i++)
             {
                 int iColumn = ind[i];
-                if (oneFixStart_[iColumn]>=0&&!complement_[iColumn])
+                if(oneFixStart_[iColumn] >= 0 && !complement_[iColumn])
                 {
-                    double value=3.1;
-                    int jClique=-1;
-                    for (int j=oneFixStart_[iColumn]; j<zeroFixStart_[iColumn]; j++)
+                    double value = 3.1;
+                    int jClique = -1;
+                    for(int j = oneFixStart_[iColumn]; j < zeroFixStart_[iColumn]; j++)
                     {
                         int iClique = whichClique_[j];
-                        if(weightClique[iClique]>value)
+                        if(weightClique[iClique] > value)
                         {
-                            jClique=iClique;
-                            value=weightClique[iClique];
+                            jClique = iClique;
+                            value = weightClique[iClique];
                         }
                     }
-                    if (jClique>=0)
+                    if(jClique >= 0)
                     {
-                        indices[iColumn]=jClique;
-                        count[jClique]=-1;
+                        indices[iColumn] = jClique;
+                        count[jClique] = -1;
                     }
                     else
                     {
-                        indices[iColumn]=-2;
+                        indices[iColumn] = -2;
                     }
                 }
             }
             ind = remainder.getIndices();
-            for (i=0; i<nRest; i++)
+            for(i = 0; i < nRest; i++)
             {
                 int iColumn = ind[i];
-                if (oneFixStart_[iColumn]>=0&&!complement_[iColumn])
+                if(oneFixStart_[iColumn] >= 0 && !complement_[iColumn])
                 {
-                    double value=1.1;
-                    int jClique=-1;
-                    for (int j=oneFixStart_[iColumn]; j<zeroFixStart_[iColumn]; j++)
+                    double value = 1.1;
+                    int jClique = -1;
+                    for(int j = oneFixStart_[iColumn]; j < zeroFixStart_[iColumn]; j++)
                     {
                         int iClique = whichClique_[j];
-                        if(weightClique[iClique]>value)
+                        if(weightClique[iClique] > value)
                         {
-                            jClique=iClique;
-                            value=weightClique[iClique];
+                            jClique = iClique;
+                            value = weightClique[iClique];
                         }
                     }
-                    if (jClique>=0)
+                    if(jClique >= 0)
                     {
-                        indices[iColumn]=jClique;
-                        count[jClique]=-1;
+                        indices[iColumn] = jClique;
+                        count[jClique] = -1;
                     }
                     else
                     {
-                        indices[iColumn]=-2;
+                        indices[iColumn] = -2;
                     }
                 }
             }
 #ifdef PRINT_DEBUG
             bool interesting = false;
 #endif
-            nnClique=0;
-            for (i=0; i<nClique; i++)
+            nnClique = 0;
+            for(i = 0; i < nClique; i++)
             {
-                int iClique=whichClique[i];
-                if (count[iClique]<0)
+                int iClique = whichClique[i];
+                if(count[iClique] < 0)
                 {
 #ifdef PRINT_DEBUG
-                    if (!interesting)
+                    if(!interesting)
                     {
-                        interesting=true;
+                        interesting = true;
                         printf("%d cover, %d remainder - b = %g (rhs %g,%g)",
-                               nInCover,nRest,b,rowLower[whichRow_],
+                               nInCover, nRest, b, rowLower[whichRow_],
                                rowUpper[whichRow_]);
-                        for (int k=rowStart[whichRow_]; k<rowStart[whichRow_]+rowLength[whichRow_]; k++)
+                        for(int k = rowStart[whichRow_]; k < rowStart[whichRow_] + rowLength[whichRow_]; k++)
                         {
                             int iColumn = column[k];
-                            printf(" (%d,%g) ",iColumn,elementByRow[k]);
+                            printf(" (%d,%g) ", iColumn, elementByRow[k]);
                         }
                         printf("\n");
                     }
-                    printf("Clique %d weight %g - ",iClique,weightClique[iClique]);
-                    for (int j=0; j<numberColumns; j++)
+                    printf("Clique %d weight %g - ", iClique, weightClique[iClique]);
+                    for(int j = 0; j < numberColumns; j++)
                     {
-                        if (indices[j]==iClique)
+                        if(indices[j] == iClique)
                         {
-                            printf("%d,%g (real el %g),%g) ",j,els[j],els2[j],xstar[j]);
+                            printf("%d,%g (real el %g),%g) ", j, els[j], els2[j], xstar[j]);
                         }
                     }
                     printf("\n");
 #endif
-                    whichClique[nnClique++]=iClique;
+                    whichClique[nnClique++] = iClique;
                 }
-                weightClique[iClique]=0.0;
+                weightClique[iClique] = 0.0;
             }
-            nClique=nnClique;
-            if (nClique)
+            nClique = nnClique;
+            if(nClique)
             {
                 // Space for columns in each clique
                 starts = whichClique + numberCliques_;
-                int * current = starts + nClique+1;
-                int * nNow = current+nClique+1;
-                int * stack = nNow+nClique+1;
-                int * which = stack+nClique+3;
-                CoinZeroN(current,3*nClique+5);
-                nnClique=0;
-                for (i=0; i<numberColumns; i++)
+                int* current = starts + nClique + 1;
+                int* nNow = current + nClique + 1;
+                int* stack = nNow + nClique + 1;
+                int* which = stack + nClique + 3;
+                CoinZeroN(current, 3 * nClique + 5);
+                nnClique = 0;
+                for(i = 0; i < numberColumns; i++)
                 {
-                    int iClique=indices[i];
-                    if (iClique>=0)
+                    int iClique = indices[i];
+                    if(iClique >= 0)
                     {
                         int back = count[iClique];
-                        if (back<0)
+                        if(back < 0)
                         {
                             // first
-                            back=nnClique;
-                            count[iClique]=nnClique;
-                            whichClique[nnClique++]=iClique;
-                            current[iClique]=0;
+                            back = nnClique;
+                            count[iClique] = nnClique;
+                            whichClique[nnClique++] = iClique;
+                            current[iClique] = 0;
                         }
                         current[iClique]++;
                         weightClique[back] -= xstar[i];
                     }
                 }
-                assert (nnClique==nClique);
-                CoinSort_2(weightClique,weightClique+nClique,whichClique);
-                int n=0;
-                for (i=0; i<nClique; i++)
+                assert(nnClique == nClique);
+                CoinSort_2(weightClique, weightClique + nClique, whichClique);
+                int n = 0;
+                for(i = 0; i < nClique; i++)
                 {
-                    starts[i]=n;
+                    starts[i] = n;
                     int iClique = whichClique[i];
-                    count[iClique]=i;
+                    count[iClique] = i;
                     n += current[iClique];
                 }
-                starts[nClique]=n;
-                for (i=0; i<nClique; i++)
+                starts[nClique] = n;
+                for(i = 0; i < nClique; i++)
                 {
-                    current[i]=starts[i]; // make start
-                    nNow[i]=0;
+                    current[i] = starts[i]; // make start
+                    nNow[i] = 0;
                 }
-                starts[nClique]=n;
-                which[n]=-1;
+                starts[nClique] = n;
+                which[n] = -1;
                 // Now fracCover in
                 ind = fracCover.getIndices();
-                for (i=0; i<nInCover; i++)
+                for(i = 0; i < nInCover; i++)
                 {
                     int iColumn = ind[i];
-                    int iClique=indices[iColumn];
-                    if (iClique>=0)
+                    int iClique = indices[iColumn];
+                    if(iClique >= 0)
                     {
                         int back = count[iClique];
                         int put = current[back];
                         current[back]++;
-                        which[put]=iColumn;
-                        indices[iColumn]=back;
+                        which[put] = iColumn;
+                        indices[iColumn] = back;
                         nNow[back]++; // already in
                     }
                 }
@@ -2705,29 +2705,29 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
                 // and add atOnes in middle
                 // *** NEED to sort so best gub first
                 ind = remainder.getIndices();
-                for (i=0; i<nRest; i++)
+                for(i = 0; i < nRest; i++)
                 {
                     int iColumn = ind[i];
-                    int iClique=indices[iColumn];
-                    if (iClique>=0)
+                    int iClique = indices[iColumn];
+                    if(iClique >= 0)
                     {
                         int back = count[iClique];
                         int put = current[back];
                         current[back]++;
-                        which[put]=iColumn;
-                        indices[iColumn]=back;
+                        which[put] = iColumn;
+                        indices[iColumn] = back;
                     }
                 }
 #ifdef CLP_INVESTIGATE
                 nTry++;
-                int k=CoinMin(nClique,4);
+                int k = CoinMin(nClique, 4);
                 howMany[k]++;
-                if ((nTry%100)==0)
+                if((nTry % 100) == 0)
                 {
-                    printf("TRY %d ",nTry);
-                    for (i=1; i<5; i++)
-                        if (howMany[i])
-                            printf("(%d cliques -> %d) ",i,howMany[i]);
+                    printf("TRY %d ", nTry);
+                    for(i = 1; i < 5; i++)
+                        if(howMany[i])
+                            printf("(%d cliques -> %d) ", i, howMany[i]);
                     printf("\n");
                 }
 #endif
@@ -2741,33 +2741,33 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
         CoinPackedVector a(fracCover);
         CoinPackedVector alpha;
         int i;
-        for (i=0; i<fracCover.getNumElements(); i++)
+        for(i = 0; i < fracCover.getNumElements(); i++)
         {
-            alpha.insert(fracCover.getIndices()[i],1.0);
+            alpha.insert(fracCover.getIndices()[i], 1.0);
         }
         // needed as an argument for exactSolveKnapsack
-        int * x = new int[nRowElem];
-        double psi_j=0.0;
+        int* x = new int[nRowElem];
+        double psi_j = 0.0;
 
         // Order alpha and a in nonincreasing order of alpha_j/a_j.
         // alpha_1/a_1 >= alpha_2/a_2 >= ... >= alpha_n/a_n
         // by defining this full-storage array "ratio" to be the external sort key.
         // right now external sort key must be full-storage.
 
-        double * ratio= new double[nCols];
-        memset(ratio, 0, (nCols*sizeof(double)));
+        double* ratio = new double[nCols];
+        memset(ratio, 0, (nCols * sizeof(double)));
 
 #ifdef CGL_DEBUG
         double alphasize = alpha.getNumElements();
         double asize = a.getNumElements();
-        assert( alphasize == asize );
+        assert(alphasize == asize);
 #endif
 
-        for (i=0; i<a.getNumElements(); i++)
+        for(i = 0; i < a.getNumElements(); i++)
         {
-            if (fabs(a.getElements()[i])> epsilon_ )
+            if(fabs(a.getElements()[i]) > epsilon_)
             {
-                ratio[a.getIndices()[i]]=alpha.getElements()[i]/a.getElements()[i];
+                ratio[a.getIndices()[i]] = alpha.getElements()[i] / a.getElements()[i];
             }
             else
             {
@@ -2781,24 +2781,24 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
 
 #ifdef CGL_DEBUG
         // sanity check
-        for ( i=1; i<a.getNumElements(); i++ )
+        for(i = 1; i < a.getNumElements(); i++)
         {
-            int alphai=  alpha.getIndices()[i];
+            int alphai =  alpha.getIndices()[i];
             int ai = a.getIndices()[i];
-            assert( alphai == ai);
+            assert(alphai == ai);
         }
 #endif
 
 #if GUBCOVER==2
-        int * current = starts + nClique+1;
-        int * nNow = current+nClique+1;
-        int * stack = nNow+nClique+1;
-        int * which = stack+nClique+3;
+        int* current = starts + nClique + 1;
+        int* nNow = current + nClique + 1;
+        int* stack = nNow + nClique + 1;
+        int* which = stack + nClique + 3;
 #endif
         // Loop through the remainder variables to be lifted "up", and lift.
         int j;
-        int firstZero=remainder.getNumElements();
-        for (j=0; j<firstZero; j++)
+        int firstZero = remainder.getNumElements();
+        for(j = 0; j < firstZero; j++)
         {
             int iColumn = remainder.getIndices()[j];
             double element = remainder.getElements()[j];
@@ -2820,15 +2820,15 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
 #if GUBCOVER==2
             int inClique = (nClique) ? indices[iColumn] : -3;
 #endif
-            if (unsatRhs - element >= epsilon_)
+            if(unsatRhs - element >= epsilon_)
             {
 #if GUBCOVER==2
-                if (!nClique)
+                if(!nClique)
                 {
 #endif
                     exactSolveKnapsack(alpha.getNumElements(),
-                                       unsatRhs-element,
-                                       alpha.getElements(),a.getElements(),psi_j,x);
+                                       unsatRhs - element,
+                                       alpha.getElements(), a.getElements(), psi_j, x);
 #if GUBCOVER==2
                 }
                 else
@@ -2838,104 +2838,104 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
                     // C) take out news in exactKnapsack
                     // weightClique2 is 2*ncolumns
                     // indices
-                    for (i=0; i<nClique; i++)
+                    for(i = 0; i < nClique; i++)
                     {
-                        stack[i]=nNow[i]-1;
-                        int k =starts[i];
-                        current[i]=which[k+stack[i]];
+                        stack[i] = nNow[i] - 1;
+                        int k = starts[i];
+                        current[i] = which[k + stack[i]];
                     }
-                    stack[nClique]=-1;
-                    current[nClique]=-1;
+                    stack[nClique] = -1;
+                    current[nClique] = -1;
                     double oldPsi_j;
                     exactSolveKnapsack(alpha.getNumElements(),
-                                       unsatRhs-element,
-                                       alpha.getElements(),a.getElements(),oldPsi_j,x);
+                                       unsatRhs - element,
+                                       alpha.getElements(), a.getElements(), oldPsi_j, x);
                     //#define FULL_GUB_PRINT
 #ifdef FULL_GUB_PRINT
-                    printf("Ordinary psi %g\n",oldPsi_j);
+                    printf("Ordinary psi %g\n", oldPsi_j);
 #endif
-                    double biggestPsi_j=0.0;
+                    double biggestPsi_j = 0.0;
                     double nowPsi_j;
-                    int n1=alpha.getNumElements();
-                    int * indIn = alpha.getIndices();
-                    double * pIn = alpha.getElements();
-                    double * wIn = a.getElements();
-                    double * p = weightClique2;
-                    double * w = p+n1;
-                    int kStack=nClique-1;
+                    int n1 = alpha.getNumElements();
+                    int* indIn = alpha.getIndices();
+                    double* pIn = alpha.getElements();
+                    double* wIn = a.getElements();
+                    double* p = weightClique2;
+                    double* w = p + n1;
+                    int kStack = nClique - 1;
 #ifdef FULL_GUB_PRINT
                     {
-                        printf ("Looking at column %d\n",iColumn);
-                        for (int j=0; j<nClique; j++)
+                        printf("Looking at column %d\n", iColumn);
+                        for(int j = 0; j < nClique; j++)
                         {
-                            printf("Clique %d ",j);
-                            for (int jj=starts[j]; jj<starts[j+1]; jj++)
-                                printf("%d ",which[jj]);
+                            printf("Clique %d ", j);
+                            for(int jj = starts[j]; jj < starts[j + 1]; jj++)
+                                printf("%d ", which[jj]);
                             printf("\n");
                         }
                     }
-                    if (iColumn==17)
+                    if(iColumn == 17)
                     {
-                        printf("col %d\n",iColumn);
+                        printf("col %d\n", iColumn);
                     }
 #endif
-                    while (kStack>=0)
+                    while(kStack >= 0)
                     {
                         // Do current
-                        for (i=0; i<nClique; i++)
+                        for(i = 0; i < nClique; i++)
                         {
-                            int k =starts[i];
-                            int kk=stack[i];
-                            if (kk>=0)
+                            int k = starts[i];
+                            int kk = stack[i];
+                            if(kk >= 0)
                             {
-                                current[i]=which[k+kk];
+                                current[i] = which[k + kk];
                             }
                             else
                             {
-                                current[i]=-3;
+                                current[i] = -3;
                             }
                         }
-                        double offsetObj=0.0;
-                        double testRhs=unsatRhs-element;
-                        int n=0;
-                        for (i=0; i<n1; i++)
+                        double offsetObj = 0.0;
+                        double testRhs = unsatRhs - element;
+                        int n = 0;
+                        for(i = 0; i < n1; i++)
                         {
                             int jColumn = indIn[i];
                             int jClique = indices[jColumn];
-                            if (jClique<0)
+                            if(jClique < 0)
                             {
                                 // not in gub - take
-                                p[n]=pIn[i];
-                                w[n++]=wIn[i];
+                                p[n] = pIn[i];
+                                w[n++] = wIn[i];
                             }
-                            else if (jColumn==current[jClique]&&jClique!=inClique)
+                            else if(jColumn == current[jClique] && jClique != inClique)
                             {
                                 // forced in unless will go negative
                                 offsetObj += pIn[i];
                                 testRhs -= wIn[i];
                             }
                         }
-                        if (testRhs >= epsilon_)
+                        if(testRhs >= epsilon_)
                         {
-                            exactSolveKnapsack(n,testRhs,p,w,nowPsi_j,x);
+                            exactSolveKnapsack(n, testRhs, p, w, nowPsi_j, x);
                             nowPsi_j += offsetObj;
 #ifdef FULL_GUB_PRINT
-                            printf("gub psi %g\n",nowPsi_j);
+                            printf("gub psi %g\n", nowPsi_j);
 #endif
-                            assert (nowPsi_j>=0.0);
-                            if (nowPsi_j>biggestPsi_j)
-                                biggestPsi_j=nowPsi_j;
+                            assert(nowPsi_j >= 0.0);
+                            if(nowPsi_j > biggestPsi_j)
+                                biggestPsi_j = nowPsi_j;
                         }
-                        else if (testRhs >= -epsilon_)
+                        else if(testRhs >= -epsilon_)
                         {
                             // as is
                             nowPsi_j = offsetObj;
 #ifdef FULL_GUB_PRINT
-                            printf("gub psi %g (no knapsack computation)\n",nowPsi_j);
+                            printf("gub psi %g (no knapsack computation)\n", nowPsi_j);
 #endif
-                            assert (nowPsi_j>=0.0);
-                            if (nowPsi_j>biggestPsi_j)
-                                biggestPsi_j=nowPsi_j;
+                            assert(nowPsi_j >= 0.0);
+                            if(nowPsi_j > biggestPsi_j)
+                                biggestPsi_j = nowPsi_j;
                         }
                         else
                         {
@@ -2944,29 +2944,29 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
 #endif
                         }
                         stack[kStack]--;
-                        while (stack[kStack]<0)
+                        while(stack[kStack] < 0)
                         {
-                            stack[kStack]=nNow[kStack]-1;
+                            stack[kStack] = nNow[kStack] - 1;
                             kStack--;
-                            if (kStack>=0)
+                            if(kStack >= 0)
                             {
                                 stack[kStack]--;
-                                if (stack[kStack]>=0)
+                                if(stack[kStack] >= 0)
                                 {
-                                    kStack=nClique-1;
+                                    kStack = nClique - 1;
                                     break;
                                 }
                             }
                         }
                     }
 #ifdef FULL_GUB_PRINT
-                    if (fabs(biggestPsi_j-oldPsi_j)>1.0e-7)
+                    if(fabs(biggestPsi_j - oldPsi_j) > 1.0e-7)
                     {
-                        printf("gub ** Ordinary psi %g, gub %g\n",oldPsi_j,
+                        printf("gub ** Ordinary psi %g, gub %g\n", oldPsi_j,
                                biggestPsi_j);
                     }
 #endif
-                    assert (biggestPsi_j<oldPsi_j+1.0e-6);
+                    assert(biggestPsi_j < oldPsi_j + 1.0e-6);
                     psi_j = biggestPsi_j;
                 }
 #endif
@@ -2974,55 +2974,55 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
             else
             {
                 // Take as zero!
-                psi_j=cutRhs; //0.0;
+                psi_j = cutRhs; //0.0;
             }
             // if the lifted coefficient is non-zero
             // (i.e. psi_j != cutRhs), add it to the cut
-            if (cutRhs-psi_j>epsilon_)
+            if(cutRhs - psi_j > epsilon_)
             {
-                cut.insert(iColumn,cutRhs-psi_j);
+                cut.insert(iColumn, cutRhs - psi_j);
 
                 // assert the new coefficient is nonegative?
-                alpha.insert(iColumn,cutRhs-psi_j);
-                a.insert(iColumn,element);
+                alpha.insert(iColumn, cutRhs - psi_j);
+                a.insert(iColumn, element);
 
 
-                ratio[iColumn] = (cutRhs-psi_j)/element;
+                ratio[iColumn] = (cutRhs - psi_j) / element;
                 CoinDecrSolutionOrdered dso(ratio);
                 a.sort(dso);
                 alpha.sort(dso);
             }
 #if GUBCOVER==2
-            if (inClique>=0)
+            if(inClique >= 0)
             {
-                int kStart =starts[inClique];
-                int kEnd =starts[inClique+1];
-                int j=nNow[inClique];
+                int kStart = starts[inClique];
+                int kEnd = starts[inClique + 1];
+                int j = nNow[inClique];
                 j += kStart;
-                assert (kStart<kEnd);
-                assert (iColumn==which[j]);
-                if (cutRhs-psi_j>epsilon_)
+                assert(kStart < kEnd);
+                assert(iColumn == which[j]);
+                if(cutRhs - psi_j > epsilon_)
                 {
                     nNow[inClique]++;
                 }
                 else
                 {
                     // shuffle up (some may have already gone)
-                    for (int k=j+1; k<kEnd; k++)
+                    for(int k = j + 1; k < kEnd; k++)
                     {
-                        which[k-1]=which[k];
-                        if (which[k-1]==-1)
+                        which[k - 1] = which[k];
+                        if(which[k - 1] == -1)
                             break;
                     }
                     // set to -1 at end
-                    which[kEnd-1]=-1;
+                    which[kEnd - 1] = -1;
                 }
             }
 #endif
         }
 
         // Loop throught the variables atOne and lift "down"
-        for (j=0; j<atOne.getNumElements(); j++)
+        for(j = 0; j < atOne.getNumElements(); j++)
         {
             // calculate the lifted coefficient of x_j = psi_j-cutRhs (now cutRhs
             // gets updated) where
@@ -3033,26 +3033,26 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
             // Note: For exact solve, must be sorted in
             // alpha_1/a_1>=alpha_2/a_2>=...>=alpha_n/a_n order
             exactSolveKnapsack(alpha.getNumElements(),
-                               unsatRhs+atOne.getElements()[j],
-                               alpha.getElements(),a.getElements(),psi_j,x);
-            alpha.insert(atOne.getIndices()[j],psi_j-cutRhs);
-            a.insert(atOne.getIndices()[j],atOne.getElements()[j]);
+                               unsatRhs + atOne.getElements()[j],
+                               alpha.getElements(), a.getElements(), psi_j, x);
+            alpha.insert(atOne.getIndices()[j], psi_j - cutRhs);
+            a.insert(atOne.getIndices()[j], atOne.getElements()[j]);
             // if the lifted coefficient is non-zero (i.e. psi_j != cutRhs), add it
             // to the cut
-            if (fabs(psi_j-cutRhs)>epsilon_)
-                cut.insert(atOne.getIndices()[j],psi_j-cutRhs);
+            if(fabs(psi_j - cutRhs) > epsilon_)
+                cut.insert(atOne.getIndices()[j], psi_j - cutRhs);
 
 #ifdef CGL_DEBUG
-            assert ( fabs(atOne.getElements()[j])> epsilon_ );
+            assert(fabs(atOne.getElements()[j]) > epsilon_);
 #else
-            if ( fabs(atOne.getElements()[j])<= epsilon_ )
+            if(fabs(atOne.getElements()[j]) <= epsilon_)
             {
                 // exit gracefully
                 cutRhs = COIN_DBL_MAX;
                 break;
             }
 #endif
-            ratio[atOne.getIndices()[j]]=(psi_j-cutRhs)/atOne.getElements()[j];
+            ratio[atOne.getIndices()[j]] = (psi_j - cutRhs) / atOne.getElements()[j];
 
             // update cutRhs and unsatRhs
             cutRhs = psi_j ;
@@ -3064,10 +3064,10 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
         }
 
 #if 0
-        for (j=firstZero; j<remainder.getNumElements(); j++)
+        for(j = firstZero; j < remainder.getNumElements(); j++)
         {
             int iColumn = remainder.getIndices()[j];
-            printf("xstar for %d is %g\n",iColumn,xstar[iColumn]);
+            printf("xstar for %d is %g\n", iColumn, xstar[iColumn]);
             // calculate the lifted coefficient of x_j = cutRhs-psi_j
             // where
             // psi_j =  max of the current lefthand side of the cut
@@ -3077,28 +3077,28 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
             // Note: For exact solve, must be sorted in
             // alpha_1/a_1>=alpha_2/a_2>=...>=alpha_n/a_n order
             // check if lifted var can take value 1
-            if (unsatRhs - remainder.getElements()[j] < epsilon_)
+            if(unsatRhs - remainder.getElements()[j] < epsilon_)
             {
                 psi_j = cutRhs;
             }
             else
             {
                 exactSolveKnapsack(alpha.getNumElements(),
-                                   unsatRhs-remainder.getElements()[j],
-                                   alpha.getElements(),a.getElements(),psi_j,x);
+                                   unsatRhs - remainder.getElements()[j],
+                                   alpha.getElements(), a.getElements(), psi_j, x);
             }
 
             // assert the new coefficient is nonegative?
-            alpha.insert(remainder.getIndices()[j],cutRhs-psi_j);
-            a.insert(remainder.getIndices()[j],remainder.getElements()[j]);
+            alpha.insert(remainder.getIndices()[j], cutRhs - psi_j);
+            a.insert(remainder.getIndices()[j], remainder.getElements()[j]);
 
             // if the lifted coefficient is non-zero
             // (i.e. psi_j != cutRhs), add it to the cut
-            if (fabs(cutRhs-psi_j)>epsilon_)
-                cut.insert(remainder.getIndices()[j],cutRhs-psi_j);
+            if(fabs(cutRhs - psi_j) > epsilon_)
+                cut.insert(remainder.getIndices()[j], cutRhs - psi_j);
 
-            ratio[remainder.getIndices()[j]]=
-                (cutRhs-psi_j)/remainder.getElements()[j];
+            ratio[remainder.getIndices()[j]] =
+                (cutRhs - psi_j) / remainder.getElements()[j];
             CoinDecrSolutionOrdered dso(ratio);
             a.sort(dso);
             alpha.sort(dso);
@@ -3107,44 +3107,44 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
         delete [] x;
         delete [] ratio;
 #if GUBCOVER==2
-        if (numberCliques_)
+        if(numberCliques_)
         {
-            const CoinPackedMatrix * matrixByRow = solver_->getMatrixByRow();
+            const CoinPackedMatrix* matrixByRow = solver_->getMatrixByRow();
             //const double * elementByRow = matrixByRow->getElements();
-            const int * column = matrixByRow->getIndices();
-            const CoinBigIndex * rowStart = matrixByRow->getVectorStarts();
-            const int * rowLength = matrixByRow->getVectorLengths();
+            const int* column = matrixByRow->getIndices();
+            const CoinBigIndex* rowStart = matrixByRow->getVectorStarts();
+            const int* rowLength = matrixByRow->getVectorLengths();
             //const double * rowUpper = solver_->getRowUpper();
             //const double * rowLower = solver_->getRowLower();
             int numberColumns = solver_->getNumCols();
-            double * els = elements_;
-            double * els2 = els+numberColumns;
-            double * weightClique = els2+numberColumns;
-            double * weightClique2 = weightClique+numberCliques_;
-            double * temp=weightClique2+2*numberColumns;
+            double* els = elements_;
+            double* els2 = els + numberColumns;
+            double* weightClique = els2 + numberColumns;
+            double* weightClique2 = weightClique + numberCliques_;
+            double* temp = weightClique2 + 2 * numberColumns;
             //int * count = reinterpret_cast<int *>(temp);
-            int * indices = reinterpret_cast<int *> (temp+numberCliques_);
+            int* indices = reinterpret_cast<int*>(temp + numberCliques_);
             //int * whichClique = indices+numberColumns;
-            for (i=rowStart[whichRow_]; i<rowStart[whichRow_]+rowLength[whichRow_]; i++)
+            for(i = rowStart[whichRow_]; i < rowStart[whichRow_] + rowLength[whichRow_]; i++)
             {
                 int iColumn = column[i];
-                indices[iColumn]=-2;
+                indices[iColumn] = -2;
 #ifdef PRINT_DEBUG
-                els2[iColumn]=0.0;
+                els2[iColumn] = 0.0;
 #endif
             }
-            for (i=0; i<nClique; i++)
-                weightClique[i]=0.0;
-            for (i=0; i<numberCliques_; i++)
-                assert (!weightClique[i]);
+            for(i = 0; i < nClique; i++)
+                weightClique[i] = 0.0;
+            for(i = 0; i < numberCliques_; i++)
+                assert(!weightClique[i]);
             //int numberColumns = solver_->getNumCols();
 #ifdef PRINT_DEBUG
-            CoinZeroN(els,numberColumns); //temp
-            for (i=0; i<numberColumns; i++)
+            CoinZeroN(els, numberColumns); //temp
+            for(i = 0; i < numberColumns; i++)
             {
-                assert (indices[i]==-2);
-                assert (!els[i]);
-                assert (!els2[i]);
+                assert(indices[i] == -2);
+                assert(!els[i]);
+                assert(!els2[i]);
             }
 #endif
         }
@@ -3156,21 +3156,21 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
     // if (sum over cut.getIndices())
     //    cut.element()*xstar > cover.getNumElements()-1, un-complement
     // and add it to the pool.
-    double sum=0;
-    for (i=0; i<cut.getNumElements(); i++)
+    double sum = 0;
+    for(i = 0; i < cut.getNumElements(); i++)
     {
-        sum+= cut.getElements()[i]*xstar[cut.getIndices()[i]];
+        sum += cut.getElements()[i] * xstar[cut.getIndices()[i]];
     }
-    if (sum > cutRhs+epsilon2_)
+    if(sum > cutRhs + epsilon2_)
     {
 #ifdef PRINT_DEBUG
         printf("Sequentially lifted UpDown cover cut of ");
         printf("size %i derived from fracCover of size %i.\n",
                cut.getNumElements(), fracCover.getNumElements());
-        for (i=0; i<cut.getNumElements(); i++)
+        for(i = 0; i < cut.getNumElements(); i++)
         {
             printf("index %i, element %g, xstar value % g \n",
-                   cut.getIndices()[i],cut.getElements()[i],
+                   cut.getIndices()[i], cut.getElements()[i],
                    xstar[cut.getIndices()[i]]);
         }
         printf("The cutRhs = %g, and the alpha_j*xstar_j sum is %g\n\n",
@@ -3178,69 +3178,69 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
 #endif
 
 #ifdef GUBCOVER
-        if (numberCliques_)
+        if(numberCliques_)
         {
             int n = cut.getNumElements();
-            const int * ind3;
-            const double * els3;
+            const int* ind3;
+            const double* els3;
             ind3 = cut.getIndices();
             els3 = cut.getElements();
-            const CoinPackedMatrix * matrixByRow = solver_->getMatrixByRow();
-            const double * elementByRow = matrixByRow->getElements();
-            const int * column = matrixByRow->getIndices();
-            const CoinBigIndex * rowStart = matrixByRow->getVectorStarts();
-            const int * rowLength = matrixByRow->getVectorLengths();
+            const CoinPackedMatrix* matrixByRow = solver_->getMatrixByRow();
+            const double* elementByRow = matrixByRow->getElements();
+            const int* column = matrixByRow->getIndices();
+            const CoinBigIndex* rowStart = matrixByRow->getVectorStarts();
+            const int* rowLength = matrixByRow->getVectorLengths();
             int numberColumns = solver_->getNumCols();
-            double * els = elements_;
-            double * els2 = els+numberColumns;
-            for (i=0; i<n; i++)
-                els[ind3[i]]=els3[i];
-            for (i=rowStart[whichRow_]; i<rowStart[whichRow_]+rowLength[whichRow_]; i++)
+            double* els = elements_;
+            double* els2 = els + numberColumns;
+            for(i = 0; i < n; i++)
+                els[ind3[i]] = els3[i];
+            for(i = rowStart[whichRow_]; i < rowStart[whichRow_] + rowLength[whichRow_]; i++)
             {
                 int iColumn = column[i];
-                els2[iColumn]=elementByRow[i];
+                els2[iColumn] = elementByRow[i];
             }
 #if CGL_DEBUG
-            bool found=false;
+            bool found = false;
 #endif
-            for (i=0; i<n; i++)
+            for(i = 0; i < n; i++)
             {
                 int iColumn = ind3[i];
                 // complement doesn't seem to work?
-                if (!complement_[iColumn])
+                if(!complement_[iColumn])
                 {
-                    if (oneFixStart_[iColumn]>=0)
+                    if(oneFixStart_[iColumn] >= 0)
                     {
-                        for (int j=oneFixStart_[iColumn]; j<zeroFixStart_[iColumn]; j++)
+                        for(int j = oneFixStart_[iColumn]; j < zeroFixStart_[iColumn]; j++)
                         {
                             int iClique = whichClique_[j];
-                            for (int k=cliqueStart_[iClique]; k<cliqueStart_[iClique+1]; k++)
+                            for(int k = cliqueStart_[iClique]; k < cliqueStart_[iClique + 1]; k++)
                             {
                                 int jColumn = sequenceInCliqueEntry(cliqueEntry_[k]);
-                                if (!els[jColumn]&&els2[jColumn])
+                                if(!els[jColumn] && els2[jColumn])
                                 {
-                                    assert (jColumn!=iColumn);
-                                    if (!complement_[jColumn]&&oneFixesInCliqueEntry(cliqueEntry_[k]))
+                                    assert(jColumn != iColumn);
+                                    if(!complement_[jColumn] && oneFixesInCliqueEntry(cliqueEntry_[k]))
                                     {
                                         //if (els2[iColumn]<0.0||els2[jColumn]<0.0)
                                         //printf("true els %g (c%d) and %g (c%d)\n",
                                         //   els2[iColumn],complement_[iColumn],
                                         //   els2[jColumn],complement_[jColumn]);
-                                        if (fabs(els2[jColumn])>=fabs(els2[iColumn]))
+                                        if(fabs(els2[jColumn]) >= fabs(els2[iColumn]))
                                         {
 #if CGL_DEBUG
-                                            if (!found)
+                                            if(!found)
                                             {
-                                                found=true;
+                                                found = true;
                                                 printf("Good cut can be improved");
-                                                for (i=0; i<n; i++)
-                                                    printf("(%d,%g) ",ind3[i],els3[i]);
-                                                printf("<= %g\n",b);
+                                                for(i = 0; i < n; i++)
+                                                    printf("(%d,%g) ", ind3[i], els3[i]);
+                                                printf("<= %g\n", b);
                                             }
-                                            printf("can add! %d %d\n",iColumn,jColumn);
+                                            printf("can add! %d %d\n", iColumn, jColumn);
 #endif
-                                            els[jColumn]=els[iColumn];
-                                            cut.insert(jColumn,els[jColumn]);
+                                            els[jColumn] = els[iColumn];
+                                            cut.insert(jColumn, els[jColumn]);
                                             // recompute as may have changed
                                             ind3 = cut.getIndices();
                                         }
@@ -3254,28 +3254,28 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
             // zero out
             n = cut.getNumElements();
             ind3 = cut.getIndices();
-            for (i=0; i<n; i++)
-                els[ind3[i]]=0.0;
-            for (i=rowStart[whichRow_]; i<rowStart[whichRow_]+rowLength[whichRow_]; i++)
+            for(i = 0; i < n; i++)
+                els[ind3[i]] = 0.0;
+            for(i = rowStart[whichRow_]; i < rowStart[whichRow_] + rowLength[whichRow_]; i++)
             {
                 int iColumn = column[i];
-                els2[iColumn]=0.0;
+                els2[iColumn] = 0.0;
             }
-            for (i=0; i<numberColumns; i++)
+            for(i = 0; i < numberColumns; i++)
             {
-                assert (!els[i]);
-                assert (!els2[i]);
+                assert(!els[i]);
+                assert(!els2[i]);
             }
         }
 #endif
         // de-complement
         int k;
         const int s = cut.getNumElements();
-        const int * indices = cut.getIndices();
-        double * elements = cut.getElements();
-        for (k=0; k<s; k++)
+        const int* indices = cut.getIndices();
+        double* elements = cut.getElements();
+        for(k = 0; k < s; k++)
         {
-            if (complement[indices[k]])
+            if(complement[indices[k]])
             {
                 // Negate the k'th element in packedVector cut
                 // and correspondingly adjust the rhs
@@ -3290,14 +3290,14 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
         rc.setRow(cut);
 #ifdef CGL_DEBUG
         {
-            double * elements = cut.getElements();
-            int * indices = cut.getIndices();
-            int n=cut.getNumElements();
-            for (k=0; k<n; k++)
+            double* elements = cut.getElements();
+            int* indices = cut.getIndices();
+            int n = cut.getNumElements();
+            for(k = 0; k < n; k++)
             {
-                assert(indices[k]>=0);
+                assert(indices[k] >= 0);
                 assert(elements[k]);
-                assert (fabs(elements[k])>1.0e-12);
+                assert(fabs(elements[k]) > 1.0e-12);
             }
         }
 #endif
@@ -3309,12 +3309,12 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
 #ifdef PRINT_DEBUG
         {
             int k;
-            printf("cutrhs %g %d elements\n",cutRhs,cut.getNumElements());
-            double * elements = cut.getElements();
-            int * indices = cut.getIndices();
-            for (k=0; k<cut.getNumElements(); k++)
+            printf("cutrhs %g %d elements\n", cutRhs, cut.getNumElements());
+            double* elements = cut.getElements();
+            int* indices = cut.getIndices();
+            for(k = 0; k < cut.getNumElements(); k++)
             {
-                printf("%d %g\n",indices[k],elements[k]);
+                printf("%d %g\n", indices[k], elements[k]);
             }
         }
 #endif
@@ -3336,8 +3336,8 @@ CglKnapsackCover::liftUpDownAndUncomplementAndAdd(
 void
 CglKnapsackCover::seqLiftAndUncomplementAndAdd(
     int nCols,
-    double * xstar,
-    int * complement,
+    double* xstar,
+    int* complement,
     int /*row*/,                       // row index number: used for debugging
     //     and to index into row bounds
     int nRowElem,                  // number of elements in the row, aka row
@@ -3354,13 +3354,13 @@ CglKnapsackCover::seqLiftAndUncomplementAndAdd(
     cut.reserve(nRowElem);
 
     // the cut coefficent for the members of the cover is 1.0
-    cut.setConstant(cover.getNumElements(),cover.getIndices(),1.0);
+    cut.setConstant(cover.getNumElements(), cover.getIndices(), 1.0);
 
     // so preserve the cutRhs which is |C|-1, where |C| is the size of the cover.
-    double cutRhs=cover.getNumElements()-1;
+    double cutRhs = cover.getNumElements() - 1;
 
     // If there is something to lift, then calcualte the lifted coefficients
-    if (remainder.getNumElements()> 0)
+    if(remainder.getNumElements() > 0)
     {
 
         // What order to lift?
@@ -3376,32 +3376,32 @@ CglKnapsackCover::seqLiftAndUncomplementAndAdd(
         CoinPackedVector a(cover);
         CoinPackedVector alpha;
         int i;
-        for (i=0; i<cover.getNumElements(); i++)
+        for(i = 0; i < cover.getNumElements(); i++)
         {
-            alpha.insert(cover.getIndices()[i],1.0);
+            alpha.insert(cover.getIndices()[i], 1.0);
         }
         // needed as an argument for exactSolveKnapsack
-        int * x = new int[nRowElem];
-        double psi_j=0.0;
+        int* x = new int[nRowElem];
+        double psi_j = 0.0;
 
         // Order alpha and a in nonincreasing order of alpha_j/a_j.
         // alpha_1/a_1 >= alpha_2/a_2 >= ... >= alpha_n/a_n
         // by defining this full-storage array "ratio" to be the external sort key.
 
-        double * ratio= new double[nCols];
-        memset(ratio, 0, (nCols*sizeof(double)));
+        double* ratio = new double[nCols];
+        memset(ratio, 0, (nCols * sizeof(double)));
 
 #ifdef CGL_DEBUG
         int alphasize =  alpha.getNumElements();
         int asize = a.getNumElements();
-        assert( alphasize == asize );
+        assert(alphasize == asize);
 #endif
 
-        for (i=0; i<a.getNumElements(); i++)
+        for(i = 0; i < a.getNumElements(); i++)
         {
-            if (fabs(a.getElements()[i])> epsilon_ )
+            if(fabs(a.getElements()[i]) > epsilon_)
             {
-                ratio[a.getIndices()[i]]=alpha.getElements()[i]/a.getElements()[i];
+                ratio[a.getIndices()[i]] = alpha.getElements()[i] / a.getElements()[i];
             }
             else
             {
@@ -3419,17 +3419,17 @@ CglKnapsackCover::seqLiftAndUncomplementAndAdd(
 
 #ifdef CGL_DEBUG
         // sanity check
-        for ( i=1; i<a.getNumElements(); i++ )
+        for(i = 1; i < a.getNumElements(); i++)
         {
-            int alphai= alpha.getIndices()[i];
+            int alphai = alpha.getIndices()[i];
             int ai = a.getIndices()[i];
-            assert( alphai == ai);
+            assert(alphai == ai);
         }
 #endif
 
         // Loop through the variables to be lifted, and lift.
         int j;
-        for (j=0; j<remainder.getNumElements(); j++)
+        for(j = 0; j < remainder.getNumElements(); j++)
         {
             // calculate the lifted coefficient of x_j = cutRhs-psi_j
             // where psi_j =  max of the current lefthand side of the cut
@@ -3438,17 +3438,17 @@ CglKnapsackCover::seqLiftAndUncomplementAndAdd(
             // Note: For exact solve, must be sorted in
             // alpha_1/a_1>=alpha_2/a_2>=...>=alpha_n/a_n order
             exactSolveKnapsack(alpha.getNumElements(),
-                               b-remainder.getElements()[j],
-                               alpha.getElements(),a.getElements(),psi_j,x);
-            alpha.insert(remainder.getIndices()[j],cutRhs-psi_j);
-            a.insert(remainder.getIndices()[j],remainder.getElements()[j]);
+                               b - remainder.getElements()[j],
+                               alpha.getElements(), a.getElements(), psi_j, x);
+            alpha.insert(remainder.getIndices()[j], cutRhs - psi_j);
+            a.insert(remainder.getIndices()[j], remainder.getElements()[j]);
             // if the lifted coefficient is non-zero (i.e. psi_j != cutRhs), add it
             // to the cut
-            if (fabs(cutRhs-psi_j)>epsilon_)
-                cut.insert(remainder.getIndices()[j],cutRhs-psi_j);
+            if(fabs(cutRhs - psi_j) > epsilon_)
+                cut.insert(remainder.getIndices()[j], cutRhs - psi_j);
 
-            ratio[remainder.getIndices()[j]]=
-                (cutRhs-psi_j)/remainder.getElements()[j];
+            ratio[remainder.getIndices()[j]] =
+                (cutRhs - psi_j) / remainder.getElements()[j];
             CoinDecrSolutionOrdered dso(ratio);
             a.sort(dso);
             alpha.sort(dso);
@@ -3461,87 +3461,87 @@ CglKnapsackCover::seqLiftAndUncomplementAndAdd(
     // if (sum over cut.getIndices())
     //    cut.element()*xstar > cover.getNumElements()-1, un-complement
     // and add it to the pool.
-    double sum=0;
+    double sum = 0;
     int i;
-    for (i=0; i<cut.getNumElements(); i++)
+    for(i = 0; i < cut.getNumElements(); i++)
     {
-        sum+= cut.getElements()[i]*xstar[cut.getIndices()[i]];
+        sum += cut.getElements()[i] * xstar[cut.getIndices()[i]];
     }
-    if (sum > cutRhs+epsilon2_)
+    if(sum > cutRhs + epsilon2_)
     {
 #ifdef PRINT_DEBUG
-        printf("Sequentially lifted cover cut of size %i derived from cover of size %i.\n",cut.getNumElements(), cover.getNumElements());
-        for (i=0; i<cut.getNumElements(); i++)
+        printf("Sequentially lifted cover cut of size %i derived from cover of size %i.\n", cut.getNumElements(), cover.getNumElements());
+        for(i = 0; i < cut.getNumElements(); i++)
         {
-            printf("index %i, element %g, xstar value % g \n", cut.getIndices()[i],cut.getElements()[i], xstar[cut.getIndices()[i]]);
+            printf("index %i, element %g, xstar value % g \n", cut.getIndices()[i], cut.getElements()[i], xstar[cut.getIndices()[i]]);
         }
         printf("The cutRhs = %g, and the alpha_j*xstar_j sum is %g\n\n", cutRhs, sum);
 #endif
 
 #ifdef GUBCOVER
-        if (numberCliques_)
+        if(numberCliques_)
         {
             int n = cut.getNumElements();
-            const int * ind3;
-            const double * els3;
+            const int* ind3;
+            const double* els3;
             ind3 = cut.getIndices();
             els3 = cut.getElements();
-            const CoinPackedMatrix * matrixByRow = solver_->getMatrixByRow();
-            const double * elementByRow = matrixByRow->getElements();
-            const int * column = matrixByRow->getIndices();
-            const CoinBigIndex * rowStart = matrixByRow->getVectorStarts();
-            const int * rowLength = matrixByRow->getVectorLengths();
+            const CoinPackedMatrix* matrixByRow = solver_->getMatrixByRow();
+            const double* elementByRow = matrixByRow->getElements();
+            const int* column = matrixByRow->getIndices();
+            const CoinBigIndex* rowStart = matrixByRow->getVectorStarts();
+            const int* rowLength = matrixByRow->getVectorLengths();
             int numberColumns = solver_->getNumCols();
-            double * els = elements_;
-            double * els2 = els+numberColumns;
-            for (i=0; i<n; i++)
-                els[ind3[i]]=els3[i];
-            for (i=rowStart[whichRow_]; i<rowStart[whichRow_]+rowLength[whichRow_]; i++)
+            double* els = elements_;
+            double* els2 = els + numberColumns;
+            for(i = 0; i < n; i++)
+                els[ind3[i]] = els3[i];
+            for(i = rowStart[whichRow_]; i < rowStart[whichRow_] + rowLength[whichRow_]; i++)
             {
                 int iColumn = column[i];
-                els2[iColumn]=elementByRow[i];
+                els2[iColumn] = elementByRow[i];
             }
 #if CGL_DEBUG
-            bool found=false;
+            bool found = false;
 #endif
-            for (i=0; i<n; i++)
+            for(i = 0; i < n; i++)
             {
                 int iColumn = ind3[i];
                 // complement doesn't seem to work?
-                if (!complement_[iColumn])
+                if(!complement_[iColumn])
                 {
-                    if (oneFixStart_[iColumn]>=0)
+                    if(oneFixStart_[iColumn] >= 0)
                     {
-                        for (int j=oneFixStart_[iColumn]; j<zeroFixStart_[iColumn]; j++)
+                        for(int j = oneFixStart_[iColumn]; j < zeroFixStart_[iColumn]; j++)
                         {
                             int iClique = whichClique_[j];
-                            for (int k=cliqueStart_[iClique]; k<cliqueStart_[iClique+1]; k++)
+                            for(int k = cliqueStart_[iClique]; k < cliqueStart_[iClique + 1]; k++)
                             {
                                 int jColumn = sequenceInCliqueEntry(cliqueEntry_[k]);
-                                if (!els[jColumn]&&els2[jColumn])
+                                if(!els[jColumn] && els2[jColumn])
                                 {
-                                    assert (jColumn!=iColumn);
-                                    if (!complement_[jColumn]&&oneFixesInCliqueEntry(cliqueEntry_[k]))
+                                    assert(jColumn != iColumn);
+                                    if(!complement_[jColumn] && oneFixesInCliqueEntry(cliqueEntry_[k]))
                                     {
                                         //if (els2[iColumn]<0.0||els2[jColumn]<0.0)
                                         //printf("true els %g (c%d) and %g (c%d)\n",
                                         //   els2[iColumn],complement_[iColumn],
                                         //   els2[jColumn],complement_[jColumn]);
-                                        if (fabs(els2[jColumn])>=fabs(els2[iColumn]))
+                                        if(fabs(els2[jColumn]) >= fabs(els2[iColumn]))
                                         {
 #if CGL_DEBUG
-                                            if (!found)
+                                            if(!found)
                                             {
-                                                found=true;
+                                                found = true;
                                                 printf("Good cut can be improved");
-                                                for (i=0; i<n; i++)
-                                                    printf("(%d,%g) ",ind3[i],els3[i]);
-                                                printf("<= %g\n",b);
+                                                for(i = 0; i < n; i++)
+                                                    printf("(%d,%g) ", ind3[i], els3[i]);
+                                                printf("<= %g\n", b);
                                             }
-                                            printf("can add! %d %d\n",iColumn,jColumn);
+                                            printf("can add! %d %d\n", iColumn, jColumn);
 #endif
-                                            els[jColumn]=els[iColumn];
-                                            cut.insert(jColumn,els[jColumn]);
+                                            els[jColumn] = els[iColumn];
+                                            cut.insert(jColumn, els[jColumn]);
                                             // recompute as may have changed
                                             ind3 = cut.getIndices();
                                         }
@@ -3555,22 +3555,22 @@ CglKnapsackCover::seqLiftAndUncomplementAndAdd(
             // zero out
             n = cut.getNumElements();
             ind3 = cut.getIndices();
-            for (i=0; i<n; i++)
-                els[ind3[i]]=0.0;
-            for (i=rowStart[whichRow_]; i<rowStart[whichRow_]+rowLength[whichRow_]; i++)
+            for(i = 0; i < n; i++)
+                els[ind3[i]] = 0.0;
+            for(i = rowStart[whichRow_]; i < rowStart[whichRow_] + rowLength[whichRow_]; i++)
             {
                 int iColumn = column[i];
-                els2[iColumn]=0.0;
+                els2[iColumn] = 0.0;
             }
         }
 #endif
         int k;
         const int s = cut.getNumElements();
-        const int * indices = cut.getIndices();
-        double * elements = cut.getElements();
-        for (k=0; k<s; k++)
+        const int* indices = cut.getIndices();
+        double* elements = cut.getElements();
+        for(k = 0; k < s; k++)
         {
-            if (complement[indices[k]])
+            if(complement[indices[k]])
             {
                 // Negate the k'th element in packedVector cut
                 // and correspondingly adjust the rhs
@@ -3584,14 +3584,14 @@ CglKnapsackCover::seqLiftAndUncomplementAndAdd(
         rc.setRow(cut);
 #ifdef CGL_DEBUG
         {
-            double * elements = cut.getElements();
-            int * indices = cut.getIndices();
-            int n=cut.getNumElements();
-            for (k=0; k<n; k++)
+            double* elements = cut.getElements();
+            int* indices = cut.getIndices();
+            int n = cut.getNumElements();
+            for(k = 0; k < n; k++)
             {
-                assert(indices[k]>=0);
+                assert(indices[k] >= 0);
                 assert(elements[k]);
-                assert (fabs(elements[k])>1.0e-12);
+                assert(fabs(elements[k]) > 1.0e-12);
             }
         }
 #endif
@@ -3602,12 +3602,12 @@ CglKnapsackCover::seqLiftAndUncomplementAndAdd(
 #ifdef PRINT_DEBUG
         {
             int k;
-            printf("cutrhs %g\n",cutRhs);
-            double * elements = cut.getElements();
-            int * indices = cut.getIndices();
-            for (k=0; k<cut.getNumElements(); k++)
+            printf("cutrhs %g\n", cutRhs);
+            double* elements = cut.getElements();
+            int* indices = cut.getIndices();
+            for(k = 0; k < cut.getNumElements(); k++)
             {
-                printf("%d %g\n",indices[k],elements[k]);
+                printf("%d %g\n", indices[k], elements[k]);
             }
         }
 #endif
@@ -3636,7 +3636,7 @@ CglKnapsackCover::liftCoverCut(
     CoinPackedVector & cut) const
 {
     int i;
-    int  goodCut=1;
+    int  goodCut = 1;
     // Given knapsack ax <=b, and a cover (e.g. cover corresponds to {0,...,nCover-1})
     // coverIndices are assumed in nondecr order of coverElements
     // a_0>=a_1>=...>=a_(nCover-1)
@@ -3650,8 +3650,8 @@ CglKnapsackCover::liftCoverCut(
 
     // Define lambda to be the "cover excess".
     // By definition, lambda > 0. If this is not the case, something's screwy. Exit gracefully.
-    double lambda = sum-b;
-    if (lambda < epsilon_)
+    double lambda = sum - b;
+    if(lambda < epsilon_)
     {
 #ifdef PRINT_DEBUG
         printf("lambda < epsilon....aborting. \n");
@@ -3667,30 +3667,30 @@ CglKnapsackCover::liftCoverCut(
     //   mu[i] = sum(j=0 to i) a_j where the cover is C={0,1,..,r}
     //   mu[0] = 0, mu[1]=a_0, mu[2]=a_0+a_1, etc.
     //   and C is assumed to be sorted in nondecreasing knapsack coefficient order.
-    double * mu= new double[cover.getNumElements()+1];
-    double * muMinusLambda= new double[cover.getNumElements()+1];
-    memset(mu, 0, (cover.getNumElements()+1)*sizeof(double));
-    memset(muMinusLambda, 0, (cover.getNumElements()+1)*sizeof(double));
+    double* mu = new double[cover.getNumElements() + 1];
+    double* muMinusLambda = new double[cover.getNumElements() + 1];
+    memset(mu, 0, (cover.getNumElements() + 1)*sizeof(double));
+    memset(muMinusLambda, 0, (cover.getNumElements() + 1)*sizeof(double));
 
     // mu[0] = 0, mu[1]= knapsack coef of cover element 0, etc.
-    muMinusLambda[0]= -lambda;
-    for(i=1; i<(cover.getNumElements()+1); i++)
+    muMinusLambda[0] = -lambda;
+    for(i = 1; i < (cover.getNumElements() + 1); i++)
     {
-        mu[i]=mu[i-1]+ cover.getElements()[i-1];
-        muMinusLambda[i]=mu[i]-lambda;
+        mu[i] = mu[i - 1] + cover.getElements()[i - 1];
+        muMinusLambda[i] = mu[i] - lambda;
     }
 
     cut.reserve(nRowElem);
     // the cut coefficent for the members of the cover is 1.0
-    cut.setConstant(cover.getNumElements(),cover.getIndices(),1.0);
+    cut.setConstant(cover.getNumElements(), cover.getIndices(), 1.0);
 
     // if f(z) is superadditive
     int h;
-    if (muMinusLambda[1] >= cover.getElements()[1]-epsilon_)
+    if(muMinusLambda[1] >= cover.getElements()[1] - epsilon_)
     {
-        for (h=0; h<remainder.getNumElements(); h++)
+        for(h = 0; h < remainder.getNumElements(); h++)
         {
-            if (remainder.getElements()[h] <= muMinusLambda[1]+epsilon_)
+            if(remainder.getElements()[h] <= muMinusLambda[1] + epsilon_)
             {
                 // cutCoef[nCut] is 0, so don't bother storing
             }
@@ -3698,28 +3698,28 @@ CglKnapsackCover::liftCoverCut(
             {
                 // Todo: searching is inefficient. sort not in cover...
                 // change so that I sort remainder before the call to lift.
-                int found=0;
-                i=2;
-                while (!found && i<(cover.getNumElements()+1))
+                int found = 0;
+                i = 2;
+                while(!found && i < (cover.getNumElements() + 1))
                 {
-                    if (remainder.getElements()[h] <= muMinusLambda[i])
+                    if(remainder.getElements()[h] <= muMinusLambda[i])
                     {
 #ifdef CGL_DEBUG
                         bool e = cut.isExistingIndex(remainder.getIndices()[h]);
-                        assert( !e );
+                        assert(!e);
 #endif
-                        cut.insert( remainder.getIndices()[h], i-1.0 );
-                        found=1;
+                        cut.insert(remainder.getIndices()[h], i - 1.0);
+                        found = 1;
                     }
                     i++;
                 }
-                if (!found)
+                if(!found)
                 {
 #ifdef CGL_DEBUG
                     printf("Error: Unable to fix lifted coefficient\n");
                     abort();
 #else
-                    goodCut=0;
+                    goodCut = 0;
 #endif
                 }
             } // end else
@@ -3729,44 +3729,44 @@ CglKnapsackCover::liftCoverCut(
     // else use superadditive function g
     else
     {
-        int coverSizePlusOne = cover.getNumElements()+1;
-        double * rho= new double[coverSizePlusOne];
-        rho[0]=lambda;
-        rho[cover.getNumElements()]=0.0;
-        for (i=1; i<cover.getNumElements(); i++)
+        int coverSizePlusOne = cover.getNumElements() + 1;
+        double* rho = new double[coverSizePlusOne];
+        rho[0] = lambda;
+        rho[cover.getNumElements()] = 0.0;
+        for(i = 1; i < cover.getNumElements(); i++)
         {
-            rho[i]=CoinMax(0.0, cover.getElements()[i]- muMinusLambda[1]);
+            rho[i] = CoinMax(0.0, cover.getElements()[i] - muMinusLambda[1]);
         }
 
         int h;
-        for (h=0; h<remainder.getNumElements(); h++)
+        for(h = 0; h < remainder.getNumElements(); h++)
         {
 
-            int found=0; // Todo: searcing is inefficient: sort...
-            i=0;
-            while(!found && i<cover.getNumElements())
+            int found = 0; // Todo: searcing is inefficient: sort...
+            i = 0;
+            while(!found && i < cover.getNumElements())
             {
-                if (remainder.getElements()[h] <= muMinusLambda[i+1])
+                if(remainder.getElements()[h] <= muMinusLambda[i + 1])
                 {
 #ifdef CGL_DEBUG
                     bool notE = !cut.isExistingIndex(remainder.getIndices()[h]);
-                    assert( notE );
+                    assert(notE);
 #endif
-                    if (i)
-                        cut.insert( remainder.getIndices()[h], static_cast<double>(i) );
-                    found=1;
+                    if(i)
+                        cut.insert(remainder.getIndices()[h], static_cast<double>(i));
+                    found = 1;
                 }
-                else if (remainder.getElements()[h] < muMinusLambda[i+1]+rho[i+1])
+                else if(remainder.getElements()[h] < muMinusLambda[i + 1] + rho[i + 1])
                 {
 #ifdef CGL_DEBUG
                     bool notE = !cut.isExistingIndex(remainder.getIndices()[h]);
-                    assert( notE );
+                    assert(notE);
 #endif
-                    double cutCoef = i+1
-                                     - (muMinusLambda[i+1]+rho[i+1]-remainder.getElements()[h])/rho[1];
-                    if (fabs(cutCoef)>epsilon_)
-                        cut.insert( remainder.getIndices()[h], cutCoef );
-                    found=1;
+                    double cutCoef = i + 1
+                                     - (muMinusLambda[i + 1] + rho[i + 1] - remainder.getElements()[h]) / rho[1];
+                    if(fabs(cutCoef) > epsilon_)
+                        cut.insert(remainder.getIndices()[h], cutCoef);
+                    found = 1;
                 }
                 i++;
             } // endwhile
@@ -3778,83 +3778,83 @@ CglKnapsackCover::liftCoverCut(
     delete [] mu;
 
 #ifdef GUBCOVER
-    if (goodCut&&numberCliques_)
+    if(goodCut && numberCliques_)
     {
         int n = cut.getNumElements();
-        const int * ind3;
-        const double * els3;
+        const int* ind3;
+        const double* els3;
         ind3 = cut.getIndices();
         els3 = cut.getElements();
-        const CoinPackedMatrix * matrixByRow = solver_->getMatrixByRow();
-        const double * elementByRow = matrixByRow->getElements();
-        const int * column = matrixByRow->getIndices();
-        const CoinBigIndex * rowStart = matrixByRow->getVectorStarts();
-        const int * rowLength = matrixByRow->getVectorLengths();
+        const CoinPackedMatrix* matrixByRow = solver_->getMatrixByRow();
+        const double* elementByRow = matrixByRow->getElements();
+        const int* column = matrixByRow->getIndices();
+        const CoinBigIndex* rowStart = matrixByRow->getVectorStarts();
+        const int* rowLength = matrixByRow->getVectorLengths();
         int numberColumns = solver_->getNumCols();
-        double * els = elements_;
-        double * els2 = els+numberColumns;
-        for (i=0; i<n; i++)
-            els[ind3[i]]=els3[i];
-        for (i=rowStart[whichRow_]; i<rowStart[whichRow_]+rowLength[whichRow_]; i++)
+        double* els = elements_;
+        double* els2 = els + numberColumns;
+        for(i = 0; i < n; i++)
+            els[ind3[i]] = els3[i];
+        for(i = rowStart[whichRow_]; i < rowStart[whichRow_] + rowLength[whichRow_]; i++)
         {
             int iColumn = column[i];
-            els2[iColumn]=elementByRow[i];
+            els2[iColumn] = elementByRow[i];
         }
 #if CGL_DEBUG
-        bool found=false;
+        bool found = false;
 #endif
-        for (i=0; i<n; i++)
+        for(i = 0; i < n; i++)
         {
             int iColumn = ind3[i];
             // complement doesn't seem to work?
-            if (!complement_[iColumn])
+            if(!complement_[iColumn])
             {
-                if (oneFixStart_[iColumn]>=0)
+                if(oneFixStart_[iColumn] >= 0)
                 {
-                    for (int j=oneFixStart_[iColumn]; j<zeroFixStart_[iColumn]; j++)
+                    for(int j = oneFixStart_[iColumn]; j < zeroFixStart_[iColumn]; j++)
                     {
                         int iClique = whichClique_[j];
-                        for (int k=cliqueStart_[iClique]; k<cliqueStart_[iClique+1]; k++)
+                        for(int k = cliqueStart_[iClique]; k < cliqueStart_[iClique + 1]; k++)
                         {
                             int jColumn = sequenceInCliqueEntry(cliqueEntry_[k]);
-                            if (!els[jColumn]&&els2[jColumn])
+                            if(!els[jColumn] && els2[jColumn])
                             {
-                                assert (jColumn!=iColumn);
-                                if (!complement_[jColumn]&&oneFixesInCliqueEntry(cliqueEntry_[k]))
+                                assert(jColumn != iColumn);
+                                if(!complement_[jColumn] && oneFixesInCliqueEntry(cliqueEntry_[k]))
                                 {
                                     //if (els2[iColumn]<0.0||els2[jColumn]<0.0)
                                     //printf("true els %g (c%d) and %g (c%d)\n",
                                     //   els2[iColumn],complement_[iColumn],
                                     //   els2[jColumn],complement_[jColumn]);
-                                    if (fabs(els2[jColumn])>=fabs(els2[iColumn]))
+                                    if(fabs(els2[jColumn]) >= fabs(els2[iColumn]))
                                     {
 #if CGL_DEBUG
-                                        if (!found)
+                                        if(!found)
                                         {
-                                            found=true;
+                                            found = true;
                                             printf("Good cut can be improved");
-                                            for (i=0; i<n; i++)
-                                                printf("(%d,%g) ",ind3[i],els3[i]);
-                                            printf("<= %g\n",b);
+                                            for(i = 0; i < n; i++)
+                                                printf("(%d,%g) ", ind3[i], els3[i]);
+                                            printf("<= %g\n", b);
                                         }
-                                        printf("can add! %d %d\n",iColumn,jColumn);
+                                        printf("can add! %d %d\n", iColumn, jColumn);
 #endif
-                                        els[jColumn]=els[iColumn];
-                                        cut.insert(jColumn,els[jColumn]);
+                                        els[jColumn] = els[iColumn];
+                                        cut.insert(jColumn, els[jColumn]);
                                         // recompute as may have changed
                                         ind3 = cut.getIndices();
                                     }
                                 }
-                                else if (false&&complement_[jColumn]&&!oneFixesInCliqueEntry(cliqueEntry_[k]))
+                                else if(false && complement_[jColumn] && !oneFixesInCliqueEntry(cliqueEntry_[k]))
                                 {
                                     printf("COMP true els %g (c%d) and %g (c%d)\n",
-                                           els2[iColumn],complement_[iColumn],
-                                           els2[jColumn],complement_[jColumn]);
+                                           els2[iColumn], complement_[iColumn],
+                                           els2[jColumn], complement_[jColumn]);
                                     printf("Good cut can be ??");
-                                    for (i=0; i<n; i++)
-                                        printf("(%d,%g) ",ind3[i],els3[i]);
-                                    printf("<= %g\n",b);
-                                    printf("can add?? %d %d\n",iColumn,jColumn);
+                                    for(i = 0; i < n; i++)
+                                        printf("(%d,%g) ", ind3[i], els3[i]);
+                                    printf("<= %g\n", b);
+                                    printf("can add?? %d %d\n", iColumn, jColumn);
                                 }
                             }
                         }
@@ -3865,12 +3865,12 @@ CglKnapsackCover::liftCoverCut(
         // zero out
         n = cut.getNumElements();
         ind3 = cut.getIndices();
-        for (i=0; i<n; i++)
-            els[ind3[i]]=0.0;
-        for (i=rowStart[whichRow_]; i<rowStart[whichRow_]+rowLength[whichRow_]; i++)
+        for(i = 0; i < n; i++)
+            els[ind3[i]] = 0.0;
+        for(i = rowStart[whichRow_]; i < rowStart[whichRow_] + rowLength[whichRow_]; i++)
         {
             int iColumn = column[i];
-            els2[iColumn]=0.0;
+            els2[iColumn] = 0.0;
         }
     }
 #endif
@@ -3890,10 +3890,10 @@ int
 CglKnapsackCover::exactSolveKnapsack(
     int n,
     double c,
-    double const *pp,
-    double const *ww,
+    double const* pp,
+    double const* ww,
     double & z,
-    int * x) const
+    int* x) const
 {
     // The knapsack problem is to find:
 
@@ -3918,43 +3918,43 @@ CglKnapsackCover::exactSolveKnapsack(
     // Assumes items are sorted  p_1/w_1 >= p_2/w_2 >= ... >= p_n/w_n
 
     memset(x, 0, (n)*sizeof(int));
-    int * xhat = new int[n+1];
-    memset(xhat, 0, (n+1)*sizeof(int));
+    int* xhat = new int[n + 1];
+    memset(xhat, 0, (n + 1)*sizeof(int));
     int j;
 
     // set up: adding the extra element and
     // accounting for the FORTRAN vs C difference in indexing arrays.
-    double * p = new double[n+2];
-    double * w = new double[n+2];
+    double* p = new double[n + 2];
+    double* w = new double[n + 2];
     int ii;
-    for (ii=1; ii<n+1; ii++)
+    for(ii = 1; ii < n + 1; ii++)
     {
-        p[ii]=pp[ii-1];
-        w[ii]=ww[ii-1];
+        p[ii] = pp[ii - 1];
+        w[ii] = ww[ii - 1];
     }
 
     // 1. initialize
     double zhat = 0.0;
     z = 0.0;
-    double chat = c+epsilon2_;
-    p[n+1] = 0.0;
-    w[n+1]= COIN_DBL_MAX;
-    j=1;
+    double chat = c + epsilon2_;
+    p[n + 1] = 0.0;
+    w[n + 1] = COIN_DBL_MAX;
+    j = 1;
 
-    while (1)
+    while(1)
     {
         // 2. compute upper bound u
         // "find r = min {i: sum k=j,i w_k>chat};"
-        ii=j;
+        ii = j;
         double wSemiSum = w[j];
         double pSemiSum = p[j];
-        while (wSemiSum <= chat && ii<n+2)
+        while(wSemiSum <= chat && ii < n + 2)
         {
             ii++;
-            wSemiSum+=w[ii];
-            pSemiSum+=p[ii];
+            wSemiSum += w[ii];
+            pSemiSum += p[ii];
         }
-        if (ii==n+2)
+        if(ii == n + 2)
         {
             printf("Exceeded iterator limit. Aborting...\n");
             abort();
@@ -3962,61 +3962,61 @@ CglKnapsackCover::exactSolveKnapsack(
         // r = ii at this point
         wSemiSum -= w[ii];
         pSemiSum -= p[ii];
-        double u = pSemiSum + floor((chat - wSemiSum)*p[ii]/w[ii]);
+        double u = pSemiSum + floor((chat - wSemiSum) * p[ii] / w[ii]);
 
         // "if (z >= zhat + u) goto 5: backtrack;"
-        if (!(z >= zhat + u))
+        if(!(z >= zhat + u))
         {
             do
             {
                 // 3. perform a forward step
-                while (w[j] <= chat)
+                while(w[j] <= chat)
                 {
                     chat = chat - w[j];
                     zhat = zhat + p[j];
                     xhat[j] = 1;
-                    j+=1;
+                    j += 1;
                 }
-                if (j<=n)
+                if(j <= n)
                 {
-                    xhat[j]= 0;
-                    j+=1;
+                    xhat[j] = 0;
+                    j += 1;
                 }
             }
-            while(j==n);
+            while(j == n);
 
             // "if (j<n) goto 2: compute_ub;"
-            if (j<n)
+            if(j < n)
                 continue;
 
             // 4. up date the best solution so far
-            if (zhat > z)
+            if(zhat > z)
             {
-                z=zhat;
+                z = zhat;
                 int k;
-                for (k=0; k<n; k++)
+                for(k = 0; k < n; k++)
                 {
-                    x[k]=xhat[k+1];
+                    x[k] = xhat[k + 1];
                 }
             }
-            j=n;
-            if (xhat[n] == 1)
+            j = n;
+            if(xhat[n] == 1)
             {
-                chat = chat+ w[n];
-                zhat = zhat-p[n];
-                xhat[n]=0;
+                chat = chat + w[n];
+                zhat = zhat - p[n];
+                xhat[n] = 0;
             }
         }
         // 5. backtrack
         // "find i=max{k<j:xhat[k]=1};"
-        int i=j-1;
-        while (!(xhat[i]==1) && i>0)
+        int i = j - 1;
+        while(!(xhat[i] == 1) && i > 0)
         {
             i--;
         }
 
         // "if (no such i exists) return;"
-        if (i==0)
+        if(i == 0)
         {
             delete [] p;
             delete [] w;
@@ -4025,9 +4025,9 @@ CglKnapsackCover::exactSolveKnapsack(
         }
 
         chat = chat + w[i];
-        zhat=zhat -p[i];
-        xhat[i]=0;
-        j=i+1;
+        zhat = zhat - p[i];
+        xhat[i] = 0;
+        j = i + 1;
         // "goto 2: compute_ub;"
     }
 }
@@ -4035,32 +4035,32 @@ CglKnapsackCover::exactSolveKnapsack(
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-CglKnapsackCover::CglKnapsackCover ()
+CglKnapsackCover::CglKnapsackCover()
     :
     CglCutGenerator(),
     epsilon_(1.0e-07),
     epsilon2_(1.0e-5),
-    onetol_(1-epsilon_),
+    onetol_(1 - epsilon_),
     maxInKnapsack_(50),
     numRowsToCheck_(-1),
     rowsToCheck_(0),
     expensiveCuts_(false)
 {
-    numberCliques_=0;
-    numberColumns_=0;
-    cliqueType_=NULL;
-    cliqueStart_=NULL;
-    cliqueEntry_=NULL;
-    oneFixStart_=NULL;
-    zeroFixStart_=NULL;
-    endFixStart_=NULL;
-    whichClique_=NULL;
+    numberCliques_ = 0;
+    numberColumns_ = 0;
+    cliqueType_ = NULL;
+    cliqueStart_ = NULL;
+    cliqueEntry_ = NULL;
+    oneFixStart_ = NULL;
+    zeroFixStart_ = NULL;
+    endFixStart_ = NULL;
+    whichClique_ = NULL;
 }
 
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-CglKnapsackCover::CglKnapsackCover (const CglKnapsackCover & source) :
+CglKnapsackCover::CglKnapsackCover(const CglKnapsackCover & source) :
     CglCutGenerator(source),
     epsilon_(source.epsilon_),
     epsilon2_(source.epsilon2_),
@@ -4070,57 +4070,57 @@ CglKnapsackCover::CglKnapsackCover (const CglKnapsackCover & source) :
     rowsToCheck_(0),
     expensiveCuts_(source.expensiveCuts_)
 {
-    if (numRowsToCheck_ > 0)
+    if(numRowsToCheck_ > 0)
     {
         rowsToCheck_ = new int[numRowsToCheck_];
         CoinCopyN(source.rowsToCheck_, numRowsToCheck_, rowsToCheck_);
     }
-    numberCliques_=source.numberCliques_;
-    numberColumns_=source.numberColumns_;
-    if (numberCliques_)
+    numberCliques_ = source.numberCliques_;
+    numberColumns_ = source.numberColumns_;
+    if(numberCliques_)
     {
         cliqueType_ = new cliqueType [numberCliques_];
-        CoinMemcpyN(source.cliqueType_,numberCliques_,cliqueType_);
-        cliqueStart_ = new int [numberCliques_+1];
-        CoinMemcpyN(source.cliqueStart_,(numberCliques_+1),cliqueStart_);
+        CoinMemcpyN(source.cliqueType_, numberCliques_, cliqueType_);
+        cliqueStart_ = new int [numberCliques_ + 1];
+        CoinMemcpyN(source.cliqueStart_, (numberCliques_ + 1), cliqueStart_);
         int n = cliqueStart_[numberCliques_];
         cliqueEntry_ = new cliqueEntry [n];
-        CoinMemcpyN(source.cliqueEntry_,n,cliqueEntry_);
+        CoinMemcpyN(source.cliqueEntry_, n, cliqueEntry_);
         oneFixStart_ = new int [numberColumns_];
-        CoinMemcpyN(source.oneFixStart_,numberColumns_,oneFixStart_);
+        CoinMemcpyN(source.oneFixStart_, numberColumns_, oneFixStart_);
         zeroFixStart_ = new int [numberColumns_];
-        CoinMemcpyN(source.zeroFixStart_,numberColumns_,zeroFixStart_);
+        CoinMemcpyN(source.zeroFixStart_, numberColumns_, zeroFixStart_);
         endFixStart_ = new int [numberColumns_];
-        CoinMemcpyN(source.endFixStart_,numberColumns_,endFixStart_);
-        int n2=-1;
-        for (int i=numberColumns_-1; i>=0; i--)
+        CoinMemcpyN(source.endFixStart_, numberColumns_, endFixStart_);
+        int n2 = -1;
+        for(int i = numberColumns_ - 1; i >= 0; i--)
         {
-            if (oneFixStart_[i]>=0)
+            if(oneFixStart_[i] >= 0)
             {
-                n2=endFixStart_[i];
+                n2 = endFixStart_[i];
                 break;
             }
         }
-        assert (n==n2);
+        assert(n == n2);
         whichClique_ = new int [n];
-        CoinMemcpyN(source.whichClique_,n,whichClique_);
+        CoinMemcpyN(source.whichClique_, n, whichClique_);
     }
     else
     {
-        cliqueType_=NULL;
-        cliqueStart_=NULL;
-        cliqueEntry_=NULL;
-        oneFixStart_=NULL;
-        zeroFixStart_=NULL;
-        endFixStart_=NULL;
-        whichClique_=NULL;
+        cliqueType_ = NULL;
+        cliqueStart_ = NULL;
+        cliqueEntry_ = NULL;
+        oneFixStart_ = NULL;
+        zeroFixStart_ = NULL;
+        endFixStart_ = NULL;
+        whichClique_ = NULL;
     }
 }
 
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CglCutGenerator *
+CglCutGenerator*
 CglKnapsackCover::clone() const
 {
     return new CglKnapsackCover(*this);
@@ -4129,7 +4129,7 @@ CglKnapsackCover::clone() const
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-CglKnapsackCover::~CglKnapsackCover ()
+CglKnapsackCover::~CglKnapsackCover()
 {
     delete[] rowsToCheck_;
     deleteCliques();
@@ -4139,18 +4139,18 @@ CglKnapsackCover::~CglKnapsackCover ()
 // Assignment operator
 //-------------------------------------------------------------------
 CglKnapsackCover &
-CglKnapsackCover::operator=(const CglKnapsackCover& rhs)
+CglKnapsackCover::operator=(const CglKnapsackCover & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         CglCutGenerator::operator=(rhs);
-        epsilon_=rhs.epsilon_;
-        epsilon2_=rhs.epsilon2_;
-        onetol_=rhs.onetol_;
-        maxInKnapsack_=rhs.maxInKnapsack_;
+        epsilon_ = rhs.epsilon_;
+        epsilon2_ = rhs.epsilon2_;
+        onetol_ = rhs.onetol_;
+        maxInKnapsack_ = rhs.maxInKnapsack_;
         delete[] rowsToCheck_;
         numRowsToCheck_ = rhs.numRowsToCheck_;
-        if (numRowsToCheck_ > 0)
+        if(numRowsToCheck_ > 0)
         {
             rowsToCheck_ = new int[numRowsToCheck_];
             CoinCopyN(rhs.rowsToCheck_, numRowsToCheck_, rowsToCheck_);
@@ -4161,78 +4161,78 @@ CglKnapsackCover::operator=(const CglKnapsackCover& rhs)
         }
         expensiveCuts_ = rhs.expensiveCuts_;
         deleteCliques();
-        numberCliques_=rhs.numberCliques_;
-        numberColumns_=rhs.numberColumns_;
-        if (numberCliques_)
+        numberCliques_ = rhs.numberCliques_;
+        numberColumns_ = rhs.numberColumns_;
+        if(numberCliques_)
         {
             cliqueType_ = new cliqueType [numberCliques_];
-            CoinMemcpyN(rhs.cliqueType_,numberCliques_,cliqueType_);
-            cliqueStart_ = new int [numberCliques_+1];
-            CoinMemcpyN(rhs.cliqueStart_,(numberCliques_+1),cliqueStart_);
+            CoinMemcpyN(rhs.cliqueType_, numberCliques_, cliqueType_);
+            cliqueStart_ = new int [numberCliques_ + 1];
+            CoinMemcpyN(rhs.cliqueStart_, (numberCliques_ + 1), cliqueStart_);
             int n = cliqueStart_[numberCliques_];
             cliqueEntry_ = new cliqueEntry [n];
-            CoinMemcpyN(rhs.cliqueEntry_,n,cliqueEntry_);
+            CoinMemcpyN(rhs.cliqueEntry_, n, cliqueEntry_);
             oneFixStart_ = new int [numberColumns_];
-            CoinMemcpyN(rhs.oneFixStart_,numberColumns_,oneFixStart_);
+            CoinMemcpyN(rhs.oneFixStart_, numberColumns_, oneFixStart_);
             zeroFixStart_ = new int [numberColumns_];
-            CoinMemcpyN(rhs.zeroFixStart_,numberColumns_,zeroFixStart_);
+            CoinMemcpyN(rhs.zeroFixStart_, numberColumns_, zeroFixStart_);
             endFixStart_ = new int [numberColumns_];
-            CoinMemcpyN(rhs.endFixStart_,numberColumns_,endFixStart_);
-            int n2=-1;
-            for (int i=numberColumns_-1; i>=0; i--)
+            CoinMemcpyN(rhs.endFixStart_, numberColumns_, endFixStart_);
+            int n2 = -1;
+            for(int i = numberColumns_ - 1; i >= 0; i--)
             {
-                if (oneFixStart_[i]>=0)
+                if(oneFixStart_[i] >= 0)
                 {
-                    n2=endFixStart_[i];
+                    n2 = endFixStart_[i];
                     break;
                 }
             }
-            assert (n==n2);
+            assert(n == n2);
             whichClique_ = new int [n];
-            CoinMemcpyN(rhs.whichClique_,n,whichClique_);
+            CoinMemcpyN(rhs.whichClique_, n, whichClique_);
         }
     }
     return *this;
 }
 // Create C++ lines to get to current state
 std::string
-CglKnapsackCover::generateCpp( FILE * fp)
+CglKnapsackCover::generateCpp(FILE* fp)
 {
     CglKnapsackCover other;
-    fprintf(fp,"0#include \"CglKnapsackCover.hpp\"\n");
-    fprintf(fp,"3  CglKnapsackCover knapsackCover;\n");
-    if (maxInKnapsack_!=other.maxInKnapsack_)
-        fprintf(fp,"3  knapsackCover.setMaxInKnapsack(%d);\n",maxInKnapsack_);
+    fprintf(fp, "0#include \"CglKnapsackCover.hpp\"\n");
+    fprintf(fp, "3  CglKnapsackCover knapsackCover;\n");
+    if(maxInKnapsack_ != other.maxInKnapsack_)
+        fprintf(fp, "3  knapsackCover.setMaxInKnapsack(%d);\n", maxInKnapsack_);
     else
-        fprintf(fp,"4  knapsackCover.setMaxInKnapsack(%d);\n",maxInKnapsack_);
-    if (expensiveCuts_ != other.expensiveCuts_)
+        fprintf(fp, "4  knapsackCover.setMaxInKnapsack(%d);\n", maxInKnapsack_);
+    if(expensiveCuts_ != other.expensiveCuts_)
     {
-        if (expensiveCuts_)
-            fprintf(fp,"3  knapsackCover.switchOnExpensive();\n");
+        if(expensiveCuts_)
+            fprintf(fp, "3  knapsackCover.switchOnExpensive();\n");
         else
-            fprintf(fp,"3  knapsackCover.switchOffExpensive();\n");
+            fprintf(fp, "3  knapsackCover.switchOffExpensive();\n");
     }
     else
     {
-        if (expensiveCuts_)
-            fprintf(fp,"4  knapsackCover.switchOnExpensive();\n");
+        if(expensiveCuts_)
+            fprintf(fp, "4  knapsackCover.switchOnExpensive();\n");
         else
-            fprintf(fp,"4  knapsackCover.switchOffExpensive();\n");
+            fprintf(fp, "4  knapsackCover.switchOffExpensive();\n");
     }
-    if (getAggressiveness()!=other.getAggressiveness())
-        fprintf(fp,"3  knapsackCover.setAggressiveness(%d);\n",getAggressiveness());
+    if(getAggressiveness() != other.getAggressiveness())
+        fprintf(fp, "3  knapsackCover.setAggressiveness(%d);\n", getAggressiveness());
     else
-        fprintf(fp,"4  knapsackCover.setAggressiveness(%d);\n",getAggressiveness());
+        fprintf(fp, "4  knapsackCover.setAggressiveness(%d);\n", getAggressiveness());
     return "knapsackCover";
 }
 // This can be used to refresh any information
 void
-CglKnapsackCover::refreshSolver(OsiSolverInterface * solver)
+CglKnapsackCover::refreshSolver(OsiSolverInterface* solver)
 {
 #ifdef GUBCOVER
     deleteCliques();
-    if (solver->getMatrixByCol())
-        createCliques( *solver,2,200,false);
+    if(solver->getMatrixByCol())
+        createCliques(*solver, 2, 200, false);
 #endif
 }
 /* Creates cliques for use by probing.
@@ -4240,9 +4240,9 @@ CglKnapsackCover::refreshSolver(OsiSolverInterface * solver)
    Returns number of cliques found.
 */
 int
-CglKnapsackCover::createCliques( OsiSolverInterface & si,
-                                 int minimumSize, int maximumSize,
-                                 bool /*extendCliques*/)
+CglKnapsackCover::createCliques(OsiSolverInterface & si,
+                                int minimumSize, int maximumSize,
+                                bool /*extendCliques*/)
 {
     // Should be 0 unless you're debugging!
     const int logLevel = 0 ;
@@ -4252,160 +4252,160 @@ CglKnapsackCover::createCliques( OsiSolverInterface & si,
     int numberRows = si.getNumRows();
     numberColumns_ = si.getNumCols();
 
-    numberCliques_=0;
-    int numberEntries=0;
-    int numberIntegers=0;
-    int * lookup = new int[numberColumns_];
+    numberCliques_ = 0;
+    int numberEntries = 0;
+    int numberIntegers = 0;
+    int* lookup = new int[numberColumns_];
     int i;
-    for (i=0; i<numberColumns_; i++)
+    for(i = 0; i < numberColumns_; i++)
     {
-        if (si.isBinary(i))
-            lookup[i]=numberIntegers++;
+        if(si.isBinary(i))
+            lookup[i] = numberIntegers++;
         else
-            lookup[i]=-1;
+            lookup[i] = -1;
     }
 
-    int * which = new int[numberColumns_];
-    int * whichRow = new int[numberRows];
+    int* which = new int[numberColumns_];
+    int* whichRow = new int[numberRows];
     // Statistics
-    int totalP1=0,totalM1=0;
-    int numberBig=0,totalBig=0;
-    int numberFixed=0;
+    int totalP1 = 0, totalM1 = 0;
+    int numberBig = 0, totalBig = 0;
+    int numberFixed = 0;
 
     // Row copy
-    const double * elementByRow = matrixByRow.getElements();
-    const int * column = matrixByRow.getIndices();
-    const CoinBigIndex * rowStart = matrixByRow.getVectorStarts();
-    const int * rowLength = matrixByRow.getVectorLengths();
+    const double* elementByRow = matrixByRow.getElements();
+    const int* column = matrixByRow.getIndices();
+    const CoinBigIndex* rowStart = matrixByRow.getVectorStarts();
+    const int* rowLength = matrixByRow.getVectorLengths();
 
     // Column lengths for slacks
-    const int * columnLength = si.getMatrixByCol()->getVectorLengths();
+    const int* columnLength = si.getMatrixByCol()->getVectorLengths();
 
-    const double * lower = si.getColLower();
-    const double * upper = si.getColUpper();
-    const double * rowLower = si.getRowLower();
-    const double * rowUpper = si.getRowUpper();
+    const double* lower = si.getColLower();
+    const double* upper = si.getColUpper();
+    const double* rowLower = si.getRowLower();
+    const double* rowUpper = si.getRowUpper();
     int iRow;
-    for (iRow=0; iRow<numberRows; iRow++)
+    for(iRow = 0; iRow < numberRows; iRow++)
     {
-        int numberP1=0, numberM1=0;
+        int numberP1 = 0, numberM1 = 0;
         int j;
-        double upperValue=rowUpper[iRow];
-        double lowerValue=rowLower[iRow];
-        bool good=true;
+        double upperValue = rowUpper[iRow];
+        double lowerValue = rowLower[iRow];
+        bool good = true;
         int slack = -1;
-        for (j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+        for(j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
         {
             int iColumn = column[j];
-            int iInteger=lookup[iColumn];
-            if (upper[iColumn]-lower[iColumn]<1.0e-8)
+            int iInteger = lookup[iColumn];
+            if(upper[iColumn] - lower[iColumn] < 1.0e-8)
             {
                 // fixed
-                upperValue -= lower[iColumn]*elementByRow[j];
-                lowerValue -= lower[iColumn]*elementByRow[j];
+                upperValue -= lower[iColumn] * elementByRow[j];
+                lowerValue -= lower[iColumn] * elementByRow[j];
                 continue;
             }
-            else if (upper[iColumn]!=1.0||lower[iColumn]!=0.0)
+            else if(upper[iColumn] != 1.0 || lower[iColumn] != 0.0)
             {
                 good = false;
                 break;
             }
-            else if (iInteger<0)
+            else if(iInteger < 0)
             {
                 good = false;
                 break;
             }
             else
             {
-                if (columnLength[iColumn]==1)
+                if(columnLength[iColumn] == 1)
                     slack = iInteger;
             }
-            if (fabs(elementByRow[j])!=1.0)
+            if(fabs(elementByRow[j]) != 1.0)
             {
-                good=false;
+                good = false;
                 break;
             }
-            else if (elementByRow[j]>0.0)
+            else if(elementByRow[j] > 0.0)
             {
-                which[numberP1++]=iColumn;
+                which[numberP1++] = iColumn;
             }
             else
             {
                 numberM1++;
-                which[numberIntegers-numberM1]=iColumn;
+                which[numberIntegers - numberM1] = iColumn;
             }
         }
-        int iUpper = static_cast<int> (floor(upperValue+1.0e-5));
-        int iLower = static_cast<int> (ceil(lowerValue-1.0e-5));
-        int state=0;
-        if (upperValue<1.0e6)
+        int iUpper = static_cast<int>(floor(upperValue + 1.0e-5));
+        int iLower = static_cast<int>(ceil(lowerValue - 1.0e-5));
+        int state = 0;
+        if(upperValue < 1.0e6)
         {
-            if (iUpper==1-numberM1)
-                state=1;
-            else if (iUpper==-numberM1)
-                state=2;
-            else if (iUpper<-numberM1)
-                state=3;
+            if(iUpper == 1 - numberM1)
+                state = 1;
+            else if(iUpper == -numberM1)
+                state = 2;
+            else if(iUpper < -numberM1)
+                state = 3;
         }
-        if (!state&&lowerValue>-1.0e6)
+        if(!state && lowerValue > -1.0e6)
         {
-            if (-iLower==1-numberP1)
-                state=-1;
-            else if (-iLower==-numberP1)
-                state=-2;
-            else if (-iLower<-numberP1)
-                state=-3;
+            if(-iLower == 1 - numberP1)
+                state = -1;
+            else if(-iLower == -numberP1)
+                state = -2;
+            else if(-iLower < -numberP1)
+                state = -3;
         }
-        if (good&&state)
+        if(good && state)
         {
-            if (abs(state)==3)
+            if(abs(state) == 3)
             {
                 // infeasible
                 numberCliques_ = -99999;
                 break;
             }
-            else if (abs(state)==2)
+            else if(abs(state) == 2)
             {
                 // we can fix all
-                numberFixed += numberP1+numberM1;
-                if (state>0)
+                numberFixed += numberP1 + numberM1;
+                if(state > 0)
                 {
                     // fix all +1 at 0, -1 at 1
-                    for (i=0; i<numberP1; i++)
-                        si.setColUpper(which[i],0.0);
-                    for (i=0; i<numberM1; i++)
-                        si.setColLower(which[numberIntegers-i-1],
+                    for(i = 0; i < numberP1; i++)
+                        si.setColUpper(which[i], 0.0);
+                    for(i = 0; i < numberM1; i++)
+                        si.setColLower(which[numberIntegers - i - 1],
                                        1.0);
                 }
                 else
                 {
                     // fix all +1 at 1, -1 at 0
-                    for (i=0; i<numberP1; i++)
-                        si.setColLower(which[i],1.0);
-                    for (i=0; i<numberM1; i++)
-                        si.setColUpper(which[numberIntegers-i-1],
+                    for(i = 0; i < numberP1; i++)
+                        si.setColLower(which[i], 1.0);
+                    for(i = 0; i < numberM1; i++)
+                        si.setColUpper(which[numberIntegers - i - 1],
                                        0.0);
                 }
             }
             else
             {
-                int length = numberP1+numberM1;
+                int length = numberP1 + numberM1;
                 // temp
-                if (numberM1)
+                if(numberM1)
                 {
-                    if (logLevel>1)
+                    if(logLevel > 1)
                         printf("bad clique %d +1, %d -1\n",
-                               numberP1,numberM1);
-                    length=0;
+                               numberP1, numberM1);
+                    length = 0;
                 }
                 totalP1 += numberP1;
                 totalM1 += numberM1;
-                if (length >= minimumSize&&length<maximumSize)
+                if(length >= minimumSize && length < maximumSize)
                 {
-                    whichRow[numberCliques_++]=iRow;
+                    whichRow[numberCliques_++] = iRow;
                     numberEntries += length;
                 }
-                else if (length >= maximumSize)
+                else if(length >= maximumSize)
                 {
                     // too big
                     numberBig++;
@@ -4414,210 +4414,210 @@ CglKnapsackCover::createCliques( OsiSolverInterface & si,
             }
         }
     }
-    if (logLevel > 0)
+    if(logLevel > 0)
     {
-        if (numberCliques_<0)
+        if(numberCliques_ < 0)
         {
             printf("*** Problem infeasible\n");
         }
         else
         {
-            if (numberCliques_)
+            if(numberCliques_)
             {
-                if (logLevel>1)
+                if(logLevel > 1)
                     printf("%d cliques of average size %g found, %d P1, %d M1\n",
                            numberCliques_,
-                           (static_cast<double>(totalP1+totalM1))/
-                           (static_cast<double> (numberCliques_)),
-                           totalP1,totalM1);
+                           (static_cast<double>(totalP1 + totalM1)) /
+                           (static_cast<double>(numberCliques_)),
+                           totalP1, totalM1);
             }
             else
             {
-                if (logLevel>1)
+                if(logLevel > 1)
                     printf("No cliques found\n");
             }
-            if (numberBig)
+            if(numberBig)
             {
-                if (logLevel>1)
+                if(logLevel > 1)
                     printf("%d large cliques ( >= %d) found, total %d\n",
-                           numberBig,maximumSize,totalBig);
+                           numberBig, maximumSize, totalBig);
             }
-            if (numberFixed)
+            if(numberFixed)
             {
-                printf("%d variables fixed\n",numberFixed);
+                printf("%d variables fixed\n", numberFixed);
             }
         }
     }
-    if (numberCliques_>0)
+    if(numberCliques_ > 0)
     {
         cliqueType_ = new cliqueType [numberCliques_];
-        cliqueStart_ = new int [numberCliques_+1];
+        cliqueStart_ = new int [numberCliques_ + 1];
         cliqueEntry_ = new cliqueEntry [numberEntries];
         oneFixStart_ = new int [numberColumns_];
         zeroFixStart_ = new int [numberColumns_];
         endFixStart_ = new int [numberColumns_];
         whichClique_ = new int [numberEntries];
-        numberEntries=0;
-        cliqueStart_[0]=0;
-        for (i=0; i<numberColumns_; i++)
+        numberEntries = 0;
+        cliqueStart_[0] = 0;
+        for(i = 0; i < numberColumns_; i++)
         {
-            oneFixStart_[i]=-1;
-            zeroFixStart_[i]=-1;
-            endFixStart_[i]=-1;
+            oneFixStart_[i] = -1;
+            zeroFixStart_[i] = -1;
+            endFixStart_[i] = -1;
         }
         int iClique;
         // Possible some have been fixed
-        int numberCliques=numberCliques_;
-        numberCliques_=0;
-        for (iClique=0; iClique<numberCliques; iClique++)
+        int numberCliques = numberCliques_;
+        numberCliques_ = 0;
+        for(iClique = 0; iClique < numberCliques; iClique++)
         {
-            int iRow=whichRow[iClique];
-            whichRow[numberCliques_]=iRow;
-            int numberP1=0, numberM1=0;
+            int iRow = whichRow[iClique];
+            whichRow[numberCliques_] = iRow;
+            int numberP1 = 0, numberM1 = 0;
             int j;
-            double upperValue=rowUpper[iRow];
-            double lowerValue=rowLower[iRow];
-            for (j=rowStart[iRow]; j<rowStart[iRow]+rowLength[iRow]; j++)
+            double upperValue = rowUpper[iRow];
+            double lowerValue = rowLower[iRow];
+            for(j = rowStart[iRow]; j < rowStart[iRow] + rowLength[iRow]; j++)
             {
                 int iColumn = column[j];
-                if (upper[iColumn]-lower[iColumn]<1.0e-8)
+                if(upper[iColumn] - lower[iColumn] < 1.0e-8)
                 {
                     // fixed
-                    upperValue -= lower[iColumn]*elementByRow[j];
-                    lowerValue -= lower[iColumn]*elementByRow[j];
+                    upperValue -= lower[iColumn] * elementByRow[j];
+                    lowerValue -= lower[iColumn] * elementByRow[j];
                     continue;
                 }
-                if (elementByRow[j]>0.0)
+                if(elementByRow[j] > 0.0)
                 {
-                    which[numberP1++]=iColumn;
+                    which[numberP1++] = iColumn;
                 }
                 else
                 {
                     numberM1++;
-                    which[numberIntegers-numberM1]=iColumn;
+                    which[numberIntegers - numberM1] = iColumn;
                 }
             }
-            int iUpper = static_cast<int> (floor(upperValue+1.0e-5));
-            int iLower = static_cast<int> (ceil(lowerValue-1.0e-5));
-            int state=0;
-            if (upperValue<1.0e6)
+            int iUpper = static_cast<int>(floor(upperValue + 1.0e-5));
+            int iLower = static_cast<int>(ceil(lowerValue - 1.0e-5));
+            int state = 0;
+            if(upperValue < 1.0e6)
             {
-                if (iUpper==1-numberM1)
-                    state=1;
+                if(iUpper == 1 - numberM1)
+                    state = 1;
             }
-            if (!state&&lowerValue>-1.0e6)
+            if(!state && lowerValue > -1.0e6)
             {
-                state=-1;
+                state = -1;
             }
-            if (abs(state)!=1)
+            if(abs(state) != 1)
                 continue; // must have been fixed
-            if (iLower==iUpper)
+            if(iLower == iUpper)
             {
-                cliqueType_[numberCliques_].equality=1;
+                cliqueType_[numberCliques_].equality = 1;
             }
             else
             {
-                cliqueType_[numberCliques_].equality=0;
+                cliqueType_[numberCliques_].equality = 0;
             }
-            if (state>0)
+            if(state > 0)
             {
-                for (i=0; i<numberP1; i++)
+                for(i = 0; i < numberP1; i++)
                 {
                     // 1 is strong branch
                     int iColumn = which[i];
-                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries],iColumn);
-                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries],true);
+                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries], iColumn);
+                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries], true);
                     numberEntries++;
                     // zero counts
-                    oneFixStart_[iColumn]=0;
-                    zeroFixStart_[iColumn]=0;
+                    oneFixStart_[iColumn] = 0;
+                    zeroFixStart_[iColumn] = 0;
                 }
-                for (i=0; i<numberM1; i++)
+                for(i = 0; i < numberM1; i++)
                 {
                     // 0 is strong branch
-                    int iColumn = which[numberIntegers-i-1];
-                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries],iColumn);
-                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries],false);
+                    int iColumn = which[numberIntegers - i - 1];
+                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries], iColumn);
+                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries], false);
                     numberEntries++;
                     // zero counts
-                    oneFixStart_[iColumn]=0;
-                    zeroFixStart_[iColumn]=0;
+                    oneFixStart_[iColumn] = 0;
+                    zeroFixStart_[iColumn] = 0;
                 }
             }
             else
             {
-                for (i=0; i<numberP1; i++)
+                for(i = 0; i < numberP1; i++)
                 {
                     // 0 is strong branch
                     int iColumn = which[i];
-                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries],iColumn);
-                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries],false);
+                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries], iColumn);
+                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries], false);
                     numberEntries++;
                     // zero counts
-                    oneFixStart_[iColumn]=0;
-                    zeroFixStart_[iColumn]=0;
+                    oneFixStart_[iColumn] = 0;
+                    zeroFixStart_[iColumn] = 0;
                 }
-                for (i=0; i<numberM1; i++)
+                for(i = 0; i < numberM1; i++)
                 {
                     // 1 is strong branch
-                    int iColumn = which[numberIntegers-i-1];
-                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries],iColumn);
-                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries],true);
+                    int iColumn = which[numberIntegers - i - 1];
+                    setSequenceInCliqueEntry(cliqueEntry_[numberEntries], iColumn);
+                    setOneFixesInCliqueEntry(cliqueEntry_[numberEntries], true);
                     numberEntries++;
                     // zero counts
-                    oneFixStart_[iColumn]=0;
-                    zeroFixStart_[iColumn]=0;
+                    oneFixStart_[iColumn] = 0;
+                    zeroFixStart_[iColumn] = 0;
                 }
             }
             numberCliques_++;
-            cliqueStart_[numberCliques_]=numberEntries;
+            cliqueStart_[numberCliques_] = numberEntries;
         }
         // Now do column lists
         // First do counts
-        for (iClique=0; iClique<numberCliques_; iClique++)
+        for(iClique = 0; iClique < numberCliques_; iClique++)
         {
-            for (int j=cliqueStart_[iClique]; j<cliqueStart_[iClique+1]; j++)
+            for(int j = cliqueStart_[iClique]; j < cliqueStart_[iClique + 1]; j++)
             {
                 int iColumn = sequenceInCliqueEntry(cliqueEntry_[j]);
-                if (oneFixesInCliqueEntry(cliqueEntry_[j]))
+                if(oneFixesInCliqueEntry(cliqueEntry_[j]))
                     oneFixStart_[iColumn]++;
                 else
                     zeroFixStart_[iColumn]++;
             }
         }
         // now get starts and use which and end as counters
-        numberEntries=0;
-        for (int iColumn=0; iColumn<numberColumns_; iColumn++)
+        numberEntries = 0;
+        for(int iColumn = 0; iColumn < numberColumns_; iColumn++)
         {
-            if (oneFixStart_[iColumn]>=0)
+            if(oneFixStart_[iColumn] >= 0)
             {
-                int n1=oneFixStart_[iColumn];
-                int n2=zeroFixStart_[iColumn];
-                oneFixStart_[iColumn]=numberEntries;
-                which[iColumn]=numberEntries;
+                int n1 = oneFixStart_[iColumn];
+                int n2 = zeroFixStart_[iColumn];
+                oneFixStart_[iColumn] = numberEntries;
+                which[iColumn] = numberEntries;
                 numberEntries += n1;
-                zeroFixStart_[iColumn]=numberEntries;
-                endFixStart_[iColumn]=numberEntries;
+                zeroFixStart_[iColumn] = numberEntries;
+                endFixStart_[iColumn] = numberEntries;
                 numberEntries += n2;
             }
         }
         // now put in
-        for (iClique=0; iClique<numberCliques_; iClique++)
+        for(iClique = 0; iClique < numberCliques_; iClique++)
         {
-            for (int j=cliqueStart_[iClique]; j<cliqueStart_[iClique+1]; j++)
+            for(int j = cliqueStart_[iClique]; j < cliqueStart_[iClique + 1]; j++)
             {
                 int iColumn = sequenceInCliqueEntry(cliqueEntry_[j]);
-                if (oneFixesInCliqueEntry(cliqueEntry_[j]))
+                if(oneFixesInCliqueEntry(cliqueEntry_[j]))
                 {
                     int put = which[iColumn];
                     which[iColumn]++;
-                    whichClique_[put]=iClique;
+                    whichClique_[put] = iClique;
                 }
                 else
                 {
                     int put = endFixStart_[iColumn];
                     endFixStart_[iColumn]++;
-                    whichClique_[put]=iClique;
+                    whichClique_[put] = iClique;
                 }
             }
         }
@@ -4638,12 +4638,12 @@ CglKnapsackCover::deleteCliques()
     delete [] zeroFixStart_;
     delete [] endFixStart_;
     delete [] whichClique_;
-    cliqueType_=NULL;
-    cliqueStart_=NULL;
-    cliqueEntry_=NULL;
-    oneFixStart_=NULL;
-    zeroFixStart_=NULL;
-    endFixStart_=NULL;
-    whichClique_=NULL;
-    numberCliques_=0;
+    cliqueType_ = NULL;
+    cliqueStart_ = NULL;
+    cliqueEntry_ = NULL;
+    oneFixStart_ = NULL;
+    zeroFixStart_ = NULL;
+    endFixStart_ = NULL;
+    whichClique_ = NULL;
+    numberCliques_ = 0;
 }

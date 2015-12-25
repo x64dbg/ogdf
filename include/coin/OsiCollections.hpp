@@ -23,11 +23,11 @@ typedef std::vector<int>    OsiVectorInt;
 /// Vector of double
 typedef std::vector<double> OsiVectorDouble;
 /// Vector of OsiColCut pointers
-typedef std::vector<OsiColCut *> OsiVectorColCutPtr;
+typedef std::vector<OsiColCut*> OsiVectorColCutPtr;
 /// Vector of OsiRowCut pointers
-typedef std::vector<OsiRowCut *> OsiVectorRowCutPtr;
+typedef std::vector<OsiRowCut*> OsiVectorRowCutPtr;
 /// Vector of OsiCut pointers
-typedef std::vector<OsiCut *>    OsiVectorCutPtr;
+typedef std::vector<OsiCut*>    OsiVectorCutPtr;
 //@}
 
 

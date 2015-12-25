@@ -18,7 +18,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpNetworkBasis::ClpNetworkBasis ()
+ClpNetworkBasis::ClpNetworkBasis()
 {
 #ifndef COIN_FAST_CODE
     slackValue_ = -1.0;
@@ -40,32 +40,32 @@ ClpNetworkBasis::ClpNetworkBasis ()
     model_ = NULL;
 }
 // Constructor from CoinFactorization
-ClpNetworkBasis::ClpNetworkBasis(const ClpSimplex * model,
-                                 int numberRows, const CoinFactorizationDouble * pivotRegion,
-                                 const int * permuteBack,
-                                 const CoinBigIndex * startColumn,
-                                 const int * numberInColumn,
-                                 const int * indexRow, const CoinFactorizationDouble * /*element*/)
+ClpNetworkBasis::ClpNetworkBasis(const ClpSimplex* model,
+                                 int numberRows, const CoinFactorizationDouble* pivotRegion,
+                                 const int* permuteBack,
+                                 const CoinBigIndex* startColumn,
+                                 const int* numberInColumn,
+                                 const int* indexRow, const CoinFactorizationDouble* /*element*/)
 {
 #ifndef COIN_FAST_CODE
     slackValue_ = -1.0;
 #endif
     numberRows_ = numberRows;
     numberColumns_ = numberRows;
-    parent_ = new int [ numberRows_+1];
-    descendant_ = new int [ numberRows_+1];
-    pivot_ = new int [ numberRows_+1];
-    rightSibling_ = new int [ numberRows_+1];
-    leftSibling_ = new int [ numberRows_+1];
-    sign_ = new double [ numberRows_+1];
-    stack_ = new int [ numberRows_+1];
-    stack2_ = new int[numberRows_+1];
-    depth_ = new int[numberRows_+1];
-    mark_ = new char[numberRows_+1];
+    parent_ = new int [ numberRows_ + 1];
+    descendant_ = new int [ numberRows_ + 1];
+    pivot_ = new int [ numberRows_ + 1];
+    rightSibling_ = new int [ numberRows_ + 1];
+    leftSibling_ = new int [ numberRows_ + 1];
+    sign_ = new double [ numberRows_ + 1];
+    stack_ = new int [ numberRows_ + 1];
+    stack2_ = new int[numberRows_ + 1];
+    depth_ = new int[numberRows_ + 1];
+    mark_ = new char[numberRows_ + 1];
     permute_ = new int [numberRows_ + 1];
     permuteBack_ = new int [numberRows_ + 1];
     int i;
-    for (i = 0; i < numberRows_ + 1; i++)
+    for(i = 0; i < numberRows_ + 1; i++)
     {
         parent_[i] = -1;
         descendant_[i] = -1;
@@ -85,16 +85,16 @@ ClpNetworkBasis::ClpNetworkBasis(const ClpSimplex * model,
     // so pivotColumnback[0] is first slack in basis and
     // it pivots on row permuteBack[0]
     // a known root is given by permuteBack[numberRows_-1]
-    for (i = 0; i < numberRows_; i++)
+    for(i = 0; i < numberRows_; i++)
     {
         int iPivot = permuteBack[i];
         double sign;
-        if (pivotRegion[i] > 0.0)
+        if(pivotRegion[i] > 0.0)
             sign = 1.0;
         else
             sign = -1.0;
         int other;
-        if (numberInColumn[i] > 0)
+        if(numberInColumn[i] > 0)
         {
             int iRow = indexRow[startColumn[i]];
             other = permuteBack[iRow];
@@ -107,7 +107,7 @@ ClpNetworkBasis::ClpNetworkBasis(const ClpSimplex * model,
         sign_[iPivot] = sign;
         int iParent = other;
         parent_[iPivot] = other;
-        if (descendant_[iParent] >= 0)
+        if(descendant_[iParent] >= 0)
         {
             // we have a sibling
             int iRight = descendant_[iParent];
@@ -125,16 +125,16 @@ ClpNetworkBasis::ClpNetworkBasis(const ClpSimplex * model,
     int nStack = 1;
     stack_[0] = descendant_[numberRows_];
     depth_[numberRows_] = -1; // root
-    while (nStack)
+    while(nStack)
     {
         // take off
         int iNext = stack_[--nStack];
-        if (iNext >= 0)
+        if(iNext >= 0)
         {
             depth_[iNext] = nStack;
             int iRight = rightSibling_[iNext];
             stack_[nStack++] = iRight;
-            if (descendant_[iNext] >= 0)
+            if(descendant_[iNext] >= 0)
                 stack_[nStack++] = descendant_[iNext];
         }
     }
@@ -145,115 +145,115 @@ ClpNetworkBasis::ClpNetworkBasis(const ClpSimplex * model,
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpNetworkBasis::ClpNetworkBasis (const ClpNetworkBasis & rhs)
+ClpNetworkBasis::ClpNetworkBasis(const ClpNetworkBasis & rhs)
 {
 #ifndef COIN_FAST_CODE
     slackValue_ = rhs.slackValue_;
 #endif
     numberRows_ = rhs.numberRows_;
     numberColumns_ = rhs.numberColumns_;
-    if (rhs.parent_)
+    if(rhs.parent_)
     {
-        parent_ = new int [numberRows_+1];
+        parent_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.parent_, (numberRows_ + 1), parent_);
     }
     else
     {
         parent_ = NULL;
     }
-    if (rhs.descendant_)
+    if(rhs.descendant_)
     {
-        descendant_ = new int [numberRows_+1];
+        descendant_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.descendant_, (numberRows_ + 1), descendant_);
     }
     else
     {
         descendant_ = NULL;
     }
-    if (rhs.pivot_)
+    if(rhs.pivot_)
     {
-        pivot_ = new int [numberRows_+1];
+        pivot_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.pivot_, (numberRows_ + 1), pivot_);
     }
     else
     {
         pivot_ = NULL;
     }
-    if (rhs.rightSibling_)
+    if(rhs.rightSibling_)
     {
-        rightSibling_ = new int [numberRows_+1];
+        rightSibling_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.rightSibling_, (numberRows_ + 1), rightSibling_);
     }
     else
     {
         rightSibling_ = NULL;
     }
-    if (rhs.leftSibling_)
+    if(rhs.leftSibling_)
     {
-        leftSibling_ = new int [numberRows_+1];
+        leftSibling_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.leftSibling_, (numberRows_ + 1), leftSibling_);
     }
     else
     {
         leftSibling_ = NULL;
     }
-    if (rhs.sign_)
+    if(rhs.sign_)
     {
-        sign_ = new double [numberRows_+1];
+        sign_ = new double [numberRows_ + 1];
         CoinMemcpyN(rhs.sign_, (numberRows_ + 1), sign_);
     }
     else
     {
         sign_ = NULL;
     }
-    if (rhs.stack_)
+    if(rhs.stack_)
     {
-        stack_ = new int [numberRows_+1];
+        stack_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.stack_, (numberRows_ + 1), stack_);
     }
     else
     {
         stack_ = NULL;
     }
-    if (rhs.permute_)
+    if(rhs.permute_)
     {
-        permute_ = new int [numberRows_+1];
+        permute_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.permute_, (numberRows_ + 1), permute_);
     }
     else
     {
         permute_ = NULL;
     }
-    if (rhs.permuteBack_)
+    if(rhs.permuteBack_)
     {
-        permuteBack_ = new int [numberRows_+1];
+        permuteBack_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.permuteBack_, (numberRows_ + 1), permuteBack_);
     }
     else
     {
         permuteBack_ = NULL;
     }
-    if (rhs.stack2_)
+    if(rhs.stack2_)
     {
-        stack2_ = new int [numberRows_+1];
+        stack2_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.stack2_, (numberRows_ + 1), stack2_);
     }
     else
     {
         stack2_ = NULL;
     }
-    if (rhs.depth_)
+    if(rhs.depth_)
     {
-        depth_ = new int [numberRows_+1];
+        depth_ = new int [numberRows_ + 1];
         CoinMemcpyN(rhs.depth_, (numberRows_ + 1), depth_);
     }
     else
     {
         depth_ = NULL;
     }
-    if (rhs.mark_)
+    if(rhs.mark_)
     {
-        mark_ = new char [numberRows_+1];
+        mark_ = new char [numberRows_ + 1];
         CoinMemcpyN(rhs.mark_, (numberRows_ + 1), mark_);
     }
     else
@@ -266,7 +266,7 @@ ClpNetworkBasis::ClpNetworkBasis (const ClpNetworkBasis & rhs)
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpNetworkBasis::~ClpNetworkBasis ()
+ClpNetworkBasis::~ClpNetworkBasis()
 {
     delete [] parent_;
     delete [] descendant_;
@@ -286,9 +286,9 @@ ClpNetworkBasis::~ClpNetworkBasis ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpNetworkBasis &
-ClpNetworkBasis::operator=(const ClpNetworkBasis& rhs)
+ClpNetworkBasis::operator=(const ClpNetworkBasis & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         delete [] parent_;
         delete [] descendant_;
@@ -307,108 +307,108 @@ ClpNetworkBasis::operator=(const ClpNetworkBasis& rhs)
 #endif
         numberRows_ = rhs.numberRows_;
         numberColumns_ = rhs.numberColumns_;
-        if (rhs.parent_)
+        if(rhs.parent_)
         {
-            parent_ = new int [numberRows_+1];
+            parent_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.parent_, (numberRows_ + 1), parent_);
         }
         else
         {
             parent_ = NULL;
         }
-        if (rhs.descendant_)
+        if(rhs.descendant_)
         {
-            descendant_ = new int [numberRows_+1];
+            descendant_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.descendant_, (numberRows_ + 1), descendant_);
         }
         else
         {
             descendant_ = NULL;
         }
-        if (rhs.pivot_)
+        if(rhs.pivot_)
         {
-            pivot_ = new int [numberRows_+1];
+            pivot_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.pivot_, (numberRows_ + 1), pivot_);
         }
         else
         {
             pivot_ = NULL;
         }
-        if (rhs.rightSibling_)
+        if(rhs.rightSibling_)
         {
-            rightSibling_ = new int [numberRows_+1];
+            rightSibling_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.rightSibling_, (numberRows_ + 1), rightSibling_);
         }
         else
         {
             rightSibling_ = NULL;
         }
-        if (rhs.leftSibling_)
+        if(rhs.leftSibling_)
         {
-            leftSibling_ = new int [numberRows_+1];
+            leftSibling_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.leftSibling_, (numberRows_ + 1), leftSibling_);
         }
         else
         {
             leftSibling_ = NULL;
         }
-        if (rhs.sign_)
+        if(rhs.sign_)
         {
-            sign_ = new double [numberRows_+1];
+            sign_ = new double [numberRows_ + 1];
             CoinMemcpyN(rhs.sign_, (numberRows_ + 1), sign_);
         }
         else
         {
             sign_ = NULL;
         }
-        if (rhs.stack_)
+        if(rhs.stack_)
         {
-            stack_ = new int [numberRows_+1];
+            stack_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.stack_, (numberRows_ + 1), stack_);
         }
         else
         {
             stack_ = NULL;
         }
-        if (rhs.permute_)
+        if(rhs.permute_)
         {
-            permute_ = new int [numberRows_+1];
+            permute_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.permute_, (numberRows_ + 1), permute_);
         }
         else
         {
             permute_ = NULL;
         }
-        if (rhs.permuteBack_)
+        if(rhs.permuteBack_)
         {
-            permuteBack_ = new int [numberRows_+1];
+            permuteBack_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.permuteBack_, (numberRows_ + 1), permuteBack_);
         }
         else
         {
             permuteBack_ = NULL;
         }
-        if (rhs.stack2_)
+        if(rhs.stack2_)
         {
-            stack2_ = new int [numberRows_+1];
+            stack2_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.stack2_, (numberRows_ + 1), stack2_);
         }
         else
         {
             stack2_ = NULL;
         }
-        if (rhs.depth_)
+        if(rhs.depth_)
         {
-            depth_ = new int [numberRows_+1];
+            depth_ = new int [numberRows_ + 1];
             CoinMemcpyN(rhs.depth_, (numberRows_ + 1), depth_);
         }
         else
         {
             depth_ = NULL;
         }
-        if (rhs.mark_)
+        if(rhs.mark_)
         {
-            mark_ = new char [numberRows_+1];
+            mark_ = new char [numberRows_ + 1];
             CoinMemcpyN(rhs.mark_, (numberRows_ + 1), mark_);
         }
         else
@@ -425,17 +425,17 @@ void ClpNetworkBasis::check()
     int nStack = 1;
     stack_[0] = descendant_[numberRows_];
     depth_[numberRows_] = -1; // root
-    while (nStack)
+    while(nStack)
     {
         // take off
         int iNext = stack_[--nStack];
-        if (iNext >= 0)
+        if(iNext >= 0)
         {
             //assert (depth_[iNext]==nStack);
             depth_[iNext] = nStack;
             int iRight = rightSibling_[iNext];
             stack_[nStack++] = iRight;
-            if (descendant_[iNext] >= 0)
+            if(descendant_[iNext] >= 0)
                 stack_[nStack++] = descendant_[iNext];
         }
     }
@@ -445,7 +445,7 @@ void ClpNetworkBasis::print()
 {
     int i;
     printf("       parent descendant     left    right   sign    depth\n");
-    for (i = 0; i < numberRows_ + 1; i++)
+    for(i = 0; i < numberRows_ + 1; i++)
         printf("%4d  %7d   %8d  %7d  %7d  %5g  %7d\n",
                i, parent_[i], descendant_[i], leftSibling_[i], rightSibling_[i],
                sign_[i], depth_[i]);
@@ -454,21 +454,21 @@ void ClpNetworkBasis::print()
    returns 0=OK
 */
 int
-ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
-                                 int pivotRow)
+ClpNetworkBasis::replaceColumn(CoinIndexedVector* regionSparse,
+                               int pivotRow)
 {
     // When things have settled down then redo this to make more elegant
     // I am sure lots of loops can be combined
     // regionSparse is empty
-    assert (!regionSparse->getNumElements());
+    assert(!regionSparse->getNumElements());
     model_->unpack(regionSparse, model_->sequenceIn());
     // arc given by pivotRow is leaving basis
     //int kParent = parent_[pivotRow];
     // arc coming in has these two nodes
-    int * indices = regionSparse->getIndices();
+    int* indices = regionSparse->getIndices();
     int iRow0 = indices[0];
     int iRow1;
-    if (regionSparse->getNumElements() == 2)
+    if(regionSparse->getNumElements() == 2)
         iRow1 = indices[1];
     else
         iRow1 = numberRows_;
@@ -478,7 +478,7 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
     model_->unpack(regionSparse, model_->pivotVariable()[pivotRow]);
     int jRow0 = indices[0];
     int jRow1;
-    if (regionSparse->getNumElements() == 2)
+    if(regionSparse->getNumElements() == 2)
         jRow1 = indices[1];
     else
         jRow1 = numberRows_;
@@ -486,13 +486,13 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
     // get correct pivotRow
     //#define FULL_DEBUG
 #ifdef FULL_DEBUG
-    printf ("irow %d %d, jrow %d %d\n",
-            iRow0, iRow1, jRow0, jRow1);
+    printf("irow %d %d, jrow %d %d\n",
+           iRow0, iRow1, jRow0, jRow1);
 #endif
-    if (parent_[jRow0] == jRow1)
+    if(parent_[jRow0] == jRow1)
     {
         int newPivot = jRow0;
-        if (newPivot != pivotRow)
+        if(newPivot != pivotRow)
         {
 #ifdef FULL_DEBUG
             printf("pivot row of %d permuted to %d\n", pivotRow, newPivot);
@@ -504,7 +504,7 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
     {
         //assert (parent_[jRow1]==jRow0);
         int newPivot = jRow1;
-        if (newPivot != pivotRow)
+        if(newPivot != pivotRow)
         {
 #ifdef FULL_DEBUG
             printf("pivot row of %d permuted to %d\n", pivotRow, newPivot);
@@ -514,7 +514,7 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
     }
     bool extraPrint = (model_->numberIterations() > -3) &&
                       (model_->logLevel() > 10);
-    if (extraPrint)
+    if(extraPrint)
         print();
 #ifdef FULL_DEBUG
     printf("In %d (region= %g, stored %g) %d (%g) pivoting on %d (%g)\n",
@@ -523,9 +523,9 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
     // see which path outgoing pivot is on
     int kRow = -1;
     int jRow = iRow1;
-    while (jRow != numberRows_)
+    while(jRow != numberRows_)
     {
-        if (jRow == pivotRow)
+        if(jRow == pivotRow)
         {
             kRow = iRow1;
             break;
@@ -535,12 +535,12 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
             jRow = parent_[jRow];
         }
     }
-    if (kRow < 0)
+    if(kRow < 0)
     {
         jRow = iRow0;
-        while (jRow != numberRows_)
+        while(jRow != numberRows_)
         {
-            if (jRow == pivotRow)
+            if(jRow == pivotRow)
             {
                 kRow = iRow0;
                 break;
@@ -552,7 +552,7 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
         }
     }
     //assert (kRow>=0);
-    if (iRow0 == kRow)
+    if(iRow0 == kRow)
     {
         iRow0 = iRow1;
         iRow1 = kRow;
@@ -563,10 +563,10 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
     // Also get precursors for cleaning order
     int nStack = 1;
     stack_[0] = iRow0;
-    while (kRow != pivotRow)
+    while(kRow != pivotRow)
     {
         stack_[nStack++] = kRow;
-        if (sign * sign_[kRow] < 0.0)
+        if(sign * sign_[kRow] < 0.0)
         {
             sign_[kRow] = -sign_[kRow];
         }
@@ -578,7 +578,7 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
         //sign *= sign_[kRow];
     }
     stack_[nStack++] = pivotRow;
-    if (sign * sign_[pivotRow] < 0.0)
+    if(sign * sign_[pivotRow] < 0.0)
     {
         sign_[pivotRow] = -sign_[pivotRow];
     }
@@ -587,12 +587,12 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
         sign = -sign;
     }
     int iParent = parent_[pivotRow];
-    while (nStack > 1)
+    while(nStack > 1)
     {
         int iLeft;
         int iRight;
         kRow = stack_[--nStack];
-        int newParent = stack_[nStack-1];
+        int newParent = stack_[nStack - 1];
 #ifdef FULL_DEBUG
         printf("row %d, old parent %d, new parent %d, pivotrow %d\n", kRow,
                iParent, newParent, pivotRow);
@@ -608,10 +608,10 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
         // Take out of old parent
         iLeft = leftSibling_[kRow];
         iRight = rightSibling_[kRow];
-        if (iLeft < 0)
+        if(iLeft < 0)
         {
             // take out of tree
-            if (iRight >= 0)
+            if(iRight >= 0)
             {
                 leftSibling_[iRight] = iLeft;
                 descendant_[iParent] = iRight;
@@ -629,7 +629,7 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
         {
             // take out of tree
             rightSibling_[iLeft] = iRight;
-            if (iRight >= 0)
+            if(iRight >= 0)
                 leftSibling_[iRight] = iLeft;
         }
         leftSibling_[kRow] = -1;
@@ -637,7 +637,7 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
 
         // now insert new one
         // make this descendant of that
-        if (descendant_[newParent] >= 0)
+        if(descendant_[newParent] >= 0)
         {
             // we will have a sibling
             int jRight = descendant_[newParent];
@@ -662,21 +662,21 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
         iDepth ++; //correct for this one
         int nStack = 1;
         stack_[0] = iPivot;
-        while (nStack)
+        while(nStack)
         {
             // take off
             int iNext = stack_[--nStack];
-            if (iNext >= 0)
+            if(iNext >= 0)
             {
                 // add stack level
                 depth_[iNext] = nStack + iDepth;
                 stack_[nStack++] = rightSibling_[iNext];
-                if (descendant_[iNext] >= 0)
+                if(descendant_[iNext] >= 0)
                     stack_[nStack++] = descendant_[iNext];
             }
         }
     }
-    if (extraPrint)
+    if(extraPrint)
         print();
     //check();
     return 0;
@@ -684,30 +684,30 @@ ClpNetworkBasis::replaceColumn ( CoinIndexedVector * regionSparse,
 
 /* Updates one column (FTRAN) from region2 */
 double
-ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
-                                 CoinIndexedVector * regionSparse2,
-                                 int pivotRow)
+ClpNetworkBasis::updateColumn(CoinIndexedVector* regionSparse,
+                              CoinIndexedVector* regionSparse2,
+                              int pivotRow)
 {
-    regionSparse->clear (  );
-    double *region = regionSparse->denseVector (  );
-    double *region2 = regionSparse2->denseVector (  );
-    int *regionIndex2 = regionSparse2->getIndices (  );
-    int numberNonZero = regionSparse2->getNumElements (  );
-    int *regionIndex = regionSparse->getIndices (  );
+    regionSparse->clear();
+    double* region = regionSparse->denseVector();
+    double* region2 = regionSparse2->denseVector();
+    int* regionIndex2 = regionSparse2->getIndices();
+    int numberNonZero = regionSparse2->getNumElements();
+    int* regionIndex = regionSparse->getIndices();
     int i;
     bool doTwo = (numberNonZero == 2);
     int i0 = -1;
     int i1 = -1;
-    if (doTwo)
+    if(doTwo)
     {
         i0 = regionIndex2[0];
         i1 = regionIndex2[1];
     }
     double returnValue = 0.0;
     bool packed = regionSparse2->packedMode();
-    if (packed)
+    if(packed)
     {
-        if (doTwo && region2[0]*region2[1] < 0.0)
+        if(doTwo && region2[0]*region2[1] < 0.0)
         {
             region[i0] = region2[0];
             region2[0] = 0.0;
@@ -715,7 +715,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
             region2[1] = 0.0;
             int iDepth0 = depth_[i0];
             int iDepth1 = depth_[i1];
-            if (iDepth1 > iDepth0)
+            if(iDepth1 > iDepth0)
             {
                 int temp = i0;
                 i0 = i1;
@@ -725,9 +725,9 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                 iDepth1 = temp;
             }
             numberNonZero = 0;
-            if (pivotRow < 0)
+            if(pivotRow < 0)
             {
-                while (iDepth0 > iDepth1)
+                while(iDepth0 > iDepth1)
                 {
                     double pivotValue = region[i0];
                     // put back now ?
@@ -740,7 +740,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                     iDepth0--;
                     i0 = otherRow;
                 }
-                while (i0 != i1)
+                while(i0 != i1)
                 {
                     double pivotValue = region[i0];
                     // put back now ?
@@ -764,7 +764,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
             }
             else
             {
-                while (iDepth0 > iDepth1)
+                while(iDepth0 > iDepth1)
                 {
                     double pivotValue = region[i0];
                     // put back now ?
@@ -772,7 +772,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                     double value = pivotValue * sign_[i0];
                     region2[numberNonZero] = value;
                     regionIndex2[numberNonZero++] = iBack;
-                    if (iBack == pivotRow)
+                    if(iBack == pivotRow)
                         returnValue = value;
                     int otherRow = parent_[i0];
                     region[i0] = 0.0;
@@ -780,7 +780,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                     iDepth0--;
                     i0 = otherRow;
                 }
-                while (i0 != i1)
+                while(i0 != i1)
                 {
                     double pivotValue = region[i0];
                     // put back now ?
@@ -788,7 +788,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                     double value = pivotValue * sign_[i0];
                     region2[numberNonZero] = value;
                     regionIndex2[numberNonZero++] = iBack;
-                    if (iBack == pivotRow)
+                    if(iBack == pivotRow)
                         returnValue = value;
                     int otherRow = parent_[i0];
                     region[i0] = 0.0;
@@ -800,7 +800,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                     value = pivotValue1 * sign_[i1];
                     region2[numberNonZero] = value;
                     regionIndex2[numberNonZero++] = iBack1;
-                    if (iBack1 == pivotRow)
+                    if(iBack1 == pivotRow)
                         returnValue = value;
                     int otherRow1 = parent_[i1];
                     region[i1] = 0.0;
@@ -815,7 +815,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
             // stack2 is start, stack is next
             int greatestDepth = -1;
             //mark_[numberRows_]=1;
-            for (i = 0; i < numberNonZero; i++)
+            for(i = 0; i < numberNonZero; i++)
             {
                 int j = regionIndex2[i];
                 double value = region2[i];
@@ -823,10 +823,10 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                 region[j] = value;
                 regionIndex[i] = j;
                 int iDepth = depth_[j];
-                if (iDepth > greatestDepth)
+                if(iDepth > greatestDepth)
                     greatestDepth = iDepth;
                 // and back until marked
-                while (!mark_[j])
+                while(!mark_[j])
                 {
                     int iNext = stack2_[iDepth];
                     stack2_[iDepth] = j;
@@ -837,17 +837,17 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                 }
             }
             numberNonZero = 0;
-            if (pivotRow < 0)
+            if(pivotRow < 0)
             {
-                for (; greatestDepth >= 0; greatestDepth--)
+                for(; greatestDepth >= 0; greatestDepth--)
                 {
                     int iPivot = stack2_[greatestDepth];
                     stack2_[greatestDepth] = -1;
-                    while (iPivot >= 0)
+                    while(iPivot >= 0)
                     {
                         mark_[iPivot] = 0;
                         double pivotValue = region[iPivot];
-                        if (pivotValue)
+                        if(pivotValue)
                         {
                             // put back now ?
                             int iBack = permuteBack_[iPivot];
@@ -863,22 +863,22 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
             }
             else
             {
-                for (; greatestDepth >= 0; greatestDepth--)
+                for(; greatestDepth >= 0; greatestDepth--)
                 {
                     int iPivot = stack2_[greatestDepth];
                     stack2_[greatestDepth] = -1;
-                    while (iPivot >= 0)
+                    while(iPivot >= 0)
                     {
                         mark_[iPivot] = 0;
                         double pivotValue = region[iPivot];
-                        if (pivotValue)
+                        if(pivotValue)
                         {
                             // put back now ?
                             int iBack = permuteBack_[iPivot];
                             double value = pivotValue * sign_[iPivot];
                             region2[numberNonZero] = value;
                             regionIndex2[numberNonZero++] = iBack;
-                            if (iBack == pivotRow)
+                            if(iBack == pivotRow)
                                 returnValue = value;
                             int otherRow = parent_[iPivot];
                             region[iPivot] = 0.0;
@@ -892,7 +892,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
     }
     else
     {
-        if (doTwo && region2[i0]*region2[i1] < 0.0)
+        if(doTwo && region2[i0]*region2[i1] < 0.0)
         {
             // If just +- 1 then could go backwards on depth until join
             region[i0] = region2[i0];
@@ -901,7 +901,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
             region2[i1] = 0.0;
             int iDepth0 = depth_[i0];
             int iDepth1 = depth_[i1];
-            if (iDepth1 > iDepth0)
+            if(iDepth1 > iDepth0)
             {
                 int temp = i0;
                 i0 = i1;
@@ -911,7 +911,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                 iDepth1 = temp;
             }
             numberNonZero = 0;
-            while (iDepth0 > iDepth1)
+            while(iDepth0 > iDepth1)
             {
                 double pivotValue = region[i0];
                 // put back now ?
@@ -924,7 +924,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                 iDepth0--;
                 i0 = otherRow;
             }
-            while (i0 != i1)
+            while(i0 != i1)
             {
                 double pivotValue = region[i0];
                 // put back now ?
@@ -952,7 +952,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
             // stack2 is start, stack is next
             int greatestDepth = -1;
             //mark_[numberRows_]=1;
-            for (i = 0; i < numberNonZero; i++)
+            for(i = 0; i < numberNonZero; i++)
             {
                 int j = regionIndex2[i];
                 double value = region2[j];
@@ -960,10 +960,10 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                 region[j] = value;
                 regionIndex[i] = j;
                 int iDepth = depth_[j];
-                if (iDepth > greatestDepth)
+                if(iDepth > greatestDepth)
                     greatestDepth = iDepth;
                 // and back until marked
-                while (!mark_[j])
+                while(!mark_[j])
                 {
                     int iNext = stack2_[iDepth];
                     stack2_[iDepth] = j;
@@ -974,15 +974,15 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                 }
             }
             numberNonZero = 0;
-            for (; greatestDepth >= 0; greatestDepth--)
+            for(; greatestDepth >= 0; greatestDepth--)
             {
                 int iPivot = stack2_[greatestDepth];
                 stack2_[greatestDepth] = -1;
-                while (iPivot >= 0)
+                while(iPivot >= 0)
                 {
                     mark_[iPivot] = 0;
                     double pivotValue = region[iPivot];
-                    if (pivotValue)
+                    if(pivotValue)
                     {
                         // put back now ?
                         int iBack = permuteBack_[iPivot];
@@ -996,7 +996,7 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
                 }
             }
         }
-        if (pivotRow >= 0)
+        if(pivotRow >= 0)
             returnValue = region2[pivotRow];
     }
     region[numberRows_] = 0.0;
@@ -1004,10 +1004,10 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
 #ifdef FULL_DEBUG
     {
         int i;
-        for (i = 0; i < numberRows_; i++)
+        for(i = 0; i < numberRows_; i++)
         {
             assert(!mark_[i]);
-            assert (stack2_[i] == -1);
+            assert(stack2_[i] == -1);
         }
     }
 #endif
@@ -1019,31 +1019,31 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
    have got code working using this simple method - thank you!
    (the only exception is if you know input is dense e.g. rhs) */
 int
-ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
-                                 double region2[] ) const
+ClpNetworkBasis::updateColumn(CoinIndexedVector* regionSparse,
+                              double region2[]) const
 {
-    regionSparse->clear (  );
-    double *region = regionSparse->denseVector (  );
+    regionSparse->clear();
+    double* region = regionSparse->denseVector();
     int numberNonZero = 0;
-    int *regionIndex = regionSparse->getIndices (  );
+    int* regionIndex = regionSparse->getIndices();
     int i;
     // set up linked lists at each depth
     // stack2 is start, stack is next
     int greatestDepth = -1;
-    for (i = 0; i < numberRows_; i++)
+    for(i = 0; i < numberRows_; i++)
     {
         double value = region2[i];
-        if (value)
+        if(value)
         {
             region2[i] = 0.0;
             region[i] = value;
             regionIndex[numberNonZero++] = i;
             int j = i;
             int iDepth = depth_[j];
-            if (iDepth > greatestDepth)
+            if(iDepth > greatestDepth)
                 greatestDepth = iDepth;
             // and back until marked
-            while (!mark_[j])
+            while(!mark_[j])
             {
                 int iNext = stack2_[iDepth];
                 stack2_[iDepth] = j;
@@ -1055,15 +1055,15 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
         }
     }
     numberNonZero = 0;
-    for (; greatestDepth >= 0; greatestDepth--)
+    for(; greatestDepth >= 0; greatestDepth--)
     {
         int iPivot = stack2_[greatestDepth];
         stack2_[greatestDepth] = -1;
-        while (iPivot >= 0)
+        while(iPivot >= 0)
         {
             mark_[iPivot] = 0;
             double pivotValue = region[iPivot];
-            if (pivotValue)
+            if(pivotValue)
             {
                 // put back now ?
                 int iBack = permuteBack_[iPivot];
@@ -1086,20 +1086,20 @@ ClpNetworkBasis::updateColumn (  CoinIndexedVector * regionSparse,
    (the only exception is if you know input is dense e.g. dense objective)
    returns number of nonzeros */
 int
-ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
-        double region2[] ) const
+ClpNetworkBasis::updateColumnTranspose(CoinIndexedVector* regionSparse,
+                                       double region2[]) const
 {
     // permute in after copying
     // so will end up in right place
-    double *region = regionSparse->denseVector (  );
-    int *regionIndex = regionSparse->getIndices (  );
+    double* region = regionSparse->denseVector();
+    int* regionIndex = regionSparse->getIndices();
     int i;
     int numberNonZero = 0;
     CoinMemcpyN(region2, numberRows_, region);
-    for (i = 0; i < numberRows_; i++)
+    for(i = 0; i < numberRows_; i++)
     {
         double value = region[i];
-        if (value)
+        if(value)
         {
             int k = permute_[i];
             region[i] = 0.0;
@@ -1113,7 +1113,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
     // stack2 is start, stack is next
     int greatestDepth = -1;
     int smallestDepth = numberRows_;
-    for (i = 0; i < numberNonZero; i++)
+    for(i = 0; i < numberNonZero; i++)
     {
         int j = regionIndex[i];
         // add in
@@ -1125,9 +1125,9 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
         stack_[j] = jNext;
         // and put all descendants on list
         int iChild = descendant_[j];
-        while (iChild >= 0)
+        while(iChild >= 0)
         {
-            if (!mark_[iChild])
+            if(!mark_[iChild])
             {
                 regionIndex[numberNonZero++] = iChild;
                 mark_[iChild] = 1;
@@ -1138,11 +1138,11 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
     numberNonZero = 0;
     region2[numberRows_] = 0.0;
     int iDepth;
-    for (iDepth = smallestDepth; iDepth <= greatestDepth; iDepth++)
+    for(iDepth = smallestDepth; iDepth <= greatestDepth; iDepth++)
     {
         int iPivot = stack2_[iDepth];
         stack2_[iDepth] = -1;
-        while (iPivot >= 0)
+        while(iPivot >= 0)
         {
             mark_[iPivot] = 0;
             double pivotValue = region2[iPivot];
@@ -1150,7 +1150,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
             double otherValue = region2[otherRow];
             pivotValue = sign_[iPivot] * pivotValue + otherValue;
             region2[iPivot] = pivotValue;
-            if (pivotValue)
+            if(pivotValue)
                 numberNonZero++;
             iPivot = stack_[iPivot];
         }
@@ -1159,23 +1159,23 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
 }
 /* Updates one column (BTRAN) from region2 */
 int
-ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
-        CoinIndexedVector * regionSparse2) const
+ClpNetworkBasis::updateColumnTranspose(CoinIndexedVector* regionSparse,
+                                       CoinIndexedVector* regionSparse2) const
 {
     // permute in - presume small number so copy back
     // so will end up in right place
-    regionSparse->clear (  );
-    double *region = regionSparse->denseVector (  );
-    double *region2 = regionSparse2->denseVector (  );
-    int *regionIndex2 = regionSparse2->getIndices (  );
-    int numberNonZero2 = regionSparse2->getNumElements (  );
-    int *regionIndex = regionSparse->getIndices (  );
+    regionSparse->clear();
+    double* region = regionSparse->denseVector();
+    double* region2 = regionSparse2->denseVector();
+    int* regionIndex2 = regionSparse2->getIndices();
+    int numberNonZero2 = regionSparse2->getNumElements();
+    int* regionIndex = regionSparse->getIndices();
     int i;
     int numberNonZero = 0;
     bool packed = regionSparse2->packedMode();
-    if (packed)
+    if(packed)
     {
-        for (i = 0; i < numberNonZero2; i++)
+        for(i = 0; i < numberNonZero2; i++)
         {
             int k = regionIndex2[i];
             int j = permute_[k];
@@ -1190,7 +1190,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
         int greatestDepth = -1;
         int smallestDepth = numberRows_;
         //mark_[numberRows_]=1;
-        for (i = 0; i < numberNonZero2; i++)
+        for(i = 0; i < numberNonZero2; i++)
         {
             int j = regionIndex[i];
             regionIndex2[i] = j;
@@ -1203,9 +1203,9 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
             stack_[j] = jNext;
             // and put all descendants on list
             int iChild = descendant_[j];
-            while (iChild >= 0)
+            while(iChild >= 0)
             {
-                if (!mark_[iChild])
+                if(!mark_[iChild])
                 {
                     regionIndex2[numberNonZero++] = iChild;
                     mark_[iChild] = 1;
@@ -1213,7 +1213,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
                 iChild = rightSibling_[iChild];
             }
         }
-        for (; i < numberNonZero; i++)
+        for(; i < numberNonZero; i++)
         {
             int j = regionIndex2[i];
             // add in
@@ -1225,9 +1225,9 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
             stack_[j] = jNext;
             // and put all descendants on list
             int iChild = descendant_[j];
-            while (iChild >= 0)
+            while(iChild >= 0)
             {
-                if (!mark_[iChild])
+                if(!mark_[iChild])
                 {
                     regionIndex2[numberNonZero++] = iChild;
                     mark_[iChild] = 1;
@@ -1238,11 +1238,11 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
         numberNonZero2 = 0;
         region[numberRows_] = 0.0;
         int iDepth;
-        for (iDepth = smallestDepth; iDepth <= greatestDepth; iDepth++)
+        for(iDepth = smallestDepth; iDepth <= greatestDepth; iDepth++)
         {
             int iPivot = stack2_[iDepth];
             stack2_[iDepth] = -1;
-            while (iPivot >= 0)
+            while(iPivot >= 0)
             {
                 mark_[iPivot] = 0;
                 double pivotValue = region[iPivot];
@@ -1250,7 +1250,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
                 double otherValue = region[otherRow];
                 pivotValue = sign_[iPivot] * pivotValue + otherValue;
                 region[iPivot] = pivotValue;
-                if (pivotValue)
+                if(pivotValue)
                 {
                     region2[numberNonZero2] = pivotValue;
                     regionIndex2[numberNonZero2++] = iPivot;
@@ -1259,7 +1259,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
             }
         }
         // zero out
-        for (i = 0; i < numberNonZero2; i++)
+        for(i = 0; i < numberNonZero2; i++)
         {
             int k = regionIndex2[i];
             region[k] = 0.0;
@@ -1267,7 +1267,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
     }
     else
     {
-        for (i = 0; i < numberNonZero2; i++)
+        for(i = 0; i < numberNonZero2; i++)
         {
             int k = regionIndex2[i];
             int j = permute_[k];
@@ -1283,7 +1283,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
         int greatestDepth = -1;
         int smallestDepth = numberRows_;
         //mark_[numberRows_]=1;
-        for (i = 0; i < numberNonZero2; i++)
+        for(i = 0; i < numberNonZero2; i++)
         {
             int j = regionIndex[i];
             double value = region[j];
@@ -1299,9 +1299,9 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
             stack_[j] = jNext;
             // and put all descendants on list
             int iChild = descendant_[j];
-            while (iChild >= 0)
+            while(iChild >= 0)
             {
-                if (!mark_[iChild])
+                if(!mark_[iChild])
                 {
                     regionIndex2[numberNonZero++] = iChild;
                     mark_[iChild] = 1;
@@ -1309,7 +1309,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
                 iChild = rightSibling_[iChild];
             }
         }
-        for (; i < numberNonZero; i++)
+        for(; i < numberNonZero; i++)
         {
             int j = regionIndex2[i];
             // add in
@@ -1321,9 +1321,9 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
             stack_[j] = jNext;
             // and put all descendants on list
             int iChild = descendant_[j];
-            while (iChild >= 0)
+            while(iChild >= 0)
             {
-                if (!mark_[iChild])
+                if(!mark_[iChild])
                 {
                     regionIndex2[numberNonZero++] = iChild;
                     mark_[iChild] = 1;
@@ -1334,11 +1334,11 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
         numberNonZero2 = 0;
         region2[numberRows_] = 0.0;
         int iDepth;
-        for (iDepth = smallestDepth; iDepth <= greatestDepth; iDepth++)
+        for(iDepth = smallestDepth; iDepth <= greatestDepth; iDepth++)
         {
             int iPivot = stack2_[iDepth];
             stack2_[iDepth] = -1;
-            while (iPivot >= 0)
+            while(iPivot >= 0)
             {
                 mark_[iPivot] = 0;
                 double pivotValue = region2[iPivot];
@@ -1346,7 +1346,7 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
                 double otherValue = region2[otherRow];
                 pivotValue = sign_[iPivot] * pivotValue + otherValue;
                 region2[iPivot] = pivotValue;
-                if (pivotValue)
+                if(pivotValue)
                     regionIndex2[numberNonZero2++] = iPivot;
                 iPivot = stack_[iPivot];
             }
@@ -1356,10 +1356,10 @@ ClpNetworkBasis::updateColumnTranspose (  CoinIndexedVector * regionSparse,
 #ifdef FULL_DEBUG
     {
         int i;
-        for (i = 0; i < numberRows_; i++)
+        for(i = 0; i < numberRows_; i++)
         {
             assert(!mark_[i]);
-            assert (stack2_[i] == -1);
+            assert(stack2_[i] == -1);
         }
     }
 #endif

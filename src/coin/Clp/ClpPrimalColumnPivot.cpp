@@ -15,7 +15,7 @@
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-ClpPrimalColumnPivot::ClpPrimalColumnPivot () :
+ClpPrimalColumnPivot::ClpPrimalColumnPivot() :
     model_(NULL),
     type_(-1),
     looksOptimal_(false)
@@ -26,7 +26,7 @@ ClpPrimalColumnPivot::ClpPrimalColumnPivot () :
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-ClpPrimalColumnPivot::ClpPrimalColumnPivot (const ClpPrimalColumnPivot & source) :
+ClpPrimalColumnPivot::ClpPrimalColumnPivot(const ClpPrimalColumnPivot & source) :
     model_(source.model_),
     type_(source.type_),
     looksOptimal_(source.looksOptimal_)
@@ -37,7 +37,7 @@ ClpPrimalColumnPivot::ClpPrimalColumnPivot (const ClpPrimalColumnPivot & source)
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-ClpPrimalColumnPivot::~ClpPrimalColumnPivot ()
+ClpPrimalColumnPivot::~ClpPrimalColumnPivot()
 {
 
 }
@@ -46,9 +46,9 @@ ClpPrimalColumnPivot::~ClpPrimalColumnPivot ()
 // Assignment operator
 //-------------------------------------------------------------------
 ClpPrimalColumnPivot &
-ClpPrimalColumnPivot::operator=(const ClpPrimalColumnPivot& rhs)
+ClpPrimalColumnPivot::operator=(const ClpPrimalColumnPivot & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         type_ = rhs.type_;
         model_ = rhs.model_;
@@ -57,14 +57,14 @@ ClpPrimalColumnPivot::operator=(const ClpPrimalColumnPivot& rhs)
     return *this;
 }
 void
-ClpPrimalColumnPivot::saveWeights(ClpSimplex * model, int )
+ClpPrimalColumnPivot::saveWeights(ClpSimplex* model, int)
 {
     model_ = model;
 }
 // checks accuracy and may re-initialize (may be empty)
 
 void
-ClpPrimalColumnPivot::updateWeights(CoinIndexedVector *)
+ClpPrimalColumnPivot::updateWeights(CoinIndexedVector*)
 {
 }
 
@@ -77,7 +77,7 @@ ClpPrimalColumnPivot::clearArrays()
    Also number of iterations before recompute
 */
 int
-ClpPrimalColumnPivot::numberSprintColumns(int & ) const
+ClpPrimalColumnPivot::numberSprintColumns(int &) const
 {
     return 0;
 }

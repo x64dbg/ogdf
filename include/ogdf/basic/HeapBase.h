@@ -56,78 +56,78 @@
 namespace ogdf
 {
 
-/**
+    /**
 
-* \brief A data structure implementing the abstract data type
-* priority queue
-* A Heap is a data structure implementing the abstract data type
-* priority queue, maintaining a set of elements each with an associated key value
-* used for keeping the elements in a specific order.
+    * \brief A data structure implementing the abstract data type
+    * priority queue
+    * A Heap is a data structure implementing the abstract data type
+    * priority queue, maintaining a set of elements each with an associated key value
+    * used for keeping the elements in a specific order.
 
-* It supports the following operations:
-* insert(element, key) insert element with key in set
-* min   return element with minimum key
-* extractMin   remove and return element with minimum key
-* decreaseKey   decrease the key of a given element to a given value
-* delete   remove a given element fromthe structure
-
-
-* Running times and space requirements are depending on the actual
-* implementation type (e.g., binary, binomial or fibonacci heaps)
-
-*/
+    * It supports the following operations:
+    * insert(element, key) insert element with key in set
+    * min   return element with minimum key
+    * extractMin   remove and return element with minimum key
+    * decreaseKey   decrease the key of a given element to a given value
+    * delete   remove a given element fromthe structure
 
 
-class HeapEntry;
+    * Running times and space requirements are depending on the actual
+    * implementation type (e.g., binary, binomial or fibonacci heaps)
 
-class HeapEntryPointer;
-
-template <class Priority, class HeapObject>
-class HeapBase
-{
-
-public:
-    //! Constructor
-    HeapBase() { }
-
-    virtual ~HeapBase() { }
+    */
 
 
-    //! build a heap out of a given set of elements
-    virtual void makeHeap() = 0;
+    class HeapEntry;
 
-    //HeapObject minRet() { }
+    class HeapEntryPointer;
 
-    //*******************************************************
-    //Modification
-
-    // insert a new element with priority key
-    //virtual void insert(HeapObject, Priority /* key */) { }
-    //extractMin
-    //derived classes should decide themselves if they have
-    //a specific delete function
-    //virtual void delete() = 0;
-
-    /// update the data structure by decreasing the key of an object
-    //virtual void decreaseKey() { }
-
-    //*******************************************************
-    //constant functions
-    int size() const
+    template <class Priority, class HeapObject>
+    class HeapBase
     {
-        return m_size;
-    }
 
-    bool empty() const
-    {
-        return m_size==0;
-    }
+    public:
+        //! Constructor
+        HeapBase() { }
+
+        virtual ~HeapBase() { }
 
 
-protected:
-    int m_size; //number of elements stored in heap
+        //! build a heap out of a given set of elements
+        virtual void makeHeap() = 0;
 
-};
+        //HeapObject minRet() { }
+
+        //*******************************************************
+        //Modification
+
+        // insert a new element with priority key
+        //virtual void insert(HeapObject, Priority /* key */) { }
+        //extractMin
+        //derived classes should decide themselves if they have
+        //a specific delete function
+        //virtual void delete() = 0;
+
+        /// update the data structure by decreasing the key of an object
+        //virtual void decreaseKey() { }
+
+        //*******************************************************
+        //constant functions
+        int size() const
+        {
+            return m_size;
+        }
+
+        bool empty() const
+        {
+            return m_size == 0;
+        }
+
+
+    protected:
+        int m_size; //number of elements stored in heap
+
+    };
 
 
 

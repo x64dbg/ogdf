@@ -57,38 +57,38 @@
 namespace ogdf
 {
 
-class SugiyamaLayout;
+    class SugiyamaLayout;
 
-/**
- * \brief Interface of crossing minimization algorithms for layered graphs.
- *
- * The interface of a two-layer crossing minimization algorithm consists of
- * two methods:
- *   -# virtual const HierarchyLevelsBase *reduceCrossings(const SugiyamaLayout sugi,
- * Hierarchy &H) performs crossing minimization on layered graph H as a part
- * of Sugiyama algorithm instance sugi.
- *   -# cleanup() has to be called last and performs some final clean-up work.
- */
+    /**
+     * \brief Interface of crossing minimization algorithms for layered graphs.
+     *
+     * The interface of a two-layer crossing minimization algorithm consists of
+     * two methods:
+     *   -# virtual const HierarchyLevelsBase *reduceCrossings(const SugiyamaLayout sugi,
+     * Hierarchy &H) performs crossing minimization on layered graph H as a part
+     * of Sugiyama algorithm instance sugi.
+     *   -# cleanup() has to be called last and performs some final clean-up work.
+     */
 
 
-class OGDF_EXPORT LayeredCrossMinModule
-{
-public:
+    class OGDF_EXPORT LayeredCrossMinModule
+    {
+    public:
 
-    //! Creates empty module.
-    LayeredCrossMinModule() { }
+        //! Creates empty module.
+        LayeredCrossMinModule() { }
 
-    //! Destruct.
-    virtual ~LayeredCrossMinModule() { }
+        //! Destruct.
+        virtual ~LayeredCrossMinModule() { }
 
-    //! Calls the actual crossing minimization algorithm.
-    virtual const HierarchyLevelsBase *reduceCrossings(const SugiyamaLayout &sugi, Hierarchy &H) = 0;
+        //! Calls the actual crossing minimization algorithm.
+        virtual const HierarchyLevelsBase* reduceCrossings(const SugiyamaLayout & sugi, Hierarchy & H) = 0;
 
-    //! Performs clean-up.
-    virtual void cleanup() { }
+        //! Performs clean-up.
+        virtual void cleanup() { }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 
 } // end namespace ogdf

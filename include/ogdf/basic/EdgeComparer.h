@@ -61,61 +61,61 @@
 namespace ogdf
 {
 
-//! The EdgeComparer compares adjacency entries on base of the position of the nodes given by an Attributed Graph's layout information
-/**
- * helper function for ordering / sorting
- * assumes that PG is a planrep on original AG and that PG is
- * not normalized, i.e., if there are bends in AG, they do not
- * have a counterpart in PG (all nodes in PG have an original)
- * temporary: we assume that we have two adjentries
- * at a common point, so we leave the check for now
- * if they meet and at which point
- *
- * \todo check if sorting order fits adjacency list
- */
-class OGDF_EXPORT EdgeComparer : public VComparer<adjEntry>
-{
-public:
-    //order: clockwise
-
-    EdgeComparer(const GraphAttributes& AG, const PlanRep& PR) : m_AG(&AG), m_PR(&PR) { }
-
-    //! compare the edges directly in AG
-    EdgeComparer(const GraphAttributes &AG) : m_AG(&AG), m_PR(0) {}
-
-    int compare(const adjEntry &e1, const adjEntry &e2) const;
-
-    //! check if vector u->v lies within 180degree halfcircle before vector u->w in clockwise order (i.e. twelve o'clock lies before 1)
-    bool before(const DPoint u, const DPoint v, const DPoint w) const;
-
-private:
-
-    //! returns a value > 0, if vector uv lies "before" vector uw
-    int orientation(
-        const DPoint u,
-        const DPoint v,
-        const DPoint w) const;
-
-    //! compares by angle relative to x-axis
-    int compareVectors(
-        const double& x1,
-        const double& y1,
-        const double& x2,
-        const double& y2) const;
-    //! computes angle between vectors p->q, p->r
-    double angle(DPoint p, DPoint q, DPoint r) const;
-
-    inline int signOf(const double& x) const
+    //! The EdgeComparer compares adjacency entries on base of the position of the nodes given by an Attributed Graph's layout information
+    /**
+     * helper function for ordering / sorting
+     * assumes that PG is a planrep on original AG and that PG is
+     * not normalized, i.e., if there are bends in AG, they do not
+     * have a counterpart in PG (all nodes in PG have an original)
+     * temporary: we assume that we have two adjentries
+     * at a common point, so we leave the check for now
+     * if they meet and at which point
+     *
+     * \todo check if sorting order fits adjacency list
+     */
+    class OGDF_EXPORT EdgeComparer : public VComparer<adjEntry>
     {
-        if ( x == 0 ) return 0;
-        else if (x > 0 ) return 1;
-        else return -1;
-    }
+    public:
+        //order: clockwise
+
+        EdgeComparer(const GraphAttributes & AG, const PlanRep & PR) : m_AG(&AG), m_PR(&PR) { }
+
+        //! compare the edges directly in AG
+        EdgeComparer(const GraphAttributes & AG) : m_AG(&AG), m_PR(0) {}
+
+        int compare(const adjEntry & e1, const adjEntry & e2) const;
+
+        //! check if vector u->v lies within 180degree halfcircle before vector u->w in clockwise order (i.e. twelve o'clock lies before 1)
+        bool before(const DPoint u, const DPoint v, const DPoint w) const;
+
+    private:
+
+        //! returns a value > 0, if vector uv lies "before" vector uw
+        int orientation(
+            const DPoint u,
+            const DPoint v,
+            const DPoint w) const;
+
+        //! compares by angle relative to x-axis
+        int compareVectors(
+            const double & x1,
+            const double & y1,
+            const double & x2,
+            const double & y2) const;
+        //! computes angle between vectors p->q, p->r
+        double angle(DPoint p, DPoint q, DPoint r) const;
+
+        inline int signOf(const double & x) const
+        {
+            if(x == 0) return 0;
+            else if(x > 0) return 1;
+            else return -1;
+        }
 
 
-    const GraphAttributes *m_AG;
-    const PlanRep *m_PR;
-};//EdgeComparer
+        const GraphAttributes* m_AG;
+        const PlanRep* m_PR;
+    };//EdgeComparer
 
 
 }//namespace ogdf

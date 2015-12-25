@@ -32,10 +32,10 @@ public:
     {
         friend class OsiCuts;
     public:
-        iterator(OsiCuts& cuts);
+        iterator(OsiCuts & cuts);
         iterator(const iterator & src);
-        iterator & operator=( const iterator& rhs);
-        ~iterator ();
+        iterator & operator=(const iterator & rhs);
+        ~iterator();
         OsiCut* operator*() const
         {
             return cutP_;
@@ -49,19 +49,19 @@ public:
             return temp;
         }
 
-        bool operator==(const iterator& it) const
+        bool operator==(const iterator & it) const
         {
-            return (colCutIndex_+rowCutIndex_)==(it.colCutIndex_+it.rowCutIndex_);
+            return (colCutIndex_ + rowCutIndex_) == (it.colCutIndex_ + it.rowCutIndex_);
         }
 
-        bool operator!=(const iterator& it) const
+        bool operator!=(const iterator & it) const
         {
-            return !((*this)==it);
+            return !((*this) == it);
         }
 
-        bool operator<(const iterator& it) const
+        bool operator<(const iterator & it) const
         {
-            return (colCutIndex_+rowCutIndex_)<(it.colCutIndex_+it.rowCutIndex_);
+            return (colCutIndex_ + rowCutIndex_) < (it.colCutIndex_ + it.rowCutIndex_);
         }
 
     private:
@@ -69,10 +69,10 @@ public:
         // *THINK* : how to inline these without sticking the code here (ugly...)
         iterator begin();
         iterator end();
-        OsiCuts& cuts_;
+        OsiCuts & cuts_;
         int rowCutIndex_;
         int colCutIndex_;
-        OsiCut * cutP_;
+        OsiCut* cutP_;
     };
 
     /** Const Iterator
@@ -86,14 +86,14 @@ public:
         typedef std::bidirectional_iterator_tag iterator_category;
         typedef OsiCut* value_type;
         typedef size_t difference_type;
-        typedef OsiCut ** pointer;
-        typedef OsiCut *& reference;
+        typedef OsiCut** pointer;
+        typedef OsiCut* & reference;
 
     public:
-        const_iterator(const OsiCuts& cuts);
+        const_iterator(const OsiCuts & cuts);
         const_iterator(const const_iterator & src);
-        const_iterator & operator=( const const_iterator& rhs);
-        ~const_iterator ();
+        const_iterator & operator=(const const_iterator & rhs);
+        ~const_iterator();
         const OsiCut* operator*() const
         {
             return cutP_;
@@ -108,29 +108,29 @@ public:
             return temp;
         }
 
-        bool operator==(const const_iterator& it) const
+        bool operator==(const const_iterator & it) const
         {
-            return (colCutIndex_+rowCutIndex_)==(it.colCutIndex_+it.rowCutIndex_);
+            return (colCutIndex_ + rowCutIndex_) == (it.colCutIndex_ + it.rowCutIndex_);
         }
 
-        bool operator!=(const const_iterator& it) const
+        bool operator!=(const const_iterator & it) const
         {
-            return !((*this)==it);
+            return !((*this) == it);
         }
 
-        bool operator<(const const_iterator& it) const
+        bool operator<(const const_iterator & it) const
         {
-            return (colCutIndex_+rowCutIndex_)<(it.colCutIndex_+it.rowCutIndex_);
+            return (colCutIndex_ + rowCutIndex_) < (it.colCutIndex_ + it.rowCutIndex_);
         }
     private:
         inline const_iterator();
         // *THINK* : how to inline these without sticking the code here (ugly...)
         const_iterator begin();
         const_iterator end();
-        const OsiCuts * cutsPtr_;
+        const OsiCuts* cutsPtr_;
         int rowCutIndex_;
         int colCutIndex_;
-        const OsiCut * cutP_;
+        const OsiCut* cutP_;
     };
     //@}
 
@@ -143,30 +143,30 @@ public:
     /** \name Inserting a cut into collection */
     //@{
     /** \brief Insert a row cut */
-    inline void insert( const OsiRowCut & rc );
+    inline void insert(const OsiRowCut & rc);
     /** \brief Insert a row cut unless it is a duplicate - cut may get sorted.
        Duplicate is defined as CoinAbsFltEq says same*/
-    void insertIfNotDuplicate( OsiRowCut & rc , CoinAbsFltEq treatAsSame=CoinAbsFltEq(1.0e-12) );
+    void insertIfNotDuplicate(OsiRowCut & rc , CoinAbsFltEq treatAsSame = CoinAbsFltEq(1.0e-12));
     /** \brief Insert a row cut unless it is a duplicate - cut may get sorted.
        Duplicate is defined as CoinRelFltEq says same*/
-    void insertIfNotDuplicate( OsiRowCut & rc , CoinRelFltEq treatAsSame );
+    void insertIfNotDuplicate(OsiRowCut & rc , CoinRelFltEq treatAsSame);
     /** \brief Insert a column cut */
-    inline void insert( const OsiColCut & cc );
+    inline void insert(const OsiColCut & cc);
 
     /** \brief Insert a row cut.
 
       The OsiCuts object takes control of the cut object.
       On return, \c rcPtr is NULL.
     */
-    inline void insert( OsiRowCut * & rcPtr );
+    inline void insert(OsiRowCut* & rcPtr);
     /** \brief Insert a column cut.
 
       The OsiCuts object takes control of the cut object.
       On return \c ccPtr is NULL.
     */
-    inline void insert( OsiColCut * & ccPtr );
+    inline void insert(OsiColCut* & ccPtr);
 #if 0
-    inline void insert( OsiCut    * & cPtr  );
+    inline void insert(OsiCut*   &   cPtr);
 #endif
 
     /** \brief Insert a set of cuts */
@@ -193,13 +193,13 @@ public:
     /**@name Get a cut from collection */
     //@{
     /// Get pointer to i'th row cut
-    inline OsiRowCut * rowCutPtr(int i);
+    inline OsiRowCut* rowCutPtr(int i);
     /// Get const pointer to i'th row cut
-    inline const OsiRowCut * rowCutPtr(int i) const;
+    inline const OsiRowCut* rowCutPtr(int i) const;
     /// Get pointer to i'th column cut
-    inline OsiColCut * colCutPtr(int i);
+    inline OsiColCut* colCutPtr(int i);
     /// Get const pointer to i'th column cut
-    inline const OsiColCut * colCutPtr(int i) const;
+    inline const OsiColCut* colCutPtr(int i) const;
 
     /// Get reference to i'th row cut
     inline OsiRowCut & rowCut(int i);
@@ -211,9 +211,9 @@ public:
     inline const OsiColCut & colCut(int i) const;
 
     /// Get const pointer to the most effective cut
-    inline const OsiCut * mostEffectiveCutPtr() const;
+    inline const OsiCut* mostEffectiveCutPtr() const;
     /// Get pointer to the most effective cut
-    inline OsiCut * mostEffectiveCutPtr();
+    inline OsiCut* mostEffectiveCutPtr();
     //@}
 
     /**@name Deleting cut from collection */
@@ -223,7 +223,7 @@ public:
     /// Remove i'th column cut from collection
     inline void eraseColCut(int i);
     /// Get pointer to i'th row cut and remove ptr from collection
-    inline OsiRowCut * rowCutPtrAndZap(int i);
+    inline OsiRowCut* rowCutPtrAndZap(int i);
     /*! \brief Clear all row cuts without deleting them
 
       Handy in case one wants to use CGL without managing cuts in one of
@@ -292,16 +292,16 @@ public:
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    OsiCuts ();
+    OsiCuts();
 
     /// Copy constructor
-    OsiCuts ( const OsiCuts &);
+    OsiCuts(const OsiCuts &);
 
     /// Assignment operator
-    OsiCuts & operator=( const OsiCuts& rhs);
+    OsiCuts & operator=(const OsiCuts & rhs);
 
     /// Destructor
-    virtual ~OsiCuts ();
+    virtual ~OsiCuts();
     //@}
 
 private:
@@ -311,7 +311,7 @@ private:
     {
     public:
         /// Function for sorting cuts by effectiveness
-        inline bool operator()(const OsiCut * c1P,const OsiCut * c2P)
+        inline bool operator()(const OsiCut* c1P, const OsiCut* c2P)
         {
             return c1P->effectiveness() > c2P->effectiveness();
         }
@@ -321,7 +321,7 @@ private:
     /**@name Private methods */
     //@{
     /// Copy internal data
-    void gutsOfCopy( const OsiCuts & source );
+    void gutsOfCopy(const OsiCuts & source);
     /// Delete internal data
     void gutsOfDestructor();
     //@}
@@ -340,43 +340,43 @@ private:
 //-------------------------------------------------------------------
 // insert cuts into collection
 //-------------------------------------------------------------------
-void OsiCuts::insert( const OsiRowCut & rc )
+void OsiCuts::insert(const OsiRowCut & rc)
 {
-    OsiRowCut * newCutPtr = rc.clone();
+    OsiRowCut* newCutPtr = rc.clone();
     //assert(dynamic_cast<OsiRowCut*>(newCutPtr) != NULL );
     rowCutPtrs_.push_back(static_cast<OsiRowCut*>(newCutPtr));
 }
-void OsiCuts::insert( const OsiColCut & cc )
+void OsiCuts::insert(const OsiColCut & cc)
 {
-    OsiColCut * newCutPtr = cc.clone();
+    OsiColCut* newCutPtr = cc.clone();
     //assert(dynamic_cast<OsiColCut*>(newCutPtr) != NULL );
     colCutPtrs_.push_back(static_cast<OsiColCut*>(newCutPtr));
 }
 
-void OsiCuts::insert( OsiRowCut* & rcPtr )
+void OsiCuts::insert(OsiRowCut* & rcPtr)
 {
     rowCutPtrs_.push_back(rcPtr);
     rcPtr = NULL;
 }
-void OsiCuts::insert( OsiColCut* &ccPtr )
+void OsiCuts::insert(OsiColCut* & ccPtr)
 {
     colCutPtrs_.push_back(ccPtr);
     ccPtr = NULL;
 }
 #if 0
-void OsiCuts::insert( OsiCut* & cPtr )
+void OsiCuts::insert(OsiCut* & cPtr)
 {
-    OsiRowCut * rcPtr = dynamic_cast<OsiRowCut*>(cPtr);
-    if ( rcPtr != NULL )
+    OsiRowCut* rcPtr = dynamic_cast<OsiRowCut*>(cPtr);
+    if(rcPtr != NULL)
     {
-        insert( rcPtr );
+        insert(rcPtr);
         cPtr = rcPtr;
     }
     else
     {
-        OsiColCut * ccPtr = dynamic_cast<OsiColCut*>(cPtr);
-        assert( ccPtr != NULL );
-        insert( ccPtr );
+        OsiColCut* ccPtr = dynamic_cast<OsiColCut*>(cPtr);
+        assert(ccPtr != NULL);
+        insert(ccPtr);
         cPtr = ccPtr;
     }
 }
@@ -385,15 +385,15 @@ void OsiCuts::insert( OsiCut* & cPtr )
 // LANNEZ SEBASTIEN added Thu May 25 01:22:51 EDT 2006
 void OsiCuts::insert(const OsiCuts & cs)
 {
-    for (OsiCuts::const_iterator it = cs.begin (); it != cs.end (); it++)
+    for(OsiCuts::const_iterator it = cs.begin(); it != cs.end(); it++)
     {
-        const OsiRowCut * rCut = dynamic_cast <const OsiRowCut * >(*it);
-        const OsiColCut * cCut = dynamic_cast <const OsiColCut * >(*it);
-        assert (rCut || cCut);
-        if (rCut)
-            insert (*rCut);
+        const OsiRowCut* rCut = dynamic_cast <const OsiRowCut*>(*it);
+        const OsiColCut* cCut = dynamic_cast <const OsiColCut*>(*it);
+        assert(rCut || cCut);
+        if(rCut)
+            insert(*rCut);
         else
-            insert (*cCut);
+            insert(*cCut);
     }
 }
 
@@ -402,8 +402,8 @@ void OsiCuts::insert(const OsiCuts & cs)
 //-------------------------------------------------------------------
 void OsiCuts::sort()
 {
-    std::sort(colCutPtrs_.begin(),colCutPtrs_.end(),OsiCutCompare());
-    std::sort(rowCutPtrs_.begin(),rowCutPtrs_.end(),OsiCutCompare());
+    std::sort(colCutPtrs_.begin(), colCutPtrs_.end(), OsiCutCompare());
+    std::sort(rowCutPtrs_.begin(), rowCutPtrs_.end(), OsiCutCompare());
 }
 
 
@@ -420,25 +420,25 @@ int OsiCuts::sizeColCuts() const
 }
 int OsiCuts::sizeCuts()    const
 {
-    return static_cast<int>(sizeRowCuts()+sizeColCuts());
+    return static_cast<int>(sizeRowCuts() + sizeColCuts());
 }
 
 //----------------------------------------------------------------
 // Get i'th cut from the collection
 //----------------------------------------------------------------
-const OsiRowCut * OsiCuts::rowCutPtr(int i) const
+const OsiRowCut* OsiCuts::rowCutPtr(int i) const
 {
     return rowCutPtrs_[i];
 }
-const OsiColCut * OsiCuts::colCutPtr(int i) const
+const OsiColCut* OsiCuts::colCutPtr(int i) const
 {
     return colCutPtrs_[i];
 }
-OsiRowCut * OsiCuts::rowCutPtr(int i)
+OsiRowCut* OsiCuts::rowCutPtr(int i)
 {
     return rowCutPtrs_[i];
 }
-OsiColCut * OsiCuts::colCutPtr(int i)
+OsiColCut* OsiCuts::colCutPtr(int i)
 {
     return colCutPtrs_[i];
 }
@@ -463,22 +463,22 @@ OsiColCut & OsiCuts::colCut(int i)
 //----------------------------------------------------------------
 // Get most effective cut from collection
 //----------------------------------------------------------------
-const OsiCut * OsiCuts::mostEffectiveCutPtr() const
+const OsiCut* OsiCuts::mostEffectiveCutPtr() const
 {
-    const_iterator b=begin();
-    const_iterator e=end();
-    return *(std::min_element(b,e,OsiCutCompare()));
+    const_iterator b = begin();
+    const_iterator e = end();
+    return *(std::min_element(b, e, OsiCutCompare()));
 }
-OsiCut * OsiCuts::mostEffectiveCutPtr()
+OsiCut* OsiCuts::mostEffectiveCutPtr()
 {
-    iterator b=begin();
-    iterator e=end();
+    iterator b = begin();
+    iterator e = end();
     //return *(std::min_element(b,e,OsiCutCompare()));
-    OsiCut * retVal = NULL;
+    OsiCut* retVal = NULL;
     double maxEff = COIN_DBL_MIN;
-    for ( OsiCuts::iterator it=b; it!=e; ++it )
+    for(OsiCuts::iterator it = b; it != e; ++it)
     {
-        if (maxEff < (*it)->effectiveness() )
+        if(maxEff < (*it)->effectiveness())
         {
             maxEff = (*it)->effectiveness();
             retVal = *it;
@@ -495,16 +495,16 @@ OsiCuts::printCuts() const
 {
     // do all column cuts first
     int i;
-    int numberColCuts=sizeColCuts();
-    for (i=0; i<numberColCuts; i++)
+    int numberColCuts = sizeColCuts();
+    for(i = 0; i < numberColCuts; i++)
     {
-        const OsiColCut * cut = colCutPtr(i);
+        const OsiColCut* cut = colCutPtr(i);
         cut->print();
     }
-    int numberRowCuts=sizeRowCuts();
-    for (i=0; i<numberRowCuts; i++)
+    int numberRowCuts = sizeRowCuts();
+    for(i = 0; i < numberRowCuts; i++)
     {
-        const OsiRowCut * cut = rowCutPtr(i);
+        const OsiRowCut* cut = rowCutPtr(i);
         cut->print();
     }
 }
@@ -515,20 +515,20 @@ OsiCuts::printCuts() const
 void OsiCuts::eraseRowCut(int i)
 {
     delete rowCutPtrs_[i];
-    rowCutPtrs_.erase( rowCutPtrs_.begin()+i );
+    rowCutPtrs_.erase(rowCutPtrs_.begin() + i);
 }
 void OsiCuts::eraseColCut(int i)
 {
     delete colCutPtrs_[i];
-    colCutPtrs_.erase( colCutPtrs_.begin()+i );
+    colCutPtrs_.erase(colCutPtrs_.begin() + i);
 }
 /// Get pointer to i'th row cut and remove ptr from collection
-OsiRowCut *
+OsiRowCut*
 OsiCuts::rowCutPtrAndZap(int i)
 {
-    OsiRowCut * cut = rowCutPtrs_[i];
-    rowCutPtrs_[i]=NULL;
-    rowCutPtrs_.erase( rowCutPtrs_.begin()+i );
+    OsiRowCut* cut = rowCutPtrs_[i];
+    rowCutPtrs_[i] = NULL;
+    rowCutPtrs_.erase(rowCutPtrs_.begin() + i);
     return cut;
 }
 void OsiCuts::dumpCuts()
@@ -537,7 +537,7 @@ void OsiCuts::dumpCuts()
 }
 void OsiCuts::eraseAndDumpCuts(const std::vector<int> to_erase)
 {
-    for (unsigned i=0; i<to_erase.size(); i++)
+    for(unsigned i = 0; i < to_erase.size(); i++)
     {
         delete rowCutPtrs_[to_erase[i]];
     }

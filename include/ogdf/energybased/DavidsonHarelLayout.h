@@ -59,131 +59,131 @@ namespace ogdf
 {
 
 
-//! The Davidson-Harel layout algorithm.
-/**
- * The implementation used in DavidsonHarelLayout is based on
- * the following publication:
- *
- * Ron Davidson, David Harel: <i>Drawing Graphs Nicely Using Simulated Annealing</i>.
- * ACM Transactions on Graphics 15(4), pp. 301-331, 1996.
- */
-class OGDF_EXPORT DavidsonHarelLayout : public LayoutModule
-{
-public:
-    //! Easy way to set fixed costs
-    enum SettingsParameter {spStandard, spRepulse, spPlanar}; //tuning of costs
-
-    //! Easy way to set temperature and iterations
-    enum SpeedParameter {sppFast, sppMedium, sppHQ};
-
-    //! Creates an instance of Davidson-Harel layout.
-    DavidsonHarelLayout();
-
-    ~DavidsonHarelLayout() {}
-
-    //! Calls the layout algorithm for graph attributes \a GA.
-    void call(GraphAttributes &GA);
-
-    //! Fixes the cost values to special configurations.
-    void fixSettings(SettingsParameter sp);
-
-    //! More convenient way of setting the speed of the algorithm.
+    //! The Davidson-Harel layout algorithm.
     /**
-     * Influences number of iterations per temperature step, starting
-     * temperature, and cooling factor.
+     * The implementation used in DavidsonHarelLayout is based on
+     * the following publication:
+     *
+     * Ron Davidson, David Harel: <i>Drawing Graphs Nicely Using Simulated Annealing</i>.
+     * ACM Transactions on Graphics 15(4), pp. 301-331, 1996.
      */
-    void setSpeed(SpeedParameter sp);
-
-    //! Sets the preferred edge length multiplier for attraction.
-    /**
-     * This is bad design, cause you dont need to have an attraction function,
-     * DH is purely modular and independent with its cost functions.
-     */
-    void setPreferredEdgeLengthMultiplier(double multi)
+    class OGDF_EXPORT DavidsonHarelLayout : public LayoutModule
     {
-        m_multiplier = multi;
-    }
+    public:
+        //! Easy way to set fixed costs
+        enum SettingsParameter {spStandard, spRepulse, spPlanar}; //tuning of costs
 
-    //! Sets the preferred edge length to \a elen
-    void setPreferredEdgeLength(double elen)
-    {
-        m_prefEdgeLength = elen;
-    }
+        //! Easy way to set temperature and iterations
+        enum SpeedParameter {sppFast, sppMedium, sppHQ};
 
-    //! Sets the weight for the energy function \a Repulsion.
-    void setRepulsionWeight(double w);
+        //! Creates an instance of Davidson-Harel layout.
+        DavidsonHarelLayout();
 
-    //! Returns the weight for the energy function \a Repulsion.
-    double getRepulsionWeight() const
-    {
-        return m_repulsionWeight;
-    }
+        ~DavidsonHarelLayout() {}
 
-    //! Sets the weight for the energy function \a Attraction.
-    void setAttractionWeight(double);
+        //! Calls the layout algorithm for graph attributes \a GA.
+        void call(GraphAttributes & GA);
 
-    //! Returns the weight for the energy function \a Attraction.
-    double getAttractionWeight() const
-    {
-        return m_attractionWeight;
-    }
+        //! Fixes the cost values to special configurations.
+        void fixSettings(SettingsParameter sp);
 
-    //! Sets the weight for the energy function \a NodeOverlap.
-    void setNodeOverlapWeight(double);
+        //! More convenient way of setting the speed of the algorithm.
+        /**
+         * Influences number of iterations per temperature step, starting
+         * temperature, and cooling factor.
+         */
+        void setSpeed(SpeedParameter sp);
 
-    //! Returns the weight for the energy function \a NodeOverlap.
-    double getNodeOverlapWeight() const
-    {
-        return m_nodeOverlapWeight;
-    }
+        //! Sets the preferred edge length multiplier for attraction.
+        /**
+         * This is bad design, cause you dont need to have an attraction function,
+         * DH is purely modular and independent with its cost functions.
+         */
+        void setPreferredEdgeLengthMultiplier(double multi)
+        {
+            m_multiplier = multi;
+        }
 
-    //! Sets the weight for the energy function \a Planarity.
-    void setPlanarityWeight(double);
+        //! Sets the preferred edge length to \a elen
+        void setPreferredEdgeLength(double elen)
+        {
+            m_prefEdgeLength = elen;
+        }
 
-    //! Returns the weight for the energy function \a Planarity.
-    double getPlanarityWeight() const
-    {
-        return m_planarityWeight;
-    }
+        //! Sets the weight for the energy function \a Repulsion.
+        void setRepulsionWeight(double w);
 
-    //! Sets the starting temperature to \a t.
-    void setStartTemperature(int t);
+        //! Returns the weight for the energy function \a Repulsion.
+        double getRepulsionWeight() const
+        {
+            return m_repulsionWeight;
+        }
 
-    //! Returns the starting temperature.
-    int getStartTemperature() const
-    {
-        return m_startTemperature;
-    }
+        //! Sets the weight for the energy function \a Attraction.
+        void setAttractionWeight(double);
 
-    //! Sets the number of iterations per temperature step to \a steps.
-    void setNumberOfIterations(int steps);
+        //! Returns the weight for the energy function \a Attraction.
+        double getAttractionWeight() const
+        {
+            return m_attractionWeight;
+        }
 
-    //! Returns the number of iterations per temperature step.
-    int getNumberOfIterations() const
-    {
-        return m_numberOfIterations;
-    }
+        //! Sets the weight for the energy function \a NodeOverlap.
+        void setNodeOverlapWeight(double);
 
-    //! Switch between using iteration number as fixed number or factor
-    //! (*number of nodes of graph)
-    void setIterationNumberAsFactor(bool b)
-    {
-        m_itAsFactor = b;
-    }
+        //! Returns the weight for the energy function \a NodeOverlap.
+        double getNodeOverlapWeight() const
+        {
+            return m_nodeOverlapWeight;
+        }
 
-private:
-    double m_repulsionWeight;   //!< The weight for repulsion energy.
-    double m_attractionWeight;  //!< The weight for attraction energy.
-    double m_nodeOverlapWeight; //!< The weight for node overlap energy.
-    double m_planarityWeight;   //!< The weight for edge crossing energy.
-    int m_startTemperature;     //!< The temperature at the start of the optimization.
-    int m_numberOfIterations;   //!< The number of iterations per temperature step.
-    SpeedParameter m_speed;     //!< You can override this by manually setting iter=0.
-    double m_multiplier;        //!< By default, number of iterations per temperature step is number of vertices multiplied by multiplier.
-    double m_prefEdgeLength;    //!< Preferred edge length (abs value), only used if > 0
-    bool m_crossings;           //!< Should crossings be computed?
-    bool m_itAsFactor;          //!< Should m_numberOfIterations be factor (true) or fixed number
-};
+        //! Sets the weight for the energy function \a Planarity.
+        void setPlanarityWeight(double);
+
+        //! Returns the weight for the energy function \a Planarity.
+        double getPlanarityWeight() const
+        {
+            return m_planarityWeight;
+        }
+
+        //! Sets the starting temperature to \a t.
+        void setStartTemperature(int t);
+
+        //! Returns the starting temperature.
+        int getStartTemperature() const
+        {
+            return m_startTemperature;
+        }
+
+        //! Sets the number of iterations per temperature step to \a steps.
+        void setNumberOfIterations(int steps);
+
+        //! Returns the number of iterations per temperature step.
+        int getNumberOfIterations() const
+        {
+            return m_numberOfIterations;
+        }
+
+        //! Switch between using iteration number as fixed number or factor
+        //! (*number of nodes of graph)
+        void setIterationNumberAsFactor(bool b)
+        {
+            m_itAsFactor = b;
+        }
+
+    private:
+        double m_repulsionWeight;   //!< The weight for repulsion energy.
+        double m_attractionWeight;  //!< The weight for attraction energy.
+        double m_nodeOverlapWeight; //!< The weight for node overlap energy.
+        double m_planarityWeight;   //!< The weight for edge crossing energy.
+        int m_startTemperature;     //!< The temperature at the start of the optimization.
+        int m_numberOfIterations;   //!< The number of iterations per temperature step.
+        SpeedParameter m_speed;     //!< You can override this by manually setting iter=0.
+        double m_multiplier;        //!< By default, number of iterations per temperature step is number of vertices multiplied by multiplier.
+        double m_prefEdgeLength;    //!< Preferred edge length (abs value), only used if > 0
+        bool m_crossings;           //!< Should crossings be computed?
+        bool m_itAsFactor;          //!< Should m_numberOfIterations be factor (true) or fixed number
+    };
 
 }
 #endif

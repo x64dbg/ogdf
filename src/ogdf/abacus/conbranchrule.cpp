@@ -42,69 +42,69 @@ namespace abacus
 {
 
 
-ostream &operator<<(ostream &out, const ConBranchRule &rhs)
-{
-    return out << rhs.poolSlotRef_;
-}
-
-
-int ConBranchRule::extract(Sub *sub)
-{
-
-    if (poolSlotRef_.conVar() == 0)
+    ostream & operator<<(ostream & out, const ConBranchRule & rhs)
     {
-        Logger::ifout() << "ConBranchRule::extract(): branching constraint not available\n";
-        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConBranchRule);
+        return out << rhs.poolSlotRef_;
     }
 
-    if (sub->addBranchingConstraint(poolSlotRef_.slot()))
+
+    int ConBranchRule::extract(Sub* sub)
     {
-        Logger::ifout() << "ConBranchRule::extract(): addition of branching constaint to subproblem failed.\n";
-        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConBranchRule);
+
+        if(poolSlotRef_.conVar() == 0)
+        {
+            Logger::ifout() << "ConBranchRule::extract(): branching constraint not available\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConBranchRule);
+        }
+
+        if(sub->addBranchingConstraint(poolSlotRef_.slot()))
+        {
+            Logger::ifout() << "ConBranchRule::extract(): addition of branching constaint to subproblem failed.\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConBranchRule);
+        }
+
+        return 0;
     }
 
-    return 0;
-}
 
-
-void ConBranchRule::extract(LpSub *lp)
-{
-    ArrayBuffer<Constraint*> newCon(1,false);
-
-    newCon.push(poolSlotRef_.conVar());
-    lp->addCons(newCon);
-}
-
-
-void ConBranchRule::unExtract(LpSub *lp)
-{
-    ArrayBuffer<int> remove(1,false);
-
-    remove.push(lp->nRow() - 1);
-
-    // pivot the slack variable associated with the removed row in
-
-    int status = lp->pivotSlackVariableIn(remove);
-
-    if (status)
+    void ConBranchRule::extract(LpSub* lp)
     {
-        Logger::ifout() << "WARNING: ";
-        Logger::ifout() << "ConBranchRule::unExtract(): pivoting in ";
-        Logger::ifout() << "slack variable failed." << endl;
+        ArrayBuffer<Constraint*> newCon(1, false);
+
+        newCon.push(poolSlotRef_.conVar());
+        lp->addCons(newCon);
     }
 
-    lp->removeCons(remove);
-}
 
-
-void ConBranchRule::initialize(Sub* sub)
-{
-    if (poolSlotRef_.conVar() == 0)
+    void ConBranchRule::unExtract(LpSub* lp)
     {
-        Logger::ifout() << "ConBranchRule::initialize(): branching constraint not available\n";
-        OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConBranchRule);
+        ArrayBuffer<int> remove(1, false);
+
+        remove.push(lp->nRow() - 1);
+
+        // pivot the slack variable associated with the removed row in
+
+        int status = lp->pivotSlackVariableIn(remove);
+
+        if(status)
+        {
+            Logger::ifout() << "WARNING: ";
+            Logger::ifout() << "ConBranchRule::unExtract(): pivoting in ";
+            Logger::ifout() << "slack variable failed." << endl;
+        }
+
+        lp->removeCons(remove);
     }
 
-    poolSlotRef_.conVar()->sub(sub);
-}
+
+    void ConBranchRule::initialize(Sub* sub)
+    {
+        if(poolSlotRef_.conVar() == 0)
+        {
+            Logger::ifout() << "ConBranchRule::initialize(): branching constraint not available\n";
+            OGDF_THROW_PARAM(AlgorithmFailureException, ogdf::afcConBranchRule);
+        }
+
+        poolSlotRef_.conVar()->sub(sub);
+    }
 } //namespace abacus

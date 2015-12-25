@@ -118,7 +118,7 @@
 
 typedef struct DRAW_GRAPH_PARAMS
 {
-    char   source_path[MAX_FILE_NAME_LENGTH +1];
+    char   source_path[MAX_FILE_NAME_LENGTH + 1];
     int    echo_commands;
 
     int    canvas_width;
@@ -128,15 +128,15 @@ typedef struct DRAW_GRAPH_PARAMS
     int    disp_nodelabels;
     int    disp_nodeweights;
     int    disp_edgeweights;
-    char   node_dash[MAX_DASH_PATTERN_LENGTH +1];
-    char   edge_dash[MAX_DASH_PATTERN_LENGTH +1];
+    char   node_dash[MAX_DASH_PATTERN_LENGTH + 1];
+    char   edge_dash[MAX_DASH_PATTERN_LENGTH + 1];
     int    node_radius;
     int    interactive_mode;
     int    mouse_tracking;
     double scale_factor;
-    char   nodelabel_font[MAX_FONT_LENGTH +1];
-    char   nodeweight_font[MAX_FONT_LENGTH +1];
-    char   edgeweight_font[MAX_FONT_LENGTH +1];
+    char   nodelabel_font[MAX_FONT_LENGTH + 1];
+    char   nodeweight_font[MAX_FONT_LENGTH + 1];
+    char   edgeweight_font[MAX_FONT_LENGTH + 1];
 } dg_params;
 
 #endif

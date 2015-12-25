@@ -52,68 +52,68 @@
 namespace ogdf
 {
 
-class PackingRowInfo
-{
-    //Helping data structure for MAARPacking.
-
-    //Outputstream for PackingRowInfo
-    friend ostream &operator<< (ostream & output, const PackingRowInfo & A)
+    class PackingRowInfo
     {
-        output <<" max_height "<<A.max_height<<" total_width "<<A.total_width<<" row_index "
-               << A.row_index;
-        return output;
-    }
+        //Helping data structure for MAARPacking.
 
-    //Inputstream for PackingRowInfo
-    friend istream &operator>> (istream & input,  PackingRowInfo & A)
-    {
-        input >>A.max_height>>A.total_width>>A.row_index;
-        return input;
-    }
+        //Outputstream for PackingRowInfo
+        friend ostream & operator<< (ostream & output, const PackingRowInfo & A)
+        {
+            output << " max_height " << A.max_height << " total_width " << A.total_width << " row_index "
+                   << A.row_index;
+            return output;
+        }
 
-public:
+        //Inputstream for PackingRowInfo
+        friend istream & operator>> (istream & input,  PackingRowInfo & A)
+        {
+            input >> A.max_height >> A.total_width >> A.row_index;
+            return input;
+        }
 
-    PackingRowInfo()      //constructor
-    {
-        total_width = 0;
-        max_height = 0;
-        row_index = 0;
-    }
+    public:
 
-    ~PackingRowInfo() { } //destructor
+        PackingRowInfo()      //constructor
+        {
+            total_width = 0;
+            max_height = 0;
+            row_index = 0;
+        }
 
-    void set_max_height(double h)
-    {
-        max_height = h;
-    }
-    void set_total_width(double w)
-    {
-        total_width = w;
-    }
-    void set_row_index(int i)
-    {
-        row_index = i;
-    }
+        ~PackingRowInfo() { } //destructor
 
-    double get_max_height()
-    {
-        return max_height;
-    }
-    double get_total_width()
-    {
-        return total_width;
-    }
-    int get_row_index()
-    {
-        return row_index;
-    }
+        void set_max_height(double h)
+        {
+            max_height = h;
+        }
+        void set_total_width(double w)
+        {
+            total_width = w;
+        }
+        void set_row_index(int i)
+        {
+            row_index = i;
+        }
 
-private:
-    double max_height;  //the maximum height of a rectangle placed in this row
-    double total_width; //the sum of the width of all rectsngles in this row
-    int row_index;      //the index of the row (first row in packing has index 0)
+        double get_max_height()
+        {
+            return max_height;
+        }
+        double get_total_width()
+        {
+            return total_width;
+        }
+        int get_row_index()
+        {
+            return row_index;
+        }
 
-};
+    private:
+        double max_height;  //the maximum height of a rectangle placed in this row
+        double total_width; //the sum of the width of all rectsngles in this row
+        int row_index;      //the index of the row (first row in packing has index 0)
+
+    };
 
 }//namespace ogdf
 #endif

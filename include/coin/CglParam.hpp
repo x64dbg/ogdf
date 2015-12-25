@@ -67,13 +67,13 @@ public:
              const double eps_c = 1e-5, const int max_s = COIN_INT_MAX);
 
     /// Copy constructor
-    CglParam(const CglParam&);
+    CglParam(const CglParam &);
 
     /// Clone
     virtual CglParam* clone() const;
 
     /// Assignment operator
-    CglParam& operator=(const CglParam &rhs);
+    CglParam & operator=(const CglParam & rhs);
 
     /// Destructor
     virtual ~CglParam();

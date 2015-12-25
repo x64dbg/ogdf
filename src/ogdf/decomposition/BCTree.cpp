@@ -48,278 +48,278 @@ namespace ogdf
 {
 
 
-void BCTree::init (node vG)
-{
-    m_numB = 0;
-    m_numC = 0;
-
-    m_gNode_isMarked.init(m_G,false);
-    m_gNode_hNode.init(m_G,0);
-    m_gEdge_hEdge.init(m_G);
-
-    m_bNode_type.init(m_B);
-    m_bNode_isMarked.init(m_B);
-    m_bNode_hRefNode.init(m_B);
-    m_bNode_hParNode.init(m_B);
-    m_bNode_hEdges.init(m_B);
-    m_bNode_numNodes.init(m_B);
-
-    m_hNode_bNode.init(m_H);
-    m_hEdge_bNode.init(m_H);
-    m_hNode_gNode.init(m_H);
-    m_hEdge_gEdge.init(m_H);
-
-    m_count = 0;
-    m_number.init(m_G,0);
-    m_lowpt.init(m_G);
-    m_gtoh.init(m_G);
-
-    biComp(0,vG);
-
-    m_number.init();
-    m_lowpt.init();
-    m_eStack.clear();
-    m_gtoh.init();
-
-    node uB;
-    forall_nodes (uB,m_B)
+    void BCTree::init(node vG)
     {
-        node vB = parent(uB);
-        if (vB) m_B.newEdge(uB,vB);
-    }
-}
+        m_numB = 0;
+        m_numC = 0;
 
+        m_gNode_isMarked.init(m_G, false);
+        m_gNode_hNode.init(m_G, 0);
+        m_gEdge_hEdge.init(m_G);
 
-void BCTree::initNotConnected (node vG)
-{
-    m_numB = 0;
-    m_numC = 0;
+        m_bNode_type.init(m_B);
+        m_bNode_isMarked.init(m_B);
+        m_bNode_hRefNode.init(m_B);
+        m_bNode_hParNode.init(m_B);
+        m_bNode_hEdges.init(m_B);
+        m_bNode_numNodes.init(m_B);
 
-    m_gNode_isMarked.init(m_G,false);
-    m_gNode_hNode.init(m_G,0);
-    m_gEdge_hEdge.init(m_G);
+        m_hNode_bNode.init(m_H);
+        m_hEdge_bNode.init(m_H);
+        m_hNode_gNode.init(m_H);
+        m_hEdge_gEdge.init(m_H);
 
-    m_bNode_type.init(m_B);
-    m_bNode_isMarked.init(m_B);
-    m_bNode_hRefNode.init(m_B);
-    m_bNode_hParNode.init(m_B);
-    m_bNode_hEdges.init(m_B);
-    m_bNode_numNodes.init(m_B);
+        m_count = 0;
+        m_number.init(m_G, 0);
+        m_lowpt.init(m_G);
+        m_gtoh.init(m_G);
 
-    m_hNode_bNode.init(m_H);
-    m_hEdge_bNode.init(m_H);
-    m_hNode_gNode.init(m_H);
-    m_hEdge_gEdge.init(m_H);
+        biComp(0, vG);
 
-    m_count = 0;
-    m_number.init(m_G,0);
-    m_lowpt.init(m_G);
-    m_gtoh.init(m_G);
-
-    biComp(0,vG);
-    // cout << m_count << endl << flush;
-
-    node v;
-
-    // call biComp for all nodes that are not in the
-    //  first connected component
-    forall_nodes(v, m_G)
-    if (m_number[v] == 0)
-    {
+        m_number.init();
+        m_lowpt.init();
         m_eStack.clear();
-        biComp(0, v);
-    }
+        m_gtoh.init();
 
-    m_lowpt.init();
-    m_eStack.clear();
-    m_gtoh.init();
-
-    node uB;
-    forall_nodes (uB,m_B)
-    {
-        node vB = parent(uB);
-        if (vB) m_B.newEdge(uB,vB);
-    }
-}
-
-
-void BCTree::biComp (adjEntry adjuG, node vG)
-{
-    m_lowpt[vG] = m_number[vG] = ++m_count;
-
-    adjEntry adj;
-    forall_adj (adj,vG)
-    {
-        //edge eG = adj->theEdge();
-        node wG = adj->twinNode();
-        if ((adjuG != 0) && (adj == adjuG->twin())) continue;
-        if (m_number[wG]==0)
+        node uB;
+        forall_nodes(uB, m_B)
         {
-            m_eStack.push(adj);
-            biComp(adj,wG);
-            if (m_lowpt[wG]<m_lowpt[vG]) m_lowpt[vG] = m_lowpt[wG];
-            if (m_lowpt[wG]>=m_number[vG])
+            node vB = parent(uB);
+            if(vB) m_B.newEdge(uB, vB);
+        }
+    }
+
+
+    void BCTree::initNotConnected(node vG)
+    {
+        m_numB = 0;
+        m_numC = 0;
+
+        m_gNode_isMarked.init(m_G, false);
+        m_gNode_hNode.init(m_G, 0);
+        m_gEdge_hEdge.init(m_G);
+
+        m_bNode_type.init(m_B);
+        m_bNode_isMarked.init(m_B);
+        m_bNode_hRefNode.init(m_B);
+        m_bNode_hParNode.init(m_B);
+        m_bNode_hEdges.init(m_B);
+        m_bNode_numNodes.init(m_B);
+
+        m_hNode_bNode.init(m_H);
+        m_hEdge_bNode.init(m_H);
+        m_hNode_gNode.init(m_H);
+        m_hEdge_gEdge.init(m_H);
+
+        m_count = 0;
+        m_number.init(m_G, 0);
+        m_lowpt.init(m_G);
+        m_gtoh.init(m_G);
+
+        biComp(0, vG);
+        // cout << m_count << endl << flush;
+
+        node v;
+
+        // call biComp for all nodes that are not in the
+        //  first connected component
+        forall_nodes(v, m_G)
+        if(m_number[v] == 0)
+        {
+            m_eStack.clear();
+            biComp(0, v);
+        }
+
+        m_lowpt.init();
+        m_eStack.clear();
+        m_gtoh.init();
+
+        node uB;
+        forall_nodes(uB, m_B)
+        {
+            node vB = parent(uB);
+            if(vB) m_B.newEdge(uB, vB);
+        }
+    }
+
+
+    void BCTree::biComp(adjEntry adjuG, node vG)
+    {
+        m_lowpt[vG] = m_number[vG] = ++m_count;
+
+        adjEntry adj;
+        forall_adj(adj, vG)
+        {
+            //edge eG = adj->theEdge();
+            node wG = adj->twinNode();
+            if((adjuG != 0) && (adj == adjuG->twin())) continue;
+            if(m_number[wG] == 0)
             {
-                node bB = m_B.newNode();
-                m_bNode_type[bB] = BComp;
-                m_bNode_isMarked[bB] = false;
-                m_bNode_hRefNode[bB] = 0;
-                m_bNode_hParNode[bB] = 0;
-                m_bNode_numNodes[bB] = 0;
-                m_numB++;
-                adjEntry adjfG;
-                do
+                m_eStack.push(adj);
+                biComp(adj, wG);
+                if(m_lowpt[wG] < m_lowpt[vG]) m_lowpt[vG] = m_lowpt[wG];
+                if(m_lowpt[wG] >= m_number[vG])
                 {
-                    adjfG = m_eStack.pop();
-                    edge fG = adjfG->theEdge();
-                    for (int i=0; i<=1; ++i)
+                    node bB = m_B.newNode();
+                    m_bNode_type[bB] = BComp;
+                    m_bNode_isMarked[bB] = false;
+                    m_bNode_hRefNode[bB] = 0;
+                    m_bNode_hParNode[bB] = 0;
+                    m_bNode_numNodes[bB] = 0;
+                    m_numB++;
+                    adjEntry adjfG;
+                    do
                     {
-                        node xG = i ? fG->target() : fG->source();
-                        if (m_gNode_isMarked[xG]) continue;
-                        m_gNode_isMarked[xG] = true;
-                        m_nodes.pushBack(xG);
-                        m_bNode_numNodes[bB]++;
-                        node zH = m_H.newNode();
-                        m_hNode_bNode[zH] = bB;
-                        m_hNode_gNode[zH] = xG;
-                        m_gtoh[xG] = zH;
-                        node xH = m_gNode_hNode[xG];
-                        if (!xH) m_gNode_hNode[xG] = zH;
-                        else
+                        adjfG = m_eStack.pop();
+                        edge fG = adjfG->theEdge();
+                        for(int i = 0; i <= 1; ++i)
                         {
-                            node xB = m_hNode_bNode[xH];
-                            if (!m_bNode_hRefNode[xB])
-                            {
-                                node cB = m_B.newNode();
-                                node yH = m_H.newNode();
-                                m_hNode_bNode[yH] = cB;
-                                m_hNode_gNode[yH] = xG;
-                                m_gNode_hNode[xG] = yH;
-                                m_bNode_type[cB] = CComp;
-                                m_bNode_isMarked[cB] = false;
-                                m_bNode_hRefNode[xB] = xH;
-                                m_bNode_hParNode[xB] = yH;
-                                m_bNode_hRefNode[cB] = yH;
-                                m_bNode_hParNode[cB] = zH;
-                                m_bNode_numNodes[cB] = 1;
-                                m_numC++;
-                            }
+                            node xG = i ? fG->target() : fG->source();
+                            if(m_gNode_isMarked[xG]) continue;
+                            m_gNode_isMarked[xG] = true;
+                            m_nodes.pushBack(xG);
+                            m_bNode_numNodes[bB]++;
+                            node zH = m_H.newNode();
+                            m_hNode_bNode[zH] = bB;
+                            m_hNode_gNode[zH] = xG;
+                            m_gtoh[xG] = zH;
+                            node xH = m_gNode_hNode[xG];
+                            if(!xH) m_gNode_hNode[xG] = zH;
                             else
                             {
-                                node yH = m_bNode_hParNode[xB];
-                                node yB = m_hNode_bNode[yH];
-                                m_bNode_hParNode[yB] = xH;
-                                m_bNode_hRefNode[yB] = yH;
-                                m_bNode_hParNode[xB] = zH;
+                                node xB = m_hNode_bNode[xH];
+                                if(!m_bNode_hRefNode[xB])
+                                {
+                                    node cB = m_B.newNode();
+                                    node yH = m_H.newNode();
+                                    m_hNode_bNode[yH] = cB;
+                                    m_hNode_gNode[yH] = xG;
+                                    m_gNode_hNode[xG] = yH;
+                                    m_bNode_type[cB] = CComp;
+                                    m_bNode_isMarked[cB] = false;
+                                    m_bNode_hRefNode[xB] = xH;
+                                    m_bNode_hParNode[xB] = yH;
+                                    m_bNode_hRefNode[cB] = yH;
+                                    m_bNode_hParNode[cB] = zH;
+                                    m_bNode_numNodes[cB] = 1;
+                                    m_numC++;
+                                }
+                                else
+                                {
+                                    node yH = m_bNode_hParNode[xB];
+                                    node yB = m_hNode_bNode[yH];
+                                    m_bNode_hParNode[yB] = xH;
+                                    m_bNode_hRefNode[yB] = yH;
+                                    m_bNode_hParNode[xB] = zH;
+                                }
                             }
                         }
+                        edge fH = m_H.newEdge(m_gtoh[fG->source()], m_gtoh[fG->target()]);
+                        m_bNode_hEdges[bB].pushBack(fH);
+                        m_hEdge_bNode[fH] = bB;
+                        m_hEdge_gEdge[fH] = fG;
+                        m_gEdge_hEdge[fG] = fH;
                     }
-                    edge fH = m_H.newEdge(m_gtoh[fG->source()],m_gtoh[fG->target()]);
-                    m_bNode_hEdges[bB].pushBack(fH);
-                    m_hEdge_bNode[fH] = bB;
-                    m_hEdge_gEdge[fH] = fG;
-                    m_gEdge_hEdge[fG] = fH;
+                    while(adj != adjfG);
+                    while(!m_nodes.empty()) m_gNode_isMarked[m_nodes.popFrontRet()] = false;
                 }
-                while (adj!=adjfG);
-                while (!m_nodes.empty()) m_gNode_isMarked[m_nodes.popFrontRet()] = false;
+            }
+            else if(m_number[wG] < m_number[vG])
+            {
+                m_eStack.push(adj);
+                if(m_number[wG] < m_lowpt[vG]) m_lowpt[vG] = m_number[wG];
             }
         }
-        else if (m_number[wG]<m_number[vG])
+    }
+
+
+    node BCTree::parent(node vB) const
+    {
+        if(!vB) return 0;
+        node vH = m_bNode_hParNode[vB];
+        if(!vH) return 0;
+        return m_hNode_bNode[vH];
+    }
+
+
+    node BCTree::bComponent(node uG, node vG) const
+    {
+        node uB = bcproper(uG);
+        node vB = bcproper(vG);
+        if(uB == vB) return uB;
+        if(typeOfBNode(uB) == BComp)
         {
-            m_eStack.push(adj);
-            if (m_number[wG]<m_lowpt[vG]) m_lowpt[vG] = m_number[wG];
+            if(typeOfBNode(vB) == BComp) return 0;
+            if(parent(uB) == vB) return uB;
+            if(parent(vB) == uB) return uB;
+            return 0;
         }
-    }
-}
-
-
-node BCTree::parent (node vB) const
-{
-    if (!vB) return 0;
-    node vH = m_bNode_hParNode[vB];
-    if (!vH) return 0;
-    return m_hNode_bNode[vH];
-}
-
-
-node BCTree::bComponent (node uG, node vG) const
-{
-    node uB = bcproper(uG);
-    node vB = bcproper(vG);
-    if (uB==vB) return uB;
-    if (typeOfBNode(uB)==BComp)
-    {
-        if (typeOfBNode(vB)==BComp) return 0;
-        if (parent(uB)==vB) return uB;
-        if (parent(vB)==uB) return uB;
+        if(typeOfBNode(vB) == BComp)
+        {
+            if(parent(uB) == vB) return vB;
+            if(parent(vB) == uB) return vB;
+            return 0;
+        }
+        node pB = parent(uB);
+        node qB = parent(vB);
+        if(pB == qB) return pB;
+        if(parent(pB) == vB) return pB;
+        if(parent(qB) == uB) return qB;
         return 0;
     }
-    if (typeOfBNode(vB)==BComp)
+
+
+    node BCTree::findNCA(node uB, node vB) const
     {
-        if (parent(uB)==vB) return vB;
-        if (parent(vB)==uB) return vB;
+        if(m_bNode_isMarked[uB]) return uB;
+        m_bNode_isMarked[uB] = true;
+        node wB = parent(uB);
+        if(wB) wB = findNCA(vB, wB);
+        else for(wB = vB; !m_bNode_isMarked[wB]; wB = parent(wB));
+        m_bNode_isMarked[uB] = false;
+        return wB;
+    }
+
+
+    SList<node> & BCTree::findPath(node sG, node tG) const
+    {
+        SList<node> & pB = *OGDF_NEW SList<node>;
+        node sB = bcproper(sG);
+        node tB = bcproper(tG);
+        node nB = findNCA(sB, tB);
+        for(pB.pushBack(sB); sB != nB; pB.pushBack(sB)) sB = parent(sB);
+        for(SListIterator<node> iB = pB.rbegin(); tB != nB; tB = parent(tB)) pB.insertAfter(tB, iB);
+        return pB;
+    }
+
+
+    SList<node>* BCTree::findPathBCTree(node sB, node tB) const
+    {
+        SList<node>* pB = OGDF_NEW SList<node>;
+        node nB = findNCA(sB, tB);
+        for(pB->pushBack(sB); sB != nB; pB->pushBack(sB)) sB = parent(sB);
+        for(SListIterator<node> iB = pB->rbegin(); tB != nB; tB = parent(tB)) pB->insertAfter(tB, iB);
+        return pB;
+    }
+
+
+    node BCTree::repVertex(node uG, node vB) const
+    {
+        node uB = bcproper(uG);
+        if(uB == vB) return m_gNode_hNode[uG];
+        if(typeOfBNode(uB) == BComp) return 0;
+        if(parent(uB) == vB) return m_bNode_hParNode[uB];
+        if(uB == parent(vB)) return m_bNode_hRefNode[vB];
         return 0;
     }
-    node pB = parent(uB);
-    node qB = parent(vB);
-    if (pB==qB) return pB;
-    if (parent(pB)==vB) return pB;
-    if (parent(qB)==uB) return qB;
-    return 0;
-}
 
-
-node BCTree::findNCA (node uB, node vB) const
-{
-    if (m_bNode_isMarked[uB]) return uB;
-    m_bNode_isMarked[uB] = true;
-    node wB = parent(uB);
-    if (wB) wB = findNCA(vB,wB);
-    else for (wB=vB; !m_bNode_isMarked[wB]; wB=parent(wB));
-    m_bNode_isMarked[uB] = false;
-    return wB;
-}
-
-
-SList<node>& BCTree::findPath (node sG, node tG) const
-{
-    SList<node>& pB = *OGDF_NEW SList<node>;
-    node sB = bcproper(sG);
-    node tB = bcproper(tG);
-    node nB = findNCA(sB,tB);
-    for (pB.pushBack(sB); sB!=nB; pB.pushBack(sB)) sB = parent(sB);
-    for (SListIterator<node> iB=pB.rbegin(); tB!=nB; tB=parent(tB)) pB.insertAfter(tB,iB);
-    return pB;
-}
-
-
-SList<node>* BCTree::findPathBCTree (node sB, node tB) const
-{
-    SList<node> *pB = OGDF_NEW SList<node>;
-    node nB = findNCA(sB,tB);
-    for (pB->pushBack(sB); sB!=nB; pB->pushBack(sB)) sB = parent(sB);
-    for (SListIterator<node> iB=pB->rbegin(); tB!=nB; tB=parent(tB)) pB->insertAfter(tB,iB);
-    return pB;
-}
-
-
-node BCTree::repVertex (node uG, node vB) const
-{
-    node uB = bcproper(uG);
-    if (uB==vB) return m_gNode_hNode[uG];
-    if (typeOfBNode(uB)==BComp) return 0;
-    if (parent(uB)==vB) return m_bNode_hParNode[uB];
-    if (uB==parent(vB)) return m_bNode_hRefNode[vB];
-    return 0;
-}
-
-node BCTree::cutVertex (node uB, node vB) const
-{
-    if (uB==vB) return typeOfBNode(uB)==CComp ? m_bNode_hRefNode[vB] : 0;
-    if (parent(uB)==vB) return m_bNode_hParNode[uB];
-    if (uB==parent(vB)) return m_bNode_hRefNode[vB];
-    return 0;
-}
+    node BCTree::cutVertex(node uB, node vB) const
+    {
+        if(uB == vB) return typeOfBNode(uB) == CComp ? m_bNode_hRefNode[vB] : 0;
+        if(parent(uB) == vB) return m_bNode_hParNode[uB];
+        if(uB == parent(vB)) return m_bNode_hRefNode[vB];
+        return 0;
+    }
 
 
 }

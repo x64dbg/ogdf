@@ -59,100 +59,100 @@
 namespace ogdf
 {
 
-class FaceSetSimple;
-template<class E> class QueuePure;
+    class FaceSetSimple;
+    template<class E> class QueuePure;
 
 
-class OGDF_EXPORT FixEdgeInserterCore : public Timeouter
-{
-public:
-    FixEdgeInserterCore(
-        PlanRepLight &pr,
-        const EdgeArray<int>      *pCostOrig,
-        const EdgeArray<bool>     *pForbiddenOrig,
-        const EdgeArray<__uint32> *pEdgeSubgraphs)
-        : m_pr(pr), m_pCost(pCostOrig), m_pForbidden(pForbiddenOrig), m_pSubgraph(pEdgeSubgraphs) { }
-
-    virtual ~FixEdgeInserterCore() { }
-
-    Module::ReturnType call(
-        const Array<edge> &origEdges,
-        bool keepEmbedding,
-        RemoveReinsertType rrPost,
-        double percentMostCrossed);
-
-    int runsPostprocessing() const
+    class OGDF_EXPORT FixEdgeInserterCore : public Timeouter
     {
-        return m_runsPostprocessing;
-    }
+    public:
+        FixEdgeInserterCore(
+            PlanRepLight & pr,
+            const EdgeArray<int>*      pCostOrig,
+            const EdgeArray<bool>*     pForbiddenOrig,
+            const EdgeArray<__uint32>* pEdgeSubgraphs)
+            : m_pr(pr), m_pCost(pCostOrig), m_pForbidden(pForbiddenOrig), m_pSubgraph(pEdgeSubgraphs) { }
 
-protected:
-    int getCost(edge e, int stSubGraph) const;
-    void findShortestPath(const CombinatorialEmbedding &E, edge eOrig, SList<adjEntry> &crossed);
-    void findWeightedShortestPath(const CombinatorialEmbedding &E, edge eOrig, SList<adjEntry> &crossed);
+        virtual ~FixEdgeInserterCore() { }
 
-    int costCrossed(edge eOrig) const;
-    void insertEdge(CombinatorialEmbedding &E, edge eOrig, const SList<adjEntry> &crossed);
-    void removeEdge(CombinatorialEmbedding &E, edge eOrig);
+        Module::ReturnType call(
+            const Array<edge> & origEdges,
+            bool keepEmbedding,
+            RemoveReinsertType rrPost,
+            double percentMostCrossed);
 
-    virtual void storeTypeOfCurrentEdge(edge eOrig) { }
-    virtual void init(CombinatorialEmbedding &E);
-    virtual void cleanup();
-    virtual void constructDual(const CombinatorialEmbedding &E);
+        int runsPostprocessing() const
+        {
+            return m_runsPostprocessing;
+        }
 
-    virtual void appendCandidates(QueuePure<edge> &queue, node v);
-    virtual void appendCandidates(Array<SListPure<edge> > &nodesAtDist, EdgeArray<int> &costDual, int maxCost, node v, int currentDist);
+    protected:
+        int getCost(edge e, int stSubGraph) const;
+        void findShortestPath(const CombinatorialEmbedding & E, edge eOrig, SList<adjEntry> & crossed);
+        void findWeightedShortestPath(const CombinatorialEmbedding & E, edge eOrig, SList<adjEntry> & crossed);
 
-    virtual void insertEdgesIntoDual(const CombinatorialEmbedding &E, adjEntry adjSrc);
-    virtual void insertEdgesIntoDualAfterRemove(const CombinatorialEmbedding &E, face f);
+        int costCrossed(edge eOrig) const;
+        void insertEdge(CombinatorialEmbedding & E, edge eOrig, const SList<adjEntry> & crossed);
+        void removeEdge(CombinatorialEmbedding & E, edge eOrig);
 
-    PlanRepLight    &m_pr;
+        virtual void storeTypeOfCurrentEdge(edge eOrig) { }
+        virtual void init(CombinatorialEmbedding & E);
+        virtual void cleanup();
+        virtual void constructDual(const CombinatorialEmbedding & E);
 
-    const EdgeArray<int>        *m_pCost;
-    const EdgeArray<bool>       *m_pForbidden;
-    const EdgeArray<__uint32>   *m_pSubgraph;
+        virtual void appendCandidates(QueuePure<edge> & queue, node v);
+        virtual void appendCandidates(Array<SListPure<edge>> & nodesAtDist, EdgeArray<int> & costDual, int maxCost, node v, int currentDist);
 
-    Graph m_dual;   //!< (Extended) dual graph, constructed/destructed during call.
+        virtual void insertEdgesIntoDual(const CombinatorialEmbedding & E, adjEntry adjSrc);
+        virtual void insertEdgesIntoDualAfterRemove(const CombinatorialEmbedding & E, face f);
 
-    EdgeArray<adjEntry> m_primalAdj;   //!< Adjacency entry in primal graph corresponding to edge in dual.
-    FaceArray<node>     m_nodeOf;      //!< The node in dual corresponding to face in primal.
+        PlanRepLight  &  m_pr;
 
-    FaceSetSimple       *m_delFaces;
-    FaceSetPure         *m_newFaces;
+        const EdgeArray<int>*        m_pCost;
+        const EdgeArray<bool>*       m_pForbidden;
+        const EdgeArray<__uint32>*   m_pSubgraph;
 
-    node m_vS; //!< The node in extended dual representing s.
-    node m_vT; //!< The node in extended dual representing t.
+        Graph m_dual;   //!< (Extended) dual graph, constructed/destructed during call.
 
-    int m_runsPostprocessing; //!< Runs of remove-reinsert method.
-};
+        EdgeArray<adjEntry> m_primalAdj;   //!< Adjacency entry in primal graph corresponding to edge in dual.
+        FaceArray<node>     m_nodeOf;      //!< The node in dual corresponding to face in primal.
+
+        FaceSetSimple*       m_delFaces;
+        FaceSetPure*         m_newFaces;
+
+        node m_vS; //!< The node in extended dual representing s.
+        node m_vT; //!< The node in extended dual representing t.
+
+        int m_runsPostprocessing; //!< Runs of remove-reinsert method.
+    };
 
 
-class FixEdgeInserterUMLCore : public FixEdgeInserterCore
-{
-public:
-    FixEdgeInserterUMLCore(
-        PlanRepLight &pr,
-        const EdgeArray<int>      *pCostOrig,
-        const EdgeArray<__uint32> *pEdgeSubgraph) : FixEdgeInserterCore(pr, pCostOrig, 0, pEdgeSubgraph) { }
-
-protected:
-    void storeTypeOfCurrentEdge(edge eOrig)
+    class FixEdgeInserterUMLCore : public FixEdgeInserterCore
     {
-        m_typeOfCurrentEdge = m_pr.typeOrig(eOrig);
-    }
-    void init(CombinatorialEmbedding &E);
-    void cleanup();
-    void constructDual(const CombinatorialEmbedding &E);
+    public:
+        FixEdgeInserterUMLCore(
+            PlanRepLight & pr,
+            const EdgeArray<int>*      pCostOrig,
+            const EdgeArray<__uint32>* pEdgeSubgraph) : FixEdgeInserterCore(pr, pCostOrig, 0, pEdgeSubgraph) { }
 
-    void appendCandidates(QueuePure<edge> &queue, node v);
-    void appendCandidates(Array<SListPure<edge> > &nodesAtDist, EdgeArray<int> &costDual, int maxCost, node v, int currentDist);
+    protected:
+        void storeTypeOfCurrentEdge(edge eOrig)
+        {
+            m_typeOfCurrentEdge = m_pr.typeOrig(eOrig);
+        }
+        void init(CombinatorialEmbedding & E);
+        void cleanup();
+        void constructDual(const CombinatorialEmbedding & E);
 
-    void insertEdgesIntoDual(const CombinatorialEmbedding &E, adjEntry adjSrc);
-    void insertEdgesIntoDualAfterRemove(const CombinatorialEmbedding &E, face f);
+        void appendCandidates(QueuePure<edge> & queue, node v);
+        void appendCandidates(Array<SListPure<edge>> & nodesAtDist, EdgeArray<int> & costDual, int maxCost, node v, int currentDist);
 
-    EdgeArray<bool> m_primalIsGen; //!< true iff corresponding primal edge is a generalization.
-    Graph::EdgeType m_typeOfCurrentEdge;
-};
+        void insertEdgesIntoDual(const CombinatorialEmbedding & E, adjEntry adjSrc);
+        void insertEdgesIntoDualAfterRemove(const CombinatorialEmbedding & E, face f);
+
+        EdgeArray<bool> m_primalIsGen; //!< true iff corresponding primal edge is a generalization.
+        Graph::EdgeType m_typeOfCurrentEdge;
+    };
 
 }
 

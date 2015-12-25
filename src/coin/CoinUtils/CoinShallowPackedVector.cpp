@@ -24,10 +24,10 @@ CoinShallowPackedVector::clear()
 
 //#############################################################################
 
-CoinShallowPackedVector&
+CoinShallowPackedVector &
 CoinShallowPackedVector::operator=(const CoinPackedVectorBase & x)
 {
-    if (&x != this)
+    if(&x != this)
     {
         indices_ = x.getIndices();
         elements_ = x.getElements();
@@ -38,7 +38,7 @@ CoinShallowPackedVector::operator=(const CoinPackedVectorBase & x)
         {
             CoinPackedVectorBase::duplicateIndex();
         }
-        catch (CoinError e)
+        catch(CoinError e)
         {
             throw CoinError("duplicate index", "operator= from base",
                             "CoinShallowPackedVector");
@@ -49,10 +49,10 @@ CoinShallowPackedVector::operator=(const CoinPackedVectorBase & x)
 
 //#############################################################################
 
-CoinShallowPackedVector&
+CoinShallowPackedVector &
 CoinShallowPackedVector::operator=(const CoinShallowPackedVector & x)
 {
-    if (&x != this)
+    if(&x != this)
     {
         indices_ = x.indices_;
         elements_ = x.elements_;
@@ -63,7 +63,7 @@ CoinShallowPackedVector::operator=(const CoinShallowPackedVector & x)
         {
             CoinPackedVectorBase::duplicateIndex();
         }
-        catch (CoinError e)
+        catch(CoinError e)
         {
             throw CoinError("duplicate index", "operator=",
                             "CoinShallowPackedVector");
@@ -76,7 +76,7 @@ CoinShallowPackedVector::operator=(const CoinShallowPackedVector & x)
 
 void
 CoinShallowPackedVector::setVector(int size,
-                                   const int * inds, const double * elems,
+                                   const int* inds, const double* elems,
                                    bool testForDuplicateIndex)
 {
     indices_ = inds;
@@ -87,7 +87,7 @@ CoinShallowPackedVector::setVector(int size,
     {
         CoinPackedVectorBase::setTestForDuplicateIndex(testForDuplicateIndex);
     }
-    catch (CoinError e)
+    catch(CoinError e)
     {
         throw CoinError("duplicate index", "setVector",
                         "CoinShallowPackedVector");
@@ -109,7 +109,7 @@ CoinShallowPackedVector::CoinShallowPackedVector(bool testForDuplicateIndex) :
     {
         CoinPackedVectorBase::setTestForDuplicateIndex(testForDuplicateIndex);
     }
-    catch (CoinError e)
+    catch(CoinError e)
     {
         throw CoinError("duplicate index", "default constructor",
                         "CoinShallowPackedVector");
@@ -120,8 +120,8 @@ CoinShallowPackedVector::CoinShallowPackedVector(bool testForDuplicateIndex) :
 // Explicit
 //-------------------------------------------------------------------
 CoinShallowPackedVector::CoinShallowPackedVector(int size,
-        const int * inds,
-        const double * elems,
+        const int* inds,
+        const double* elems,
         bool testForDuplicateIndex) :
     CoinPackedVectorBase(),
     indices_(inds),
@@ -132,7 +132,7 @@ CoinShallowPackedVector::CoinShallowPackedVector(int size,
     {
         CoinPackedVectorBase::setTestForDuplicateIndex(testForDuplicateIndex);
     }
-    catch (CoinError e)
+    catch(CoinError e)
     {
         throw CoinError("duplicate index", "explicit constructor",
                         "CoinShallowPackedVector");
@@ -142,7 +142,7 @@ CoinShallowPackedVector::CoinShallowPackedVector(int size,
 //-------------------------------------------------------------------
 // Copy
 //-------------------------------------------------------------------
-CoinShallowPackedVector::CoinShallowPackedVector(const CoinPackedVectorBase& x) :
+CoinShallowPackedVector::CoinShallowPackedVector(const CoinPackedVectorBase & x) :
     CoinPackedVectorBase(),
     indices_(x.getIndices()),
     elements_(x.getElements()),
@@ -153,7 +153,7 @@ CoinShallowPackedVector::CoinShallowPackedVector(const CoinPackedVectorBase& x) 
     {
         CoinPackedVectorBase::setTestForDuplicateIndex(x.testForDuplicateIndex());
     }
-    catch (CoinError e)
+    catch(CoinError e)
     {
         throw CoinError("duplicate index", "copy constructor from base",
                         "CoinShallowPackedVector");
@@ -164,7 +164,7 @@ CoinShallowPackedVector::CoinShallowPackedVector(const CoinPackedVectorBase& x) 
 // Copy
 //-------------------------------------------------------------------
 CoinShallowPackedVector::CoinShallowPackedVector(const
-        CoinShallowPackedVector& x) :
+        CoinShallowPackedVector & x) :
     CoinPackedVectorBase(),
     indices_(x.getIndices()),
     elements_(x.getElements()),
@@ -175,7 +175,7 @@ CoinShallowPackedVector::CoinShallowPackedVector(const
     {
         CoinPackedVectorBase::setTestForDuplicateIndex(x.testForDuplicateIndex());
     }
-    catch (CoinError e)
+    catch(CoinError e)
     {
         throw CoinError("duplicate index", "copy constructor",
                         "CoinShallowPackedVector");
@@ -187,10 +187,10 @@ CoinShallowPackedVector::CoinShallowPackedVector(const
 //-------------------------------------------------------------------
 void CoinShallowPackedVector::print()
 {
-    for (int i=0; i < nElements_; i++)
+    for(int i = 0; i < nElements_; i++)
     {
         std::cout << indices_[i] << ":" << elements_[i];
-        if (i < nElements_-1)
+        if(i < nElements_ - 1)
             std::cout << ", ";
     }
     std::cout << std::endl;

@@ -39,17 +39,17 @@ public:
         to try and stay feasible.
         Names will be dropped in presolved model if asked
     */
-    ClpSimplex * presolvedModel(ClpSimplex & si,
-                                double feasibilityTolerance = 0.0,
-                                bool keepIntegers = true,
-                                int numberPasses = 5,
-                                bool dropNames = false,
-                                bool doRowObjective = false);
+    ClpSimplex* presolvedModel(ClpSimplex & si,
+                               double feasibilityTolerance = 0.0,
+                               bool keepIntegers = true,
+                               int numberPasses = 5,
+                               bool dropNames = false,
+                               bool doRowObjective = false);
 #ifndef CLP_NO_STD
     /** This version saves data in a file.  The passed in model
         is updated to be presolved model.
         Returns non-zero if infeasible*/
-    int presolvedModelToFile(ClpSimplex &si, std::string fileName,
+    int presolvedModelToFile(ClpSimplex & si, std::string fileName,
                              double feasibilityTolerance = 0.0,
                              bool keepIntegers = true,
                              int numberPasses = 5,
@@ -58,16 +58,16 @@ public:
 #endif
     /** Return pointer to presolved model,
         Up to user to destroy */
-    ClpSimplex * model() const;
+    ClpSimplex* model() const;
     /// Return pointer to original model
-    ClpSimplex * originalModel() const;
+    ClpSimplex* originalModel() const;
     /// Set pointer to original model
-    void setOriginalModel(ClpSimplex * model);
+    void setOriginalModel(ClpSimplex* model);
 
     /// return pointer to original columns
-    const int * originalColumns() const;
+    const int* originalColumns() const;
     /// return pointer to original rows
-    const int * originalRows() const;
+    const int* originalRows() const;
     /** "Magic" number. If this is non-zero then any elements with this value
         may change and so presolve is very limited in what can be done
         to the row and column.  This is for non-linear problems.
@@ -87,7 +87,7 @@ public:
     }
     inline void setDoDual(bool doDual)
     {
-        if (doDual) presolveActions_  &= ~1;
+        if(doDual) presolveActions_  &= ~1;
         else presolveActions_ |= 1;
     }
     /// Whether we want to do singleton part of presolve
@@ -97,7 +97,7 @@ public:
     }
     inline void setDoSingleton(bool doSingleton)
     {
-        if (doSingleton) presolveActions_  &= ~2;
+        if(doSingleton) presolveActions_  &= ~2;
         else presolveActions_ |= 2;
     }
     /// Whether we want to do doubleton part of presolve
@@ -107,7 +107,7 @@ public:
     }
     inline void setDoDoubleton(bool doDoubleton)
     {
-        if (doDoubleton) presolveActions_  &= ~4;
+        if(doDoubleton) presolveActions_  &= ~4;
         else presolveActions_ |= 4;
     }
     /// Whether we want to do tripleton part of presolve
@@ -117,7 +117,7 @@ public:
     }
     inline void setDoTripleton(bool doTripleton)
     {
-        if (doTripleton) presolveActions_  &= ~8;
+        if(doTripleton) presolveActions_  &= ~8;
         else presolveActions_ |= 8;
     }
     /// Whether we want to do tighten part of presolve
@@ -127,7 +127,7 @@ public:
     }
     inline void setDoTighten(bool doTighten)
     {
-        if (doTighten) presolveActions_  &= ~16;
+        if(doTighten) presolveActions_  &= ~16;
         else presolveActions_ |= 16;
     }
     /// Whether we want to do forcing part of presolve
@@ -137,7 +137,7 @@ public:
     }
     inline void setDoForcing(bool doForcing)
     {
-        if (doForcing) presolveActions_  &= ~32;
+        if(doForcing) presolveActions_  &= ~32;
         else presolveActions_ |= 32;
     }
     /// Whether we want to do impliedfree part of presolve
@@ -147,7 +147,7 @@ public:
     }
     inline void setDoImpliedFree(bool doImpliedfree)
     {
-        if (doImpliedfree) presolveActions_  &= ~64;
+        if(doImpliedfree) presolveActions_  &= ~64;
         else presolveActions_ |= 64;
     }
     /// Whether we want to do dupcol part of presolve
@@ -157,7 +157,7 @@ public:
     }
     inline void setDoDupcol(bool doDupcol)
     {
-        if (doDupcol) presolveActions_  &= ~128;
+        if(doDupcol) presolveActions_  &= ~128;
         else presolveActions_ |= 128;
     }
     /// Whether we want to do duprow part of presolve
@@ -167,7 +167,7 @@ public:
     }
     inline void setDoDuprow(bool doDuprow)
     {
-        if (doDuprow) presolveActions_  &= ~256;
+        if(doDuprow) presolveActions_  &= ~256;
         else presolveActions_ |= 256;
     }
     /// Whether we want to do singleton column part of presolve
@@ -177,7 +177,7 @@ public:
     }
     inline void setDoSingletonColumn(bool doSingleton)
     {
-        if (doSingleton) presolveActions_  &= ~512;
+        if(doSingleton) presolveActions_  &= ~512;
         else presolveActions_ |= 512;
     }
     /// Whether we want to do gubrow part of presolve
@@ -187,7 +187,7 @@ public:
     }
     inline void setDoGubrow(bool doGubrow)
     {
-        if (doGubrow) presolveActions_  &= ~1024;
+        if(doGubrow) presolveActions_  &= ~1024;
         else presolveActions_ |= 1024;
     }
     /// Set whole group
@@ -228,10 +228,10 @@ public:
     /**@name private or protected data */
 private:
     /// Original model - must not be destroyed before postsolve
-    ClpSimplex * originalModel_;
+    ClpSimplex* originalModel_;
 
     /// ClpPresolved model - up to user to destroy by deleteClpPresolvedModel
-    ClpSimplex * presolvedModel_;
+    ClpSimplex* presolvedModel_;
     /** "Magic" number. If this is non-zero then any elements with this value
         may change and so presolve is very limited in what can be done
         to the row and column.  This is for non-linear problems.
@@ -239,13 +239,13 @@ private:
     */
     double nonLinearValue_;
     /// Original column numbers
-    int * originalColumn_;
+    int* originalColumn_;
     /// Original row numbers
-    int * originalRow_;
+    int* originalRow_;
     /// Row objective
-    double * rowObjective_;
+    double* rowObjective_;
     /// The list of transformations applied.
-    const CoinPresolveAction *paction_;
+    const CoinPresolveAction* paction_;
 
     /// The postsolved problem will expand back to its former size
     /// as postsolve transformations are applied.
@@ -272,16 +272,16 @@ protected:
     /// If you want to apply the individual presolve routines differently,
     /// or perhaps add your own to the mix,
     /// define a derived class and override this method
-    virtual const CoinPresolveAction *presolve(CoinPresolveMatrix *prob);
+    virtual const CoinPresolveAction* presolve(CoinPresolveMatrix* prob);
 
     /// Postsolving is pretty generic; just apply the transformations
     /// in reverse order.
     /// You will probably only be interested in overriding this method
     /// if you want to add code to test for consistency
     /// while debugging new presolve techniques.
-    virtual void postsolve(CoinPostsolveMatrix &prob);
+    virtual void postsolve(CoinPostsolveMatrix & prob);
     /** This is main part of Presolve */
-    virtual ClpSimplex * gutsOfPresolvedModel(ClpSimplex * originalModel,
+    virtual ClpSimplex* gutsOfPresolvedModel(ClpSimplex* originalModel,
             double feasibilityTolerance,
             bool keepIntegers,
             int numberPasses,

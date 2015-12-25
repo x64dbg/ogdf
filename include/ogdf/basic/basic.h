@@ -217,383 +217,383 @@ namespace ogdf
 
 #ifndef OGDF_DLL
 
-/**
- *  The class Initialization is used for initializing global variables.
- *  You should never create instances of it!
-*/
-class Initialization
-{
-    static int s_count;
-
-public:
-    Initialization();
-    ~Initialization();
-};
-
-static Initialization s_ogdfInitializer;
-
-#endif
-
-
-/**
- * @name Global basic functions
- */
-//@{
-
-// forward declarations
-template<class E> class List;
-
-
-enum Direction { before, after };
-
-//! Returns random integer between low and high (including).
-inline int randomNumber(int low, int high)
-{
-#if RAND_MAX == 32767
-    // We get only 15 random bits on some systems (Windows, Solaris)!
-    int r1 = (rand() & ((1 << 16) - 1));
-    int r2 = (rand() & ((1 << 16) - 1));
-    int r = (r1 << 15) | r2;
-#else
-    int r = rand();
-#endif
-    return low + (r % (high-low+1));
-}
-
-//! Returns random double value between low and high.
-inline double randomDouble(double low, double high)
-{
-    double val = low +(rand()*(high-low))/RAND_MAX;
-    OGDF_ASSERT(val >= low && val <= high);
-    return val;
-}
-
-//! Returns a random double value from the normal distribution
-//! with mean m and standard deviation sd
-inline double randomDoubleNormal(double m, double sd)
-{
-    double x1, y1, w;
-
-    do
+    /**
+     *  The class Initialization is used for initializing global variables.
+     *  You should never create instances of it!
+    */
+    class Initialization
     {
-        double rndVal = randomDouble(0,1);
-        x1 = 2.0 * rndVal - 1.0;
-        rndVal = randomDouble(0,1);
-        double x2 = 2.0 * rndVal - 1.0;
-        w = x1*x1 + x2*x2;
+        static int s_count;
+
+    public:
+        Initialization();
+        ~Initialization();
+    };
+
+    static Initialization s_ogdfInitializer;
+
+#endif
+
+
+    /**
+     * @name Global basic functions
+     */
+    //@{
+
+    // forward declarations
+    template<class E> class List;
+
+
+    enum Direction { before, after };
+
+    //! Returns random integer between low and high (including).
+    inline int randomNumber(int low, int high)
+    {
+#if RAND_MAX == 32767
+        // We get only 15 random bits on some systems (Windows, Solaris)!
+        int r1 = (rand() & ((1 << 16) - 1));
+        int r2 = (rand() & ((1 << 16) - 1));
+        int r = (r1 << 15) | r2;
+#else
+        int r = rand();
+#endif
+        return low + (r % (high - low + 1));
     }
-    while (w >= 1.0);
 
-    w = sqrt((-2.0 * log(w))/w) ;
-    y1 = x1*w;
+    //! Returns random double value between low and high.
+    inline double randomDouble(double low, double high)
+    {
+        double val = low + (rand() * (high - low)) / RAND_MAX;
+        OGDF_ASSERT(val >= low && val <= high);
+        return val;
+    }
 
-    return(m + y1*sd);
-}
+    //! Returns a random double value from the normal distribution
+    //! with mean m and standard deviation sd
+    inline double randomDoubleNormal(double m, double sd)
+    {
+        double x1, y1, w;
 
+        do
+        {
+            double rndVal = randomDouble(0, 1);
+            x1 = 2.0 * rndVal - 1.0;
+            rndVal = randomDouble(0, 1);
+            double x2 = 2.0 * rndVal - 1.0;
+            w = x1 * x1 + x2 * x2;
+        }
+        while(w >= 1.0);
 
+        w = sqrt((-2.0 * log(w)) / w) ;
+        y1 = x1 * w;
 
-//! Returns used CPU time from T to current time and assigns
-//! current time to T.
-OGDF_EXPORT double usedTime(double& T);
-
-//! \a doDestruction() returns false if a data type does not require to
-//! call its destructor (e.g. build-in data types).
-template<class E>inline bool doDestruction(const E *)
-{
-    return true;
-}
-
-// specializations
-template<>inline bool doDestruction(const char *)
-{
-    return false;
-}
-template<>inline bool doDestruction<int>(const int *)
-{
-    return false;
-}
-template<>inline bool doDestruction<double>(const double *)
-{
-    return false;
-}
+        return(m + y1 * sd);
+    }
 
 
-//! Compares the two strings \a str1 and \a str2, ignoring the case of characters.
-OGDF_EXPORT bool equalIgnoreCase(const string &str1, const string &str2);
 
-//! Tests if \a prefix is a prefix of \a str, ignoring the case of characters.
-OGDF_EXPORT bool prefixIgnoreCase(const string &prefix, const string &str);
+    //! Returns used CPU time from T to current time and assigns
+    //! current time to T.
+    OGDF_EXPORT double usedTime(double & T);
 
-//@}
+    //! \a doDestruction() returns false if a data type does not require to
+    //! call its destructor (e.g. build-in data types).
+    template<class E>inline bool doDestruction(const E*)
+    {
+        return true;
+    }
 
-
-/**
- * @name Files and directories
- */
-//@{
-
-//! The type of an entry in a directory.
-enum FileType
-{
-    ftEntry,     /**< file or directory */
-    ftFile,      /**< file */
-    ftDirectory  /**< directory */
-};
-
-//! Returns true iff \a fileName is a regular file (not a directory).
-OGDF_EXPORT bool isFile(const char *fileName);
-
-//! Returns true iff \a fileName is a directory.
-OGDF_EXPORT bool isDirectory(const char *fileName);
-
-//! Changes current directory to \a dirName; returns true if successful.
-OGDF_EXPORT bool changeDir(const char *dirName);
-
-//! Returns in \a files the list of files in directory \a dirName.
-/** The optional argument \a pattern can be used to filter files.
- *
- *  \pre \a dirName is a directory
- */
-OGDF_EXPORT void getFiles(const char *dirName,
-                          List<string> &files,
-                          const char *pattern = "*");
-
-//! Appends to \a files the list of files in directory \a dirName.
-/** The optional argument \a pattern can be used to filter files.
- *
- *  \pre \a dirName is a directory
- */
-OGDF_EXPORT void getFilesAppend(const char *dirName,
-                                List<string> &files,
-                                const char *pattern = "*");
+    // specializations
+    template<>inline bool doDestruction(const char*)
+    {
+        return false;
+    }
+    template<>inline bool doDestruction<int>(const int*)
+    {
+        return false;
+    }
+    template<>inline bool doDestruction<double>(const double*)
+    {
+        return false;
+    }
 
 
-//! Returns in \a subdirs the list of directories contained in directory \a dirName.
-/** The optional argument \a pattern can be used to filter files.
- *
- *  \pre \a dirName is a directory
- */
-OGDF_EXPORT void getSubdirs(const char *dirName,
-                            List<string> &subdirs,
-                            const char *pattern = "*");
+    //! Compares the two strings \a str1 and \a str2, ignoring the case of characters.
+    OGDF_EXPORT bool equalIgnoreCase(const string & str1, const string & str2);
 
-//! Appends to \a subdirs the list of directories contained in directory \a dirName.
-/** The optional argument \a pattern can be used to filter files.
- *
- *  \pre \a dirName is a directory
- */
-OGDF_EXPORT void getSubdirsAppend(const char *dirName,
-                                  List<string> &subdirs,
-                                  const char *pattern = "*");
+    //! Tests if \a prefix is a prefix of \a str, ignoring the case of characters.
+    OGDF_EXPORT bool prefixIgnoreCase(const string & prefix, const string & str);
+
+    //@}
 
 
-//! Returns in \a entries the list of all entries contained in directory \a dirName.
-/** Entries may be files or directories. The optional argument \a pattern
- *  can be used to filter files.
- *
- *  \pre \a dirName is a directory
- */
-OGDF_EXPORT void getEntries(const char *dirName,
-                            List<string> &entries,
-                            const char *pattern = "*");
+    /**
+     * @name Files and directories
+     */
+    //@{
 
-//! Appends to \a entries the list of all entries contained in directory \a dirName.
-/** Entries may be files or directories. The optional argument \a pattern
- *  can be used to filter files.
- *
- *  \pre \a dirName is a directory
- */
-OGDF_EXPORT void getEntriesAppend(const char *dirName,
-                                  List<string> &entries,
-                                  const char *pattern = "*");
+    //! The type of an entry in a directory.
+    enum FileType
+    {
+        ftEntry,     /**< file or directory */
+        ftFile,      /**< file */
+        ftDirectory  /**< directory */
+    };
+
+    //! Returns true iff \a fileName is a regular file (not a directory).
+    OGDF_EXPORT bool isFile(const char* fileName);
+
+    //! Returns true iff \a fileName is a directory.
+    OGDF_EXPORT bool isDirectory(const char* fileName);
+
+    //! Changes current directory to \a dirName; returns true if successful.
+    OGDF_EXPORT bool changeDir(const char* dirName);
+
+    //! Returns in \a files the list of files in directory \a dirName.
+    /** The optional argument \a pattern can be used to filter files.
+     *
+     *  \pre \a dirName is a directory
+     */
+    OGDF_EXPORT void getFiles(const char* dirName,
+                              List<string> & files,
+                              const char* pattern = "*");
+
+    //! Appends to \a files the list of files in directory \a dirName.
+    /** The optional argument \a pattern can be used to filter files.
+     *
+     *  \pre \a dirName is a directory
+     */
+    OGDF_EXPORT void getFilesAppend(const char* dirName,
+                                    List<string> & files,
+                                    const char* pattern = "*");
 
 
-//! Returns in \a entries the list of all entries of type \a t contained in directory \a dirName.
-/** The optional argument \a pattern can be used to filter files.
- *
- *  \pre \a dirName is a directory
- */
-OGDF_EXPORT void getEntries(const char *dirName,
-                            FileType t,
-                            List<string> &entries,
-                            const char *pattern = "*");
+    //! Returns in \a subdirs the list of directories contained in directory \a dirName.
+    /** The optional argument \a pattern can be used to filter files.
+     *
+     *  \pre \a dirName is a directory
+     */
+    OGDF_EXPORT void getSubdirs(const char* dirName,
+                                List<string> & subdirs,
+                                const char* pattern = "*");
 
-//! Appends to \a entries the list of all entries of type \a t contained in directory \a dirName.
-/** The optional argument \a pattern can be used to filter files.
- *
- *  \pre \a dirName is a directory
- */
-OGDF_EXPORT void getEntriesAppend(const char *dirName,
-                                  FileType t,
-                                  List<string> &entries,
-                                  const char *pattern = "*");
+    //! Appends to \a subdirs the list of directories contained in directory \a dirName.
+    /** The optional argument \a pattern can be used to filter files.
+     *
+     *  \pre \a dirName is a directory
+     */
+    OGDF_EXPORT void getSubdirsAppend(const char* dirName,
+                                      List<string> & subdirs,
+                                      const char* pattern = "*");
 
-//@}
+
+    //! Returns in \a entries the list of all entries contained in directory \a dirName.
+    /** Entries may be files or directories. The optional argument \a pattern
+     *  can be used to filter files.
+     *
+     *  \pre \a dirName is a directory
+     */
+    OGDF_EXPORT void getEntries(const char* dirName,
+                                List<string> & entries,
+                                const char* pattern = "*");
+
+    //! Appends to \a entries the list of all entries contained in directory \a dirName.
+    /** Entries may be files or directories. The optional argument \a pattern
+     *  can be used to filter files.
+     *
+     *  \pre \a dirName is a directory
+     */
+    OGDF_EXPORT void getEntriesAppend(const char* dirName,
+                                      List<string> & entries,
+                                      const char* pattern = "*");
+
+
+    //! Returns in \a entries the list of all entries of type \a t contained in directory \a dirName.
+    /** The optional argument \a pattern can be used to filter files.
+     *
+     *  \pre \a dirName is a directory
+     */
+    OGDF_EXPORT void getEntries(const char* dirName,
+                                FileType t,
+                                List<string> & entries,
+                                const char* pattern = "*");
+
+    //! Appends to \a entries the list of all entries of type \a t contained in directory \a dirName.
+    /** The optional argument \a pattern can be used to filter files.
+     *
+     *  \pre \a dirName is a directory
+     */
+    OGDF_EXPORT void getEntriesAppend(const char* dirName,
+                                      FileType t,
+                                      List<string> & entries,
+                                      const char* pattern = "*");
+
+    //@}
 
 
 #ifdef OGDF_DEBUG
-/** We maintain a debug level in debug versions indicating how many
- *  internal checks (usually assertions) are done.
- *  Usage: Set the variable ogdf::debugLevel using the macro
- *   OGDF_SET_DEBUG_LEVEL(level) to the desired level
- *   in the calling code (e.g. main()). The debugLevel can be set
- *   to a higher level for critical parts (e.g., where you assume a bug)
- *   ensuring that other parts are not too slow.
- */
-enum DebugLevel
-{
-    dlMinimal, dlExtendedChecking, dlConsistencyChecks, dlHeavyChecks
-};
-extern DebugLevel debugLevel;
+    /** We maintain a debug level in debug versions indicating how many
+     *  internal checks (usually assertions) are done.
+     *  Usage: Set the variable ogdf::debugLevel using the macro
+     *   OGDF_SET_DEBUG_LEVEL(level) to the desired level
+     *   in the calling code (e.g. main()). The debugLevel can be set
+     *   to a higher level for critical parts (e.g., where you assume a bug)
+     *   ensuring that other parts are not too slow.
+     */
+    enum DebugLevel
+    {
+        dlMinimal, dlExtendedChecking, dlConsistencyChecks, dlHeavyChecks
+    };
+    extern DebugLevel debugLevel;
 #endif
 
 
-//! Abstract base class for bucket functions.
-/**
- * The parameterized class \a BucketFunc<E> is an abstract base class
- * for bucket functions. Derived classes have to implement \a getBucket().
- * Bucket functions are used by bucket sort functions for container types.
- */
-template<class E> class BucketFunc
-{
-public:
-    virtual ~BucketFunc() { }
+    //! Abstract base class for bucket functions.
+    /**
+     * The parameterized class \a BucketFunc<E> is an abstract base class
+     * for bucket functions. Derived classes have to implement \a getBucket().
+     * Bucket functions are used by bucket sort functions for container types.
+     */
+    template<class E> class BucketFunc
+    {
+    public:
+        virtual ~BucketFunc() { }
 
-    //! Returns the bucket of \a x.
-    virtual int getBucket(const E &x) = 0;
-};
+        //! Returns the bucket of \a x.
+        virtual int getBucket(const E & x) = 0;
+    };
 
 
 
-/**
- * @name Atomic operations
- */
-//@{
+    /**
+     * @name Atomic operations
+     */
+    //@{
 
 #ifdef OGDF_SYSTEM_WINDOWS
 
 #define OGDF_MEMORY_BARRIER MemoryBarrier()
 
-//! Atomically decrements (decreases by one) the variable to which \a pX points.
-/**
- * @param pX points to the variable to be decremented.
- * @return The resulting decremented value.
- */
-inline __int32 atomicDec(__int32 volatile *pX)
-{
-    return (__int32)InterlockedDecrement((LONG volatile *)pX);
-}
+    //! Atomically decrements (decreases by one) the variable to which \a pX points.
+    /**
+     * @param pX points to the variable to be decremented.
+     * @return The resulting decremented value.
+     */
+    inline __int32 atomicDec(__int32 volatile* pX)
+    {
+        return (__int32)InterlockedDecrement((LONG volatile*)pX);
+    }
 
-//! Atomically decrements (decreases by one) the variable to which \a pX points.
-/**
- * @param pX points to the variable to be decremented.
- * @return The resulting decremented value.
- */
-inline __int64 atomicDec(__int64 volatile *pX)
-{
-    return InterlockedDecrement64(pX);
-}
+    //! Atomically decrements (decreases by one) the variable to which \a pX points.
+    /**
+     * @param pX points to the variable to be decremented.
+     * @return The resulting decremented value.
+     */
+    inline __int64 atomicDec(__int64 volatile* pX)
+    {
+        return InterlockedDecrement64(pX);
+    }
 
-//! Atomically increments (increases by one) the variable to which \a pX points.
-/**
- * @param pX points to the variable to be incremented.
- * @return The resulting incremented value.
- */
-inline __int32 atomicInc(__int32 volatile *pX)
-{
-    return (__int32)InterlockedIncrement((LONG volatile *)pX);
-}
+    //! Atomically increments (increases by one) the variable to which \a pX points.
+    /**
+     * @param pX points to the variable to be incremented.
+     * @return The resulting incremented value.
+     */
+    inline __int32 atomicInc(__int32 volatile* pX)
+    {
+        return (__int32)InterlockedIncrement((LONG volatile*)pX);
+    }
 
-//! Atomically increments (increases by one) the variable to which \a pX points.
-/**
- * @param pX points to the variable to be incremented.
- * @return The resulting incremented value.
- */
-inline __int64 atomicInc(__int64 volatile *pX)
-{
-    return InterlockedIncrement64(pX);
-}
+    //! Atomically increments (increases by one) the variable to which \a pX points.
+    /**
+     * @param pX points to the variable to be incremented.
+     * @return The resulting incremented value.
+     */
+    inline __int64 atomicInc(__int64 volatile* pX)
+    {
+        return InterlockedIncrement64(pX);
+    }
 
 
-//! Atomically sets the variable pointed to by \a pX to \a value and returns its previous value.
-/**
- * @param pX    points to the variable to be modified.
- * @param value is the value to which the variable is set.
- * @return The previous value of the modified variable.
- */
-inline __int32 atomicExchange(__int32 volatile *pX, __int32 value)
-{
-    return InterlockedExchange((LONG volatile *)pX, (LONG)value);
-}
+    //! Atomically sets the variable pointed to by \a pX to \a value and returns its previous value.
+    /**
+     * @param pX    points to the variable to be modified.
+     * @param value is the value to which the variable is set.
+     * @return The previous value of the modified variable.
+     */
+    inline __int32 atomicExchange(__int32 volatile* pX, __int32 value)
+    {
+        return InterlockedExchange((LONG volatile*)pX, (LONG)value);
+    }
 
-//! Atomically sets the variable pointed to by \a pX to \a value and returns its previous value.
-/**
- * @param pX    points to the variable to be modified.
- * @param value is the value to which the variable is set.
- * @return The previous value of the modified variable.
- */
-inline __int64 atomicExchange(__int64 volatile *pX, __int64 value)
-{
-    return InterlockedExchange64(pX, value);
-}
+    //! Atomically sets the variable pointed to by \a pX to \a value and returns its previous value.
+    /**
+     * @param pX    points to the variable to be modified.
+     * @param value is the value to which the variable is set.
+     * @return The previous value of the modified variable.
+     */
+    inline __int64 atomicExchange(__int64 volatile* pX, __int64 value)
+    {
+        return InterlockedExchange64(pX, value);
+    }
 
-//! Atomically sets the variable pointed to by \a pX to \a value and returns its previous value.
-/**
- * @param pX    points to the variable to be modified.
- * @param value is the value to which the variable is set.
- * @return The previous value of the modified variable.
- */
-template<typename T>
-inline T *atomicExchange(T * volatile *pX, T *value)
-{
-    return (T *)InterlockedExchangePointer((PVOID volatile *)pX, value);
-}
+    //! Atomically sets the variable pointed to by \a pX to \a value and returns its previous value.
+    /**
+     * @param pX    points to the variable to be modified.
+     * @param value is the value to which the variable is set.
+     * @return The previous value of the modified variable.
+     */
+    template<typename T>
+    inline T* atomicExchange(T* volatile* pX, T* value)
+    {
+        return (T*)InterlockedExchangePointer((PVOID volatile*)pX, value);
+    }
 
 
 #if defined(_M_AMD64)
-//! Atomically subtracts \a value from the variable to which \a pX points.
-/**
- * @param pX    points to the variable to be modified.
- * @param value is the value to be subtracted form the variable.
- * @return The resulting value of the modified variable.
- */
-inline __int32 atomicSub(__int32 volatile *pX, __int32 value)
-{
-    return (__int32)InterlockedAdd((LONG volatile *)pX, -value);
-}
+    //! Atomically subtracts \a value from the variable to which \a pX points.
+    /**
+     * @param pX    points to the variable to be modified.
+     * @param value is the value to be subtracted form the variable.
+     * @return The resulting value of the modified variable.
+     */
+    inline __int32 atomicSub(__int32 volatile* pX, __int32 value)
+    {
+        return (__int32)InterlockedAdd((LONG volatile*)pX, -value);
+    }
 
-//! Atomically subtracts \a value from the variable to which \a pX points.
-/**
- * @param pX    points to the variable to be modified.
- * @param value is the value to be subtracted form the variable.
- * @return The resulting value of the modified variable.
- */
-inline __int64 atomicSub(__int64 volatile *pX, __int64 value)
-{
-    return InterlockedAdd64(pX, -value);
-}
+    //! Atomically subtracts \a value from the variable to which \a pX points.
+    /**
+     * @param pX    points to the variable to be modified.
+     * @param value is the value to be subtracted form the variable.
+     * @return The resulting value of the modified variable.
+     */
+    inline __int64 atomicSub(__int64 volatile* pX, __int64 value)
+    {
+        return InterlockedAdd64(pX, -value);
+    }
 
-//! Atomically adds \a value to the variable to which \a pX points.
-/**
- * @param pX    points to the variable to be modified.
- * @param value is the value to be added to the variable.
- * @return The resulting value of the modified variable.
- */
-inline __int32 atomicAdd(__int32 volatile *pX, __int32 value)
-{
-    return (__int32)InterlockedAdd((LONG volatile *)pX, value);
-}
+    //! Atomically adds \a value to the variable to which \a pX points.
+    /**
+     * @param pX    points to the variable to be modified.
+     * @param value is the value to be added to the variable.
+     * @return The resulting value of the modified variable.
+     */
+    inline __int32 atomicAdd(__int32 volatile* pX, __int32 value)
+    {
+        return (__int32)InterlockedAdd((LONG volatile*)pX, value);
+    }
 
-//! Atomically adds \a value to the variable to which \a pX points.
-/**
- * @param pX    points to the variable to be modified.
- * @param value is the value to be added to the variable.
- * @return The resulting value of the modified variable.
- */
-inline __int64 atomicAdd(__int64 volatile *pX, __int64 value)
-{
-    return InterlockedAdd64(pX, value);
-}
+    //! Atomically adds \a value to the variable to which \a pX points.
+    /**
+     * @param pX    points to the variable to be modified.
+     * @param value is the value to be added to the variable.
+     * @return The resulting value of the modified variable.
+     */
+    inline __int64 atomicAdd(__int64 volatile* pX, __int64 value)
+    {
+        return InterlockedAdd64(pX, value);
+    }
 
 #endif
 
@@ -602,64 +602,64 @@ inline __int64 atomicAdd(__int64 volatile *pX, __int64 value)
 
 #define OGDF_MEMORY_BARRIER __sync_synchronize()
 
-inline __int32 atomicDec(__int32 volatile *pX)
-{
-    return  __sync_sub_and_fetch(pX, 1);
-}
+    inline __int32 atomicDec(__int32 volatile* pX)
+    {
+        return  __sync_sub_and_fetch(pX, 1);
+    }
 
-inline __int64 atomicDec(__int64 volatile *pX)
-{
-    return  __sync_sub_and_fetch(pX, 1);
-}
+    inline __int64 atomicDec(__int64 volatile* pX)
+    {
+        return  __sync_sub_and_fetch(pX, 1);
+    }
 
-inline __int32 atomicInc(__int32 volatile *pX)
-{
-    return  __sync_add_and_fetch(pX, 1);
-}
+    inline __int32 atomicInc(__int32 volatile* pX)
+    {
+        return  __sync_add_and_fetch(pX, 1);
+    }
 
-inline __int64 atomicInc(__int64 volatile *pX)
-{
-    return  __sync_add_and_fetch(pX, 1);
-}
+    inline __int64 atomicInc(__int64 volatile* pX)
+    {
+        return  __sync_add_and_fetch(pX, 1);
+    }
 
-inline __int32 atomicSub(__int32 volatile *pX, __int32 value)
-{
-    return __sync_sub_and_fetch(pX, value);
-}
+    inline __int32 atomicSub(__int32 volatile* pX, __int32 value)
+    {
+        return __sync_sub_and_fetch(pX, value);
+    }
 
-inline __int64 atomicSub(__int64 volatile *pX, __int64 value)
-{
-    return __sync_sub_and_fetch(pX, value);
-}
+    inline __int64 atomicSub(__int64 volatile* pX, __int64 value)
+    {
+        return __sync_sub_and_fetch(pX, value);
+    }
 
-inline __int32 atomicAdd(__int32 volatile *pX, __int32 value)
-{
-    return __sync_add_and_fetch(pX, value);
-}
+    inline __int32 atomicAdd(__int32 volatile* pX, __int32 value)
+    {
+        return __sync_add_and_fetch(pX, value);
+    }
 
-inline __int64 atomicAdd(__int64 volatile *pX, __int64 value)
-{
-    return __sync_add_and_fetch(pX, value);
-}
+    inline __int64 atomicAdd(__int64 volatile* pX, __int64 value)
+    {
+        return __sync_add_and_fetch(pX, value);
+    }
 
-inline __int32 atomicExchange(__int32 volatile *pX, __int32 value)
-{
-    return __sync_lock_test_and_set(pX, value);
-}
+    inline __int32 atomicExchange(__int32 volatile* pX, __int32 value)
+    {
+        return __sync_lock_test_and_set(pX, value);
+    }
 
-inline __int64 atomicExchange(__int64 volatile *pX, __int64 value)
-{
-    return __sync_lock_test_and_set(pX, value);
-}
+    inline __int64 atomicExchange(__int64 volatile* pX, __int64 value)
+    {
+        return __sync_lock_test_and_set(pX, value);
+    }
 
-template<typename T>
-inline T *atomicExchange(T * volatile *pX, T *value)
-{
-    return __sync_lock_test_and_set(pX, value);
-}
+    template<typename T>
+    inline T* atomicExchange(T* volatile* pX, T* value)
+    {
+        return __sync_lock_test_and_set(pX, value);
+    }
 
 #endif
-//@}
+    //@}
 
 } // end namespace ogdf
 
@@ -673,14 +673,14 @@ inline T *atomicExchange(T * volatile *pX, T *value)
 
 #ifndef OGDF_HAVE_CPP11
 
-int                stoi  (const string& _Str, size_t *_Idx = 0, int _Base = 10);
-long long          stoll (const string& _Str, size_t *_Idx = 0, int _Base = 10);
-unsigned long      stoul (const string& _Str, size_t *_Idx = 0, int _Base = 10);
-unsigned long long stoull(const string& _Str, size_t *_Idx = 0, int _Base = 10);
+int                stoi(const string & _Str, size_t* _Idx = 0, int _Base = 10);
+long long          stoll(const string & _Str, size_t* _Idx = 0, int _Base = 10);
+unsigned long      stoul(const string & _Str, size_t* _Idx = 0, int _Base = 10);
+unsigned long long stoull(const string & _Str, size_t* _Idx = 0, int _Base = 10);
 
-float       stof (const string& _Str, size_t *_Idx = 0);
-double      stod (const string& _Str, size_t *_Idx = 0);
-long double stold(const string& _Str, size_t *_Idx = 0);
+float       stof(const string & _Str, size_t* _Idx = 0);
+double      stod(const string & _Str, size_t* _Idx = 0);
+long double stold(const string & _Str, size_t* _Idx = 0);
 
 string to_string(long long _Val);
 string to_string(unsigned long long _Val);
@@ -706,27 +706,27 @@ using std::to_string;
 
 inline string to_string(int           value)
 {
-    return to_string( (long long)          value);
+    return to_string((long long)          value);
 }
 inline string to_string(long          value)
 {
-    return to_string( (long long)          value);
+    return to_string((long long)          value);
 }
 inline string to_string(unsigned int  value)
 {
-    return to_string( (unsigned long long) value);
+    return to_string((unsigned long long) value);
 }
 inline string to_string(unsigned long value)
 {
-    return to_string( (unsigned long long) value);
+    return to_string((unsigned long long) value);
 }
 inline string to_string(float         value)
 {
-    return to_string( (long double)        value);
+    return to_string((long double)        value);
 }
 inline string to_string(double        value)
 {
-    return to_string( (long double)        value);
+    return to_string((long double)        value);
 }
 
 #endif

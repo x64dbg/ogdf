@@ -60,11 +60,11 @@ using namespace ogdf;
 using namespace abacus;
 
 
-MinimalClusterConnection::MinimalClusterConnection(Master *master, List<nodePair> &edges) :
+MinimalClusterConnection::MinimalClusterConnection(Master* master, List<nodePair> & edges) :
     Constraint(master, 0, CSense::Less, 1.0, false, false, true)
 {
     ListConstIterator<nodePair> it;
-    for (it = edges.begin(); it.valid(); ++it)
+    for(it = edges.begin(); it.valid(); ++it)
     {
         m_edges.pushBack(*it);
     }
@@ -74,15 +74,15 @@ MinimalClusterConnection::MinimalClusterConnection(Master *master, List<nodePair
 MinimalClusterConnection::~MinimalClusterConnection() {}
 
 
-double MinimalClusterConnection::coeff(const Variable *v) const
+double MinimalClusterConnection::coeff(const Variable* v) const
 {
     //TODO: speedup, we know between which nodepairs edges exist...
-    const EdgeVar *e = (const EdgeVar *)v;
+    const EdgeVar* e = (const EdgeVar*)v;
     ListConstIterator<nodePair> it;
-    for (it = m_edges.begin(); it.valid(); ++it)
+    for(it = m_edges.begin(); it.valid(); ++it)
     {
-        if ( ((*it).v1 == e->sourceNode() && (*it).v2 == e->targetNode()) ||
-                ((*it).v2 == e->sourceNode() && (*it).v1 == e->targetNode()) )
+        if(((*it).v1 == e->sourceNode() && (*it).v2 == e->targetNode()) ||
+                ((*it).v2 == e->sourceNode() && (*it).v1 == e->targetNode()))
         {
             return 1.0;
         }

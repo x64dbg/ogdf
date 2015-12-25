@@ -48,23 +48,23 @@ namespace ogdf
 {
 
 
-void UpwardPlanarSubgraphModule::callAndDelete(
-    GraphCopy &GC,
-    List<edge> &delOrigEdges)
-{
-    List<edge> delEdges;
-
-    call(GC, delEdges);
-
-    ListConstIterator<edge> it;
-    for(it = delEdges.begin(); it.valid(); ++it)
+    void UpwardPlanarSubgraphModule::callAndDelete(
+        GraphCopy & GC,
+        List<edge> & delOrigEdges)
     {
-        edge eCopy = *it;
+        List<edge> delEdges;
 
-        delOrigEdges.pushBack(GC.original(eCopy));
-        GC.delEdge(eCopy);
+        call(GC, delEdges);
+
+        ListConstIterator<edge> it;
+        for(it = delEdges.begin(); it.valid(); ++it)
+        {
+            edge eCopy = *it;
+
+            delOrigEdges.pushBack(GC.original(eCopy));
+            GC.delEdge(eCopy);
+        }
     }
-}
 
 
 } // end namespace ogdf

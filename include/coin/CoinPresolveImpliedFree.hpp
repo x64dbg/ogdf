@@ -33,28 +33,28 @@ class implied_free_action : public CoinPresolveAction
         int row, col;
         double clo, cup;
         double rlo, rup;
-        const double *rowels;
-        const double *costs;
+        const double* rowels;
+        const double* costs;
         int ninrow;
     };
 
     const int nactions_;
-    const action *const actions_;
+    const action* const actions_;
 
     implied_free_action(int nactions,
-                        const action *actions,
-                        const CoinPresolveAction *next) :
+                        const action* actions,
+                        const CoinPresolveAction* next) :
         CoinPresolveAction(next),
         nactions_(nactions), actions_(actions) {}
 
 public:
-    const char *name() const;
+    const char* name() const;
 
-    static const CoinPresolveAction *presolve(CoinPresolveMatrix * prob,
-            const CoinPresolveAction *next,
+    static const CoinPresolveAction* presolve(CoinPresolveMatrix* prob,
+            const CoinPresolveAction* next,
             int & fillLevel);
 
-    void postsolve(CoinPostsolveMatrix *prob) const;
+    void postsolve(CoinPostsolveMatrix* prob) const;
 
     ~implied_free_action();
 };

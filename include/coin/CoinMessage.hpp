@@ -27,7 +27,7 @@
 
 enum COIN_Message
 {
-    COIN_MPS_LINE=0,
+    COIN_MPS_LINE = 0,
     COIN_MPS_STATS,
     COIN_MPS_ILLEGAL,
     COIN_MPS_BADIMAGE,
@@ -88,7 +88,7 @@ public:
       Build a CoinMessages object and load it with the standard set of
       Coin messages.
     */
-    CoinMessage(Language language=us_en);
+    CoinMessage(Language language = us_en);
     //@}
 
 };

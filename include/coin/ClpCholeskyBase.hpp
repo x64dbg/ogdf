@@ -62,7 +62,7 @@ public:
      If using default symbolic etc then must set sizeFactor_ to
      size of input matrix to order (and to symbolic).
      Also just permute_ and permuteInverse_ should be created */
-    virtual int order(ClpInterior * model);
+    virtual int order(ClpInterior* model);
     /** Does Symbolic factorization given permutation.
         This is called immediately after order.  If user provides this then
         user must provide factorize and solve.  Otherwise the default factorization is used
@@ -70,13 +70,13 @@ public:
     virtual int symbolic();
     /** Factorize - filling in rowsDropped and returning number dropped.
         If return code negative then out of memory */
-    virtual int factorize(const CoinWorkDouble * diagonal, int * rowsDropped) ;
+    virtual int factorize(const CoinWorkDouble* diagonal, int* rowsDropped) ;
     /** Uses factorization to solve. */
-    virtual void solve (CoinWorkDouble * region) ;
+    virtual void solve(CoinWorkDouble* region) ;
     /** Uses factorization to solve. - given as if KKT.
      region1 is rows+columns, region2 is rows */
-    virtual void solveKKT (CoinWorkDouble * region1, CoinWorkDouble * region2, const CoinWorkDouble * diagonal,
-                           CoinWorkDouble diagonalScaleFactor);
+    virtual void solveKKT(CoinWorkDouble* region1, CoinWorkDouble* region2, const CoinWorkDouble* diagonal,
+                          CoinWorkDouble diagonalScaleFactor);
 private:
     /// AMD ordering
     int orderAMD();
@@ -98,7 +98,7 @@ public:
     /// reset numberRowsDropped and rowsDropped.
     void resetRowsDropped();
     /// rowsDropped - which rows are gone
-    inline char * rowsDropped() const
+    inline char* rowsDropped() const
     {
         return rowsDropped_;
     }
@@ -133,17 +133,17 @@ public:
         return sizeFactor_;
     }
     /// Return sparseFactor
-    inline longDouble * sparseFactor() const
+    inline longDouble* sparseFactor() const
     {
         return sparseFactor_;
     }
     /// Return diagonal
-    inline longDouble * diagonal() const
+    inline longDouble* diagonal() const
     {
         return diagonal_;
     }
     /// Return workDouble
-    inline longDouble * workDouble() const
+    inline longDouble* workDouble() const
     {
         return workDouble_;
     }
@@ -191,19 +191,19 @@ public:
     /** Destructor (has to be public) */
     virtual ~ClpCholeskyBase();
     /// Copy
-    ClpCholeskyBase(const ClpCholeskyBase&);
+    ClpCholeskyBase(const ClpCholeskyBase &);
     /// Assignment
-    ClpCholeskyBase& operator=(const ClpCholeskyBase&);
+    ClpCholeskyBase & operator=(const ClpCholeskyBase &);
     //@}
     //@{
     ///@name Other
     /// Clone
-    virtual ClpCholeskyBase * clone() const;
+    virtual ClpCholeskyBase* clone() const;
 
     /// Returns type
     inline int type() const
     {
-        if (doKKT_) return 100;
+        if(doKKT_) return 100;
         else return type_;
     }
 protected:
@@ -213,7 +213,7 @@ protected:
         type_ = type;
     }
     /// model.
-    inline void setModel(ClpInterior * model)
+    inline void setModel(ClpInterior* model)
     {
         model_ = model;
     }
@@ -225,23 +225,23 @@ protected:
         Uses upper triangular as much easier.
         Returns size
      */
-    int symbolic1(const CoinBigIndex * Astart, const int * Arow);
+    int symbolic1(const CoinBigIndex* Astart, const int* Arow);
     /** Symbolic2  - Fills in indices
         Uses lower triangular so can do cliques etc
      */
-    void symbolic2(const CoinBigIndex * Astart, const int * Arow);
+    void symbolic2(const CoinBigIndex* Astart, const int* Arow);
     /** Factorize - filling in rowsDropped and returning number dropped
         in integerParam.
      */
-    void factorizePart2(int * rowsDropped) ;
+    void factorizePart2(int* rowsDropped) ;
     /** solve - 1 just first half, 2 just second half - 3 both.
     If 1 and 2 then diagonal has sqrt of inverse otherwise inverse
     */
-    void solve(CoinWorkDouble * region, int type);
+    void solve(CoinWorkDouble* region, int type);
     /// Forms ADAT - returns nonzero if not enough memory
     int preOrder(bool lowerTriangular, bool includeDiagonal, bool doKKT);
     /// Updates dense part (broken out for profiling)
-    void updateDense(longDouble * d, /*longDouble * work,*/ int * first);
+    void updateDense(longDouble* d, /*longDouble * work,*/ int* first);
     //@}
 
 protected:
@@ -257,7 +257,7 @@ protected:
     /// choleskyCondition.
     double choleskyCondition_;
     /// model.
-    ClpInterior * model_;
+    ClpInterior* model_;
     /// numberTrials.  Number of trials before rejection
     int numberTrials_;
     /// numberRows.  Number of Rows in factorization
@@ -265,31 +265,31 @@ protected:
     /// status.  Status of factorization
     int status_;
     /// rowsDropped
-    char * rowsDropped_;
+    char* rowsDropped_;
     /// permute inverse.
-    int * permuteInverse_;
+    int* permuteInverse_;
     /// main permute.
-    int * permute_;
+    int* permute_;
     /// numberRowsDropped.  Number of rows gone
     int numberRowsDropped_;
     /// sparseFactor.
-    longDouble * sparseFactor_;
+    longDouble* sparseFactor_;
     /// choleskyStart - element starts
-    CoinBigIndex * choleskyStart_;
+    CoinBigIndex* choleskyStart_;
     /// choleskyRow (can be shorter than sparsefactor)
-    int * choleskyRow_;
+    int* choleskyRow_;
     /// Index starts
-    CoinBigIndex * indexStart_;
+    CoinBigIndex* indexStart_;
     /// Diagonal
-    longDouble * diagonal_;
+    longDouble* diagonal_;
     /// double work array
-    longDouble * workDouble_;
+    longDouble* workDouble_;
     /// link array
-    int * link_;
+    int* link_;
     // Integer work array
-    CoinBigIndex * workInteger_;
+    CoinBigIndex* workInteger_;
     // Clique information
-    int * clique_;
+    int* clique_;
     /// sizeFactor.
     CoinBigIndex sizeFactor_;
     /// Size of index array
@@ -301,13 +301,13 @@ protected:
     /// doubleParameters;
     double doubleParameters_[64];
     /// Row copy of matrix
-    ClpMatrixBase * rowCopy_;
+    ClpMatrixBase* rowCopy_;
     /// Dense indicators
-    char * whichDense_;
+    char* whichDense_;
     /// Dense columns (updated)
-    longDouble * denseColumn_;
+    longDouble* denseColumn_;
     /// Dense cholesky
-    ClpCholeskyDense * dense_;
+    ClpCholeskyDense* dense_;
     /// Dense threshold (for taking out of Cholesky)
     int denseThreshold_;
     //@}

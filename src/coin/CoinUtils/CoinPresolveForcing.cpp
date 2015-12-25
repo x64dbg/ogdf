@@ -24,16 +24,16 @@
   This just doesn't seem efficient, particularly when used to calculate row
   bounds. Lots of extra work.
 */
-void implied_bounds (const double *els,
-                     const double *clo, const double *cup,
-                     const int *hcol,
-                     CoinBigIndex krs, CoinBigIndex kre,
-                     double *maxupp, double *maxdownp,
-                     int jcol,
-                     double rlo, double rup,
-                     double *iclb, double *icub)
+void implied_bounds(const double* els,
+                    const double* clo, const double* cup,
+                    const int* hcol,
+                    CoinBigIndex krs, CoinBigIndex kre,
+                    double* maxupp, double* maxdownp,
+                    int jcol,
+                    double rlo, double rup,
+                    double* iclb, double* icub)
 {
-    if (rlo<=-PRESOLVE_INF&&rup>=PRESOLVE_INF)
+    if(rlo <= -PRESOLVE_INF && rup >= PRESOLVE_INF)
     {
         *iclb = -PRESOLVE_INF;
         *icub =  PRESOLVE_INF;
@@ -48,17 +48,17 @@ void implied_bounds (const double *els,
 
     // compute sum of all bounds except for jcol
     CoinBigIndex kk;
-    for (kk=krs; kk<kre; kk++)
+    for(kk = krs; kk < kre; kk++)
     {
-        if (hcol[kk] == jcol)
+        if(hcol[kk] == jcol)
             jcolk = kk;
 
         // swap jcol with hcol[kre-1];
         // that is, consider jcol last
         // this assumes that jcol occurs in this row
         CoinBigIndex k = (hcol[kk] == jcol
-                          ? kre-1
-                          : kk == kre-1
+                          ? kre - 1
+                          : kk == kre - 1
                           ? jcolk
                           : kk);
 
@@ -70,7 +70,7 @@ void implied_bounds (const double *els,
         double ub = cup[col];
 
         // quick!  compute the implied col bounds before maxup/maxdown are changed
-        if (kk == kre-1)
+        if(kk == kre - 1)
         {
             PRESOLVEASSERT(fabs(coeff) > ZTOLDP);
 
@@ -78,9 +78,9 @@ void implied_bounds (const double *els,
             bool finite_ilb = (-PRESOLVE_INF < rlo && !posinf && PRESOLVEFINITE(maxup));
 
             double iub = (rup - maxdown) / coeff;
-            bool finite_iub = ( rup < PRESOLVE_INF && !neginf && PRESOLVEFINITE(maxdown));
+            bool finite_iub = (rup < PRESOLVE_INF && !neginf && PRESOLVEFINITE(maxdown));
 
-            if (coeff > 0.0)
+            if(coeff > 0.0)
             {
                 *iclb = (finite_ilb ? ilb : -PRESOLVE_INF);
                 *icub = (finite_iub ? iub :  PRESOLVE_INF);
@@ -92,21 +92,21 @@ void implied_bounds (const double *els,
             }
         }
 
-        if (coeff > 0.0)
+        if(coeff > 0.0)
         {
-            if (PRESOLVE_INF <= ub)
+            if(PRESOLVE_INF <= ub)
             {
                 posinf = true;
-                if (neginf)
+                if(neginf)
                     break;    // pointless
             }
             else
                 maxup += ub * coeff;
 
-            if (lb <= -PRESOLVE_INF)
+            if(lb <= -PRESOLVE_INF)
             {
                 neginf = true;
-                if (posinf)
+                if(posinf)
                     break;    // pointless
             }
             else
@@ -114,19 +114,19 @@ void implied_bounds (const double *els,
         }
         else
         {
-            if (PRESOLVE_INF <= ub)
+            if(PRESOLVE_INF <= ub)
             {
                 neginf = true;
-                if (posinf)
+                if(posinf)
                     break;    // pointless
             }
             else
                 maxdown += ub * coeff;
 
-            if (lb <= -PRESOLVE_INF)
+            if(lb <= -PRESOLVE_INF)
             {
                 posinf = true;
-                if (neginf)
+                if(neginf)
                     break;    // pointless
             }
             else
@@ -138,7 +138,7 @@ void implied_bounds (const double *els,
     // However, since we put the column whose implied bounds we want
     // to know at the end, and it doesn't matter if its own bounds
     // are infinite, don't worry about breaking at the last iteration.
-    if (kk<kre-1)
+    if(kk < kre - 1)
     {
         *iclb = -PRESOLVE_INF;
         *icub =  PRESOLVE_INF;
@@ -151,11 +151,11 @@ void implied_bounds (const double *els,
     *maxdownp = (neginf) ? -PRESOLVE_INF : maxdown;
 }
 
-static void implied_row_bounds(const double *els,
-                               const double *clo, const double *cup,
-                               const int *hcol,
+static void implied_row_bounds(const double* els,
+                               const double* clo, const double* cup,
+                               const int* hcol,
                                CoinBigIndex krs, CoinBigIndex kre,
-                               double *maxupp, double *maxdownp)
+                               double* maxupp, double* maxdownp)
 {
     int jcol = hcol[krs];
     bool posinf = false;
@@ -167,17 +167,17 @@ static void implied_row_bounds(const double *els,
 
     // compute sum of all bounds except for jcol
     CoinBigIndex kk;
-    for (kk=krs; kk<kre; kk++)
+    for(kk = krs; kk < kre; kk++)
     {
-        if (hcol[kk] == jcol)
+        if(hcol[kk] == jcol)
             jcolk = kk;
 
         // swap jcol with hcol[kre-1];
         // that is, consider jcol last
         // this assumes that jcol occurs in this row
         CoinBigIndex k = (hcol[kk] == jcol
-                          ? kre-1
-                          : kk == kre-1
+                          ? kre - 1
+                          : kk == kre - 1
                           ? jcolk
                           : kk);
 
@@ -188,21 +188,21 @@ static void implied_row_bounds(const double *els,
         double lb = clo[col];
         double ub = cup[col];
 
-        if (coeff > 0.0)
+        if(coeff > 0.0)
         {
-            if (PRESOLVE_INF <= ub)
+            if(PRESOLVE_INF <= ub)
             {
                 posinf = true;
-                if (neginf)
+                if(neginf)
                     break;    // pointless
             }
             else
                 maxup += ub * coeff;
 
-            if (lb <= -PRESOLVE_INF)
+            if(lb <= -PRESOLVE_INF)
             {
                 neginf = true;
-                if (posinf)
+                if(posinf)
                     break;    // pointless
             }
             else
@@ -210,19 +210,19 @@ static void implied_row_bounds(const double *els,
         }
         else
         {
-            if (PRESOLVE_INF <= ub)
+            if(PRESOLVE_INF <= ub)
             {
                 neginf = true;
-                if (posinf)
+                if(posinf)
                     break;    // pointless
             }
             else
                 maxdown += ub * coeff;
 
-            if (lb <= -PRESOLVE_INF)
+            if(lb <= -PRESOLVE_INF)
             {
                 posinf = true;
-                if (neginf)
+                if(neginf)
                     break;    // pointless
             }
             else
@@ -234,24 +234,24 @@ static void implied_row_bounds(const double *els,
     *maxdownp = (neginf) ? -PRESOLVE_INF : maxdown;
 }
 
-const char *forcing_constraint_action::name() const
+const char* forcing_constraint_action::name() const
 {
     return ("forcing_constraint_action");
 }
 // defed out to avoid compiler warning
 #if 0
-static bool some_col_was_fixed(const int *hcol, CoinBigIndex krs, CoinBigIndex kre,
-                               const double *clo,
-                               const double *cup)
+static bool some_col_was_fixed(const int* hcol, CoinBigIndex krs, CoinBigIndex kre,
+                               const double* clo,
+                               const double* cup)
 {
     CoinBigIndex k;
-    for (k=krs; k<kre; k++)
+    for(k = krs; k < kre; k++)
     {
         int jcol = hcol[k];
-        if (clo[jcol] == cup[jcol])
+        if(clo[jcol] == cup[jcol])
             break;
     }
-    return (k<kre);
+    return (k < kre);
 }
 #endif
 
@@ -286,30 +286,30 @@ static bool some_col_was_fixed(const int *hcol, CoinBigIndex krs, CoinBigIndex k
 // to make the problem feasible.
 
 const CoinPresolveAction
-*forcing_constraint_action::presolve(CoinPresolveMatrix *prob,
-                                     const CoinPresolveAction *next)
+* forcing_constraint_action::presolve(CoinPresolveMatrix* prob,
+                                      const CoinPresolveAction* next)
 {
     double startTime = 0.0;
-    int startEmptyRows=0;
+    int startEmptyRows = 0;
     int startEmptyColumns = 0;
-    if (prob->tuning_)
+    if(prob->tuning_)
     {
         startTime = CoinCpuTime();
         startEmptyRows = prob->countEmptyRows();
         startEmptyColumns = prob->countEmptyCols();
     }
-    double *clo   = prob->clo_;
-    double *cup   = prob->cup_;
-    double *csol  = prob->sol_ ;
+    double* clo   = prob->clo_;
+    double* cup   = prob->cup_;
+    double* csol  = prob->sol_ ;
 
-    const double *rowels  = prob->rowels_;
-    const int *hcol   = prob->hcol_;
-    const CoinBigIndex *mrstrt    = prob->mrstrt_;
-    const int *hinrow = prob->hinrow_;
+    const double* rowels  = prob->rowels_;
+    const int* hcol   = prob->hcol_;
+    const CoinBigIndex* mrstrt    = prob->mrstrt_;
+    const int* hinrow = prob->hinrow_;
     const int nrows   = prob->nrows_;
 
-    const double *rlo = prob->rlo_;
-    const double *rup = prob->rup_;
+    const double* rlo = prob->rlo_;
+    const double* rup = prob->rup_;
 
     //  const char *integerType = prob->integerType_;
 
@@ -317,19 +317,19 @@ const CoinPresolveAction
     const double inftol   = prob->feasibilityTolerance_;
     const int ncols   = prob->ncols_;
 
-    int *fixed_cols   = new int[ncols];
+    int* fixed_cols   = new int[ncols];
     int nfixed_cols   = 0;
 
-    action *actions   = new action [nrows];
+    action* actions   = new action [nrows];
     int nactions = 0;
 
-    int *useless_rows = new int[nrows];
+    int* useless_rows = new int[nrows];
     int nuseless_rows = 0;
 
     int numberLook = prob->numberRowsToDo_;
     int iLook;
-    int * look = prob->rowsToDo_;
-    bool fixInfeasibility = (prob->presolveOptions_&16384)!=0;
+    int* look = prob->rowsToDo_;
+    bool fixInfeasibility = (prob->presolveOptions_ & 16384) != 0;
 
 # if PRESOLVE_DEBUG
     std::cout << "Entering forcing_constraint_action::presolve." << std::endl ;
@@ -339,10 +339,10 @@ const CoinPresolveAction
       Open a loop to scan the constraints of interest. There must be variables
       left in the row.
     */
-    for (iLook=0; iLook<numberLook; iLook++)
+    for(iLook = 0; iLook < numberLook; iLook++)
     {
         int irow = look[iLook];
-        if (hinrow[irow] > 0)
+        if(hinrow[irow] > 0)
         {
             CoinBigIndex krs = mrstrt[irow];
             CoinBigIndex kre = krs + hinrow[irow];
@@ -355,35 +355,35 @@ const CoinPresolveAction
             implied_row_bounds(rowels, clo, cup, hcol, krs, kre,
                                &maxup, &maxdown);
 
-            if (maxup < PRESOLVE_INF && maxup + inftol < rlo[irow]&&!fixInfeasibility)
+            if(maxup < PRESOLVE_INF && maxup + inftol < rlo[irow] && !fixInfeasibility)
             {
                 /* max row activity below the row lower bound */
-                prob->status_|= 1;
+                prob->status_ |= 1;
                 prob->messageHandler()->message(COIN_PRESOLVE_ROWINFEAS,
                                                 prob->messages())
-                        <<irow
-                        <<rlo[irow]
-                        <<rup[irow]
-                        <<CoinMessageEol;
+                        << irow
+                        << rlo[irow]
+                        << rup[irow]
+                        << CoinMessageEol;
                 break;
             }
-            else if (-PRESOLVE_INF < maxdown && rup[irow] < maxdown - inftol&&!fixInfeasibility)
+            else if(-PRESOLVE_INF < maxdown && rup[irow] < maxdown - inftol && !fixInfeasibility)
             {
                 /* min row activity above the row upper bound */
-                prob->status_|= 1;
+                prob->status_ |= 1;
                 prob->messageHandler()->message(COIN_PRESOLVE_ROWINFEAS,
                                                 prob->messages())
-                        <<irow
-                        <<rlo[irow]
-                        <<rup[irow]
-                        <<CoinMessageEol;
+                        << irow
+                        << rlo[irow]
+                        << rup[irow]
+                        << CoinMessageEol;
                 break;
             }
             // ADD TOLERANCE TO THESE TESTS
-            else if ((rlo[irow] <= -PRESOLVE_INF ||
-                      (-PRESOLVE_INF < maxdown && rlo[irow] <= maxdown)) &&
-                     (rup[irow] >= PRESOLVE_INF ||
-                      (maxup < PRESOLVE_INF && rup[irow] >= maxup)))
+            else if((rlo[irow] <= -PRESOLVE_INF ||
+                     (-PRESOLVE_INF < maxdown && rlo[irow] <= maxdown)) &&
+                    (rup[irow] >= PRESOLVE_INF ||
+                     (maxup < PRESOLVE_INF && rup[irow] >= maxup)))
             {
 
                 /*
@@ -406,8 +406,8 @@ const CoinPresolveAction
                 useless_rows[nuseless_rows++] = irow;
 
             }
-            else if ((maxup < PRESOLVE_INF && fabs(rlo[irow] - maxup) < tol) ||
-                     (-PRESOLVE_INF < maxdown && fabs(rup[irow] - maxdown) < tol))
+            else if((maxup < PRESOLVE_INF && fabs(rlo[irow] - maxup) < tol) ||
+                    (-PRESOLVE_INF < maxdown && fabs(rup[irow] - maxdown) < tol))
             {
 
                 // the lower bound can just be reached, or
@@ -426,15 +426,15 @@ const CoinPresolveAction
                 */
                 // out of space - this probably never happens (but this routine will
                 // often put duplicates in the fixed column list)
-                if (nfixed_cols + (kre-krs) >= ncols)
+                if(nfixed_cols + (kre - krs) >= ncols)
                     break;
 
-                double *bounds = new double[hinrow[irow]];
-                int *rowcols = new int[hinrow[irow]];
+                double* bounds = new double[hinrow[irow]];
+                int* rowcols = new int[hinrow[irow]];
                 int lk = krs;   // load fix-to-down in front
                 int uk = kre;   // load fix-to-up in back
                 CoinBigIndex k;
-                for ( k=krs; k<kre; k++)
+                for(k = krs; k < kre; k++)
                 {
                     int jcol = hcol[k];
                     prob->addCol(jcol);
@@ -443,12 +443,12 @@ const CoinPresolveAction
                     PRESOLVEASSERT(fabs(coeff) > ZTOLDP);
 
                     // one of the two contributed to maxup - set the other to that
-                    if (lbound_tight == (coeff > 0.0))
+                    if(lbound_tight == (coeff > 0.0))
                     {
                         --uk;
-                        bounds[uk-krs] = clo[jcol];
-                        rowcols[uk-krs] = jcol;
-                        if (csol != 0)
+                        bounds[uk - krs] = clo[jcol];
+                        rowcols[uk - krs] = jcol;
+                        if(csol != 0)
                         {
                             csol[jcol] = cup[jcol] ;
                         }
@@ -456,10 +456,10 @@ const CoinPresolveAction
                     }
                     else
                     {
-                        bounds[lk-krs] = cup[jcol];
-                        rowcols[lk-krs] = jcol;
+                        bounds[lk - krs] = cup[jcol];
+                        rowcols[lk - krs] = jcol;
                         ++lk;
-                        if (csol != 0)
+                        if(csol != 0)
                         {
                             csol[jcol] = clo[jcol] ;
                         }
@@ -470,13 +470,13 @@ const CoinPresolveAction
                 }
                 PRESOLVEASSERT(uk == lk);
 
-                action *f = &actions[nactions];
+                action* f = &actions[nactions];
                 nactions++;
-                PRESOLVE_DETAIL_PRINT(printf("pre_forcing %dR E\n",irow));
+                PRESOLVE_DETAIL_PRINT(printf("pre_forcing %dR E\n", irow));
 
                 f->row = irow;
-                f->nlo = lk-krs;
-                f->nup = kre-uk;
+                f->nlo = lk - krs;
+                f->nup = kre - uk;
                 f->rowcols = rowcols;
                 f->bounds = bounds;
             }
@@ -484,16 +484,16 @@ const CoinPresolveAction
     }
 
 
-    if (nactions)
+    if(nactions)
     {
 #if PRESOLVE_SUMMARY
         printf("NFORCED:  %d\n", nactions);
 #endif
         next = new forcing_constraint_action(nactions,
-                                             CoinCopyOfArray(actions,nactions), next);
+                                             CoinCopyOfArray(actions, nactions), next);
     }
-    deleteAction(actions,action*);
-    if (nuseless_rows)
+    deleteAction(actions, action*);
+    if(nuseless_rows)
     {
         next = useless_constraint_action::presolve(prob,
                 useless_rows, nuseless_rows,
@@ -505,25 +505,25 @@ const CoinPresolveAction
       remove_fixed_action::postsolve when we try to reinstate a column multiple
       times.
     */
-    if (nfixed_cols)
+    if(nfixed_cols)
     {
-        if (nfixed_cols > 1)
+        if(nfixed_cols > 1)
         {
-            std::sort(fixed_cols,fixed_cols+nfixed_cols) ;
-            int *end = std::unique(fixed_cols,fixed_cols+nfixed_cols) ;
-            nfixed_cols = static_cast<int>(end-fixed_cols) ;
+            std::sort(fixed_cols, fixed_cols + nfixed_cols) ;
+            int* end = std::unique(fixed_cols, fixed_cols + nfixed_cols) ;
+            nfixed_cols = static_cast<int>(end - fixed_cols) ;
         }
-        next = remove_fixed_action::presolve(prob,fixed_cols,nfixed_cols,next) ;
+        next = remove_fixed_action::presolve(prob, fixed_cols, nfixed_cols, next) ;
     }
     delete[]fixed_cols ;
 
-    if (prob->tuning_)
+    if(prob->tuning_)
     {
-        double thisTime=CoinCpuTime();
+        double thisTime = CoinCpuTime();
         int droppedRows = prob->countEmptyRows() - startEmptyRows ;
         int droppedColumns =  prob->countEmptyCols() - startEmptyColumns;
         printf("CoinPresolveForcing(32) - %d rows, %d columns dropped in time %g, total %g\n",
-               droppedRows,droppedColumns,thisTime-startTime,thisTime-prob->startTime_);
+               droppedRows, droppedColumns, thisTime - startTime, thisTime - prob->startTime_);
     }
 
 # if PRESOLVE_DEBUG
@@ -534,42 +534,42 @@ const CoinPresolveAction
     return (next);
 }
 
-void forcing_constraint_action::postsolve(CoinPostsolveMatrix *prob) const
+void forcing_constraint_action::postsolve(CoinPostsolveMatrix* prob) const
 {
-    const action *const actions = actions_;
+    const action* const actions = actions_;
     const int nactions = nactions_;
 
-    const double *colels  = prob->colels_;
-    const int *hrow       = prob->hrow_;
-    const CoinBigIndex *mcstrt        = prob->mcstrt_;
-    const int *hincol     = prob->hincol_;
-    const int *link       = prob->link_;
+    const double* colels  = prob->colels_;
+    const int* hrow       = prob->hrow_;
+    const CoinBigIndex* mcstrt        = prob->mcstrt_;
+    const int* hincol     = prob->hincol_;
+    const int* link       = prob->link_;
 
     //  CoinBigIndex free_list = prob->free_list_;
 
-    double *clo   = prob->clo_;
-    double *cup   = prob->cup_;
-    double *rlo   = prob->rlo_;
-    double *rup   = prob->rup_;
+    double* clo   = prob->clo_;
+    double* cup   = prob->cup_;
+    double* rlo   = prob->rlo_;
+    double* rup   = prob->rup_;
 
-    const double *sol = prob->sol_;
-    double *rcosts    = prob->rcosts_;
+    const double* sol = prob->sol_;
+    double* rcosts    = prob->rcosts_;
 
-    double *acts  = prob->acts_;
-    double *rowduals = prob->rowduals_;
+    double* acts  = prob->acts_;
+    double* rowduals = prob->rowduals_;
 
     const double ztoldj   = prob->ztoldj_;
     const double ztolzb   = prob->ztolzb_;
 
-    for (const action *f = &actions[nactions-1]; actions<=f; f--)
+    for(const action* f = &actions[nactions - 1]; actions <= f; f--)
     {
 
         const int irow  = f->row;
         const int nlo   = f->nlo;
         const int nup   = f->nup;
         const int ninrow    = nlo + nup;
-        const int *rowcols  = f->rowcols;
-        const double *bounds= f->bounds;
+        const int* rowcols  = f->rowcols;
+        const double* bounds = f->bounds;
         int k;
         /*
           Original comment: When we restore bounds here, we need to allow for the
@@ -580,11 +580,11 @@ void forcing_constraint_action::postsolve(CoinPostsolveMatrix *prob) const
           of the variable must reflect the value it was fixed at, else we lose
           feasibility. We don't care what the other bound does.   -- lh, 040903 --
         */
-        for (k=0; k<nlo; k++)
+        for(k = 0; k < nlo; k++)
         {
             int jcol = rowcols[k];
             cup[jcol] = bounds[k];
-            prob->setColumnStatus(jcol,CoinPrePostsolveMatrix::atLowerBound) ;
+            prob->setColumnStatus(jcol, CoinPrePostsolveMatrix::atLowerBound) ;
             /*
                   PRESOLVEASSERT(prob->getColumnStatus(jcol)!=CoinPrePostsolveMatrix::basic);
                   if (cup[jcol] >= PRESOLVE_INF)
@@ -598,11 +598,11 @@ void forcing_constraint_action::postsolve(CoinPostsolveMatrix *prob) const
             */
         }
 
-        for (k=nlo; k<ninrow; k++)
+        for(k = nlo; k < ninrow; k++)
         {
             int jcol = rowcols[k];
             clo[jcol] = bounds[k];
-            prob->setColumnStatus(jcol,CoinPrePostsolveMatrix::atUpperBound) ;
+            prob->setColumnStatus(jcol, CoinPrePostsolveMatrix::atUpperBound) ;
             /*
                   PRESOLVEASSERT(prob->getColumnStatus(jcol)!=CoinPrePostsolveMatrix::basic);
                   if (clo[jcol] <= -PRESOLVE_INF)
@@ -616,7 +616,7 @@ void forcing_constraint_action::postsolve(CoinPostsolveMatrix *prob) const
             */
         }
 
-        PRESOLVEASSERT(prob->getRowStatus(irow)==CoinPrePostsolveMatrix::basic);
+        PRESOLVEASSERT(prob->getRowStatus(irow) == CoinPrePostsolveMatrix::basic);
         PRESOLVEASSERT(rowduals[irow] == 0.0);
 
         // this is a lazy implementation.
@@ -630,7 +630,7 @@ void forcing_constraint_action::postsolve(CoinPostsolveMatrix *prob) const
         // find the one most out of whack and fix it.
         int whacked = -1;
         double whack = 0.0;
-        for (k=0; k<ninrow; k++)
+        for(k = 0; k < ninrow; k++)
         {
             int jcol = rowcols[k];
             CoinBigIndex kk = presolve_find_row2(irow, mcstrt[jcol], hincol[jcol], hrow, link);
@@ -638,7 +638,7 @@ void forcing_constraint_action::postsolve(CoinPostsolveMatrix *prob) const
             // choose rowdual to cancel out reduced cost
             double whack0 = rcosts[jcol] / colels[kk];
 
-            if (((rcosts[jcol] > ztoldj  && !(fabs(sol[jcol] - clo[jcol]) <= ztolzb)) ||
+            if(((rcosts[jcol] > ztoldj  && !(fabs(sol[jcol] - clo[jcol]) <= ztolzb)) ||
                     (rcosts[jcol] < -ztoldj && !(fabs(sol[jcol] - cup[jcol]) <= ztolzb))) &&
                     fabs(whack0) > fabs(whack))
             {
@@ -647,16 +647,16 @@ void forcing_constraint_action::postsolve(CoinPostsolveMatrix *prob) const
             }
         }
 
-        if (whacked != -1)
+        if(whacked != -1)
         {
-            prob->setColumnStatus(whacked,CoinPrePostsolveMatrix::basic);
-            if (acts[irow]-rlo[irow]<rup[irow]-acts[irow])
-                prob->setRowStatus(irow,CoinPrePostsolveMatrix::atLowerBound);
+            prob->setColumnStatus(whacked, CoinPrePostsolveMatrix::basic);
+            if(acts[irow] - rlo[irow] < rup[irow] - acts[irow])
+                prob->setRowStatus(irow, CoinPrePostsolveMatrix::atLowerBound);
             else
-                prob->setRowStatus(irow,CoinPrePostsolveMatrix::atUpperBound);
+                prob->setRowStatus(irow, CoinPrePostsolveMatrix::atUpperBound);
             rowduals[irow] = whack;
 
-            for (k=0; k<ninrow; k++)
+            for(k = 0; k < ninrow; k++)
             {
                 int jcol = rowcols[k];
                 CoinBigIndex kk = presolve_find_row2(irow, mcstrt[jcol], hincol[jcol], hrow, link);
@@ -681,21 +681,21 @@ void forcing_constraint_action::postsolve(CoinPostsolveMatrix *prob) const
 // and whether there is more than one.
 // It is possible to compute implied bounds for the (one) variable
 // with no bound.
-static void implied_bounds1(CoinPresolveMatrix * prob, const double *rowels,
-                            const int *mrstrt,
-                            const int *hrow,
-                            const int *hinrow,
-                            const double *clo, const double *cup,
-                            const int *hcol,
+static void implied_bounds1(CoinPresolveMatrix* prob, const double* rowels,
+                            const int* mrstrt,
+                            const int* hrow,
+                            const int* hinrow,
+                            const double* clo, const double* cup,
+                            const int* hcol,
                             int ncols,
-                            const double *rlo, const double *rup,
-                            const char *integerType,
+                            const double* rlo, const double* rup,
+                            const char* integerType,
                             int nrows,
-                            double *ilbound, double *iubound)
+                            double* ilbound, double* iubound)
 {
     const double tol = prob->feasibilityTolerance_;
 
-    for (int irow=0; irow<nrows; irow++)
+    for(int irow = 0; irow < nrows; irow++)
     {
         CoinBigIndex krs = mrstrt[irow];
         CoinBigIndex kre = krs + hinrow[irow];
@@ -714,7 +714,7 @@ static void implied_bounds1(CoinPresolveMatrix * prob, const double *rowels,
         double maxup = 0.0;
         double maxdown = 0.0;
         CoinBigIndex k;
-        for (k=krs; k<kre; k++)
+        for(k = krs; k < kre; k++)
         {
             int jcol = hcol[k];
             double coeff = rowels[k];
@@ -722,34 +722,34 @@ static void implied_bounds1(CoinPresolveMatrix * prob, const double *rowels,
             double ub = cup[jcol];
 
             // HAVE TO DEAL WITH BOUNDS OF INTEGER VARIABLES
-            if (coeff > 0.0)
+            if(coeff > 0.0)
             {
-                if (PRESOLVE_INF <= ub)
+                if(PRESOLVE_INF <= ub)
                 {
-                    if (ub_inf_index == -1)
+                    if(ub_inf_index == -1)
                     {
                         ub_inf_index = k;
                     }
                     else
                     {
                         ub_inf_index = -2;
-                        if (lb_inf_index == -2)
+                        if(lb_inf_index == -2)
                             break;    // pointless
                     }
                 }
                 else
                     maxup += ub * coeff;
 
-                if (lb <= -PRESOLVE_INF)
+                if(lb <= -PRESOLVE_INF)
                 {
-                    if (lb_inf_index == -1)
+                    if(lb_inf_index == -1)
                     {
                         lb_inf_index = k;
                     }
                     else
                     {
                         lb_inf_index = -2;
-                        if (ub_inf_index == -2)
+                        if(ub_inf_index == -2)
                             break;    // pointless
                     }
                 }
@@ -758,32 +758,32 @@ static void implied_bounds1(CoinPresolveMatrix * prob, const double *rowels,
             }
             else
             {
-                if (PRESOLVE_INF <= ub)
+                if(PRESOLVE_INF <= ub)
                 {
-                    if (lb_inf_index == -1)
+                    if(lb_inf_index == -1)
                     {
                         lb_inf_index = k;
                     }
                     else
                     {
                         lb_inf_index = -2;
-                        if (ub_inf_index == -2)
+                        if(ub_inf_index == -2)
                             break;    // pointless
                     }
                 }
                 else
                     maxdown += ub * coeff;
 
-                if (lb <= -PRESOLVE_INF)
+                if(lb <= -PRESOLVE_INF)
                 {
-                    if (ub_inf_index == -1)
+                    if(ub_inf_index == -1)
                     {
                         ub_inf_index = k;
                     }
                     else
                     {
                         ub_inf_index = -2;
-                        if (lb_inf_index == -2)
+                        if(lb_inf_index == -2)
                             break;    // pointless
                     }
                 }
@@ -799,47 +799,47 @@ static void implied_bounds1(CoinPresolveMatrix * prob, const double *rowels,
         // are *not* infinite.
         // With two or more terms, it is infinite.
         // If we only saw one infinite term, then
-        if (ub_inf_index == -2)
+        if(ub_inf_index == -2)
             maxup = PRESOLVE_INF;
 
-        if (lb_inf_index == -2)
+        if(lb_inf_index == -2)
             maxdown = -PRESOLVE_INF;
 
         const bool maxup_finite = PRESOLVEFINITE(maxup);
         const bool maxdown_finite = PRESOLVEFINITE(maxdown);
 
-        if (ub_inf_index == -1 && maxup_finite && maxup + tol < rlo[irow]&&!fixInfeasibility)
+        if(ub_inf_index == -1 && maxup_finite && maxup + tol < rlo[irow] && !fixInfeasibility)
         {
             /* infeasible */
-            prob->status_|= 1;
+            prob->status_ |= 1;
             prob->messageHandler()->message(COIN_PRESOLVE_ROWINFEAS,
                                             prob->messages())
-                    <<irow
-                    <<rlo[irow]
-                    <<rup[irow]
-                    <<CoinMessageEol;
+                    << irow
+                    << rlo[irow]
+                    << rup[irow]
+                    << CoinMessageEol;
             break;
         }
-        else if (lb_inf_index == -1 && maxdown_finite && rup[irow] < maxdown - tol&&!fixInfeasibility)
+        else if(lb_inf_index == -1 && maxdown_finite && rup[irow] < maxdown - tol && !fixInfeasibility)
         {
             /* infeasible */
-            prob->status_|= 1;
+            prob->status_ |= 1;
             prob->messageHandler()->message(COIN_PRESOLVE_ROWINFEAS,
                                             prob->messages())
-                    <<irow
-                    <<rlo[irow]
-                    <<rup[irow]
-                    <<CoinMessageEol;
+                    << irow
+                    << rlo[irow]
+                    << rup[irow]
+                    << CoinMessageEol;
             break;
         }
 
-        for (k = krs; k<kre; ++k)
+        for(k = krs; k < kre; ++k)
         {
             int jcol = hcol[k];
             double coeff = rowels[k];
 
             // SHOULD GET RID OF THIS
-            if (fabs(coeff) > ZTOLDP2 &&
+            if(fabs(coeff) > ZTOLDP2 &&
                     !integerType[jcol])
             {
                 double maxup1 = (ub_inf_index == -1 || ub_inf_index == k
@@ -859,13 +859,13 @@ static void implied_bounds1(CoinPresolveMatrix * prob, const double *rowels,
                 bool finite_ilb = (-PRESOLVE_INF < irlo && maxup_finite1);
 
                 double iub = (irup - maxdown1) / coeff;
-                bool finite_iub = ( irup < PRESOLVE_INF && maxdown_finite1);
+                bool finite_iub = (irup < PRESOLVE_INF && maxdown_finite1);
 
                 double ilb1 = (coeff > 0.0
                                ? (finite_ilb ? ilb : -PRESOLVE_INF)
                                : (finite_iub ? iub : -PRESOLVE_INF));
 
-                if (ilbound[jcol] < ilb1)
+                if(ilbound[jcol] < ilb1)
                 {
                     ilbound[jcol] = ilb1;
                     //if (jcol == 278001)
@@ -874,13 +874,13 @@ static void implied_bounds1(CoinPresolveMatrix * prob, const double *rowels,
             }
         }
 
-        for (k = krs; k<kre; ++k)
+        for(k = krs; k < kre; ++k)
         {
             int jcol = hcol[k];
             double coeff = rowels[k];
 
             // SHOULD GET RID OF THIS
-            if (fabs(coeff) > ZTOLDP2 &&
+            if(fabs(coeff) > ZTOLDP2 &&
                     !integerType[jcol])
             {
                 double maxup1 = (ub_inf_index == -1 || ub_inf_index == k
@@ -901,13 +901,13 @@ static void implied_bounds1(CoinPresolveMatrix * prob, const double *rowels,
                 bool finite_ilb = (-PRESOLVE_INF < irlo && maxup_finite1);
 
                 double iub = (irup - maxdown1) / coeff;
-                bool finite_iub = ( irup < PRESOLVE_INF && maxdown_finite1);
+                bool finite_iub = (irup < PRESOLVE_INF && maxdown_finite1);
 
                 double iub1 = (coeff > 0.0
                                ? (finite_iub ? iub :  PRESOLVE_INF)
                                : (finite_ilb ? ilb :  PRESOLVE_INF));
 
-                if (iub1 < iubound[jcol])
+                if(iub1 < iubound[jcol])
                 {
                     iubound[jcol] = iub1;
                     //if (jcol == 278001)
@@ -925,13 +925,13 @@ double lo0    = pa->clo;
 double up0    = pa->cup;
 int irow  = pa->irow;
 int jcol  = pa->icol;
-int *rowcols  = pa->rowcols;
+int* rowcols  = pa->rowcols;
 int ninrow    = pa->ninrow;
 
 clo[jcol] = lo0;
     cup[jcol] = up0;
 
-    if ((colstat[jcol] & PRESOLVE_XBASIC) == 0 &&
+    if((colstat[jcol] & PRESOLVE_XBASIC) == 0 &&
     fabs(lo0 - sol[jcol]) > ztolzb &&
     fabs(up0 - sol[jcol]) > ztolzb)
     {
@@ -941,21 +941,21 @@ clo[jcol] = lo0;
         // informally:  if this variable is at its implied bound,
         // then the other variables must be at their bounds,
         // which means the bounds will stop them even if the aren't basic.
-        if (rowstat[irow] & PRESOLVE_XBASIC)
+        if(rowstat[irow] & PRESOLVE_XBASIC)
             rowstat[irow] = 0;
         else
         {
             int k;
-            for (k=0; k<ninrow; k++)
+            for(k = 0; k < ninrow; k++)
             {
                 int col = rowcols[k];
-                if (cdone[col] &&
+                if(cdone[col] &&
                 (colstat[col] & PRESOLVE_XBASIC) &&
                 ((fabs(clo[col] - sol[col]) <= ztolzb && rcosts[col] >= -ztoldj) ||
                 (fabs(cup[col] - sol[col]) <= ztolzb && rcosts[col] <= ztoldj)))
                     break;
             }
-            if (k<ninrow)
+            if(k < ninrow)
             {
                 int col = rowcols[k];
                 // steal this basic variable
@@ -990,7 +990,7 @@ clo[jcol] = lo0;
             colstat[jcol] = PRESOLVE_XBASIC;
         }
 
-        for (k=0; k<ninrow; k++)
+        for(k = 0; k < ninrow; k++)
         {
             int jcol = rowcols[k];
             CoinBigIndex kk = presolve_find_row(irow, mcstrt[jcol], mcstrt[jcol] + hincol[jcol], hrow);
@@ -1003,24 +1003,24 @@ clo[jcol] = lo0;
             int badbasic = -1;
 
             // we may have just screwed up the rcost of another basic variable
-            for (k=0; k<ninrow; k++)
+            for(k = 0; k < ninrow; k++)
             {
                 int col = rowcols[k];
-                if (col != jcol &&
+                if(col != jcol &&
                         cdone[col] &&
                         (colstat[col] & PRESOLVE_XBASIC) &&
                         !(fabs(rcosts[col]) < ztoldj))
-                    if (badbasic == -1)
+                    if(badbasic == -1)
                         badbasic = k;
                     else
                         abort();    // two!!  what to do???
             }
 
-            if (badbasic != -1)
+            if(badbasic != -1)
             {
                 int col = rowcols[badbasic];
 
-                if (fabs(acts[irow]) < ZTOLDP)
+                if(fabs(acts[irow]) < ZTOLDP)
                 {
 #if PRESOLVE_DEBUG
                     printf("PIVOTING COL TO SLACK!:  %d %d\n", irow, col);
@@ -1040,15 +1040,15 @@ clo[jcol] = lo0;
 forcing_constraint_action::~forcing_constraint_action()
 {
     int i;
-    for (i=0; i<nactions_; i++)
+    for(i = 0; i < nactions_; i++)
     {
         //delete [] actions_[i].rowcols; MS Visual C++ V6 can not compile
         //delete [] actions_[i].bounds; MS Visual C++ V6 can not compile
-        deleteAction(actions_[i].rowcols,int *);
-        deleteAction(actions_[i].bounds,double *);
+        deleteAction(actions_[i].rowcols, int*);
+        deleteAction(actions_[i].bounds, double*);
     }
     // delete [] actions_; MS Visual C++ V6 can not compile
-    deleteAction(actions_,action *);
+    deleteAction(actions_, action*);
 }
 
 

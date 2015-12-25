@@ -55,38 +55,38 @@
 namespace ogdf
 {
 
-/**
- * \brief Base class for embedder algorithms.
- *
- * An embedder algorithm computes a planar embedding of a planar
- * graph.
- *
- * \see PlanarizationLayout, PlanarizationGridLayout
- */
-class OGDF_EXPORT EmbedderModule : public Module, public Timeouter
-{
-public:
-    //! Initializes an embedder module.
-    EmbedderModule() { }
-
-    virtual ~EmbedderModule() { }
-
     /**
-     * \brief Calls the embedder algorithm for graph \a G.
-     * \param G is the graph that shall be embedded.
-     * \param adjExternal is set (by the algorithm) to an adjacency entry on the
-     *        external face of \a G.
+     * \brief Base class for embedder algorithms.
+     *
+     * An embedder algorithm computes a planar embedding of a planar
+     * graph.
+     *
+     * \see PlanarizationLayout, PlanarizationGridLayout
      */
-    virtual void call(Graph& G, adjEntry& adjExternal) = 0;
-
-    //! Calls the embedder algorithm for planarized representation \a PG.
-    void operator()(Graph& G, adjEntry& adjExternal)
+    class OGDF_EXPORT EmbedderModule : public Module, public Timeouter
     {
-        call(G, adjExternal);
-    }
+    public:
+        //! Initializes an embedder module.
+        EmbedderModule() { }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        virtual ~EmbedderModule() { }
+
+        /**
+         * \brief Calls the embedder algorithm for graph \a G.
+         * \param G is the graph that shall be embedded.
+         * \param adjExternal is set (by the algorithm) to an adjacency entry on the
+         *        external face of \a G.
+         */
+        virtual void call(Graph & G, adjEntry & adjExternal) = 0;
+
+        //! Calls the embedder algorithm for planarized representation \a PG.
+        void operator()(Graph & G, adjEntry & adjExternal)
+        {
+            call(G, adjExternal);
+        }
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 } // end namespace ogdf
 

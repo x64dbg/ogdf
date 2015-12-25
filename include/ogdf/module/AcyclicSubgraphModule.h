@@ -54,73 +54,73 @@
 namespace ogdf
 {
 
-/**
- * \brief Base class of algorithms for computing a maximal acyclic subgraph.
- *
- * \see SugiyamaLayout
- */
-class OGDF_EXPORT AcyclicSubgraphModule
-{
-public:
-    //! Initializes an acyclic subgraph module.
-    AcyclicSubgraphModule() { }
-
-    // destruction
-    virtual ~AcyclicSubgraphModule() { }
-
     /**
-     * \brief Computes the set of edges \a arcSet which have to be removed
-     *        for obtaining an acyclic subgraph of \a G.
+     * \brief Base class of algorithms for computing a maximal acyclic subgraph.
      *
-     * This is the actual algorithm call and must be implemented by derived classes.
-     * @param G is the input graph.
-     * @param arcSet is assigned the list of edges that have to be removed in \a G.
+     * \see SugiyamaLayout
      */
-    virtual void call(const Graph &G, List<edge> &arcSet) = 0;
-
-    /**
-     * \brief Computes the set of edges \a arcSet which have to be removed
-     *        for obtaining an acyclic subgraph of \a G.
-     * @param G is the input graph.
-     * @param arcSet is assigned the list of edges that have to be removed in \a G.
-     */
-    void operator()(const Graph &G, List<edge> &arcSet)
+    class OGDF_EXPORT AcyclicSubgraphModule
     {
-        call(G,arcSet);
-    }
+    public:
+        //! Initializes an acyclic subgraph module.
+        AcyclicSubgraphModule() { }
 
-    /**
-     * \brief Makes \a G acyclic by reversing edges.
-     *
-     * This method will ignore self-loops in the input graph \a G; thus self-loops
-     * are neither reversed or removed nor added to \a reversed.
-     * @param G is the input graph.
-     * @param reversed is assigned the list of edges that have been reversed in \a G.
-     */
-    void callAndReverse(Graph &G, List<edge> &reversed);
+        // destruction
+        virtual ~AcyclicSubgraphModule() { }
 
-    // makes G acyclic (except for self-loops!) by reversing edges
-    /**
-     * \brief Makes \a G acyclic by reversing edges.
-     *
-     * This method will ignore self-loops in the input graph \a G; thus self-loops
-     * are neither reversed nor removed. This is the simplified version of callAndDelete()
-     * that does not return the list of reversed edges.
-     * @param G is the input graph.
-     */
-    void callAndReverse(Graph &G);
+        /**
+         * \brief Computes the set of edges \a arcSet which have to be removed
+         *        for obtaining an acyclic subgraph of \a G.
+         *
+         * This is the actual algorithm call and must be implemented by derived classes.
+         * @param G is the input graph.
+         * @param arcSet is assigned the list of edges that have to be removed in \a G.
+         */
+        virtual void call(const Graph & G, List<edge> & arcSet) = 0;
 
-    // makes G acyclic by deleting edges
-    /**
-     * \brief Makes \a G acyclic by removing edges.
-     *
-     * This method will also remove self-loops in the input graph \a G.
-     * @param G is the input graph.
-     */
-    void callAndDelete(Graph &G);
+        /**
+         * \brief Computes the set of edges \a arcSet which have to be removed
+         *        for obtaining an acyclic subgraph of \a G.
+         * @param G is the input graph.
+         * @param arcSet is assigned the list of edges that have to be removed in \a G.
+         */
+        void operator()(const Graph & G, List<edge> & arcSet)
+        {
+            call(G, arcSet);
+        }
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        /**
+         * \brief Makes \a G acyclic by reversing edges.
+         *
+         * This method will ignore self-loops in the input graph \a G; thus self-loops
+         * are neither reversed or removed nor added to \a reversed.
+         * @param G is the input graph.
+         * @param reversed is assigned the list of edges that have been reversed in \a G.
+         */
+        void callAndReverse(Graph & G, List<edge> & reversed);
+
+        // makes G acyclic (except for self-loops!) by reversing edges
+        /**
+         * \brief Makes \a G acyclic by reversing edges.
+         *
+         * This method will ignore self-loops in the input graph \a G; thus self-loops
+         * are neither reversed nor removed. This is the simplified version of callAndDelete()
+         * that does not return the list of reversed edges.
+         * @param G is the input graph.
+         */
+        void callAndReverse(Graph & G);
+
+        // makes G acyclic by deleting edges
+        /**
+         * \brief Makes \a G acyclic by removing edges.
+         *
+         * This method will also remove self-loops in the input graph \a G.
+         * @param G is the input graph.
+         */
+        void callAndDelete(Graph & G);
+
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 } // end namespace ogdf
 

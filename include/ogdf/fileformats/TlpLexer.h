@@ -57,101 +57,101 @@
 namespace ogdf
 {
 
-namespace tlp
-{
-
-
-struct Token
-{
-
-    enum Type
+    namespace tlp
     {
-        tok_leftParen, tok_rightParen,
-        tok_identifier, tok_string
-    } type;
-
-    std::string *value; // Optional token value (avaliable in id and string).
-    size_t line, column; // Where given token occured for printing nice info.
-
-    Token(const Type &type, size_t line, size_t column);
-    friend std::ostream &operator <<(std::istream &os, const Token &token);
-
-    bool inline leftParen() const
-    {
-        return type == tok_leftParen;
-    }
-
-    bool inline rightParen() const
-    {
-        return type == tok_rightParen;
-    }
-
-    bool inline identifier() const
-    {
-        return type == tok_identifier;
-    }
-
-    bool inline identifier(const char *str) const
-    {
-        return type == tok_identifier && (*value) == str;
-    }
-
-    bool inline string() const
-    {
-        return type == tok_string;
-    }
-
-    bool inline string(const char *str) const
-    {
-        return type == tok_string && (*value) == str;
-    }
-};
-
-std::ostream &operator <<(std::ostream &os, const Token &token);
 
 
-class Lexer
-{
-private:
-    std::istream &m_istream;
-    std::string m_buffer;
-    std::string::const_iterator m_begin, m_end;
-    size_t m_line;
+        struct Token
+        {
 
-    std::vector<Token> m_tokens;
+            enum Type
+            {
+                tok_leftParen, tok_rightParen,
+                tok_identifier, tok_string
+            } type;
 
-    bool fetchBuffer();
-    void cleanValues();
+            std::string* value; // Optional token value (avaliable in id and string).
+            size_t line, column; // Where given token occured for printing nice info.
 
-    bool tokenizeLine();
-    bool tokenizeString();
-    bool tokenizeIdentifier();
+            Token(const Type & type, size_t line, size_t column);
+            friend std::ostream & operator <<(std::istream & os, const Token & token);
 
-    size_t line() const
-    {
-        return m_line;
-    }
+            bool inline leftParen() const
+            {
+                return type == tok_leftParen;
+            }
 
-    size_t column() const
-    {
-        return std::distance(m_buffer.begin(), m_begin) + 1;
-    }
+            bool inline rightParen() const
+            {
+                return type == tok_rightParen;
+            }
 
-    static bool isIdentifier(char c);
+            bool inline identifier() const
+            {
+                return type == tok_identifier;
+            }
 
-public:
-    Lexer(std::istream &is);
-    ~Lexer();
+            bool inline identifier(const char* str) const
+            {
+                return type == tok_identifier && (*value) == str;
+            }
 
-    bool tokenize();
-    const std::vector<Token> &tokens() const
-    {
-        return m_tokens;
-    }
-};
+            bool inline string() const
+            {
+                return type == tok_string;
+            }
+
+            bool inline string(const char* str) const
+            {
+                return type == tok_string && (*value) == str;
+            }
+        };
+
+        std::ostream & operator <<(std::ostream & os, const Token & token);
 
 
-} // end namespace tlp
+        class Lexer
+        {
+        private:
+            std::istream & m_istream;
+            std::string m_buffer;
+            std::string::const_iterator m_begin, m_end;
+            size_t m_line;
+
+            std::vector<Token> m_tokens;
+
+            bool fetchBuffer();
+            void cleanValues();
+
+            bool tokenizeLine();
+            bool tokenizeString();
+            bool tokenizeIdentifier();
+
+            size_t line() const
+            {
+                return m_line;
+            }
+
+            size_t column() const
+            {
+                return std::distance(m_buffer.begin(), m_begin) + 1;
+            }
+
+            static bool isIdentifier(char c);
+
+        public:
+            Lexer(std::istream & is);
+            ~Lexer();
+
+            bool tokenize();
+            const std::vector<Token> & tokens() const
+            {
+                return m_tokens;
+            }
+        };
+
+
+    } // end namespace tlp
 
 } // end namespace ogdf
 

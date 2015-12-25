@@ -51,110 +51,110 @@
 namespace ogdf
 {
 
-/**
- * \brief Interface for upward planarization algorithms.
- *
- */
-class OGDF_EXPORT UpwardPlanarizerModule : public Module
-{
-
-public:
-
-    //! Initializes an upward planarizer module.
-    UpwardPlanarizerModule() { }
-
-    // destruction
-    virtual ~UpwardPlanarizerModule() { }
-
     /**
-     * \brief Computes a upward planarized representation (UPR) of the input graph \a G.
-     *
-     * @param UPR represents the input graph as well as the computed upward planarized
-     *        representation after the call. The original graph of \a UPR muss be the input graph \a G.
-     *        Crossings are replaced by dummy vertices. The UPR is finaly augmented to a st-graph. Since this augmentation,
-     *        crossings dummies may not got an in- and outdegree of 2!
-     *
-     * @param forbid points to an edge array indicating which edges are not allowed
-     *        to be crossed, i.e., (*forbid)[e] = true. If forbid = 0, no edges are
-     *        forbidden.
-     *
-     * @param cost points to an edge array that gives the cost of each edge. If cost
-     *        = 0, all edges have cost 1.
-     *
-     * \return the status of the result.
+     * \brief Interface for upward planarization algorithms.
      *
      */
-    ReturnType call(UpwardPlanRep &UPR,
-                    const EdgeArray<int>  * cost = 0,
-                    const EdgeArray<bool> * forbid = 0)
+    class OGDF_EXPORT UpwardPlanarizerModule : public Module
     {
-        m_useCost = (cost != 0);
-        m_useForbid = (forbid != 0);
 
-        if(!useCost())      cost      = OGDF_NEW EdgeArray<int> (UPR.original(), 1);
-        if(!useForbid())    forbid    = OGDF_NEW EdgeArray<bool> (UPR.original(), 0);
+    public:
+
+        //! Initializes an upward planarizer module.
+        UpwardPlanarizerModule() { }
+
+        // destruction
+        virtual ~UpwardPlanarizerModule() { }
+
+        /**
+         * \brief Computes a upward planarized representation (UPR) of the input graph \a G.
+         *
+         * @param UPR represents the input graph as well as the computed upward planarized
+         *        representation after the call. The original graph of \a UPR muss be the input graph \a G.
+         *        Crossings are replaced by dummy vertices. The UPR is finaly augmented to a st-graph. Since this augmentation,
+         *        crossings dummies may not got an in- and outdegree of 2!
+         *
+         * @param forbid points to an edge array indicating which edges are not allowed
+         *        to be crossed, i.e., (*forbid)[e] = true. If forbid = 0, no edges are
+         *        forbidden.
+         *
+         * @param cost points to an edge array that gives the cost of each edge. If cost
+         *        = 0, all edges have cost 1.
+         *
+         * \return the status of the result.
+         *
+         */
+        ReturnType call(UpwardPlanRep & UPR,
+                        const EdgeArray<int>*   cost = 0,
+                        const EdgeArray<bool>* forbid = 0)
+        {
+            m_useCost = (cost != 0);
+            m_useForbid = (forbid != 0);
+
+            if(!useCost())      cost      = OGDF_NEW EdgeArray<int> (UPR.original(), 1);
+            if(!useForbid())    forbid    = OGDF_NEW EdgeArray<bool> (UPR.original(), 0);
 
 
-        ReturnType R = doCall(UPR, *cost, *forbid);
+            ReturnType R = doCall(UPR, *cost, *forbid);
 
-        if(!useCost())      delete cost;
-        if(!useForbid())    delete forbid;
-        return R;
-    }
-
-
-    //! Computes a upward planarized representation of the input graph (shorthand for call)
-    ReturnType operator()(UpwardPlanRep &UPR,
-                          const EdgeArray<int>  * cost = 0,
-                          const EdgeArray<bool> * forbid = 0)
-    {
-        return call(UPR, cost, forbid);
-    }
+            if(!useCost())      delete cost;
+            if(!useForbid())    delete forbid;
+            return R;
+        }
 
 
-    //! Returns true iff edge costs are given.
-    bool useCost() const
-    {
-        return m_useCost;
-    }
+        //! Computes a upward planarized representation of the input graph (shorthand for call)
+        ReturnType operator()(UpwardPlanRep & UPR,
+                              const EdgeArray<int>*   cost = 0,
+                              const EdgeArray<bool>* forbid = 0)
+        {
+            return call(UPR, cost, forbid);
+        }
 
-    //! Returns true iff forbidden edges are given.
-    bool useForbid() const
-    {
-        return m_useForbid;
-    }
 
-protected:
-    /**
-     * \brief Computes an upward planarized representation of the input graph.
-     *
-     * @param UPR represents the input graph as well as the computed upward planarized
-     *        representation after the call. The original graph of \a UPR muss be the input graph \a G.
-     *        Crossings are replaced by dummy vertices. The UPR is finaly augmented to a st-graph. Since this augmentation,
-     *        crossings dummies may not got an in- and outdegree of 2!
-     *
-     * @param cost points to an edge array that gives the cost of each edge. If cost
-     *        = 0, all edges have cost 1.
-     *
-     * @param forbid points to an edge array indicating which edges are not allowed
-     *        to be crossed, i.e., (*forbid)[e] = true. If forbid = 0, no edges are
-     *        forbidden.
-     *
-     * \return the status of the result.
-     */
-    virtual ReturnType doCall(
-        UpwardPlanRep &UPR,
-        const EdgeArray<int>  &cost,
-        const EdgeArray<bool> &forbid) = 0;
+        //! Returns true iff edge costs are given.
+        bool useCost() const
+        {
+            return m_useCost;
+        }
 
-    OGDF_MALLOC_NEW_DELETE
+        //! Returns true iff forbidden edges are given.
+        bool useForbid() const
+        {
+            return m_useForbid;
+        }
 
-private:
+    protected:
+        /**
+         * \brief Computes an upward planarized representation of the input graph.
+         *
+         * @param UPR represents the input graph as well as the computed upward planarized
+         *        representation after the call. The original graph of \a UPR muss be the input graph \a G.
+         *        Crossings are replaced by dummy vertices. The UPR is finaly augmented to a st-graph. Since this augmentation,
+         *        crossings dummies may not got an in- and outdegree of 2!
+         *
+         * @param cost points to an edge array that gives the cost of each edge. If cost
+         *        = 0, all edges have cost 1.
+         *
+         * @param forbid points to an edge array indicating which edges are not allowed
+         *        to be crossed, i.e., (*forbid)[e] = true. If forbid = 0, no edges are
+         *        forbidden.
+         *
+         * \return the status of the result.
+         */
+        virtual ReturnType doCall(
+            UpwardPlanRep & UPR,
+            const EdgeArray<int> & cost,
+            const EdgeArray<bool> & forbid) = 0;
 
-    bool m_useCost; //!< True iff edge costs are given.
-    bool m_useForbid; //!< True iff forbidden edges are given.
+        OGDF_MALLOC_NEW_DELETE
 
-};
+    private:
+
+        bool m_useCost; //!< True iff edge costs are given.
+        bool m_useForbid; //!< True iff forbidden edges are given.
+
+    };
 
 } // end namespace ogdf
 

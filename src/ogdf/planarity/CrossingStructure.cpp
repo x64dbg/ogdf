@@ -48,66 +48,66 @@ namespace ogdf
 {
 
 
-void CrossingStructure::init(PlanRepLight &PG, int weightedCrossingNumber)
-{
-    m_weightedCrossingNumber = weightedCrossingNumber;
-    m_crossings.init(PG.original());
-
-    m_numCrossings = 0;
-    NodeArray<int> index(PG,-1);
-    node v;
-    forall_nodes(v,PG)
-    if(PG.isDummy(v))
-        index[v] = m_numCrossings++;
-
-    edge ePG;
-    forall_edges(ePG,PG)
+    void CrossingStructure::init(PlanRepLight & PG, int weightedCrossingNumber)
     {
-        if(PG.original(ePG->source()) != 0)
+        m_weightedCrossingNumber = weightedCrossingNumber;
+        m_crossings.init(PG.original());
+
+        m_numCrossings = 0;
+        NodeArray<int> index(PG, -1);
+        node v;
+        forall_nodes(v, PG)
+        if(PG.isDummy(v))
+            index[v] = m_numCrossings++;
+
+        edge ePG;
+        forall_edges(ePG, PG)
         {
+            if(PG.original(ePG->source()) != 0)
+            {
+                edge e = PG.original(ePG);
+                ListConstIterator<edge> it = PG.chain(e).begin();
+                for(++it; it.valid(); ++it)
+                {
+                    m_crossings[e].pushBack(index[(*it)->source()]);
+                }
+            }
+        }
+    }
+
+    void CrossingStructure::restore(PlanRep & PG, int cc)
+    {
+        Array<node> id2Node(0, m_numCrossings - 1, 0);
+
+        SListPure<edge> edges;
+        PG.allEdges(edges);
+
+        for(SListConstIterator<edge> itE = edges.begin(); itE.valid(); ++itE)
+        {
+            edge ePG = *itE;
             edge e = PG.original(ePG);
-            ListConstIterator<edge> it = PG.chain(e).begin();
-            for(++it; it.valid(); ++it)
+
+            SListConstIterator<int> it;
+            for(it = m_crossings[e].begin(); it.valid(); ++it)
             {
-                m_crossings[e].pushBack(index[(*it)->source()]);
+                node x = id2Node[*it];
+                edge ePGOld = ePG;
+                ePG = PG.split(ePG);
+                node y = ePG->source();
+
+                if(x == 0)
+                {
+                    id2Node[*it] = y;
+                }
+                else
+                {
+                    PG.moveTarget(ePGOld, x);
+                    PG.moveSource(ePG, x);
+                    PG.delNode(y);
+                }
             }
         }
+
     }
-}
-
-void CrossingStructure::restore(PlanRep &PG, int cc)
-{
-    Array<node> id2Node(0,m_numCrossings-1,0);
-
-    SListPure<edge> edges;
-    PG.allEdges(edges);
-
-    for(SListConstIterator<edge> itE = edges.begin(); itE.valid(); ++itE)
-    {
-        edge ePG = *itE;
-        edge e = PG.original(ePG);
-
-        SListConstIterator<int> it;
-        for(it = m_crossings[e].begin(); it.valid(); ++it)
-        {
-            node x = id2Node[*it];
-            edge ePGOld = ePG;
-            ePG = PG.split(ePG);
-            node y = ePG->source();
-
-            if(x == 0)
-            {
-                id2Node[*it] = y;
-            }
-            else
-            {
-                PG.moveTarget(ePGOld, x);
-                PG.moveSource(ePG, x);
-                PG.delNode(y);
-            }
-        }
-    }
-
-}
 
 }

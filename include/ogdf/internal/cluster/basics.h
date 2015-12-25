@@ -54,47 +54,47 @@
 
 namespace ogdf
 {
-class ChunkConnection;
+    class ChunkConnection;
 
-//! Struct for storing the two corresponding nodes of an edge.
-struct nodePair
-{
-    node v1;
-    node v2;
-    nodePair() {}
-    nodePair(node u1, node u2) : v1(u1), v2(u2) {}
-    void printMe(ostream& out) const
+    //! Struct for storing the two corresponding nodes of an edge.
+    struct nodePair
     {
-        out << "("<<v1<<","<<v2<<")";
-    }
-};
-std::ostream &operator<<(std::ostream &os, const nodePair& v);
+        node v1;
+        node v2;
+        nodePair() {}
+        nodePair(node u1, node u2) : v1(u1), v2(u2) {}
+        void printMe(ostream & out) const
+        {
+            out << "(" << v1 << "," << v2 << ")";
+        }
+    };
+    std::ostream & operator<<(std::ostream & os, const nodePair & v);
 
 
-//! Struct for attaching the current lp-value to the corresponding edge.
-//! Used in the primal heuristic.
-struct edgeValue
-{
-    node src;
-    node trg;
-    double lpValue;
-    bool original;
-    edge e;
-};
+    //! Struct for attaching the current lp-value to the corresponding edge.
+    //! Used in the primal heuristic.
+    struct edgeValue
+    {
+        node src;
+        node trg;
+        double lpValue;
+        bool original;
+        edge e;
+    };
 
-//! Basic constraint type
-class BaseConstraint : public abacus::Constraint
-{
+    //! Basic constraint type
+    class BaseConstraint : public abacus::Constraint
+    {
 
-public:
-    BaseConstraint(abacus::Master *master, const abacus::Sub *sub, abacus::CSense::SENSE sense, double rhs, bool dynamic, bool local, bool liftable) :
-        abacus::Constraint(master, sub, sense, rhs, dynamic, local, liftable) { }
+    public:
+        BaseConstraint(abacus::Master* master, const abacus::Sub* sub, abacus::CSense::SENSE sense, double rhs, bool dynamic, bool local, bool liftable) :
+            abacus::Constraint(master, sub, sense, rhs, dynamic, local, liftable) { }
 
-    virtual ~BaseConstraint() { }
+        virtual ~BaseConstraint() { }
 
-    virtual int coeff(const nodePair& n) const = 0;
-    virtual double coeff(const abacus::Variable *v) const = 0;
-};
+        virtual int coeff(const nodePair & n) const = 0;
+        virtual double coeff(const abacus::Variable* v) const = 0;
+    };
 
 }//end namespace ogdf
 

@@ -27,7 +27,7 @@
 typedef struct CG_PROB
 {
     int            proc_index;
-    void          *user;
+    void*          user;
     int            msgtag;
     int            master;
     int            draw_graph;    /* the tid of DrawGraph */
@@ -40,7 +40,7 @@ typedef struct CG_PROB
     lp_sol         cur_sol;
 #ifdef COMPILE_IN_CG
     int           cuts_to_add_num;
-    cut_data    **cuts_to_add;
+    cut_data**    cuts_to_add;
     int           cuts_to_add_size;
 #endif
 } cg_prob;
@@ -49,35 +49,35 @@ typedef struct CG_PROB
 /*==================== CG basic functions (cg_func.c) =======================*/
 /*===========================================================================*/
 
-cg_prob *get_cg_ptr PROTO((cg_prob **cg_list));
-void cg_initialize PROTO((cg_prob *p, int master_tid));
-void cg_close PROTO((cg_prob * p));
-cut_data *create_explicit_cut PROTO((int nzcnt, int *indices, double *values,
+cg_prob* get_cg_ptr PROTO((cg_prob** cg_list));
+void cg_initialize PROTO((cg_prob* p, int master_tid));
+void cg_close PROTO((cg_prob* p));
+cut_data* create_explicit_cut PROTO((int nzcnt, int* indices, double* values,
                                      double rhs, double range, char sense,
                                      char send_to_cp));
-int cg_add_explicit_cut PROTO((int nzcnt, int *indices, double *values,
+int cg_add_explicit_cut PROTO((int nzcnt, int* indices, double* values,
                                double rhs, double range, char sense,
-                               char send_to_cp, int *num_cuts, int *alloc_cuts,
-                               cut_data ***cuts));
-int cg_add_user_cut PROTO((cut_data *new_cut, int *num_cuts, int *alloc_cuts,
-                           cut_data ***cuts));
+                               char send_to_cp, int* num_cuts, int* alloc_cuts,
+                               cut_data** *cuts));
+int cg_add_user_cut PROTO((cut_data* new_cut, int* num_cuts, int* alloc_cuts,
+                           cut_data** *cuts));
 
 /*===========================================================================*/
 /*=============== CG communication functions (cg_proccomm.c) ================*/
 /*===========================================================================*/
 
-int cg_process_message PROTO((cg_prob *p, int r_bufid));
-int cg_send_cut PROTO((cut_data *new_cut, int *num_cuts, int *alloc_cuts,
-                       cut_data ***cuts));
+int cg_process_message PROTO((cg_prob* p, int r_bufid));
+int cg_send_cut PROTO((cut_data* new_cut, int* num_cuts, int* alloc_cuts,
+                       cut_data** *cuts));
 
 /*===========================================================================*/
 /*==================== LP wrapper functions (cg_wrapper.c) ==================*/
 /*===========================================================================*/
 
-int receive_cg_data_u PROTO((cg_prob *p));
-int receive_lp_solution_cg_u PROTO((cg_prob *p));
-int free_cg_u PROTO((cg_prob *p));
-int find_cuts_u PROTO((cg_prob *p, LPdata *lp_data, int *num_cuts));
-int check_validity_of_cut_u PROTO((cg_prob *p, cut_data *new_cut));
+int receive_cg_data_u PROTO((cg_prob* p));
+int receive_lp_solution_cg_u PROTO((cg_prob* p));
+int free_cg_u PROTO((cg_prob* p));
+int find_cuts_u PROTO((cg_prob* p, LPdata* lp_data, int* num_cuts));
+int check_validity_of_cut_u PROTO((cg_prob* p, cut_data* new_cut));
 
 #endif

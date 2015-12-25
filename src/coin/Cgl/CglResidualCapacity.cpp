@@ -28,8 +28,8 @@
 // Generate Mixed Integer Rounding inequality
 //-------------------------------------------------------------------
 void
-CglResidualCapacity::generateCuts(const OsiSolverInterface& si,
-                                  OsiCuts& cs,
+CglResidualCapacity::generateCuts(const OsiSolverInterface & si,
+                                  OsiCuts & cs,
                                   const CglTreeInfo /*info*/) const
 {
 
@@ -39,21 +39,21 @@ CglResidualCapacity::generateCuts(const OsiSolverInterface& si,
     bool preReso = false;
     si.getHintParam(OsiDoPresolveInInitial, preInit);
     si.getHintParam(OsiDoPresolveInResolve, preReso);
-    if (preInit == false &&  preReso == false &&
-            doPreproc_ == -1 )   // Do once
+    if(preInit == false &&  preReso == false &&
+            doPreproc_ == -1)    // Do once
     {
-        if (doneInitPre_ == false)
+        if(doneInitPre_ == false)
         {
             resCapPreprocess(si);
             doneInitPre_ = true;
         }
     }
-    else if ( doPreproc_ == 1 ) // Do everytime
+    else if(doPreproc_ == 1)    // Do everytime
     {
         resCapPreprocess(si);
         doneInitPre_ = true;
     }
-    else if (doneInitPre_ == false)
+    else if(doneInitPre_ == false)
     {
         resCapPreprocess(si);
         doneInitPre_ = true;
@@ -85,7 +85,7 @@ CglResidualCapacity::generateCuts(const OsiSolverInterface& si,
 //-------------------------------------------------------------------
 // Default Constructor
 //-------------------------------------------------------------------
-CglResidualCapacity::CglResidualCapacity ()
+CglResidualCapacity::CglResidualCapacity()
     :
     CglCutGenerator()
 {
@@ -96,7 +96,7 @@ CglResidualCapacity::CglResidualCapacity ()
 //-------------------------------------------------------------------
 // Alternate Constructor
 //-------------------------------------------------------------------
-CglResidualCapacity::CglResidualCapacity (const double epsilon)
+CglResidualCapacity::CglResidualCapacity(const double epsilon)
     :
     CglCutGenerator()
 {
@@ -107,7 +107,7 @@ CglResidualCapacity::CglResidualCapacity (const double epsilon)
 //-------------------------------------------------------------------
 // Copy constructor
 //-------------------------------------------------------------------
-CglResidualCapacity::CglResidualCapacity (
+CglResidualCapacity::CglResidualCapacity(
     const CglResidualCapacity & rhs)
     :
     CglCutGenerator(rhs)
@@ -119,7 +119,7 @@ CglResidualCapacity::CglResidualCapacity (
 //-------------------------------------------------------------------
 // Clone
 //-------------------------------------------------------------------
-CglCutGenerator *
+CglCutGenerator*
 CglResidualCapacity::clone() const
 {
     return new CglResidualCapacity(*this);
@@ -129,9 +129,9 @@ CglResidualCapacity::clone() const
 // Assignment operator
 //-------------------------------------------------------------------
 CglResidualCapacity &
-CglResidualCapacity::operator=(const CglResidualCapacity& rhs)
+CglResidualCapacity::operator=(const CglResidualCapacity & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
         gutsOfDelete();
         CglCutGenerator::operator=(rhs);
@@ -144,7 +144,7 @@ CglResidualCapacity::operator=(const CglResidualCapacity& rhs)
 //-------------------------------------------------------------------
 // Destructor
 //-------------------------------------------------------------------
-CglResidualCapacity::~CglResidualCapacity ()
+CglResidualCapacity::~CglResidualCapacity()
 {
     gutsOfDelete();
 }
@@ -153,7 +153,7 @@ CglResidualCapacity::~CglResidualCapacity ()
 // Construct
 //-------------------------------------------------------------------
 void
-CglResidualCapacity::gutsOfConstruct (const double epsilon)
+CglResidualCapacity::gutsOfConstruct(const double epsilon)
 {
 
     EPSILON_ = epsilon;
@@ -164,8 +164,8 @@ CglResidualCapacity::gutsOfConstruct (const double epsilon)
     doneInitPre_ = false;
     rowTypes_ = 0;
     indRows_ = 0;
-    sense_=NULL;
-    RHS_=NULL;
+    sense_ = NULL;
+    RHS_ = NULL;
     numRowL_ = 0;
     indRowL_ = 0;
     numRowG_ = 0;
@@ -176,37 +176,37 @@ CglResidualCapacity::gutsOfConstruct (const double epsilon)
 // Delete
 //-------------------------------------------------------------------
 void
-CglResidualCapacity::gutsOfDelete ()
+CglResidualCapacity::gutsOfDelete()
 {
-    if (rowTypes_ != 0)
+    if(rowTypes_ != 0)
     {
         delete [] rowTypes_;
         rowTypes_ = 0;
     }
-    if (indRows_ != 0)
+    if(indRows_ != 0)
     {
         delete [] indRows_;
         indRows_ = 0;
     }
-    if (indRowL_ != 0)
+    if(indRowL_ != 0)
     {
         delete [] indRowL_;
         indRowL_ = 0;
     }
-    if (indRowG_ != 0)
+    if(indRowG_ != 0)
     {
         delete [] indRowG_;
         indRowG_ = 0;
     }
-    if (sense_ !=NULL)
+    if(sense_ != NULL)
     {
         delete [] sense_;
-        sense_=NULL;
+        sense_ = NULL;
     }
-    if (RHS_ !=NULL)
+    if(RHS_ != NULL)
     {
         delete [] RHS_;
-        RHS_=NULL;
+        RHS_ = NULL;
     }
 }
 
@@ -214,7 +214,7 @@ CglResidualCapacity::gutsOfDelete ()
 // Copy
 //-------------------------------------------------------------------
 void
-CglResidualCapacity::gutsOfCopy (const CglResidualCapacity& rhs)
+CglResidualCapacity::gutsOfCopy(const CglResidualCapacity & rhs)
 {
     EPSILON_ = rhs.EPSILON_;
     TOLERANCE_ = rhs.TOLERANCE_;
@@ -226,24 +226,24 @@ CglResidualCapacity::gutsOfCopy (const CglResidualCapacity& rhs)
     numRowG_ = rhs.numRowG_;
 
 
-    if (numRows_ > 0)
+    if(numRows_ > 0)
     {
         rowTypes_ = new RowType [numRows_];
         CoinDisjointCopyN(rhs.rowTypes_, numRows_, rowTypes_);
         indRows_ = new int [numRows_];
         CoinDisjointCopyN(rhs.indRows_, numRows_, indRows_);
-        sense_ = CoinCopyOfArray(rhs.sense_,numRows_);
-        RHS_ = CoinCopyOfArray(rhs.RHS_,numRows_);
+        sense_ = CoinCopyOfArray(rhs.sense_, numRows_);
+        RHS_ = CoinCopyOfArray(rhs.RHS_, numRows_);
     }
     else
     {
         rowTypes_ = 0;
         indRows_ = 0;
-        sense_=NULL;
-        RHS_=NULL;
+        sense_ = NULL;
+        RHS_ = NULL;
     }
 
-    if (numRowL_ > 0)
+    if(numRowL_ > 0)
     {
         indRowL_ = new int [numRowL_];
         CoinDisjointCopyN(rhs.indRowL_, numRowL_, indRowL_);
@@ -253,7 +253,7 @@ CglResidualCapacity::gutsOfCopy (const CglResidualCapacity& rhs)
         indRowL_ = 0;
     }
 
-    if (numRowG_ > 0)
+    if(numRowG_ > 0)
     {
         indRowG_ = new int [numRowG_];
         CoinDisjointCopyN(rhs.indRowG_, numRowG_, indRowG_);
@@ -271,7 +271,7 @@ CglResidualCapacity::gutsOfCopy (const CglResidualCapacity& rhs)
 //-------------------------------------------------------------------
 void
 CglResidualCapacity::
-resCapPreprocess(const OsiSolverInterface& si) const
+resCapPreprocess(const OsiSolverInterface & si) const
 {
     // get matrix stored by row
     const CoinPackedMatrix & matrixByRow = *si.getMatrixByRow();
@@ -281,18 +281,18 @@ resCapPreprocess(const OsiSolverInterface& si) const
     const int* colInds       = matrixByRow.getIndices();
     const int* rowStarts     = matrixByRow.getVectorStarts();
     const int* rowLengths    = matrixByRow.getVectorLengths();
-    const double * colLowerBound = si.getColLower();
-    const double * colUpperBound = si.getColUpper();
+    const double* colLowerBound = si.getColLower();
+    const double* colUpperBound = si.getColUpper();
     // Get copies of sense and RHS so we can modify if ranges
-    if (sense_)
+    if(sense_)
     {
         delete [] sense_;
         delete [] RHS_;
     }
-    sense_ = CoinCopyOfArray(si.getRowSense(),numRows_);
-    RHS_  = CoinCopyOfArray(si.getRightHandSide(),numRows_);
+    sense_ = CoinCopyOfArray(si.getRowSense(), numRows_);
+    RHS_  = CoinCopyOfArray(si.getRightHandSide(), numRows_);
 
-    if (rowTypes_ != 0)
+    if(rowTypes_ != 0)
     {
         delete [] rowTypes_;
         rowTypes_ = 0;
@@ -309,29 +309,29 @@ resCapPreprocess(const OsiSolverInterface& si) const
     const double* rowActivity        = si.getRowActivity();
     const double* rowLower        = si.getRowLower();
     const double* rowUpper        = si.getRowUpper();
-    for (iRow = 0; iRow < numRows_; ++iRow)
+    for(iRow = 0; iRow < numRows_; ++iRow)
     {
         // If range then choose which to use
-        if (sense_[iRow]=='R')
+        if(sense_[iRow] == 'R')
         {
-            if (rowActivity[iRow]-rowLower[iRow]<
-                    rowUpper[iRow]-rowActivity[iRow])
+            if(rowActivity[iRow] - rowLower[iRow] <
+                    rowUpper[iRow] - rowActivity[iRow])
             {
                 // treat as G row
-                RHS_[iRow]=rowLower[iRow];
-                sense_[iRow]='G';
+                RHS_[iRow] = rowLower[iRow];
+                sense_[iRow] = 'G';
             }
             else
             {
                 // treat as L row
-                RHS_[iRow]=rowUpper[iRow];
-                sense_[iRow]='L';
+                RHS_[iRow] = rowUpper[iRow];
+                sense_[iRow] = 'L';
             }
         }
         // get the type of a row
         const RowType rowType =
-            determineRowType(si, rowLengths[iRow], colInds+rowStarts[iRow],
-                             coefByRow+rowStarts[iRow], sense_[iRow], RHS_[iRow],
+            determineRowType(si, rowLengths[iRow], colInds + rowStarts[iRow],
+                             coefByRow + rowStarts[iRow], sense_[iRow], RHS_[iRow],
                              colLowerBound, colUpperBound);
         // store the type of the current row
         rowTypes_[iRow] = rowType;
@@ -358,30 +358,30 @@ resCapPreprocess(const OsiSolverInterface& si) const
     }
 
     // allocate memory for vector of indices of all rows
-    if (indRows_ != 0)
+    if(indRows_ != 0)
     {
         delete [] indRows_;
         indRows_ = 0;
     }
-    if (numRows_ > 0)
+    if(numRows_ > 0)
         indRows_ = new int [numRows_];     // Destructor will free memory
     // allocate memory for vector of indices of rows of type ROW_L and ROW_BOTH
     numRowL_ = numL + numB;
-    if (indRowL_ != 0)
+    if(indRowL_ != 0)
     {
         delete [] indRowL_;
         indRowL_ = 0;
     }
-    if (numRowL_ > 0)
+    if(numRowL_ > 0)
         indRowL_ = new int [numRowL_];     // Destructor will free memory
     // allocate memory for vector of indices of rows of type ROW_G and ROW_BOTH
     numRowG_ = numG + numB;
-    if (indRowG_ != 0)
+    if(indRowG_ != 0)
     {
         delete [] indRowG_;
         indRowG_ = 0;
     }
-    if (numRowG_ > 0)
+    if(numRowG_ > 0)
         indRowG_ = new int [numRowG_];     // Destructor will free memory
 
 
@@ -395,7 +395,7 @@ resCapPreprocess(const OsiSolverInterface& si) const
 
     int countL = 0;
     int countG = 0;
-    for ( iRow = 0; iRow < numRows_; ++iRow)
+    for(iRow = 0; iRow < numRows_; ++iRow)
     {
 
         RowType rowType = rowTypes_[iRow];
@@ -404,13 +404,13 @@ resCapPreprocess(const OsiSolverInterface& si) const
         indRows_[iRow] = iRow;
 
         // fill the vector indRowL_ with the indices of the rows of type ROW_L and ROW_BOTH
-        if (rowType == ROW_L || rowType == ROW_BOTH)
+        if(rowType == ROW_L || rowType == ROW_BOTH)
         {
             indRowL_[countL] = iRow;
             countL++;
         }
         // fill the vector indRowG_ with the indices of rows of type ROW_G and ROW_BOTH
-        if (rowType == ROW_G || rowType == ROW_BOTH)
+        if(rowType == ROW_G || rowType == ROW_BOTH)
         {
             indRowG_[countG] = iRow;
             countG++;
@@ -423,47 +423,47 @@ resCapPreprocess(const OsiSolverInterface& si) const
 // Determine the type of a given row
 //-------------------------------------------------------------------
 CglResidualCapacity::RowType
-CglResidualCapacity::determineRowType(const OsiSolverInterface& si,
+CglResidualCapacity::determineRowType(const OsiSolverInterface & si,
                                       const int rowLen, const int* ind,
                                       const double* coef, const char sense,
                                       const double rhs,
                                       const double* colLowerBound,
                                       const double* colUpperBound) const
 {
-    if (rowLen == 0)
+    if(rowLen == 0)
         return ROW_OTHER;
     RowType rowType = ROW_OTHER;
-    double *negCoef;
+    double* negCoef;
     bool flagL, flagG, flag1, flag2;
-    switch (sense)
+    switch(sense)
     {
     case 'L':
-        flagL=treatAsLessThan(si, rowLen, ind, coef, rhs, colLowerBound,
-                              colUpperBound);
-        if ( flagL ) rowType=ROW_L;
+        flagL = treatAsLessThan(si, rowLen, ind, coef, rhs, colLowerBound,
+                                colUpperBound);
+        if(flagL) rowType = ROW_L;
         break;
     case 'G':
         negCoef = new double[rowLen];
-        for ( int i=0; i < rowLen; ++i )
-            negCoef[i]=-coef[i];
-        flagG=treatAsLessThan(si, rowLen, ind, negCoef, -rhs, colLowerBound,
-                              colUpperBound);
-        if ( flagG ) rowType=ROW_G;
+        for(int i = 0; i < rowLen; ++i)
+            negCoef[i] = -coef[i];
+        flagG = treatAsLessThan(si, rowLen, ind, negCoef, -rhs, colLowerBound,
+                                colUpperBound);
+        if(flagG) rowType = ROW_G;
         delete [] negCoef;
         break;
     case 'E':
-        flag1=treatAsLessThan(si, rowLen, ind, coef, rhs, colLowerBound,
-                              colUpperBound);
+        flag1 = treatAsLessThan(si, rowLen, ind, coef, rhs, colLowerBound,
+                                colUpperBound);
 
         negCoef = new double[rowLen];
-        for ( int i=0; i < rowLen; ++i )
-            negCoef[i]=-coef[i];
-        flag2=treatAsLessThan(si, rowLen, ind, negCoef, -rhs, colLowerBound,
-                              colUpperBound);
+        for(int i = 0; i < rowLen; ++i)
+            negCoef[i] = -coef[i];
+        flag2 = treatAsLessThan(si, rowLen, ind, negCoef, -rhs, colLowerBound,
+                                colUpperBound);
         delete [] negCoef;
-        if ( flag1 && !flag2 ) rowType=ROW_L;
-        if ( !flag1 && flag2 ) rowType=ROW_G;
-        if ( flag1 && flag2  ) rowType=ROW_BOTH;
+        if(flag1 && !flag2) rowType = ROW_L;
+        if(!flag1 && flag2) rowType = ROW_G;
+        if(flag1 && flag2) rowType = ROW_BOTH;
         break;
     default:
         throw CoinError("Unknown sense", "determineRowType",
@@ -476,47 +476,47 @@ CglResidualCapacity::determineRowType(const OsiSolverInterface& si,
 //--------------------------------------------
 
 bool
-CglResidualCapacity::treatAsLessThan(const OsiSolverInterface& si,
+CglResidualCapacity::treatAsLessThan(const OsiSolverInterface & si,
                                      const int rowLen, const int* ind,
                                      const double* coef,
                                      const double /*rhs*/,
                                      const double* colLowerBound,
                                      const double* colUpperBound) const
 {
-    bool intFound=false;
-    bool contFound=false;
-    bool goodIneq=true;
-    double intCoef=-1;
+    bool intFound = false;
+    bool contFound = false;
+    bool goodIneq = true;
+    double intCoef = -1;
 
     // look for a_1 c_1 +   + a_k c_k  - d z_1 -   - d z_p <= b
     // where c_i continuous, z_j integer
-    for ( int i = 0; i < rowLen; ++i )
+    for(int i = 0; i < rowLen; ++i)
     {
-        if ( coef[i]  > EPSILON_ || !si.isInteger(ind[i]) )
+        if(coef[i]  > EPSILON_ || !si.isInteger(ind[i]))
         {
-            if ( colLowerBound[ind[i]] < -EPSILON_ || colUpperBound[ind[i]] > 1.e10 )
+            if(colLowerBound[ind[i]] < -EPSILON_ || colUpperBound[ind[i]] > 1.e10)
             {
                 // cont var with too big bounds
-                goodIneq=false;
+                goodIneq = false;
                 break;
             }
             else
-                contFound=true;
+                contFound = true;
         }
-        else if ( !intFound &&  coef[i] < -EPSILON_  && si.isInteger(ind[i]) )
+        else if(!intFound &&  coef[i] < -EPSILON_  && si.isInteger(ind[i]))
         {
-            intFound=true;
-            intCoef=coef[i];
+            intFound = true;
+            intCoef = coef[i];
             continue;
         }
-        else if ( intFound && coef[i] < -EPSILON_  && si.isInteger(ind[i]) &&
-                  fabs( coef[i] - intCoef ) > EPSILON_ )
+        else if(intFound && coef[i] < -EPSILON_  && si.isInteger(ind[i]) &&
+                fabs(coef[i] - intCoef) > EPSILON_)
         {
-            goodIneq=false;
+            goodIneq = false;
             break;
         }
     }
-    if ( contFound && intFound && goodIneq ) return true;
+    if(contFound && intFound && goodIneq) return true;
     else return false;
 }
 
@@ -525,17 +525,17 @@ CglResidualCapacity::treatAsLessThan(const OsiSolverInterface& si,
 //-------------------------------------------------------------------
 void
 CglResidualCapacity::generateResCapCuts(
-    const OsiSolverInterface& si,
+    const OsiSolverInterface & si,
     const double* xlp,
     const double* colUpperBound,
     const double* colLowerBound,
-    const CoinPackedMatrix& /*matrixByRow*/,
+    const CoinPackedMatrix & /*matrixByRow*/,
     const double* /*LHS*/,
     const double* coefByRow,
     const int* colInds,
     const int* rowStarts,
     const int* rowLengths,
-    OsiCuts& cs ) const
+    OsiCuts & cs) const
 {
 
 #if CGL_DEBUG
@@ -543,20 +543,20 @@ CglResidualCapacity::generateResCapCuts(
     std::ofstream fout("stats.dat");
 #endif
 
-    for (int iRow = 0; iRow < numRowL_; ++iRow)
+    for(int iRow = 0; iRow < numRowL_; ++iRow)
     {
-        int rowToUse=indRowL_[iRow];
+        int rowToUse = indRowL_[iRow];
         OsiRowCut resCapCut;
         // Find a most violated residual capacity ineq
         bool hasCut = resCapSeparation(si, rowLengths[rowToUse],
-                                       colInds+rowStarts[rowToUse],
-                                       coefByRow+rowStarts[rowToUse],
+                                       colInds + rowStarts[rowToUse],
+                                       coefByRow + rowStarts[rowToUse],
                                        RHS_[rowToUse],
                                        xlp, colUpperBound, colLowerBound,
                                        resCapCut);
 
         // if a cut was found, insert it into cs
-        if (hasCut)
+        if(hasCut)
         {
 #if CGL_DEBUG
             std::cout << "Res. cap. cut generated " << std::endl;
@@ -565,25 +565,25 @@ CglResidualCapacity::generateResCapCuts(
         }
     }
 
-    for (int iRow = 0; iRow < numRowG_; ++iRow)
+    for(int iRow = 0; iRow < numRowG_; ++iRow)
     {
-        int rowToUse=indRowG_[iRow];
+        int rowToUse = indRowG_[iRow];
         OsiRowCut resCapCut;
-        const int rowLen=rowLengths[rowToUse];
-        double *negCoef= new double[rowLen];
-        const int rStart=rowStarts[rowToUse];
-        for ( int i=0; i < rowLen; ++i )
-            negCoef[i]=-coefByRow[rStart+i];
+        const int rowLen = rowLengths[rowToUse];
+        double* negCoef = new double[rowLen];
+        const int rStart = rowStarts[rowToUse];
+        for(int i = 0; i < rowLen; ++i)
+            negCoef[i] = -coefByRow[rStart + i];
         // Find a most violated residual capacity ineq
         bool hasCut = resCapSeparation(si, rowLengths[rowToUse],
-                                       colInds+rowStarts[rowToUse],
+                                       colInds + rowStarts[rowToUse],
                                        negCoef,
                                        -RHS_[rowToUse],
                                        xlp, colUpperBound, colLowerBound,
                                        resCapCut);
         delete [] negCoef;
         // if a cut was found, insert it into cs
-        if (hasCut)
+        if(hasCut)
         {
 #if CGL_DEBUG
             std::cout << "Res. cap. cut generated " << std::endl;
@@ -604,31 +604,31 @@ CglResidualCapacity::generateResCapCuts(
 // separation algorithm
 //-------------------------------------------------------------------
 bool
-CglResidualCapacity::resCapSeparation(const OsiSolverInterface& si,
+CglResidualCapacity::resCapSeparation(const OsiSolverInterface & si,
                                       const int rowLen, const int* ind,
                                       const double* coef,
                                       const double rhs,
-                                      const double *xlp,
+                                      const double* xlp,
                                       const double* colUpperBound,
                                       const double* /*colLowerBound*/,
-                                      OsiRowCut& resCapCut) const
+                                      OsiRowCut & resCapCut) const
 {
     // process original row to create row in canonical form
     std::vector<int> positionIntVar;
-    double ybar=0.0;
-    double *xbar;
-    double intCoef=-1;
-    double *newRowCoef;
-    int *positionContVar;
+    double ybar = 0.0;
+    double* xbar;
+    double intCoef = -1;
+    double* newRowCoef;
+    int* positionContVar;
     double newRowRHS;
-    int contCount=0;
+    int contCount = 0;
 
-    for ( int i = 0; i < rowLen; ++i )
+    for(int i = 0; i < rowLen; ++i)
     {
-        if ( coef[i] < -EPSILON_ && si.isInteger(ind[i]) )
+        if(coef[i] < -EPSILON_ && si.isInteger(ind[i]))
         {
-            intCoef=-coef[i];
-            ybar+=xlp[ind[i]];
+            intCoef = -coef[i];
+            ybar += xlp[ind[i]];
             positionIntVar.push_back(i);
         }
         else
@@ -637,86 +637,86 @@ CglResidualCapacity::resCapSeparation(const OsiSolverInterface& si,
     xbar = new double [contCount];
     newRowCoef = new double [contCount];
     positionContVar = new int [contCount];
-    contCount=0;
-    newRowRHS=rhs;
-    for ( int i = 0; i < rowLen; ++i )
-        if ( coef[i] > EPSILON_ || !si.isInteger(ind[i]) )
+    contCount = 0;
+    newRowRHS = rhs;
+    for(int i = 0; i < rowLen; ++i)
+        if(coef[i] > EPSILON_ || !si.isInteger(ind[i]))
         {
-            newRowCoef[contCount]=coef[i]*colUpperBound[ind[i]];
-            xbar[contCount]=xlp[ind[i]]/colUpperBound[ind[i]];
-            if ( newRowCoef[contCount] < -EPSILON_ )  // complement
+            newRowCoef[contCount] = coef[i] * colUpperBound[ind[i]];
+            xbar[contCount] = xlp[ind[i]] / colUpperBound[ind[i]];
+            if(newRowCoef[contCount] < -EPSILON_)     // complement
             {
                 newRowCoef[contCount] = -newRowCoef[contCount];
                 xbar[contCount] = 1.0 - xbar[contCount];
-                newRowRHS+= newRowCoef[contCount];
+                newRowRHS += newRowCoef[contCount];
             }
-            positionContVar[contCount++]=i;
+            positionContVar[contCount++] = i;
         }
 
     // now separate
     std::vector<int> setSbar;
     const double lambda = ybar - floor(ybar);
-    double sumCoef=0.0;
-    for ( int i = 0; i < contCount; ++i )
-        if ( xbar[i] > lambda )
+    double sumCoef = 0.0;
+    for(int i = 0; i < contCount; ++i)
+        if(xbar[i] > lambda)
         {
             setSbar.push_back(i);
-            sumCoef+=newRowCoef[i];
+            sumCoef += newRowCoef[i];
         }
     const int sSize = static_cast<int>(setSbar.size());
     bool generated;
-    if ( sSize == 0 ) generated=false; // no cut
+    if(sSize == 0) generated = false;  // no cut
     else
     {
         // generate cut
-        const double mu= ceil( (sumCoef - newRowRHS)/intCoef );
-        double r = sumCoef - newRowRHS - intCoef * floor( (sumCoef - newRowRHS)/intCoef );
+        const double mu = ceil((sumCoef - newRowRHS) / intCoef);
+        double r = sumCoef - newRowRHS - intCoef * floor((sumCoef - newRowRHS) / intCoef);
         const int numInt = static_cast<int>(positionIntVar.size());
         const int cutLen = sSize + numInt;
         int* cutInd = new int [cutLen];
         double* cutCoef = new double [cutLen];
-        double violation=0.0;
-        double complCoef=0.0;
+        double violation = 0.0;
+        double complCoef = 0.0;
         // load continuous variables
-        for ( int i = 0; i < sSize; ++i )
+        for(int i = 0; i < sSize; ++i)
         {
-            const int newRowPosition=setSbar[i];
-            const int originalRowPosition=positionContVar[newRowPosition];
-            cutInd[i]=ind[originalRowPosition];
-            cutCoef[i]=coef[originalRowPosition];
-            if ( cutCoef[i] < -EPSILON_ )
-                complCoef+= cutCoef[i]*colUpperBound[ind[originalRowPosition]];
-            violation+=cutCoef[i]*xlp[ind[originalRowPosition]];
+            const int newRowPosition = setSbar[i];
+            const int originalRowPosition = positionContVar[newRowPosition];
+            cutInd[i] = ind[originalRowPosition];
+            cutCoef[i] = coef[originalRowPosition];
+            if(cutCoef[i] < -EPSILON_)
+                complCoef += cutCoef[i] * colUpperBound[ind[originalRowPosition]];
+            violation += cutCoef[i] * xlp[ind[originalRowPosition]];
         }
         // load integer variables
-        for ( int i = 0; i < numInt; ++i )
+        for(int i = 0; i < numInt; ++i)
         {
-            const int originalRowPosition=positionIntVar[i];
-            cutInd[i+sSize]=ind[originalRowPosition];
-            cutCoef[i+sSize]= - r;
-            violation+=cutCoef[i+sSize]*xlp[ind[originalRowPosition]];
+            const int originalRowPosition = positionIntVar[i];
+            cutInd[i + sSize] = ind[originalRowPosition];
+            cutCoef[i + sSize] = - r;
+            violation += cutCoef[i + sSize] * xlp[ind[originalRowPosition]];
         }
-        double cutRHS=(sumCoef - r * mu) + complCoef;
-        violation-=cutRHS;
-        if ( violation > TOLERANCE_ )
+        double cutRHS = (sumCoef - r * mu) + complCoef;
+        violation -= cutRHS;
+        if(violation > TOLERANCE_)
         {
             resCapCut.setRow(cutLen, cutInd, cutCoef);
             resCapCut.setLb(-1.0 * si.getInfinity());
             resCapCut.setUb(cutRHS);
             resCapCut.setEffectiveness(violation);
-            generated=true;
+            generated = true;
 #if 0
             std::cout << "coef ";
-            for(int i=0; i<cutLen; ++i)
+            for(int i = 0; i < cutLen; ++i)
                 std::cout << cutCoef[i] << " ";
             std::cout << std::endl << " bounds ";
-            for(int i=0; i<cutLen; ++i)
+            for(int i = 0; i < cutLen; ++i)
                 std::cout << colUpperBound[cutInd[i]] << " ";
             std::cout << std::endl << " rhs " << cutRHS << std::endl;
 #endif
         }
         else
-            generated=false;
+            generated = false;
         delete [] cutCoef;
         delete [] cutInd;
     }
@@ -757,7 +757,7 @@ double CglResidualCapacity::getTolerance() const
 //
 void CglResidualCapacity::setDoPreproc(int value)
 {
-    if ( value != -1 && value != 0 && value != 1 )
+    if(value != -1 && value != 0 && value != 1)
         throw CoinError("setDoPrepoc", "invalid value",
                         "CglResidualCapacity");
     else

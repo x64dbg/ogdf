@@ -46,97 +46,97 @@
 namespace ogdf
 {
 
-void bfs_SPAP(const Graph& G, NodeArray<NodeArray<double> >& shortestPathMatrix,
-              double edgeCosts)
-{
-    node v;
-    forall_nodes(v, G)
-    {
-        bfs_SPSS(v, G, shortestPathMatrix[v], edgeCosts);
-    }
-}
-
-void bfs_SPSS(const node& v, const Graph& G, NodeArray<double>& distanceArray,
-              double edgeCosts)
-{
-    NodeArray<bool> mark(G, false);
-    SListPure<node> bfs;
-    bfs.pushBack(v);
-    // mark v and set distance to itself 0
-    mark[v] = true;
-    distanceArray[v] = 0;
-    node w;
-    node adj;
-    edge e;
-    while (!bfs.empty())
-    {
-        w = bfs.popFrontRet();
-        double d = distanceArray[w] + edgeCosts;
-        forall_adj_edges(e,w)
-        {
-            adj = e->opposite(w);
-            if (!mark[adj])
-            {
-                mark[adj] = true;
-                bfs.pushBack(adj);
-                distanceArray[adj] = d;
-            }
-        }
-    }
-}
-
-double dijkstra_SPAP(const GraphAttributes& GA,
-                     NodeArray<NodeArray<double> >& shortestPathMatrix)
-{
-    const Graph& G = GA.constGraph();
-    EdgeArray<double> edgeCosts(G);
-    edge e;
-    double avgCosts = 0;
-    forall_edges(e,G)
-    {
-        edgeCosts[e] = GA.doubleWeight(e);
-        avgCosts += edgeCosts[e];
-    }
-    dijkstra_SPAP(G, shortestPathMatrix, edgeCosts);
-    return avgCosts / G.numberOfEdges();
-}
-
-void dijkstra_SPAP(const Graph& G,
-                   NodeArray<NodeArray<double> >& shortestPathMatrix,
-                   const EdgeArray<double>& edgeCosts)
-{
-    node v;
-    forall_nodes(v, G)
-    {
-        dijkstra_SPSS(v, G, shortestPathMatrix[v], edgeCosts);
-    }
-}
-
-void dijkstra_SPSS(node s, const Graph& G, NodeArray<double>& distance,
-                   const EdgeArray<double>& edgeCosts)
-{
-    NodeArray<edge> predecessor(G);
-    Dijkstra<double> sssp;
-    sssp.call(G, edgeCosts, s, predecessor, distance);
-}
-
-void floydWarshall_SPAP(NodeArray<NodeArray<double> >& shortestPathMatrix,
-                        const Graph& G)
-{
-    node u;
-    forall_nodes(u, G)
+    void bfs_SPAP(const Graph & G, NodeArray<NodeArray<double>> & shortestPathMatrix,
+                  double edgeCosts)
     {
         node v;
         forall_nodes(v, G)
         {
-            node w;
-            forall_nodes(w, G)
+            bfs_SPSS(v, G, shortestPathMatrix[v], edgeCosts);
+        }
+    }
+
+    void bfs_SPSS(const node & v, const Graph & G, NodeArray<double> & distanceArray,
+                  double edgeCosts)
+    {
+        NodeArray<bool> mark(G, false);
+        SListPure<node> bfs;
+        bfs.pushBack(v);
+        // mark v and set distance to itself 0
+        mark[v] = true;
+        distanceArray[v] = 0;
+        node w;
+        node adj;
+        edge e;
+        while(!bfs.empty())
+        {
+            w = bfs.popFrontRet();
+            double d = distanceArray[w] + edgeCosts;
+            forall_adj_edges(e, w)
             {
-                shortestPathMatrix[v][w] = min(shortestPathMatrix[v][w],
-                                               shortestPathMatrix[u][v] + shortestPathMatrix[u][w]);
+                adj = e->opposite(w);
+                if(!mark[adj])
+                {
+                    mark[adj] = true;
+                    bfs.pushBack(adj);
+                    distanceArray[adj] = d;
+                }
             }
         }
     }
-}
+
+    double dijkstra_SPAP(const GraphAttributes & GA,
+                         NodeArray<NodeArray<double>> & shortestPathMatrix)
+    {
+        const Graph & G = GA.constGraph();
+        EdgeArray<double> edgeCosts(G);
+        edge e;
+        double avgCosts = 0;
+        forall_edges(e, G)
+        {
+            edgeCosts[e] = GA.doubleWeight(e);
+            avgCosts += edgeCosts[e];
+        }
+        dijkstra_SPAP(G, shortestPathMatrix, edgeCosts);
+        return avgCosts / G.numberOfEdges();
+    }
+
+    void dijkstra_SPAP(const Graph & G,
+                       NodeArray<NodeArray<double>> & shortestPathMatrix,
+                       const EdgeArray<double> & edgeCosts)
+    {
+        node v;
+        forall_nodes(v, G)
+        {
+            dijkstra_SPSS(v, G, shortestPathMatrix[v], edgeCosts);
+        }
+    }
+
+    void dijkstra_SPSS(node s, const Graph & G, NodeArray<double> & distance,
+                       const EdgeArray<double> & edgeCosts)
+    {
+        NodeArray<edge> predecessor(G);
+        Dijkstra<double> sssp;
+        sssp.call(G, edgeCosts, s, predecessor, distance);
+    }
+
+    void floydWarshall_SPAP(NodeArray<NodeArray<double>> & shortestPathMatrix,
+                            const Graph & G)
+    {
+        node u;
+        forall_nodes(u, G)
+        {
+            node v;
+            forall_nodes(v, G)
+            {
+                node w;
+                forall_nodes(w, G)
+                {
+                    shortestPathMatrix[v][w] = min(shortestPathMatrix[v][w],
+                                                   shortestPathMatrix[u][v] + shortestPathMatrix[u][w]);
+                }
+            }
+        }
+    }
 
 }

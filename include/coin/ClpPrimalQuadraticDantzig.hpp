@@ -30,14 +30,14 @@ public:
         updateArray has cost updates (also use pivotRow_ from last iteration)
         Can just do full price if you really want to be slow
     */
-    virtual int pivotColumn(CoinIndexedVector * updates,
-                            CoinIndexedVector * spareRow1,
-                            CoinIndexedVector * spareRow2,
-                            CoinIndexedVector * spareColumn1,
-                            CoinIndexedVector * spareColumn2);
+    virtual int pivotColumn(CoinIndexedVector* updates,
+                            CoinIndexedVector* spareRow1,
+                            CoinIndexedVector* spareRow2,
+                            CoinIndexedVector* spareColumn1,
+                            CoinIndexedVector* spareColumn2);
 
     /// Just sets model
-    virtual void saveWeights(ClpSimplex * model, int mode)
+    virtual void saveWeights(ClpSimplex* model, int mode)
     {
         model_ = model;
     }
@@ -53,17 +53,17 @@ public:
     ClpPrimalQuadraticDantzig(const ClpPrimalQuadraticDantzig &);
 
     /// Constructor from model
-    ClpPrimalQuadraticDantzig(ClpSimplexPrimalQuadratic * model,
-                              ClpQuadraticInfo * info);
+    ClpPrimalQuadraticDantzig(ClpSimplexPrimalQuadratic* model,
+                              ClpQuadraticInfo* info);
 
     /// Assignment operator
-    ClpPrimalQuadraticDantzig & operator=(const ClpPrimalQuadraticDantzig& rhs);
+    ClpPrimalQuadraticDantzig & operator=(const ClpPrimalQuadraticDantzig & rhs);
 
     /// Destructor
-    virtual ~ClpPrimalQuadraticDantzig ();
+    virtual ~ClpPrimalQuadraticDantzig();
 
     /// Clone
-    virtual ClpPrimalColumnPivot * clone(bool copyData = true) const;
+    virtual ClpPrimalColumnPivot* clone(bool copyData = true) const;
 
     //@}
 
@@ -72,7 +72,7 @@ public:
 private:
     ///@name Private member data
     /// Pointer to info
-    ClpQuadraticInfo * quadraticInfo_;
+    ClpQuadraticInfo* quadraticInfo_;
     //@}
 };
 

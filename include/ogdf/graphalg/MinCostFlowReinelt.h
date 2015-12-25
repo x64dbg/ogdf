@@ -57,111 +57,111 @@ namespace ogdf
 {
 
 
-class OGDF_EXPORT MinCostFlowReinelt : public MinCostFlowModule
-{
-public:
-    MinCostFlowReinelt() { }
-
-    // computes min-cost flow
-    // Precond.: graph must be connected, lowerBound[e] <= upperBound[e]
-    //   for all edges e, sum over all supply[v] equals 0
-    // returns true iff a feasible min-cost flow exists
-    bool call(
-        const Graph &G,                   // directed graph
-        const EdgeArray<int> &lowerBound, // lower bound for flow
-        const EdgeArray<int> &upperBound, // upper bound for flow
-        const EdgeArray<int> &cost,       // cost of an edge
-        const NodeArray<int> &supply,     // supply (if neg. demand) of a node
-        EdgeArray<int> &flow);            // computed flow
-
-    bool call(
-        const Graph &G,                   // directed graph
-        const EdgeArray<int> &lowerBound, // lower bound for flow
-        const EdgeArray<int> &upperBound, // upper bound for flow
-        const EdgeArray<int> &cost,       // cost of an edge
-        const NodeArray<int> &supply,     // supply (if neg. demand) of a node
-        EdgeArray<int> &flow,             // computed flow
-        NodeArray<int> &dual);            // computed dual variables
-
-    int infinity() const
+    class OGDF_EXPORT MinCostFlowReinelt : public MinCostFlowModule
     {
-        return numeric_limits<int>::max();
-    }
+    public:
+        MinCostFlowReinelt() { }
 
-private:
+        // computes min-cost flow
+        // Precond.: graph must be connected, lowerBound[e] <= upperBound[e]
+        //   for all edges e, sum over all supply[v] equals 0
+        // returns true iff a feasible min-cost flow exists
+        bool call(
+            const Graph & G,                  // directed graph
+            const EdgeArray<int> & lowerBound, // lower bound for flow
+            const EdgeArray<int> & upperBound, // upper bound for flow
+            const EdgeArray<int> & cost,      // cost of an edge
+            const NodeArray<int> & supply,    // supply (if neg. demand) of a node
+            EdgeArray<int> & flow);           // computed flow
 
-    struct arctype;
+        bool call(
+            const Graph & G,                  // directed graph
+            const EdgeArray<int> & lowerBound, // lower bound for flow
+            const EdgeArray<int> & upperBound, // upper bound for flow
+            const EdgeArray<int> & cost,      // cost of an edge
+            const NodeArray<int> & supply,    // supply (if neg. demand) of a node
+            EdgeArray<int> & flow,            // computed flow
+            NodeArray<int> & dual);           // computed dual variables
 
-    struct nodetype
-    {
-        nodetype *father;     /* ->father in basis tree */
-        nodetype *successor;  /* ->successor in preorder */
-        arctype *arc_id;      /* ->arc (node,father) */
-        bool orientation;     /* false<=>basic arc=(father->node)*/
-        int dual;             /* value of dual variable */
-        int flow;             /* flow in basic arc (node,father) */
-        int name;             /* identification of node = node-nr*/
-        nodetype *last;       /* last node in subtree */
-        int nr_of_nodes;      /* number of nodes in subtree */
+        int infinity() const
+        {
+            return numeric_limits<int>::max();
+        }
+
+    private:
+
+        struct arctype;
+
+        struct nodetype
+        {
+            nodetype* father;     /* ->father in basis tree */
+            nodetype* successor;  /* ->successor in preorder */
+            arctype* arc_id;      /* ->arc (node,father) */
+            bool orientation;     /* false<=>basic arc=(father->node)*/
+            int dual;             /* value of dual variable */
+            int flow;             /* flow in basic arc (node,father) */
+            int name;             /* identification of node = node-nr*/
+            nodetype* last;       /* last node in subtree */
+            int nr_of_nodes;      /* number of nodes in subtree */
+        };
+
+        struct arctype
+        {
+            arctype* next_arc;    /* -> next arc in list */
+            nodetype* tail;       /* -> tail of arc */
+            nodetype* head;       /* -> head of arc */
+            int cost;             /* cost of unit flow */
+            int upper_bound;      /* capacity of arc */
+            int arcnum;           /* number of arc in input */
+
+            OGDF_NEW_DELETE
+        };
+
+
+        int mcf(
+            int mcfNrNodes,
+            int mcfNrArcs,
+            Array<int> & mcfSupply,
+            Array<int> & mcfTail,
+            Array<int> & mcfHead,
+            Array<int> & mcfLb,
+            Array<int> & mcfUb,
+            Array<int> & mcfCost,
+            Array<int> & mcfFlow,
+            Array<int> & mcfDual,
+            int* mcfObj
+        );
+
+        void start(Array<int> & supply);
+
+        void beacircle(arctype** eplus, arctype** pre, bool* from_ub);
+        void beadouble(arctype** eplus, arctype** pre, bool* from_ub);
+
+
+        Array<nodetype> nodes;     /* node space */
+        Array<arctype> arcs;       /* arc space */
+        //Array<nodetype *> p;    /*used for starting procedure*/
+
+        nodetype* root;         /*->root of basis tree*/
+        nodetype rootStruct;
+
+        arctype* last_n1;       /*->start for search for entering arc in N' */
+        arctype* last_n2;       /*->start for search for entering arc in N''*/
+        arctype* start_arc;     /* -> initial arc list*/
+        arctype* start_b;       /* -> first basic arc*/
+        arctype* start_n1;      /* -> first nonbasic arc in n'*/
+        arctype* start_n2;      /* -> first nonbasic arc in n''*/
+        arctype* startsearch;   /* ->start of search for basis entering arc */
+        arctype* searchend;     /* ->end of search for entering arc in bea */
+        arctype* searchend_n1;  /*->end of search for entering arc in N' */
+        arctype* searchend_n2;  /*->end of search for entering arc in N''*/
+
+        //int artvalue;          /*cost and upper_bound of artificial arc */
+        int m_maxCost;         // maximum of the cost of all input arcs
+
+        int nn;                /*number of original nodes*/
+        int mm;                /*number of original arcs*/
     };
-
-    struct arctype
-    {
-        arctype *next_arc;    /* -> next arc in list */
-        nodetype *tail;       /* -> tail of arc */
-        nodetype *head;       /* -> head of arc */
-        int cost;             /* cost of unit flow */
-        int upper_bound;      /* capacity of arc */
-        int arcnum;           /* number of arc in input */
-
-        OGDF_NEW_DELETE
-    };
-
-
-    int mcf(
-        int mcfNrNodes,
-        int mcfNrArcs,
-        Array<int> &mcfSupply,
-        Array<int> &mcfTail,
-        Array<int> &mcfHead,
-        Array<int> &mcfLb,
-        Array<int> &mcfUb,
-        Array<int> &mcfCost,
-        Array<int> &mcfFlow,
-        Array<int> &mcfDual,
-        int *mcfObj
-    );
-
-    void start(Array<int> &supply);
-
-    void beacircle(arctype **eplus, arctype **pre, bool *from_ub);
-    void beadouble(arctype **eplus, arctype **pre, bool *from_ub);
-
-
-    Array<nodetype> nodes;     /* node space */
-    Array<arctype> arcs;       /* arc space */
-    //Array<nodetype *> p;    /*used for starting procedure*/
-
-    nodetype *root;         /*->root of basis tree*/
-    nodetype rootStruct;
-
-    arctype *last_n1;       /*->start for search for entering arc in N' */
-    arctype *last_n2;       /*->start for search for entering arc in N''*/
-    arctype *start_arc;     /* -> initial arc list*/
-    arctype *start_b;       /* -> first basic arc*/
-    arctype *start_n1;      /* -> first nonbasic arc in n'*/
-    arctype *start_n2;      /* -> first nonbasic arc in n''*/
-    arctype *startsearch;   /* ->start of search for basis entering arc */
-    arctype *searchend;     /* ->end of search for entering arc in bea */
-    arctype *searchend_n1;  /*->end of search for entering arc in N' */
-    arctype *searchend_n2;  /*->end of search for entering arc in N''*/
-
-    //int artvalue;          /*cost and upper_bound of artificial arc */
-    int m_maxCost;         // maximum of the cost of all input arcs
-
-    int nn;                /*number of original nodes*/
-    int mm;                /*number of original arcs*/
-};
 
 
 } // end namespace ogdf

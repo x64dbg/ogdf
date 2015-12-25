@@ -40,21 +40,21 @@ namespace abacus
 {
 
 
-ostream &operator<<(ostream &out, const VarType &rhs)
-{
-    switch (rhs.type_)
+    ostream & operator<<(ostream & out, const VarType & rhs)
     {
-    case VarType::Continuous:
-        out << "Continuous";
-        break;
-    case VarType::Integer:
-        out << "Integer";
-        break;
-    case VarType::Binary:
-        out << "Binary";
-        break;
+        switch(rhs.type_)
+        {
+        case VarType::Continuous:
+            out << "Continuous";
+            break;
+        case VarType::Integer:
+            out << "Integer";
+            break;
+        case VarType::Binary:
+            out << "Binary";
+            break;
+        }
+        return out;
     }
-    return out;
-}
 
 } //namespace abacus

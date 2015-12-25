@@ -56,97 +56,97 @@
 namespace ogdf
 {
 
-/**
- * \brief Computation of a planar subgraph using PQ-trees.
- *
- * Literature: Jayakumar, Thulasiraman, Swamy 1989
- *
- * <h3>Optional Parameters</h3>
- *
- * <table>
- *   <tr>
- *     <th>Option</th><th>Type</th><th>Default</th><th>Description</th>
- *   </tr><tr>
- *     <td><i>runs</i></td><td>int</td><td>0</td>
- *     <td>the number of randomized runs performed by the algorithm; the best
- *         solution is picked among all the runs. If runs is 0, one
- *         deterministic run is performed.</td>
- *   </tr>
- * </table>
- *
- * Observe that this algorithm by theory does not compute a maximal
- * planar subgraph. It is however the fastest known good heuristic.
- */
-class OGDF_EXPORT FastPlanarSubgraph : public PlanarSubgraphModule
-{
-
-    class ThreadMaster;
-    class Worker;
-    typedef std::pair<Graph*,EdgeArray<edge>*> BlockType;
-
-public:
-    //! Creates an instance of the fast planar subgraph algorithm with default settings.
-    FastPlanarSubgraph();
-
-    //! Creates an instance of the fast planar subgraph algorithm with the same settings as \a fps.
-    FastPlanarSubgraph(const FastPlanarSubgraph &fps);
-
-    //! Destructor
-    ~FastPlanarSubgraph() { }
-
-    //! Returns a new instance of fast planar subgraph with the same option settings.
-    virtual PlanarSubgraphModule *clone() const;
-
-    //! Assignment operator. Copies option settings only.
-    FastPlanarSubgraph &operator=(const FastPlanarSubgraph &fps);
-
-
-    // options
-
-    //! Sets the number of randomized runs to \a nRuns.
-    void runs (int nRuns)
-    {
-        m_nRuns = nRuns;
-    }
-
-    //! Returns the current number of randomized runs.
-    int runs() const
-    {
-        return m_nRuns;
-    }
-
-
-protected:
-    //! Returns true, if G is planar, false otherwise.
     /**
-     * \todo Add timeout support (limit number of runs when timeout is reached).
+     * \brief Computation of a planar subgraph using PQ-trees.
+     *
+     * Literature: Jayakumar, Thulasiraman, Swamy 1989
+     *
+     * <h3>Optional Parameters</h3>
+     *
+     * <table>
+     *   <tr>
+     *     <th>Option</th><th>Type</th><th>Default</th><th>Description</th>
+     *   </tr><tr>
+     *     <td><i>runs</i></td><td>int</td><td>0</td>
+     *     <td>the number of randomized runs performed by the algorithm; the best
+     *         solution is picked among all the runs. If runs is 0, one
+     *         deterministic run is performed.</td>
+     *   </tr>
+     * </table>
+     *
+     * Observe that this algorithm by theory does not compute a maximal
+     * planar subgraph. It is however the fastest known good heuristic.
      */
-    ReturnType doCall(const Graph &G,
-                      const List<edge> &preferedEdges,
-                      List<edge> &delEdges,
-                      const EdgeArray<int>  *pCost,
-                      bool preferedImplyPlanar);
+    class OGDF_EXPORT FastPlanarSubgraph : public PlanarSubgraphModule
+    {
+
+        class ThreadMaster;
+        class Worker;
+        typedef std::pair<Graph*, EdgeArray<edge>*> BlockType;
+
+    public:
+        //! Creates an instance of the fast planar subgraph algorithm with default settings.
+        FastPlanarSubgraph();
+
+        //! Creates an instance of the fast planar subgraph algorithm with the same settings as \a fps.
+        FastPlanarSubgraph(const FastPlanarSubgraph & fps);
+
+        //! Destructor
+        ~FastPlanarSubgraph() { }
+
+        //! Returns a new instance of fast planar subgraph with the same option settings.
+        virtual PlanarSubgraphModule* clone() const;
+
+        //! Assignment operator. Copies option settings only.
+        FastPlanarSubgraph & operator=(const FastPlanarSubgraph & fps);
 
 
-private:
-    int m_nRuns;  //!< The number of runs for randomization.
+        // options
 
-    //! Realizes the sequential implementation.
-    void seqCall(const Array<BlockType> &block, const EdgeArray<int> *pCost, int nRuns, bool randomize, List<edge> &delEdges);
+        //! Sets the number of randomized runs to \a nRuns.
+        void runs(int nRuns)
+        {
+            m_nRuns = nRuns;
+        }
 
-    //! Realizes the parallel implementation.
-    void parCall(const Array<BlockType> &block, const EdgeArray<int> *pCost, int nRuns, int nThreads, List<edge> &delEdges);
+        //! Returns the current number of randomized runs.
+        int runs() const
+        {
+            return m_nRuns;
+        }
 
-    //! Performs a planarization on a biconnected component pf \a G.
-    /** The numbering contains an st-numbering of the component.
-     */
-    static void planarize(
-        const Graph &G,
-        NodeArray<int> &numbering,
-        List<edge> &delEdges);
 
-    static void doWorkHelper(ThreadMaster &master);
-};
+    protected:
+        //! Returns true, if G is planar, false otherwise.
+        /**
+         * \todo Add timeout support (limit number of runs when timeout is reached).
+         */
+        ReturnType doCall(const Graph & G,
+                          const List<edge> & preferedEdges,
+                          List<edge> & delEdges,
+                          const EdgeArray<int>*  pCost,
+                          bool preferedImplyPlanar);
+
+
+    private:
+        int m_nRuns;  //!< The number of runs for randomization.
+
+        //! Realizes the sequential implementation.
+        void seqCall(const Array<BlockType> & block, const EdgeArray<int>* pCost, int nRuns, bool randomize, List<edge> & delEdges);
+
+        //! Realizes the parallel implementation.
+        void parCall(const Array<BlockType> & block, const EdgeArray<int>* pCost, int nRuns, int nThreads, List<edge> & delEdges);
+
+        //! Performs a planarization on a biconnected component pf \a G.
+        /** The numbering contains an st-numbering of the component.
+         */
+        static void planarize(
+            const Graph & G,
+            NodeArray<int> & numbering,
+            List<edge> & delEdges);
+
+        static void doWorkHelper(ThreadMaster & master);
+    };
 
 }
 #endif

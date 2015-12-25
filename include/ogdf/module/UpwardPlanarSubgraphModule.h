@@ -57,48 +57,48 @@
 namespace ogdf
 {
 
-/**
- * \brief Interface for algorithms for computing an upward planar subgraph.
- */
-class OGDF_EXPORT UpwardPlanarSubgraphModule
-{
-public:
-    //! Initializes an upward planar subgraph module.
-    UpwardPlanarSubgraphModule() { }
-
-    // destruction
-    virtual ~UpwardPlanarSubgraphModule() { }
-
     /**
-     * \brief Computes set of edges \a delEdges which have to be deleted to obtain the upward planar subgraph.
-     *
-     * Must be implemented by derived classes.
-     * @param G is the input graph.
-     * @param delEdges is assigned the set of edges which have to be deleted in \a G
-     *        to obtain the upward planar subgraph.
+     * \brief Interface for algorithms for computing an upward planar subgraph.
      */
-    virtual void call(const Graph &G, List<edge> &delEdges) = 0;
-
-
-    //! Computes set of edges \a delEdges which have to be deleted to obtain the upward planar subgraph.
-    void operator()(const Graph &G, List<edge> &delEdges)
+    class OGDF_EXPORT UpwardPlanarSubgraphModule
     {
-        call(G,delEdges);
-    }
+    public:
+        //! Initializes an upward planar subgraph module.
+        UpwardPlanarSubgraphModule() { }
+
+        // destruction
+        virtual ~UpwardPlanarSubgraphModule() { }
+
+        /**
+         * \brief Computes set of edges \a delEdges which have to be deleted to obtain the upward planar subgraph.
+         *
+         * Must be implemented by derived classes.
+         * @param G is the input graph.
+         * @param delEdges is assigned the set of edges which have to be deleted in \a G
+         *        to obtain the upward planar subgraph.
+         */
+        virtual void call(const Graph & G, List<edge> & delEdges) = 0;
 
 
-    /**
-     * \brief Makes \a GC upward planar by deleting edges.
-     * @param GC is a copy of the input graph.
-     * @param delOrigEdges is the set of original edges whose copies have been
-     *        deleted in \a GC.
-     */
-    void callAndDelete(GraphCopy &GC, List<edge> &delOrigEdges);
+        //! Computes set of edges \a delEdges which have to be deleted to obtain the upward planar subgraph.
+        void operator()(const Graph & G, List<edge> & delEdges)
+        {
+            call(G, delEdges);
+        }
+
+
+        /**
+         * \brief Makes \a GC upward planar by deleting edges.
+         * @param GC is a copy of the input graph.
+         * @param delOrigEdges is the set of original edges whose copies have been
+         *        deleted in \a GC.
+         */
+        void callAndDelete(GraphCopy & GC, List<edge> & delOrigEdges);
 
 
 
-    OGDF_MALLOC_NEW_DELETE
-}; // class UpwardPlanarSubgraph
+        OGDF_MALLOC_NEW_DELETE
+    }; // class UpwardPlanarSubgraph
 
 
 

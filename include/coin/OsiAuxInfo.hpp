@@ -22,26 +22,26 @@ class OsiAuxInfo
 {
 public:
     // Default Constructor
-    OsiAuxInfo (void * appData = NULL);
+    OsiAuxInfo(void* appData = NULL);
 
     // Copy Constructor
-    OsiAuxInfo (const OsiAuxInfo & rhs);
+    OsiAuxInfo(const OsiAuxInfo & rhs);
     // Destructor
     virtual ~OsiAuxInfo();
 
     /// Clone
-    virtual OsiAuxInfo * clone() const;
+    virtual OsiAuxInfo* clone() const;
     /// Assignment operator
-    OsiAuxInfo & operator=(const OsiAuxInfo& rhs);
+    OsiAuxInfo & operator=(const OsiAuxInfo & rhs);
 
     /// Get application data
-    inline void * getApplicationData() const
+    inline void* getApplicationData() const
     {
         return appData_;
     }
 protected:
     /// Pointer to user-defined data structure
-    void * appData_;
+    void* appData_;
 };
 //#############################################################################
 /** This class allows for the use of more exotic solvers e.g. Non-Linear or Volume.
@@ -53,20 +53,20 @@ class OsiBabSolver : public OsiAuxInfo
 {
 public:
     // Default Constructor
-    OsiBabSolver (int solverType=0);
+    OsiBabSolver(int solverType = 0);
 
     // Copy Constructor
-    OsiBabSolver (const OsiBabSolver & rhs);
+    OsiBabSolver(const OsiBabSolver & rhs);
     // Destructor
     virtual ~OsiBabSolver();
 
     /// Clone
-    virtual OsiAuxInfo * clone() const;
+    virtual OsiAuxInfo* clone() const;
     /// Assignment operator
-    OsiBabSolver & operator=(const OsiBabSolver& rhs);
+    OsiBabSolver & operator=(const OsiBabSolver & rhs);
 
     /// Update solver
-    inline void setSolver(const OsiSolverInterface * solver)
+    inline void setSolver(const OsiSolverInterface* solver)
     {
         solver_ = solver;
     }
@@ -82,18 +82,18 @@ public:
         numberColumns is size of newSolution
     */
     int solution(double & objectiveValue,
-                 double * newSolution, int numberColumns);
+                 double* newSolution, int numberColumns);
     /** Set solution and objective value.
         Number of columns and optimization direction taken from current solver.
         Size of solution is numberColumns (may be padded or truncated in function) */
-    void setSolution(const double * solution, int numberColumns, double objectiveValue);
+    void setSolution(const double* solution, int numberColumns, double objectiveValue);
 
     /** returns true if the object stores a solution, false otherwise. If there
       is a solution then solutionValue and solution will be filled out as well.
         In that case the user needs to allocate solution to be a big enough
       array.
     */
-    bool hasSolution(double & solutionValue, double * solution);
+    bool hasSolution(double & solutionValue, double* solution);
 
     /** Sets solver type
         0 - normal LP solver
@@ -109,7 +109,7 @@ public:
     */
     inline void setSolverType(int value)
     {
-        solverType_=value;
+        solverType_ = value;
     }
     /** gets solver type
         0 - normal LP solver
@@ -131,23 +131,23 @@ public:
         be obsolete */
     inline bool solutionAddsCuts() const
     {
-        return solverType_==3;
+        return solverType_ == 3;
     }
     /// Return true if we should try cuts at root even if looks satisfied
     inline bool alwaysTryCutsAtRootNode() const
     {
-        return solverType_==4;
+        return solverType_ == 4;
     }
     /** Returns true if can use solver objective or feasible values,
         otherwise use mipBound etc */
     inline bool solverAccurate() const
     {
-        return solverType_==0||solverType_==2||solverType_==4;
+        return solverType_ == 0 || solverType_ == 2 || solverType_ == 4;
     }
     /// Returns true if can use reduced costs for fixing
     inline bool reducedCostsAccurate() const
     {
-        return solverType_==0||solverType_==4;
+        return solverType_ == 0 || solverType_ == 4;
     }
     /// Get objective  (well mip bound)
     double mipBound() const;
@@ -166,12 +166,12 @@ public:
     /// Says whether we want to try cuts at all
     inline bool tryCuts() const
     {
-        return solverType_!=2;
+        return solverType_ != 2;
     }
     /// Says whether we have a warm start (so can do strong branching)
     inline bool warmStart() const
     {
-        return solverType_!=2;
+        return solverType_ != 2;
     }
     /** Get bit mask for odd actions of solvers
         1 - solution or bound arrays may move in mysterious ways e.g. cplex
@@ -187,25 +187,25 @@ public:
     */
     inline void setExtraCharacteristics(int value)
     {
-        extraCharacteristics_=value;
+        extraCharacteristics_ = value;
     }
     /// Pointer to lower bounds before branch (only if extraCharacteristics set)
-    inline const double * beforeLower() const
+    inline const double* beforeLower() const
     {
         return beforeLower_;
     }
     /// Set pointer to lower bounds before branch (only if extraCharacteristics set)
-    inline void setBeforeLower(const double * array)
+    inline void setBeforeLower(const double* array)
     {
         beforeLower_ = array;
     }
     /// Pointer to upper bounds before branch (only if extraCharacteristics set)
-    inline const double * beforeUpper() const
+    inline const double* beforeUpper() const
     {
         return beforeUpper_;
     }
     /// Set pointer to upper bounds before branch (only if extraCharacteristics set)
-    inline void setBeforeUpper(const double * array)
+    inline void setBeforeUpper(const double* array)
     {
         beforeUpper_ = array;
     }
@@ -215,13 +215,13 @@ protected:
     /// Current lower bound on solution ( if > 1.0e50 infeasible)
     double mipBound_;
     /// Solver to use for getting/setting solutions etc
-    const OsiSolverInterface * solver_;
+    const OsiSolverInterface* solver_;
     /// Best integer feasible solution
-    double * bestSolution_;
+    double* bestSolution_;
     /// Pointer to lower bounds before branch (only if extraCharacteristics set)
-    const double * beforeLower_;
+    const double* beforeLower_;
     /// Pointer to upper bounds before branch (only if extraCharacteristics set)
-    const double * beforeUpper_;
+    const double* beforeUpper_;
     /** Solver type
         0 - normal LP solver
         1 - DW - may also return heuristic solutions

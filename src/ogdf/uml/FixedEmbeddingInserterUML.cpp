@@ -48,61 +48,61 @@
 namespace ogdf
 {
 
-//---------------------------------------------------------
-// constructor
-// sets default values for options
-//
-FixedEmbeddingInserterUML::FixedEmbeddingInserterUML()
-{
-    m_rrOption = rrNone;
-    m_percentMostCrossed = 25;
-    m_keepEmbedding = false;
-}
+    //---------------------------------------------------------
+    // constructor
+    // sets default values for options
+    //
+    FixedEmbeddingInserterUML::FixedEmbeddingInserterUML()
+    {
+        m_rrOption = rrNone;
+        m_percentMostCrossed = 25;
+        m_keepEmbedding = false;
+    }
 
 
-// copy constructor
-FixedEmbeddingInserterUML::FixedEmbeddingInserterUML(const FixedEmbeddingInserterUML &inserter)
-    : UMLEdgeInsertionModule()
-{
-    m_rrOption = inserter.m_rrOption;
-    m_percentMostCrossed = inserter.m_percentMostCrossed;
-    m_keepEmbedding = inserter.m_keepEmbedding;
-}
+    // copy constructor
+    FixedEmbeddingInserterUML::FixedEmbeddingInserterUML(const FixedEmbeddingInserterUML & inserter)
+        : UMLEdgeInsertionModule()
+    {
+        m_rrOption = inserter.m_rrOption;
+        m_percentMostCrossed = inserter.m_percentMostCrossed;
+        m_keepEmbedding = inserter.m_keepEmbedding;
+    }
 
 
-// clone method
-UMLEdgeInsertionModule *FixedEmbeddingInserterUML::clone() const
-{
-    FixedEmbeddingInserterUML *pInserter = new FixedEmbeddingInserterUML;
-    pInserter->m_rrOption = m_rrOption;
-    pInserter->m_percentMostCrossed = m_percentMostCrossed;
-    pInserter->m_keepEmbedding = m_keepEmbedding;
+    // clone method
+    UMLEdgeInsertionModule* FixedEmbeddingInserterUML::clone() const
+    {
+        FixedEmbeddingInserterUML* pInserter = new FixedEmbeddingInserterUML;
+        pInserter->m_rrOption = m_rrOption;
+        pInserter->m_percentMostCrossed = m_percentMostCrossed;
+        pInserter->m_keepEmbedding = m_keepEmbedding;
 
-    return pInserter;
-}
-
-
-// assignment operator
-FixedEmbeddingInserterUML &FixedEmbeddingInserterUML::operator=(const FixedEmbeddingInserterUML &inserter)
-{
-    m_rrOption = inserter.m_rrOption;
-    m_percentMostCrossed = inserter.m_percentMostCrossed;
-    m_keepEmbedding = inserter.m_keepEmbedding;
-    return *this;
-}
+        return pInserter;
+    }
 
 
-// actual call method
-Module::ReturnType FixedEmbeddingInserterUML::doCall(
-    PlanRepLight              &pr,
-    const Array<edge>         &origEdges,
-    const EdgeArray<int>      *pCostOrig,
-    const EdgeArray<__uint32> *pEdgeSubgraph)
-{
-    FixEdgeInserterUMLCore core(pr, pCostOrig, pEdgeSubgraph);
-    core.timeLimit(timeLimit());
+    // assignment operator
+    FixedEmbeddingInserterUML & FixedEmbeddingInserterUML::operator=(const FixedEmbeddingInserterUML & inserter)
+    {
+        m_rrOption = inserter.m_rrOption;
+        m_percentMostCrossed = inserter.m_percentMostCrossed;
+        m_keepEmbedding = inserter.m_keepEmbedding;
+        return *this;
+    }
 
-    return core.call(origEdges, m_keepEmbedding, m_rrOption, m_percentMostCrossed);
-}
+
+    // actual call method
+    Module::ReturnType FixedEmbeddingInserterUML::doCall(
+        PlanRepLight       &       pr,
+        const Array<edge>     &    origEdges,
+        const EdgeArray<int>*      pCostOrig,
+        const EdgeArray<__uint32>* pEdgeSubgraph)
+    {
+        FixEdgeInserterUMLCore core(pr, pCostOrig, pEdgeSubgraph);
+        core.timeLimit(timeLimit());
+
+        return core.call(origEdges, m_keepEmbedding, m_rrOption, m_percentMostCrossed);
+    }
 
 }

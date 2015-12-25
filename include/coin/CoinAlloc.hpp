@@ -64,8 +64,8 @@ private:
     const std::size_t entry_size_;
 
 private:
-    CoinMempool(const CoinMempool&);
-    CoinMempool& operator=(const CoinMempool&);
+    CoinMempool(const CoinMempool &);
+    CoinMempool & operator=(const CoinMempool &);
 
 private:
     char* allocate_new_block();
@@ -87,7 +87,7 @@ public:
     ~CoinMempool();
 
     char* alloc();
-    inline void dealloc(char *p)
+    inline void dealloc(char* p)
     {
         char** pp = (char**)p;
         lock_mutex();
@@ -122,19 +122,19 @@ public:
 
     inline void* alloc(const std::size_t n)
     {
-        if (maxpooled_ <= 0)
+        if(maxpooled_ <= 0)
         {
             return std::malloc(n);
         }
-        char *p = NULL;
+        char* p = NULL;
         const std::size_t to_alloc =
-            ((n+COINUTILS_MEMPOOL_ALIGNMENT-1) & CoinAllocRoundMask) +
+            ((n + COINUTILS_MEMPOOL_ALIGNMENT - 1) & CoinAllocRoundMask) +
             COINUTILS_MEMPOOL_ALIGNMENT;
         CoinMempool* pool = NULL;
-        if (maxpooled_ > 0 && to_alloc >= (size_t)maxpooled_)
+        if(maxpooled_ > 0 && to_alloc >= (size_t)maxpooled_)
         {
             p = static_cast<char*>(std::malloc(to_alloc));
-            if (p == NULL) throw std::bad_alloc();
+            if(p == NULL) throw std::bad_alloc();
         }
         else
         {
@@ -142,21 +142,21 @@ public:
             p = pool->alloc();
         }
         *((CoinMempool**)p) = pool;
-        return static_cast<void*>(p+COINUTILS_MEMPOOL_ALIGNMENT);
+        return static_cast<void*>(p + COINUTILS_MEMPOOL_ALIGNMENT);
     }
 
     inline void dealloc(void* p)
     {
-        if (maxpooled_ <= 0)
+        if(maxpooled_ <= 0)
         {
             std::free(p);
             return;
         }
-        if (p)
+        if(p)
         {
-            char* base = static_cast<char*>(p)-COINUTILS_MEMPOOL_ALIGNMENT;
+            char* base = static_cast<char*>(p) - COINUTILS_MEMPOOL_ALIGNMENT;
             CoinMempool* pool = *((CoinMempool**)base);
-            if (!pool)
+            if(!pool)
             {
                 std::free(base);
             }
@@ -173,14 +173,14 @@ extern CoinAlloc CoinAllocator;
 //#############################################################################
 
 #if defined(COINUTILS_MEMPOOL_OVERRIDE_NEW) && (COINUTILS_MEMPOOL_OVERRIDE_NEW == 1)
-void* operator new(std::size_t size) throw (std::bad_alloc);
-void* operator new[](std::size_t) throw (std::bad_alloc);
+void* operator new(std::size_t size) throw(std::bad_alloc);
+void* operator new[](std::size_t) throw(std::bad_alloc);
 void operator delete(void*) throw();
 void operator delete[](void*) throw();
-void* operator new(std::size_t, const std::nothrow_t&) throw();
-void* operator new[](std::size_t, const std::nothrow_t&) throw();
-void operator delete(void*, const std::nothrow_t&) throw();
-void operator delete[](void*, const std::nothrow_t&) throw();
+void* operator new(std::size_t, const std::nothrow_t &) throw();
+void* operator new[](std::size_t, const std::nothrow_t &) throw();
+void operator delete(void*, const std::nothrow_t &) throw();
+void operator delete[](void*, const std::nothrow_t &) throw();
 #endif
 
 #endif /*(COINUTILS_MEMPOOL_MAXPOOLED >= 0)*/

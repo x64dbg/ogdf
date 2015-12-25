@@ -34,7 +34,7 @@
 CoinPostsolveMatrix::CoinPostsolveMatrix
 (int ncols_alloc, int nrows_alloc, CoinBigIndex nelems_alloc)
 
-    : CoinPrePostsolveMatrix(ncols_alloc,nrows_alloc,nelems_alloc),
+    : CoinPrePostsolveMatrix(ncols_alloc, nrows_alloc, nelems_alloc),
       free_list_(0),
       maxlink_(nelems_alloc),
       link_(0),
@@ -73,7 +73,7 @@ CoinPostsolveMatrix::~CoinPostsolveMatrix()
 */
 
 void
-CoinPostsolveMatrix::assignPresolveToPostsolve (CoinPresolveMatrix *&preObj)
+CoinPostsolveMatrix::assignPresolveToPostsolve(CoinPresolveMatrix* & preObj)
 
 {
     /*
@@ -139,7 +139,7 @@ CoinPostsolveMatrix::assignPresolveToPostsolve (CoinPresolveMatrix *&preObj)
       with the versions from the CoinPresolveObject, in case they've been
       customized. Let preObj believe it's no longer responsible for the handler.
     */
-    if (defaultHandler_ == true)
+    if(defaultHandler_ == true)
         delete handler_ ;
     handler_ = preObj->handler_ ;
     preObj->defaultHandler_ = false ;
@@ -161,31 +161,31 @@ CoinPostsolveMatrix::assignPresolveToPostsolve (CoinPresolveMatrix *&preObj)
     maxlink_ = bulk0_ ;
     link_ = new CoinBigIndex [maxlink_] ;
 
-    if (ncols_ > 0)
+    if(ncols_ > 0)
     {
         CoinBigIndex minkcs = -1 ;
-        for (int j = 0 ; j < ncols_ ; j++)
+        for(int j = 0 ; j < ncols_ ; j++)
         {
             CoinBigIndex kcs = mcstrt_[j] ;
             int lenj = hincol_[j] ;
             assert(lenj > 0) ;
-            CoinBigIndex kce = kcs+lenj-1 ;
+            CoinBigIndex kce = kcs + lenj - 1 ;
             CoinBigIndex k ;
 
-            for (k = kcs ; k < kce ; k++)
+            for(k = kcs ; k < kce ; k++)
             {
-                link_[k] = k+1 ;
+                link_[k] = k + 1 ;
             }
             link_[k++] = NO_LINK ;
 
-            if (preObj->clink_[j].pre == NO_LINK)
+            if(preObj->clink_[j].pre == NO_LINK)
             {
                 minkcs = kcs ;
             }
             int nxtj = preObj->clink_[j].suc ;
             assert(nxtj >= 0 && nxtj <= ncols_) ;
             CoinBigIndex nxtcs = mcstrt_[nxtj] ;
-            for ( ; k < nxtcs ; k++)
+            for(; k < nxtcs ; k++)
             {
                 link_[k] = free_list_ ;
                 free_list_ = k ;
@@ -193,9 +193,9 @@ CoinPostsolveMatrix::assignPresolveToPostsolve (CoinPresolveMatrix *&preObj)
         }
 
         assert(minkcs >= 0) ;
-        if (minkcs > 0)
+        if(minkcs > 0)
         {
-            for (CoinBigIndex k = 0 ; k < minkcs ; k++)
+            for(CoinBigIndex k = 0 ; k < minkcs ; k++)
             {
                 link_[k] = free_list_ ;
                 free_list_ = k ;
@@ -204,7 +204,7 @@ CoinPostsolveMatrix::assignPresolveToPostsolve (CoinPresolveMatrix *&preObj)
     }
     else
     {
-        for (CoinBigIndex k = 0 ; k < maxlink_ ; k++)
+        for(CoinBigIndex k = 0 ; k < maxlink_ ; k++)
         {
             link_[k] = free_list_ ;
             free_list_ = k ;
@@ -221,18 +221,18 @@ CoinPostsolveMatrix::assignPresolveToPostsolve (CoinPresolveMatrix *&preObj)
       These are used to track the action of postsolve transforms during debugging.
     */
     cdone_ = new char [ncols0_] ;
-    CoinFillN(cdone_,ncols_,PRESENT_IN_REDUCED) ;
-    CoinZeroN(cdone_+ncols_,ncols0_-ncols_) ;
+    CoinFillN(cdone_, ncols_, PRESENT_IN_REDUCED) ;
+    CoinZeroN(cdone_ + ncols_, ncols0_ - ncols_) ;
     rdone_ = new char [nrows0_] ;
-    CoinFillN(rdone_,nrows_,PRESENT_IN_REDUCED) ;
-    CoinZeroN(rdone_+nrows_,nrows0_-nrows_) ;
+    CoinFillN(rdone_, nrows_, PRESENT_IN_REDUCED) ;
+    CoinZeroN(rdone_ + nrows_, nrows0_ - nrows_) ;
 # else
     cdone_ = 0 ;
     rdone_ = 0 ;
 # endif
 
 # if PRESOLVE_CONSISTENCY
-    presolve_check_free_list(this,true) ;
+    presolve_check_free_list(this, true) ;
     presolve_check_threads(this) ;
 # endif
 

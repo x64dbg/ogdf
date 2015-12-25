@@ -61,124 +61,124 @@
 namespace ogdf
 {
 
-template<class ATYPE> class CompactionConstraintGraph;
-class Layout;
+    template<class ATYPE> class CompactionConstraintGraph;
+    class Layout;
 
 
-//! represents compaction algorithm using min-cost flow in the dual of the constraint graph
-class OGDF_EXPORT FlowCompaction
-{
-public:
-    //! construction
-    FlowCompaction(int maxImprovementSteps = 0,
-                   int costGen = 1,
-                   int costAssoc = 1);
-
-    //! call of constructive heuristics for orthogonal representation
-    void constructiveHeuristics(
-        PlanRep &PG,
-        OrthoRep &OR,
-        const RoutingChannel<int> &rc,
-        GridLayoutMapped &drawing);
-
-
-    //! call of improvement heuristics for orthogonal drawing (variable cages)
-    void improvementHeuristics(
-        PlanRep &PG,
-        OrthoRep &OR,
-        const RoutingChannel<int> &rc,
-        GridLayoutMapped &drawing);
-
-    //! call of improvement heuristics for orthogonal drawing (tight cages)
-    void improvementHeuristics(
-        PlanRep &PG,
-        OrthoRep &OR,
-        //const
-        MinimumEdgeDistances<int> &minDist,
-        GridLayoutMapped &drawing,
-        int originalSeparation //the input value before multiplication test for compaction improvement
-    );
-
-    //
-    // options
-
-    //! sets option maxImprovementSteps, which is the maximal number of steps performed by improvementHeuristics().
-    void maxImprovementSteps(int maxSteps)
+    //! represents compaction algorithm using min-cost flow in the dual of the constraint graph
+    class OGDF_EXPORT FlowCompaction
     {
-        m_maxImprovementSteps = maxSteps;
-    }
+    public:
+        //! construction
+        FlowCompaction(int maxImprovementSteps = 0,
+                       int costGen = 1,
+                       int costAssoc = 1);
 
-    //! returns option maxImprovementSteps
-    int maxImprovementSteps() const
-    {
-        return m_maxImprovementSteps;
-    }
-
-    //! sets cost of arcs in constraint graph corresponding to generalizations
-    void costGen(int c)
-    {
-        m_costGen = c;
-    }
-
-    //! returns option costGen
-    int costGen() const
-    {
-        return m_costGen;
-    }
-
-    //! sets cost of arcs in constraint graph corresponding to associations
-    void costAssoc(int c)
-    {
-        m_costAssoc = c;
-    }
-
-    //! returns option costGen
-    int costAssoc() const
-    {
-        return m_costAssoc;
-    }
-
-    //! sets number of separation scaling improvement steps
-    void scalingSteps(int sc)
-    {
-        m_scalingSteps = sc;
-    }
-
-    //! set alignment option
-    void align(bool b)
-    {
-        m_align = b;
-    }
+        //! call of constructive heuristics for orthogonal representation
+        void constructiveHeuristics(
+            PlanRep & PG,
+            OrthoRep & OR,
+            const RoutingChannel<int> & rc,
+            GridLayoutMapped & drawing);
 
 
-private:
-    void computeCoords(
-        CompactionConstraintGraph<int> &D,
-        NodeArray<int> &pos,
-        bool fixZeroLength = false,
-        bool fixVertexSize = false,
-        bool improvementHeuristics = false,
-        bool onlyGen = false);
-    void dfsAssignPos(
-        NodeArray<bool> &visited,
-        NodeArray<int> &pos,
-        node v,
-        int x);
+        //! call of improvement heuristics for orthogonal drawing (variable cages)
+        void improvementHeuristics(
+            PlanRep & PG,
+            OrthoRep & OR,
+            const RoutingChannel<int> & rc,
+            GridLayoutMapped & drawing);
 
-    // options
-    int m_maxImprovementSteps; //!< maximal number of improvement steps
-    int m_costGen;   //!< cost of arcs in constraint graph corresponding to generalization
-    int m_costAssoc; //!< cost of arcs in constraint graph corresponding to associations
-    bool m_cageExpense; //!< should cageedges be more expensive than others? will be propagated to compactionConstraintGraph
-    //int m_costCage; //!< preliminary: Carsten uses 10
-    int m_numGenSteps; //!< number of steps reserved for generalization compaction
-    int m_scalingSteps; //!< number of improvement steps with decreasing separation
-    bool m_align; //!< toggle if brother nodes in hierarchies should be aligned
+        //! call of improvement heuristics for orthogonal drawing (tight cages)
+        void improvementHeuristics(
+            PlanRep & PG,
+            OrthoRep & OR,
+            //const
+            MinimumEdgeDistances<int> & minDist,
+            GridLayoutMapped & drawing,
+            int originalSeparation //the input value before multiplication test for compaction improvement
+        );
+
+        //
+        // options
+
+        //! sets option maxImprovementSteps, which is the maximal number of steps performed by improvementHeuristics().
+        void maxImprovementSteps(int maxSteps)
+        {
+            m_maxImprovementSteps = maxSteps;
+        }
+
+        //! returns option maxImprovementSteps
+        int maxImprovementSteps() const
+        {
+            return m_maxImprovementSteps;
+        }
+
+        //! sets cost of arcs in constraint graph corresponding to generalizations
+        void costGen(int c)
+        {
+            m_costGen = c;
+        }
+
+        //! returns option costGen
+        int costGen() const
+        {
+            return m_costGen;
+        }
+
+        //! sets cost of arcs in constraint graph corresponding to associations
+        void costAssoc(int c)
+        {
+            m_costAssoc = c;
+        }
+
+        //! returns option costGen
+        int costAssoc() const
+        {
+            return m_costAssoc;
+        }
+
+        //! sets number of separation scaling improvement steps
+        void scalingSteps(int sc)
+        {
+            m_scalingSteps = sc;
+        }
+
+        //! set alignment option
+        void align(bool b)
+        {
+            m_align = b;
+        }
 
 
-    EdgeArray<edge> m_dualEdge;
-    EdgeArray<int>  m_flow;
-};
+    private:
+        void computeCoords(
+            CompactionConstraintGraph<int> & D,
+            NodeArray<int> & pos,
+            bool fixZeroLength = false,
+            bool fixVertexSize = false,
+            bool improvementHeuristics = false,
+            bool onlyGen = false);
+        void dfsAssignPos(
+            NodeArray<bool> & visited,
+            NodeArray<int> & pos,
+            node v,
+            int x);
+
+        // options
+        int m_maxImprovementSteps; //!< maximal number of improvement steps
+        int m_costGen;   //!< cost of arcs in constraint graph corresponding to generalization
+        int m_costAssoc; //!< cost of arcs in constraint graph corresponding to associations
+        bool m_cageExpense; //!< should cageedges be more expensive than others? will be propagated to compactionConstraintGraph
+        //int m_costCage; //!< preliminary: Carsten uses 10
+        int m_numGenSteps; //!< number of steps reserved for generalization compaction
+        int m_scalingSteps; //!< number of improvement steps with decreasing separation
+        bool m_align; //!< toggle if brother nodes in hierarchies should be aligned
+
+
+        EdgeArray<edge> m_dualEdge;
+        EdgeArray<int>  m_flow;
+    };
 
 
 } // end namespace ogdf

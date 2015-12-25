@@ -26,17 +26,17 @@ public:
     virtual ~CoinWarmStart() {}
 
     /// `Virtual constructor'
-    virtual CoinWarmStart *clone() const = 0 ;
+    virtual CoinWarmStart* clone() const = 0 ;
 
     virtual CoinWarmStartDiff*
-    generateDiff (const CoinWarmStart *const ) const
+    generateDiff(const CoinWarmStart* const) const
     {
         return 0;
     }
 
 
     virtual void
-    applyDiff (const CoinWarmStartDiff *const ) {}
+    applyDiff(const CoinWarmStartDiff* const) {}
 
 };
 
@@ -57,7 +57,7 @@ public:
     virtual ~CoinWarmStartDiff() {}
 
     /// `Virtual constructor'
-    virtual CoinWarmStartDiff *clone() const = 0 ;
+    virtual CoinWarmStartDiff* clone() const = 0 ;
 };
 
 #endif

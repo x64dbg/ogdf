@@ -59,304 +59,304 @@ namespace ogdf
 {
 
 
-//! Simple face sets.
-/**
- * A face set maintains a subset \a S of the faces contained in an associated
- * combinatorial embedding.
- * This kind of face set only provides efficient operation for testing membership,
- * insertion, and clearing the set.
- *
- * \sa
- *   - FaceSet, FaceSetPure
- *   - NodeSet, NodeSetPure, NodeSetSimple
- */
-class OGDF_EXPORT FaceSetSimple
-{
-public:
-    //! Creates an empty face set associated with combinatorial embedding \a E.
-    FaceSetSimple(const CombinatorialEmbedding &E) : m_isContained(E,false) { }
-
-    // destructor
-    ~FaceSetSimple() { }
-
-    //! Inserts face \a f into set \a S.
+    //! Simple face sets.
     /**
-     * This operation has constant runtime.
+     * A face set maintains a subset \a S of the faces contained in an associated
+     * combinatorial embedding.
+     * This kind of face set only provides efficient operation for testing membership,
+     * insertion, and clearing the set.
      *
-     * \pre \a f is a face in the associated combinatorial embedding.
+     * \sa
+     *   - FaceSet, FaceSetPure
+     *   - NodeSet, NodeSetPure, NodeSetSimple
      */
-    void insert(face f)
+    class OGDF_EXPORT FaceSetSimple
     {
-        OGDF_ASSERT(f->embeddingOf() == m_isContained.embeddingOf());
-        bool &isContained = m_isContained[f];
-        if (isContained == false)
+    public:
+        //! Creates an empty face set associated with combinatorial embedding \a E.
+        FaceSetSimple(const CombinatorialEmbedding & E) : m_isContained(E, false) { }
+
+        // destructor
+        ~FaceSetSimple() { }
+
+        //! Inserts face \a f into set \a S.
+        /**
+         * This operation has constant runtime.
+         *
+         * \pre \a f is a face in the associated combinatorial embedding.
+         */
+        void insert(face f)
         {
-            isContained = true;
-            m_faces.pushFront(f);
+            OGDF_ASSERT(f->embeddingOf() == m_isContained.embeddingOf());
+            bool & isContained = m_isContained[f];
+            if(isContained == false)
+            {
+                isContained = true;
+                m_faces.pushFront(f);
+            }
         }
-    }
 
 
-    //! Removes all faces from \a S.
-    /**
-     * After this operation, the \a S is empty and still associated with the same combinatorial embedding.
-     * The runtime of this operations is O(k), where k is the number of faces in \a S before
-     * this operation.
-     */
-    void clear()
-    {
-        SListIterator<face> it;
-        for(it = m_faces.begin(); it.valid(); ++it)
+        //! Removes all faces from \a S.
+        /**
+         * After this operation, the \a S is empty and still associated with the same combinatorial embedding.
+         * The runtime of this operations is O(k), where k is the number of faces in \a S before
+         * this operation.
+         */
+        void clear()
         {
-            m_isContained[*it] = false;
+            SListIterator<face> it;
+            for(it = m_faces.begin(); it.valid(); ++it)
+            {
+                m_isContained[*it] = false;
+            }
+            m_faces.clear();
         }
-        m_faces.clear();
-    }
 
 
-    //! Returns true if face \a f is contained in \a S, false otherwise.
-    /**
-     * This operation has constant runtime.
-     *
-     * \pre \a f is a face in the associated combinatorial embedding.
-     */
-    bool isMember(face f) const
-    {
-        OGDF_ASSERT(f->embeddingOf() == m_isContained.embeddingOf());
-        return m_isContained[f];
-    }
-
-    //! Returns a reference to the list of faces contained in \a S.
-    /**
-     * This list can be used for iterating over all faces in \a S.
-     */
-    const SListPure<face> &faces() const
-    {
-        return m_faces;
-    }
-
-private:
-    //! m_isContained[f] is true iff \a f is contained in \a S.
-    FaceArray<bool> m_isContained;
-
-    //! The list of faces contained in \a S.
-    SListPure<face> m_faces;
-};
-
-
-
-//! Face sets.
-/**
- * A face set maintains a subset \a S of the faces contained in an associated
- * combinatorial embedding. This kind of face set provides efficient operations for testing
- * membership, insertion and deletion of elements, and clearing the set.
- *
- * In contrast to FaceSet, a FaceSetPure does not provide efficient access
- * to the number of faces stored in the set.
- *
- * \sa
- *   - FaceSet, FaceSetSimple
- *   - NodeSet, NodeSetPure, NodeSetSimple
- */
-class OGDF_EXPORT FaceSetPure
-{
-public:
-    //! Creates an empty node set associated with combinatorial embedding \a E.
-    FaceSetPure(const CombinatorialEmbedding &E) : m_it(E,ListIterator<face>()) { }
-
-    // destructor
-    ~FaceSetPure() { }
-
-    //! Inserts face \a f into \a S.
-    /**
-     * This operation has constant runtime.
-     *
-     * \pre \a f is a face in the associated combinatorial embedding.
-     */
-    void insert(face f)
-    {
-        OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
-        ListIterator<face> &itF = m_it[f];
-        if (!itF.valid())
-            itF = m_faces.pushBack(f);
-    }
-
-    //! Removes face \a f from \a S.
-    /**
-     * This operation has constant runtime.
-     *
-     * \pre \a f is a face in the associated combinatorial embedding.
-     */
-    void remove(face f)
-    {
-        OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
-        ListIterator<face> &itF = m_it[f];
-        if (itF.valid())
+        //! Returns true if face \a f is contained in \a S, false otherwise.
+        /**
+         * This operation has constant runtime.
+         *
+         * \pre \a f is a face in the associated combinatorial embedding.
+         */
+        bool isMember(face f) const
         {
-            m_faces.del(itF);
-            itF = ListIterator<face>();
+            OGDF_ASSERT(f->embeddingOf() == m_isContained.embeddingOf());
+            return m_isContained[f];
         }
-    }
 
-
-    //! Removes all faces from \a S.
-    /**
-     * After this operation, \a S is empty and still associated with the same combinatorial embedding.
-     * The runtime of this operations is O(k), where k is the number of faces in \a S
-     * before this operation.
-     */
-    void clear()
-    {
-        ListIterator<face> it;
-        for(it = m_faces.begin(); it.valid(); ++it)
+        //! Returns a reference to the list of faces contained in \a S.
+        /**
+         * This list can be used for iterating over all faces in \a S.
+         */
+        const SListPure<face> & faces() const
         {
-            m_it[*it] = ListIterator<face>();
+            return m_faces;
         }
-        m_faces.clear();
-    }
+
+    private:
+        //! m_isContained[f] is true iff \a f is contained in \a S.
+        FaceArray<bool> m_isContained;
+
+        //! The list of faces contained in \a S.
+        SListPure<face> m_faces;
+    };
 
 
-    //! Returns true if face \a f is contained in \a S, false otherwise.
+
+    //! Face sets.
     /**
-     * This operation has constant runtime.
+     * A face set maintains a subset \a S of the faces contained in an associated
+     * combinatorial embedding. This kind of face set provides efficient operations for testing
+     * membership, insertion and deletion of elements, and clearing the set.
      *
-     * \pre \a f is a face in the associated combinatorial embedding.
-     */
-    bool isMember(face f) const
-    {
-        OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
-        return m_it[f].valid();
-    }
-
-    //! Returns a reference to the list of faces contained in \a S.
-    /**
-     * This list can be used for iterating over all faces in \a S.
-     */
-    const ListPure<face> &faces() const
-    {
-        return m_faces;
-    }
-
-private:
-    //! m_it[f] contains the list iterator pointing to \a f if \a f is contained in S,
-    //! an invalid list iterator otherwise.
-    FaceArray<ListIterator<face> > m_it;
-
-    //! The list of faces contained in \a S.
-    ListPure<face> m_faces;
-};
-
-
-
-//! Face sets.
-/**
- * A face set maintains a subset \a S of the faces contained in an associated
- * combinatorial embedding. This kind of face set provides efficient operations for testing
- * membership, insertion and deletion of elements, and clearing the set.
- *
- * In contrast to FaceSetPure, a FaceSet provides efficient access
- * to the number of elements stored in the set.
- *
- * \sa
- *   - FaceSetPure, FaceSetSimple
- *   - NodeSet, NodeSetPure, NodeSetSimple
- */
-class OGDF_EXPORT FaceSet
-{
-public:
-    //! Creates an empty node set associated with combinatorial embedding \a E.
-    FaceSet(const CombinatorialEmbedding &E) : m_it(E,ListIterator<face>()) { }
-
-    // destructor
-    ~FaceSet() { }
-
-    //! Inserts face \a f into \a S.
-    /**
-     * This operation has constant runtime.
+     * In contrast to FaceSet, a FaceSetPure does not provide efficient access
+     * to the number of faces stored in the set.
      *
-     * \pre \a f is a face in the associated combinatorial embedding.
+     * \sa
+     *   - FaceSet, FaceSetSimple
+     *   - NodeSet, NodeSetPure, NodeSetSimple
      */
-    void insert(face f)
+    class OGDF_EXPORT FaceSetPure
     {
-        OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
-        ListIterator<face> &itF = m_it[f];
-        if (!itF.valid())
-            itF = m_faces.pushBack(f);
-    }
+    public:
+        //! Creates an empty node set associated with combinatorial embedding \a E.
+        FaceSetPure(const CombinatorialEmbedding & E) : m_it(E, ListIterator<face>()) { }
 
-    //! Removes face \a f from \a S.
-    /**
-     * This operation has constant runtime.
-     *
-     * \pre \a f is a face in the associated combinatorial embedding.
-     */
-    void remove(face f)
-    {
-        OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
-        ListIterator<face> &itF = m_it[f];
-        if (itF.valid())
+        // destructor
+        ~FaceSetPure() { }
+
+        //! Inserts face \a f into \a S.
+        /**
+         * This operation has constant runtime.
+         *
+         * \pre \a f is a face in the associated combinatorial embedding.
+         */
+        void insert(face f)
         {
-            m_faces.del(itF);
-            itF = ListIterator<face>();
+            OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
+            ListIterator<face> & itF = m_it[f];
+            if(!itF.valid())
+                itF = m_faces.pushBack(f);
         }
-    }
 
-
-    //! Removes all faces from \a S.
-    /**
-     * After this operation, \a S is empty and still associated with the same combinatorial embedding.
-     * The runtime of this operations is O(k), where k is the number of faces in \a S
-     * before this operation.
-     */
-    void clear()
-    {
-        ListIterator<face> it;
-        for(it = m_faces.begin(); it.valid(); ++it)
+        //! Removes face \a f from \a S.
+        /**
+         * This operation has constant runtime.
+         *
+         * \pre \a f is a face in the associated combinatorial embedding.
+         */
+        void remove(face f)
         {
-            m_it[*it] = ListIterator<face>();
+            OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
+            ListIterator<face> & itF = m_it[f];
+            if(itF.valid())
+            {
+                m_faces.del(itF);
+                itF = ListIterator<face>();
+            }
         }
-        m_faces.clear();
-    }
 
 
-    //! Returns true if face \a f is contained in \a S, false otherwise.
+        //! Removes all faces from \a S.
+        /**
+         * After this operation, \a S is empty and still associated with the same combinatorial embedding.
+         * The runtime of this operations is O(k), where k is the number of faces in \a S
+         * before this operation.
+         */
+        void clear()
+        {
+            ListIterator<face> it;
+            for(it = m_faces.begin(); it.valid(); ++it)
+            {
+                m_it[*it] = ListIterator<face>();
+            }
+            m_faces.clear();
+        }
+
+
+        //! Returns true if face \a f is contained in \a S, false otherwise.
+        /**
+         * This operation has constant runtime.
+         *
+         * \pre \a f is a face in the associated combinatorial embedding.
+         */
+        bool isMember(face f) const
+        {
+            OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
+            return m_it[f].valid();
+        }
+
+        //! Returns a reference to the list of faces contained in \a S.
+        /**
+         * This list can be used for iterating over all faces in \a S.
+         */
+        const ListPure<face> & faces() const
+        {
+            return m_faces;
+        }
+
+    private:
+        //! m_it[f] contains the list iterator pointing to \a f if \a f is contained in S,
+        //! an invalid list iterator otherwise.
+        FaceArray<ListIterator<face>> m_it;
+
+        //! The list of faces contained in \a S.
+        ListPure<face> m_faces;
+    };
+
+
+
+    //! Face sets.
     /**
-     * This operation has constant runtime.
+     * A face set maintains a subset \a S of the faces contained in an associated
+     * combinatorial embedding. This kind of face set provides efficient operations for testing
+     * membership, insertion and deletion of elements, and clearing the set.
      *
-     * \pre \a f is a face in the associated combinatorial embedding.
+     * In contrast to FaceSetPure, a FaceSet provides efficient access
+     * to the number of elements stored in the set.
+     *
+     * \sa
+     *   - FaceSetPure, FaceSetSimple
+     *   - NodeSet, NodeSetPure, NodeSetSimple
      */
-    bool isMember(face f) const
+    class OGDF_EXPORT FaceSet
     {
-        OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
-        return m_it[f].valid();
-    }
+    public:
+        //! Creates an empty node set associated with combinatorial embedding \a E.
+        FaceSet(const CombinatorialEmbedding & E) : m_it(E, ListIterator<face>()) { }
 
-    //! Returns the size of \a S.
-    /**
-     * This operation has constant runtime.
-     */
-    int size() const
-    {
-        return m_faces.size();
-    }
+        // destructor
+        ~FaceSet() { }
 
-    //! Returns a reference to the list of faces contained in \a S.
-    /**
-     * This list can be used for iterating over all faces in \a S.
-     */
-    const List<face> &faces() const
-    {
-        return m_faces;
-    }
+        //! Inserts face \a f into \a S.
+        /**
+         * This operation has constant runtime.
+         *
+         * \pre \a f is a face in the associated combinatorial embedding.
+         */
+        void insert(face f)
+        {
+            OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
+            ListIterator<face> & itF = m_it[f];
+            if(!itF.valid())
+                itF = m_faces.pushBack(f);
+        }
 
-private:
-    //! m_it[f] contains the list iterator pointing to \a f if \a f is contained in S,
-    //! an invalid list iterator otherwise.
-    FaceArray<ListIterator<face> > m_it;
+        //! Removes face \a f from \a S.
+        /**
+         * This operation has constant runtime.
+         *
+         * \pre \a f is a face in the associated combinatorial embedding.
+         */
+        void remove(face f)
+        {
+            OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
+            ListIterator<face> & itF = m_it[f];
+            if(itF.valid())
+            {
+                m_faces.del(itF);
+                itF = ListIterator<face>();
+            }
+        }
 
-    //! The list of faces contained in \a S.
-    List<face> m_faces;
-};
+
+        //! Removes all faces from \a S.
+        /**
+         * After this operation, \a S is empty and still associated with the same combinatorial embedding.
+         * The runtime of this operations is O(k), where k is the number of faces in \a S
+         * before this operation.
+         */
+        void clear()
+        {
+            ListIterator<face> it;
+            for(it = m_faces.begin(); it.valid(); ++it)
+            {
+                m_it[*it] = ListIterator<face>();
+            }
+            m_faces.clear();
+        }
+
+
+        //! Returns true if face \a f is contained in \a S, false otherwise.
+        /**
+         * This operation has constant runtime.
+         *
+         * \pre \a f is a face in the associated combinatorial embedding.
+         */
+        bool isMember(face f) const
+        {
+            OGDF_ASSERT(f->embeddingOf() == m_it.embeddingOf());
+            return m_it[f].valid();
+        }
+
+        //! Returns the size of \a S.
+        /**
+         * This operation has constant runtime.
+         */
+        int size() const
+        {
+            return m_faces.size();
+        }
+
+        //! Returns a reference to the list of faces contained in \a S.
+        /**
+         * This list can be used for iterating over all faces in \a S.
+         */
+        const List<face> & faces() const
+        {
+            return m_faces;
+        }
+
+    private:
+        //! m_it[f] contains the list iterator pointing to \a f if \a f is contained in S,
+        //! an invalid list iterator otherwise.
+        FaceArray<ListIterator<face>> m_it;
+
+        //! The list of faces contained in \a S.
+        List<face> m_faces;
+    };
 
 
 } // end namespace ogdf

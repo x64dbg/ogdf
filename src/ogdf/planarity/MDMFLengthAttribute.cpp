@@ -47,128 +47,128 @@
 namespace ogdf
 {
 
-MDMFLengthAttribute MDMFLengthAttribute::operator=(const MDMFLengthAttribute& x)
-{
-    this->d = x.d;
-    this->l = x.l;
-    return *this;
-}
+    MDMFLengthAttribute MDMFLengthAttribute::operator=(const MDMFLengthAttribute & x)
+    {
+        this->d = x.d;
+        this->l = x.l;
+        return *this;
+    }
 
-MDMFLengthAttribute MDMFLengthAttribute::operator=(const int& x)
-{
-    this->d = x;
-    this->l = 0;
-    return *this;
-}
+    MDMFLengthAttribute MDMFLengthAttribute::operator=(const int & x)
+    {
+        this->d = x;
+        this->l = 0;
+        return *this;
+    }
 
-bool MDMFLengthAttribute::operator==(const MDMFLengthAttribute& x)
-{
-    return (this->d == x.d && this->l == x.l);
-}
+    bool MDMFLengthAttribute::operator==(const MDMFLengthAttribute & x)
+    {
+        return (this->d == x.d && this->l == x.l);
+    }
 
-bool MDMFLengthAttribute::operator!=(const MDMFLengthAttribute& x)
-{
-    return !(*this == x);
-}
+    bool MDMFLengthAttribute::operator!=(const MDMFLengthAttribute & x)
+    {
+        return !(*this == x);
+    }
 
-bool MDMFLengthAttribute::operator>(const MDMFLengthAttribute& x)
-{
-    return (this->d > x.d || (this->d == x.d && this->l > x.l));
-}
+    bool MDMFLengthAttribute::operator>(const MDMFLengthAttribute & x)
+    {
+        return (this->d > x.d || (this->d == x.d && this->l > x.l));
+    }
 
-bool MDMFLengthAttribute::operator<(const MDMFLengthAttribute& x)
-{
-    return !(*this >= x);
-}
+    bool MDMFLengthAttribute::operator<(const MDMFLengthAttribute & x)
+    {
+        return !(*this >= x);
+    }
 
-bool MDMFLengthAttribute::operator>=(const MDMFLengthAttribute& x)
-{
-    return (*this == x) || (*this > x);
-}
+    bool MDMFLengthAttribute::operator>=(const MDMFLengthAttribute & x)
+    {
+        return (*this == x) || (*this > x);
+    }
 
-bool MDMFLengthAttribute::operator<=(const MDMFLengthAttribute& x)
-{
-    return (*this == x) || (*this < x);
-}
+    bool MDMFLengthAttribute::operator<=(const MDMFLengthAttribute & x)
+    {
+        return (*this == x) || (*this < x);
+    }
 
-MDMFLengthAttribute MDMFLengthAttribute::operator+(const MDMFLengthAttribute& x)
-{
-    return MDMFLengthAttribute(this->d + x.d, this->l + x.l);
-}
+    MDMFLengthAttribute MDMFLengthAttribute::operator+(const MDMFLengthAttribute & x)
+    {
+        return MDMFLengthAttribute(this->d + x.d, this->l + x.l);
+    }
 
-MDMFLengthAttribute MDMFLengthAttribute::operator-(const MDMFLengthAttribute& x)
-{
-    return MDMFLengthAttribute(this->d - x.d, this->l - x.l);
-}
+    MDMFLengthAttribute MDMFLengthAttribute::operator-(const MDMFLengthAttribute & x)
+    {
+        return MDMFLengthAttribute(this->d - x.d, this->l - x.l);
+    }
 
-MDMFLengthAttribute MDMFLengthAttribute::operator+=(const MDMFLengthAttribute& x)
-{
-    this->d += x.d;
-    this->l += x.l;
-    return *this;
-}
+    MDMFLengthAttribute MDMFLengthAttribute::operator+=(const MDMFLengthAttribute & x)
+    {
+        this->d += x.d;
+        this->l += x.l;
+        return *this;
+    }
 
-MDMFLengthAttribute MDMFLengthAttribute::operator-=(const MDMFLengthAttribute& x)
-{
-    this->d -= x.d;
-    this->l -= x.l;
-    return *this;
-}
+    MDMFLengthAttribute MDMFLengthAttribute::operator-=(const MDMFLengthAttribute & x)
+    {
+        this->d -= x.d;
+        this->l -= x.l;
+        return *this;
+    }
 
-bool operator==(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return (x.d == y.d && x.l == y.l);
-}
+    bool operator==(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return (x.d == y.d && x.l == y.l);
+    }
 
-bool operator!=(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return !(x == y);
-}
+    bool operator!=(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return !(x == y);
+    }
 
-bool operator>(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return (x.d > y.d || (x.d == y.d && x.l > y.l));
-}
+    bool operator>(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return (x.d > y.d || (x.d == y.d && x.l > y.l));
+    }
 
-bool operator<(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return y > x;
-}
+    bool operator<(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return y > x;
+    }
 
-bool operator>=(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return (x == y) || (x > y);
-}
+    bool operator>=(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return (x == y) || (x > y);
+    }
 
-bool operator<=(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return (x == y) || (x < y);
-}
+    bool operator<=(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return (x == y) || (x < y);
+    }
 
-MDMFLengthAttribute operator+(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return MDMFLengthAttribute(x.d + y.d, x.l + y.l);
-}
+    MDMFLengthAttribute operator+(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return MDMFLengthAttribute(x.d + y.d, x.l + y.l);
+    }
 
-MDMFLengthAttribute operator-(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return MDMFLengthAttribute(x.d - y.d, x.l - y.l);
-}
+    MDMFLengthAttribute operator-(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return MDMFLengthAttribute(x.d - y.d, x.l - y.l);
+    }
 
-MDMFLengthAttribute operator+=(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return MDMFLengthAttribute(x.d + y.d, x.l + y.l);
-}
+    MDMFLengthAttribute operator+=(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return MDMFLengthAttribute(x.d + y.d, x.l + y.l);
+    }
 
-MDMFLengthAttribute operator-=(const MDMFLengthAttribute& x, const MDMFLengthAttribute& y)
-{
-    return MDMFLengthAttribute(x.d - y.d, x.l - y.l);
-}
+    MDMFLengthAttribute operator-=(const MDMFLengthAttribute & x, const MDMFLengthAttribute & y)
+    {
+        return MDMFLengthAttribute(x.d - y.d, x.l - y.l);
+    }
 
-ostream& operator<<(ostream& s, const MDMFLengthAttribute& x)
-{
-    s << x.d << ", " << x.l;
-    return s;
-}
+    ostream & operator<<(ostream & s, const MDMFLengthAttribute & x)
+    {
+        s << x.d << ", " << x.l;
+        return s;
+    }
 
 } // end namespace ogdf

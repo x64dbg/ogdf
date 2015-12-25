@@ -34,54 +34,54 @@
 extern "C" {
 #endif
 
-int c_ekkbtrn( register const EKKfactinfo *fact,
-               double *dwork1,
-               int * mpt,int first_nonzero);
-int c_ekkbtrn_ipivrw( register const EKKfactinfo *fact,
-                      double *dwork1,
-                      int * mpt, int ipivrw,int * spare);
+int c_ekkbtrn(register const EKKfactinfo* fact,
+              double* dwork1,
+              int* mpt, int first_nonzero);
+int c_ekkbtrn_ipivrw(register const EKKfactinfo* fact,
+                     double* dwork1,
+                     int* mpt, int ipivrw, int* spare);
 
-int c_ekketsj( register /*const*/ EKKfactinfo *fact,
-               double *dwork1,
-               int *mpt2, double dalpha, int orig_nincol,
-               int npivot, int *nuspikp,
-               const int ipivrw, int * spare);
-int c_ekkftrn( register const EKKfactinfo *fact,
-               double *dwork1,
-               double * dpermu,int * mpt, int numberNonZero);
+int c_ekketsj(register /*const*/ EKKfactinfo* fact,
+              double* dwork1,
+              int* mpt2, double dalpha, int orig_nincol,
+              int npivot, int* nuspikp,
+              const int ipivrw, int* spare);
+int c_ekkftrn(register const EKKfactinfo* fact,
+              double* dwork1,
+              double* dpermu, int* mpt, int numberNonZero);
 
-int c_ekkftrn_ft( register EKKfactinfo *fact,
-                  double *dwork1, int *mpt, int *nincolp);
-void c_ekkftrn2( register EKKfactinfo *fact, double *dwork1,
-                 double * dpermu1,int * mpt1, int *nincolp,
-                 double *dwork1_ft, int *mpt_ft, int *nincolp_ft);
+int c_ekkftrn_ft(register EKKfactinfo* fact,
+                 double* dwork1, int* mpt, int* nincolp);
+void c_ekkftrn2(register EKKfactinfo* fact, double* dwork1,
+                double* dpermu1, int* mpt1, int* nincolp,
+                double* dwork1_ft, int* mpt_ft, int* nincolp_ft);
 
-int c_ekklfct( register EKKfactinfo *fact);
-int c_ekkslcf( register const EKKfactinfo *fact);
-inline void c_ekkscpy(int n, const int *marr1,int *marr2)
+int c_ekklfct(register EKKfactinfo* fact);
+int c_ekkslcf(register const EKKfactinfo* fact);
+inline void c_ekkscpy(int n, const int* marr1, int* marr2)
 {
-    CoinMemcpyN(marr1,n,marr2);
+    CoinMemcpyN(marr1, n, marr2);
 }
-inline void c_ekkdcpy(int n, const double *marr1,double *marr2)
+inline void c_ekkdcpy(int n, const double* marr1, double* marr2)
 {
-    CoinMemcpyN(marr1,n,marr2);
+    CoinMemcpyN(marr1, n, marr2);
 }
-int c_ekk_IsSet(const int * array,int bit);
-void c_ekk_Set(int * array,int bit);
-void c_ekk_Unset(int * array,int bit);
+int c_ekk_IsSet(const int* array, int bit);
+void c_ekk_Set(int* array, int bit);
+void c_ekk_Unset(int* array, int bit);
 
-void c_ekkzero(int length, int n, void * array);
-inline void c_ekkdzero(int n, double *marray)
+void c_ekkzero(int length, int n, void* array);
+inline void c_ekkdzero(int n, double* marray)
 {
-    CoinZeroN(marray,n);
+    CoinZeroN(marray, n);
 }
-inline void c_ekkizero(int n, int *marray)
+inline void c_ekkizero(int n, int* marray)
 {
-    CoinZeroN(marray,n);
+    CoinZeroN(marray, n);
 }
-inline void c_ekkczero(int n, char *marray)
+inline void c_ekkczero(int n, char* marray)
 {
-    CoinZeroN(marray,n);
+    CoinZeroN(marray, n);
 }
 #ifdef __cplusplus
 }
@@ -89,12 +89,12 @@ inline void c_ekkczero(int n, char *marray)
 
 #define c_ekkscpy_0_1(s,ival,array) CoinFillN(array,s,ival)
 #define c_ekks1cpy( n,marr1,marr2)  CoinMemcpyN(marr1,n, marr2)
-void clp_setup_pointers(EKKfactinfo * fact);
+void clp_setup_pointers(EKKfactinfo* fact);
 void clp_memory(int type);
-double * clp_double(int number_entries);
-int * clp_int(int number_entries);
-void * clp_malloc(int number_entries);
-void clp_free(void * oldArray);
+double* clp_double(int number_entries);
+int* clp_int(int number_entries);
+void* clp_malloc(int number_entries);
+void clp_free(void* oldArray);
 
 #define SLACK_VALUE -1.0
 #define C_EKK_REMOVE_LINK(hpiv,hin,link,ipivot) \
@@ -160,16 +160,16 @@ void clp_free(void * oldArray);
 /*    23: system error at label 320 */
 {
 #if 1
-    int *hcoli    = fact->xecadr;
-    double *dluval    = fact->xeeadr;
-    double *dvalpv = fact->kw3adr;
-    int *mrstrt   = fact->xrsadr;
-    int *hrowi    = fact->xeradr;
-    int *mcstrt   = fact->xcsadr;
-    int *hinrow   = fact->xrnadr;
-    int *hincol   = fact->xcnadr;
-    int *hpivro   = fact->krpadr;
-    int *hpivco   = fact->kcpadr;
+    int* hcoli    = fact->xecadr;
+    double* dluval    = fact->xeeadr;
+    double* dvalpv = fact->kw3adr;
+    int* mrstrt   = fact->xrsadr;
+    int* hrowi    = fact->xeradr;
+    int* mcstrt   = fact->xcsadr;
+    int* hinrow   = fact->xrnadr;
+    int* hincol   = fact->xcnadr;
+    int* hpivro   = fact->krpadr;
+    int* hpivco   = fact->kcpadr;
 #endif
     int nnentl    = fact->nnentl;
     int nnentu    = fact->nnentu;
@@ -177,7 +177,7 @@ void clp_free(void * oldArray);
     int xnewro    = *xnewrop;
     int ncompactions  = *ncompactionsp;
 
-    MACTION_T *maction = reinterpret_cast<MACTION_T*>(maction_void);
+    MACTION_T* maction = reinterpret_cast<MACTION_T*>(maction_void);
 
     int i, j, k;
     double d1;
@@ -200,8 +200,8 @@ void clp_free(void * oldArray);
     int nmove, ileft;
 #ifndef C_EKKCMFY
     int iput, nspare;
-    int noRoomForDense=0;
-    int if_sparse_update=fact->if_sparse_update;
+    int noRoomForDense = 0;
+    int if_sparse_update = fact->if_sparse_update;
 #endif
     int irtcod    = 0;
     const int nrow    = fact->nrow;
@@ -211,13 +211,13 @@ void clp_free(void * oldArray);
 
     /* Function Body */
     lstart = nnetas - nnentl + 1;
-    for (i = lstart; i <= nnetas; ++i)
+    for(i = lstart; i <= nnetas; ++i)
     {
         hrowi[i] = SHIFT_INDEX(hcoli[i]);
     }
     ifdens = 0;
 
-    for (i = 1; i <= nrow; ++i)
+    for(i = 1; i <= nrow; ++i)
     {
         maction[i] = 0;
         mwork[i].pre = i - 1;
@@ -230,45 +230,45 @@ void clp_free(void * oldArray);
     mwork[1].pre = nrow;
     mwork[nrow].suc = 1;
 
-    for (count = 1; count <= nrow; ++count)
+    for(count = 1; count <= nrow; ++count)
     {
 
         /* Pick column singletons */
-        if (! (hpivco[1] <= 0))
+        if(!(hpivco[1] <= 0))
         {
             int small_pivot = c_ekkcsin(fact,
                                         rlink, clink,
                                         nsingp);
 
-            if (small_pivot)
+            if(small_pivot)
             {
                 irtcod = 7; /* pivot too small */
-                if (fact->invok >= 0)
+                if(fact->invok >= 0)
                 {
                     goto L1050;
                 }
             }
-            if (fact->npivots >= nrow)
+            if(fact->npivots >= nrow)
             {
                 goto L1050;
             }
         }
 
         /* Pick row singletons */
-        if (! (hpivro[1] <= 0))
+        if(!(hpivro[1] <= 0))
         {
             irtcod = c_ekkrsin(fact,
                                rlink, clink,
-                               mwork,nfirst,
+                               mwork, nfirst,
                                nsingp,
 
                                &xnewco, &xnewro,
                                &nnentu,
                                &kmxeta, &ncompactions,
                                &nnentl);
-            if (irtcod != 0)
+            if(irtcod != 0)
             {
-                if (irtcod < 0 || fact->invok >= 0)
+                if(irtcod < 0 || fact->invok >= 0)
                 {
                     /* -5 */
                     goto L1050;
@@ -276,7 +276,7 @@ void clp_free(void * oldArray);
                 /* ASSERT:  irtcod == 7 - pivot too small */
                 /* why don't we return with an error? */
             }
-            if (fact->npivots >= nrow)
+            if(fact->npivots >= nrow)
             {
                 goto L1050;
             }
@@ -287,7 +287,7 @@ void clp_free(void * oldArray);
         irtcod = c_ekkfpvt(fact,
                            rlink, clink,
                            nsingp, xrejctp, &ipivot, &jpivot);
-        if (irtcod != 0)
+        if(irtcod != 0)
         {
             /* irtcod == 10 */
             goto L1050;
@@ -310,10 +310,10 @@ void clp_free(void * oldArray);
 #ifndef C_EKKCMFY
         {
             double size = nrow - fact->npivots;
-            if (size > GO_DENSE && (nnentu - fact->nuspike) * GO_DENSE_RATIO > size * size)
+            if(size > GO_DENSE && (nnentu - fact->nuspike) * GO_DENSE_RATIO > size * size)
             {
                 /* say going to dense coding */
-                if (*nsingp == 0)
+                if(*nsingp == 0)
                 {
                     ifdens = 1;
                 }
@@ -323,7 +323,7 @@ void clp_free(void * oldArray);
         /* copy the pivot row entries into dvalpv */
         /* the maction array tells us the index into dvalpv for a given row */
         /* the alternative would be using a large array of doubles */
-        for (k = kipis; k <= kipie; ++k)
+        for(k = kipis; k <= kipie; ++k)
         {
             irow = hcoli[k];
             dvalpv[k - kipis + 1] = dluval[k];
@@ -332,7 +332,7 @@ void clp_free(void * oldArray);
 
         /* Loop over nonzeros in pivot column */
         kcpiv = mcstrt[jpivot] - 1;
-        for (nzpivj = 1; nzpivj <= epivco; ++nzpivj)
+        for(nzpivj = 1; nzpivj <= epivco; ++nzpivj)
         {
             ++kcpiv;
             npr = hrowi[kcpiv];
@@ -350,11 +350,11 @@ void clp_free(void * oldArray);
 
             /* Search for element to be eliminated */
             knpr = knprs;
-            while (1)
+            while(1)
             {
                 UNROLL_LOOP_BODY4(
                 {
-                    if (jpivot == hcoli[knpr])
+                    if(jpivot == hcoli[knpr])
                     {
                         break;
                     }
@@ -377,10 +377,10 @@ void clp_free(void * oldArray);
             d1 = 1e33;
             j1 = hcoli[nres];
 
-            if (nres != knprs)
+            if(nres != knprs)
             {
                 j = hcoli[knprs];
-                if (maction[j] == 0)
+                if(maction[j] == 0)
                 {
                     ++kfill;
                 }
@@ -394,10 +394,10 @@ void clp_free(void * oldArray);
             }
             j2 = hcoli[nres + 1];
             jj1 = maction[j1];
-            for (kr = nres; kr < knpre; kr += 2)
+            for(kr = nres; kr < knpre; kr += 2)
             {
                 jj2 = maction[j2];
-                if (jj1 == 0)
+                if(jj1 == 0)
                 {
                     ++kfill;
                 }
@@ -405,11 +405,11 @@ void clp_free(void * oldArray);
                 {
                     maction[j1] = static_cast<MACTION_T>(-maction[j1]);
                     dluval[kr] += multip * dvalpv[jj1];
-                    cancel = cancel || ! (fact->zeroTolerance < d1);
+                    cancel = cancel || !(fact->zeroTolerance < d1);
                     d1 = fabs(dluval[kr]);
                 }
                 j1 = hcoli[kr + 2];
-                if (jj2 == 0)
+                if(jj2 == 0)
                 {
                     ++kfill;
                 }
@@ -417,13 +417,13 @@ void clp_free(void * oldArray);
                 {
                     maction[j2] = static_cast<MACTION_T>(-maction[j2]);
                     dluval[kr + 1] += multip * dvalpv[jj2];
-                    cancel = cancel || ! (fact->zeroTolerance < d1);
+                    cancel = cancel || !(fact->zeroTolerance < d1);
                     d1 = fabs(dluval[kr + 1]);
                 }
                 jj1 = maction[j1];
                 j2 = hcoli[kr + 3];
             }
-            cancel = cancel || ! (fact->zeroTolerance < d1);
+            cancel = cancel || !(fact->zeroTolerance < d1);
 #else
             /*
              * This is apparently what the above code does.
@@ -443,11 +443,11 @@ void clp_free(void * oldArray);
             kfill = epivr1 - (knpre - knprs + 1);
             cancel = false;
 
-            for (kr = knprs; kr <= knpre; kr++)
+            for(kr = knprs; kr <= knpre; kr++)
             {
                 j1 = hcoli[kr];
                 jj1 = maction[j1];
-                if ( (jj1 == 0))
+                if((jj1 == 0))
                 {
                     /* no entry - this pivot column entry will have to be added */
                     ++kfill;
@@ -458,21 +458,21 @@ void clp_free(void * oldArray);
                     maction[j1] = -maction[j1];
                     dluval[kr] += multip * dvalpv[jj1];
                     d1 = fabs(dluval[kr]);
-                    cancel = cancel || ! (fact->zeroTolerance < d1);
+                    cancel = cancel || !(fact->zeroTolerance < d1);
                 }
             }
 #endif
             kstart = knpre;
             fill = kfill;
 
-            if (cancel)
+            if(cancel)
             {
                 /* KSTART is used as a stack pointer for nonzeros in factored row */
                 kstart = knprs - 1;
-                for (kr = knprs; kr <= knpre; ++kr)
+                for(kr = knprs; kr <= knpre; ++kr)
                 {
                     j = hcoli[kr];
-                    if (fabs(dluval[kr]) > fact->zeroTolerance)
+                    if(fabs(dluval[kr]) > fact->zeroTolerance)
                     {
                         ++kstart;
                         dluval[kstart] = dluval[kr];
@@ -486,9 +486,9 @@ void clp_free(void * oldArray);
                         --enpr;
                         kcs = mcstrt[j];
                         kce = kcs + hincol[j];
-                        for (kk = kcs; kk <= kce; ++kk)
+                        for(kk = kcs; kk <= kce; ++kk)
                         {
-                            if (hrowi[kk] == npr)
+                            if(hrowi[kk] == npr)
                             {
                                 hrowi[kk] = hrowi[kce];
                                 hrowi[kce] = 0;
@@ -501,9 +501,9 @@ void clp_free(void * oldArray);
                 knpre = kstart;
             }
             /* Fill contains an upper bound on the amount of fill-in */
-            if (fill == 0)
+            if(fill == 0)
             {
-                for (k = kipis; k <= kipie; ++k)
+                for(k = kipis; k <= kipie; ++k)
                 {
                     maction[hcoli[k]] = static_cast<MACTION_T>(-maction[hcoli[k]]);
                 }
@@ -513,14 +513,14 @@ void clp_free(void * oldArray);
                 naft = mwork[npr].suc;
                 kqq = mrstrt[naft] - knpre - 1;
 
-                if (fill > kqq)
+                if(fill > kqq)
                 {
                     /* Fill-in exceeds space left. Check if there is enough */
                     /* space in row file for the new row. */
                     nznpr = enpr + fill;
-                    if (! (xnewro + nznpr + 1 < lstart))
+                    if(!(xnewro + nznpr + 1 < lstart))
                     {
-                        if (! (nnentu + nznpr + 1 < lstart))
+                        if(!(nnentu + nznpr + 1 < lstart))
                         {
                             irtcod = -5;
                             goto L1050;
@@ -531,7 +531,7 @@ void clp_free(void * oldArray);
                         /* compressions would just be 1 remainder which eventually will */
                         /* fit in cache */
                         {
-                            int iput = c_ekkrwcs(fact,dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
+                            int iput = c_ekkrwcs(fact, dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
                             kmxeta += xnewro - iput ;
                             xnewro = iput - 1;
                             ++ncompactions;
@@ -552,10 +552,10 @@ void clp_free(void * oldArray);
                      * The links keep track of the order of rows in memory.
                      * Rows are only moved from the middle all the way to the end.
                      */
-                    if (npr != nlast)
+                    if(npr != nlast)
                     {
                         npre = mwork[npr].pre;
-                        if (npr == nfirst)
+                        if(npr == nfirst)
                         {
                             nfirst = naft;
                         }
@@ -572,7 +572,7 @@ void clp_free(void * oldArray);
                         mrstrt[npr] = kstart + 1;
                         nmove = knpre - knprs + 1;
                         ibase = kstart + 1 - knprs;
-                        for (kr = knprs; kr <= knpre; ++kr)
+                        for(kr = knprs; kr <= knpre; ++kr)
                         {
                             dluval[ibase + kr] = dluval[kr];
                             hcoli[ibase + kr] = hcoli[kr];
@@ -595,19 +595,19 @@ void clp_free(void * oldArray);
                      * Presumably, this was trying to implement the ideas about
                      * padding expressed above.
                      */
-                    if (iadd32 != 0)
+                    if(iadd32 != 0)
                     {
                         xnewro += iadd32;
                     }
                     else
                     {
-                        if (kstart + (nrow << 1) + 100 < lstart)
+                        if(kstart + (nrow << 1) + 100 < lstart)
                         {
                             ileft = ((nrow - fact->npivots + 32) & -32);
-                            if (kstart + ileft * ileft + 32 < lstart)
+                            if(kstart + ileft * ileft + 32 < lstart)
                             {
                                 iadd32 = ileft;
-                                xnewro = CoinMax(kstart,xnewro);
+                                xnewro = CoinMax(kstart, xnewro);
                                 xnewro = (xnewro & -32) + ileft;
                             }
                             else
@@ -623,20 +623,20 @@ void clp_free(void * oldArray);
 
                     hinrow[npr] = enpr;
                 }
-                else if (! (nnentu + kqq + 2 < lstart))
+                else if(!(nnentu + kqq + 2 < lstart))
                 {
                     irtcod = -5;
                     goto L1050;
                 }
                 /* Scan pivot row again to generate fill in. */
-                for (kr = kipis; kr <= kipie; ++kr)
+                for(kr = kipis; kr <= kipie; ++kr)
                 {
                     j = hcoli[kr];
                     jj = maction[j];
-                    if (jj >0)
+                    if(jj > 0)
                     {
                         elemnt = multip * dvalpv[jj];
-                        if (fabs(elemnt) > fact->zeroTolerance)
+                        if(fabs(elemnt) > fact->zeroTolerance)
                         {
                             ++kstart;
                             dluval[kstart] = elemnt;
@@ -647,16 +647,16 @@ void clp_free(void * oldArray);
                             nz = hincol[j];
                             kcs = mcstrt[j];
                             kce = kcs + nz - 1;
-                            if (kce == xnewco)
+                            if(kce == xnewco)
                             {
-                                if (xnewco + 1 >= lstart)
+                                if(xnewco + 1 >= lstart)
                                 {
-                                    if (xnewco + nz + 1 >= lstart)
+                                    if(xnewco + nz + 1 >= lstart)
                                     {
                                         /*                  Compress column file */
-                                        if (nnentu + nz + 1 < lstart)
+                                        if(nnentu + nz + 1 < lstart)
                                         {
-                                            xnewco = c_ekkclco(fact,hrowi, mcstrt, hincol, xnewco);
+                                            xnewco = c_ekkclco(fact, hrowi, mcstrt, hincol, xnewco);
                                             ++ncompactions;
 
                                             kcpiv = mcstrt[jpivot] - 1;
@@ -674,7 +674,7 @@ void clp_free(void * oldArray);
                                     /*              Copy column */
                                     mcstrt[j] = xnewco + 1;
                                     ibase = mcstrt[j] - kcs;
-                                    for (kk = kcs; kk <= kce; ++kk)
+                                    for(kk = kcs; kk <= kce; ++kk)
                                     {
                                         hrowi[ibase + kk] = hrowi[kk];
                                         hrowi[kk] = 0;
@@ -687,15 +687,15 @@ void clp_free(void * oldArray);
                                     ++xnewco;
                                 }
                             }
-                            else if (hrowi[kce + 1] != 0)
+                            else if(hrowi[kce + 1] != 0)
                             {
                                 /* here we use the fact that hrowi entries not "in use" are zeroed */
-                                if (xnewco + nz + 1 >= lstart)
+                                if(xnewco + nz + 1 >= lstart)
                                 {
                                     /* Compress column file */
-                                    if (nnentu + nz + 1 < lstart)
+                                    if(nnentu + nz + 1 < lstart)
                                     {
-                                        xnewco = c_ekkclco(fact,hrowi, mcstrt, hincol, xnewco);
+                                        xnewco = c_ekkclco(fact, hrowi, mcstrt, hincol, xnewco);
                                         ++ncompactions;
 
                                         kcpiv = mcstrt[jpivot] - 1;
@@ -713,7 +713,7 @@ void clp_free(void * oldArray);
                                 /* move the column to the end of the column file */
                                 mcstrt[j] = xnewco + 1;
                                 ibase = mcstrt[j] - kcs;
-                                for (kk = kcs; kk <= kce; ++kk)
+                                for(kk = kcs; kk <= kce; ++kk)
                                 {
                                     hrowi[ibase + kk] = hrowi[kk];
                                     hrowi[kk] = 0;
@@ -731,23 +731,23 @@ void clp_free(void * oldArray);
                         maction[j] = static_cast<MACTION_T>(-maction[j]);
                     }
                 }
-                if (fill > kqq)
+                if(fill > kqq)
                 {
                     xnewro = kstart;
                 }
             }
             hinrow[npr] = kstart - mrstrt[npr] + 1;
             /* Check if row or column file needs compression */
-            if (! (xnewco + 1 < lstart))
+            if(!(xnewco + 1 < lstart))
             {
-                xnewco = c_ekkclco(fact,hrowi, mcstrt, hincol, xnewco);
+                xnewco = c_ekkclco(fact, hrowi, mcstrt, hincol, xnewco);
                 ++ncompactions;
 
                 kcpiv = mcstrt[jpivot] - 1;
             }
-            if (! (xnewro + 1 < lstart))
+            if(!(xnewro + 1 < lstart))
             {
-                int iput = c_ekkrwcs(fact,dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
+                int iput = c_ekkrwcs(fact, dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
                 kmxeta += xnewro - iput ;
                 xnewro = iput - 1;
                 ++ncompactions;
@@ -771,60 +771,60 @@ void clp_free(void * oldArray);
                 int j;
                 int nel, krs;
                 int koff;
-                int * index;
-                double * els;
+                int* index;
+                double* els;
                 nel = hinrow[npr];
                 krs = mrstrt[npr];
-                index=&hcoli[krs];
-                els=&dluval[krs];
+                index = &hcoli[krs];
+                els = &dluval[krs];
 #if INLINE_AFPV<3
 #if INLINE_AFPV==1
                 double maxaij = 0.0;
                 koff = 0;
-                j=0;
-                while (j<nel)
+                j = 0;
+                while(j < nel)
                 {
                     double d = fabs(els[j]);
-                    if (maxaij < d)
+                    if(maxaij < d)
                     {
                         maxaij = d;
-                        koff=j;
+                        koff = j;
                     }
                     j++;
                 }
 #else
-                assert (nel);
-                koff=0;
-                double maxaij=fabs(els[0]);
-                for (j=1; j<nel; j++)
+                assert(nel);
+                koff = 0;
+                double maxaij = fabs(els[0]);
+                for(j = 1; j < nel; j++)
                 {
                     double d = fabs(els[j]);
-                    if (maxaij < d)
+                    if(maxaij < d)
                     {
                         maxaij = d;
-                        koff=j;
+                        koff = j;
                     }
                 }
 #endif
 #else
                 double maxaij = 0.0;
                 koff = 0;
-                j=0;
-                if ((nel&1)!=0)
+                j = 0;
+                if((nel & 1) != 0)
                 {
-                    maxaij=fabs(els[0]);
-                    j=1;
+                    maxaij = fabs(els[0]);
+                    j = 1;
                 }
 
-                while (j<nel)
+                while(j < nel)
                 {
                     UNROLL_LOOP_BODY2(
                     {
                         double d = fabs(els[j]);
-                        if (maxaij < d)
+                        if(maxaij < d)
                         {
                             maxaij = d;
-                            koff=j;
+                            koff = j;
                         }
                         j++;
                     });
@@ -837,7 +837,7 @@ void clp_free(void * oldArray);
 
             {
                 int nzi = hinrow[npr];
-                if (nzi > 0)
+                if(nzi > 0)
                 {
                     C_EKK_ADD_LINK(hpivro, nzi, rlink, npr);
                 }
@@ -847,23 +847,23 @@ void clp_free(void * oldArray);
         /* after pivot move biggest to first in each row */
 #if INLINE_AFPV==0
         int nn = mcstrt[fact->xnetal] - lstart + 1;
-        c_ekkafpv(hrowi+lstart, hcoli, dluval, mrstrt, hinrow, nn);
+        c_ekkafpv(hrowi + lstart, hcoli, dluval, mrstrt, hinrow, nn);
 #endif
 
         /* Restore work array */
-        for (k = kipis; k <= kipie; ++k)
+        for(k = kipis; k <= kipie; ++k)
         {
             maction[hcoli[k]] = 0;
         }
 
-        if (*xrejctp > 0)
+        if(*xrejctp > 0)
         {
-            for (k = kipis; k <= kipie; ++k)
+            for(k = kipis; k <= kipie; ++k)
             {
                 int j = hcoli[k];
                 int nzj = hincol[j];
-                if (! (nzj <= 0) &&
-                        ! ((clink[j].pre > nrow && nzj != 1)))
+                if(!(nzj <= 0) &&
+                        !((clink[j].pre > nrow && nzj != 1)))
                 {
                     C_EKK_ADD_LINK(hpivco, nzj, clink, j);
                 }
@@ -871,11 +871,11 @@ void clp_free(void * oldArray);
         }
         else
         {
-            for (k = kipis; k <= kipie; ++k)
+            for(k = kipis; k <= kipie; ++k)
             {
                 int j = hcoli[k];
                 int nzj = hincol[j];
-                if (! (nzj <= 0))
+                if(!(nzj <= 0))
                 {
                     C_EKK_ADD_LINK(hpivco, nzj, clink, j);
                 }
@@ -885,18 +885,18 @@ void clp_free(void * oldArray);
 
         /* Go to dense coding if appropriate */
 #ifndef C_EKKCMFY
-        if (ifdens != 0)
+        if(ifdens != 0)
         {
             int ndense = nrow - fact->npivots;
-            if (! (xnewro + ndense * ndense >= lstart))
+            if(!(xnewro + ndense * ndense >= lstart))
             {
 
                 /* set up sort order in MACTION */
-                c_ekkizero( nrow, reinterpret_cast<int *> (maction+1));
+                c_ekkizero(nrow, reinterpret_cast<int*>(maction + 1));
                 iput = 0;
-                for (i = 1; i <= nrow; ++i)
+                for(i = 1; i <= nrow; ++i)
                 {
-                    if (clink[i].pre >= 0)
+                    if(clink[i].pre >= 0)
                     {
                         ++iput;
                         maction[i] = static_cast<short int>(iput);
@@ -904,48 +904,48 @@ void clp_free(void * oldArray);
                 }
                 /* and get number spare needed */
                 nspare = 0;
-                for (i = 1; i <= nrow; ++i)
+                for(i = 1; i <= nrow; ++i)
                 {
-                    if (rlink[i].pre >= 0)
+                    if(rlink[i].pre >= 0)
                     {
                         nspare = nspare + ndense - hinrow[i];
                     }
                 }
-                if (iput != nrow - fact->npivots)
+                if(iput != nrow - fact->npivots)
                 {
                     /* must be singular */
-                    c_ekkizero( nrow, reinterpret_cast<int *> (maction+1));
+                    c_ekkizero(nrow, reinterpret_cast<int*>(maction + 1));
                 }
                 else
                 {
                     /* pack down then back up */
-                    int iput = c_ekkrwcs(fact,dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
+                    int iput = c_ekkrwcs(fact, dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
                     kmxeta += xnewro - iput ;
                     xnewro = iput - 1;
                     ++ncompactions;
 
                     --ncompactions;
-                    if (xnewro + nspare + ndense * ndense >= lstart)
+                    if(xnewro + nspare + ndense * ndense >= lstart)
                     {
-                        c_ekkizero( nrow, reinterpret_cast<int *> (maction+1));
+                        c_ekkizero(nrow, reinterpret_cast<int*>(maction + 1));
                     }
                     else
                     {
                         xnewro += nspare;
-                        c_ekkrwct(fact,dluval, hcoli, mrstrt, hinrow, mwork,
+                        c_ekkrwct(fact, dluval, hcoli, mrstrt, hinrow, mwork,
                                   rlink, maction, dvalpv,
                                   nlast,  xnewro);
                         kmxeta += xnewro ;
-                        if (nnentu + nnentl > nrow * 5 &&
-                                (ndense*ndense)>(nnentu+nnentl)>>2 &&
+                        if(nnentu + nnentl > nrow * 5 &&
+                                (ndense * ndense) > (nnentu + nnentl) >> 2 &&
                                 !if_sparse_update)
                         {
                             fact->ndenuc = ndense;
                         }
                         irtcod = c_ekkcmfd(fact,
-                                           (reinterpret_cast<int*>(dvalpv)+1),
+                                           (reinterpret_cast<int*>(dvalpv) + 1),
                                            rlink, clink,
-                                           (reinterpret_cast<int*>(maction+1))+1,
+                                           (reinterpret_cast<int*>(maction + 1)) + 1,
                                            nnetas,
                                            &nnentl, &nnentu,
                                            nsingp);
@@ -959,18 +959,18 @@ void clp_free(void * oldArray);
             {
                 /* say not enough room */
                 /*printf("no room %d\n",ndense);*/
-                if (1)
+                if(1)
                 {
                     /* return and increase size of etas if possible */
-                    if (!noRoomForDense)
+                    if(!noRoomForDense)
                     {
-                        int etasize =CoinMax(4*fact->nnentu+(nnetas-fact->nnentl)+1000,fact->eta_size);
-                        noRoomForDense=ndense;
-                        fact->eta_size=CoinMin(static_cast<int>(1.2*fact->eta_size),etasize);
-                        if (fact->maxNNetas>0&&fact->eta_size>
+                        int etasize = CoinMax(4 * fact->nnentu + (nnetas - fact->nnentl) + 1000, fact->eta_size);
+                        noRoomForDense = ndense;
+                        fact->eta_size = CoinMin(static_cast<int>(1.2 * fact->eta_size), etasize);
+                        if(fact->maxNNetas > 0 && fact->eta_size >
                                 fact->maxNNetas)
                         {
-                            fact->eta_size=fact->maxNNetas;
+                            fact->eta_size = fact->maxNNetas;
                         }
                     }
                 }
@@ -981,7 +981,7 @@ void clp_free(void * oldArray);
 
 L1050:
     {
-        int iput = c_ekkrwcs(fact,dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
+        int iput = c_ekkrwcs(fact, dluval, hcoli, mrstrt, hinrow, mwork, nfirst);
         kmxeta += xnewro - iput;
         xnewro = iput - 1;
         ++ncompactions;
@@ -989,8 +989,8 @@ L1050:
 
     nnentu = xnewro;
     /* save order of row copy for c_ekkshfv */
-    mwork[nrow+1].pre = nfirst;
-    mwork[nrow+1].suc = nlast;
+    mwork[nrow + 1].pre = nfirst;
+    mwork[nrow + 1].suc = nlast;
 
     fact->nnentl = nnentl;
     fact->nnentu = nnentu;

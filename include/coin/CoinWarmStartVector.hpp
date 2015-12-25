@@ -30,7 +30,7 @@ protected:
     {
         delete[] values_;
     }
-    inline void gutsOfCopy(const CoinWarmStartVector<T>& rhs)
+    inline void gutsOfCopy(const CoinWarmStartVector<T> & rhs)
     {
         size_  = rhs.size_;
         values_ = new T[size_];
@@ -52,7 +52,7 @@ public:
     /** Assign the vector to be the warmstart information. In this method
         the object assumes ownership of the pointer and upon return #vector will
         be a NULL pointer. If copying is desirable use the constructor. */
-    void assignVector(int size, T*& vec)
+    void assignVector(int size, T* & vec)
     {
         size_ = size;
         delete[] values_;
@@ -68,14 +68,14 @@ public:
         CoinDisjointCopyN(vec, size, values_);
     }
 
-    CoinWarmStartVector(const CoinWarmStartVector& rhs)
+    CoinWarmStartVector(const CoinWarmStartVector & rhs)
     {
         gutsOfCopy(rhs);
     }
 
-    CoinWarmStartVector& operator=(const CoinWarmStartVector& rhs)
+    CoinWarmStartVector & operator=(const CoinWarmStartVector & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             gutsOfDestructor();
             gutsOfCopy(rhs);
@@ -83,9 +83,9 @@ public:
         return *this;
     }
 
-    inline void swap(CoinWarmStartVector& rhs)
+    inline void swap(CoinWarmStartVector & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             std::swap(size_, rhs.size_);
             std::swap(values_, rhs.values_);
@@ -93,7 +93,7 @@ public:
     }
 
     /** `Virtual constructor' */
-    virtual CoinWarmStart *clone() const
+    virtual CoinWarmStart* clone() const
     {
         return new CoinWarmStartVector(*this);
     }
@@ -126,7 +126,7 @@ public:
     */
 
     virtual CoinWarmStartDiff*
-    generateDiff (const CoinWarmStart *const oldCWS) const ;
+    generateDiff(const CoinWarmStart* const oldCWS) const ;
 
     /*! \brief Apply \p diff to this warm start.
 
@@ -134,7 +134,7 @@ public:
     allocated capacity of the warm start is sufficiently large.
     */
 
-    virtual void applyDiff (const CoinWarmStartDiff *const cwsdDiff) ;
+    virtual void applyDiff(const CoinWarmStartDiff* const cwsdDiff) ;
 
     //@}
 
@@ -169,21 +169,21 @@ template <typename T>
 class CoinWarmStartVectorDiff : public virtual CoinWarmStartDiff
 {
     friend CoinWarmStartDiff*
-    CoinWarmStartVector<T>::generateDiff(const CoinWarmStart *const oldCWS) const;
+    CoinWarmStartVector<T>::generateDiff(const CoinWarmStart* const oldCWS) const;
     friend void
-    CoinWarmStartVector<T>::applyDiff(const CoinWarmStartDiff *const diff) ;
+    CoinWarmStartVector<T>::applyDiff(const CoinWarmStartDiff* const diff) ;
 
 public:
 
     /*! \brief `Virtual constructor' */
-    virtual CoinWarmStartDiff * clone() const
+    virtual CoinWarmStartDiff* clone() const
     {
         return new CoinWarmStartVectorDiff(*this) ;
     }
 
     /*! \brief Assignment */
     virtual CoinWarmStartVectorDiff &
-    operator= (const CoinWarmStartVectorDiff<T>& rhs) ;
+    operator= (const CoinWarmStartVectorDiff<T> & rhs) ;
 
     /*! \brief Destructor */
     virtual ~CoinWarmStartVectorDiff()
@@ -192,9 +192,9 @@ public:
         delete[] diffVals_ ;
     }
 
-    inline void swap(CoinWarmStartVectorDiff& rhs)
+    inline void swap(CoinWarmStartVectorDiff & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             std::swap(sze_, rhs.sze_);
             std::swap(diffNdxs_, rhs.diffNdxs_);
@@ -204,7 +204,7 @@ public:
 
     /*! \brief Default constructor
      */
-    CoinWarmStartVectorDiff () : sze_(0), diffNdxs_(0), diffVals_(NULL) {}
+    CoinWarmStartVectorDiff() : sze_(0), diffNdxs_(0), diffVals_(NULL) {}
 
     /*! \brief Copy constructor
 
@@ -212,7 +212,7 @@ public:
     objects. But consider whether you should be using #clone() to retain
     polymorphism.
     */
-    CoinWarmStartVectorDiff(const CoinWarmStartVectorDiff<T>& rhs) ;
+    CoinWarmStartVectorDiff(const CoinWarmStartVectorDiff<T> & rhs) ;
 
     /*! \brief Standard constructor */
     CoinWarmStartVectorDiff(int sze, const unsigned int* const diffNdxs,
@@ -275,11 +275,11 @@ public:
         return u_.values();
     }
 
-    inline void assignVector0(int size, T*& vec)
+    inline void assignVector0(int size, T* & vec)
     {
         t_.assignVector(size, vec);
     }
-    inline void assignVector1(int size, U*& vec)
+    inline void assignVector1(int size, U* & vec)
     {
         u_.assignVector(size, vec);
     }
@@ -288,24 +288,24 @@ public:
     CoinWarmStartVectorPair(int s0, const T* v0, int s1, const U* v1) :
         t_(s0, v0), u_(s1, v1) {}
 
-    CoinWarmStartVectorPair(const CoinWarmStartVectorPair<T,U>& rhs) :
+    CoinWarmStartVectorPair(const CoinWarmStartVectorPair<T, U> & rhs) :
         t_(rhs.t_), u_(rhs.u_) {}
-    CoinWarmStartVectorPair& operator=(const CoinWarmStartVectorPair<T,U>& rhs)
+    CoinWarmStartVectorPair & operator=(const CoinWarmStartVectorPair<T, U> & rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             t_ = rhs.t_;
             u_ = rhs.u_;
         }
     }
 
-    inline void swap(CoinWarmStartVectorPair<T,U>& rhs)
+    inline void swap(CoinWarmStartVectorPair<T, U> & rhs)
     {
         t_.swap(rhs.t_);
         u_.swap(rhs.u_);
     }
 
-    virtual CoinWarmStart *clone() const
+    virtual CoinWarmStart* clone() const
     {
         return new CoinWarmStartVectorPair(*this);
     }
@@ -319,9 +319,9 @@ public:
     }
 
     virtual CoinWarmStartDiff*
-    generateDiff (const CoinWarmStart *const oldCWS) const ;
+    generateDiff(const CoinWarmStart* const oldCWS) const ;
 
-    virtual void applyDiff (const CoinWarmStartDiff *const cwsdDiff) ;
+    virtual void applyDiff(const CoinWarmStartDiff* const cwsdDiff) ;
 };
 
 //=============================================================================
@@ -330,9 +330,9 @@ template <typename T, typename U>
 class CoinWarmStartVectorPairDiff : public virtual CoinWarmStartDiff
 {
     friend CoinWarmStartDiff*
-    CoinWarmStartVectorPair<T,U>::generateDiff(const CoinWarmStart *const oldCWS) const;
+    CoinWarmStartVectorPair<T, U>::generateDiff(const CoinWarmStart* const oldCWS) const;
     friend void
-    CoinWarmStartVectorPair<T,U>::applyDiff(const CoinWarmStartDiff *const diff) ;
+    CoinWarmStartVectorPair<T, U>::applyDiff(const CoinWarmStartDiff* const diff) ;
 
 private:
     CoinWarmStartVectorDiff<T> tdiff_;
@@ -340,23 +340,23 @@ private:
 
 public:
     CoinWarmStartVectorPairDiff() {}
-    CoinWarmStartVectorPairDiff(const CoinWarmStartVectorPairDiff<T,U>& rhs) :
+    CoinWarmStartVectorPairDiff(const CoinWarmStartVectorPairDiff<T, U> & rhs) :
         tdiff_(rhs.tdiff_), udiff_(rhs.udiff_) {}
     ~CoinWarmStartVectorPairDiff() {}
 
-    virtual CoinWarmStartVectorPairDiff&
-    operator=(const CoinWarmStartVectorPairDiff<T,U>& rhs)
+    virtual CoinWarmStartVectorPairDiff &
+    operator=(const CoinWarmStartVectorPairDiff<T, U> & rhs)
     {
         tdiff_ = rhs.tdiff_;
         udiff_ = rhs.udiff_;
     }
 
-    virtual CoinWarmStartDiff * clone() const
+    virtual CoinWarmStartDiff* clone() const
     {
         return new CoinWarmStartVectorPairDiff(*this) ;
     }
 
-    inline void swap(CoinWarmStartVectorPairDiff<T,U>& rhs)
+    inline void swap(CoinWarmStartVectorPairDiff<T, U> & rhs)
     {
         tdiff_.swap(rhs.tdiff_);
         udiff_.swap(rhs.udiff_);
@@ -381,17 +381,17 @@ public:
 */
 
 template <typename T> CoinWarmStartDiff*
-CoinWarmStartVector<T>::generateDiff(const CoinWarmStart *const oldCWS) const
+CoinWarmStartVector<T>::generateDiff(const CoinWarmStart* const oldCWS) const
 {
     /*
       Make sure the parameter is CoinWarmStartVector or derived class.
     */
     const CoinWarmStartVector<T>* oldVector =
         dynamic_cast<const CoinWarmStartVector<T>*>(oldCWS);
-    if (!oldVector)
+    if(!oldVector)
     {
         throw CoinError("Old warm start not derived from CoinWarmStartVector.",
-                        "generateDiff","CoinWarmStartVector") ;
+                        "generateDiff", "CoinWarmStartVector") ;
     }
     const CoinWarmStartVector<T>* newVector = this ;
     /*
@@ -403,25 +403,25 @@ CoinWarmStartVector<T>::generateDiff(const CoinWarmStart *const oldCWS) const
 
     assert(newCnt >= oldCnt) ;
 
-    unsigned int *diffNdx = new unsigned int [newCnt];
+    unsigned int* diffNdx = new unsigned int [newCnt];
     T* diffVal = new T[newCnt];
     /*
       Scan the vector vectors.  For the portion of the vectors which overlap,
       create diffs. Then add any additional entries from newVector.
     */
-    const T*oldVal = oldVector->values() ;
-    const T*newVal = newVector->values() ;
+    const T* oldVal = oldVector->values() ;
+    const T* newVal = newVector->values() ;
     int numberChanged = 0 ;
     int i ;
-    for (i = 0 ; i < oldCnt ; i++)
+    for(i = 0 ; i < oldCnt ; i++)
     {
-        if (oldVal[i] != newVal[i])
+        if(oldVal[i] != newVal[i])
         {
             diffNdx[numberChanged] = i ;
             diffVal[numberChanged++] = newVal[i] ;
         }
     }
-    for ( ; i < newCnt ; i++)
+    for(; i < newCnt ; i++)
     {
         diffNdx[numberChanged] = i ;
         diffVal[numberChanged++] = newVal[i] ;
@@ -429,8 +429,8 @@ CoinWarmStartVector<T>::generateDiff(const CoinWarmStart *const oldCWS) const
     /*
       Create the object of our desire.
     */
-    CoinWarmStartVectorDiff<T> *diff =
-        new CoinWarmStartVectorDiff<T>(numberChanged,diffNdx,diffVal) ;
+    CoinWarmStartVectorDiff<T>* diff =
+        new CoinWarmStartVectorDiff<T>(numberChanged, diffNdx, diffVal) ;
     /*
       Clean up and return.
     */
@@ -450,27 +450,27 @@ CoinWarmStartVector<T>::generateDiff(const CoinWarmStart *const oldCWS) const
 */
 
 template <typename T> void
-CoinWarmStartVector<T>::applyDiff (const CoinWarmStartDiff *const cwsdDiff)
+CoinWarmStartVector<T>::applyDiff(const CoinWarmStartDiff* const cwsdDiff)
 {
     /*
       Make sure we have a CoinWarmStartVectorDiff
     */
     const CoinWarmStartVectorDiff<T>* diff =
         dynamic_cast<const CoinWarmStartVectorDiff<T>*>(cwsdDiff) ;
-    if (!diff)
+    if(!diff)
     {
         throw CoinError("Diff not derived from CoinWarmStartVectorDiff.",
-                        "applyDiff","CoinWarmStartVector") ;
+                        "applyDiff", "CoinWarmStartVector") ;
     }
     /*
       Application is by straighforward replacement of words in the vector vector.
     */
     const int numberChanges = diff->sze_ ;
-    const unsigned int *diffNdxs = diff->diffNdxs_ ;
+    const unsigned int* diffNdxs = diff->diffNdxs_ ;
     const T* diffVals = diff->diffVals_ ;
     T* vals = this->values_ ;
 
-    for (int i = 0 ; i < numberChanges ; i++)
+    for(int i = 0 ; i < numberChanges ; i++)
     {
         unsigned int diffNdx = diffNdxs[i] ;
         T diffVal = diffVals[i] ;
@@ -483,23 +483,23 @@ CoinWarmStartVector<T>::applyDiff (const CoinWarmStartDiff *const cwsdDiff)
 
 // Assignment
 
-template <typename T> CoinWarmStartVectorDiff<T>&
-CoinWarmStartVectorDiff<T>::operator=(const CoinWarmStartVectorDiff<T> &rhs)
+template <typename T> CoinWarmStartVectorDiff<T> &
+CoinWarmStartVectorDiff<T>::operator=(const CoinWarmStartVectorDiff<T> & rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
-        if (sze_ > 0)
+        if(sze_ > 0)
         {
             delete[] diffNdxs_ ;
             delete[] diffVals_ ;
         }
         sze_ = rhs.sze_ ;
-        if (sze_ > 0)
+        if(sze_ > 0)
         {
             diffNdxs_ = new unsigned int[sze_] ;
-            memcpy(diffNdxs_,rhs.diffNdxs_,sze_*sizeof(unsigned int)) ;
+            memcpy(diffNdxs_, rhs.diffNdxs_, sze_ * sizeof(unsigned int)) ;
             diffVals_ = new T[sze_] ;
-            memcpy(diffVals_,rhs.diffVals_,sze_*sizeof(T)) ;
+            memcpy(diffVals_, rhs.diffVals_, sze_ * sizeof(T)) ;
         }
         else
         {
@@ -515,17 +515,17 @@ CoinWarmStartVectorDiff<T>::operator=(const CoinWarmStartVectorDiff<T> &rhs)
 // Copy constructor
 
 template <typename T>
-CoinWarmStartVectorDiff<T>::CoinWarmStartVectorDiff(const CoinWarmStartVectorDiff<T> &rhs)
+CoinWarmStartVectorDiff<T>::CoinWarmStartVectorDiff(const CoinWarmStartVectorDiff<T> & rhs)
     : sze_(rhs.sze_),
       diffNdxs_(0),
       diffVals_(0)
 {
-    if (sze_ > 0)
+    if(sze_ > 0)
     {
         diffNdxs_ = new unsigned int[sze_] ;
-        memcpy(diffNdxs_,rhs.diffNdxs_,sze_*sizeof(unsigned int)) ;
+        memcpy(diffNdxs_, rhs.diffNdxs_, sze_ * sizeof(unsigned int)) ;
         diffVals_ = new T[sze_] ;
-        memcpy(diffVals_,rhs.diffVals_,sze_*sizeof(T)) ;
+        memcpy(diffVals_, rhs.diffVals_, sze_ * sizeof(T)) ;
     }
 }
 
@@ -533,17 +533,17 @@ CoinWarmStartVectorDiff<T>::CoinWarmStartVectorDiff(const CoinWarmStartVectorDif
 
 template <typename T>
 CoinWarmStartVectorDiff<T>::CoinWarmStartVectorDiff
-(int sze, const unsigned int *const diffNdxs, const T *const diffVals)
+(int sze, const unsigned int* const diffNdxs, const T* const diffVals)
     : sze_(sze),
       diffNdxs_(0),
       diffVals_(0)
 {
-    if (sze > 0)
+    if(sze > 0)
     {
         diffNdxs_ = new unsigned int[sze] ;
-        memcpy(diffNdxs_,diffNdxs,sze*sizeof(unsigned int)) ;
+        memcpy(diffNdxs_, diffNdxs, sze * sizeof(unsigned int)) ;
         diffVals_ = new T[sze] ;
-        memcpy(diffVals_,diffVals,sze*sizeof(T)) ;
+        memcpy(diffVals_, diffVals, sze * sizeof(T)) ;
     }
 }
 

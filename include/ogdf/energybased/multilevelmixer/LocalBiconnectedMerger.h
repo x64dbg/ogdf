@@ -53,32 +53,32 @@
 namespace ogdf
 {
 
-class OGDF_EXPORT LocalBiconnectedMerger : public MultilevelBuilder
-{
-private:
-    double m_levelSizeFactor;
-    NodeArray<node> m_substituteNodes;
-    NodeArray<bool> m_isCut;
-    HashArray<int, int> m_realNodeMarks;
+    class OGDF_EXPORT LocalBiconnectedMerger : public MultilevelBuilder
+    {
+    private:
+        double m_levelSizeFactor;
+        NodeArray<node> m_substituteNodes;
+        NodeArray<bool> m_isCut;
+        HashArray<int, int> m_realNodeMarks;
 
-    void initCuts(Graph &G);
-    int realNodeMark(int index);
+        void initCuts(Graph & G);
+        int realNodeMark(int index);
 
-    //! Creates the next level in the hierarchy by merging
-    //! vertices based on matching, edge cover, and local biconnectivity check.
-    bool buildOneLevel(MultilevelGraph &MLG);
-    bool doMerge(MultilevelGraph &MLG, node parent, node mergePartner, int level);
-    bool doMergeIfPossible(Graph &G, MultilevelGraph &MLG, node parent, node mergePartner, int level);
-    bool canMerge(Graph &G, node parent, node mergePartner);
-    bool canMerge(Graph &G, node parent, node mergePartner, int testStrength);
+        //! Creates the next level in the hierarchy by merging
+        //! vertices based on matching, edge cover, and local biconnectivity check.
+        bool buildOneLevel(MultilevelGraph & MLG);
+        bool doMerge(MultilevelGraph & MLG, node parent, node mergePartner, int level);
+        bool doMergeIfPossible(Graph & G, MultilevelGraph & MLG, node parent, node mergePartner, int level);
+        bool canMerge(Graph & G, node parent, node mergePartner);
+        bool canMerge(Graph & G, node parent, node mergePartner, int testStrength);
 
-public:
-    //! Constructs a LocalBiconnectedMerger multilevel builder.
-    LocalBiconnectedMerger();
-    //! Specifies the ratio between two consecutive level sizes up to which
-    //! merging is done.
-    void setFactor(double factor);
-};
+    public:
+        //! Constructs a LocalBiconnectedMerger multilevel builder.
+        LocalBiconnectedMerger();
+        //! Specifies the ratio between two consecutive level sizes up to which
+        //! merging is done.
+        void setFactor(double factor);
+    };
 
 } // namespace ogdf
 

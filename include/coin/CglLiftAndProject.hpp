@@ -12,8 +12,8 @@
 /** Lift And Project Cut Generator Class */
 class CglLiftAndProject : public CglCutGenerator
 {
-    friend void CglLiftAndProjectUnitTest(const OsiSolverInterface * siP,
-                                          const std::string mpdDir );
+    friend void CglLiftAndProjectUnitTest(const OsiSolverInterface* siP,
+                                          const std::string mpdDir);
 
 public:
     /**@name Generate Cuts */
@@ -38,14 +38,14 @@ public:
     */
     void setBeta(int oneOrMinusOne)
     {
-        if (oneOrMinusOne==1 || oneOrMinusOne==-1)
+        if(oneOrMinusOne == 1 || oneOrMinusOne == -1)
         {
-            beta_= static_cast<double>(oneOrMinusOne);
+            beta_ = static_cast<double>(oneOrMinusOne);
         }
         else
         {
             throw CoinError("Unallowable value. Beta must be 1 or -1",
-                            "cutGeneration","CglLiftAndProject");
+                            "cutGeneration", "CglLiftAndProject");
         }
     }
 
@@ -54,30 +54,30 @@ public:
     /**@name Constructors and destructors */
     //@{
     /// Default constructor
-    CglLiftAndProject ();
+    CglLiftAndProject();
 
     /// Copy constructor
-    CglLiftAndProject (
+    CglLiftAndProject(
         const CglLiftAndProject &);
 
     /// Clone
-    virtual CglCutGenerator * clone() const;
+    virtual CglCutGenerator* clone() const;
 
     /// Assignment operator
     CglLiftAndProject &
     operator=(
-        const CglLiftAndProject& rhs);
+        const CglLiftAndProject & rhs);
 
     /// Destructor
     virtual
-    ~CglLiftAndProject ();
+    ~CglLiftAndProject();
     /// Create C++ lines to get to current state
-    virtual std::string generateCpp( FILE * fp);
+    virtual std::string generateCpp(FILE* fp);
     //@}
 
 private:
 
-// Private member methods
+    // Private member methods
 
     /**@name Private methods */
     //@{
@@ -103,7 +103,7 @@ private:
     have to be compiled into the library. And that's a gain, because the
     library should be compiled with optimization on, but this method should be
     compiled with debugging. */
-void CglLiftAndProjectUnitTest(const OsiSolverInterface * siP,
-                               const std::string mpdDir );
+void CglLiftAndProjectUnitTest(const OsiSolverInterface* siP,
+                               const std::string mpdDir);
 
 #endif

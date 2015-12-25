@@ -88,13 +88,13 @@ public:
 
       In some sense, a wrapper for presolve(CoinPresolveMatrix*).
     */
-    virtual OsiSolverInterface *presolvedModel(OsiSolverInterface & origModel,
-            double feasibilityTolerance=0.0,
-            bool keepIntegers=true,
-            int numberPasses=5,
-            const char * prohibited=NULL,
-            bool doStatus=true,
-            const char * rowProhibited=NULL);
+    virtual OsiSolverInterface* presolvedModel(OsiSolverInterface & origModel,
+            double feasibilityTolerance = 0.0,
+            bool keepIntegers = true,
+            int numberPasses = 5,
+            const char* prohibited = NULL,
+            bool doStatus = true,
+            const char* rowProhibited = NULL);
 
     /*! \brief Restate the solution to the presolved problem in terms of the
          original problem and load it into the original model.
@@ -113,22 +113,22 @@ public:
 
       In some sense, a wrapper for postsolve(CoinPostsolveMatrix&).
     */
-    virtual void postsolve(bool updateStatus=true);
+    virtual void postsolve(bool updateStatus = true);
 
     /*! \brief Return a pointer to the presolved model. */
-    OsiSolverInterface * model() const;
+    OsiSolverInterface* model() const;
 
     /// Return a pointer to the original model
-    OsiSolverInterface * originalModel() const;
+    OsiSolverInterface* originalModel() const;
 
     /// Set the pointer to the original model
-    void setOriginalModel(OsiSolverInterface *model);
+    void setOriginalModel(OsiSolverInterface* model);
 
     /// Return a pointer to the original columns
-    const int * originalColumns() const;
+    const int* originalColumns() const;
 
     /// Return a pointer to the original rows
-    const int * originalRows() const;
+    const int* originalRows() const;
 
     /// Return number of rows in original model
     inline int getNumRows() const
@@ -165,7 +165,7 @@ public:
     */
     inline void setPresolveActions(int action)
     {
-        presolveActions_  = (presolveActions_&0xffff0000)|(action&0xffff);
+        presolveActions_  = (presolveActions_ & 0xffff0000) | (action & 0xffff);
     }
 
 private:
@@ -173,13 +173,13 @@ private:
 
         Must not be destroyed until after postsolve().
     */
-    OsiSolverInterface * originalModel_;
+    OsiSolverInterface* originalModel_;
 
     /*! Presolved  model (solver interface loaded with the presolved problem)
 
       Must be destroyed by the client (using delete) after postsolve().
     */
-    OsiSolverInterface * presolvedModel_;
+    OsiSolverInterface* presolvedModel_;
 
     /*! "Magic" number. If this is non-zero then any elements with this value
         may change and so presolve is very limited in what can be done
@@ -189,13 +189,13 @@ private:
     double nonLinearValue_;
 
     /// Original column numbers
-    int * originalColumn_;
+    int* originalColumn_;
 
     /// Original row numbers
-    int * originalRow_;
+    int* originalRow_;
 
     /// The list of transformations applied.
-    const CoinPresolveAction *paction_;
+    const CoinPresolveAction* paction_;
 
     /*! \brief Number of columns in original model.
 
@@ -229,7 +229,7 @@ protected:
       perhaps add your own to the mix, define a derived class and override
       this method
     */
-    virtual const CoinPresolveAction *presolve(CoinPresolveMatrix *prob);
+    virtual const CoinPresolveAction* presolve(CoinPresolveMatrix* prob);
 
     /*! \brief Reverse presolve transformations to recover the solution
          to the original problem.
@@ -241,7 +241,7 @@ protected:
       you want to add code to test for consistency while debugging new presolve
       techniques.
     */
-    virtual void postsolve(CoinPostsolveMatrix &prob);
+    virtual void postsolve(CoinPostsolveMatrix & prob);
 
     /*! \brief Destroys queued postsolve actions.
 

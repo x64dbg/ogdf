@@ -46,60 +46,60 @@
 namespace ogdf
 {
 
-RandomPlacer::RandomPlacer()
-    :m_circleSizeFactor(1.0)
-{
-}
-
-
-void RandomPlacer::setCircleSize(double factor)
-{
-    m_circleSizeFactor = factor;
-}
-
-
-void RandomPlacer::placeOneLevel(MultilevelGraph &MLG)
-{
-    int level = MLG.getLevel();
-    DPoint center(0.0, 0.0);
-    double radius = 0.0;
-
-    Graph &G = MLG.getGraph();
-    double n = G.numberOfNodes();
-    if (n > 0)
+    RandomPlacer::RandomPlacer()
+        : m_circleSizeFactor(1.0)
     {
-        node v;
-        forall_nodes(v, G)
+    }
+
+
+    void RandomPlacer::setCircleSize(double factor)
+    {
+        m_circleSizeFactor = factor;
+    }
+
+
+    void RandomPlacer::placeOneLevel(MultilevelGraph & MLG)
+    {
+        int level = MLG.getLevel();
+        DPoint center(0.0, 0.0);
+        double radius = 0.0;
+
+        Graph & G = MLG.getGraph();
+        double n = G.numberOfNodes();
+        if(n > 0)
         {
-            center = center + DPoint( MLG.x(v), MLG.y(v) );
+            node v;
+            forall_nodes(v, G)
+            {
+                center = center + DPoint(MLG.x(v), MLG.y(v));
+            }
+            center = DPoint(center.m_x / n, center.m_y / n);
+            forall_nodes(v, G)
+            {
+                double r = sqrt(MLG.x(v) * MLG.x(v) + MLG.y(v) * MLG.y(v));
+                if(r > radius) radius = r;
+            }
+            radius *= m_circleSizeFactor;
         }
-        center = DPoint(center.m_x / n, center.m_y / n);
-        forall_nodes(v, G)
+        else
         {
-            double r = sqrt( MLG.x(v) * MLG.x(v) + MLG.y(v) * MLG.y(v) );
-            if (r > radius) radius = r;
+            radius = 10.0 * m_circleSizeFactor;
         }
-        radius *= m_circleSizeFactor;
+
+        while(MLG.getLevel() == level && MLG.getLastMerge() != 0)
+        {
+            placeOneNode(MLG, center, radius);
+        }
     }
-    else
+
+
+    void RandomPlacer::placeOneNode(MultilevelGraph & MLG, DPoint center, double radius)
     {
-        radius = 10.0 * m_circleSizeFactor;
+        node merged = MLG.undoLastMerge();
+        float angle = (float)randomDouble(0.0, 2 * Math::pi);
+        float randRadius = float(sqrt(randomDouble(0.0, radius * radius)));
+        MLG.x(merged, cos(angle) * randRadius + ((m_randomOffset) ? (float)randomDouble(-1.0, 1.0) : 0.f));
+        MLG.y(merged, sin(angle) * randRadius + ((m_randomOffset) ? (float)randomDouble(-1.0, 1.0) : 0.f));
     }
-
-    while (MLG.getLevel() == level && MLG.getLastMerge() != 0)
-    {
-        placeOneNode(MLG, center, radius);
-    }
-}
-
-
-void RandomPlacer::placeOneNode(MultilevelGraph &MLG, DPoint center, double radius)
-{
-    node merged = MLG.undoLastMerge();
-    float angle = (float)randomDouble(0.0, 2 * Math::pi);
-    float randRadius = float(sqrt(randomDouble(0.0, radius * radius)));
-    MLG.x(merged, cos(angle) * randRadius + ((m_randomOffset)?(float)randomDouble(-1.0, 1.0):0.f));
-    MLG.y(merged, sin(angle) * randRadius + ((m_randomOffset)?(float)randomDouble(-1.0, 1.0):0.f));
-}
 
 } // namespace ogdf

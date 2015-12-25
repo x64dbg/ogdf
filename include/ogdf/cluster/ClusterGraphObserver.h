@@ -61,55 +61,55 @@ namespace ogdf
 {
 
 
-//----------------------------------------------------------
-// GraphObserver
-// abstract base class
-// derived classes have to overload nodeDeleted, nodeAdded
-// edgeDeleted, edgeAdded
-// these functions should be called by Graph before (delete)
-// and after (add) its structure
-//----------------------------------------------------------
-class OGDF_EXPORT ClusterGraphObserver
-{
-    friend class ClusterGraph;
-
-public:
-    ClusterGraphObserver() : m_pClusterGraph(0) {}
-
-    ClusterGraphObserver(const ClusterGraph* CG) : m_pClusterGraph(CG)
+    //----------------------------------------------------------
+    // GraphObserver
+    // abstract base class
+    // derived classes have to overload nodeDeleted, nodeAdded
+    // edgeDeleted, edgeAdded
+    // these functions should be called by Graph before (delete)
+    // and after (add) its structure
+    //----------------------------------------------------------
+    class OGDF_EXPORT ClusterGraphObserver
     {
-        m_itCGList = CG->registerObserver(this);
-    }//constructor
+        friend class ClusterGraph;
 
-    virtual ~ClusterGraphObserver()
-    {
-        if (m_pClusterGraph) m_pClusterGraph->unregisterObserver(m_itCGList);
-    }//destructor
+    public:
+        ClusterGraphObserver() : m_pClusterGraph(0) {}
 
-    // associates structure with different graph
-    void reregister(const ClusterGraph *pCG)
-    {
-        //small speedup: check if == m_pGraph
-        if (m_pClusterGraph) m_pClusterGraph->unregisterObserver(m_itCGList);
-        if ((m_pClusterGraph = pCG) != 0) m_itCGList = pCG->registerObserver(this);
-    }
+        ClusterGraphObserver(const ClusterGraph* CG) : m_pClusterGraph(CG)
+        {
+            m_itCGList = CG->registerObserver(this);
+        }//constructor
 
-    virtual void clusterDeleted(cluster v) = 0;
-    virtual void clusterAdded(cluster v)   = 0;
-    //virtual void reInit()             = 0;
-    //virtual void cleared()            = 0;//Graph cleared
+        virtual ~ClusterGraphObserver()
+        {
+            if(m_pClusterGraph) m_pClusterGraph->unregisterObserver(m_itCGList);
+        }//destructor
 
-    const ClusterGraph*  getGraph() const
-    {
-        return m_pClusterGraph;
-    }
+        // associates structure with different graph
+        void reregister(const ClusterGraph* pCG)
+        {
+            //small speedup: check if == m_pGraph
+            if(m_pClusterGraph) m_pClusterGraph->unregisterObserver(m_itCGList);
+            if((m_pClusterGraph = pCG) != 0) m_itCGList = pCG->registerObserver(this);
+        }
 
-protected:
-    const ClusterGraph* m_pClusterGraph; //underlying clustergraph
+        virtual void clusterDeleted(cluster v) = 0;
+        virtual void clusterAdded(cluster v)   = 0;
+        //virtual void reInit()             = 0;
+        //virtual void cleared()            = 0;//Graph cleared
 
-    //List entry in cluster graphs list of all registered observers
-    ListIterator<ClusterGraphObserver*> m_itCGList;
-};
+        const ClusterGraph*  getGraph() const
+        {
+            return m_pClusterGraph;
+        }
+
+    protected:
+        const ClusterGraph* m_pClusterGraph; //underlying clustergraph
+
+        //List entry in cluster graphs list of all registered observers
+        ListIterator<ClusterGraphObserver*> m_itCGList;
+    };
 
 } // end of namespace
 

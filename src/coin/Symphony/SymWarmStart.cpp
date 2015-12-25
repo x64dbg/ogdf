@@ -24,7 +24,7 @@
 
 //#############################################################################
 
-SymWarmStart::SymWarmStart(warm_start_desc * ws)
+SymWarmStart::SymWarmStart(warm_start_desc* ws)
 {
     warmStart_ = sym_create_copy_warm_start(ws);
 }
@@ -32,7 +32,7 @@ SymWarmStart::SymWarmStart(warm_start_desc * ws)
 /*===========================================================================*/
 /*===========================================================================*/
 
-SymWarmStart::SymWarmStart(char * fileName)
+SymWarmStart::SymWarmStart(char* fileName)
 {
 
     warmStart_ = sym_read_warm_start(fileName);
@@ -43,9 +43,9 @@ SymWarmStart::SymWarmStart(char * fileName)
 
 SymWarmStart::SymWarmStart(const SymWarmStart & symWS)
 {
-    warm_start_desc * wsCopy;
-    SymWarmStart * sWS = const_cast<SymWarmStart *>(&symWS);
-    wsCopy = const_cast<warm_start_desc *>(sWS->getCopyOfWarmStartDesc());
+    warm_start_desc* wsCopy;
+    SymWarmStart* sWS = const_cast<SymWarmStart*>(&symWS);
+    wsCopy = const_cast<warm_start_desc*>(sWS->getCopyOfWarmStartDesc());
 
     warmStart_ = wsCopy;
 }
@@ -61,7 +61,7 @@ SymWarmStart::~SymWarmStart()
 /*===========================================================================*/
 /*===========================================================================*/
 
-CoinWarmStart * SymWarmStart::clone () const
+CoinWarmStart* SymWarmStart::clone() const
 {
     return new SymWarmStart(*this);
 }
@@ -69,7 +69,7 @@ CoinWarmStart * SymWarmStart::clone () const
 /*===========================================================================*/
 /*===========================================================================*/
 
-warm_start_desc * SymWarmStart::getCopyOfWarmStartDesc()
+warm_start_desc* SymWarmStart::getCopyOfWarmStartDesc()
 {
 
     if(warmStart_)
@@ -78,7 +78,7 @@ warm_start_desc * SymWarmStart::getCopyOfWarmStartDesc()
     }
     else
     {
-        std::cout<<"getWarmStart(): No loaded warm start desc. to return!"<<std::endl;
+        std::cout << "getWarmStart(): No loaded warm start desc. to return!" << std::endl;
         return 0;
     }
 }
@@ -86,7 +86,7 @@ warm_start_desc * SymWarmStart::getCopyOfWarmStartDesc()
 /*===========================================================================*/
 /*===========================================================================*/
 
-int SymWarmStart::writeToFile(char * fileName)
+int SymWarmStart::writeToFile(char* fileName)
 {
     return(sym_write_warm_start_desc(warmStart_, fileName));
 }

@@ -12,19 +12,19 @@
 
 //#############################################################################
 
-double *
+double*
 CoinPackedVectorBase::denseVector(int denseSize) const
 {
-    if (getMaxIndex() >= denseSize)
+    if(getMaxIndex() >= denseSize)
         throw CoinError("Dense vector size is less than max index",
                         "denseVector", "CoinPackedVectorBase");
 
-    double * dv = new double[denseSize];
+    double* dv = new double[denseSize];
     CoinFillN(dv, denseSize, 0.0);
     const int s = getNumElements();
-    const int * inds = getIndices();
-    const double * elems = getElements();
-    for (int i = 0; i < s; ++i)
+    const int* inds = getIndices();
+    const double* elems = getElements();
+    for(int i = 0; i < s; ++i)
         dv[inds[i]] = elems[i];
     return dv;
 }
@@ -34,14 +34,14 @@ CoinPackedVectorBase::denseVector(int denseSize) const
 double
 CoinPackedVectorBase::operator[](int i) const
 {
-    if (! testedDuplicateIndex_)
+    if(! testedDuplicateIndex_)
         duplicateIndex("operator[]", "CoinPackedVectorBase");
 
     // Get a reference to a map of full storage indices to
     // packed storage location.
     const std::set<int> & sv = *indexSet("operator[]", "CoinPackedVectorBase");
 #if 1
-    if (sv.find(i) == sv.end())
+    if(sv.find(i) == sv.end())
         return 0.0;
     return getElements()[findIndex(i)];
 #else
@@ -57,7 +57,7 @@ CoinPackedVectorBase::operator[](int i) const
 void
 CoinPackedVectorBase::setTestForDuplicateIndex(bool test) const
 {
-    if (test == true)
+    if(test == true)
     {
         testForDuplicateIndex_ = true;
         duplicateIndex("setTestForDuplicateIndex", "CoinPackedVectorBase");
@@ -101,9 +101,9 @@ CoinPackedVectorBase::getMinIndex() const
 
 void
 CoinPackedVectorBase::duplicateIndex(const char* methodName,
-                                     const char * className) const
+                                     const char* className) const
 {
-    if (testForDuplicateIndex())
+    if(testForDuplicateIndex())
         indexSet(methodName, className);
     testedDuplicateIndex_ = true;
 }
@@ -113,7 +113,7 @@ CoinPackedVectorBase::duplicateIndex(const char* methodName,
 bool
 CoinPackedVectorBase::isExistingIndex(int i) const
 {
-    if (! testedDuplicateIndex_)
+    if(! testedDuplicateIndex_)
         duplicateIndex("indexExists", "CoinPackedVectorBase");
 
     const std::set<int> & sv = *indexSet("indexExists", "CoinPackedVectorBase");
@@ -124,30 +124,30 @@ CoinPackedVectorBase::isExistingIndex(int i) const
 int
 CoinPackedVectorBase::findIndex(int i) const
 {
-    const int * inds = getIndices();
+    const int* inds = getIndices();
     int retVal = static_cast<int>(std::find(inds, inds + getNumElements(), i) - inds);
-    if (retVal == getNumElements() ) retVal = -1;
+    if(retVal == getNumElements()) retVal = -1;
     return retVal;
 }
 
 //#############################################################################
 
 bool
-CoinPackedVectorBase::operator==(const CoinPackedVectorBase& rhs) const
+CoinPackedVectorBase::operator==(const CoinPackedVectorBase & rhs) const
 {
-    if (getNumElements() == 0 || rhs.getNumElements() == 0)
+    if(getNumElements() == 0 || rhs.getNumElements() == 0)
     {
-        if (getNumElements() == 0 && rhs.getNumElements() == 0)
+        if(getNumElements() == 0 && rhs.getNumElements() == 0)
             return (true) ;
         else
             return (false) ;
     }
     else
     {
-        return (getNumElements()==rhs.getNumElements() &&
-                std::equal(getIndices(),getIndices()+getNumElements(),
+        return (getNumElements() == rhs.getNumElements() &&
+                std::equal(getIndices(), getIndices() + getNumElements(),
                            rhs.getIndices()) &&
-                std::equal(getElements(),getElements()+getNumElements(),
+                std::equal(getElements(), getElements() + getNumElements(),
                            rhs.getElements())) ;
     }
 }
@@ -155,24 +155,24 @@ CoinPackedVectorBase::operator==(const CoinPackedVectorBase& rhs) const
 //-----------------------------------------------------------------------------
 
 bool
-CoinPackedVectorBase::operator!=(const CoinPackedVectorBase& rhs) const
+CoinPackedVectorBase::operator!=(const CoinPackedVectorBase & rhs) const
 {
-    return !( (*this)==rhs );
+    return !((*this) == rhs);
 }
 
 //-----------------------------------------------------------------------------
 
 int
-CoinPackedVectorBase::compare(const CoinPackedVectorBase& rhs) const
+CoinPackedVectorBase::compare(const CoinPackedVectorBase & rhs) const
 {
     const int size = getNumElements();
     int itmp = size - rhs.getNumElements();
-    if (itmp != 0)
+    if(itmp != 0)
     {
         return itmp;
     }
     itmp = memcmp(getIndices(), rhs.getIndices(), size * sizeof(int));
-    if (itmp != 0)
+    if(itmp != 0)
     {
         return itmp;
     }
@@ -180,7 +180,7 @@ CoinPackedVectorBase::compare(const CoinPackedVectorBase& rhs) const
 }
 
 bool
-CoinPackedVectorBase::isEquivalent(const CoinPackedVectorBase& rhs) const
+CoinPackedVectorBase::isEquivalent(const CoinPackedVectorBase & rhs) const
 {
     return isEquivalent(rhs,  CoinRelFltEq());
 }
@@ -190,10 +190,10 @@ CoinPackedVectorBase::isEquivalent(const CoinPackedVectorBase& rhs) const
 double
 CoinPackedVectorBase::dotProduct(const double* dense) const
 {
-    const double * elems = getElements();
-    const int * inds = getIndices();
+    const double* elems = getElements();
+    const int* inds = getIndices();
     double dp = 0.0;
-    for (int i = getNumElements() - 1; i >= 0; --i)
+    for(int i = getNumElements() - 1; i >= 0; --i)
         dp += elems[i] * dense[inds[i]];
     return dp;
 }
@@ -205,7 +205,7 @@ CoinPackedVectorBase::oneNorm() const
 {
     register double norm = 0.0;
     register const double* elements = getElements();
-    for (int i = getNumElements() - 1; i >= 0; --i)
+    for(int i = getNumElements() - 1; i >= 0; --i)
     {
         norm += fabs(elements[i]);
     }
@@ -236,7 +236,7 @@ CoinPackedVectorBase::infNorm() const
 {
     register double norm = 0.0;
     register const double* elements = getElements();
-    for (int i = getNumElements() - 1; i >= 0; --i)
+    for(int i = getNumElements() - 1; i >= 0; --i)
     {
         norm = CoinMax(norm, fabs(elements[i]));
     }
@@ -273,10 +273,10 @@ CoinPackedVectorBase::~CoinPackedVectorBase()
 void
 CoinPackedVectorBase::findMaxMinIndices() const
 {
-    if ( getNumElements()==0 )
+    if(getNumElements() == 0)
         return;
     // if indexSet exists then grab begin and rend to get min & max indices
-    else if ( indexSetPtr_ != NULL )
+    else if(indexSetPtr_ != NULL)
     {
         maxIndex_ = *indexSetPtr_->rbegin();
         minIndex_ = *indexSetPtr_-> begin();
@@ -293,25 +293,25 @@ CoinPackedVectorBase::findMaxMinIndices() const
 
 //-------------------------------------------------------------------
 
-std::set<int> *
+std::set<int>*
 CoinPackedVectorBase::indexSet(const char* methodName,
-                               const char * className) const
+                               const char* className) const
 {
     testedDuplicateIndex_ = true;
-    if ( indexSetPtr_ == NULL )
+    if(indexSetPtr_ == NULL)
     {
         // create a set of the indices
         indexSetPtr_ = new std::set<int>;
         const int s = getNumElements();
-        const int * inds = getIndices();
-        for (int j=0; j < s; ++j)
+        const int* inds = getIndices();
+        for(int j = 0; j < s; ++j)
         {
-            if (!indexSetPtr_->insert(inds[j]).second)
+            if(!indexSetPtr_->insert(inds[j]).second)
             {
                 testedDuplicateIndex_ = false;
                 delete indexSetPtr_;
                 indexSetPtr_ = NULL;
-                if (methodName != NULL)
+                if(methodName != NULL)
                 {
                     throw CoinError("Duplicate index found", methodName, className);
                 }

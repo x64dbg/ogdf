@@ -55,48 +55,48 @@
 namespace ogdf
 {
 
-/**
- * The class FPPLayout represents the layout algorithm by
- * de Fraysseix, Pach, Pollack [DPP90]. This algorithm draws a planar graph G
- * straight-line without crossings. G must not contain self-loops or multiple
- * edges. The grid layout size is (2<i>n</i>-4) * (<i>n</i>-2) for a graph with
- * n nodes (<i>n</i> ≥ 3).
- * The algorithm runs in three phases. In the ﬁrst phase, the graph is
- * augmented by adding new artiﬁcial edges to get a triangulated plane graph.
- * Then, a so-called shelling order (also called canonical ordering)
- * for triangulated planar graphs is computed. In the third phase the vertices
- * are placed incrementally according to the shelling order.
- */
-class OGDF_EXPORT FPPLayout : public PlanarGridLayoutModule
-{
-public:
-    FPPLayout();
+    /**
+     * The class FPPLayout represents the layout algorithm by
+     * de Fraysseix, Pach, Pollack [DPP90]. This algorithm draws a planar graph G
+     * straight-line without crossings. G must not contain self-loops or multiple
+     * edges. The grid layout size is (2<i>n</i>-4) * (<i>n</i>-2) for a graph with
+     * n nodes (<i>n</i> ≥ 3).
+     * The algorithm runs in three phases. In the ﬁrst phase, the graph is
+     * augmented by adding new artiﬁcial edges to get a triangulated plane graph.
+     * Then, a so-called shelling order (also called canonical ordering)
+     * for triangulated planar graphs is computed. In the third phase the vertices
+     * are placed incrementally according to the shelling order.
+     */
+    class OGDF_EXPORT FPPLayout : public PlanarGridLayoutModule
+    {
+    public:
+        FPPLayout();
 
-private:
-    void doCall(
-        const Graph &G,
-        adjEntry adjExternal,
-        GridLayout &gridLayout,
-        IPoint &boundingBox,
-        bool fixEmbedding );
+    private:
+        void doCall(
+            const Graph & G,
+            adjEntry adjExternal,
+            GridLayout & gridLayout,
+            IPoint & boundingBox,
+            bool fixEmbedding);
 
-    void computeOrder(
-        const GraphCopy &G,
-        NodeArray<int> &num,
-        NodeArray<adjEntry> &e_wp,
-        NodeArray<adjEntry> &e_wq,
-        adjEntry e_12,
-        adjEntry e_2n,
-        adjEntry e_n1 );
+        void computeOrder(
+            const GraphCopy & G,
+            NodeArray<int> & num,
+            NodeArray<adjEntry> & e_wp,
+            NodeArray<adjEntry> & e_wq,
+            adjEntry e_12,
+            adjEntry e_2n,
+            adjEntry e_n1);
 
-    void computeCoordinates(
-        const GraphCopy &G,
-        IPoint &boundingBox,
-        GridLayout &gridLayout,
-        NodeArray<int> &num,
-        NodeArray<adjEntry> &e_wp,
-        NodeArray<adjEntry> &e_wq );
-};
+        void computeCoordinates(
+            const GraphCopy & G,
+            IPoint & boundingBox,
+            GridLayout & gridLayout,
+            NodeArray<int> & num,
+            NodeArray<adjEntry> & e_wp,
+            NodeArray<adjEntry> & e_wq);
+    };
 
 
 } // end namespace ogdf

@@ -46,124 +46,124 @@
 namespace ogdf
 {
 
-//*************************************************************
-//sets all edgeSubGraphs values to zero
-//
-void SimDrawCreator::clearESG()
-{
-    edge e;
-    forall_edges(e,*m_G)
-    m_GA->subGraphBits(e) = 0;
-
-}//end clearESG
-
-
-//*************************************************************
-//gives each edge in m_G a random edgeSubGraphs value
-//works with two graphs
-void SimDrawCreator::randomESG2(int doubleESGProbability)
-{
-    OGDF_ASSERT( doubleESGProbability <= 100 );
-    OGDF_ASSERT( doubleESGProbability >= 0 );
-
-    clearESG();
-
-    edge e;
-    forall_edges(e,*m_G)
+    //*************************************************************
+    //sets all edgeSubGraphs values to zero
+    //
+    void SimDrawCreator::clearESG()
     {
-        //all edges have a chance of doubleESGProbability (in percent)
-        //to belong to both input graphs
-        int doubleESGRandom = rand() % 100;
-        if(doubleESGRandom < doubleESGProbability)
-        {
-            m_GA->addSubGraph(e, 0);
-            m_GA->addSubGraph(e, 1);
-        }
-        else
-        {
-            // all edges, which do not belong to both input graphs
-            // have a 50/50 chance to belong to graph 0 or to graph 1
-            int singleESGRandom = rand() % 2;
-            m_GA->addSubGraph(e, singleESGRandom);
-        }
-    }
+        edge e;
+        forall_edges(e, *m_G)
+        m_GA->subGraphBits(e) = 0;
 
-}//end randomESG2
+    }//end clearESG
 
 
-//*************************************************************
-//gives each edge in m_G a random edgeSubGraphs value
-//works with three graphs
-void SimDrawCreator::randomESG3(int doubleESGProbability, int tripleESGProbability)
-{
-    OGDF_ASSERT( doubleESGProbability + tripleESGProbability <= 100 );
-    OGDF_ASSERT( doubleESGProbability >= 0 );
-    OGDF_ASSERT( tripleESGProbability >= 0 );
-
-    clearESG();
-
-    edge e;
-    forall_edges(e,*m_G)
+    //*************************************************************
+    //gives each edge in m_G a random edgeSubGraphs value
+    //works with two graphs
+    void SimDrawCreator::randomESG2(int doubleESGProbability)
     {
-        /*All edges have a chance of tripleESGProbability (in percent)
-        to belong to all three graphs.*/
-        int multipleESGRandom = rand() % 100;
-        if(multipleESGRandom < doubleESGProbability + tripleESGProbability)
-        {
-            m_GA->addSubGraph(e,0);
-            m_GA->addSubGraph(e,1);
-            m_GA->addSubGraph(e,2);
+        OGDF_ASSERT(doubleESGProbability <= 100);
+        OGDF_ASSERT(doubleESGProbability >= 0);
 
-            /*Furthermore, all edges have a chance of doubleESGProbability
-            to belong to two of three graphs.*/
-            if(multipleESGRandom >= tripleESGProbability)
+        clearESG();
+
+        edge e;
+        forall_edges(e, *m_G)
+        {
+            //all edges have a chance of doubleESGProbability (in percent)
+            //to belong to both input graphs
+            int doubleESGRandom = rand() % 100;
+            if(doubleESGRandom < doubleESGProbability)
             {
-                int removeESGRandom = rand() % 3;
-                m_GA->removeSubGraph(e, removeESGRandom);
+                m_GA->addSubGraph(e, 0);
+                m_GA->addSubGraph(e, 1);
+            }
+            else
+            {
+                // all edges, which do not belong to both input graphs
+                // have a 50/50 chance to belong to graph 0 or to graph 1
+                int singleESGRandom = rand() % 2;
+                m_GA->addSubGraph(e, singleESGRandom);
             }
         }
-        else
-        {
-            //all edges, which do not belong to two or three graphs
-            //have a 33 percent chance to belong to one of the three graphs.
-            int singleESGRandom = rand() % 3;
-            m_GA->addSubGraph(e, singleESGRandom);
-        }
-    }
 
-}//end randomESG3
+    }//end randomESG2
 
 
-//*************************************************************
-//gives each edge a random edgeSubgraph value
-//works with graphNumber number of graphs
-void SimDrawCreator::randomESG(int graphNumber)
-{
-    OGDF_ASSERT( 0 < graphNumber && graphNumber < 32 );
-
-    int max = (int)pow((double)2,graphNumber+1)-1;
-    edge e;
-    forall_edges(e,*m_G)
+    //*************************************************************
+    //gives each edge in m_G a random edgeSubGraphs value
+    //works with three graphs
+    void SimDrawCreator::randomESG3(int doubleESGProbability, int tripleESGProbability)
     {
-        int randomESGValue = 1 + rand() % max;
-        m_GA->subGraphBits(e) = randomESGValue;
-    }
+        OGDF_ASSERT(doubleESGProbability + tripleESGProbability <= 100);
+        OGDF_ASSERT(doubleESGProbability >= 0);
+        OGDF_ASSERT(tripleESGProbability >= 0);
 
-}//end randomESG
+        clearESG();
+
+        edge e;
+        forall_edges(e, *m_G)
+        {
+            /*All edges have a chance of tripleESGProbability (in percent)
+            to belong to all three graphs.*/
+            int multipleESGRandom = rand() % 100;
+            if(multipleESGRandom < doubleESGProbability + tripleESGProbability)
+            {
+                m_GA->addSubGraph(e, 0);
+                m_GA->addSubGraph(e, 1);
+                m_GA->addSubGraph(e, 2);
+
+                /*Furthermore, all edges have a chance of doubleESGProbability
+                to belong to two of three graphs.*/
+                if(multipleESGRandom >= tripleESGProbability)
+                {
+                    int removeESGRandom = rand() % 3;
+                    m_GA->removeSubGraph(e, removeESGRandom);
+                }
+            }
+            else
+            {
+                //all edges, which do not belong to two or three graphs
+                //have a 33 percent chance to belong to one of the three graphs.
+                int singleESGRandom = rand() % 3;
+                m_GA->addSubGraph(e, singleESGRandom);
+            }
+        }
+
+    }//end randomESG3
 
 
-//*************************************************************
-//
-//
-void SimDrawCreator::createRandom(int numberOfNodes,
-                                  int numberOfEdges,
-                                  int numberOfBasicGraphs)
-{
-    OGDF_ASSERT( 0 < numberOfBasicGraphs && numberOfBasicGraphs < 32 );
-    randomSimpleGraph(*m_G, numberOfNodes, numberOfEdges);
-    randomESG(numberOfBasicGraphs);
+    //*************************************************************
+    //gives each edge a random edgeSubgraph value
+    //works with graphNumber number of graphs
+    void SimDrawCreator::randomESG(int graphNumber)
+    {
+        OGDF_ASSERT(0 < graphNumber && graphNumber < 32);
 
-}//end createRandom
+        int max = (int)pow((double)2, graphNumber + 1) - 1;
+        edge e;
+        forall_edges(e, *m_G)
+        {
+            int randomESGValue = 1 + rand() % max;
+            m_GA->subGraphBits(e) = randomESGValue;
+        }
+
+    }//end randomESG
+
+
+    //*************************************************************
+    //
+    //
+    void SimDrawCreator::createRandom(int numberOfNodes,
+                                      int numberOfEdges,
+                                      int numberOfBasicGraphs)
+    {
+        OGDF_ASSERT(0 < numberOfBasicGraphs && numberOfBasicGraphs < 32);
+        randomSimpleGraph(*m_G, numberOfNodes, numberOfEdges);
+        randomESG(numberOfBasicGraphs);
+
+    }//end createRandom
 
 
 } // end namespace ogdf

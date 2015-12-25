@@ -82,7 +82,7 @@ public:
     /**@name Constructors and destructor and copy */
     //@{
     /// Default constructor
-    ClpInterior (  );
+    ClpInterior();
 
     /// Copy constructor.
     ClpInterior(const ClpInterior &);
@@ -92,14 +92,14 @@ public:
         row and column lists given.  The new order is given by list order and
         duplicates are allowed.  Name and integer information can be dropped
     */
-    ClpInterior (const ClpModel * wholeModel,
-                 int numberRows, const int * whichRows,
-                 int numberColumns, const int * whichColumns,
-                 bool dropNames = true, bool dropIntegers = true);
+    ClpInterior(const ClpModel* wholeModel,
+                int numberRows, const int* whichRows,
+                int numberColumns, const int* whichColumns,
+                bool dropNames = true, bool dropIntegers = true);
     /// Assignment operator. This copies the data
     ClpInterior & operator=(const ClpInterior & rhs);
     /// Destructor
-    ~ClpInterior (  );
+    ~ClpInterior();
     // Ones below are just ClpModel with some changes
     /** Loads a problem (the constraints on the
           rows are given by lower and upper bounds). If a pointer is 0 then the
@@ -112,36 +112,36 @@ public:
         <li> <code>obj</code>: all variables have 0 objective coefficient
           </ul>
       */
-    void loadProblem (  const ClpMatrixBase& matrix,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
-    void loadProblem (  const CoinPackedMatrix& matrix,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
+    void loadProblem(const ClpMatrixBase & matrix,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
+    void loadProblem(const CoinPackedMatrix & matrix,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
 
     /** Just like the other loadProblem() method except that the matrix is
       given in a standard column major ordered format (without gaps). */
-    void loadProblem (  const int numcols, const int numrows,
-                        const CoinBigIndex* start, const int* index,
-                        const double* value,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
+    void loadProblem(const int numcols, const int numrows,
+                     const CoinBigIndex* start, const int* index,
+                     const double* value,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
     /// This one is for after presolve to save memory
-    void loadProblem (  const int numcols, const int numrows,
-                        const CoinBigIndex* start, const int* index,
-                        const double* value, const int * length,
-                        const double* collb, const double* colub,
-                        const double* obj,
-                        const double* rowlb, const double* rowub,
-                        const double * rowObjective = NULL);
+    void loadProblem(const int numcols, const int numrows,
+                     const CoinBigIndex* start, const int* index,
+                     const double* value, const int* length,
+                     const double* collb, const double* colub,
+                     const double* obj,
+                     const double* rowlb, const double* rowub,
+                     const double* rowObjective = NULL);
     /// Read an mps file from the given filename
-    int readMps(const char *filename,
+    int readMps(const char* filename,
                 bool keepNames = false,
                 bool ignoreErrors = false);
     /** Borrow model.  This is so we dont have to copy large amounts
@@ -158,7 +158,7 @@ public:
     /** Pdco algorithm - see ClpPdco.hpp for method */
     int pdco();
     // ** Temporary version
-    int  pdco( ClpPdcoBase * stuff, Options &options, Info &info, Outfo &outfo);
+    int  pdco(ClpPdcoBase* stuff, Options & options, Info & info, Outfo & outfo);
     /// Primal-Dual Predictor-Corrector barrier
     int primalDual();
     //@}
@@ -284,19 +284,19 @@ public:
         maximumBarrierIterations_ = value;
     }
     /// Set cholesky (and delete present one)
-    void setCholesky(ClpCholeskyBase * cholesky);
+    void setCholesky(ClpCholeskyBase* cholesky);
     /// Return number fixed to see if worth presolving
     int numberFixed() const;
     /** fix variables interior says should be.  If reallyFix false then just
         set values to exact bounds */
     void fixFixed(bool reallyFix = true);
     /// Primal erturbation vector
-    inline CoinWorkDouble * primalR() const
+    inline CoinWorkDouble* primalR() const
     {
         return primalR_;
     }
     /// Dual erturbation vector
-    inline CoinWorkDouble * dualR() const
+    inline CoinWorkDouble* dualR() const
     {
         return dualR_;
     }
@@ -339,15 +339,15 @@ public:
     void checkSolution();
     /** Modifies djs to allow for quadratic.
         returns quadratic offset */
-    CoinWorkDouble quadraticDjs(CoinWorkDouble * djRegion, const CoinWorkDouble * solution,
+    CoinWorkDouble quadraticDjs(CoinWorkDouble* djRegion, const CoinWorkDouble* solution,
                                 CoinWorkDouble scaleFactor);
 
     /// To say a variable is fixed
-    inline void setFixed( int sequence)
+    inline void setFixed(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] | 1) ;
     }
-    inline void clearFixed( int sequence)
+    inline void clearFixed(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] & ~1) ;
     }
@@ -357,11 +357,11 @@ public:
     }
 
     /// To flag a variable
-    inline void setFlagged( int sequence)
+    inline void setFlagged(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] | 2) ;
     }
-    inline void clearFlagged( int sequence)
+    inline void clearFlagged(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] & ~2) ;
     }
@@ -371,11 +371,11 @@ public:
     }
 
     /// To say a variable is fixed OR free
-    inline void setFixedOrFree( int sequence)
+    inline void setFixedOrFree(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] | 4) ;
     }
-    inline void clearFixedOrFree( int sequence)
+    inline void clearFixedOrFree(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] & ~4) ;
     }
@@ -385,11 +385,11 @@ public:
     }
 
     /// To say a variable has lower bound
-    inline void setLowerBound( int sequence)
+    inline void setLowerBound(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] | 8) ;
     }
-    inline void clearLowerBound( int sequence)
+    inline void clearLowerBound(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] & ~8) ;
     }
@@ -399,11 +399,11 @@ public:
     }
 
     /// To say a variable has upper bound
-    inline void setUpperBound( int sequence)
+    inline void setUpperBound(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] | 16) ;
     }
-    inline void clearUpperBound( int sequence)
+    inline void clearUpperBound(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] & ~16) ;
     }
@@ -413,11 +413,11 @@ public:
     }
 
     /// To say a variable has fake lower bound
-    inline void setFakeLower( int sequence)
+    inline void setFakeLower(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] | 32) ;
     }
-    inline void clearFakeLower( int sequence)
+    inline void clearFakeLower(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] & ~32) ;
     }
@@ -427,11 +427,11 @@ public:
     }
 
     /// To say a variable has fake upper bound
-    inline void setFakeUpper( int sequence)
+    inline void setFakeUpper(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] | 64) ;
     }
-    inline void clearFakeUpper( int sequence)
+    inline void clearFakeUpper(int sequence)
     {
         status_[sequence] = static_cast<unsigned char>(status_[sequence] & ~64) ;
     }
@@ -441,7 +441,7 @@ public:
     }
     //@}
 
-////////////////// data //////////////////
+    ////////////////// data //////////////////
 protected:
 
     /**@name data.  Many arrays have a row part and a column part.
@@ -466,30 +466,30 @@ public:
     CoinWorkDouble zsize_;
 protected:
     /// Working copy of lower bounds (Owner of arrays below)
-    CoinWorkDouble * lower_;
+    CoinWorkDouble* lower_;
     /// Row lower bounds - working copy
-    CoinWorkDouble * rowLowerWork_;
+    CoinWorkDouble* rowLowerWork_;
     /// Column lower bounds - working copy
-    CoinWorkDouble * columnLowerWork_;
+    CoinWorkDouble* columnLowerWork_;
     /// Working copy of upper bounds (Owner of arrays below)
-    CoinWorkDouble * upper_;
+    CoinWorkDouble* upper_;
     /// Row upper bounds - working copy
-    CoinWorkDouble * rowUpperWork_;
+    CoinWorkDouble* rowUpperWork_;
     /// Column upper bounds - working copy
-    CoinWorkDouble * columnUpperWork_;
+    CoinWorkDouble* columnUpperWork_;
     /// Working copy of objective
-    CoinWorkDouble * cost_;
+    CoinWorkDouble* cost_;
 public:
     /// Rhs
-    CoinWorkDouble * rhs_;
-    CoinWorkDouble * x_;
-    CoinWorkDouble * y_;
-    CoinWorkDouble * dj_;
+    CoinWorkDouble* rhs_;
+    CoinWorkDouble* x_;
+    CoinWorkDouble* y_;
+    CoinWorkDouble* dj_;
 protected:
     /// Pointer to Lsqr object
-    ClpLsqr * lsqrObject_;
+    ClpLsqr* lsqrObject_;
     /// Pointer to stuff
-    ClpPdcoBase * pdcoStuff_;
+    ClpPdcoBase* pdcoStuff_;
     /// Below here is standard barrier stuff
     /// mu.
     CoinWorkDouble mu_;
@@ -547,52 +547,52 @@ protected:
     /// maximumRHSChange
     CoinWorkDouble maximumRHSChange_;
     /// errorRegion. i.e. Ax
-    CoinWorkDouble * errorRegion_;
+    CoinWorkDouble* errorRegion_;
     /// rhsFixRegion.
-    CoinWorkDouble * rhsFixRegion_;
+    CoinWorkDouble* rhsFixRegion_;
     /// upperSlack
-    CoinWorkDouble * upperSlack_;
+    CoinWorkDouble* upperSlack_;
     /// lowerSlack
-    CoinWorkDouble * lowerSlack_;
+    CoinWorkDouble* lowerSlack_;
     /// diagonal
-    CoinWorkDouble * diagonal_;
+    CoinWorkDouble* diagonal_;
     /// solution
-    CoinWorkDouble * solution_;
+    CoinWorkDouble* solution_;
     /// work array
-    CoinWorkDouble * workArray_;
+    CoinWorkDouble* workArray_;
     /// delta X
-    CoinWorkDouble * deltaX_;
+    CoinWorkDouble* deltaX_;
     /// delta Y
-    CoinWorkDouble * deltaY_;
+    CoinWorkDouble* deltaY_;
     /// deltaZ.
-    CoinWorkDouble * deltaZ_;
+    CoinWorkDouble* deltaZ_;
     /// deltaW.
-    CoinWorkDouble * deltaW_;
+    CoinWorkDouble* deltaW_;
     /// deltaS.
-    CoinWorkDouble * deltaSU_;
-    CoinWorkDouble * deltaSL_;
+    CoinWorkDouble* deltaSU_;
+    CoinWorkDouble* deltaSL_;
     /// Primal regularization array
-    CoinWorkDouble * primalR_;
+    CoinWorkDouble* primalR_;
     /// Dual regularization array
-    CoinWorkDouble * dualR_;
+    CoinWorkDouble* dualR_;
     /// rhs B
-    CoinWorkDouble * rhsB_;
+    CoinWorkDouble* rhsB_;
     /// rhsU.
-    CoinWorkDouble * rhsU_;
+    CoinWorkDouble* rhsU_;
     /// rhsL.
-    CoinWorkDouble * rhsL_;
+    CoinWorkDouble* rhsL_;
     /// rhsZ.
-    CoinWorkDouble * rhsZ_;
+    CoinWorkDouble* rhsZ_;
     /// rhsW.
-    CoinWorkDouble * rhsW_;
+    CoinWorkDouble* rhsW_;
     /// rhs C
-    CoinWorkDouble * rhsC_;
+    CoinWorkDouble* rhsC_;
     /// zVec
-    CoinWorkDouble * zVec_;
+    CoinWorkDouble* zVec_;
     /// wVec
-    CoinWorkDouble * wVec_;
+    CoinWorkDouble* wVec_;
     /// cholesky.
-    ClpCholeskyBase * cholesky_;
+    ClpCholeskyBase* cholesky_;
     /// numberComplementarityPairs i.e. ones with lower and/or upper bounds (not fixed)
     int numberComplementarityPairs_;
     /// numberComplementarityItems_ i.e. number of active bounds

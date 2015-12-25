@@ -57,54 +57,54 @@
 namespace ogdf
 {
 
-//--------------------------------------------------------------------------
-//CPlanarSubgraphModule
-//base class of algorithms for the computation of c-planar subgraphs
-//--------------------------------------------------------------------------
-/**
- *
- * \brief Interface of algorithms for the computation of c-planar subgraphs.
- */
-class CPlanarSubgraphModule : public Module, public Timeouter
-{
-
-public:
-    //! Constructs a cplanar subgraph module
-    CPlanarSubgraphModule() {}
-    //! Destruction
-    virtual ~CPlanarSubgraphModule() {}
-
+    //--------------------------------------------------------------------------
+    //CPlanarSubgraphModule
+    //base class of algorithms for the computation of c-planar subgraphs
+    //--------------------------------------------------------------------------
     /**
-     *  \brief  Computes set of edges delEdges, which have to be deleted
-     *  in order to get a c-planar subgraph.
      *
-     * Must be implemented by derived classes.
-     * @param G is the clustergraph.
-     * @param delEdges holds the edges not in the subgraph on return.
-     *
+     * \brief Interface of algorithms for the computation of c-planar subgraphs.
      */
-    ReturnType call(const ClusterGraph &G, List<edge> &delEdges)
+    class CPlanarSubgraphModule : public Module, public Timeouter
     {
-        return doCall(G, delEdges);
-    }
+
+    public:
+        //! Constructs a cplanar subgraph module
+        CPlanarSubgraphModule() {}
+        //! Destruction
+        virtual ~CPlanarSubgraphModule() {}
+
+        /**
+         *  \brief  Computes set of edges delEdges, which have to be deleted
+         *  in order to get a c-planar subgraph.
+         *
+         * Must be implemented by derived classes.
+         * @param G is the clustergraph.
+         * @param delEdges holds the edges not in the subgraph on return.
+         *
+         */
+        ReturnType call(const ClusterGraph & G, List<edge> & delEdges)
+        {
+            return doCall(G, delEdges);
+        }
 
 
-protected:
+    protected:
 
-    /**
-     * \brief Computes a maximum c-planar subgraph.
-     *
-     * If delEdges is empty on return, the clustered graph G is c-planar-
-     * The actual algorithm call that must be implemented by derived classes!
-     *
-     * @param CG is the given cluster graph.
-     * @param delEdges holds the set of edges that have to be deleted.
-     */
-    virtual ReturnType doCall(const ClusterGraph &CG,
-                              List<edge> &delEdges) = 0;
+        /**
+         * \brief Computes a maximum c-planar subgraph.
+         *
+         * If delEdges is empty on return, the clustered graph G is c-planar-
+         * The actual algorithm call that must be implemented by derived classes!
+         *
+         * @param CG is the given cluster graph.
+         * @param delEdges holds the set of edges that have to be deleted.
+         */
+        virtual ReturnType doCall(const ClusterGraph & CG,
+                                  List<edge> & delEdges) = 0;
 
-    OGDF_MALLOC_NEW_DELETE
-};
+        OGDF_MALLOC_NEW_DELETE
+    };
 
 } //end namespace ogdf
 

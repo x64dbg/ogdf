@@ -62,53 +62,53 @@
 namespace ogdf
 {
 
-namespace gdf
-{
-
-
-class Parser
-{
-private:
-    std::istream &m_istream;
-    HashArray<std::string, node> m_nodeId;
-    std::vector<NodeAttribute> m_nodeAttrs;
-    std::vector<EdgeAttribute> m_edgeAttrs;
-
-    bool readAttributes(
-        GraphAttributes &GA, node v,
-        const std::vector<std::string> &values);
-    bool readAttributes(
-        GraphAttributes &GA, edge e,
-        const std::vector<std::string> &values);
-
-    bool readNodeDef(const std::string &str);
-    bool readEdgeDef(const std::string &str);
-
-    bool readNodeStmt(
-        Graph &G, GraphAttributes *GA,
-        const std::string &str, size_t line);
-    bool readEdgeStmt(
-        Graph &G, GraphAttributes *GA,
-        const std::string &str, size_t line);
-
-    bool readGraph(Graph &G, GraphAttributes *GA);
-
-public:
-    Parser(std::istream &is);
-
-    bool read(Graph &G)
+    namespace gdf
     {
-        return readGraph(G, NULL);
-    }
-
-    bool read(Graph &G, GraphAttributes &GA)
-    {
-        return readGraph(G, &GA);
-    }
-};
 
 
-} // end namespace gdf
+        class Parser
+        {
+        private:
+            std::istream & m_istream;
+            HashArray<std::string, node> m_nodeId;
+            std::vector<NodeAttribute> m_nodeAttrs;
+            std::vector<EdgeAttribute> m_edgeAttrs;
+
+            bool readAttributes(
+                GraphAttributes & GA, node v,
+                const std::vector<std::string> & values);
+            bool readAttributes(
+                GraphAttributes & GA, edge e,
+                const std::vector<std::string> & values);
+
+            bool readNodeDef(const std::string & str);
+            bool readEdgeDef(const std::string & str);
+
+            bool readNodeStmt(
+                Graph & G, GraphAttributes* GA,
+                const std::string & str, size_t line);
+            bool readEdgeStmt(
+                Graph & G, GraphAttributes* GA,
+                const std::string & str, size_t line);
+
+            bool readGraph(Graph & G, GraphAttributes* GA);
+
+        public:
+            Parser(std::istream & is);
+
+            bool read(Graph & G)
+            {
+                return readGraph(G, NULL);
+            }
+
+            bool read(Graph & G, GraphAttributes & GA)
+            {
+                return readGraph(G, &GA);
+            }
+        };
+
+
+    } // end namespace gdf
 
 } // end namespace ogdf
 

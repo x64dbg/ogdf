@@ -63,66 +63,66 @@
 namespace ogdf
 {
 
-class GraphMLParser
-{
-private:
-    XmlParser m_xml;
-    XmlTagObject *m_graphTag; // "Almost root" tag.
-
-    HashArray<string, node> m_nodeId; // Maps GraphML node id to Graph node.
-    HashArray<string, string> m_attrName; // Maps attribute id to its name.
-
-    bool readData(
-        GraphAttributes &GA,
-        const node &v, const XmlTagObject &nodeData);
-    bool readData(
-        GraphAttributes &GA,
-        const edge &e, const XmlTagObject &edgeData);
-    bool readData(
-        ClusterGraphAttributes &CA,
-        const cluster &c, const XmlTagObject &clusterData);
-
-    // Finds all data-keys for given element and calls appropiate "readData".
-    template <typename A, typename T>
-    bool readAttributes(A &GA, const T &elem, const XmlTagObject &elemTag)
+    class GraphMLParser
     {
-        List<XmlTagObject *> dataTags;
-        elemTag.findSonXmlTagObjectByName("data", dataTags);
+    private:
+        XmlParser m_xml;
+        XmlTagObject* m_graphTag; // "Almost root" tag.
 
-        forall_listiterators(XmlTagObject *, it, dataTags)
+        HashArray<string, node> m_nodeId; // Maps GraphML node id to Graph node.
+        HashArray<string, string> m_attrName; // Maps attribute id to its name.
+
+        bool readData(
+            GraphAttributes & GA,
+            const node & v, const XmlTagObject & nodeData);
+        bool readData(
+            GraphAttributes & GA,
+            const edge & e, const XmlTagObject & edgeData);
+        bool readData(
+            ClusterGraphAttributes & CA,
+            const cluster & c, const XmlTagObject & clusterData);
+
+        // Finds all data-keys for given element and calls appropiate "readData".
+        template <typename A, typename T>
+        bool readAttributes(A & GA, const T & elem, const XmlTagObject & elemTag)
         {
-            const bool result = readData(GA, elem, **it);
+            List<XmlTagObject*> dataTags;
+            elemTag.findSonXmlTagObjectByName("data", dataTags);
 
-            if(!result)
+            forall_listiterators(XmlTagObject*, it, dataTags)
             {
-                return false;
+                const bool result = readData(GA, elem, **it);
+
+                if(!result)
+                {
+                    return false;
+                }
             }
+
+            return true;
         }
 
-        return true;
-    }
+        bool readNodes(
+            Graph & G, GraphAttributes* GA,
+            const XmlTagObject & rootTag);
+        bool readEdges(
+            Graph & G, GraphAttributes* GA,
+            const XmlTagObject & rootTag);
+        bool readClusters(
+            Graph & G, ClusterGraph & C, ClusterGraphAttributes* CA,
+            const cluster & rootCluster, const XmlTagObject & clusterRoot);
 
-    bool readNodes(
-        Graph &G, GraphAttributes *GA,
-        const XmlTagObject &rootTag);
-    bool readEdges(
-        Graph &G, GraphAttributes *GA,
-        const XmlTagObject &rootTag);
-    bool readClusters(
-        Graph &G, ClusterGraph &C, ClusterGraphAttributes *CA,
-        const cluster &rootCluster, const XmlTagObject &clusterRoot);
+        bool m_error;
 
-    bool m_error;
+    public:
+        GraphMLParser(istream & in);
+        ~GraphMLParser();
 
-public:
-    GraphMLParser(istream &in);
-    ~GraphMLParser();
-
-    bool read(Graph &G);
-    bool read(Graph &G, GraphAttributes &GA);
-    bool read(Graph &G, ClusterGraph &C);
-    bool read(Graph &G, ClusterGraph &C, ClusterGraphAttributes &CA);
-};
+        bool read(Graph & G);
+        bool read(Graph & G, GraphAttributes & GA);
+        bool read(Graph & G, ClusterGraph & C);
+        bool read(Graph & G, ClusterGraph & C, ClusterGraphAttributes & CA);
+    };
 
 
 } // end namespace ogdf

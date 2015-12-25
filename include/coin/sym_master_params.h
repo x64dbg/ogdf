@@ -32,7 +32,7 @@ typedef struct PARAMS
 {
     int        warm_start;
     int        verbosity;
-    char       param_file[MAX_FILE_NAME_LENGTH +1];
+    char       param_file[MAX_FILE_NAME_LENGTH + 1];
     int        random_seed;
     cp_params  cp_par;
     cg_params  cg_par;
@@ -41,23 +41,23 @@ typedef struct PARAMS
     dg_params  dg_par;
     prep_params prep_par;
 
-    char       tm_exe[MAX_FILE_NAME_LENGTH +1];
-    char       dg_exe[MAX_FILE_NAME_LENGTH +1];
+    char       tm_exe[MAX_FILE_NAME_LENGTH + 1];
+    char       dg_exe[MAX_FILE_NAME_LENGTH + 1];
     int        tm_debug;
     int        dg_debug;
     int        tm_machine_set;
-    char       tm_machine[MACH_NAME_LENGTH +1];
+    char       tm_machine[MACH_NAME_LENGTH + 1];
     int        dg_machine_set;
-    char       dg_machine[MACH_NAME_LENGTH +1];
+    char       dg_machine[MACH_NAME_LENGTH + 1];
     int        pvm_trace;
     int        do_branch_and_cut;
     int        do_draw_graph;
     int        use_permanent_cut_pools;
-    char       infile[MAX_FILE_NAME_LENGTH +1]; /* For MPS file name
+    char       infile[MAX_FILE_NAME_LENGTH + 1]; /* For MPS file name
                           or GNUMP modelfile */
     int        file_type;
-    char       datafile[MAX_FILE_NAME_LENGTH +1]; /* GNUMP datafile */
-    char       test_dir[MAX_FILE_NAME_LENGTH +1];  /* Test files directory */
+    char       datafile[MAX_FILE_NAME_LENGTH + 1]; /* GNUMP datafile */
+    char       test_dir[MAX_FILE_NAME_LENGTH + 1]; /* Test files directory */
     double     obj_offset;
 
     /* Multi-criteria parameters */

@@ -56,76 +56,76 @@
 namespace ogdf
 {
 
-/**
- * \brief Interface for minor-monotone edge insertion algorithms.
- *
- * \see MMSubgraphPlanarizer
- */
-class OGDF_EXPORT MMEdgeInsertionModule : public Module
-{
-public:
-    //! The postprocessing methods.
-    enum RemoveReinsertType
+    /**
+     * \brief Interface for minor-monotone edge insertion algorithms.
+     *
+     * \see MMSubgraphPlanarizer
+     */
+    class OGDF_EXPORT MMEdgeInsertionModule : public Module
     {
-        rrNone,        //!< No postprocessing.
-        rrInserted,    //!< Postprocessing only with the edges that have to be inserted.
-        rrMostCrossed, //!< Postprocessing with the edges involved in the most crossings.
-        rrAll,         //!< Postproceesing with all edges and all node splits.
-        rrIncremental  //!< Full postprocessing after each edge insertion.
+    public:
+        //! The postprocessing methods.
+        enum RemoveReinsertType
+        {
+            rrNone,        //!< No postprocessing.
+            rrInserted,    //!< Postprocessing only with the edges that have to be inserted.
+            rrMostCrossed, //!< Postprocessing with the edges involved in the most crossings.
+            rrAll,         //!< Postproceesing with all edges and all node splits.
+            rrIncremental  //!< Full postprocessing after each edge insertion.
+        };
+
+        //! Initializes a minor-monotone edge insertion module.
+        MMEdgeInsertionModule() { }
+
+        // destruction
+        virtual ~MMEdgeInsertionModule() { }
+
+        /**
+         * \brief Inserts all edges in \a origEdges into \a PG.
+         *
+         * @param PG is the input planarized expansion and will also receive the result.
+         * @param origEdges is the list of original edges (edges in the original graph
+         *        of \a PG) that have to be inserted.
+         * \return the status of the result.
+         */
+        ReturnType call(PlanRepExpansion & PG, const List<edge> & origEdges)
+        {
+            return doCall(PG, origEdges, 0);
+        }
+
+        /**
+         * \brief Inserts all edges in \a origEdges into \a PG and forbids crossing \a forbiddenEdges.
+         *
+         * @param PG is the input planarized expansion and will also receive the result.
+         * @param origEdges is the list of original edges (edges in the original graph
+         *        of \a PG) that have to be inserted.
+         * @param forbiddenEdgeOrig is an edge array indicating if an original edge is
+         *        forbidden to be crossed.
+         * \return the status of the result.
+         */
+        ReturnType call(PlanRepExpansion & PG,
+                        const List<edge> & origEdges,
+                        const EdgeArray<bool> & forbiddenEdgeOrig)
+        {
+            return doCall(PG, origEdges, &forbiddenEdgeOrig);
+        }
+
+    protected:
+        /**
+         * \brief Actual algorithm call that has to be implemented by derived classes.
+         *
+         * @param PG is the input planarized expansion and will also receive the result.
+         * @param origEdges is the list of original edges (edges in the original graph
+         *        of \a PG) that have to be inserted.
+         * @param forbiddenEdgeOrig points to an edge array indicating if an original edge is
+         *        forbidden to be crossed.
+         */
+        virtual ReturnType doCall(PlanRepExpansion & PG,
+                                  const List<edge> & origEdges, const EdgeArray<bool>* forbiddenEdgeOrig) = 0;
+
+
+        OGDF_MALLOC_NEW_DELETE
     };
-
-    //! Initializes a minor-monotone edge insertion module.
-    MMEdgeInsertionModule() { }
-
-    // destruction
-    virtual ~MMEdgeInsertionModule() { }
-
-    /**
-     * \brief Inserts all edges in \a origEdges into \a PG.
-     *
-     * @param PG is the input planarized expansion and will also receive the result.
-     * @param origEdges is the list of original edges (edges in the original graph
-     *        of \a PG) that have to be inserted.
-     * \return the status of the result.
-     */
-    ReturnType call(PlanRepExpansion &PG, const List<edge> &origEdges)
-    {
-        return doCall(PG, origEdges, 0);
-    }
-
-    /**
-     * \brief Inserts all edges in \a origEdges into \a PG and forbids crossing \a forbiddenEdges.
-     *
-     * @param PG is the input planarized expansion and will also receive the result.
-     * @param origEdges is the list of original edges (edges in the original graph
-     *        of \a PG) that have to be inserted.
-     * @param forbiddenEdgeOrig is an edge array indicating if an original edge is
-     *        forbidden to be crossed.
-     * \return the status of the result.
-     */
-    ReturnType call(PlanRepExpansion &PG,
-                    const List<edge> &origEdges,
-                    const EdgeArray<bool> &forbiddenEdgeOrig)
-    {
-        return doCall(PG, origEdges, &forbiddenEdgeOrig);
-    }
-
-protected:
-    /**
-     * \brief Actual algorithm call that has to be implemented by derived classes.
-     *
-     * @param PG is the input planarized expansion and will also receive the result.
-     * @param origEdges is the list of original edges (edges in the original graph
-     *        of \a PG) that have to be inserted.
-     * @param forbiddenEdgeOrig points to an edge array indicating if an original edge is
-     *        forbidden to be crossed.
-     */
-    virtual ReturnType doCall(PlanRepExpansion &PG,
-                              const List<edge> &origEdges, const EdgeArray<bool> *forbiddenEdgeOrig) = 0;
-
-
-    OGDF_MALLOC_NEW_DELETE
-};
 
 } // end namespace ogdf
 

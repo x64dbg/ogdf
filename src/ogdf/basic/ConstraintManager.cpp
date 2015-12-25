@@ -49,20 +49,20 @@
 namespace ogdf
 {
 
-Constraint *ConstraintManager::createConstraintByName(const Graph &G, string *name)
-{
-//  if ((*name) == "Anchor") return new AnchorConstraint(G); else
-//  if ((*name) == "Alignment") return new AlignmentConstraint(G,0.0); else
-//  if ((*name) == "Sequence") return new SequenceConstraint(G,true); else
-    return NULL;
-}
+    Constraint* ConstraintManager::createConstraintByName(const Graph & G, string* name)
+    {
+        //  if ((*name) == "Anchor") return new AnchorConstraint(G); else
+        //  if ((*name) == "Alignment") return new AlignmentConstraint(G,0.0); else
+        //  if ((*name) == "Sequence") return new SequenceConstraint(G,true); else
+        return NULL;
+    }
 
-string ConstraintManager::getClassnameOfConstraint(Constraint *c)
-{
-//  if (c->getType()==AnchorConstraint::getStaticType()) return "Anchor";
-//  if (c->getType()==AlignmentConstraint::getStaticType()) return "Alignment";
-//  if (c->getType()==SequenceConstraint::getStaticType()) return "Sequence";
-    return "";
-}
+    string ConstraintManager::getClassnameOfConstraint(Constraint* c)
+    {
+        //  if (c->getType()==AnchorConstraint::getStaticType()) return "Anchor";
+        //  if (c->getType()==AlignmentConstraint::getStaticType()) return "Alignment";
+        //  if (c->getType()==SequenceConstraint::getStaticType()) return "Sequence";
+        return "";
+    }
 
 }

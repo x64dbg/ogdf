@@ -35,69 +35,69 @@ public:
         Parts of operation split out into separate functions for
         profiling and speed
     */
-    virtual int pivotColumn(CoinIndexedVector * updates,
-                            CoinIndexedVector * spareRow1,
-                            CoinIndexedVector * spareRow2,
-                            CoinIndexedVector * spareColumn1,
-                            CoinIndexedVector * spareColumn2);
+    virtual int pivotColumn(CoinIndexedVector* updates,
+                            CoinIndexedVector* spareRow1,
+                            CoinIndexedVector* spareRow2,
+                            CoinIndexedVector* spareColumn1,
+                            CoinIndexedVector* spareColumn2);
     /// For quadratic or funny nonlinearities
-    int pivotColumnOldMethod(CoinIndexedVector * updates,
-                             CoinIndexedVector * spareRow1,
-                             CoinIndexedVector * spareRow2,
-                             CoinIndexedVector * spareColumn1,
-                             CoinIndexedVector * spareColumn2);
+    int pivotColumnOldMethod(CoinIndexedVector* updates,
+                             CoinIndexedVector* spareRow1,
+                             CoinIndexedVector* spareRow2,
+                             CoinIndexedVector* spareColumn1,
+                             CoinIndexedVector* spareColumn2);
     /// Just update djs
-    void justDjs(CoinIndexedVector * updates,
-                 CoinIndexedVector * spareRow2,
-                 CoinIndexedVector * spareColumn1,
-                 CoinIndexedVector * spareColumn2);
+    void justDjs(CoinIndexedVector* updates,
+                 CoinIndexedVector* spareRow2,
+                 CoinIndexedVector* spareColumn1,
+                 CoinIndexedVector* spareColumn2);
     /// Update djs doing partial pricing (dantzig)
-    int partialPricing(CoinIndexedVector * updates,
-                       CoinIndexedVector * spareRow2,
+    int partialPricing(CoinIndexedVector* updates,
+                       CoinIndexedVector* spareRow2,
                        int numberWanted,
                        int numberLook);
     /// Update djs, weights for Devex using djs
-    void djsAndDevex(CoinIndexedVector * updates,
-                     CoinIndexedVector * spareRow2,
-                     CoinIndexedVector * spareColumn1,
-                     CoinIndexedVector * spareColumn2);
+    void djsAndDevex(CoinIndexedVector* updates,
+                     CoinIndexedVector* spareRow2,
+                     CoinIndexedVector* spareColumn1,
+                     CoinIndexedVector* spareColumn2);
     /// Update djs, weights for Steepest using djs
-    void djsAndSteepest(CoinIndexedVector * updates,
-                        CoinIndexedVector * spareRow2,
-                        CoinIndexedVector * spareColumn1,
-                        CoinIndexedVector * spareColumn2);
+    void djsAndSteepest(CoinIndexedVector* updates,
+                        CoinIndexedVector* spareRow2,
+                        CoinIndexedVector* spareColumn1,
+                        CoinIndexedVector* spareColumn2);
     /// Update djs, weights for Devex using pivot row
-    void djsAndDevex2(CoinIndexedVector * updates,
-                      CoinIndexedVector * spareRow2,
-                      CoinIndexedVector * spareColumn1,
-                      CoinIndexedVector * spareColumn2);
+    void djsAndDevex2(CoinIndexedVector* updates,
+                      CoinIndexedVector* spareRow2,
+                      CoinIndexedVector* spareColumn1,
+                      CoinIndexedVector* spareColumn2);
     /// Update djs, weights for Steepest using pivot row
-    void djsAndSteepest2(CoinIndexedVector * updates,
-                         CoinIndexedVector * spareRow2,
-                         CoinIndexedVector * spareColumn1,
-                         CoinIndexedVector * spareColumn2);
+    void djsAndSteepest2(CoinIndexedVector* updates,
+                         CoinIndexedVector* spareRow2,
+                         CoinIndexedVector* spareColumn1,
+                         CoinIndexedVector* spareColumn2);
     /// Update weights for Devex
-    void justDevex(CoinIndexedVector * updates,
-                   CoinIndexedVector * spareRow2,
-                   CoinIndexedVector * spareColumn1,
-                   CoinIndexedVector * spareColumn2);
+    void justDevex(CoinIndexedVector* updates,
+                   CoinIndexedVector* spareRow2,
+                   CoinIndexedVector* spareColumn1,
+                   CoinIndexedVector* spareColumn2);
     /// Update weights for Steepest
-    void justSteepest(CoinIndexedVector * updates,
-                      CoinIndexedVector * spareRow2,
-                      CoinIndexedVector * spareColumn1,
-                      CoinIndexedVector * spareColumn2);
+    void justSteepest(CoinIndexedVector* updates,
+                      CoinIndexedVector* spareRow2,
+                      CoinIndexedVector* spareColumn1,
+                      CoinIndexedVector* spareColumn2);
     /// Updates two arrays for steepest
-    void transposeTimes2(const CoinIndexedVector * pi1, CoinIndexedVector * dj1,
-                         const CoinIndexedVector * pi2, CoinIndexedVector * dj2,
-                         CoinIndexedVector * spare, double scaleFactor);
+    void transposeTimes2(const CoinIndexedVector* pi1, CoinIndexedVector* dj1,
+                         const CoinIndexedVector* pi2, CoinIndexedVector* dj2,
+                         CoinIndexedVector* spare, double scaleFactor);
 
     /// Updates weights - part 1 - also checks accuracy
-    virtual void updateWeights(CoinIndexedVector * input);
+    virtual void updateWeights(CoinIndexedVector* input);
 
     /// Checks accuracy - just for debug
     void checkAccuracy(int sequence, double relativeTolerance,
-                       CoinIndexedVector * rowArray1,
-                       CoinIndexedVector * rowArray2);
+                       CoinIndexedVector* rowArray1,
+                       CoinIndexedVector* rowArray2);
 
     /// Initialize weights
     void initializeWeights();
@@ -110,7 +110,7 @@ public:
         4) restore weights
         5) at end of values pass (so need initialization)
     */
-    virtual void saveWeights(ClpSimplex * model, int mode);
+    virtual void saveWeights(ClpSimplex* model, int mode);
     /// Gets rid of last update
     virtual void unrollWeights();
     /// Gets rid of all arrays
@@ -135,7 +135,7 @@ public:
     /// Switch off sprint idea
     virtual void switchOffSprint();
 
-//@}
+    //@}
 
     /** enums for persistence
     */
@@ -161,13 +161,13 @@ public:
     ClpPrimalColumnSteepest(const ClpPrimalColumnSteepest & rhs);
 
     /// Assignment operator
-    ClpPrimalColumnSteepest & operator=(const ClpPrimalColumnSteepest& rhs);
+    ClpPrimalColumnSteepest & operator=(const ClpPrimalColumnSteepest & rhs);
 
     /// Destructor
-    virtual ~ClpPrimalColumnSteepest ();
+    virtual ~ClpPrimalColumnSteepest();
 
     /// Clone
-    virtual ClpPrimalColumnPivot * clone(bool copyData = true) const;
+    virtual ClpPrimalColumnPivot* clone(bool copyData = true) const;
 
     //@}
 
@@ -177,13 +177,13 @@ public:
     */
     inline bool reference(int i) const
     {
-        return ((reference_[i>>5] >> (i & 31)) & 1) != 0;
+        return ((reference_[i >> 5] >> (i & 31)) & 1) != 0;
     }
     inline void setReference(int i, bool trueFalse)
     {
-        unsigned int & value = reference_[i>>5];
+        unsigned int & value = reference_[i >> 5];
         int bit = i & 31;
-        if (trueFalse)
+        if(trueFalse)
             value |= (1 << bit);
         else
             value &= ~(1 << bit);
@@ -206,15 +206,15 @@ private:
     // Update weight
     double devex_;
     /// weight array
-    double * weights_;
+    double* weights_;
     /// square of infeasibility array (just for infeasible columns)
-    CoinIndexedVector * infeasible_;
+    CoinIndexedVector* infeasible_;
     /// alternate weight array (so we can unroll)
-    CoinIndexedVector * alternateWeights_;
+    CoinIndexedVector* alternateWeights_;
     /// save weight array (so we can use checkpoint)
-    double * savedWeights_;
+    double* savedWeights_;
     // Array for exact devex to say what is in reference framework
-    unsigned int * reference_;
+    unsigned int* reference_;
     /** Status
         0) Normal
         -1) Needs initialization
