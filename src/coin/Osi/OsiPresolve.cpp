@@ -1299,7 +1299,7 @@ void OsiPresolve::postsolve(CoinPostsolveMatrix & prob)
 
 #if 0 && PRESOLVE_DEBUG
 
-            <<This block of checks will require some work to get it to compile.>>
+            << This block of checks will require some work to get it to compile.>>
 
             for(i = 0; i < ncols0; i++)
     {
@@ -1332,7 +1332,7 @@ void OsiPresolve::postsolve(CoinPostsolveMatrix & prob)
 
 #if 0 && PRESOLVE_DEBUG
 
-            <<This block of checks will require some work to get it to compile.>>
+            << This block of checks will require some work to get it to compile.>>
 
             // debug check:  make sure we ended up with same original matrix
     {
